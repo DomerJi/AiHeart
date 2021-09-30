@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="LoadingView">
+        <attr name="iconWidth" format="dimension" />
+        <attr name="iconHeight" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="AmountView">
+        <attr name="corner" format="dimension" />
+        <attr name="isEdit" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="InputBoxView">
+        <attr name="codeCount" format="integer" />
+        <attr name="encryption" format="boolean" />
+        <attr name="softKeyboardAuto" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="TitleView">
+        <attr name="tv_centerText" format="string" />
+        <attr name="tv_rightText" format="string" />
+        <attr name="tv_leftIcon" format="reference" />
+        <attr name="tv_showIcon" format="boolean" />
+        <attr name="tv_background" format="reference" />
+        <attr name="tv_leftIconColor" format="reference" />
+        <attr name="tv_centerTextColor" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="MySearchView">
+        <attr name="sv_isEdit" format="boolean" />
+        <attr name="sv_clearIcon" format="boolean" />
+        <attr name="sv_hint" format="string" />
+        <attr name="sv_hintColor" format="reference" />
+        <attr name="sv_background" format="reference" />
+    </declare-styleable>
+
+</resources>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/black">
+
+
+    <FrameLayout
+        android:id="@+id/fl_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintDimensionRatio="H,16:9"
+        tools:ignore="MissingConstraints" />
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/mPlayerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:controller_layout_id="@layout/custom_exo_player_control_view"
+        app:layout_constraintDimensionRatio="H,16:9"
+        tools:ignore="MissingConstraints" />
+
+    <!-- dd
+
+        app:controller_layout_id="@layout/custom_exo_player_view"
+        app:player_layout_id="@layout/custom_exo_player_control_view"-->
+
+    <ProgressBar
+        android:id="@+id/pb_bottom"
+        style="@style/HorizontalProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:max="1000"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <Button
+        android:id="@+id/btn_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="播放"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize"
+        tools:ignore="MissingConstraints"
+        tools:text="视频名称" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

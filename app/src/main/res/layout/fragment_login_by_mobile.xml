@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <include layout="@layout/layout_login_top" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="30dp"
+        app:layout_constraintTop_toBottomOf="@id/cl_top">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="手机号登录"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_edit_height"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/tv_country"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="+86"
+                android:textColor="@color/text_common"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/et_mobile"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_toRightOf="@id/tv_country"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:hint="@string/please_input_mobile"
+                android:paddingLeft="8dp"
+                android:textColor="@color/text_common"
+                android:textColorHint="@color/text_hint"
+                android:textSize="@dimen/textSize" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider_2px"
+                android:layout_alignParentBottom="true"
+                android:background="@color/divider" />
+
+        </RelativeLayout>
+
+        <com.thfw.ui.widget.VerificationCodeView
+            android:id="@+id/vfcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/bt_login"
+            style="@style/common_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="28dp"
+            android:text="登录" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_login_by_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="用密码登录"
+                android:textColor="@color/text_common"
+                android:textSize="@dimen/textSize" />
+
+            <TextView
+                android:id="@+id/tv_forget_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:padding="10dp"
+                android:text="忘记密码？"
+                android:textColor="@color/text_hint"
+                android:textSize="@dimen/textSize" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <include layout="@layout/layout_login_bottom" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

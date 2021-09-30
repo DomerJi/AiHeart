@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">common-ui</string>
+
+    <string name="load_ing">加载中...</string>
+    <string name="load_fail">加载失败</string>
+    <string name="load_more">加载更多</string>
+    <string name="load_success">加载成功</string>
+    <string name="load_empty">还没有内容哦</string>
+    <string name="net_no_connected">请检查网络链接状态！</string>
+
+    <string name="title">Title</string>
+    <string name="reset">重置</string>
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="dialog_confirm">确定</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_close">关闭</string>
+    <string name="dialog_count_change_title">修改购买数量</string>
+
+    <string name="back">返回</string>
+    <string name="next_step">下一步</string>
+    <string name="prev_step">上一步</string>
+
+    <string name="bigText">天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n天和防务\n</string>
+    <string name="bigText2">天和防务天和防务天和防务天和防务天和防务天和防务天和防务天和防务天和防务天和防务天和防务天和防务天和防务天和防务天和防务天和防务</string>
+    <!--  登录相关-->
+    <string name="login">登录</string>
+    <string name="logout">退出登录</string>
+    <string name="other_login_type">其他登录方式</string>
+    <string name="forget_password">忘记密码</string>
+    <string name="login_by_password">账号密码登录</string>
+    <string name="login_by_verification">免注册登录</string>
+    <string name="use_login_by_verification">使用手机验证码登录</string>
+    <string name="use_login_by_password">使用账号密码登录</string>
+    <string name="gain_verification_code">发送验证码</string>
+    <string name="verification_code_send_success">验证码成功发送至手机，请查收！</string>
+    <string name="password_check_hint">6-12位的数字、字母组成(不能是纯数字)</string>
+    <string name="please_input_mobile">请输入手机号</string>
+    <string name="please_input_verification">请输入验证码</string>
+    <string name="please_input_mobile_number11">请输入11位手机号！</string>
+    <string name="please_input_password">请输入密码</string>
+    <string name="login_agree">《用户协议隐私政策》</string>
+    <string name="login_agree_hint">登录即代表您已同意</string>
+    <string name="hint_bind_mobile">为了更好的为您服务 请您绑定手机号码</string>
+    <string name="hint_login_by_password">使用账号密码登录提示：\n需要您手机验证码登录成功或微信登录成功后，修改登录密码，就可以用  手机号和密码 登录了 。</string>
+    <string name="dialog_transaction_password">请输入交易密码</string>
+    <string name="dialog_verification_code">请验证手机号码</string>
+    <string name="dialog_purchase_goods">采购商品</string>
+    <string name="dialog_purchase_goods_hint">让百万供应商为你报价</string>
+    <string name="dialog_publish_goods">发布商品</string>
+    <string name="dialog_publish_goods_hint">让千万供应商找到你</string>
+
+</resources>

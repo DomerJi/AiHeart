@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv_subtract"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="@drawable/amount_subtract_selector"
+        android:gravity="center"
+        android:text="—"
+        android:textColor="@drawable/amount_text_changed_selector" />
+
+
+    <EditText
+        android:id="@+id/et_count"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:background="@drawable/amount_text_count_selector"
+        android:gravity="center"
+        android:inputType="number"
+        tools:text="1" />
+
+    <TextView
+        android:id="@+id/tv_add"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="@drawable/amount_add_selector"
+        android:gravity="center"
+        android:text="+"
+        android:textSize="20sp"
+        android:textColor="@drawable/amount_text_changed_selector" />
+
+
+</LinearLayout>

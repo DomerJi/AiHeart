@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.thfw.mobileheart.activity.TestActivity">
+
+    <me.zhanghai.android.materialratingbar.MaterialRatingBar
+        android:id="@+id/ratingBar"
+        style="@style/Widget.MaterialRatingBar.RatingBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:secondaryProgressTint="#0F0"
+        app:mrb_progressBackgroundTint="#ccc"
+        app:mrb_progressTint="#FF0"
+        tools:ignore="MissingConstraints" />
+
+
+    <ProgressBar
+        android:id="@+id/pb_bottom"
+        style="@style/HorizontalProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="20dp"
+        android:max="1000"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+
+    <Button
+        android:id="@+id/bt_begin_download"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始下载" />
+
+    <Button
+        android:id="@+id/bt_aiui"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AiUi" />
+
+
+</LinearLayout>

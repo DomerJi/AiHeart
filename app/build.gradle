@@ -1,0 +1,94 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        applicationId "com.thfw.mobileheart"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi-v7a"
+        }
+    }
+
+    signingConfigs {
+        // 签名
+        release {
+            storeFile file("sign.jks")
+            storePassword "robotheart321654"
+            keyAlias "robotheart"
+            keyPassword "robotheart321654"
+        }
+    }
+
+//    buildTypes {
+//        release {
+//            debuggable true
+//            minifyEnabled true
+//            zipAlignEnabled true
+//            shrinkResources true
+//            signingConfig signingConfigs.release
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//
+//            buildConfigField "boolean", "LOG_ENABLE", "true"
+//        }
+//        debug {
+//            debuggable true
+//            minifyEnabled false
+//            zipAlignEnabled false
+//            shrinkResources false
+//            testCoverageEnabled false
+//            signingConfig signingConfigs.release
+//
+//            buildConfigField "boolean", "LOG_ENABLE", "true"
+//        }
+//
+//    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    // 配置so文件在 libs目录下
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility rootProject.ext.source_java_version
+        targetCompatibility rootProject.ext.target_java_version
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':common-base')
+    implementation project(':common-ui')
+    implementation project(':picture_library')
+    implementation project(':calendarview')
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.android.support:multidex:1.0.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.navigation:navigation-fragment:2.3.0'
+    implementation 'androidx.navigation:navigation-ui:2.3.0'
+    implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+
+}

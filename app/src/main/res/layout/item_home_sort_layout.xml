@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:weightSum="4"
+        tools:ignore="MissingConstraints">
+
+        <RelativeLayout
+            android:id="@+id/rl_tab_01"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/iv_tab_01"
+                android:layout_width="@dimen/home_sort_icon_height"
+                android:layout_height="@dimen/home_sort_icon_height"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_sort_talk" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_tab_01"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/home_sort_text_icon_margin"
+                android:text="@string/sort_type_talk"
+                android:textSize="@dimen/home_sort_text_size" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_tab_02"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/iv_tab_02"
+                android:layout_width="@dimen/home_sort_icon_height"
+                android:layout_height="@dimen/home_sort_icon_height"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_sort_what" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_tab_02"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/home_sort_text_icon_margin"
+                android:text="@string/sort_type_what"
+                android:textSize="@dimen/home_sort_text_size" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_tab_03"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/iv_tab_03"
+                android:layout_width="@dimen/home_sort_icon_height"
+                android:layout_height="@dimen/home_sort_icon_height"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_sort_test" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_tab_03"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/home_sort_text_icon_margin"
+                android:text="@string/sort_type_test"
+                android:textSize="@dimen/home_sort_text_size" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_tab_04"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/iv_tab_04"
+                android:layout_width="@dimen/home_sort_icon_height"
+                android:layout_height="@dimen/home_sort_icon_height"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_sort_exercise" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_tab_04"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/home_sort_text_icon_margin"
+                android:text="@string/sort_type_exercise"
+                android:textSize="@dimen/home_sort_text_size" />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:weightSum="4"
+        tools:ignore="MissingConstraints">
+
+        <RelativeLayout
+            android:id="@+id/rl_tab_05"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/iv_tab_05"
+                android:layout_width="@dimen/home_sort_icon_height"
+                android:layout_height="@dimen/home_sort_icon_height"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_sort_listen" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_tab_05"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/home_sort_text_icon_margin"
+                android:text="@string/sort_type_listening"
+                android:textSize="@dimen/home_sort_text_size" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_tab_06"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/iv_tab_06"
+                android:layout_width="@dimen/home_sort_icon_height"
+                android:layout_height="@dimen/home_sort_icon_height"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_sort_see" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_tab_06"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/home_sort_text_icon_margin"
+                android:text="@string/sort_type_see"
+                android:textSize="@dimen/home_sort_text_size" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_tab_07"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/iv_tab_07"
+                android:layout_width="@dimen/home_sort_icon_height"
+                android:layout_height="@dimen/home_sort_icon_height"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_sort_read" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_tab_07"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/home_sort_text_icon_margin"
+                android:text="@string/sort_type_read"
+                android:textSize="@dimen/home_sort_text_size" />
+
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rl_tab_08"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/iv_tab_08"
+                android:layout_width="@dimen/home_sort_icon_height"
+                android:layout_height="@dimen/home_sort_icon_height"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_sort_study" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_tab_08"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/home_sort_text_icon_margin"
+                android:text="@string/sort_type_study"
+                android:textSize="@dimen/home_sort_text_size" />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/page_background_gray" />
+
+
+</LinearLayout>

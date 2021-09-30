@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingLeft="8dp"
+    android:paddingTop="6dp"
+    android:paddingRight="8dp"
+    android:paddingBottom="6dp">
+
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/riv_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/cat"
+        app:layout_constraintDimensionRatio="1:0.52"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:riv_corner_radius="@dimen/corner"
+        app:riv_oval="false"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="@dimen/divider_2px"
+        android:gravity="center"
+        android:text="Home Body"
+        android:textColor="@color/text_common"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintTop_toBottomOf="@id/riv_avatar"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="9dp"
+        android:gravity="center"
+        android:text="Home Body"
+        android:textColor="@color/text_content"
+        android:textSize="10sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:ignore="MissingConstraints" />
+
+
+    <ImageView
+        android:id="@+id/iv_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:src="@drawable/ic_baseline_more_vert_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_number" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

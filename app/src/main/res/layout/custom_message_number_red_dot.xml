@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/message_count_dot_red"
+    android:gravity="center"
+    android:maxHeight="16dp"
+    android:maxLines="1"
+    android:minWidth="16dp"
+    android:paddingLeft="2dp"
+    android:paddingTop="2dp"
+    android:paddingRight="2dp"
+    android:paddingBottom="2dp"
+    android:text="99+"
+    android:textColor="@color/white"
+    android:textSize="@dimen/textSize_message_count" />

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/page_padding"
+        android:text="@string/dialog_count_change_title"
+        android:textColor="@color/text_common" />
+
+    <com.thfw.ui.widget.AmountView
+        android:id="@+id/av_count"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/page_padding"
+        app:isEdit="true" />
+
+    <View
+        android:id="@+id/vline_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_2px"
+        android:layout_marginTop="@dimen/page_padding"
+        android:background="@color/black_30" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_left"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_left_button_selector"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textColor="@color/text_hint" />
+
+        <View
+            android:id="@+id/vline_vertical"
+            android:layout_width="@dimen/divider_2px"
+            android:layout_height="match_parent"
+            android:background="@color/black_30" />
+
+
+        <TextView
+            android:id="@+id/tv_right"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_right_button_selector"
+            android:gravity="center"
+            android:text="@string/confirm"
+            android:textColor="@color/text_common" />
+
+    </LinearLayout>
+
+</LinearLayout>

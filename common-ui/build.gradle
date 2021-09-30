@@ -1,0 +1,44 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':common-base')
+    implementation 'com.drakeet.multitype:multitype:4.2.0'
+    implementation 'androidx.appcompat:appcompat:' + rootProject.ext.appcompat
+    implementation 'androidx.constraintlayout:constraintlayout:' + rootProject.ext.constraintlayout
+    implementation 'androidx.legacy:' + rootProject.ext.legacySupport
+    api 'com.jaeger.statusbarutil:library:' + rootProject.ext.statusbarutil
+    api 'com.youth.banner:banner:' + rootProject.ext.banner
+    api 'com.github.yhaolpz:FloatWindow:1.0.9'
+    api 'me.zhanghai.android.materialratingbar:library:' + rootProject.ext.materialratingbar
+
+    api 'com.scwang.smart:refresh-layout-kernel:' + rootProject.ext.smartRefresh      //核心必须依赖
+    api 'com.scwang.smart:refresh-header-classics:' + rootProject.ext.smartRefresh    //经典刷新头
+    api 'com.scwang.smart:refresh-footer-classics:' + rootProject.ext.smartRefresh    //经典加载
+}

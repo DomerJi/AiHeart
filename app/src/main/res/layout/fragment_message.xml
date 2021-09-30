@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.thfw.mobileheart.fragment.MessageFragment">
+
+
+    <com.thfw.ui.widget.LinearTopLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <com.thfw.ui.widget.TitleView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tv_centerText="@string/message"
+            app:tv_rightText="全部已读"
+            app:tv_showIcon="false" />
+
+    </com.thfw.ui.widget.LinearTopLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/white">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/rl_tab01"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/rl_tab02"
+                tools:ignore="MissingConstraints">
+
+                <TextView
+                    android:id="@+id/tv_tab01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tab_task"
+                    android:textColor="@drawable/message_tab_textcolor_selector"
+                    android:textSize="@dimen/textSize_large"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <View
+                    android:id="@+id/v_indactor_01"
+                    android:layout_width="30dp"
+                    android:layout_height="4dp"
+                    android:background="@color/login_agree"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <include
+                    android:id="@+id/tv_tab01_massage"
+                    layout="@layout/custom_message_number_red_dot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toRightOf="@id/tv_tab01"
+                    app:layout_constraintTop_toTopOf="@id/tv_tab01" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/rl_tab02"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toRightOf="@id/rl_tab01"
+                app:layout_constraintRight_toLeftOf="@id/rl_tab03"
+                tools:ignore="MissingConstraints">
+
+                <TextView
+                    android:id="@+id/tv_tab02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tab_report"
+                    android:textColor="@drawable/message_tab_textcolor_selector"
+                    android:textSize="@dimen/textSize_large"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <View
+                    android:id="@+id/v_indactor_02"
+                    android:layout_width="30dp"
+                    android:layout_height="4dp"
+                    android:background="@color/login_agree"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <include
+                    android:id="@+id/tv_tab02_massage"
+                    layout="@layout/custom_message_number_red_dot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toRightOf="@id/tv_tab02"
+                    app:layout_constraintTop_toTopOf="@id/tv_tab02" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/rl_tab03"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toRightOf="@id/rl_tab02"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:ignore="MissingConstraints">
+
+                <TextView
+                    android:id="@+id/tv_tab03"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tab_notice"
+                    android:textColor="@drawable/message_tab_textcolor_selector"
+                    android:textSize="@dimen/textSize_large"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <View
+                    android:id="@+id/v_indactor_03"
+                    android:layout_width="30dp"
+                    android:layout_height="4dp"
+                    android:background="@color/login_agree"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <include
+                    android:id="@+id/tv_tab03_massage"
+                    layout="@layout/custom_message_number_red_dot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toRightOf="@id/tv_tab03"
+                    app:layout_constraintTop_toTopOf="@id/tv_tab03" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_background"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/page_margin"
+        android:text="@string/title"
+        android:textColor="@color/text_common"
+        android:textSize="@dimen/textSize"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/page_margin"
+        android:paddingLeft="@dimen/page_padding"
+        android:text="@string/title"
+        android:textColor="@color/text_common"
+        android:textSize="@dimen/textSize"
+        tools:ignore="MissingConstraints" />
+
+    <View
+        android:id="@+id/vline_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_2px"
+        android:layout_marginTop="@dimen/page_padding"
+        android:background="@color/black_30" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_left"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:background="@drawable/dialog_left_button_selector"
+            android:textColor="@color/text_hint" />
+
+        <View
+            android:id="@+id/vline_vertical"
+            android:layout_width="@dimen/divider_2px"
+            android:layout_height="match_parent"
+            android:background="@color/black_30" />
+
+
+        <TextView
+            android:id="@+id/tv_right"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/confirm"
+            android:background="@drawable/dialog_right_button_selector"
+            android:textColor="@color/text_common" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
