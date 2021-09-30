@@ -91,5 +91,5 @@
         </service>
         <service android:name="com.thfw.mobileheart.AudioService" />
     </application>
-
+<!--    test-->
 </manifest>
