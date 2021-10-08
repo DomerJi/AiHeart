@@ -25,7 +25,6 @@
 
     </style>
 
-    <!-- 右侧弹出-->
     <style name="common_button">
         <item name="android:background">@drawable/common_guadual_btn_selector</item>
         <item name="android:textColor">@drawable/common_btn_textcolor_selector</item>
@@ -36,6 +35,13 @@
         <item name="android:windowEnterAnimation">@anim/enter</item>
         <item name="android:windowExitAnimation">@anim/exit</item>
     </style>
+
+    <!-- 右侧弹出-->
+    <style name="animate_dialog_fade">
+        <item name="android:windowEnterAnimation">@anim/enter_fade</item>
+        <item name="android:windowExitAnimation">@anim/exit_fade</item>
+    </style>
+
     <!-- 右侧弹出-->
     <style name="animate_dialog_right">
         <item name="android:windowEnterAnimation">@anim/enter_right</item>

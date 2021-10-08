@@ -14,6 +14,16 @@
         android:layout_height="wrap_content"
         app:tv_centerText="@string/sort_type_what" />
 
+    <ImageView
+        android:id="@+id/iv_more"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/navigation_height"
+        android:layout_alignParentRight="true"
+        android:padding="12dp"
+        android:scaleType="center"
+        android:src="@drawable/ic_more_horiz"
+        app:tint="@color/white" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_chatList"

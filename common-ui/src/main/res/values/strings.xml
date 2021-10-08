@@ -39,6 +39,8 @@
     <string name="please_input_verification">请输入验证码</string>
     <string name="please_input_mobile_number11">请输入11位手机号！</string>
     <string name="please_input_password">请输入密码</string>
+    <string name="please_input_new_password">请输入新密码</string>
+    <string name="please_input_new_repassword">再次输入新密码</string>
     <string name="login_agree">《用户协议隐私政策》</string>
     <string name="login_agree_hint">登录即代表您已同意</string>
     <string name="hint_bind_mobile">为了更好的为您服务 请您绑定手机号码</string>
@@ -49,5 +51,9 @@
     <string name="dialog_purchase_goods_hint">让百万供应商为你报价</string>
     <string name="dialog_publish_goods">发布商品</string>
     <string name="dialog_publish_goods_hint">让千万供应商找到你</string>
+
+    <string name="ask_more_what">猜你想问</string>
+    <string name="ask_more_help">帮助说明</string>
+    <string name="ask_more_clear">清除记录</string>
 
 </resources>

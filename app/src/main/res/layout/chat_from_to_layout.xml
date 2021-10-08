@@ -8,10 +8,11 @@
     android:paddingBottom="8dp">
 
     <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/riv_avatar"
         android:layout_width="43dp"
-        android:layout_height="40dp"
+        android:layout_height="43dp"
         android:layout_marginLeft="16dp"
-        android:src="@drawable/flow_voice_start"
+        android:src="@mipmap/ic_ai_avatar"
         app:riv_oval="true" />
 
     <RelativeLayout

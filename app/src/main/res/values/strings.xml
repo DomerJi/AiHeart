@@ -73,6 +73,9 @@
 
     <string name="box_title">心灵筒</string>
     <string name="share">分享</string>
+    <!-- 聊天 -->
+    <string name="finishServiceTitle">确认结束服务?</string>
+    <string name="finishServiceHint">感谢您的咨询，希望下次还可以为您服务</string>
 
     <!--订单-->
     <string name="order">订单</string>
@@ -92,6 +95,8 @@
     <string name="perfect_infomation">完善信息</string>
     <string name="leapfrog">跳过</string>
     <string name="i_chooseed">我选好了</string>
+
+
 
     <!-- 请替换成在语音云官网申请的appid -->
     <string name="app_id">ec8b0856</string>

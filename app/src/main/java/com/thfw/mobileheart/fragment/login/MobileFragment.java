@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.fragment.login;
 
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.activity.WebActivity;
+import com.thfw.mobileheart.activity.login.ForgetPasswordActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.robotheart.R;
@@ -38,6 +40,8 @@ public class MobileFragment extends BaseFragment {
     private TextView mTvProductUser;
     private TextView mTvProductMsg;
     private TextView mTvProductAgree;
+    private RoundedImageView mRivIconBg;
+    private CheckBox mCheckBox;
 
     @Override
     public int getContentView() {
@@ -76,15 +80,14 @@ public class MobileFragment extends BaseFragment {
             }
         });
         mTvForgetPassword.setOnClickListener(v -> {
-            if (getActivity() instanceof LoginActivity) {
-                LoginActivity activity = (LoginActivity) getActivity();
-                activity.getFragmentLoader().load(LoginActivity.BY_FORGET);
-            }
+            ForgetPasswordActivity.startActivity(mContext, ForgetPasswordActivity.BY_MOBILE);
         });
         mTvProduct3g = (TextView) findViewById(R.id.tv_product_3g);
         mTvProductUser = (TextView) findViewById(R.id.tv_product_user);
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
+        mRivIconBg = (RoundedImageView) findViewById(R.id.riv_icon_bg);
+        mCheckBox = (CheckBox) findViewById(R.id.cb_product);
     }
 
     @Override

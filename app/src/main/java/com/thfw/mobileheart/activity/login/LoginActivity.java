@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.thfw.base.base.IPresenter;
-import com.thfw.mobileheart.fragment.login.ForgetFragment;
 import com.thfw.mobileheart.fragment.login.MobileFragment;
 import com.thfw.mobileheart.fragment.login.PasswordFragment;
 import com.thfw.mobileheart.util.FragmentLoader;
@@ -40,7 +39,6 @@ public class LoginActivity extends BaseActivity {
 
         fragmentLoader.add(BY_MOBILE, new MobileFragment());
         fragmentLoader.add(BY_PASSWORD, new PasswordFragment());
-        fragmentLoader.add(BY_FORGET, new ForgetFragment());
 
         fragmentLoader.load(type);
     }

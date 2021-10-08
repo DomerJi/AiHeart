@@ -21,6 +21,10 @@ import com.thfw.mobileheart.adapter.ChatAdapter;
 import com.thfw.mobileheart.model.ChatEntity;
 import com.thfw.robotheart.R;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.dialog.DialogFactory;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.widget.TitleView;
 
 import java.util.Random;
 
@@ -33,6 +37,7 @@ public class ChatActivity extends BaseActivity {
     private android.widget.EditText mEtContent;
     private RelativeLayout mRlRoot;
     private TextView mTvSend;
+    private com.thfw.ui.widget.TitleView mTitleView;
 
     public static void startActivity(Context context) {
         startActivity(context, null);
@@ -102,6 +107,35 @@ public class ChatActivity extends BaseActivity {
                     }
                 }
                 return false;
+            }
+        });
+
+
+        mTitleView = (TitleView) findViewById(R.id.titleView);
+        mTitleView.getIvBack().setOnClickListener(v -> {
+            finishService();
+        });
+    }
+
+    /**
+     * 【弹框】 结束服务提醒
+     */
+    private void finishService() {
+        DialogFactory.createCustomDialog(this, new DialogFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvTitle.setText(R.string.finishServiceTitle);
+                mTvHint.setText(R.string.finishServiceHint);
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                if (view.getId() == R.id.tv_left) {
+                    tDialog.dismiss();
+                } else {
+                    tDialog.dismiss();
+                    finish();
+                }
             }
         });
     }

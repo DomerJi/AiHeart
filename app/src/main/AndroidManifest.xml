@@ -53,6 +53,7 @@
         <activity android:name="com.thfw.mobileheart.activity.test.TestingActivity" />
         <activity android:name="com.thfw.mobileheart.activity.audio.AudioPlayerActivity" />
         <activity android:name="com.thfw.mobileheart.activity.StatusActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.login.ForgetPasswordActivity" />
         <activity
             android:name="com.thfw.mobileheart.activity.video.VideoPlayActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -91,5 +92,5 @@
         </service>
         <service android:name="com.thfw.mobileheart.AudioService" />
     </application>
-<!--    test-->
+    <!--    test-->
 </manifest>

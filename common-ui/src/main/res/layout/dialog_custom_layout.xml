@@ -15,17 +15,19 @@
         android:layout_marginTop="@dimen/page_margin"
         android:text="@string/title"
         android:textColor="@color/text_common"
-        android:textSize="@dimen/textSize"
+        android:textSize="@dimen/textSize_large"
         tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/tv_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/page_margin"
-        android:paddingLeft="@dimen/page_padding"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:minHeight="80dp"
+        android:padding="16dp"
         android:text="@string/title"
-        android:textColor="@color/text_common"
+        android:textColor="@color/text_content"
         android:textSize="@dimen/textSize"
         tools:ignore="MissingConstraints" />
 
@@ -33,8 +35,7 @@
         android:id="@+id/vline_horizontal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_2px"
-        android:layout_marginTop="@dimen/page_padding"
-        android:background="@color/black_30" />
+        android:background="@color/divider" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,16 +47,17 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@drawable/dialog_left_button_selector"
             android:gravity="center"
             android:text="@string/cancel"
-            android:background="@drawable/dialog_left_button_selector"
-            android:textColor="@color/text_hint" />
+            android:textColor="@color/text_content"
+            android:textSize="@dimen/textSize" />
 
         <View
             android:id="@+id/vline_vertical"
             android:layout_width="@dimen/divider_2px"
             android:layout_height="match_parent"
-            android:background="@color/black_30" />
+            android:background="@color/divider" />
 
 
         <TextView
@@ -63,10 +65,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@drawable/dialog_right_button_selector"
             android:gravity="center"
             android:text="@string/confirm"
-            android:background="@drawable/dialog_right_button_selector"
-            android:textColor="@color/text_common" />
+            android:textColor="@color/text_red"
+            android:textSize="@dimen/textSize" />
 
     </LinearLayout>
 

@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,6 +22,10 @@ import com.thfw.mobileheart.adapter.ChatAdapter;
 import com.thfw.mobileheart.model.ChatEntity;
 import com.thfw.robotheart.R;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.dialog.DialogFactory;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.widget.TitleView;
 
 public class AskActivity extends BaseActivity {
 
@@ -31,6 +36,8 @@ public class AskActivity extends BaseActivity {
     private EditText mEtContent;
     private RelativeLayout mRlRoot;
     private TextView mTvSend;
+    private TitleView mTitleView;
+    private android.widget.ImageView mIvMore;
 
     public static void startActivity(Context context) {
         startActivity(context, null);
@@ -100,6 +107,59 @@ public class AskActivity extends BaseActivity {
                     }
                 }
                 return false;
+            }
+        });
+
+        mTitleView = (TitleView) findViewById(R.id.titleView);
+        mTitleView.getIvBack().setOnClickListener(v -> {
+            finishService();
+        });
+        mIvMore = (ImageView) findViewById(R.id.iv_more);
+        mIvMore.setOnClickListener(v -> {
+            bottomDialog();
+        });
+    }
+
+    /**
+     * 【弹框】 底部选项
+     */
+    private void bottomDialog() {
+        DialogFactory.createAskMore(this, new DialogFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                if (view.getId() == R.id.tv_cancel) {
+                    tDialog.dismiss();
+                } else {
+
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 【弹框】 结束服务提醒
+     */
+    private void finishService() {
+        DialogFactory.createCustomDialog(this, new DialogFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvTitle.setText(R.string.finishServiceTitle);
+                mTvHint.setText(R.string.finishServiceHint);
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                if (view.getId() == R.id.tv_left) {
+                    tDialog.dismiss();
+                } else {
+                    tDialog.dismiss();
+                    finish();
+                }
             }
         });
     }

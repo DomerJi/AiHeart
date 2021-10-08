@@ -9,6 +9,16 @@
     app:layout_constraintDimensionRatio="18:10"
     tools:ignore="MissingConstraints">
 
+    <com.thfw.ui.widget.LinearTopLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.thfw.ui.widget.TitleView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tv_background="@color/transparent" />
+
+    </com.thfw.ui.widget.LinearTopLayout>
 
 
     <com.makeramen.roundedimageview.RoundedImageView

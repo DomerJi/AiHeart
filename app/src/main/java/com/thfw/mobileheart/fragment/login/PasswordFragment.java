@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.activity.WebActivity;
+import com.thfw.mobileheart.activity.login.ForgetPasswordActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.robotheart.R;
@@ -72,10 +73,7 @@ public class PasswordFragment extends BaseFragment {
         });
 
         mTvForgetPassword.setOnClickListener(v -> {
-            if (getActivity() instanceof LoginActivity) {
-                LoginActivity activity = (LoginActivity) getActivity();
-                activity.getFragmentLoader().load(LoginActivity.BY_FORGET);
-            }
+            ForgetPasswordActivity.startActivity(mContext, ForgetPasswordActivity.BY_MOBILE);
         });
         mTvProduct3g = (TextView) findViewById(R.id.tv_product_3g);
         mTvProductUser = (TextView) findViewById(R.id.tv_product_user);
