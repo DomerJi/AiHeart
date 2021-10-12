@@ -13,4 +13,18 @@
         app:tv_centerText="@string/sort_type_exercise"
         tools:ignore="MissingConstraints" />
 
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleView">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_exercise"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

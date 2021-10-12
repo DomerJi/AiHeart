@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp">
+
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/riv_avatar"
+        android:layout_width="73dp"
+        android:layout_height="73dp"
+        android:layout_marginLeft="16dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/cat"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:riv_corner_radius="@dimen/corner"
+        app:riv_oval="false" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="@dimen/divider_2px"
+        android:gravity="center"
+        android:text="Home Body"
+        android:textColor="@color/text_common"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintLeft_toRightOf="@id/riv_avatar"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="9dp"
+        android:gravity="center"
+        android:text="Home Body"
+        android:textColor="@color/text_content"
+        android:textSize="10sp"
+        app:layout_constraintLeft_toRightOf="@id/riv_avatar"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="9dp"
+        android:gravity="center"
+        android:text="Home Body"
+        android:textColor="@color/text_content"
+        android:textSize="10sp"
+        app:layout_constraintLeft_toRightOf="@id/riv_avatar"
+        app:layout_constraintTop_toBottomOf="@id/tv_number"
+        tools:ignore="MissingConstraints" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

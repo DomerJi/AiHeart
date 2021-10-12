@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingTop="10dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="10dp"
+        tools:background="@color/white">
+
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:src="@color/text_green"
+            app:riv_corner_radius_bottom_left="3dp"
+            app:riv_corner_radius_top_left="3dp"
+            app:riv_oval="true" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@id/riv_bg"
+            android:text="@string/title"
+            android:textColor="@color/text_content"
+            android:textSize="@dimen/textSize" />
+
+        <TextView
+            android:id="@+id/tv_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_title"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@id/riv_bg"
+            android:text="@string/title"
+            android:textColor="@color/text_green"
+            android:textSize="@dimen/textSize_product" />
+
+
+        <TextView
+            android:id="@+id/tv_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_title"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@id/riv_bg"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="@string/title"
+            android:textColor="@color/text_hint"
+            android:textSize="@dimen/textSize_product" />
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_2px"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/divider" />
+
+
+</LinearLayout>

@@ -55,15 +55,17 @@ public class TitleView extends FrameLayout {
             final int centerTextColor = ta.getColor(R.styleable.TitleView_tv_centerTextColor, Color.WHITE);
             if (d != null) {
                 mIvBack.setImageDrawable(d);
+            } else {
+                if (leftIconColor == Color.WHITE) {
+                    mIvBack.setImageResource(R.drawable.navigation_back_selector);
+                } else {
+                    mIvBack.setColorFilter(leftIconColor);
+                }
             }
             view.setBackgroundColor(colorBg);
             mTvTitle.setTextColor(centerTextColor);
             mIvBack.setVisibility(showIcon ? VISIBLE : GONE);
-            if (leftIconColor == Color.WHITE) {
-                mIvBack.setImageResource(R.drawable.navigation_back_selector);
-            }else {
-                mIvBack.setColorFilter(leftIconColor);
-            }
+
             ta.recycle();
         }
         setRightText(rightText);

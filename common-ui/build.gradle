@@ -37,7 +37,7 @@ dependencies {
     api 'com.youth.banner:banner:' + rootProject.ext.banner
     api 'com.github.yhaolpz:FloatWindow:1.0.9'
     api 'me.zhanghai.android.materialratingbar:library:' + rootProject.ext.materialratingbar
-
+    api 'com.google.android.flexbox:flexbox:3.0.0'
     api 'com.scwang.smart:refresh-layout-kernel:' + rootProject.ext.smartRefresh      //核心必须依赖
     api 'com.scwang.smart:refresh-header-classics:' + rootProject.ext.smartRefresh    //经典刷新头
     api 'com.scwang.smart:refresh-footer-classics:' + rootProject.ext.smartRefresh    //经典加载

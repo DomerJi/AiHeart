@@ -3,11 +3,21 @@ package com.thfw.mobileheart.activity.test;
 import android.content.Context;
 import android.content.Intent;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.base.IPresenter;
+import com.thfw.mobileheart.adapter.TestOneAdapter;
 import com.thfw.robotheart.R;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.widget.TitleView;
 
 public class TestingActivity extends BaseActivity {
+
+    private com.thfw.ui.widget.TitleView mTitleView;
+    private com.scwang.smart.refresh.layout.SmartRefreshLayout mRefreshLayout;
+    private androidx.recyclerview.widget.RecyclerView mRvTest;
 
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, TestingActivity.class));
@@ -26,10 +36,14 @@ public class TestingActivity extends BaseActivity {
     @Override
     public void initView() {
 
+        mTitleView = (TitleView) findViewById(R.id.titleView);
+        mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
+        mRvTest = (RecyclerView) findViewById(R.id.rv_test);
     }
 
     @Override
     public void initData() {
-
+        mRvTest.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+        mRvTest.setAdapter(new TestOneAdapter(null));
     }
 }

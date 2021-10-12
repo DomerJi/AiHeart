@@ -1,5 +1,6 @@
 package com.thfw.mobileheart.activity.audio;
 
+import android.animation.Animator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.os.IBinder;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -21,6 +23,7 @@ import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.utils.BitmapUtil;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.PaletteUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -29,6 +32,7 @@ import com.thfw.mobileheart.util.AudioModel;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
 import com.thfw.robotheart.R;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.widget.TitleView;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -43,6 +47,10 @@ public class AudioPlayerActivity extends BaseActivity {
     private ProgressBar mPbBar;
     private View btPlay;
     private View btPause;
+    private ProgressBar mPbLoading;
+    private com.thfw.ui.widget.TitleView mTitleView;
+    private ImageView mIvShare;
+    private View[] views;
 
     @Override
     public int getContentView() {
@@ -60,10 +68,57 @@ public class AudioPlayerActivity extends BaseActivity {
         mAudioView = (StyledPlayerView) findViewById(R.id.audio_view);
         mIvBlurBg = (ImageView) findViewById(R.id.iv_blur_bg);
         mPbBar = findViewById(R.id.pb_loading);
-        Bitmap bitmap = BitmapUtil.getResourceBitmap(mContext, R.mipmap.splash);
-        mIvBlurBg.setImageBitmap(PaletteUtil.doBlur(bitmap, 60, true));
+        Bitmap bitmap = BitmapUtil.getResourceBitmap(mContext, R.mipmap.cat);
+        mIvBlurBg.setImageBitmap(PaletteUtil.doBlur(bitmap, 2, true));
         btPlay = findViewById(R.id.exo_play);
         btPause = findViewById(R.id.exo_pause);
+
+
+        mPbLoading = (ProgressBar) findViewById(R.id.pb_loading);
+        mTitleView = (TitleView) findViewById(R.id.titleView);
+        mTitleView.getIvBack().setPadding(4, 4, 4, 4);
+        mIvShare = (ImageView) findViewById(R.id.iv_share);
+        View mVborder01 = findViewById(R.id.v_border_01);
+        View mVborder02 = findViewById(R.id.v_border_02);
+        View mVborder03 = findViewById(R.id.v_border_03);
+        views = new View[]{mVborder01, mVborder02, mVborder03};
+        startAnimateBorder(mVborder03, 100);
+        startAnimateBorder(mVborder02, 900);
+    }
+
+
+    private void startAnimateBorder(View view, long delay) {
+
+        view.animate().scaleY(2).scaleX(2).alpha(0).setDuration(1600)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .setStartDelay(delay)
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
+                            return;
+                        }
+                        view.setScaleX(1);
+                        view.setScaleY(1);
+                        view.setAlpha(1);
+                        startAnimateBorder(view, 0);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                }).start();
     }
 
     @Override
@@ -76,7 +131,7 @@ public class AudioPlayerActivity extends BaseActivity {
         playerListener.setPbBar(mPbBar);
         player.addListener(playerListener);
         mAudioView.setPlayer(player);
-        mAudioView.setUseController(true);
+
 
         player.addMediaItem(mediaItem);
         player.addMediaItem(mediaItem01);
@@ -118,6 +173,15 @@ public class AudioPlayerActivity extends BaseActivity {
 
         }
     };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAudioView.setUseController(true);
+        mAudioView.setControllerHideOnTouch(false);
+        mAudioView.setControllerShowTimeoutMs(0);
+        mAudioView.showController();
+    }
 
     @Override
     public int getStatusBarColor() {

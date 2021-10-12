@@ -56,4 +56,9 @@
     <string name="ask_more_help">帮助说明</string>
     <string name="ask_more_clear">清除记录</string>
 
+    <string name="name_wechat">微信</string>
+    <string name="name_friend">朋友圈</string>
+    <string name="name_qq">QQ</string>
+    <string name="name_sina">微博</string>
+
 </resources>

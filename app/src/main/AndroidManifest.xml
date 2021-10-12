@@ -34,7 +34,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.thfw.mobileheart.activity.me.CollectActivity"></activity>
+        <activity android:name="com.thfw.mobileheart.activity.audio.AudioEtcActivity"></activity>
+        <activity android:name="com.thfw.mobileheart.activity.exercise.ExerciseDetailActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.me.CollectActivity" />
         <activity android:name="com.thfw.mobileheart.activity.me.MeAskActivity" />
         <activity android:name="com.thfw.mobileheart.activity.integral.ClockInActivity" />
         <activity
@@ -51,7 +53,9 @@
         <activity android:name="com.thfw.mobileheart.activity.audio.AudioHomeActivity" />
         <activity android:name="com.thfw.mobileheart.activity.exercise.ExerciseActivity" />
         <activity android:name="com.thfw.mobileheart.activity.test.TestingActivity" />
-        <activity android:name="com.thfw.mobileheart.activity.audio.AudioPlayerActivity" />
+        <activity
+            android:name="com.thfw.mobileheart.activity.audio.AudioPlayerActivity"
+            android:theme="@style/AnimActivity" />
         <activity android:name="com.thfw.mobileheart.activity.StatusActivity" />
         <activity android:name="com.thfw.mobileheart.activity.login.ForgetPasswordActivity" />
         <activity
@@ -92,5 +96,5 @@
         </service>
         <service android:name="com.thfw.mobileheart.AudioService" />
     </application>
-    <!--    test-->
+
 </manifest>

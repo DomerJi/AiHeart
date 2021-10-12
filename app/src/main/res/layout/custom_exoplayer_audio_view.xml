@@ -12,10 +12,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_gravity="bottom"
     android:background="#66000000"
     android:layoutDirection="ltr"
@@ -25,87 +25,193 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingTop="4dp">
+        android:layout_centerVertical="true"
+        android:layout_gravity="bottom"
+        android:layoutDirection="ltr"
+        android:orientation="vertical"
+        tools:targetApi="28">
 
-        <ImageButton
-            android:id="@id/exo_prev"
-            style="@style/ExoMediaButton.Previous" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="4dp">
 
-        <ImageButton
-            android:id="@id/exo_rew"
-            style="@style/ExoMediaButton.Rewind" />
+            <ImageButton
+                android:id="@id/exo_prev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:src="@mipmap/ic_audio_last" />
 
-        <ImageButton
-            android:id="@id/exo_shuffle"
-            style="@style/ExoMediaButton"
-            android:visibility="gone" />
+            <RelativeLayout
+                android:layout_width="180dp"
+                android:layout_height="180dp">
 
-        <ImageButton
-            android:id="@id/exo_repeat_toggle"
-            style="@style/ExoMediaButton"
-            android:visibility="gone" />
+                <ImageButton
+                    android:id="@id/exo_play"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@color/transparent"
+                    android:src="@mipmap/ic_play_white" />
 
-        <ImageButton
-            android:id="@id/exo_play"
-            style="@style/ExoMediaButton.Play" />
+                <ImageButton
+                    android:id="@id/exo_pause"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@color/transparent"
+                    android:src="@mipmap/ic_pause_white"
+                    android:visibility="gone" />
 
-        <ImageButton
-            android:id="@id/exo_pause"
-            style="@style/ExoMediaButton.Pause"
-            android:visibility="gone" />
 
-        <ImageButton
-            android:id="@id/exo_ffwd"
-            style="@style/ExoMediaButton.FastForward" />
+                <View
+                    android:id="@+id/v_border_01"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/audio_anim_bg_border" />
 
-        <ImageButton
-            android:id="@id/exo_next"
-            style="@style/ExoMediaButton.Next" />
+                <View
+                    android:id="@+id/v_border_02"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/audio_anim_bg_border" />
 
-        <ImageButton
-            android:id="@id/exo_vr"
-            style="@style/ExoMediaButton.VR"
-            android:visibility="gone" />
+                <View
+                    android:id="@+id/v_border_03"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/audio_anim_bg_border" />
+
+            </RelativeLayout>
+
+
+            <ImageButton
+                android:id="@id/exo_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:src="@mipmap/ic_audio_next" />
+
+
+            <!--        <ImageButton-->
+            <!--            android:id="@id/exo_rew"-->
+            <!--            style="@style/ExoMediaButton.Rewind"-->
+            <!--            android:visibility="gone" />-->
+
+            <!--        <ImageButton-->
+            <!--            android:id="@id/exo_shuffle"-->
+            <!--            style="@style/ExoMediaButton"-->
+            <!--            android:visibility="gone" />-->
+
+            <!--        <ImageButton-->
+            <!--            android:id="@id/exo_repeat_toggle"-->
+            <!--            style="@style/ExoMediaButton"-->
+            <!--            android:visibility="gone" />-->
+
+
+            <!--        <ImageButton-->
+            <!--            android:id="@id/exo_ffwd"-->
+            <!--            style="@style/ExoMediaButton.FastForward"-->
+            <!--            android:visibility="gone" />-->
+
+
+            <!--        <ImageButton-->
+            <!--            android:id="@id/exo_vr"-->
+            <!--            style="@style/ExoMediaButton.VR"-->
+            <!--            android:visibility="gone" />-->
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="第一节 人际交往心理学概述"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_small" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="30dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@id/exo_position"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <View
+                android:id="@id/exo_progress_placeholder"
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@id/exo_duration"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="60dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_play_order"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="12dp"
+                android:src="@mipmap/ic_play_random" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/iv_play_catelogue"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="12dp"
+                android:src="@mipmap/ic_catlogue" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/iv_collect"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="12dp"
+                android:src="@mipmap/ic_collect_white" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@id/exo_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:textColor="#FFBEBEBE"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <View
-            android:id="@id/exo_progress_placeholder"
-            android:layout_width="0dp"
-            android:layout_height="26dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@id/exo_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:textColor="#FFBEBEBE"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
