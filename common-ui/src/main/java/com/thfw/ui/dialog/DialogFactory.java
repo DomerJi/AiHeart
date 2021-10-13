@@ -151,18 +151,27 @@ public class DialogFactory {
     /**
      * 【分享】第三方
      */
-    public static TDialog createShare(FragmentActivity activity, OnViewCallBack onViewCallBack) {
+    public static TDialog createShare(FragmentActivity activity, OnBindViewListener onBindViewListener, OnViewClickListener onViewClickListener) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_share_layout)
                 .setGravity(Gravity.BOTTOM)
                 .setScreenWidthAspect(activity, 1f)
-                .addOnClickListener(R.id.ll_wechat, R.id.ll_friend, R.id.ll_qq, R.id.ll_sina,R.id.tv_cancel)
-                .setOnBindViewListener(new OnBindViewListener() {
-                    @Override
-                    public void bindView(BindViewHolder viewHolder) {
-                    }
-                })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                .addOnClickListener(R.id.ll_wechat, R.id.ll_friend, R.id.ll_qq, R.id.ll_sina, R.id.tv_cancel)
+                .setOnBindViewListener(onBindViewListener)
+                .setOnViewClickListener(onViewClickListener).create().show();
+    }
+
+    /**
+     * 【状态】自定义
+     */
+    public static TDialog createCustomStatus(FragmentActivity activity, OnBindViewListener onBindViewListener, OnViewClickListener onViewClickListener) {
+        return new TDialog.Builder(activity.getSupportFragmentManager())
+                .setLayoutRes(R.layout.dialog_custom_status_layout)
+                .setGravity(Gravity.BOTTOM)
+                .setScreenWidthAspect(activity, 1f)
+                .addOnClickListener( R.id.tv_confirm, R.id.iv_close)
+                .setOnBindViewListener(onBindViewListener)
+                .setOnViewClickListener(onViewClickListener).create().show();
     }
 
     public interface OnViewCallBack extends OnViewClickListener {

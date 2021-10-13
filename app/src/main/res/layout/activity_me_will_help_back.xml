@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.thfw.mobileheart.activity.settings.MeWillHelpBackActivity">
+
+
+    <com.thfw.ui.widget.TitleView
+        android:id="@+id/titleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tv_centerText="我要反馈"
+        app:tv_rightText="历史反馈"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_content_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="26dp"
+        android:text="反馈内容"
+        android:textColor="@color/text_common"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleView" />
+
+
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/page_gray_radius"
+        app:layout_constraintTop_toBottomOf="@id/tv_content_title">
+
+
+        <ImageView
+            android:id="@+id/iv_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:padding="8dp"
+            android:src="@mipmap/ic_add_image" />
+
+        <EditText
+            android:id="@+id/et_helpback_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/iv_add"
+            android:background="@color/transparent"
+            android:gravity="top"
+            android:hint="请输入要反馈的内容"
+            android:padding="8dp"
+            android:textColor="@color/text_common"
+            android:textColorHint="@color/text_hint"
+            android:textSize="@dimen/textSize_small" />
+
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/tv_mobile_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="26dp"
+        android:text="练习方式"
+        android:textColor="@color/text_common"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_content" />
+
+    <EditText
+        android:id="@+id/et_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/page_gray_radius"
+        android:hint="请输入您的手机号"
+        android:inputType="number"
+        android:maxLines="1"
+        android:padding="10dp"
+        android:textColor="@color/text_common"
+        android:textColorHint="@color/text_hint"
+        android:textSize="@dimen/textSize_small"
+        app:layout_constraintTop_toBottomOf="@id/tv_mobile_title" />
+
+
+    <Button
+        android:id="@+id/bt_submit"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/btn_text_green_bg"
+        android:text="提交反馈"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

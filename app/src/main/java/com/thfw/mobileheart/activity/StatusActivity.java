@@ -2,6 +2,10 @@ package com.thfw.mobileheart.activity;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -9,13 +13,20 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.utils.BitmapUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.PaletteUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.adapter.StatusAdapter;
 import com.thfw.mobileheart.model.StatusEntity;
 import com.thfw.robotheart.R;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.dialog.DialogFactory;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnBindViewListener;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.widget.LinearTopLayout;
 import com.thfw.ui.widget.TitleView;
 
@@ -70,6 +81,48 @@ public class StatusActivity extends BaseActivity {
         });
         mRvStatusList.setLayoutManager(gridLayoutManager);
         mStatusAdapter = new StatusAdapter(getList());
+        mStatusAdapter.setOnRvItemListener(new OnRvItemListener<StatusEntity>() {
+            @Override
+            public void onItemClick(List<StatusEntity> list, int position) {
+                DialogFactory.createCustomStatus(StatusActivity.this, new OnBindViewListener() {
+                    @Override
+                    public void bindView(BindViewHolder viewHolder) {
+                        EditText editText = viewHolder.getView(R.id.et_custom_status);
+                        View clearEdit = viewHolder.getView(R.id.iv_clear_edit);
+                        clearEdit.setOnClickListener(v -> {
+                            editText.setText("");
+                        });
+                        editText.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable s) {
+                                clearEdit.setVisibility(s.length() > 0 ? View.VISIBLE : View.GONE);
+                            }
+                        });
+                    }
+                }, new OnViewClickListener() {
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                        if (view.getId() == R.id.tv_confirm) {
+                            EditText editText = viewHolder.getView(R.id.et_custom_status);
+                            ToastUtil.show(editText.getText().toString());
+                            tDialog.dismiss();
+                        } else {
+                            tDialog.dismiss();
+                        }
+                    }
+                });
+            }
+        });
         mRvStatusList.setAdapter(mStatusAdapter);
 
 

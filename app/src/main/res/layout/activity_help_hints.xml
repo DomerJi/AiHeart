@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.thfw.mobileheart.activity.settings.HelpHintsActivity">
+
+    <com.thfw.ui.widget.TitleView
+        android:id="@+id/titleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tv_centerText="常见问题"
+        app:tv_rightText="历史反馈"
+        tools:ignore="MissingConstraints" />
+
+
+    <Button
+        android:id="@+id/bt_help_back"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/common_red_btn_selector"
+        android:text="我要反馈"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_small"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

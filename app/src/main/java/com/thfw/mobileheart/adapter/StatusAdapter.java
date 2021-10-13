@@ -82,6 +82,11 @@ public class StatusAdapter extends BaseAdapter<StatusEntity, RecyclerView.ViewHo
 
         public StatusHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            itemView.setOnClickListener(v -> {
+                if (mOnRvItemListener != null) {
+                    mOnRvItemListener.onItemClick(getDataList(), getBindingAdapterPosition());
+                }
+            });
         }
     }
 }

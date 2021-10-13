@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_top_corner_background"
+    android:orientation="vertical"
+    tools:ignore="MissingDefaultResource">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:src="@mipmap/ic_status_close_black"
+            android:textColor="@color/text_content"
+            android:textSize="@dimen/textSize" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="填写自定义状态"
+            android:textColor="@color/text_common"
+            android:textSize="@dimen/textSize" />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/edit_status_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginLeft="13dp"
+            android:src="@mipmap/ic_status_navigation" />
+
+        <EditText
+            android:id="@+id/et_custom_status"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:gravity="center_vertical"
+            android:hint="请输入您的状态"
+            android:maxLength="6"
+            android:maxLines="1"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textSize="@dimen/textSize" />
+
+
+        <ImageView
+            android:id="@+id/iv_clear_edit"
+            android:layout_width="45dp"
+            android:layout_height="match_parent"
+            android:paddingLeft="13dp"
+            android:paddingRight="13dp"
+            android:src="@mipmap/ic_status_close_gray"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/tv_confirm"
+        style="@style/common_button"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="30dp"
+        android:gravity="center"
+        android:text="确定"
+        android:textSize="@dimen/textSize" />
+
+
+</LinearLayout>

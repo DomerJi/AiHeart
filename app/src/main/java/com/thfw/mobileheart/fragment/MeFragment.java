@@ -15,6 +15,7 @@ import com.thfw.mobileheart.activity.integral.ClockInActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.me.CollectActivity;
 import com.thfw.mobileheart.activity.me.MeAskActivity;
+import com.thfw.mobileheart.activity.settings.HelpBackActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
 import com.thfw.mobileheart.activity.settings.SettingActivity;
 import com.thfw.robotheart.R;
@@ -121,6 +122,9 @@ public class MeFragment extends BaseFragment {
         });
         mLlTimeContinuationDay.setOnClickListener(v -> {
             startActivity(new Intent(mContext, ClockInActivity.class));
+        });
+        mLlHelpBack.setOnClickListener(v -> {
+            startActivity(new Intent(mContext, HelpBackActivity.class));
         });
     }
 

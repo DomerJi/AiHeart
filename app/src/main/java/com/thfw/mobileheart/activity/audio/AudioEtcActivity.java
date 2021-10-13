@@ -14,7 +14,6 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
-import com.thfw.mobileheart.activity.exercise.ExerciseDetailActivity;
 import com.thfw.mobileheart.adapter.AudioEtcAdapter;
 import com.thfw.mobileheart.model.AudioEtcModel;
 import com.thfw.robotheart.R;
@@ -22,6 +21,8 @@ import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.DialogFactory;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnBindViewListener;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.widget.TitleView;
 
 import java.util.List;
@@ -61,12 +62,12 @@ public class AudioEtcActivity extends BaseActivity {
         mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
         mIvShare.setOnClickListener(v -> {
-            DialogFactory.createShare(AudioEtcActivity.this, new DialogFactory.OnViewCallBack() {
+            DialogFactory.createShare(AudioEtcActivity.this, new OnBindViewListener() {
                 @Override
-                public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                public void bindView(BindViewHolder viewHolder) {
 
                 }
-
+            }, new OnViewClickListener() {
                 @Override
                 public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
 

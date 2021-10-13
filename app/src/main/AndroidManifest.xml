@@ -34,7 +34,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.thfw.mobileheart.activity.audio.AudioEtcActivity"></activity>
+        <activity android:name="com.thfw.mobileheart.activity.settings.MeWillHelpBackActivity"></activity>
+        <activity android:name="com.thfw.mobileheart.activity.settings.HelpHintsActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.settings.HelpBackActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.audio.AudioEtcActivity" />
         <activity android:name="com.thfw.mobileheart.activity.exercise.ExerciseDetailActivity" />
         <activity android:name="com.thfw.mobileheart.activity.me.CollectActivity" />
         <activity android:name="com.thfw.mobileheart.activity.me.MeAskActivity" />

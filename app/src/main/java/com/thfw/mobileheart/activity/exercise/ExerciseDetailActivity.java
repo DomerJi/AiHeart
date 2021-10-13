@@ -21,6 +21,8 @@ import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.DialogFactory;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnBindViewListener;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.widget.TitleView;
 
 import java.util.ArrayList;
@@ -63,12 +65,12 @@ public class ExerciseDetailActivity extends BaseActivity {
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mIvShare.setOnClickListener(v -> {
-            DialogFactory.createShare(ExerciseDetailActivity.this, new DialogFactory.OnViewCallBack() {
+            DialogFactory.createShare(ExerciseDetailActivity.this, new OnBindViewListener() {
                 @Override
-                public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                public void bindView(BindViewHolder viewHolder) {
 
                 }
-
+            }, new OnViewClickListener() {
                 @Override
                 public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
 
