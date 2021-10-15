@@ -1,16 +1,15 @@
 package com.thfw.mobileheart.fragment.list;
 
-import android.content.Intent;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
-import com.thfw.mobileheart.activity.audio.AudioEtcActivity;
+import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.HomeVideoListAdapter;
 import com.thfw.mobileheart.model.AudioModel;
+import com.thfw.mobileheart.model.VideoModel;
 import com.thfw.robotheart.R;
 import com.thfw.ui.base.BaseFragment;
 
@@ -50,7 +49,7 @@ public class VideoListFragment extends BaseFragment {
         homeVideoListAdapter.setOnRvItemListener(new OnRvItemListener<AudioModel>() {
             @Override
             public void onItemClick(List<AudioModel> list, int position) {
-                startActivity(new Intent(mContext, AudioEtcActivity.class));
+                VideoPlayActivity.startActivity(mContext, VideoModel.getVideoUrl().get(1));
             }
         });
         mRvList.setAdapter(homeVideoListAdapter);

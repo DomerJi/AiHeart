@@ -14,7 +14,7 @@
         android:background="@drawable/gain_verification_code_selector"
         android:gravity="center"
         android:text="@string/gain_verification_code"
-        android:textColor="@color/text_red"
+        android:textColor="@color/btn_red"
         android:textSize="10sp" />
 
     <EditText

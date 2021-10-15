@@ -1,19 +1,27 @@
 package com.thfw.mobileheart.activity.video;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -38,10 +47,11 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.MyApplication;
-import com.thfw.robotheart.R;
-import com.thfw.mobileheart.adapter.HomeAdapter;
-import com.thfw.mobileheart.model.HomeEntity;
+import com.thfw.mobileheart.adapter.VideoPlayListAdapter;
 import com.thfw.mobileheart.model.VideoModel;
+import com.thfw.mobileheart.model.VideoPlayListModel;
+import com.thfw.mobileheart.util.ExoPlayerFactory;
+import com.thfw.robotheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.yhao.floatwindow.FloatWindow;
 import com.yhao.floatwindow.PermissionListener;
@@ -60,16 +70,14 @@ import static android.view.View.VISIBLE;
 /**
  * 悬浮窗播放，全屏播放，竖屏播放
  */
-public class VideoPlayActivity extends BaseActivity {
+public class VideoPlayActivity extends BaseActivity implements VideoGestureHelper.VideoGestureListener {
 
-    private FrameLayout mFlVideo;
+
     private ImageView mIvBg;
     private PlayerView mMPlayerView;
     private ProgressBar mPbBottom;
-    private Button mBtnPlay;
     private ProgressBar mPbLoading;
     private TextView mTvTitle;
-    private TextView mTvScreenAll;
     private SimpleExoPlayer mExoPlayer;
     private VideoModel mVideoModel;
     private PlayerListener mPlayerListener;
@@ -84,6 +92,18 @@ public class VideoPlayActivity extends BaseActivity {
     private boolean windowPlay = false;
     private TextView mTvScreentSmall;
     private LinearLayout mRootLinearLayout;
+    private ConstraintLayout mVideoPlayConstranint;
+    private FrameLayout mFlVideo;
+    private LinearLayout mLlTopControl;
+    private ImageView mIvBack;
+    private ImageView mIvMore;
+    private TextView mTvScreenSmall;
+    private ImageView mIvScreenAll;
+    private boolean landscape;
+    private Handler handler;
+    private RelativeLayout mRlError;
+    private TextView mTvErrorHint;
+    private ImageView mExoPlay;
 
     public static void startActivity(Context context, VideoModel videoModel) {
         context.startActivity(new Intent(context, VideoPlayActivity.class).putExtra(KEY_DATA, videoModel));
@@ -102,31 +122,35 @@ public class VideoPlayActivity extends BaseActivity {
     @Override
     public void initView() {
 
-        mFlVideo = (FrameLayout) findViewById(R.id.fl_video);
         mIvBg = (ImageView) findViewById(R.id.iv_bg);
         mMPlayerView = (PlayerView) findViewById(R.id.mPlayerView);
         mPbBottom = (ProgressBar) findViewById(R.id.pb_bottom);
-        mBtnPlay = (Button) findViewById(R.id.btn_play);
         mPbLoading = (ProgressBar) findViewById(R.id.pb_loading);
         mTvTitle = (TextView) findViewById(R.id.tv_title);
-        mTvScreenAll = (TextView) findViewById(R.id.tv_screen_all);
+        mExoPlay = findViewById(R.id.exo_play);
         mVideoLayout = findViewById(R.id.video_play_constranint);
         // test todo
         mRvVideoDetail = findViewById(R.id.rv_video_detail);
         mRvVideoDetail.setLayoutManager(new LinearLayoutManager(mContext));
-        List<HomeEntity> list = new ArrayList<>();
+        List<VideoPlayListModel> list = new ArrayList<>();
+        list.add(new VideoPlayListModel(VideoPlayListModel.TYPE_TOP));
+        list.add(new VideoPlayListModel(VideoPlayListModel.TYPE_GROUP).setHeadName("选集"));
+        list.add(new VideoPlayListModel(VideoPlayListModel.TYPE_ECT));
+        list.add(new VideoPlayListModel(VideoPlayListModel.TYPE_GROUP).setHeadName("猜你喜欢"));
+
         for (int i = 0; i < 20; i++) {
-            list.add(new HomeEntity());
+            list.add(new VideoPlayListModel(VideoPlayListModel.TYPE_BODY));
         }
-        HomeAdapter mHomeAdapter = new HomeAdapter(list);
+        VideoPlayListAdapter videoPlayListAdapter = new VideoPlayListAdapter(list);
         mRvVideoDetail.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
         // 添加动画
         mRvVideoDetail.setItemAnimator(new DefaultItemAnimator());
-        mRvVideoDetail.setAdapter(mHomeAdapter);
+        mRvVideoDetail.setAdapter(videoPlayListAdapter);
+        mIvScreenAll = findViewById(R.id.iv_screen_all);
         /**
          * 全屏按钮
          */
-        mTvScreenAll.setOnClickListener(v -> {
+        mIvScreenAll.setOnClickListener(v -> {
             if (EmptyUtil.isEmpty(VideoPlayActivity.this)) {
                 ToastUtil.show("VideoPlay null");
                 if (FloatWindow.get() != null) {
@@ -136,7 +160,7 @@ public class VideoPlayActivity extends BaseActivity {
                         mExoPlayer.release();
                         mExoPlayer = null;
                     }
-                    VideoPlayActivity.startActivity(mContext, (VideoModel) mTvScreenAll.getTag());
+                    VideoPlayActivity.startActivity(mContext, (VideoModel) mIvScreenAll.getTag());
                     return;
                 }
             } else {
@@ -177,8 +201,32 @@ public class VideoPlayActivity extends BaseActivity {
             showVideoWindow();
         });
 
+        mVideoPlayConstranint = (ConstraintLayout) findViewById(R.id.video_play_constranint);
+        mFlVideo = (FrameLayout) findViewById(R.id.fl_video);
+        mLlTopControl = (LinearLayout) findViewById(R.id.ll_top_control);
+        mIvBack = (ImageView) findViewById(R.id.iv_back);
+        mIvMore = (ImageView) findViewById(R.id.iv_more);
+        mTvScreenSmall = (TextView) findViewById(R.id.tv_screen_small);
+        mIvBack.setOnClickListener(v -> {
+            // 如果是横屏，先退出横屏模式
+            if (landscape) {
+                mIvScreenAll.performClick();
+            } else {
+                finish();
+            }
+        });
+        mIvMore.setOnClickListener(v -> {
+            ToastUtil.show("更多");
+        });
+        mRlError = (RelativeLayout) findViewById(R.id.rl_error);
+        mTvErrorHint = (TextView) findViewById(R.id.tv_error_hint);
+        // 初始化手势
+        initGesture();
     }
 
+    /**
+     * 开启悬浮窗
+     */
     private void showVideoWindow() {
         LogUtil.d(TAG, "showFlow()");
         if (FloatWindow.get() != null && FloatWindow.get().isShowing()) {
@@ -254,7 +302,8 @@ public class VideoPlayActivity extends BaseActivity {
     }
 
     @Override
-    protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle
+                                    savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mVideoModel = (VideoModel) getIntent().getSerializableExtra(KEY_DATA);
@@ -263,7 +312,7 @@ public class VideoPlayActivity extends BaseActivity {
             finish();
             return;
         }
-        mTvScreenAll.setTag(mVideoModel);
+        mIvScreenAll.setTag(mVideoModel);
         mTvTitle.setText(mVideoModel.title);
         mExoPlayer = new SimpleExoPlayer.Builder(this).build();
 
@@ -298,7 +347,9 @@ public class VideoPlayActivity extends BaseActivity {
             mExoPlayer.setPlayWhenReady(true);
         }
 
+        initView();
     }
+
 // 隐藏 activity singleInstance 有效
 //    @Override
 //    public void onBackPressed() {
@@ -337,7 +388,14 @@ public class VideoPlayActivity extends BaseActivity {
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mMPlayerView.getLayoutParams();
             layoutParams.height = ConstraintLayout.LayoutParams.MATCH_PARENT;
             layoutParams.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+            layoutParams.dimensionRatio = null;
             mMPlayerView.setLayoutParams(layoutParams);
+            LinearLayout.LayoutParams layoutParams1 = (LinearLayout.LayoutParams) mVideoLayout.getLayoutParams();
+            layoutParams1.height = ConstraintLayout.LayoutParams.MATCH_PARENT;
+            layoutParams1.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+            mVideoLayout.setLayoutParams(layoutParams1);
+            mTvTitle.setVisibility(VISIBLE);
+            landscape = true;
         } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             Log.i("LANDSCAPE = ", String.valueOf(Configuration.ORIENTATION_PORTRAIT));
             //获得 WindowManager.LayoutParams 属性对象
@@ -354,6 +412,15 @@ public class VideoPlayActivity extends BaseActivity {
             layoutParams.height = 0;
             layoutParams.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
             mMPlayerView.setLayoutParams(layoutParams);
+
+            LinearLayout.LayoutParams layoutParams1 = (LinearLayout.LayoutParams) mVideoLayout.getLayoutParams();
+            layoutParams1.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+            layoutParams1.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+            mVideoLayout.setLayoutParams(layoutParams1);
+            mTvTitle.setVisibility(View.GONE);
+            landscape = false;
+        } else {
+            landscape = false;
         }
         super.onConfigurationChanged(newConfig);
 
@@ -408,7 +475,7 @@ public class VideoPlayActivity extends BaseActivity {
             }
             mPbBar.setTag("error");
             mPbBar.setVisibility(View.GONE);
-
+            String errorHint = null;
             if (error.type == ExoPlaybackException.TYPE_SOURCE) {
                 IOException cause = error.getSourceException();
                 if (cause instanceof HttpDataSource.HttpDataSourceException) {
@@ -421,26 +488,41 @@ public class VideoPlayActivity extends BaseActivity {
                     if (httpError instanceof HttpDataSource.InvalidResponseCodeException) {
                         // Cast to InvalidResponseCodeException and retrieve the response code,
                         // message and headers.
-                        ToastUtil.show("视频资源错误");
+                        errorHint = "视频资源错误";
                     } else {
                         // Try calling httpError.getCause() to retrieve the underlying cause,
                         // although note that it may be null.
 
                         if (httpError.getCause() instanceof UnknownHostException) {
-                            ToastUtil.show("网络异常，请检查网络");
+                            errorHint = "网络异常，请检查网络";
                         } else {
-                            ToastUtil.show("未知错误" + httpError.getCause());
+                            errorHint = "未知错误" + httpError.getCause();
                         }
                     }
                 }
             } else if (error.type == ExoPlaybackException.TYPE_RENDERER) {
-                ToastUtil.show("渲染错误 - TYPE_UNEXPECTED");
+                errorHint = "渲染错误 - UNEXPECTED";
             } else if (error.type == ExoPlaybackException.TYPE_UNEXPECTED) {
-                ToastUtil.show("未知错误 - TYPE_UNEXPECTED");
+                errorHint = "未知错误 - UNEXPECTED";
             } else if (error.type == ExoPlaybackException.TYPE_REMOTE) {
-                ToastUtil.show("网络错误");
+                errorHint = "网络错误 - REMOTE";
             }
+            showError(errorHint);
+        }
+    }
 
+    private void showError(String error) {
+        if (TextUtils.isEmpty(error)) {
+            mRlError.setVisibility(View.GONE);
+            mTvErrorHint.setText("");
+        } else {
+            ToastUtil.show(error);
+            mRlError.setVisibility(VISIBLE);
+            mRlError.setOnClickListener(v -> {
+                mRlError.setVisibility(View.GONE);
+                mExoPlay.performClick();
+            });
+            mTvErrorHint.setText(error);
         }
     }
 
@@ -501,9 +583,185 @@ public class VideoPlayActivity extends BaseActivity {
         SharePreferenceUtil.setLong(CURRENT_POSITION, 0);
     }
 
+    private void onBottomProgressBar(ProgressBar mPbBar, boolean hide) {
+        mPbBar.setVisibility(hide ? View.GONE : VISIBLE);
+        if (!hide) {
+            ExoPlayer player = ExoPlayerFactory.getExoPlayer();
+            if (handler != null) {
+                handler.removeCallbacksAndMessages(null);
+                handler = null;
+            }
+            handler = new Handler(Looper.myLooper()) {
+
+                @Override
+                public void handleMessage(@NonNull Message msg) {
+                    super.handleMessage(msg);
+                    int progress = (int) (player.getContentPosition() * 1000 / player.getContentDuration());
+                    mPbBar.setProgress(progress);
+                    handler.sendEmptyMessageDelayed(0, 1000);
+                }
+
+            };
+
+            handler.sendEmptyMessageDelayed(0, 0);
+
+
+        } else {
+            if (handler != null) {
+                handler.removeCallbacksAndMessages(null);
+                handler = null;
+            }
+        }
+    }
+
     @Override
     public void finish() {
         overridePendingTransition(0, 0);
         super.finish();
     }
+
+    //=============== 开始 视频手势 =======================//
+
+    private VideoGestureHelper ly_VG;
+    private ShowChangeLayout scl;
+    private AudioManager mAudioManager;
+    private int maxVolume = 0;
+    private int oldVolume = 0;
+    private int newProgress = 0, oldProgress = 0;
+    private BrightnessHelper mBrightnessHelper;
+    private float brightness = 1;
+    private Window mWindow;
+    private WindowManager.LayoutParams mLayoutParams;
+
+    private void initGesture() {
+        ly_VG = new VideoGestureHelper(mContext, mMPlayerView);
+        ly_VG.setVideoGestureListener(this);
+
+        scl = (ShowChangeLayout) findViewById(R.id.scl);
+
+        //初始化获取音量属性
+        mAudioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
+        maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+
+        //初始化亮度调节
+        mBrightnessHelper = new BrightnessHelper(this);
+
+        //下面这是设置当前APP亮度的方法配置
+        mWindow = getWindow();
+        mLayoutParams = mWindow.getAttributes();
+        brightness = mLayoutParams.screenBrightness;
+    }
+
+
+    @Override
+    public void onDown(MotionEvent e) {
+        //每次按下的时候更新当前亮度和音量，还有进度
+        oldProgress = newProgress;
+        oldVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        brightness = mLayoutParams.screenBrightness;
+        if (brightness == -1) {
+            //一开始是默认亮度的时候，获取系统亮度，计算比例值
+            brightness = mBrightnessHelper.getBrightness() / 255f;
+        }
+    }
+
+    @Override
+    public void onEndFF_REW(MotionEvent e) {
+        ToastUtil.show("设置进度为" + newProgress);
+    }
+
+    @Override
+    public void onVolumeGesture(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+
+        Log.d(TAG, "onVolumeGesture: oldVolume " + oldVolume);
+        int value = ly_VG.getHeight() / maxVolume;
+        int newVolume = (int) ((e1.getY() - e2.getY()) / value + oldVolume);
+
+        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, AudioManager.FLAG_PLAY_SOUND);
+
+
+        Log.d(TAG, "onVolumeGesture: value" + value);
+
+        Log.d(TAG, "onVolumeGesture: newVolume " + newVolume);
+
+        //要强行转Float类型才能算出小数点，不然结果一直为0
+        int volumeProgress = (int) (newVolume / Float.valueOf(maxVolume) * 100);
+        if (volumeProgress >= 50) {
+            scl.setImageResource(R.drawable.ic_volume_higher_w);
+        } else if (volumeProgress > 0) {
+            scl.setImageResource(R.drawable.ic_volume_lower_w);
+        } else {
+            scl.setImageResource(R.drawable.ic_volume_off_w);
+        }
+        scl.setProgress(volumeProgress);
+        scl.show();
+    }
+
+    @Override
+    public void onBrightnessGesture(MotionEvent e1, MotionEvent e2, float distanceX,
+                                    float distanceY) {
+        //下面这是设置当前APP亮度的方法
+        Log.d(TAG, "onBrightnessGesture: old" + brightness);
+        float newBrightness = (e1.getY() - e2.getY()) / ly_VG.getHeight();
+        newBrightness += brightness;
+
+        Log.d(TAG, "onBrightnessGesture: new" + newBrightness);
+        if (newBrightness < 0) {
+            newBrightness = 0;
+        } else if (newBrightness > 1) {
+            newBrightness = 1;
+        }
+        mLayoutParams.screenBrightness = newBrightness;
+        mWindow.setAttributes(mLayoutParams);
+        scl.setProgress((int) (newBrightness * 100));
+        scl.setImageResource(R.drawable.ic_brightness_w);
+        scl.show();
+    }
+
+    @Override
+    public void onFF_REWGesture(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        float offset = e2.getX() - e1.getX();
+        Log.d(TAG, "onFF_REWGesture: offset " + offset);
+        Log.d(TAG, "onFF_REWGesture: ly_VG.getWidth()" + ly_VG.getWidth());
+        //根据移动的正负决定快进还是快退
+        if (offset > 0) {
+            scl.setImageResource(R.drawable.ic_video_ff);
+            newProgress = (int) (oldProgress + offset / ly_VG.getWidth() * 100);
+            if (newProgress > 100) {
+                newProgress = 100;
+            }
+        } else {
+            scl.setImageResource(R.drawable.ic_video_fr);
+            newProgress = (int) (oldProgress + offset / ly_VG.getWidth() * 100);
+            if (newProgress < 0) {
+                newProgress = 0;
+            }
+        }
+        scl.setProgress(newProgress);
+        scl.show();
+    }
+
+    @Override
+    public void onSingleTapGesture(MotionEvent e) {
+        Log.d(TAG, "onSingleTapGesture: ");
+        ToastUtil.show("SingleTap");
+        if (mMPlayerView != null) {
+            if (mMPlayerView.isControllerVisible()) {
+                mMPlayerView.hideController();
+            } else {
+                mMPlayerView.showController();
+            }
+        }
+    }
+
+    @Override
+    public void onDoubleTapGesture(MotionEvent e) {
+        Log.d(TAG, "onDoubleTapGesture: ");
+        if (!landscape && mIvScreenAll != null) {
+            mIvScreenAll.performClick();
+        }
+    }
+
+    //=============== 结束 视频手势 =======================//
+
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tv_order"
+    android:layout_width="33dp"
+    android:layout_height="33dp"
+    android:layout_margin="6dp"
+    android:background="@drawable/etc_order_bg"
+    android:gravity="center"
+    android:textColor="@color/text_content"
+    android:textSize="@dimen/textSize"
+    tools:text="1" />

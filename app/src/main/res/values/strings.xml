@@ -55,6 +55,12 @@
     <string name="set_privacy_policy">隐私政策</string>
     <string name="set_about_ai">关于密友</string>
 
+    <string name="safe_mobile">手机号码</string>
+    <string name="safe_wechat">微信号</string>
+    <string name="safe_bind">去绑定</string>
+    <string name="safe_QQ">QQ</string>
+    <string name="safe_password">密友密码</string>
+
     <string name="info_avatar">头像</string>
     <string name="info_nickname">昵称</string>
     <string name="info_name">真实姓名</string>

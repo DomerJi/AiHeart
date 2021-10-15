@@ -14,9 +14,9 @@ import com.thfw.mobileheart.activity.heartbox.HeartBoxActivity;
 import com.thfw.mobileheart.activity.integral.ClockInActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.me.CollectActivity;
-import com.thfw.mobileheart.activity.me.MeAskActivity;
 import com.thfw.mobileheart.activity.settings.HelpBackActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
+import com.thfw.mobileheart.activity.settings.MeAskListActivity;
 import com.thfw.mobileheart.activity.settings.SettingActivity;
 import com.thfw.robotheart.R;
 import com.thfw.ui.base.BaseFragment;
@@ -85,9 +85,6 @@ public class MeFragment extends BaseFragment {
         mTvAccompanyDay = (TextView) findViewById(R.id.tv_accompany_day);
         mIvCall = (ImageView) findViewById(R.id.iv_call);
         mLlQuit = (LinearLayout) findViewById(R.id.ll_quit);
-        mLlQuit.setOnClickListener(v -> {
-            startActivity(new Intent(mContext, MeAskActivity.class));
-        });
         mTvQuizNumber = (TextView) findViewById(R.id.tv_quiz_number);
         mLlCollect = (LinearLayout) findViewById(R.id.ll_collect);
         mLlCollect.setOnClickListener(v -> {
@@ -125,6 +122,9 @@ public class MeFragment extends BaseFragment {
         });
         mLlHelpBack.setOnClickListener(v -> {
             startActivity(new Intent(mContext, HelpBackActivity.class));
+        });
+        mLlQuit.setOnClickListener(v -> {
+            startActivity(new Intent(mContext, MeAskListActivity.class));
         });
     }
 

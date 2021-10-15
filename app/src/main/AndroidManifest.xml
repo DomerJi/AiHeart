@@ -34,13 +34,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.thfw.mobileheart.activity.settings.MeWillHelpBackActivity"></activity>
+        <activity android:name="com.thfw.mobileheart.activity.settings.MeAskListActivity"></activity>
+        <activity android:name="com.thfw.mobileheart.activity.settings.BindMobileActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.settings.AccountSafeActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.settings.MeWillHelpBackActivity" />
         <activity android:name="com.thfw.mobileheart.activity.settings.HelpHintsActivity" />
         <activity android:name="com.thfw.mobileheart.activity.settings.HelpBackActivity" />
         <activity android:name="com.thfw.mobileheart.activity.audio.AudioEtcActivity" />
         <activity android:name="com.thfw.mobileheart.activity.exercise.ExerciseDetailActivity" />
         <activity android:name="com.thfw.mobileheart.activity.me.CollectActivity" />
-        <activity android:name="com.thfw.mobileheart.activity.me.MeAskActivity" />
         <activity android:name="com.thfw.mobileheart.activity.integral.ClockInActivity" />
         <activity
             android:name="com.thfw.mobileheart.activity.ScrollingActivity"

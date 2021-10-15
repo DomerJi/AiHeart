@@ -563,7 +563,7 @@
                     android:layout_height="100dp"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/hobby_rv_bg"
-                    android:clipToPadding="true"
+                    android:clipToPadding="false"
                     android:paddingLeft="20dp"
                     android:paddingTop="10dp"
                     android:paddingRight="20dp"

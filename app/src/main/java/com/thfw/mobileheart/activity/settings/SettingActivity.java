@@ -41,6 +41,9 @@ public class SettingActivity extends BaseActivity {
         mLlInfo.setOnClickListener(v -> {
             startActivity(new Intent(mContext, InfoActivity.class));
         });
+        mLlAccountSafe.setOnClickListener(v -> {
+            startActivity(new Intent(mContext, AccountSafeActivity.class));
+        });
     }
 
     @Override

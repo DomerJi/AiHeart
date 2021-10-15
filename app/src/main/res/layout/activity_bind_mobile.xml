@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.thfw.mobileheart.activity.settings.BindMobileActivity">
+
+    <com.thfw.ui.widget.TitleView
+        android:id="@+id/titleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tv_centerText="关联手机"
+        tools:ignore="MissingConstraints" />
+
+    <LinearLayout
+        android:id="@+id/ll_bind"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical"
+        android:padding="30dp"
+        app:layout_constraintTop_toBottomOf="@id/titleView">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_edit_height"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/tv_country"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="+86"
+                android:textColor="@color/text_common"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/et_mobile"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_toRightOf="@id/tv_country"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:hint="@string/please_input_mobile"
+                android:paddingLeft="8dp"
+                android:textColor="@color/text_common"
+                android:textColorHint="@color/text_hint"
+                android:textSize="@dimen/textSize" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider_2px"
+                android:layout_alignParentBottom="true"
+                android:background="@color/divider" />
+
+        </RelativeLayout>
+
+        <com.thfw.ui.widget.VerificationCodeView
+            android:id="@+id/vfcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints" />
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/bt_bind"
+        style="@style/common_button"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="30dp"
+        android:text="确定关联"
+        app:layout_constraintTop_toBottomOf="@id/ll_bind" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
