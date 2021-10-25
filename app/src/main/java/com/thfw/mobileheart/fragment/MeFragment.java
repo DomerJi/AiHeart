@@ -13,7 +13,11 @@ import com.thfw.mobileheart.activity.StatusActivity;
 import com.thfw.mobileheart.activity.heartbox.HeartBoxActivity;
 import com.thfw.mobileheart.activity.integral.ClockInActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
+import com.thfw.mobileheart.activity.me.AssessReportActivity;
 import com.thfw.mobileheart.activity.me.CollectActivity;
+import com.thfw.mobileheart.activity.me.HealthReportActivity;
+import com.thfw.mobileheart.activity.me.MeHistoryActivity;
+import com.thfw.mobileheart.activity.me.MeTestHistoryActivity;
 import com.thfw.mobileheart.activity.settings.HelpBackActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
 import com.thfw.mobileheart.activity.settings.MeAskListActivity;
@@ -126,7 +130,22 @@ public class MeFragment extends BaseFragment {
         mLlQuit.setOnClickListener(v -> {
             startActivity(new Intent(mContext, MeAskListActivity.class));
         });
+        mLlTestReport.setOnClickListener(v -> {
+            startActivity(new Intent(mContext, AssessReportActivity.class));
+        });
+        mLlSafeReport.setOnClickListener(v -> {
+            startActivity(new Intent(mContext, HealthReportActivity.class));
+        });
+
+        // 历史
+        mLlHistoryTest.setOnClickListener(v -> MeTestHistoryActivity.startActivity(mContext));
+        mLlHistoryExercise.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 0));
+        mLlHistoryListening.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 1));
+        mLlHistorySee.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 2));
+        mLlHistoryRead.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 3));
+        mLlHistoryStudy.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 4));
     }
+
 
     @Override
     public void initData() {

@@ -1,21 +1,23 @@
-package com.thfw.mobileheart.activity.settings;
+package com.thfw.mobileheart.activity.test;
 
 import android.content.Intent;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;
 
-public class HelpHintsActivity extends BaseActivity {
+public class TestBeginActivity extends BaseActivity {
 
     private com.thfw.ui.widget.TitleView mTitleView;
-    private android.widget.Button mBtHelpBack;
+    private android.widget.ImageView mIvShare;
+    private android.widget.Button mBtnBegin;
 
     @Override
     public int getContentView() {
-        return R.layout.activity_help_hints;
+        return R.layout.activity_test_begin;
     }
 
     @Override
@@ -27,13 +29,14 @@ public class HelpHintsActivity extends BaseActivity {
     public void initView() {
 
         mTitleView = (TitleView) findViewById(R.id.titleView);
-        mBtHelpBack = (Button) findViewById(R.id.bt_help_back);
+        mIvShare = (ImageView) findViewById(R.id.iv_share);
+        mBtnBegin = (Button) findViewById(R.id.btn_begin);
     }
 
     @Override
     public void initData() {
-        mBtHelpBack.setOnClickListener(v -> {
-            startActivity(new Intent(mContext, MeWillHelpBackActivity.class));
+        mBtnBegin.setOnClickListener(v -> {
+            startActivity(new Intent(mContext, TestProgressIngActivity.class));
         });
     }
 }

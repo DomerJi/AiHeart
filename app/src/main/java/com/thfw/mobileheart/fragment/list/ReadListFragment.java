@@ -1,11 +1,26 @@
 package com.thfw.mobileheart.fragment.list;
 
+import android.content.Intent;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.face.OnRvItemListener;
+import com.thfw.mobileheart.activity.read.ReadEtcActivity;
+import com.thfw.mobileheart.adapter.ReadOneAdapter;
+import com.thfw.mobileheart.model.ReadModel;
 import com.thfw.robotheart.R;
 import com.thfw.ui.base.BaseFragment;
 
+import java.util.List;
+
 
 public class ReadListFragment extends BaseFragment {
+
+    private SmartRefreshLayout mRefreshLayout;
+    private RecyclerView mRvList;
 
     public ReadListFragment(String data) {
         super();
@@ -24,11 +39,21 @@ public class ReadListFragment extends BaseFragment {
     @Override
     public void initView() {
 
+        mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
+        mRvList = (RecyclerView) findViewById(R.id.rv_list);
     }
 
     @Override
     public void initData() {
-
+        mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+        ReadOneAdapter readOneAdapter = new ReadOneAdapter(null);
+        readOneAdapter.setOnRvItemListener(new OnRvItemListener<ReadModel>() {
+            @Override
+            public void onItemClick(List<ReadModel> list, int position) {
+                startActivity(new Intent(mContext, ReadEtcActivity.class));
+            }
+        });
+        mRvList.setAdapter(readOneAdapter);
     }
 
 }

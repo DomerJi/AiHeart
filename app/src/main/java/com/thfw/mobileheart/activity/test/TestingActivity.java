@@ -8,10 +8,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.face.OnRvItemListener;
 import com.thfw.mobileheart.adapter.TestOneAdapter;
+import com.thfw.mobileheart.model.TestModel;
 import com.thfw.robotheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;
+
+import java.util.List;
 
 public class TestingActivity extends BaseActivity {
 
@@ -44,6 +48,13 @@ public class TestingActivity extends BaseActivity {
     @Override
     public void initData() {
         mRvTest.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        mRvTest.setAdapter(new TestOneAdapter(null));
+        TestOneAdapter testOneAdapter = new TestOneAdapter(null);
+        testOneAdapter.setOnRvItemListener(new OnRvItemListener<TestModel>() {
+            @Override
+            public void onItemClick(List<TestModel> list, int position) {
+                startActivity(new Intent(mContext, TestBeginActivity.class));
+            }
+        });
+        mRvTest.setAdapter(testOneAdapter);
     }
 }

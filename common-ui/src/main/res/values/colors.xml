@@ -8,11 +8,15 @@
     <!--页面通用背景-->
     <color name="page_background_gray">#F5F5F5</color>
     <color name="page_background_white">#FFFFFF</color>
+    <color name="exercise">#29DACA</color>
+    <color name="exercise_20">#3329DACA</color>
+    <color name="exercise_text">#00CC99</color>
 
     <color name="colorButtonLeft">#00BC89</color>
+    <color name="colorButtonRight">#00D69C</color>
+
     <color name="colorButtonLeft2">#8800BC89</color>
-    <color name="colorButtonRight">#8800D69C</color>
-    <color name="colorButtonRight2">#00D69C</color>
+    <color name="colorButtonRight2">#8800D69C</color>
 
     <color name="enabled_false">#F4F6F7</color>
     <color name="link">#2A5D83</color>
@@ -32,7 +36,9 @@
     <color name="dot_red">#E64550</color>
     <color name="btn_red">#E64550</color>
     <color name="gray">#888888</color>
+    <color name="gray_ccc">#CCCCCC</color>
     <color name="divider">#19000000</color>
+
     <!-- 透明 -->
     <color name="transparent">#00000000</color>
     <color name="gain_verification">#21BE56</color>
@@ -58,6 +64,7 @@
     <color name="white_15">#21FFFFFF</color>
     <color name="white_10">#19FFFFFF</color>
     <color name="white_05">#0CFFFFFF</color>
+
     <!-- 黑色 -->
     <color name="black">#FF000000</color>
     <color name="black_95">#F2000000</color>

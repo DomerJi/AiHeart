@@ -29,12 +29,14 @@
 
     <string name="me_quiz">我的提问</string>
     <string name="me_collect">我的收藏</string>
+    <string name="me_history">历史记录</string>
 
     <string name="me_time_minute">累积分钟</string>
     <string name="me_time_day">累积天数</string>
     <string name="me_time_continuation_day">连续天数</string>
 
     <string name="me_test">我测的</string>
+    <string name="me_test_history">我的测试</string>
     <string name="me_exercise">我练的</string>
     <string name="me_listening">我听的</string>
     <string name="me_see">我看的</string>

@@ -42,6 +42,31 @@ public class DialogFactory {
                 .setOnViewClickListener(onViewCallBack).create().show();
     }
 
+
+    /**
+     * 通用弹框
+     *
+     * @param activity
+     * @param onViewCallBack
+     * @return
+     */
+    public static TDialog createCustomThreeDialog(FragmentActivity activity, OnViewThreeCallBack onViewCallBack) {
+        return new TDialog.Builder(activity.getSupportFragmentManager())
+                .setLayoutRes(R.layout.dialog_custom_three_layout)
+                .setDialogAnimationRes(R.style.animate_dialog_fade)
+                .addOnClickListener(R.id.tv_one, R.id.tv_two, R.id.tv_three)
+                // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
+                .setOnBindViewListener(viewHolder -> {
+                    TextView mTvTitle = viewHolder.getView(R.id.tv_title);
+                    TextView mTvHint = viewHolder.getView(R.id.tv_hint);
+                    TextView mTvOne = viewHolder.getView(R.id.tv_one);
+                    TextView mTvTwo = viewHolder.getView(R.id.tv_two);
+                    TextView mTvThree = viewHolder.getView(R.id.tv_three);
+                    onViewCallBack.callBack(mTvTitle, mTvHint, mTvOne, mTvTwo, mTvThree);
+                })
+                .setOnViewClickListener(onViewCallBack).create().show();
+    }
+
     /**
      * 交易密码
      *
@@ -169,13 +194,17 @@ public class DialogFactory {
                 .setLayoutRes(R.layout.dialog_custom_status_layout)
                 .setGravity(Gravity.BOTTOM)
                 .setScreenWidthAspect(activity, 1f)
-                .addOnClickListener( R.id.tv_confirm, R.id.iv_close)
+                .addOnClickListener(R.id.tv_confirm, R.id.iv_close)
                 .setOnBindViewListener(onBindViewListener)
                 .setOnViewClickListener(onViewClickListener).create().show();
     }
 
     public interface OnViewCallBack extends OnViewClickListener {
         void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical);
+    }
+
+    public interface OnViewThreeCallBack extends OnViewClickListener {
+        void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvOne, TextView mTvTwo, TextView mTvThree);
     }
 
 

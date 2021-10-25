@@ -16,6 +16,7 @@ import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 import com.thfw.mobileheart.activity.exercise.ExerciseActivity;
+import com.thfw.mobileheart.activity.me.ServiceHotLineActivity;
 import com.thfw.mobileheart.activity.read.ReadHomeActivity;
 import com.thfw.mobileheart.activity.study.StudyHomeActivity;
 import com.thfw.mobileheart.activity.talk.AskActivity;
@@ -254,6 +255,9 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
 
         public MadeHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            itemView.findViewById(R.id.root_hotline).setOnClickListener(v -> {
+                mContext.startActivity(new Intent(mContext, ServiceHotLineActivity.class));
+            });
         }
     }
 

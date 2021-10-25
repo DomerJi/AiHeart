@@ -1,5 +1,6 @@
 package com.thfw.mobileheart.fragment.exercise;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.base.IPresenter;
+import com.thfw.mobileheart.activity.exercise.ExerciseIngActivity;
 import com.thfw.mobileheart.adapter.BaseAdapter;
 import com.thfw.robotheart.R;
 import com.thfw.ui.base.BaseFragment;
@@ -45,7 +47,7 @@ public class ExerciseLogcataFragment extends BaseFragment {
     @Override
     public void initData() {
 
-        mRvExercise.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false){
+        mRvExercise.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false) {
             @Override
             public boolean canScrollVertically() {
                 return false;
@@ -75,6 +77,9 @@ public class ExerciseLogcataFragment extends BaseFragment {
 
         public LogcataHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            itemView.setOnClickListener(v -> {
+                startActivity(new Intent(mContext, ExerciseIngActivity.class));
+            });
         }
     }
 }

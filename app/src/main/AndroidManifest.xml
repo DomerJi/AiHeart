@@ -34,7 +34,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.thfw.mobileheart.activity.settings.MeAskListActivity"></activity>
+        <activity android:name="com.thfw.mobileheart.activity.me.MeTestHistoryActivity"></activity>
+        <activity android:name="com.thfw.mobileheart.activity.me.MeHistoryActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.test.TestBeginActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.exercise.ExerciseIngActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.read.ReadDetailsActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.me.ServiceHotLineActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.me.HealthReportActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.me.AssessReportActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.settings.MeAskListActivity" />
         <activity android:name="com.thfw.mobileheart.activity.settings.BindMobileActivity" />
         <activity android:name="com.thfw.mobileheart.activity.settings.AccountSafeActivity" />
         <activity android:name="com.thfw.mobileheart.activity.settings.MeWillHelpBackActivity" />
@@ -44,6 +52,7 @@
         <activity android:name="com.thfw.mobileheart.activity.exercise.ExerciseDetailActivity" />
         <activity android:name="com.thfw.mobileheart.activity.me.CollectActivity" />
         <activity android:name="com.thfw.mobileheart.activity.integral.ClockInActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.test.TestProgressIngActivity" />
         <activity
             android:name="com.thfw.mobileheart.activity.ScrollingActivity"
             android:label="@string/title_activity_scrolling"
@@ -58,6 +67,7 @@
         <activity android:name="com.thfw.mobileheart.activity.audio.AudioHomeActivity" />
         <activity android:name="com.thfw.mobileheart.activity.exercise.ExerciseActivity" />
         <activity android:name="com.thfw.mobileheart.activity.test.TestingActivity" />
+        <activity android:name="com.thfw.mobileheart.activity.read.ReadEtcActivity" />
         <activity
             android:name="com.thfw.mobileheart.activity.audio.AudioPlayerActivity"
             android:theme="@style/AnimActivity" />
