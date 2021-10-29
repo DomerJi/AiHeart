@@ -159,7 +159,7 @@ public class DialogFactory {
     /**
      * 【问一问】 更多弹框
      */
-    public static TDialog createAskMore(FragmentActivity activity, OnViewCallBack onViewCallBack) {
+    public static TDialog createAskMore(FragmentActivity activity, OnViewClickListener onViewClickListener) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_ask_more_layout)
                 .setGravity(Gravity.BOTTOM)
@@ -170,7 +170,7 @@ public class DialogFactory {
                     public void bindView(BindViewHolder viewHolder) {
                     }
                 })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                .setOnViewClickListener(onViewClickListener).create().show();
     }
 
     /**

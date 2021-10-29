@@ -8,8 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.robotheart.R;
 import com.thfw.mobileheart.model.ChatEntity;
+import com.thfw.robotheart.R;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,16 +25,25 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
     @NotNull
     @Override
     public ChatHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        if (viewType == 0) {
-            return new ChatHolder(LayoutInflater.from(mContext).inflate(R.layout.chat_from_to_layout, parent, false));
-        } else {
-            return new ChatHolder(LayoutInflater.from(mContext).inflate(R.layout.chat_to_from_layout, parent, false));
+        switch (viewType) {
+            case ChatEntity.TYPE_FROM:// 【对方】 对话
+                return new ChatHolder(LayoutInflater.from(mContext).inflate(R.layout.chat_from_to_layout, parent, false));
+            case ChatEntity.TYPE_TO: // 【我】对话
+                return new ChatHolder(LayoutInflater.from(mContext).inflate(R.layout.chat_to_from_layout, parent, false));
+            case ChatEntity.TYPE_END_SERVICE: // 您已结束本次服务
+                return new ChatHolder(LayoutInflater.from(mContext).inflate(R.layout.chat_end_service_layout, parent, false));
+            case ChatEntity.TYPE_FEEDBACK: // 您对本次回答满意吗？
+                return new ChatHolder(LayoutInflater.from(mContext).inflate(R.layout.chat_freeback_layout, parent, false));
+            default:
+                return new ChatHolder(LayoutInflater.from(mContext).inflate(R.layout.chat_from_to_layout, parent, false));
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull ChatHolder holder, int position) {
-        holder.mTvTalk.setText(mDataList.get(position).talk);
+        if (holder.mTvTalk != null) {
+            holder.mTvTalk.setText(mDataList.get(position).talk);
+        }
     }
 
     @Override

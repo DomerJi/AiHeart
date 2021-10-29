@@ -1,6 +1,7 @@
 package com.thfw.base.utils;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Build;
@@ -181,6 +182,19 @@ public class Util {
         view.setLayoutParams(marginParams);
         view.requestLayout();
         return marginParams;
+    }
+
+    public static boolean isPad(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE || isHuaweiPad();
+    }
+
+    public static boolean isHuaweiPad() {
+        if (Build.BRAND.equals("HUAWEI") && Build.DEVICE.equals("HWBAH3-H")) {
+            return true;
+        }
+        return false;
     }
 
 

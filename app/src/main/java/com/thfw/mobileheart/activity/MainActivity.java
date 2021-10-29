@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.thfw.base.base.IPresenter;
-import com.thfw.mobileheart.activity.talk.ChatActivity;
+import com.thfw.mobileheart.activity.robot.RobotActivity;
 import com.thfw.mobileheart.fragment.HomeFragment;
 import com.thfw.mobileheart.fragment.MeFragment;
 import com.thfw.mobileheart.fragment.MessageFragment;
@@ -81,7 +81,8 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         mTvMe = (TextView) findViewById(R.id.tv_me);
         // 小天智能聊天
         mLlAiChat.setOnClickListener(v -> {
-            ChatActivity.startActivity(mContext);
+//            ChatActivity.startActivity(mContext);
+            startActivity(new Intent(mContext, RobotActivity.class));
         });
 
 //            startActivity(new Intent(mContext, ExoPlayerActivity.class));
@@ -137,7 +138,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             // 淡入
             mMainRoot.setAlpha(0f);
             mMainRoot.setVisibility(View.VISIBLE);
-            mMainRoot.animate().alpha(1f).setDuration(300).start();
+            mMainRoot.animate().alpha(1f).setDuration(400).start();
             setStatusBarBackGround(STATUSBAR_WHITE);
         }
     }

@@ -25,6 +25,7 @@ import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.DialogFactory;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.widget.TitleView;
 
 public class AskActivity extends BaseActivity {
@@ -124,16 +125,11 @@ public class AskActivity extends BaseActivity {
      * 【弹框】 底部选项
      */
     private void bottomDialog() {
-        DialogFactory.createAskMore(this, new DialogFactory.OnViewCallBack() {
-            @Override
-            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-            }
-
+        DialogFactory.createAskMore(this, new OnViewClickListener() {
             @Override
             public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                if (view.getId() == R.id.tv_cancel) {
-                    tDialog.dismiss();
-                } else {
+
+                if (view.getId() == com.thfw.ui.R.id.tv_cancel) {
 
                 }
             }

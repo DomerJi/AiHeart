@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context="com.thfw.mobileheart.activity.robot.RobotActivity">
+
+
+    <FrameLayout
+        android:id="@+id/fl_robot"
+        android:layout_width="260dp"
+        android:layout_height="match_parent"
+        android:background="@color/text_green"
+        tools:ignore="MissingConstraints" />
+
+
+    <FrameLayout
+        android:id="@+id/fl_robot_chatlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/fl_robot"
+        android:background="@color/text_yellow"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_drag"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="-10dp"
+        android:layout_toRightOf="@id/fl_robot"
+        android:background="@color/divider"
+        tools:ignore="MissingConstraints" />
+
+
+</RelativeLayout>

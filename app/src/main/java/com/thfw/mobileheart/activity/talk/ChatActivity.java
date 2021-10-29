@@ -85,7 +85,7 @@ public class ChatActivity extends BaseActivity {
         mTvSend.setEnabled(!EmptyUtil.isEmpty(mEtContent.getText().toString()));
         mTvSend.setOnClickListener(v -> {
             ChatEntity chatEntity = new ChatEntity();
-            chatEntity.type = new Random().nextInt(2) == 1 ? ChatEntity.TYPE_TO : ChatEntity.TYPE_FROM;
+            chatEntity.type = new Random().nextInt(4);
             chatEntity.talk = mEtContent.getText().toString();
             mChatAdapter.addData(chatEntity);
             mChatAdapter.notifyItemInserted(mChatAdapter.getItemCount() - 1);

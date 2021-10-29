@@ -54,6 +54,8 @@ public class HomeFragment extends BaseFragment {
     private int maxHeight;
     private int minHeight;
 
+    private boolean isFirst = true;
+
     @Override
     public int getContentView() {
         return R.layout.fragment_home;
@@ -179,7 +181,7 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
-                if (new Random().nextInt(10) == 1) {
+                if (new Random().nextInt(100) == 1) {
                     pageHelper.onFail(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -189,8 +191,9 @@ public class HomeFragment extends BaseFragment {
                 } else {
                     pageHelper.onSuccess(getList());
                 }
+                isFirst = false;
             }
-        }.sendEmptyMessageDelayed(0, 300);
+        }.sendEmptyMessageDelayed(0, isFirst ? 0 : 300);
     }
 
     public List<HomeEntity> getList() {
