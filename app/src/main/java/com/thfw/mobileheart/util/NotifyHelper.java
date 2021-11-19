@@ -10,7 +10,7 @@ import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 
 

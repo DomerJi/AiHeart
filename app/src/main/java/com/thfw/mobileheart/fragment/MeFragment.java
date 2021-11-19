@@ -22,7 +22,7 @@ import com.thfw.mobileheart.activity.settings.HelpBackActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
 import com.thfw.mobileheart.activity.settings.MeAskListActivity;
 import com.thfw.mobileheart.activity.settings.SettingActivity;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseFragment;
 import com.thfw.user.login.UserManager;
 

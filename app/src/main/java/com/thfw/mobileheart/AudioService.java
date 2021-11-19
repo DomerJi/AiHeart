@@ -15,7 +15,6 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.util.AudioModel;
 import com.thfw.mobileheart.util.NotifyHelper;
-import com.thfw.robotheart.R;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;

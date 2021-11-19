@@ -38,9 +38,10 @@
         android:id="@+id/pb_bottom"
         style="@style/HorizontalProgressBar"
         android:layout_width="match_parent"
-        android:layout_height="3dp"
+        android:layout_height="100dp"
         android:max="1000"
-        android:visibility="gone"
+        android:progress="100"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <Button

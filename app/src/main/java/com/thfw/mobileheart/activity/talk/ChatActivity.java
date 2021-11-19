@@ -19,7 +19,7 @@ import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.mobileheart.adapter.ChatAdapter;
 import com.thfw.mobileheart.model.ChatEntity;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.DialogFactory;
 import com.thfw.ui.dialog.TDialog;

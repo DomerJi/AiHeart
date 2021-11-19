@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.mobileheart.model.HeartBoxEntity;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.utils.GlideUtil;
 
 import org.jetbrains.annotations.NotNull;

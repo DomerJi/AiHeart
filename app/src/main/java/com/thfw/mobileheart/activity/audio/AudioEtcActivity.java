@@ -16,7 +16,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.mobileheart.adapter.AudioEtcAdapter;
 import com.thfw.mobileheart.model.AudioEtcModel;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.DialogFactory;
 import com.thfw.ui.dialog.TDialog;

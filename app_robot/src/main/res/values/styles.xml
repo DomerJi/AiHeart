@@ -1,0 +1,16 @@
+<resources>
+
+    <!--activity 底部弹出-->
+    <style name="AnimActivity" parent="AppTheme">
+        <item name="android:windowAnimationStyle">@style/anim_translate_bottom</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="anim_translate_bottom" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/exit_fade</item>
+        <item name="android:activityCloseEnterAnimation">@anim/enter_fade</item>
+        <item name="android:activityCloseExitAnimation">@anim/exit</item>
+    </style>
+
+</resources>

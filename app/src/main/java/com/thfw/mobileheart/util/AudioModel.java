@@ -1,6 +1,6 @@
 package com.thfw.mobileheart.util;
 
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 
 /**
  * Author:pengs

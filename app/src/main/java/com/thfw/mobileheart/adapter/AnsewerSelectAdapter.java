@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.mobileheart.util.AnsewerModel;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 
 import org.jetbrains.annotations.NotNull;
 

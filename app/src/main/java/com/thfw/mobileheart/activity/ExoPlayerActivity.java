@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.adapter.VideoListAdapter;
 import com.thfw.mobileheart.model.VideoModel;
 import com.thfw.mobileheart.util.ExoPlayerFactory;

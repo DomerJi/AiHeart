@@ -13,7 +13,7 @@ import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.activity.login.ForgetPasswordActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.widget.VerificationCodeView;
 

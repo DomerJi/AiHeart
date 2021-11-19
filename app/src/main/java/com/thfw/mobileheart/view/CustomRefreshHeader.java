@@ -26,7 +26,7 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.constant.RefreshState;
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
 import com.scwang.smart.refresh.layout.util.SmartUtil;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

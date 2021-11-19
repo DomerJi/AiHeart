@@ -5,7 +5,7 @@
 //import android.util.Log;
 //import android.widget.ImageView;
 //
-//import com.thfw.robotheart.R;
+//import com.thfw.mobileheart.R;
 //
 //import java.io.File;
 //

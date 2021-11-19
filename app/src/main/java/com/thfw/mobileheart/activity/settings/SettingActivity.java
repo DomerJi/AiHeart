@@ -5,7 +5,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.thfw.base.base.IPresenter;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 
 public class SettingActivity extends BaseActivity {

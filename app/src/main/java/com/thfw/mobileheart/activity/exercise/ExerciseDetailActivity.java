@@ -16,7 +16,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.fragment.exercise.ExerciseHintFragment;
 import com.thfw.mobileheart.fragment.exercise.ExerciseLogcataFragment;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.DialogFactory;
 import com.thfw.ui.dialog.TDialog;

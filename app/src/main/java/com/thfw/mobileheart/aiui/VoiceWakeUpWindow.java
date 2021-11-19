@@ -22,7 +22,7 @@ import com.iflytek.cloud.util.ResourceUtil;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.yhao.floatwindow.FloatWindow;
 import com.yhao.floatwindow.PermissionListener;
 import com.yhao.floatwindow.Screen;

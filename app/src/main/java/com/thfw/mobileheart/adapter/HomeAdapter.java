@@ -25,7 +25,7 @@ import com.thfw.mobileheart.activity.test.TestingActivity;
 import com.thfw.mobileheart.activity.video.VideoHomeActivity;
 import com.thfw.mobileheart.model.HomeEntity;
 import com.thfw.mobileheart.model.HomeHistoryEntity;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.utils.GlideUtil;
 import com.youth.banner.Banner;
 import com.youth.banner.indicator.CircleIndicator;

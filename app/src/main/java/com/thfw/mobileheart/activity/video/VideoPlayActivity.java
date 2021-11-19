@@ -51,7 +51,7 @@ import com.thfw.mobileheart.adapter.VideoPlayListAdapter;
 import com.thfw.mobileheart.model.VideoModel;
 import com.thfw.mobileheart.model.VideoPlayListModel;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.yhao.floatwindow.FloatWindow;
 import com.yhao.floatwindow.PermissionListener;

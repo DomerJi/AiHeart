@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 
 /**
  * Author: yanzhikai

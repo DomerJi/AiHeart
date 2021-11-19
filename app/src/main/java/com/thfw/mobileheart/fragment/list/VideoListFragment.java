@@ -10,7 +10,7 @@ import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.HomeVideoListAdapter;
 import com.thfw.mobileheart.model.AudioModel;
 import com.thfw.mobileheart.model.VideoModel;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseFragment;
 
 import java.util.List;

@@ -13,7 +13,7 @@ import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.fragment.robot.RobotDetailFragment;
 import com.thfw.mobileheart.fragment.robot.RobotFragment;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 
 public class RobotActivity extends BaseActivity {

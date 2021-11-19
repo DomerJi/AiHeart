@@ -8,7 +8,7 @@ import com.thfw.mobileheart.fragment.login.ForgetFragment;
 import com.thfw.mobileheart.fragment.login.SetPasswordFragment;
 import com.thfw.mobileheart.fragment.login.SetPasswordScusseFragment;
 import com.thfw.mobileheart.util.FragmentLoader;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 
 public class ForgetPasswordActivity extends BaseActivity {

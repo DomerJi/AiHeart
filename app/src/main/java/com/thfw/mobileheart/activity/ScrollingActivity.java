@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 
 public class ScrollingActivity extends AppCompatActivity {
 

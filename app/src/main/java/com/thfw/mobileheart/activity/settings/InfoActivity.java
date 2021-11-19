@@ -13,7 +13,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.adapter.InfoLikeAdapter;
 import com.thfw.mobileheart.model.InfoLikeModel;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;
 

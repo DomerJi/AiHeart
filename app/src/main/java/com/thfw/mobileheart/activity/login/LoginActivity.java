@@ -7,7 +7,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.fragment.login.MobileFragment;
 import com.thfw.mobileheart.fragment.login.PasswordFragment;
 import com.thfw.mobileheart.util.FragmentLoader;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 
 public class LoginActivity extends BaseActivity {

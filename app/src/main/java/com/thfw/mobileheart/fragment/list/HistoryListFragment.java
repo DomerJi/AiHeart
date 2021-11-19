@@ -3,7 +3,7 @@ package com.thfw.mobileheart.fragment.list;
 import android.graphics.Color;
 
 import com.thfw.base.base.IPresenter;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseFragment;
 
 import java.util.Random;

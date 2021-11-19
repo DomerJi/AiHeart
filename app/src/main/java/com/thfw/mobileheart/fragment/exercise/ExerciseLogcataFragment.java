@@ -13,7 +13,7 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.activity.exercise.ExerciseIngActivity;
 import com.thfw.mobileheart.adapter.BaseAdapter;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseFragment;
 
 import org.jetbrains.annotations.NotNull;

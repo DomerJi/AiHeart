@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.model.StatusEntity;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 
 import org.jetbrains.annotations.NotNull;
 

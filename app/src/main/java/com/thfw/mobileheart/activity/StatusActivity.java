@@ -20,7 +20,7 @@ import com.thfw.base.utils.PaletteUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.adapter.StatusAdapter;
 import com.thfw.mobileheart.model.StatusEntity;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.DialogFactory;
 import com.thfw.ui.dialog.TDialog;

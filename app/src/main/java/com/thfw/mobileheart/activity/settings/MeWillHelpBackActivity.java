@@ -1,7 +1,7 @@
 package com.thfw.mobileheart.activity.settings;
 
 import com.thfw.base.base.IPresenter;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 
 public class MeWillHelpBackActivity extends BaseActivity {

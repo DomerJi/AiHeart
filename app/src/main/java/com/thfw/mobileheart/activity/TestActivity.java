@@ -18,7 +18,7 @@ import com.thfw.base.net.download.ProgressListener;
 import com.thfw.base.net.download.TestDownLoad;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

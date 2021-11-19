@@ -30,7 +30,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.AudioService;
 import com.thfw.mobileheart.util.AudioModel;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
-import com.thfw.robotheart.R;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;
 
