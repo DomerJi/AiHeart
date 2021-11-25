@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+
+
     <color name="login_agree">#00A871</color>
     <color name="xt_hint_title">#E64550</color>
-    <color name="titlebar_background">#000000</color>
-    <color name="titleBar_tint">#FFFFFF</color>
+
+    <color name="titlebar_background">@color/colorRobotPrimary</color>
+    <color name="titleBar_tint">@color/colorRobotFore</color>
 
 </resources>

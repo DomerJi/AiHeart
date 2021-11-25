@@ -66,8 +66,19 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
         mContext = getContext();
         setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
         inflate(mContext, R.layout.layout_titlebar_view, this);
+        setBackgroundResource(R.color.titlebar_background);
         initView();
         initReceiver();
+        initTimeReceiver();
+    }
+
+    private void initTimeReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_TIME_TICK);
+        filter.addAction(Intent.ACTION_TIME_CHANGED);
+        filter.addAction(Intent.ACTION_DATE_CHANGED);
+        getContext().registerReceiver(broadcastReceiver, filter);
+        //广播的注册，其中Intent.ACTION_TIME_CHANGED代表时间设置变化的时候会发出该广播
     }
 
     private void initView() {
@@ -83,6 +94,18 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
         mTvTitleBarTime.setText(HourUtil.getHHMM(System.currentTimeMillis()));
         mIvTitleBarWifi.setVisibility(NetworkUtil.isWifiConnected(mContext) ? VISIBLE : INVISIBLE);
     }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.ACTION_TIME_TICK.equals(intent.getAction())) {
+                mTvTitleBarTime.setText(HourUtil.getHHMM(System.currentTimeMillis()));
+            } else if (intent.ACTION_TIME_CHANGED.equals(intent.getAction())) {
+                mTvTitleBarTime.setText(HourUtil.getHHMM(System.currentTimeMillis()));
+            }
+        }
+    };
 
     private void updateBattery(int level) {
         mPbBatteryProgress.setProgress(level);
@@ -108,6 +131,7 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
         super.onDetachedFromWindow();
         mContext.unregisterReceiver(this.mWifiStateReceiver);
         mContext.unregisterReceiver(this.mBatInfoReceiver);
+        mContext.unregisterReceiver(this.broadcastReceiver);
         TimingHelper.getInstance().removeWorkArriveListener(this);
     }
 

@@ -1,9 +1,6 @@
 package com.thfw.robotheart.activitys;
 
-import android.widget.TextView;
-
 import com.thfw.base.base.IPresenter;
-import com.thfw.base.utils.HourUtil;
 import com.thfw.robotheart.R;
 import com.thfw.ui.base.BaseActivity;
 
@@ -23,10 +20,6 @@ public class MainActivity extends BaseActivity {
     public void initView() {
 
 
-        TextView mTvWeak = findViewById(R.id.tv_weak);
-        String ymd = HourUtil.getYYMMDD(System.currentTimeMillis()).replaceAll("-", "/");
-
-        mTvWeak.setText(ymd + "  " + HourUtil.getWeek(System.currentTimeMillis()));
     }
 
     @Override

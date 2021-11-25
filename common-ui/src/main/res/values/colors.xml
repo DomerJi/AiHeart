@@ -4,6 +4,12 @@
     <color name="colorPrimary">#59C6C1</color>
     <color name="colorPrimaryDark">#59C6C1</color>
     <color name="colorAccent">#29B357</color>
+    <color name="colorFore">#000000</color>
+
+    <color name="colorRobotPrimary">#008800</color>
+    <color name="colorRobotPrimaryDark">#008800</color>
+    <color name="colorRobotAccent">#00FF88</color>
+    <color name="colorRobotFore">#00FFFF</color>
 
     <!--页面通用背景-->
     <color name="page_background_gray">#F5F5F5</color>

@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activitys.MainActivity">
 
     <com.thfw.robotheart.view.TitleBarView
         android:id="@+id/titleBarView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/titleBarHeight"
-        android:background="@color/black"
         tools:ignore="MissingConstraints" />
 
+    <com.thfw.ui.widget.TitleRobotView
+        android:id="@+id/titleRobotView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/titleBarView"
+        tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/tv_weak"
+    <com.thfw.ui.widget.WeekView
+        android:id="@+id/weekView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@id/titleBarView"/>
+        android:paddingRight="12dp"
+        android:textColor="@color/colorRobotFore"
+        android:textSize="14sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleBarView" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

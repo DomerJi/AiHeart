@@ -27,6 +27,16 @@
         <attr name="tv_centerTextColor" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="TitleRobotView">
+        <attr name="trv_centerText" format="string" />
+        <attr name="trv_rightText" format="string" />
+        <attr name="trv_leftIcon" format="reference" />
+        <attr name="trv_showIcon" format="boolean" />
+        <attr name="trv_background" format="reference" />
+        <attr name="trv_leftIconColor" format="reference" />
+        <attr name="trv_centerTextColor" format="reference" />
+    </declare-styleable>
+
     <declare-styleable name="MySearchView">
         <attr name="sv_isEdit" format="boolean" />
         <attr name="sv_clearIcon" format="boolean" />

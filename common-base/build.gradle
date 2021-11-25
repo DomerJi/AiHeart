@@ -102,4 +102,7 @@ dependencies {
     api "com.google.android.exoplayer:exoplayer-core:$exo_version"
     api "com.google.android.exoplayer:exoplayer-dash:$exo_version"
     api "com.google.android.exoplayer:exoplayer-ui:$exo_version"
+
+
+    api files('libs/Msc.jar')
 }

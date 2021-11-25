@@ -4,8 +4,6 @@ import android.content.Context;
 
 import androidx.multidex.MultiDexApplication;
 
-import com.iflytek.cloud.SpeechConstant;
-import com.iflytek.cloud.SpeechUtility;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -16,7 +14,6 @@ import com.scwang.smart.refresh.layout.listener.DefaultRefreshFooterCreator;
 import com.scwang.smart.refresh.layout.listener.DefaultRefreshHeaderCreator;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
-import com.thfw.robotheart.aiui.Constant;
 import com.thfw.ui.dialog.TDialog;
 
 import java.text.SimpleDateFormat;
@@ -61,10 +58,6 @@ public class MyApplication extends MultiDexApplication {
         SharePreferenceUtil.init(this);
         ToastUtil.init(this);
         TDialog.init(this);
-        // 科大讯飞
-        // 将“12345678”替换成您申请的APPID，申请地址：http://www.xfyun.cn
-        // 请勿在“=”与appid之间添加任何空字符或者转义符
-        SpeechUtility.createUtility(this, SpeechConstant.APPID + "=" + Constant.VALUE_APPID);
     }
 
 }
