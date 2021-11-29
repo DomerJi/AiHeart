@@ -35,7 +35,7 @@ public class TimingHelper {
                         workInt.addCount();
                         Log.d(TAG, "workInt.addCount() = " + workInt.toString());
                         if (workInt.arrive()) {
-                           notifyWork(workInt);
+                            notifyWork(workInt);
                         }
                     }
                 }
@@ -47,7 +47,7 @@ public class TimingHelper {
 
     }
 
-    public void notifyWork(WorkInt workInt){
+    public void notifyWork(WorkInt workInt) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -98,7 +98,7 @@ public class TimingHelper {
     public void removeWorkArriveListener(WorkListener workListener) {
         if (mWorkInts.containsKey(workListener.workInt())) {
             HashSet<WorkListener> workListeners = mWorkInts.get(workListener);
-            if (workListeners.contains(workListener)) {
+            if (workListeners != null && workListeners.contains(workListener)) {
                 workListeners.remove(workListener);
                 if (workListeners.isEmpty()) {
                     mWorkInts.remove(workListener.workInt());
