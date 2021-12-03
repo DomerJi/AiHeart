@@ -13,4 +13,96 @@
         <item name="android:activityCloseExitAnimation">@anim/exit</item>
     </style>
 
+    <!--             android:showText="false"
+            android:switchMinWidth="@dimen/switch_min_width"
+            android:textColor="@color/black"
+            android:textOff="关闭"
+            android:textOn="开启"
+            android:textSize="4sp"
+            android:thumb="@drawable/switch_set_thumb"
+            android:track="@drawable/switch_set_track" -->
+    <style name="switch_set_style" parent="Widget.AppCompat.CompoundButton.Switch">
+
+        <item name="android:switchMinWidth">@dimen/switch_min_width</item>
+        <item name="android:thumb">@drawable/switch_set_thumb</item>
+        <item name="android:track">@drawable/switch_set_track</item>
+        <item name="android:textOff">关</item>
+        <item name="android:textOn">开</item>
+        <item name="android:textSize">@dimen/textSize</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="LoadingProgressBar">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">@anim/loading_anim</item>
+        <item name="android:indeterminateBehavior">repeat</item>
+        <item name="android:indeterminate">true</item>
+        <item name="android:indeterminateDuration">1800</item>
+        <item name="android:minWidth">48dip</item>
+        <item name="android:maxWidth">48dip</item>
+        <item name="android:minHeight">48dip</item>
+        <item name="android:maxHeight">48dip</item>
+    </style>
+
+    <style name="HorizontalProgressBar" parent="@android:style/Widget.ProgressBar">
+
+        <item name="android:maxHeight">50dip</item>
+        <item name="android:minHeight">10dip</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">
+            @android:drawable/progress_indeterminate_horizontal
+        </item>
+        <item name="android:progressDrawable">@drawable/progressbar_h1</item>
+
+    </style>
+
+    <style name="BatteryProgressBar" parent="@android:style/Widget.ProgressBar">
+
+        <item name="android:maxHeight">50dip</item>
+        <item name="android:minHeight">10dip</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">
+            @android:drawable/progress_indeterminate_horizontal
+        </item>
+        <item name="android:progressDrawable">@drawable/progressbar_battery</item>
+
+    </style>
+
+    <style name="common_login_button">
+        <item name="android:background">@drawable/common_guadual_btn_selector</item>
+        <item name="android:textColor">@drawable/common_btn_textcolor_selector</item>
+    </style>
+
+    <style name="common_button">
+        <item name="android:background">@drawable/common_guadual_btn_selector</item>
+        <item name="android:textColor">@drawable/common_btn_textcolor_selector</item>
+    </style>
+
+    <!-- 底部弹出-->
+    <style name="animate_dialog">
+        <item name="android:windowEnterAnimation">@anim/enter</item>
+        <item name="android:windowExitAnimation">@anim/exit</item>
+    </style>
+
+    <!-- 右侧弹出-->
+    <style name="animate_dialog_fade">
+        <item name="android:windowEnterAnimation">@anim/enter_fade</item>
+        <item name="android:windowExitAnimation">@anim/exit_fade</item>
+    </style>
+
+    <!-- 右侧弹出-->
+    <style name="animate_dialog_right">
+        <item name="android:windowEnterAnimation">@anim/enter_right</item>
+        <item name="android:windowExitAnimation">@anim/exit_right</item>
+    </style>
+
+
+    <style name="tallerBarStyle" parent="@android:style/Widget.SeekBar" >
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/progress_scl</item>
+        <item name="android:indeterminateDrawable">@android:drawable/progress_horizontal</item>
+        <item name="android:minHeight">10dip</item>
+        <item name="android:maxHeight">10dip</item>
+    </style>
+
 </resources>

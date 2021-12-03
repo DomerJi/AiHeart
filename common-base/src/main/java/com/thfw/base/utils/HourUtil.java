@@ -99,4 +99,18 @@ public class HourUtil {
         calendar.setTime(new Date(time));
         return weekDays[calendar.get(Calendar.DAY_OF_WEEK) - 1];
     }
+
+    public static String[] getLimitTime(long limitTime) {
+        long hour = limitTime / (3600 * 1000);
+        long minute = limitTime / (60 * 1000) % 60;
+        long second = limitTime / 1000 % 60;
+        return new String[]{String.format("%02d", hour), String.format("%02d", minute), String.format("%02d", second)};
+    }
+
+    public static String getLimitTimeALl(long limitTime) {
+        long hour = limitTime / (3600 * 1000);
+        long minute = limitTime / (60 * 1000) % 60;
+        long second = limitTime / 1000 % 60;
+        return String.format("%02d", hour) + ":" + String.format("%02d", minute) + ":" + String.format("%02d", second);
+    }
 }

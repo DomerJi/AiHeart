@@ -1,4 +1,4 @@
-package com.thfw.ui.widget;
+package com.thfw.robotheart.view;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,7 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
-import com.thfw.ui.R;
+import com.thfw.robotheart.R;
 
 
 /**
@@ -28,9 +28,13 @@ public class TitleRobotView extends FrameLayout {
     private ImageView mIvBack;
     private TextView mTvTitle;
     private TextView mTvRight;
+    private TextView mTvLeft;
     private String centerText;
     private String rightText;
     private boolean showIcon;
+    private View mLlBack;
+    private boolean showTitleBar;
+    private TitleBarView mTitleBarView;
 
     public TitleRobotView(@NonNull Context context) {
         this(context, null);
@@ -49,6 +53,7 @@ public class TitleRobotView extends FrameLayout {
             centerText = ta.getString(R.styleable.TitleRobotView_trv_centerText);
             rightText = ta.getString(R.styleable.TitleRobotView_trv_rightText);
             showIcon = ta.getBoolean(R.styleable.TitleRobotView_trv_showIcon, true);
+            showTitleBar = ta.getBoolean(R.styleable.TitleRobotView_trv_show_titleBar, true);
             final Drawable d = ta.getDrawable(R.styleable.TitleRobotView_trv_leftIcon);
             final int colorBg = ta.getColor(R.styleable.TitleRobotView_trv_background, getResources().getColor(R.color.colorRobotPrimary));
             final int leftIconColor = ta.getColor(R.styleable.TitleRobotView_trv_leftIconColor, getResources().getColor(R.color.colorRobotFore));
@@ -64,8 +69,12 @@ public class TitleRobotView extends FrameLayout {
             }
             view.setBackgroundColor(colorBg);
             mTvTitle.setTextColor(centerTextColor);
+            mTvLeft.setTextColor(centerTextColor);
+            mTvRight.setTextColor(centerTextColor);
             mIvBack.setVisibility(showIcon ? VISIBLE : GONE);
-
+            if (showTitleBar) {
+                mTitleBarView.setVisibility(VISIBLE);
+            }
             ta.recycle();
         }
         setRightText(rightText);
@@ -73,11 +82,18 @@ public class TitleRobotView extends FrameLayout {
 
     }
 
+    public void showTitleBarView(boolean showTitleBar) {
+        mTitleBarView.setVisibility(showTitleBar ? VISIBLE : GONE);
+    }
+
     private void initView() {
         mIvBack = findViewById(R.id.iv_back);
+        mLlBack = findViewById(R.id.ll_back);
         mTvTitle = findViewById(R.id.tv_title);
         mTvRight = findViewById(R.id.tv_right);
-        mIvBack.setOnClickListener(v -> {
+        mTvLeft = findViewById(R.id.tv_left);
+        mTitleBarView = findViewById(R.id.trv_titleBarView);
+        mLlBack.setOnClickListener(v -> {
             if (getContext() instanceof Activity) {
                 ((Activity) getContext()).onBackPressed();
             }

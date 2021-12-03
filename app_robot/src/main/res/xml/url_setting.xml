@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:entries="@array/machine_entries"
+        android:entryValues="@array/machine_values"
+        android:key="url_preference"
+        android:summary="支持：鲁谷,广州,森华 "
+        android:title="域名设置" />
+
+    <EditTextPreference
+        android:key="url_edit"
+        android:summary=""
+        android:title="输入域名(优先级较高) 格式参考：域名(+:端口)" />
+
+</PreferenceScreen>
+

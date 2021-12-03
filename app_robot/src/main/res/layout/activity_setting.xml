@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/robot_page_bg"
+    tools:context=".activitys.me.SettingActivity">
+
+    <com.thfw.robotheart.view.TitleBarView
+        android:id="@+id/titleBarView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/titleBarHeight"
+        tools:ignore="MissingConstraints" />
+
+    <com.thfw.robotheart.view.TitleRobotView
+        android:id="@+id/titleRobotView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/titleBarView"
+        app:trv_centerText="@string/me_setting"
+        tools:ignore="MissingConstraints" />
+
+
+    <FrameLayout
+        android:id="@+id/fl_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/ll_navigation"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView">
+
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_bottom_height"
+        android:background="@drawable/navigation_tab_bg_normal"
+        android:orientation="horizontal"
+        android:paddingLeft="160dp"
+        android:paddingRight="160dp"
+        android:weightSum="6"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/tv_set_net"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/navigation_tab_selector"
+            android:gravity="center"
+            android:text="@string/set_net"
+            android:textColor="@drawable/common_textcolor_white_black_selector"
+            android:textSize="@dimen/textSize" />
+
+
+        <TextView
+            android:id="@+id/tv_set_volume"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/navigation_tab_selector"
+            android:gravity="center"
+            android:text="@string/set_volume"
+            android:textColor="@drawable/common_textcolor_white_black_selector"
+            android:textSize="@dimen/textSize" />
+
+        <TextView
+            android:id="@+id/tv_set_light"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/navigation_tab_selector"
+            android:gravity="center"
+            android:text="@string/set_light"
+            android:textColor="@drawable/common_textcolor_white_black_selector"
+            android:textSize="@dimen/textSize" />
+
+        <TextView
+            android:id="@+id/tv_set_blue"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/navigation_tab_selector"
+            android:gravity="center"
+            android:text="@string/set_blue"
+            android:textColor="@drawable/common_textcolor_white_black_selector"
+            android:textSize="@dimen/textSize" />
+
+        <TextView
+            android:id="@+id/tv_set_shutdown"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/navigation_tab_selector"
+            android:gravity="center"
+            android:text="@string/set_shutdown"
+            android:textColor="@drawable/common_textcolor_white_black_selector"
+            android:textSize="@dimen/textSize" />
+
+        <TextView
+            android:id="@+id/tv_set_update"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/navigation_tab_selector"
+            android:gravity="center"
+            android:text="@string/set_update"
+            android:textColor="@drawable/common_textcolor_white_black_selector"
+            android:textSize="@dimen/textSize" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

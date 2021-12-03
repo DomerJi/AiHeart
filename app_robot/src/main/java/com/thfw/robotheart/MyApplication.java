@@ -12,6 +12,7 @@ import com.scwang.smart.refresh.layout.api.RefreshHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.DefaultRefreshFooterCreator;
 import com.scwang.smart.refresh.layout.listener.DefaultRefreshHeaderCreator;
+import com.thfw.base.ContextApp;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.ui.dialog.TDialog;
@@ -56,6 +57,9 @@ public class MyApplication extends MultiDexApplication {
         super.onCreate();
         app = this;
         SharePreferenceUtil.init(this);
+        ContextApp.init(app);
+        ContextApp.setDeviceType(ContextApp.DeviceType.ROBOT);
+
         ToastUtil.init(this);
         TDialog.init(this);
     }

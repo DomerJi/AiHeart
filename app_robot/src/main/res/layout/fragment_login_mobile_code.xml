@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ccddff">
+
+
+    <com.thfw.robotheart.view.TitleRobotView
+        android:id="@+id/titleRobotView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:trv_background="@color/transparent"
+        app:trv_centerTextColor="@color/black"
+        app:trv_leftIconColor="@color/black"
+        app:trv_rightText="密码登录"
+        app:trv_show_titleBar="false" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="220dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="220dp"
+        android:orientation="vertical"
+        android:padding="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="请输入验证码"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textSize_robot_title"
+            android:textStyle="bold" />
+
+
+        <com.thfw.ui.widget.InputBoxSquareView
+            android:id="@+id/ibv_code"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_below="@id/tv_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="35dp"
+            android:layout_marginBottom="35dp"
+            app:ibs_codeCount="4"
+            app:ibs_encryption="false"
+            app:ibs_softKeyboardAuto="true" />
+
+
+        <Button
+            android:id="@+id/bt_get_code"
+            style="@style/common_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_button_height"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="8dp"
+            android:text="登录"
+            android:textSize="@dimen/textSize_large" />
+
+
+        <TextView
+            android:id="@+id/tv_reget_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="18dp"
+            android:text="重新获取(60)"
+            android:textSize="@dimen/textSize_large" />
+
+    </LinearLayout>
+
+
+    <include layout="@layout/layout_login_bottom" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

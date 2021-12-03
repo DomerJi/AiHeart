@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:background="@drawable/robot_page_bg">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:text="@string/set_shutdown"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_large" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_1px"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorRobotFore" />
+
+        <Switch
+            android:id="@+id/switch_all_volume"
+            style="@style/switch_set_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="8dp" />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:minWidth="500dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="75dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:background="@color/white_10"
+                android:orientation="horizontal"
+                android:paddingRight="12dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_hour"
+                    android:layout_width="72dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="时"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize_large" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="3dp"
+                    android:background="@color/colorRobotFore" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_min"
+                    android:layout_width="72dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="分"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize_large" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="3dp"
+                    android:background="@color/colorRobotFore" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_second"
+                    android:layout_width="72dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="秒"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize_large" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="3dp"
+                    android:background="@color/colorRobotFore" />
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/tv_ececute"
+                android:layout_width="75dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/custom_radius_8dp_bg"
+                android:gravity="center"
+                android:text="执行"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textSize_large" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_tint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text=" "
+            android:textColor="@color/set_red"
+            android:textSize="28sp"
+            tools:text="距离关机:  14点04分" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

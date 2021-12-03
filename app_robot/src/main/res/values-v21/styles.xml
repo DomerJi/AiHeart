@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="switch_set_style" parent="Widget.AppCompat.CompoundButton.Switch">
+
+        <item name="android:switchMinWidth">@dimen/switch_min_width</item>
+        <item name="android:thumb">@drawable/switch_set_thumb</item>
+        <item name="android:track">@drawable/switch_set_track</item>
+        <item name="android:textOff">关</item>
+        <item name="android:textOn">开</item>
+        <item name="android:showText">true</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+</resources>

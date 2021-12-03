@@ -9,7 +9,7 @@
     <color name="colorRobotPrimary">#008800</color>
     <color name="colorRobotPrimaryDark">#008800</color>
     <color name="colorRobotAccent">#00FF88</color>
-    <color name="colorRobotFore">#00FFFF</color>
+    <color name="colorRobotFore">#91dff3</color>
 
     <!--页面通用背景-->
     <color name="page_background_gray">#F5F5F5</color>
@@ -34,8 +34,13 @@
     <color name="text_hint">#999999</color>
     <!-- 通用时间文本颜色 -->
     <color name="text_time">#999999</color>
+    <color name="robot_search_border_color">#53546a</color>
+    <color name="robot_search_bg">#122335</color>
+    <color name="left_navigation_divder">#4d5f77</color>
+
 
     <color name="text_green">#00A871</color>
+    <color name="green_selected_text">#00CC99</color>
     <color name="text_yellow">#FF8600</color>
     <color name="text_green_80">#CC00A871</color>
     <color name="text_red">#FF5454</color>

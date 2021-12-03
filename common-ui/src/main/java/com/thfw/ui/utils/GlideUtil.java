@@ -45,6 +45,14 @@ public class GlideUtil {
                 .into(imageView);
     }
 
+    public static void load(Context mContext, int  resId, ImageView imageView) {
+        Glide.with(mContext)
+                .load(resId)
+                .apply(getRequestOptions())
+                .centerCrop()
+                .into(imageView);
+    }
+
     public static void load(Activity mContext, String url, ImageView imageView) {
         Glide.with(mContext)
                 .load(url)

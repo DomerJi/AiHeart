@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <corners
+        android:bottomLeftRadius="@dimen/card_image_radius"
+        android:bottomRightRadius="@dimen/card_image_radius" />
+
+    <gradient
+        android:angle="-90"
+        android:endColor="@color/black"
+        android:startColor="@color/transparent" />
+
+</shape>

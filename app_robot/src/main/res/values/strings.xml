@@ -3,18 +3,20 @@
     <string name="app_name">强J密友(机器人版)</string>
 
     <string name="home">首页</string>
+    <string name="test_nickname">许三多</string>
     <string name="message">消息</string>
     <string name="me">我的</string>
     <string name="local_one_step_login">本机号码一键登录</string>
 
-    <string name="sort_type_talk">聊一聊</string>
-    <string name="sort_type_what">问一问</string>
-    <string name="sort_type_test">测一测</string>
-    <string name="sort_type_exercise">练一练</string>
-    <string name="sort_type_listening">听一听</string>
-    <string name="sort_type_see">看一看</string>
-    <string name="sort_type_read">读一读</string>
-    <string name="sort_type_study">学一学</string>
+    <string name="sort_type_talk">AI树洞</string>
+    <string name="sort_type_what">咨询助理</string>
+    <string name="sort_type_test">心理测评</string>
+    <string name="sort_type_exercise">成长练习</string>
+    <string name="sort_type_listening">正念冥想</string>
+    <string name="sort_type_see">科普视频</string>
+    <string name="sort_type_read">科普文章</string>
+    <string name="sort_type_study">学习强军</string>
+    <string name="sort_type_hot_call">全国心理服务热线</string>
 
     <string name="xt_hint_title">小天温馨提示：</string>
     <string name="xt_hint_content">如果你正处于危机情况，比如产生了自杀或自伤的念头，你可以拨打全国心理援助热线寻求援助。</string>

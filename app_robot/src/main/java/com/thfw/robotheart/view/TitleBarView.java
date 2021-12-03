@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.TypedArray;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
@@ -45,6 +46,7 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
     private Context mContext;
     private BroadcastReceiver mBatInfoReceiver;
     private BroadcastReceiver mWifiStateReceiver;
+    private BroadcastReceiver broadcastReceiver;
     private static volatile int level;
 
 
@@ -59,14 +61,29 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
     public TitleBarView(@NonNull @NotNull Context context, @Nullable @org.jetbrains.annotations.Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
+        if (attrs != null) {
+            TypedArray ta = context.obtainStyledAttributes(attrs, com.thfw.ui.R.styleable.TitleBarView);
+            final int colorBg = ta.getColor(com.thfw.ui.R.styleable.TitleBarView_tbv_background, getResources().getColor(R.color.titlebar_background));
+            setBackgroundColor(colorBg);
+        }
 
     }
 
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        init();
+    }
+
     private void init() {
+
         mContext = getContext();
+        if (getVisibility() == GONE) {
+            return;
+        }
         setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
         inflate(mContext, R.layout.layout_titlebar_view, this);
-        setBackgroundResource(R.color.titlebar_background);
+
         initView();
         initReceiver();
         initTimeReceiver();
@@ -95,18 +112,6 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
         mIvTitleBarWifi.setVisibility(NetworkUtil.isWifiConnected(mContext) ? VISIBLE : INVISIBLE);
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.ACTION_TIME_TICK.equals(intent.getAction())) {
-                mTvTitleBarTime.setText(HourUtil.getHHMM(System.currentTimeMillis()));
-            } else if (intent.ACTION_TIME_CHANGED.equals(intent.getAction())) {
-                mTvTitleBarTime.setText(HourUtil.getHHMM(System.currentTimeMillis()));
-            }
-        }
-    };
-
     private void updateBattery(int level) {
         mPbBatteryProgress.setProgress(level);
         mTvProgress.setText(level + "%");
@@ -115,13 +120,17 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mContext.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (this.mBatInfoReceiver != null) {
+            mContext.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        }
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        mContext.registerReceiver(mWifiStateReceiver, filter);
+        if (mWifiStateReceiver != null) {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+            filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+            mContext.registerReceiver(mWifiStateReceiver, filter);
+        }
 
         TimingHelper.getInstance().addWorkArriveListener(this);
     }
@@ -129,9 +138,15 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mContext.unregisterReceiver(this.mWifiStateReceiver);
-        mContext.unregisterReceiver(this.mBatInfoReceiver);
-        mContext.unregisterReceiver(this.broadcastReceiver);
+        if (mWifiStateReceiver != null) {
+            mContext.unregisterReceiver(this.mWifiStateReceiver);
+        }
+        if (mBatInfoReceiver != null) {
+            mContext.unregisterReceiver(this.mBatInfoReceiver);
+        }
+        if (broadcastReceiver != null) {
+            mContext.unregisterReceiver(this.broadcastReceiver);
+        }
         TimingHelper.getInstance().removeWorkArriveListener(this);
     }
 
@@ -165,6 +180,19 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     mIvTitleBarWifi.setVisibility(NetworkUtil.isWifiConnected(mContext) ? VISIBLE : INVISIBLE);
+                }
+            };
+        }
+        if (broadcastReceiver == null) {
+            broadcastReceiver = new BroadcastReceiver() {
+
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (intent.ACTION_TIME_TICK.equals(intent.getAction())) {
+                        mTvTitleBarTime.setText(HourUtil.getHHMM(System.currentTimeMillis()));
+                    } else if (intent.ACTION_TIME_CHANGED.equals(intent.getAction())) {
+                        mTvTitleBarTime.setText(HourUtil.getHHMM(System.currentTimeMillis()));
+                    }
                 }
             };
         }

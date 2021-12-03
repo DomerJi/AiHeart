@@ -10,7 +10,8 @@ public enum WorkInt {
     SLEEP(0, 1 * 60, false),
     LOGOUT(1, 1 * 60, false),
     TIME(2, 60, true),
-    HINT(3, 20, true);
+    HINT(3, 20, true),
+    SECOND(4, 1, true);
 
     /**
      * 标识

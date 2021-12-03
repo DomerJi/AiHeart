@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2016 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom"
+    android:background="#66000000"
+    android:layoutDirection="ltr"
+    android:orientation="vertical"
+    tools:targetApi="28">
+
+
+    <RelativeLayout
+        android:id="@+id/rl_etc_control"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/etc_border_bg_01"
+        app:layout_constraintBottom_toTopOf="@id/ll_bottom_control"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/riv_etc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="55dp"
+            android:src="@mipmap/ic_launcher"
+            app:riv_oval="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="52dp"
+            android:background="@drawable/etc_border_bg_02" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="49dp"
+            android:background="@drawable/etc_border_bg_02" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="46dp"
+            android:background="@drawable/etc_border_bg_02" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="43dp"
+            android:background="@drawable/etc_border_bg_02" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="40dp"
+            android:background="@drawable/etc_border_bg_02" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="37dp"
+            android:background="@drawable/etc_border_bg_02" />
+
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="50dp"
+        android:gravity="left"
+        android:text="第一节 人际交往心理学概述"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_large"
+        app:layout_constraintLeft_toRightOf="@id/rl_etc_control"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rl_etc_control" />
+
+    <TextView
+        android:id="@+id/tv_etc_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:text="所属章节"
+        android:textColor="@color/colorRobotFore"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintLeft_toLeftOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+
+    <ImageView
+        android:id="@+id/iv_play_order"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="right"
+        android:layout_marginRight="120dp"
+        android:padding="12dp"
+        android:src="@mipmap/ic_play_random"
+        app:layout_constraintBottom_toTopOf="@id/ll_bottom_control"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/ll_bottom_control"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layoutDirection="ltr"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_etc_control"
+        tools:targetApi="28">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="30dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@id/exo_position"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+<!--            <View-->
+<!--                android:id="@id/exo_progress_placeholder"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="15dp"-->
+<!--                android:layout_weight="1" />-->
+
+            <com.google.android.exoplayer2.ui.DefaultTimeBar
+                android:id="@id/exo_progress"
+                android:layout_width="0dp"
+                android:layout_height="18dp"
+                android:layout_weight="1"
+                app:layout_constraintBottom_toBottomOf="@id/exo_position"
+                app:layout_constraintLeft_toRightOf="@id/exo_position"
+                app:layout_constraintRight_toLeftOf="@id/exo_duration"
+                app:layout_constraintTop_toTopOf="@id/exo_position"
+                app:buffered_color="@color/seekbar_buffer_color"
+                app:played_ad_marker_color="@color/seekbar_color"
+                app:played_color="@color/seekbar_color"
+                app:ad_marker_color="@color/seekbar_color"
+                app:ad_marker_width="50dp"
+                app:unplayed_color="@color/white_20"/>
+
+
+            <TextView
+                android:id="@id/exo_duration"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="120dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="120dp"
+            android:orientation="horizontal">
+
+
+            <ImageView
+                android:id="@+id/iv_collect"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="12dp"
+                android:src="@mipmap/ic_collect_white" />
+
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@id/exo_prev"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@color/transparent"
+                android:src="@mipmap/ic_audio_last" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <RelativeLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp">
+
+                <ImageButton
+                    android:id="@id/exo_play"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@color/transparent"
+                    android:src="@mipmap/ic_play_white" />
+
+                <ImageButton
+                    android:id="@id/exo_pause"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@color/transparent"
+                    android:src="@mipmap/ic_pause_white"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@id/exo_next"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@color/transparent"
+                android:src="@mipmap/ic_audio_next" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/iv_play_catelogue"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="12dp"
+                android:src="@mipmap/ic_catlogue" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,12 @@
         <attr name="softKeyboardAuto" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="InputBoxSquareView">
+        <attr name="ibs_codeCount" format="integer" />
+        <attr name="ibs_encryption" format="boolean" />
+        <attr name="ibs_softKeyboardAuto" format="boolean" />
+    </declare-styleable>
+
     <declare-styleable name="TitleView">
         <attr name="tv_centerText" format="string" />
         <attr name="tv_rightText" format="string" />
@@ -35,6 +41,11 @@
         <attr name="trv_background" format="reference" />
         <attr name="trv_leftIconColor" format="reference" />
         <attr name="trv_centerTextColor" format="reference" />
+        <attr name="trv_show_titleBar" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="TitleBarView">
+        <attr name="tbv_background" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="MySearchView">
@@ -43,6 +54,14 @@
         <attr name="sv_hint" format="string" />
         <attr name="sv_hintColor" format="reference" />
         <attr name="sv_background" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="MyRobotSearchView">
+        <attr name="rsv_isEdit" format="boolean" />
+        <attr name="rsv_clearIcon" format="boolean" />
+        <attr name="rsv_hint" format="string" />
+        <attr name="rsv_hintColor" format="reference" />
+        <attr name="rsv_background" format="reference" />
     </declare-styleable>
 
 </resources>

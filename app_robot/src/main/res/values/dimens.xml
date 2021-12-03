@@ -3,6 +3,12 @@
 
     <dimen name="titleBarHeight">25dp</dimen>
 
+    <!--导航栏高度-->
+    <dimen name="navigation_height">50dp</dimen>
+
+    <dimen name="home_textSize">21sp</dimen>
+    <dimen name="home_navigation_margin">4dp</dimen>
+
     <dimen name="home_tab_height">50dp</dimen>
     <dimen name="home_tab_icon_height">20dp</dimen>
     <dimen name="home_tab_icon_chat_height">40dp</dimen>
@@ -11,16 +17,41 @@
     <dimen name="home_sort_text_size">13sp</dimen>
     <dimen name="home_sort_text_icon_margin">-3dp</dimen>
 
+    <dimen name="textSize_robot_title">20sp</dimen>
+
     <dimen name="home_hint_dot">6dp</dimen>
     <dimen name="home_hint_dot_radius">3dp</dimen>
 
     <dimen name="title_size">25sp</dimen>
-    <dimen name="button_height">40dp</dimen>
+    <dimen name="button_height">50dp</dimen>
+    <dimen name="login_button_height">60dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="app_bar_height">220dp</dimen>
+
+
+    <!--文本-->
+    <dimen name="textSize">16sp</dimen>
+    <dimen name="textSize_small">14sp</dimen>
+    <dimen name="textSize_product">12sp</dimen>
+    <dimen name="textSize_large">18sp</dimen>
+    <dimen name="textSize_password">22sp</dimen>
+    <dimen name="textSize_navigation_tab_left">22sp</dimen>
+    <dimen name="padding_navigation_tab_left">16dp</dimen>
+
+    <dimen name="navigation_left_width">160dp</dimen>
+    <dimen name="navigation_bottom_height">100dp</dimen>
+    <dimen name="switch_min_width">85dp</dimen>
+
+    <dimen name="login_edit_height">60dp</dimen>
+
+    <dimen name="card_image_radius">10dp</dimen>
+    <dimen name="card_image_bottom_bg_height">40dp</dimen>
+    <dimen name="card_image_bottom_textSize">12sp</dimen>
+    <dimen name="card_image_bottom_padding">12dp</dimen>
+
 
 </resources>

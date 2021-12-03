@@ -61,4 +61,15 @@
     <string name="name_qq">QQ</string>
     <string name="name_sina">微博</string>
 
+    <string name="set_net">网络设置</string>
+    <string name="set_volume">音量设置</string>
+    <string name="set_light">亮度设置</string>
+    <string name="set_blue">蓝牙设置</string>
+    <string name="set_shutdown">定时关机</string>
+    <string name="set_update">系统更新</string>
+
+    <string name="set_volume_system">系统声音</string>
+    <string name="set_volume_hint">提示声音</string>
+    <string name="set_volume_btn">按键声音</string>
+
 </resources>

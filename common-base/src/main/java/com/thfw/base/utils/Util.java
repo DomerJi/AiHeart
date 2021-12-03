@@ -3,6 +3,7 @@ package com.thfw.base.utils;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -11,6 +12,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
@@ -195,6 +197,18 @@ public class Util {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 添加下划线
+     *
+     * @param textViews
+     */
+    public static void addUnderLine(TextView... textViews) {
+        for (TextView textView : textViews) {
+            textView.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);  // 下划线
+            textView.getPaint().setAntiAlias(true); // 抗锯齿
+        }
     }
 
 

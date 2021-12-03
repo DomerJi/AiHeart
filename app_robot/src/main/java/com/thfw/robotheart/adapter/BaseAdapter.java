@@ -1,6 +1,9 @@
 package com.thfw.robotheart.adapter;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -70,6 +73,10 @@ public abstract class BaseAdapter<T, V extends RecyclerView.ViewHolder> extends 
         super.onDetachedFromRecyclerView(recyclerView);
         this.mRecyclerView = null;
         this.mContext = null;
+    }
+
+    protected View inflate(int layoutId, ViewGroup parent) {
+        return LayoutInflater.from(mContext).inflate(layoutId, parent, false);
     }
 
     @Override

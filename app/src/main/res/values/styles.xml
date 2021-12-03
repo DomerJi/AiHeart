@@ -11,6 +11,7 @@
         <item name="android:listDivider">@drawable/list_divider</item>
         <item name="android:windowBackground">@color/page_background_gray</item>
         <!--        <item name="android:windowDrawsSystemBarBackgrounds">false</item>-->
+        <item name="android:overScrollMode">never</item>
     </style>
 
     <!-- 用于纯白背景的页面-->
@@ -22,6 +23,7 @@
         <!-- 分割线主题颜色设置 -->
         <item name="android:listDivider">@drawable/list_divider</item>
         <item name="android:windowBackground">@color/page_background_white</item>
+        <item name="android:overScrollMode">never</item>
     </style>
 
     <style name="AppThemeSplash" parent="Theme.AppCompat.Light.NoActionBar">
@@ -30,6 +32,7 @@
         <item name="colorPrimaryDark">@color/transparent</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@mipmap/splash</item>
+        <item name="android:overScrollMode">never</item>
     </style>
 
     <style name="HomeTabText">
