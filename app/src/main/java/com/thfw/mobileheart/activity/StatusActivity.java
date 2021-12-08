@@ -19,7 +19,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.PaletteUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.adapter.StatusAdapter;
-import com.thfw.mobileheart.model.StatusEntity;
+import com.thfw.base.models.StatusEntity;
 import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.DialogFactory;

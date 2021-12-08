@@ -10,7 +10,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.mobileheart.activity.read.ReadEtcActivity;
 import com.thfw.mobileheart.adapter.ReadOneAdapter;
-import com.thfw.mobileheart.model.ReadModel;
+import com.thfw.base.models.ReadModel;
 import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseFragment;
 

@@ -1,14 +1,46 @@
 package com.thfw.user.login;
 
+import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.user.IUser;
 import com.thfw.user.IUserInfo;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class User implements IUser, IUserInfo {
 
     private int loginStatus;
+    private String token;
+    private String mobile;
+    private List<OrganizationModel.OrganizationBean> organList;
+
+    public void setOrganList(List<OrganizationModel.OrganizationBean> organList) {
+        this.organList = organList;
+    }
+
+    public List<OrganizationModel.OrganizationBean> getOrganList() {
+        return organList;
+    }
+
+    public String getOrganListStr() {
+        String organStr = "";
+        int size = organList.size();
+        if (size >= 2) {
+            organStr += organList.get(size - 2).getName() + " - " + organList.get(size - 1).getName();
+        } else {
+            organStr += organList.get(size).getName();
+        }
+        return organStr;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
 
     public User() {
         this.loginStatus = LoginStatus.UNKNOWN;
@@ -33,7 +65,7 @@ public class User implements IUser, IUserInfo {
 
     @Override
     public String getToken() {
-        return null;
+        return token;
     }
 
     @Override
@@ -53,7 +85,7 @@ public class User implements IUser, IUserInfo {
 
     @Override
     public String getMobile() {
-        return null;
+        return mobile;
     }
 
     @Override

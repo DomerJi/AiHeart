@@ -7,5 +7,5 @@ import com.thfw.base.base.IPresenter;
  * Date: 2021/11/15 10:20
  * Describe:Todo
  */
-public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActivity {
+public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActivity<T> {
 }

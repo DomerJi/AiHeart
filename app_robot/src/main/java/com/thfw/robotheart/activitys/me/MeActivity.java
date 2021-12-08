@@ -1,5 +1,6 @@
 package com.thfw.robotheart.activitys.me;
 
+import android.content.Intent;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -63,6 +64,22 @@ public class MeActivity extends RobotBaseActivity {
         mRivAvatar.setOnClickListener(v -> {
             if (!UserManager.getInstance().isLogin()) {
                 LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+            }
+        });
+
+        mRlAccountManager.setOnClickListener(v -> {
+            if (!UserManager.getInstance().isLogin()) {
+                LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+            } else {
+                startActivity(new Intent(mContext, AccountManagerActivity.class));
+            }
+        });
+
+        mRlMsg.setOnClickListener(v -> {
+            if (!UserManager.getInstance().isLogin()) {
+                LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+            } else {
+                startActivity(new Intent(mContext, InfoActivity.class));
             }
         });
     }

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activitys.test.TestDetailActivity">
+
+    <com.thfw.robotheart.view.TitleRobotView
+        android:id="@+id/titleRobotView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:trv_centerText="心理测评"
+        tools:ignore="MissingConstraints" />
+
+    <LinearLayout
+        android:id="@+id/ll_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        android:weightSum="11"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView">
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:weightSum="5">
+
+            <ImageView
+                android:id="@+id/iv_bg"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/tv_test_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/title"
+                android:textColor="@color/text_blue_dark"
+                android:textSize="@dimen/textSize_large" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:overScrollMode="never">
+
+                <com.thfw.ui.widget.JustifyTextView
+                    android:id="@+id/tv_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:lineSpacingExtra="2dp"
+                    android:overScrollMode="never"
+                    android:text="@string/bigText"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize" />
+
+            </ScrollView>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingTop="8dp"
+                android:paddingBottom="32dp">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/tv_see_port"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="查看报告"
+                    android:textColor="@color/text_blue_dark_50"
+                    android:textSize="@dimen/textSize_large" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/tv_collect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="收藏"
+                    android:textColor="@color/text_blue_dark_50"
+                    android:textSize="@dimen/textSize_large" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/bt_begin_test"
+                    android:layout_width="110dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/common_blue_dark_selector"
+                    android:text="开始测试"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            android:paddingRight="26dp"
+            android:paddingBottom="16dp">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_hint"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/white20_radius_8dp_bg"
+                android:clipToPadding="false"
+                android:paddingTop="16dp"
+                android:paddingBottom="32dp" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.thfw.ui.widget.LoadingView
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

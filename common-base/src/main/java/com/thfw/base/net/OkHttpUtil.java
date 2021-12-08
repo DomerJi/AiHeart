@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.thfw.base.base.IModel;
 import com.thfw.base.base.UI;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
@@ -139,7 +138,7 @@ public class OkHttpUtil {
     }
 
     @SuppressLint("CheckResult")
-    public static <T extends IModel, U extends UI> void request(Observable<HttpResult<T>> observable, U resultUI) {
+    public static <T extends Object, U extends UI> void request(Observable<HttpResult<T>> observable, U resultUI) {
         if (resultUI.getLifecycleProvider() != null) {
             observable = observable.compose(resultUI.getLifecycleProvider().bindToLifecycle());
         }

@@ -15,7 +15,7 @@ import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioTypeModel;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.AudioEtcTypeAdapter;
-import com.thfw.robotheart.fragments.audio.AudioEtcListFragment;
+import com.thfw.robotheart.fragments.media.AudioEtcListFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;

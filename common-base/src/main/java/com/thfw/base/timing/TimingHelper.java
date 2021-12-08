@@ -97,7 +97,7 @@ public class TimingHelper {
 
     public void removeWorkArriveListener(WorkListener workListener) {
         if (mWorkInts.containsKey(workListener.workInt())) {
-            HashSet<WorkListener> workListeners = mWorkInts.get(workListener);
+            HashSet<WorkListener> workListeners = mWorkInts.get(workListener.workInt());
             if (workListeners != null && workListeners.contains(workListener)) {
                 workListeners.remove(workListener);
                 if (workListeners.isEmpty()) {

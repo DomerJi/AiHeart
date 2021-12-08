@@ -16,7 +16,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.adapter.MeBoxAdapter;
-import com.thfw.mobileheart.model.HeartBoxEntity;
+import com.thfw.base.models.HeartBoxEntity;
 import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;

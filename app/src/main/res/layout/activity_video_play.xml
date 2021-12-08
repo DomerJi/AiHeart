@@ -47,7 +47,7 @@
             app:controller_layout_id="@layout/custom_exo_player_view"
             app:player_layout_id="@layout/custom_exo_player_control_view"-->
 
-        <com.thfw.mobileheart.activity.video.ShowChangeLayout
+        <com.thfw.ui.widget.ShowChangeLayout
             android:id="@+id/scl"
             android:layout_width="100dp"
             android:layout_height="100dp"

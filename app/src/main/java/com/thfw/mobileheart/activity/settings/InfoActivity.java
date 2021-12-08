@@ -12,7 +12,7 @@ import com.google.android.flexbox.JustifyContent;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.adapter.InfoLikeAdapter;
-import com.thfw.mobileheart.model.InfoLikeModel;
+import com.thfw.base.models.InfoLikeModel;
 import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;

@@ -1,5 +1,6 @@
 package com.thfw.robotheart.fragments.login;
 
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -8,13 +9,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.thfw.base.base.IPresenter;
+import com.thfw.base.face.MyTextWatcher;
+import com.thfw.base.models.TokenModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.LoginPresenter;
+import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.RegularUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.ui.base.BaseFragment;
+import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.user.login.LoginStatus;
+import com.thfw.user.login.User;
+import com.thfw.user.login.UserManager;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
-public class LoginPasswordFragment extends BaseFragment {
+public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implements LoginPresenter.LoginUi<TokenModel> {
 
     private TextView mTvLoginByMobile;
     private TextView mTvCountry;
@@ -42,8 +54,8 @@ public class LoginPasswordFragment extends BaseFragment {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public LoginPresenter onCreatePresenter() {
+        return new LoginPresenter(this);
     }
 
     @Override
@@ -64,14 +76,64 @@ public class LoginPasswordFragment extends BaseFragment {
         mTvProductUser = (TextView) findViewById(R.id.tv_product_user);
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
-        Util.addUnderLine(mTvProduct3g,mTvProductUser, mTvProductMsg, mTvProductAgree);
+
+        Util.addUnderLine(mTvProduct3g, mTvProductUser, mTvProductMsg, mTvProductAgree);
+
+
     }
 
     @Override
     public void initData() {
+        MyTextWatcher myTextWatcher = new MyTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String phone = mEtMobile.getText().toString();
+                String password = mEtPassword.getText().toString();
+                boolean canLogin = RegularUtil.isPhone(phone) && !TextUtils.isEmpty(password) && password.length() >= 6;
+                mBtLogin.setEnabled(canLogin);
+            }
+        };
+
+        mEtMobile.addTextChangedListener(myTextWatcher);
+        mEtPassword.addTextChangedListener(myTextWatcher);
+        mBtLogin.setEnabled(false);
+        mBtLogin.setOnClickListener(v -> {
+            String phone = mEtMobile.getText().toString();
+            String password = mEtPassword.getText().toString();
+            LoadingDialog.show(getActivity(), "登录中");
+            mPresenter.loginByPassword(phone, password);
+        });
         mTvLoginByMobile.setOnClickListener(v -> {
             LoginActivity loginActivity = (LoginActivity) getActivity();
             loginActivity.getFragmentLoader().load(LoginActivity.BY_MOBILE);
         });
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(TokenModel data) {
+        LoadingDialog.hide();
+        if (data != null && !TextUtils.isEmpty(data.token)) {
+            ToastUtil.show("登录成功");
+            User user = new User();
+            user.setToken(data.token);
+            user.setMobile(mEtMobile.getText().toString());
+            user.setLoginStatus(LoginStatus.LOGINED);
+            UserManager.getInstance().login(user);
+            LogUtil.d(TAG, "UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
+            getActivity().finish();
+        } else {
+            ToastUtil.show("token 参数错误");
+        }
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        LoadingDialog.hide();
+        ToastUtil.show(throwable.getMessage());
     }
 }

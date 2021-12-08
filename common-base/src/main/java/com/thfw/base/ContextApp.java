@@ -45,9 +45,16 @@ public final class ContextApp {
          * 手机
          */
         int MOBILE = 1;
+
+        /**
+         * 平板
+         */
+        int PAD = 2;
+
         /**
          * 机器人
          */
-        int ROBOT = 2;
+        int ROBOT = 3;
+
     }
 }

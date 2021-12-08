@@ -1,0 +1,47 @@
+package com.thfw.base.presenter;
+
+import com.thfw.base.api.TestApi;
+import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.UI;
+import com.thfw.base.models.TestDetailModel;
+import com.thfw.base.models.TestModel;
+import com.thfw.base.models.TestResultModel;
+import com.thfw.base.net.HttpResult;
+import com.thfw.base.net.OkHttpUtil;
+
+import java.util.List;
+
+import io.reactivex.Observable;
+
+/**
+ * Author:pengs
+ * Date: 2021/12/8 10:15
+ * Describe:Todo
+ */
+public class TestPresenter extends IPresenter<TestPresenter.TestUi> {
+
+
+    public TestPresenter(TestUi ui) {
+        super(ui);
+    }
+
+    public void onGetList() {
+        Observable<HttpResult<List<TestModel>>> observable = OkHttpUtil.createService(TestApi.class).onGetList("");
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    public void onGetInfo(int id) {
+        Observable<HttpResult<TestDetailModel>> observable = OkHttpUtil.createService(TestApi.class).onGetInfo(id);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    public void onSubmit(int id, String opts, int spendTime) {
+        Observable<HttpResult<TestResultModel>> observable = OkHttpUtil.createService(TestApi.class).onSubmit(id, opts, spendTime);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+
+    public interface TestUi<T> extends UI<T> {
+
+    }
+}

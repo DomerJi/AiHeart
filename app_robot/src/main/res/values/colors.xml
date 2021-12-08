@@ -8,7 +8,7 @@
 
     <color name="titlebar_background">@color/transparent</color>
     <color name="titleBar_tint">@color/colorRobotFore</color>
-    <color name="set_divider">#12377d</color>
+    <color name="set_divider">#3a6683</color>
 
     <color name="loading_text_color">#ddd</color>
 
@@ -24,6 +24,8 @@
     <color name="exercise_20">#3329DACA</color>
     <color name="exercise_text">#00CC99</color>
     <color name="green_selected_text">#00CC99</color>
+    <color name="btn_green">#00CC99</color>
+    <color name="btn_green_50">#8800CC99</color>
 
     <color name="colorButtonLeft">#ff934d</color>
     <color name="colorButtonRight">#fc686f</color>
@@ -31,7 +33,7 @@
     <color name="colorButtonLeft2">#88ff934d</color>
     <color name="colorButtonRight2">#88fc686f</color>
 
-    <color name="enabled_false">#F4F6F7</color>
+    <color name="enabled_false">@color/gray_ccc</color>
     <color name="link">#2A5D83</color>
 
     <!-- 通用文本颜色 -->
@@ -47,11 +49,14 @@
     <color name="text_yellow">#FF8600</color>
     <color name="text_green_80">#CC00A871</color>
     <color name="text_red">#FF5454</color>
+    <color name="text_blue_dark">#6088b9</color>
+    <color name="text_blue_dark_50">#886088b9</color>
     <color name="dot_red">#E64550</color>
     <color name="btn_red">#E64550</color>
+    <color name="btn_red_50">#88E64550</color>
     <color name="gray">#888888</color>
     <color name="gray_ccc">#CCCCCC</color>
-    <color name="divider">#19000000</color>
+    <color name="divider">#3a6683</color>
     <color name="seekbar_color">#2cc7ec</color>
     <color name="seekbar_buffer_color">#bcecf8</color>
 

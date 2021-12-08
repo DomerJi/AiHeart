@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.utils.EmptyUtil;
-import com.thfw.mobileheart.model.InfoLikeModel;
+import com.thfw.base.models.InfoLikeModel;
 import com.thfw.mobileheart.R;
 
 import org.jetbrains.annotations.NotNull;

@@ -12,7 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.mobileheart.model.HeartBoxEntity;
+import com.thfw.base.models.HeartBoxEntity;
 import com.thfw.mobileheart.R;
 import com.thfw.ui.utils.GlideUtil;
 

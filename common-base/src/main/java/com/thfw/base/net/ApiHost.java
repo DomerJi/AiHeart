@@ -11,7 +11,7 @@ public class ApiHost {
     /**
      * 正式环境
      */
-    public static String ONLINE_HOST = "https://vehicle.baidu.com/";
+    public static String ONLINE_HOST = "https://tianhe.soulbuddy.cn/";
 
     /**
      * 测试环境

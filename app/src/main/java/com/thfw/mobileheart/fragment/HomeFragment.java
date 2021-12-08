@@ -23,7 +23,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.ExoPlayerActivity;
 import com.thfw.mobileheart.adapter.HomeAdapter;
-import com.thfw.mobileheart.model.HomeEntity;
+import com.thfw.base.models.HomeEntity;
 import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.widget.LinearTopLayout;

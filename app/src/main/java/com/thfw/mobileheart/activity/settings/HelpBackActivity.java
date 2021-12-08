@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.mobileheart.adapter.HelpBackAdapter;
-import com.thfw.mobileheart.model.HelpBackModel;
+import com.thfw.base.models.HelpBackModel;
 import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;

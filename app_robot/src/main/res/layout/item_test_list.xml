@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="8dp"
+    android:layout_marginBottom="12dp"
+    android:layout_marginRight="8dp"
+    tools:layout_width="300dp">
+
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/riv_etc_bg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_card_image"
+        app:layout_constraintDimensionRatio="5:3"
+        app:riv_corner_radius="@dimen/card_image_radius"
+        app:riv_oval="false" />
+
+
+    <TextView
+        android:id="@+id/tv_hour"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_image_bottom_bg_height"
+        android:background="@drawable/card_image_bottom_black_bg"
+        android:gravity="right|center_vertical"
+        android:paddingRight="@dimen/card_image_bottom_padding"
+        android:text="@string/title"
+        android:textColor="@drawable/common_left_tab_textcolor_selector"
+        android:textSize="@dimen/card_image_bottom_textSize"
+        app:layout_constraintBottom_toBottomOf="@id/riv_etc_bg" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/title"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_large"
+        app:layout_constraintTop_toBottomOf="@id/riv_etc_bg" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

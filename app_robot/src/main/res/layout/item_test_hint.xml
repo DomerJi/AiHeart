@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp">
+
+    <View
+        android:id="@+id/v_left_tab"
+        android:layout_width="5dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="12dp"
+        android:background="@color/text_green"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_title" />
+
+    <com.thfw.ui.widget.JustifyTextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/text_green"
+        android:textSize="@dimen/textSize_large"
+        app:layout_constraintLeft_toRightOf="@id/v_left_tab"
+        tools:text="@string/title" />
+
+
+    <com.thfw.ui.widget.JustifyTextView
+        android:id="@+id/tv_hint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="16dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_large"
+        app:layout_constraintLeft_toRightOf="@id/v_left_tab"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:text="@string/bigText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

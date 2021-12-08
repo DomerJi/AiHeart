@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activitys.me.SelectOrganizationActivity">
+
+    <com.thfw.robotheart.view.TitleRobotView
+        android:id="@+id/titleRobotView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:trv_centerText="选择组织"
+        tools:ignore="MissingConstraints" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_selected"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/bt_confirm"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView" />
+
+
+    <Button
+        android:id="@+id/bt_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/common_comfirm_btn_selector"
+        android:text="选择"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintBottom_toBottomOf="@id/rv_selected"
+        app:layout_constraintLeft_toRightOf="@id/rv_selected"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rv_selected" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_select_children"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white_05"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_selected" />
+
+
+    <com.thfw.ui.widget.LoadingView
+        android:id="@id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

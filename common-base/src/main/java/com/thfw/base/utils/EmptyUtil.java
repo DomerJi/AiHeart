@@ -1,6 +1,7 @@
 package com.thfw.base.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -20,6 +21,10 @@ public final class EmptyUtil {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static boolean isEmpty(Activity activity) {
         return activity == null || activity.isFinishing() || activity.isDestroyed();
+    }
+
+    public static boolean isEmpty(Context activity) {
+        return activity == null || ((activity instanceof Activity) && isEmpty((Activity) activity));
     }
 
     public static boolean isEmpty(Fragment fragment) {

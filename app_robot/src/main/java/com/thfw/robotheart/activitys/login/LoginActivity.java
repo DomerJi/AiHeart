@@ -17,6 +17,8 @@ public class LoginActivity extends BaseActivity {
     public static final int BY_PASSWORD = 1;
     public static final int BY_FORGET = 2;
     public static final int BY_MOBILE_CODE = 4;
+
+    public static final String KEY_PHONE_NUMBER = "phone_number";
     private int type;
     private FragmentLoader fragmentLoader;
 

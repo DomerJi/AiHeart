@@ -1,11 +1,14 @@
 package com.thfw.base.utils;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
@@ -209,6 +212,25 @@ public class Util {
             textView.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);  // 下划线
             textView.getPaint().setAntiAlias(true); // 抗锯齿
         }
+    }
+
+    public static String getAppVersion(Context context) {
+        String versionName = "";
+
+        try {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo p1 = pm.getPackageInfo(context.getPackageName(), 0);
+            versionName = p1.versionName;
+            if (TextUtils.isEmpty(versionName) || versionName.length() <= 0) {
+                return "";
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+
+        }
+        return versionName;
+
+
     }
 
 

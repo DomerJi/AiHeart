@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.mobileheart.model.VideoEtcOrderModel;
+import com.thfw.base.models.VideoEtcOrderModel;
 import com.thfw.mobileheart.R;
 
 import org.jetbrains.annotations.NotNull;

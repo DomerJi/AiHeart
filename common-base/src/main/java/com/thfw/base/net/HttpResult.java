@@ -8,18 +8,18 @@ import com.thfw.base.base.IResult;
  */
 public class HttpResult<T> implements IResult, IModel {
 
-    private static final int CODE_SUCCESS = 0;
+    private static final int CODE_SUCCESS = 1;
 
     /**
      * 返回状态值
      * 0表示成功
      */
-    private int errno;
+    private int code;
 
     /**
      * 返回结果提示
      */
-    private String err_msg;
+    private String msg;
 
     /**
      * 返回结果数据
@@ -32,16 +32,16 @@ public class HttpResult<T> implements IResult, IModel {
 
     @Override
     public int getCode() {
-        return errno;
+        return code;
     }
 
     @Override
     public String getMsg() {
-        return err_msg;
+        return msg;
     }
 
     @Override
     public boolean isSuccessful() {
-        return errno == CODE_SUCCESS;
+        return code == CODE_SUCCESS;
     }
 }

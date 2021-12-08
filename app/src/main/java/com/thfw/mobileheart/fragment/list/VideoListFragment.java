@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.VideoModel;
+import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.HomeVideoListAdapter;
-import com.thfw.mobileheart.model.AudioModel;
-import com.thfw.mobileheart.model.VideoModel;
-import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.util.AudioModel;
 import com.thfw.ui.base.BaseFragment;
 
 import java.util.List;

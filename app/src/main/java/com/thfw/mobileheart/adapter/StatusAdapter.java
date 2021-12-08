@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.utils.Util;
-import com.thfw.mobileheart.model.StatusEntity;
+import com.thfw.base.models.StatusEntity;
 import com.thfw.mobileheart.R;
 
 import org.jetbrains.annotations.NotNull;

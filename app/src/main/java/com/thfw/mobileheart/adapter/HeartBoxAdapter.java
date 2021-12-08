@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.mobileheart.model.HeartBoxEntity;
+import com.thfw.base.models.HeartBoxEntity;
 import com.thfw.mobileheart.R;
 
 import org.jetbrains.annotations.NotNull;

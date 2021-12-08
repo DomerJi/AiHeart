@@ -142,6 +142,10 @@ public class AudioPlayerActivity extends BaseActivity {
                     }
                 });
                 mRvList.setAdapter(audioItemAdapter);
+            } else {
+                if (player != null) {
+                    ((AudioItemAdapter) mRvList.getAdapter()).setCurrentIndex(player.getCurrentWindowIndex());
+                }
             }
             mFlContent.setAlpha(0f);
             mFlContent.setVisibility(View.VISIBLE);
@@ -265,6 +269,7 @@ public class AudioPlayerActivity extends BaseActivity {
                 etcAnimState(true);
             }
         }
+
 
         /**
          * 音频切换

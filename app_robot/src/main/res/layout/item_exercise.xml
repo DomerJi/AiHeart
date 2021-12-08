@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@drawable/card_radius_50_bg"
+    android:padding="8dp"
+    tools:layout_width="400dp">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/riv_avatar"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@mipmap/ic_launcher"
+        app:riv_corner_radius="8dp" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/bigText2"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintLeft_toRightOf="@id/riv_avatar"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_hour"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="11课时"
+        android:textColor="@color/colorRobotFore"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintLeft_toRightOf="@id/riv_avatar"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+
+    <TextView
+        android:id="@+id/tv_people_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/title"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_small"
+        app:layout_constraintBottom_toBottomOf="@id/riv_avatar"
+        app:layout_constraintLeft_toRightOf="@id/riv_avatar" />
+
+
+    <ImageView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintBottom_toBottomOf="@id/tv_current_hour"
+        app:layout_constraintRight_toLeftOf="@id/tv_current_hour"
+        app:layout_constraintTop_toTopOf="@id/tv_current_hour" />
+
+    <TextView
+        android:id="@+id/tv_current_hour"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/title"
+        android:textColor="@color/text_yellow"
+        android:textSize="@dimen/textSize_small"
+        app:layout_constraintBottom_toBottomOf="@id/riv_avatar"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

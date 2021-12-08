@@ -35,6 +35,7 @@ public class InputBoxSquareView extends FrameLayout {
     private boolean softKeyboardAuto = true;
     private int codeCount = DEFAULT_CODECOUNT;
     private OnInputCompleteListener onInputCompleteListener;
+    private int len;
 
     public InputBoxSquareView(@NonNull Context context) {
         this(context, null);
@@ -103,15 +104,24 @@ public class InputBoxSquareView extends FrameLayout {
 
             @Override
             public void afterTextChanged(Editable text) {
-                int len = text.length();
+                len = text.length();
                 setTextViews(text.toString());
-                if (len == codeCount && onInputCompleteListener != null) {
-                    LogUtil.e("InputBox", "code = " + text.toString());
-                    onInputCompleteListener.onComplete(text.toString());
+                if (onInputCompleteListener != null) {
+                    if (len == codeCount) {
+                        LogUtil.e("InputBox", "code = " + text.toString());
+                        onInputCompleteListener.onComplete(text.toString());
+                        onInputCompleteListener.onChanged(text.toString());
+                    } else {
+                        onInputCompleteListener.onChanged(text.toString());
+                    }
                 }
             }
         });
 
+    }
+
+    public boolean inputCodeSuccess() {
+        return len == codeCount;
     }
 
     private void setTextViews(String text) {
@@ -164,5 +174,7 @@ public class InputBoxSquareView extends FrameLayout {
 
     public interface OnInputCompleteListener {
         void onComplete(String text);
+
+        void onChanged(String text);
     }
 }

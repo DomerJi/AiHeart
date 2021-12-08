@@ -10,7 +10,7 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.mobileheart.adapter.TestOneAdapter;
-import com.thfw.mobileheart.model.TestModel;
+import com.thfw.base.models.TestModel;
 import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;

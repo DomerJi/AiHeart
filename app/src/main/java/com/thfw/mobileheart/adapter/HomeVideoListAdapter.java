@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.mobileheart.model.AudioModel;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.util.AudioModel;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -8,14 +8,21 @@ import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
+import com.thfw.robotheart.activitys.exercise.ExerciseActivity;
 import com.thfw.robotheart.activitys.me.MeActivity;
+import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.activitys.me.SettingActivity;
 import com.thfw.robotheart.activitys.test.TestActivity;
+import com.thfw.robotheart.activitys.video.VideoHomeActivity;
 import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.ui.widget.WeekView;
+import com.thfw.user.login.User;
+import com.thfw.user.login.UserManager;
+import com.thfw.user.login.UserObserver;
 
 public class MainActivity extends RobotBaseActivity implements View.OnClickListener {
 
@@ -88,9 +95,17 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mLlMe.setOnClickListener(this);
     }
 
+
     @Override
     public void initData() {
-
+        mWeekView.setOnClickListener(v -> {
+            if (ClickCountUtils.click(15)) {
+                startActivity(new Intent(mContext, PrivateSetActivity.class));
+            }
+        });
+        if(UserManager.getInstance().isLogin()){
+            mTvInstitution.setText(UserManager.getInstance().getUser().getOrganListStr());
+        }
     }
 
     @Override
@@ -104,6 +119,21 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             startActivity(new Intent(mContext, AudioHomeActivity.class));
         } else if (vId == R.id.ll_test) {
             startActivity(new Intent(mContext, TestActivity.class));
+        } else if (vId == R.id.ll_video) {
+            startActivity(new Intent(mContext, VideoHomeActivity.class));
+        } else if (vId == R.id.ll_exercise) {
+            startActivity(new Intent(mContext, ExerciseActivity.class));
         }
     }
+
+    @Override
+    public UserObserver addObserver() {
+        return new UserObserver() {
+            @Override
+            public void onChanged(UserManager accountManager, User user) {
+                mTvInstitution.setText(user.getOrganListStr());
+            }
+        };
+    }
+
 }

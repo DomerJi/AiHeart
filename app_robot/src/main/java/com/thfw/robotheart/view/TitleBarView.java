@@ -109,11 +109,11 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
             updateBattery(level);
         }
         mTvTitleBarTime.setText(HourUtil.getHHMM(System.currentTimeMillis()));
-        mIvTitleBarWifi.setVisibility(NetworkUtil.isWifiConnected(mContext) ? VISIBLE : INVISIBLE);
+        mIvTitleBarWifi.setVisibility(NetworkUtil.isWifiConnected(mContext) ? VISIBLE : GONE);
     }
 
     private void updateBattery(int level) {
-        mPbBatteryProgress.setProgress(level);
+        mPbBatteryProgress.setProgress(50);
         mTvProgress.setText(level + "%");
     }
 
@@ -179,7 +179,7 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
             mWifiStateReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    mIvTitleBarWifi.setVisibility(NetworkUtil.isWifiConnected(mContext) ? VISIBLE : INVISIBLE);
+                    mIvTitleBarWifi.setVisibility(NetworkUtil.isWifiConnected(mContext) ? VISIBLE : GONE);
                 }
             };
         }

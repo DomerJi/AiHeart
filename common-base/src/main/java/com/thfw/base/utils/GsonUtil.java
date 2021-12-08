@@ -15,11 +15,11 @@ public class GsonUtil {
     private GsonUtil() {
     }
 
-    public static <T> T fromJson(String json, java.lang.reflect.Type type) throws Exception {
+    public static <T> T fromJson(String json, java.lang.reflect.Type type) {
         return json == null ? null : sGson.fromJson(json, type);
     }
 
-    public static <T> T fromJson(JsonElement json, java.lang.reflect.Type type) throws Exception {
+    public static <T> T fromJson(JsonElement json, java.lang.reflect.Type type) {
         return json == null ? null : sGson.fromJson(json, type);
     }
 

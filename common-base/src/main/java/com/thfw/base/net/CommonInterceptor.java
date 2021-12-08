@@ -1,10 +1,10 @@
 package com.thfw.base.net;
 
 
-import com.thfw.base.BuildConfig;
+import android.text.TextUtils;
+
 import com.thfw.base.utils.LogUtil;
 
-import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
@@ -32,7 +32,8 @@ public class CommonInterceptor implements Interceptor {
             Charset charset = Charset.forName("UTF-8");
             ResponseBody responseBody = response.peekBody(Long.MAX_VALUE);
             Reader jsonReader = new InputStreamReader(responseBody.byteStream(), charset);
-            BufferedReader reader = new BufferedReader(jsonReader);
+            String json = responseBody.string();
+            LogUtil.d("CommonInterceptor", "json = " + json);
         } catch (Exception e) {
             e.printStackTrace();
             LogUtil.d(e.toString());
@@ -48,11 +49,25 @@ public class CommonInterceptor implements Interceptor {
             requestBuilder = request.newBuilder();
         }
         // TODO 添加头部 cookie token
-        requestBuilder.addHeader("Authorization", "TOKEN");
-        requestBuilder.addHeader("Cookie", "BDUSS=");
-        if (BuildConfig.DEBUG) {
-
+//        requestBuilder.addHeader("Authorization", "TOKEN");
+//        requestBuilder.addHeader("Cookie", "BDUSS=");
+        if (tokenListener != null && requestBuilder != null) {
+            String token = tokenListener.getToken();
+            if (!TextUtils.isEmpty(token)) {
+                requestBuilder.addHeader("Token", token);
+            }
         }
         return requestBuilder.build();
+    }
+
+
+    public static void setTokenListener(OnTokenListener tokenListener) {
+        CommonInterceptor.tokenListener = tokenListener;
+    }
+
+    private static OnTokenListener tokenListener;
+
+    public interface OnTokenListener {
+        String getToken();
     }
 }

@@ -48,11 +48,14 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.adapter.VideoPlayListAdapter;
-import com.thfw.mobileheart.model.VideoModel;
-import com.thfw.mobileheart.model.VideoPlayListModel;
+import com.thfw.base.models.VideoModel;
+import com.thfw.base.models.VideoPlayListModel;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
 import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.widget.BrightnessHelper;
+import com.thfw.ui.widget.ShowChangeLayout;
+import com.thfw.ui.widget.VideoGestureHelper;
 import com.yhao.floatwindow.FloatWindow;
 import com.yhao.floatwindow.PermissionListener;
 import com.yhao.floatwindow.Screen;
@@ -762,6 +765,10 @@ public class VideoPlayActivity extends BaseActivity implements VideoGestureHelpe
         }
     }
 
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
     //=============== 结束 视频手势 =======================//
 
 }

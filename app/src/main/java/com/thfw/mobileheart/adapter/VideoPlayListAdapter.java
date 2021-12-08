@@ -9,8 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.mobileheart.model.VideoEtcOrderModel;
-import com.thfw.mobileheart.model.VideoPlayListModel;
+import com.thfw.base.models.VideoEtcOrderModel;
+import com.thfw.base.models.VideoPlayListModel;
 import com.thfw.mobileheart.R;
 
 import org.jetbrains.annotations.NotNull;

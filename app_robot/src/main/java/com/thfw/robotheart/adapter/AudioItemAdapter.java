@@ -35,6 +35,11 @@ public class AudioItemAdapter extends BaseAdapter<AudioItemModel, AudioItemAdapt
         return new AudioItemHolder(inflate(R.layout.item_audio_item_list, parent));
     }
 
+    public void setCurrentIndex(int mCurrentIndex) {
+        this.mCurrentIndex = mCurrentIndex;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull @NotNull AudioItemHolder holder, int position) {
         holder.mTvTitle.setText(mDataList.get(position).url);

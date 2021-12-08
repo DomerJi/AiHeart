@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:maxLength="10"
+            android:maxLength="30"
             android:text="七连五班"
             android:textColor="@color/colorRobotFore"
             android:textSize="16sp"

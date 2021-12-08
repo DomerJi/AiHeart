@@ -55,7 +55,7 @@ public class TitleRobotView extends FrameLayout {
             showIcon = ta.getBoolean(R.styleable.TitleRobotView_trv_showIcon, true);
             showTitleBar = ta.getBoolean(R.styleable.TitleRobotView_trv_show_titleBar, true);
             final Drawable d = ta.getDrawable(R.styleable.TitleRobotView_trv_leftIcon);
-            final int colorBg = ta.getColor(R.styleable.TitleRobotView_trv_background, getResources().getColor(R.color.colorRobotPrimary));
+            final int colorBg = ta.getColor(R.styleable.TitleRobotView_trv_background, getResources().getColor(R.color.transparent));
             final int leftIconColor = ta.getColor(R.styleable.TitleRobotView_trv_leftIconColor, getResources().getColor(R.color.colorRobotFore));
             final int centerTextColor = ta.getColor(R.styleable.TitleRobotView_trv_centerTextColor, getResources().getColor(R.color.colorRobotFore));
             if (d != null) {

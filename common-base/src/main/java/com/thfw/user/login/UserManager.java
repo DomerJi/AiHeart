@@ -1,5 +1,10 @@
 package com.thfw.user.login;
 
+import com.thfw.base.net.CommonInterceptor;
+import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
+
 import java.util.Observable;
 
 
@@ -9,9 +14,21 @@ import java.util.Observable;
 public class UserManager extends Observable {
 
     private static volatile UserManager instance;
+    private static final String KEY_USER = "key.user";
     private User user = new User();
 
     private UserManager() {
+        String json = SharePreferenceUtil.getString(KEY_USER, null);
+        user = GsonUtil.fromJson(json, User.class);
+        if (user == null) {
+            user = new User();
+        }
+        CommonInterceptor.setTokenListener(new CommonInterceptor.OnTokenListener() {
+            @Override
+            public String getToken() {
+                return isLogin() ? user.getToken() : "null";
+            }
+        });
     }
 
     public static UserManager getInstance() {
@@ -41,11 +58,7 @@ public class UserManager extends Observable {
             return;
         }
         this.user = newUser;
-        if (this.user.equals(newUser)) {
-            return;
-        }
-        setChanged();
-        notifyObservers(user);
+        notifyUserInfo();
     }
 
     /**
@@ -66,6 +79,15 @@ public class UserManager extends Observable {
         user.logout(flag);
         setChanged();
         notifyObservers(user);
+        SharePreferenceUtil.setString(KEY_USER, "");
+    }
+
+    public void notifyUserInfo() {
+        setChanged();
+        String userJson = GsonUtil.toJson(user);
+        notifyObservers(user);
+        LogUtil.e("login -> userJson" + userJson);
+        SharePreferenceUtil.setString(KEY_USER, userJson);
     }
 
 }

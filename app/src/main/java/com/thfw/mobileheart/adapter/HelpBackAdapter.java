@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.mobileheart.model.HelpBackModel;
+import com.thfw.base.models.HelpBackModel;
 import com.thfw.mobileheart.R;
 
 import org.jetbrains.annotations.NotNull;
