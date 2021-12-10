@@ -339,8 +339,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="12dp"
-                android:background="@color/page_background_gray" />
+                android:layout_height="12dp" />
 
             <LinearLayout
                 android:id="@+id/ll_schooling"
@@ -537,8 +536,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="12dp"
-                android:background="@color/page_background_gray" />
+                android:layout_height="12dp" />
 
 
             <LinearLayout
@@ -573,8 +571,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="12dp"
-                android:background="@color/page_background_gray" />
+                android:layout_height="12dp" />
 
 
             <LinearLayout

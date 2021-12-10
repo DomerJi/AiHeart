@@ -70,7 +70,7 @@
         android:id="@+id/rl_speciality_talk"
         android:layout_width="260dp"
         android:layout_height="0dp"
-        android:background="@color/btn_red"
+        android:background="@color/white_10"
         app:layout_constraintBottom_toBottomOf="@id/ll_navigation"
         app:layout_constraintTop_toTopOf="@id/ll_navigation"
         tools:ignore="MissingConstraints">
@@ -84,7 +84,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginRight="16dp"
-        android:background="@color/white_50"
         android:weightSum="4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="2:1"

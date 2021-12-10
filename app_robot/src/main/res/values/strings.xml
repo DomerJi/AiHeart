@@ -57,7 +57,10 @@
     <string name="set_notice">通知设置</string>
     <string name="set_clear_cache">清除缓存</string>
     <string name="set_privacy_policy">隐私政策</string>
-    <string name="set_about_ai">关于密友</string>
+    <string name="set_about_ai">关于我们</string>
+    <string name="help_back">意见反馈</string>
+    <string name="audio_instruct">语音指令</string>
+    <string name="common_problem">常见问题</string>
 
     <string name="safe_mobile">手机号码</string>
     <string name="safe_wechat">微信号</string>

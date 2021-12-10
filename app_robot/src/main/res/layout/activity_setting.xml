@@ -4,14 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/robot_page_bg"
     tools:context=".activitys.me.SettingActivity">
-
-    <com.thfw.robotheart.view.TitleBarView
-        android:id="@+id/titleBarView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/titleBarHeight"
-        tools:ignore="MissingConstraints" />
 
     <com.thfw.robotheart.view.TitleRobotView
         android:id="@+id/titleRobotView"
@@ -19,14 +12,14 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/titleBarView"
         app:trv_centerText="@string/me_setting"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints,NotSibling" />
 
 
     <FrameLayout
         android:id="@+id/fl_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/ll_navigation"
+        app:layout_constraintBottom_toTopOf="@id/ll_navigation"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView">
 
     </FrameLayout>

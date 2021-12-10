@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.base.api.HistoryApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.login.LoginActivity;
@@ -82,5 +83,34 @@ public class MeActivity extends RobotBaseActivity {
                 startActivity(new Intent(mContext, InfoActivity.class));
             }
         });
+
+        mLlExercise.setOnClickListener(v -> {
+            HistoryActivity.startActivity(mContext, HistoryApi.TYPE_EXERCISE);
+        });
+        mLlTest.setOnClickListener(v -> {
+            HistoryActivity.startActivity(mContext, HistoryApi.TYPE_TEST);
+        });
+        mLlStudy.setOnClickListener(v -> {
+            HistoryActivity.startActivity(mContext, HistoryApi.TYPE_STUDY);
+        });
+        mLlMusic.setOnClickListener(v -> {
+            HistoryActivity.startActivity(mContext, HistoryApi.TYPE_AUDIO);
+        });
+        mLlRead.setOnClickListener(v -> {
+            HistoryActivity.startActivity(mContext, HistoryApi.TYPE_BOOK);
+        });
+
+        mRlCollection.setOnClickListener(v -> {
+            startActivity(new Intent(mContext, CollectActivity.class));
+        });
+
+        mRlWork.setOnClickListener(v -> {
+            startActivity(new Intent(mContext, TaskActivity.class));
+        });
+
+        mRlBackHelp.setOnClickListener(v -> {
+            startActivity(new Intent(mContext, HelpBackActivity.class));
+        });
+
     }
 }

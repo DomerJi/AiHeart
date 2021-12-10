@@ -10,7 +10,7 @@ import java.util.Date;
 public class HourUtil {
 
     private static final SimpleDateFormat formatyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
-    private static final SimpleDateFormat formatyyMMddHHmm = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat formatyyMMddHHmm = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private static final SimpleDateFormat formatHHmmss = new SimpleDateFormat("HH:mm:ss");
     private static final SimpleDateFormat formatHHmm = new SimpleDateFormat("HH:mm");
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

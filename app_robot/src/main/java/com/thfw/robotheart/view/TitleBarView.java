@@ -113,7 +113,7 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
     }
 
     private void updateBattery(int level) {
-        mPbBatteryProgress.setProgress(50);
+        mPbBatteryProgress.setProgress(level);
         mTvProgress.setText(level + "%");
     }
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/ic_round_star_rate_24" android:state_checked="true" />
+    <item android:drawable="@drawable/ic_round_star_rate_24" android:state_selected="true" />
+    <item android:drawable="@drawable/ic_round_star_outline_24" />
+
+</selector>

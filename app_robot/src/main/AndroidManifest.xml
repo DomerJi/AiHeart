@@ -34,7 +34,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activitys.test.TestIngActivity"></activity>
+        <activity android:name=".activitys.me.HelpBackActivity"></activity>
+        <activity android:name=".activitys.me.TaskActivity" />
+        <activity android:name=".activitys.me.CollectActivity" />
+        <activity android:name=".activitys.me.HistoryActivity" />
+        <activity android:name=".activitys.me.HotPhoneActivity" />
+        <activity android:name=".activitys.talk.ThemeTalkActivity" />
+        <activity android:name=".activitys.talk.AiTalkActivity" />
+        <activity android:name=".activitys.text.BookStudyActivity" />
+        <activity android:name=".activitys.text.BookActivity" />
+        <activity android:name=".activitys.test.TestIngActivity" />
         <activity android:name=".activitys.test.TestDetailActivity" />
         <activity android:name=".activitys.me.SelectOrganizationActivity" />
         <activity android:name=".activitys.me.PrivateSetActivity" />

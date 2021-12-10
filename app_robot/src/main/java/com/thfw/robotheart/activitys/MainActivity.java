@@ -12,10 +12,15 @@ import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
 import com.thfw.robotheart.activitys.exercise.ExerciseActivity;
+import com.thfw.robotheart.activitys.me.HotPhoneActivity;
 import com.thfw.robotheart.activitys.me.MeActivity;
 import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.activitys.me.SettingActivity;
+import com.thfw.robotheart.activitys.talk.AiTalkActivity;
+import com.thfw.robotheart.activitys.talk.ThemeTalkActivity;
 import com.thfw.robotheart.activitys.test.TestActivity;
+import com.thfw.robotheart.activitys.text.BookActivity;
+import com.thfw.robotheart.activitys.text.BookStudyActivity;
 import com.thfw.robotheart.activitys.video.VideoHomeActivity;
 import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.base.RobotBaseActivity;
@@ -93,6 +98,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mLlHotCall.setOnClickListener(this);
         mLlSetting.setOnClickListener(this);
         mLlMe.setOnClickListener(this);
+        mRlSpecialityTalk.setOnClickListener(this);
     }
 
 
@@ -103,7 +109,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 startActivity(new Intent(mContext, PrivateSetActivity.class));
             }
         });
-        if(UserManager.getInstance().isLogin()){
+        if (UserManager.getInstance().isLogin()) {
             mTvInstitution.setText(UserManager.getInstance().getUser().getOrganListStr());
         }
     }
@@ -123,6 +129,16 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             startActivity(new Intent(mContext, VideoHomeActivity.class));
         } else if (vId == R.id.ll_exercise) {
             startActivity(new Intent(mContext, ExerciseActivity.class));
+        } else if (vId == R.id.rl_speciality_talk) {
+            startActivity(new Intent(mContext, ThemeTalkActivity.class));
+        } else if (vId == R.id.ll_talk) {
+            startActivity(new Intent(mContext, AiTalkActivity.class));
+        } else if (vId == R.id.ll_hot_call) {
+            startActivity(new Intent(mContext, HotPhoneActivity.class));
+        } else if (vId == R.id.ll_study) {
+            startActivity(new Intent(mContext, BookStudyActivity.class));
+        } else if (vId == R.id.ll_book) {
+            startActivity(new Intent(mContext, BookActivity.class));
         }
     }
 

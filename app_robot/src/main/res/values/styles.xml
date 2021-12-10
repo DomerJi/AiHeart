@@ -109,12 +109,31 @@
     </style>
 
 
-    <style name="tallerBarStyle" parent="@android:style/Widget.SeekBar" >
+    <style name="tallerBarStyle" parent="@android:style/Widget.SeekBar">
         <item name="android:indeterminateOnly">false</item>
         <item name="android:progressDrawable">@drawable/progress_scl</item>
         <item name="android:indeterminateDrawable">@android:drawable/progress_horizontal</item>
         <item name="android:minHeight">10dip</item>
         <item name="android:maxHeight">10dip</item>
+    </style>
+
+    <style name="TabLayoutStyle" parent="Base.Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/TabLayoutItemTextStyle</item>
+        <item name="android:layout_marginLeft">26dp</item>
+        <item name="tabBackground">@drawable/top_tab_radius_bg_selector</item>
+        <item name="tabGravity">start</item>
+        <item name="tabIndicator">@null</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabPaddingEnd">16dp</item>
+        <item name="tabPaddingStart">16dp</item>
+        <item name="tabRippleColor">@color/transparent</item>
+        <item name="tabSelectedTextColor">@color/black</item>
+        <item name="tabTextColor">@color/white</item>
+        <item name="android:layout_height">@dimen/top_tab_height</item>
+    </style>
+
+    <style name="TabLayoutItemTextStyle">
+        <item name="android:textSize">17sp</item>
     </style>
 
 </resources>

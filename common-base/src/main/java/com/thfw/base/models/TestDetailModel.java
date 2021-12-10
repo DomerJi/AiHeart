@@ -175,7 +175,13 @@ public class TestDetailModel implements IModel {
         private String willGet;
         @SerializedName("testing_des")
         private String testingDes;
+        private int collected;
+
         private List<HintBean> hintBeans;
+
+        public boolean isCollected() {
+            return collected == 1;
+        }
 
         public List<HintBean> getHintBeans() {
             if (hintBeans != null) {

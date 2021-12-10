@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin"
         android:text="@string/load_empty"
-        android:textColor="@color/text_common"
+        android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/iv_load_empty"
         tools:ignore="MissingConstraints" />
 

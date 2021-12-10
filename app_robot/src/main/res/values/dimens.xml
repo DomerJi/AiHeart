@@ -12,6 +12,7 @@
     <dimen name="home_tab_height">50dp</dimen>
     <dimen name="home_tab_icon_height">20dp</dimen>
     <dimen name="home_tab_icon_chat_height">40dp</dimen>
+    <dimen name="top_tab_height">36dp</dimen>
 
     <dimen name="home_sort_icon_height">65dp</dimen>
     <dimen name="home_sort_text_size">13sp</dimen>
@@ -42,6 +43,9 @@
     <dimen name="textSize_large">20sp</dimen>
     <dimen name="textSize_password">22sp</dimen>
     <dimen name="textSize_navigation_tab_left">22sp</dimen>
+    <dimen name="textSize_navigation_tab_left_child">18sp</dimen>
+    <dimen name="navigation_tab_left_child_height">45dp</dimen>
+    <dimen name="navigation_tab_left_height">50dp</dimen>
     <dimen name="padding_navigation_tab_left">16dp</dimen>
 
     <dimen name="navigation_left_width">160dp</dimen>
