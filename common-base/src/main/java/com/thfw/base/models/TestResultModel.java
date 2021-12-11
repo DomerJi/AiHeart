@@ -1,5 +1,6 @@
 package com.thfw.base.models;
 
+import com.google.gson.annotations.SerializedName;
 import com.thfw.base.base.IModel;
 
 /**
@@ -8,5 +9,10 @@ import com.thfw.base.base.IModel;
  * Describe:Todo
  */
 public class TestResultModel implements IModel {
+    @SerializedName("result_id")
+    private int resultId;
 
+    public int getResultId() {
+        return resultId;
+    }
 }

@@ -1,6 +1,7 @@
 package com.thfw.user.login;
 
 import com.thfw.base.models.OrganizationModel;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.user.IUser;
 import com.thfw.user.IUserInfo;
@@ -25,11 +26,14 @@ public class User implements IUser, IUserInfo {
 
     public String getOrganListStr() {
         String organStr = "";
+        if (EmptyUtil.isEmpty(organList)) {
+            return "";
+        }
         int size = organList.size();
         if (size >= 2) {
             organStr += organList.get(size - 2).getName() + " - " + organList.get(size - 1).getName();
         } else {
-            organStr += organList.get(size).getName();
+            organStr += organList.get(size - 1).getName();
         }
         return organStr;
     }

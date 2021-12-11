@@ -122,6 +122,7 @@ public class TestDetailActivity extends RobotBaseActivity<TestPresenter> impleme
 
         mBtBeginTest.setOnClickListener(v -> {
             TestIngActivity.startActivity(mContext, mModel);
+            finish();
         });
 
         mIvCollect.setSelected(mInfoBean.isCollected());

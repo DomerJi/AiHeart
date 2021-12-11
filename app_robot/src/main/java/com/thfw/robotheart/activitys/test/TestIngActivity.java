@@ -112,7 +112,8 @@ public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements
     @Override
     public void onSuccess(TestResultModel data) {
         LoadingDialog.hide();
-        ToastUtil.show("提交成功");
+        TestResultWebActivity.startActivity(mContext, data);
+        finish();
     }
 
     @Override

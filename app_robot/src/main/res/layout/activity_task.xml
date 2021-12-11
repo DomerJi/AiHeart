@@ -10,7 +10,7 @@
         android:id="@+id/titleRobotView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:trv_centerText="@string/me_collect"
+        app:trv_centerText="我的任务"
         tools:ignore="MissingConstraints" />
 
     <com.google.android.material.tabs.TabLayout
@@ -36,8 +36,12 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_1px"
+        android:layout_marginLeft="26dp"
+        android:layout_marginRight="26dp"
         android:background="@color/colorRobotFore"
-        app:layout_constraintBottom_toBottomOf="@id/tabLayout" />
+        app:layout_constraintBottom_toBottomOf="@id/tabLayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 
     <androidx.viewpager2.widget.ViewPager2

@@ -34,6 +34,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activitys.test.TestResultWebActivity"></activity>
+        <activity android:name=".activitys.WebActivity"></activity>
         <activity android:name=".activitys.me.HelpBackActivity"></activity>
         <activity android:name=".activitys.me.TaskActivity" />
         <activity android:name=".activitys.me.CollectActivity" />
