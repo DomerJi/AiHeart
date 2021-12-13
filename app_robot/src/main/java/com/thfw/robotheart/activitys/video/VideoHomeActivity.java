@@ -21,6 +21,7 @@ import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.ui.widget.MyRobotSearchView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VideoHomeActivity extends RobotBaseActivity {
@@ -71,8 +72,39 @@ public class VideoHomeActivity extends RobotBaseActivity {
 
     @Override
     public void initData() {
+
+        List<VideoTypeModel> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            VideoTypeModel model = new VideoTypeModel();
+            model.id = i;
+            model.name = "Praent_" + i;
+            if (i % 2 == 0) {
+                model.list = new ArrayList<>();
+                VideoTypeModel childModel = new VideoTypeModel();
+                childModel.id = (i + 1) * 1000 + 1;
+                childModel.name = "Child" + 1;
+                model.list.add(childModel);
+                VideoTypeModel childModel2 = new VideoTypeModel();
+                childModel2.id = (i + 1) * 1000 + 2;
+                childModel2.name = "Child" + 2;
+                model.list.add(childModel2);
+
+                VideoTypeModel childModel3 = new VideoTypeModel();
+                childModel3.id = (i + 1) * 1000 + 3;
+                childModel3.name = "Child" + 3;
+                model.list.add(childModel3);
+
+
+                VideoTypeModel childModel4 = new VideoTypeModel();
+                childModel4.id = (i + 1) * 1000 + 4;
+                childModel4.name = "Child" + 4;
+                model.list.add(childModel4);
+            }
+            list.add(model);
+        }
+
         FragmentLoader mLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
-        VideoEtcTypeAdapter mVideoEtcTypeAdapter = new VideoEtcTypeAdapter(null);
+        VideoEtcTypeAdapter mVideoEtcTypeAdapter = new VideoEtcTypeAdapter(list);
 
         mVideoEtcTypeAdapter.setOnRvItemListener(new OnRvItemListener<VideoTypeModel>() {
             @Override

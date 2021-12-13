@@ -9,6 +9,7 @@
     <string name="local_one_step_login">本机号码一键登录</string>
 
     <string name="sort_type_talk">AI树洞</string>
+    <string name="sort_type_theme_talk">主题对话</string>
     <string name="sort_type_what">咨询助理</string>
     <string name="sort_type_test">心理测评</string>
     <string name="sort_type_exercise">成长练习</string>

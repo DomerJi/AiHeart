@@ -7,7 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.base.models.BookStudyTypeModel;
+import com.thfw.base.models.VideoTypeModel;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.constants.UIConfig;
 
@@ -20,11 +20,11 @@ import java.util.List;
  * Date: 2021/12/2 16:24
  * Describe:音频合集类型列表
  */
-public class BookStudyChildTypeAdapter extends BaseAdapter<BookStudyTypeModel, BookStudyChildTypeAdapter.BookStudyTypeHolder> {
+public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChildTypeAdapter.BookStudyTypeHolder> {
 
     private int selectedIndex = -1;
 
-    public BookStudyChildTypeAdapter(List<BookStudyTypeModel> dataList) {
+    public VideoChildTypeAdapter(List<VideoTypeModel> dataList) {
         super(dataList);
     }
 

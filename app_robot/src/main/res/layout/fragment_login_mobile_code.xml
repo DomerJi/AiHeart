@@ -2,40 +2,45 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#ccddff">
-
-
-    <com.thfw.robotheart.view.TitleRobotView
-        android:id="@+id/titleRobotView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:trv_background="@color/transparent"
-        app:trv_centerTextColor="@color/black"
-        app:trv_leftIconColor="@color/black"
-        app:trv_rightText="密码登录"
-        app:trv_show_titleBar="false" />
+    android:layout_height="match_parent">
 
 
     <LinearLayout
+        android:id="@+id/ll_login_center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="200dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginRight="200dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="80dp"
+        android:layout_marginBottom="80dp"
+        android:background="@drawable/login_radius_bg"
         android:orientation="vertical"
-        android:padding="30dp"
+        android:paddingLeft="100dp"
+        android:paddingTop="80dp"
+        android:paddingRight="100dp"
+        android:paddingBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleRobotView">
+        app:layout_constraintTop_toTopOf="parent">
+
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="手机号登录"
+            android:textColor="@color/text_yellow"
+            android:textSize="@dimen/textSize_login_title" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="12dp"
             android:text="请输入验证码"
-            android:textColor="@color/black"
-            android:textSize="@dimen/textSize_robot_title"
-            android:textStyle="bold" />
+            android:textColor="@color/black_80"
+            android:textSize="@dimen/textSize" />
 
 
         <com.thfw.ui.widget.InputBoxSquareView
@@ -44,8 +49,7 @@
             android:layout_height="70dp"
             android:layout_below="@id/tv_title"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="35dp"
-            android:layout_marginBottom="35dp"
+            android:layout_marginTop="16dp"
             app:ibs_codeCount="6"
             app:ibs_encryption="false"
             app:ibs_softKeyboardAuto="true" />
@@ -57,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/login_button_height"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="26dp"
             android:layout_marginRight="8dp"
             android:text="登录"
             android:textSize="@dimen/textSize_large" />
@@ -73,6 +77,23 @@
             android:textSize="@dimen/textSize_large" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_login_by_mobile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="8dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp"
+        android:text="免密登录"
+        android:textColor="@color/black"
+        android:textSize="@dimen/textSize_robot_title"
+        app:layout_constraintRight_toRightOf="@id/ll_login_center"
+        app:layout_constraintTop_toTopOf="@id/ll_login_center" />
 
 
     <include layout="@layout/layout_login_bottom" />

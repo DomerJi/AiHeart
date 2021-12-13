@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.models.TalkModel;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
@@ -132,7 +133,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         } else if (vId == R.id.rl_speciality_talk) {
             startActivity(new Intent(mContext, ThemeTalkActivity.class));
         } else if (vId == R.id.ll_talk) {
-            startActivity(new Intent(mContext, AiTalkActivity.class));
+            AiTalkActivity.startActivity(mContext,new TalkModel(TalkModel.TYPE_AI));
         } else if (vId == R.id.ll_hot_call) {
             startActivity(new Intent(mContext, HotPhoneActivity.class));
         } else if (vId == R.id.ll_study) {

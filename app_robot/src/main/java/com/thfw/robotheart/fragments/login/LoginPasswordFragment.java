@@ -29,7 +29,6 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implements LoginPresenter.LoginUi<TokenModel> {
 
     private TextView mTvLoginByMobile;
-    private TextView mTvCountry;
     private EditText mEtMobile;
     private EditText mEtPassword;
     private ImageView mIvSeePassword;
@@ -62,7 +61,6 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
     public void initView() {
 
         mTvLoginByMobile = (TextView) findViewById(R.id.tv_login_by_mobile);
-        mTvCountry = (TextView) findViewById(R.id.tv_country);
         mEtMobile = (EditText) findViewById(R.id.et_mobile);
         mEtPassword = (EditText) findViewById(R.id.et_password);
         mIvSeePassword = (ImageView) findViewById(R.id.iv_see_password);

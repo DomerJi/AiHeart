@@ -9,10 +9,9 @@
         android:id="@+id/tv_type"
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigation_tab_left_child_height"
-        android:background="@drawable/navigation_tab_selector"
         android:gravity="center"
         android:text="@string/title"
-        android:textColor="@drawable/common_left_tab_textcolor_selector"
+        android:textColor="@drawable/common_left_tab_children_text_selector"
         android:textSize="@dimen/textSize_navigation_tab_left_child" />
 
     <View

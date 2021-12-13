@@ -6,6 +6,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.fragments.sets.SetBlueFragment;
@@ -33,6 +35,8 @@ public class SettingActivity extends RobotBaseActivity {
     private android.widget.TextView mTvSetShutdown;
     private android.widget.TextView mTvSetUpdate;
     private TextView[] mTabs;
+
+    private Fragment mFragment;
 
     @Override
     public int getContentView() {
@@ -72,9 +76,11 @@ public class SettingActivity extends RobotBaseActivity {
         mLoader.add(R.id.tv_set_update, new SetUpdateFragment());
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
-                mLoader.load(v.getId());
+                mFragment = mLoader.load(v.getId());
                 for (TextView tab : mTabs) {
                     tab.setSelected(tab.getId() == v.getId());
                     tab.setTypeface(Typeface.defaultFromStyle(tab.getId() == v.getId() ? Typeface.BOLD : Typeface.NORMAL));
@@ -85,5 +91,17 @@ public class SettingActivity extends RobotBaseActivity {
             tab.setOnClickListener(onClickListener);
         }
         mTabs[0].performClick();
+
+        mTitleRobotView.getIvBack().setOnClickListener(v -> {
+            // 如果网络设置正在输入密码，先返回，不退出
+            if (mFragment != null && mFragment instanceof SetNetFragment) {
+                SetNetFragment setNetFragment = (SetNetFragment) mFragment;
+                if (setNetFragment.wifiInputFragment()) {
+                    setNetFragment.removeFragment();
+                    return;
+                }
+            }
+            finish();
+        });
     }
 }

@@ -10,7 +10,34 @@
         android:id="@+id/titleRobotView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:trv_centerText="@string/sort_type_talk"
+        app:trv_centerText="@string/sort_type_theme_talk"
         tools:ignore="MissingConstraints" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_anim"
+        android:layout_width="0dp"
+        android:background="@color/white_10"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/rv_list"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView"
+        tools:ignore="MissingConstraints">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="3"
+        app:layout_constraintLeft_toRightOf="@id/cl_anim"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

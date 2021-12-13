@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Author:pengs
  * Date: 2021/12/2 16:24
- * Describe:音频合集类型列表
+ * Describe:学习强军两级类型
  */
 public class BookStudyTypeAdapter extends BaseAdapter<BookStudyTypeModel, BookStudyTypeAdapter.BookStudyTypeHolder> {
 
@@ -47,8 +47,8 @@ public class BookStudyTypeAdapter extends BaseAdapter<BookStudyTypeModel, BookSt
     public void onBindViewHolder(@NonNull @NotNull BookStudyTypeHolder holder, int position) {
         BookStudyTypeModel bean = mDataList.get(position);
         holder.mTvType.setTextSize(selectedIndex == position ? UIConfig.LEFT_TAB_MAX_TEXTSIZE : UIConfig.LEFT_TAB_MIN_TEXTSIZE);
-
         holder.mTvType.setText(bean.name);
+        holder.mTvType.setSelected(selectedIndex == position);
         if (selectedIndex == position) {
             if (!EmptyUtil.isEmpty(bean.list)) {
                 BookStudyChildTypeAdapter childAdapter = new BookStudyChildTypeAdapter(bean.list);
@@ -60,23 +60,14 @@ public class BookStudyTypeAdapter extends BaseAdapter<BookStudyTypeModel, BookSt
                         if (mOnRvItemListener != null) {
                             mOnRvItemListener.onItemClick(list, position);
                         }
-                        holder.mTvType.setSelected(false);
                     }
                 });
                 holder.mRvChild.setAdapter(childAdapter);
                 holder.mRvChild.setVisibility(View.VISIBLE);
-                if (!childAdapter.isSelected()) {
-                    holder.mTvType.setSelected(selectedIndex == position);
-                } else {
-                    holder.mTvType.setSelected(false);
-                }
-
             } else {
-                holder.mTvType.setSelected(selectedIndex == position);
                 holder.mRvChild.setVisibility(View.GONE);
             }
         } else {
-            holder.mTvType.setSelected(false);
             holder.mRvChild.removeAllViews();
             holder.mRvChild.setVisibility(View.GONE);
         }

@@ -2,43 +2,53 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#ccddff">
+    android:layout_height="match_parent">
 
 
     <TextView
         android:id="@+id/tv_login_by_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
         android:paddingLeft="16dp"
-        android:paddingTop="26dp"
+        android:paddingTop="8dp"
         android:paddingRight="16dp"
-        android:paddingBottom="26dp"
+        android:paddingBottom="8dp"
         android:text="密码登录"
         android:textColor="@color/black"
         android:textSize="@dimen/textSize_robot_title"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="@id/ll_login_center"
+        app:layout_constraintTop_toTopOf="@id/ll_login_center" />
 
 
     <LinearLayout
+        android:id="@+id/ll_login_center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="180dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginRight="180dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="80dp"
+        android:layout_marginBottom="80dp"
+        android:background="@drawable/login_radius_bg"
         android:orientation="vertical"
-        android:padding="30dp"
+        android:paddingLeft="100dp"
+        android:paddingTop="80dp"
+        android:paddingRight="100dp"
+        android:paddingBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_login_by_password">
+        app:layout_constraintTop_toTopOf="parent">
+
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:text="手机号登录"
-            android:textColor="@color/black"
-            android:textSize="@dimen/textSize_robot_title"
-            android:textStyle="bold" />
+            android:textColor="@color/text_yellow"
+            android:textSize="@dimen/textSize_login_title" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -65,7 +75,7 @@
                 android:layout_toRightOf="@id/tv_country"
                 android:background="@null"
                 android:gravity="center_vertical"
-                android:hint="@string/please_input_mobile"
+                android:hint="@string/please_input_mobile_only"
                 android:paddingLeft="8dp"
                 android:textColor="@color/text_common"
                 android:textColorHint="@color/text_hint"
@@ -80,10 +90,10 @@
             style="@style/common_button"
             android:layout_width="match_parent"
             android:layout_height="@dimen/button_height"
-            android:layout_marginTop="36dp"
-            android:text="获取验证码"
             android:layout_marginLeft="8dp"
+            android:layout_marginTop="36dp"
             android:layout_marginRight="8dp"
+            android:text="获取验证码"
             android:textSize="@dimen/textSize_large" />
 
     </LinearLayout>

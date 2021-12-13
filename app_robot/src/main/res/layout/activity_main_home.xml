@@ -10,7 +10,6 @@
         android:id="@+id/titleBarView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/titleBarHeight"
-        app:tbv_background="@color/transparent"
         tools:ignore="MissingConstraints" />
 
     <com.thfw.ui.widget.WeekView

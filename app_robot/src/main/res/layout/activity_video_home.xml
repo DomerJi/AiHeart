@@ -16,7 +16,6 @@
         android:id="@+id/rvList"
         android:layout_width="@dimen/navigation_left_width"
         android:layout_height="0dp"
-        android:background="@drawable/navigation_tab_bg_normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView" />
 
@@ -45,9 +44,9 @@
         <com.thfw.ui.widget.MyRobotSearchView
             android:id="@+id/rsv_search"
             android:layout_width="260dp"
+            android:layout_height="@dimen/robot_search_height"
             app:rsv_hint="减压"
-            app:rsv_hintColor="@color/text_robot_time"
-            android:layout_height="@dimen/robot_search_height" />
+            app:rsv_hintColor="@color/text_robot_time" />
 
         <ImageView
             android:id="@+id/iv_history"

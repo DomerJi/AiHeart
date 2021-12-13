@@ -17,7 +17,6 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.login.LoginActivity;
-import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.InputBoxSquareView;
@@ -29,7 +28,6 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
         implements LoginPresenter.LoginUi<TokenModel>, TimingHelper.WorkListener {
 
-    private TitleRobotView mTitleRobotView;
     private InputBoxSquareView mIbvCode;
     private Button mBtGetCode;
     private TextView mTvRegetCode;
@@ -46,6 +44,8 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
     private String phone;
 
     private int secondCount = 60;
+    private LinearLayout mLlLoginCenter;
+    private TextView mTvLoginByMobile;
 
     public LoginMobileCodeFragment() {
         // Required empty public constructor
@@ -63,7 +63,6 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
 
     @Override
     public void initView() {
-        mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
         mIbvCode = (InputBoxSquareView) findViewById(R.id.ibv_code);
         mBtGetCode = (Button) findViewById(R.id.bt_get_code);
         mTvRegetCode = (TextView) findViewById(R.id.tv_reget_code);
@@ -75,16 +74,14 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
         mTvProductUser = (TextView) findViewById(R.id.tv_product_user);
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
+        mLlLoginCenter = (LinearLayout) findViewById(R.id.ll_login_center);
+        mTvLoginByMobile = (TextView) findViewById(R.id.tv_login_by_mobile);
     }
 
     @Override
     public void initData() {
 
         mTvRegetCode.setText("重新获取(" + secondCount + ")");
-        mTitleRobotView.getIvBack().setOnClickListener(v -> {
-            LoginActivity loginActivity = (LoginActivity) getActivity();
-            loginActivity.getFragmentLoader().load(LoginActivity.BY_MOBILE);
-        });
 
         mTvRegetCode.setOnClickListener(v -> {
             if (secondCount <= 0) {
@@ -125,10 +122,6 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
             }
         });
 
-        mTitleRobotView.setRightOnClickListener(v -> {
-            LoginActivity loginActivity = (LoginActivity) getActivity();
-            loginActivity.getFragmentLoader().load(LoginActivity.BY_PASSWORD);
-        });
         mBtGetCode.setEnabled(false);
         mBtGetCode.setOnClickListener(v -> {
             LoginActivity loginActivity = (LoginActivity) getActivity();
@@ -137,6 +130,10 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
             mPresenter.loginByMobile(phone, code);
         });
 
+        mTvLoginByMobile.setOnClickListener(v -> {
+            LoginActivity loginActivity = (LoginActivity) getActivity();
+            loginActivity.getFragmentLoader().load(LoginActivity.BY_MOBILE);
+        });
 
     }
 

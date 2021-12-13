@@ -46,6 +46,7 @@
 
     <declare-styleable name="TitleBarView">
         <attr name="tbv_background" format="reference" />
+        <attr name="tbv_black" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="MySearchView">

@@ -35,7 +35,8 @@
     <string name="gain_verification_code">发送验证码</string>
     <string name="verification_code_send_success">验证码成功发送至手机，请查收！</string>
     <string name="password_check_hint">6-12位的数字、字母组成(不能是纯数字)</string>
-    <string name="please_input_mobile">请输入手机号</string>
+    <string name="please_input_mobile">请输入手机号/系统账号</string>
+    <string name="please_input_mobile_only">请输入手机号</string>
     <string name="please_input_verification">请输入验证码</string>
     <string name="please_input_mobile_number11">请输入11位手机号！</string>
     <string name="please_input_password">请输入密码</string>

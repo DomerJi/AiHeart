@@ -4,10 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
@@ -48,6 +52,7 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
     private BroadcastReceiver mWifiStateReceiver;
     private BroadcastReceiver broadcastReceiver;
     private static volatile int level;
+    private boolean colorFg = false;
 
 
     public TitleBarView(@NonNull @NotNull Context context) {
@@ -58,12 +63,20 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
         this(context, attrs, -1);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public TitleBarView(@NonNull @NotNull Context context, @Nullable @org.jetbrains.annotations.Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, com.thfw.ui.R.styleable.TitleBarView);
             final int colorBg = ta.getColor(com.thfw.ui.R.styleable.TitleBarView_tbv_background, getResources().getColor(R.color.titlebar_background));
+            colorFg = ta.getBoolean(com.thfw.ui.R.styleable.TitleBarView_tbv_black, false);
+            if (colorFg) {
+                mIvTitleBarWifi.setColorFilter(Color.BLACK);
+                mTvTitleBarTime.setTextColor(Color.BLACK);
+                mPbBatteryProgress.setProgressTintList(ColorStateList.valueOf(Color.BLACK));
+                mPbBatteryProgress.setProgressBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+            }
             setBackgroundColor(colorBg);
         }
 
@@ -98,6 +111,7 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
         //广播的注册，其中Intent.ACTION_TIME_CHANGED代表时间设置变化的时候会发出该广播
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void initView() {
         mIvTitleBarWifi = (ImageView) findViewById(R.id.iv_titleBar_wifi);
         mTvTitleBarTime = (TextView) findViewById(R.id.tv_titleBar_time);

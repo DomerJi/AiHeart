@@ -1,0 +1,177 @@
+package com.thfw.robotheart.fragments.sets;
+
+import android.net.wifi.ScanResult;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+
+import com.thanosfisherman.wifiutils.WifiConnectorBuilder;
+import com.thanosfisherman.wifiutils.WifiUtils;
+import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
+import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
+import com.thfw.base.base.IPresenter;
+import com.thfw.base.utils.ToastUtil;
+import com.thfw.robotheart.R;
+import com.thfw.ui.base.RobotBaseFragment;
+
+/**
+ * wifi 输入密码
+ */
+public class WifiInputFragment extends RobotBaseFragment {
+
+
+    private ScanResult scanResult;
+    private String passType;
+    private int position;
+    private TextView mTvConnect;
+    private LinearLayout mLlUser;
+    private EditText mEtUser;
+    private LinearLayout mLlPass;
+    private EditText mEtPass;
+    private ProgressBar mPbLoading;
+
+    public WifiInputFragment(ScanResult scanResult, String passType, int position) {
+        super();
+        this.scanResult = scanResult;
+        this.passType = passType;
+        this.position = position;
+    }
+
+    @Override
+    public int getContentView() {
+        return R.layout.fragment_wifi_input;
+    }
+
+    @Override
+    public IPresenter onCreatePresenter() {
+        return null;
+    }
+
+    @Override
+    public void initView() {
+
+        mTvConnect = (TextView) findViewById(R.id.tv_connect);
+        mLlUser = (LinearLayout) findViewById(R.id.ll_user);
+        mEtUser = (EditText) findViewById(R.id.et_user);
+        mLlPass = (LinearLayout) findViewById(R.id.ll_pass);
+        mEtPass = (EditText) findViewById(R.id.et_pass);
+        mPbLoading = (ProgressBar) findViewById(R.id.pb_loading);
+        // "WPA" "WEP"
+        if ("WEP".equals(passType)) {
+            mLlUser.setVisibility(View.VISIBLE);
+            TextWatcher textWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    boolean flag1 = TextUtils.isEmpty(mEtUser.getText().toString());
+                    boolean flag2 = TextUtils.isEmpty(mEtPass.getText().toString());
+                    mTvConnect.setEnabled(flag1 && flag2);
+                }
+            };
+            mEtUser.addTextChangedListener(textWatcher);
+            mEtPass.addTextChangedListener(textWatcher);
+            mTvConnect.setOnClickListener(v -> {
+                connect();
+            });
+        } else if ("WPA".equals(passType)) {
+            mLlUser.setVisibility(View.GONE);
+            mEtPass.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    mTvConnect.setEnabled(s.toString().length() > 0);
+                }
+            });
+            mTvConnect.setOnClickListener(v -> {
+                connect();
+            });
+        }
+    }
+
+    @Override
+    public void initData() {
+
+    }
+
+
+    /**
+     * 连接wifi
+     */
+    private void connect() {
+        connectUi(true);
+        String user = mEtUser.getText().toString();
+        WifiConnectorBuilder.WifiSuccessListener successListener;
+        if (!TextUtils.isEmpty(user)) {
+            successListener = WifiUtils.withContext(getContext().getApplicationContext())
+                    .connectWith(user, scanResult.BSSID, mEtPass.getText().toString());
+
+        } else {
+            successListener = WifiUtils.withContext(getContext().getApplicationContext())
+                    .connectWith(scanResult.SSID, mEtPass.getText().toString());
+        }
+        successListener.setTimeout(10000)
+                .onConnectionResult(new ConnectionSuccessListener() {
+                    @Override
+                    public void success() {
+                        connectUi(false);
+                        if (completeInputListener != null) {
+                            completeInputListener.onComplete();
+                        }
+                        ToastUtil.show("成功链接至-" + scanResult.SSID);
+
+                    }
+
+                    @Override
+                    public void failed(@NonNull ConnectionErrorCode errorCode) {
+                        connectUi(false);
+                        ToastUtil.show("链接失败");
+                    }
+                }).start();
+    }
+
+    /**
+     * 连接loading提示
+     *
+     * @param show
+     */
+    private void connectUi(boolean show) {
+        mTvConnect.setEnabled(!show);
+        mTvConnect.setText(show ? "" : "连接");
+        mPbLoading.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    OnCompleteInputListener completeInputListener;
+
+    public void setCompleteInputListener(OnCompleteInputListener completeInputListener) {
+        this.completeInputListener = completeInputListener;
+    }
+
+    public interface OnCompleteInputListener {
+        void onComplete();
+    }
+}

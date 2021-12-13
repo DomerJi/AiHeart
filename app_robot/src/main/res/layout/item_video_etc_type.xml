@@ -2,19 +2,28 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <TextView
         android:id="@+id/tv_type"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/navigation_tab_selector"
+        android:layout_height="@dimen/navigation_tab_left_height"
+        android:background="@drawable/navigation_tab_normal_wihte_10_selector"
         android:gravity="center"
-        android:padding="@dimen/padding_navigation_tab_left"
         android:text="@string/title"
         android:textColor="@drawable/common_left_tab_textcolor_selector"
         android:textSize="@dimen/textSize_navigation_tab_left" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_child"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tv_type"
+        tools:ignore="MissingConstraints" />
+
 
     <View
         android:layout_width="match_parent"

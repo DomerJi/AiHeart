@@ -18,21 +18,21 @@ import java.util.List;
  * Date: 2021/12/9 14:32
  * Describe:Todo
  */
-public class BookStudyListAdapter extends BaseAdapter<BookStudyItemModel, BookStudyListAdapter.BookStudyHolder> {
+public class BookListAdapter extends BaseAdapter<BookStudyItemModel, BookListAdapter.BookListHolder> {
 
-    public BookStudyListAdapter(List<BookStudyItemModel> dataList) {
+    public BookListAdapter(List<BookStudyItemModel> dataList) {
         super(dataList);
     }
 
     @NonNull
     @NotNull
     @Override
-    public BookStudyHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        return new BookStudyHolder(inflate(R.layout.item_book_study, parent));
+    public BookListAdapter.BookListHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+        return new BookListHolder(inflate(R.layout.item_book_study, parent));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull @NotNull BookStudyHolder holder, int position) {
+    public void onBindViewHolder(@NonNull @NotNull BookListAdapter.BookListHolder holder, int position) {
 
     }
 
@@ -41,9 +41,9 @@ public class BookStudyListAdapter extends BaseAdapter<BookStudyItemModel, BookSt
         return 30;
     }
 
-    public class BookStudyHolder extends RecyclerView.ViewHolder {
+    public class BookListHolder extends RecyclerView.ViewHolder {
 
-        public BookStudyHolder(@NonNull @NotNull View itemView) {
+        public BookListHolder(@NonNull @NotNull View itemView) {
             super(itemView);
         }
     }

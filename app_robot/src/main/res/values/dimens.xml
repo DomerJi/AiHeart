@@ -19,6 +19,7 @@
     <dimen name="home_sort_text_icon_margin">-3dp</dimen>
 
     <dimen name="textSize_robot_title">20sp</dimen>
+    <dimen name="textSize_login_title">30sp</dimen>
 
     <dimen name="home_hint_dot">6dp</dimen>
     <dimen name="home_hint_dot_radius">3dp</dimen>

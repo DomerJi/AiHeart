@@ -1,15 +1,19 @@
 package com.thfw.base.utils;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
@@ -19,7 +23,13 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 
+import com.thfw.base.ContextApp;
+
+import java.util.List;
+
 public class Util {
+
+    private static final String TAG = "Util";
 
     public static int computeSampleSize(BitmapFactory.Options options,
                                         int minSideLength, int maxNumOfPixels) {
@@ -230,6 +240,105 @@ public class Util {
         }
         return versionName;
 
+
+    }
+
+    /**
+     * 是否系统app
+     *
+     * @param pkgName
+     * @return
+     */
+    public static boolean isSystemApp(String pkgName) {
+        boolean isSystemApp = false;
+        PackageInfo pi = null;
+        try {
+            PackageManager pm = ContextApp.get().getPackageManager();
+            pi = pm.getPackageInfo(pkgName, 0);
+        } catch (Throwable t) {
+            Log.w("TAG", t.getMessage(), t);
+        }
+        // 是系统中已安装的应用
+        if (pi != null) {
+            boolean isSysApp = (pi.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1;
+            boolean isSysUpd = (pi.applicationInfo.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) == 1;
+            isSystemApp = isSysApp || isSysUpd;
+        }
+        return isSystemApp;
+    }
+
+    /**
+     * 忘记某一个wifi密码
+     *
+     * @param wifiManager
+     * @param targetSsid
+     */
+    public static void removeWifiBySsid(WifiManager wifiManager, String targetSsid) {
+        Log.i(TAG, "try to removeWifiBySsid, targetSsid=" + targetSsid);
+        if (wifiManager == null) {
+            return;
+        }
+        List<WifiConfiguration> wifiConfigs = wifiManager.getConfiguredNetworks();
+        if (wifiConfigs == null) {
+            return;
+        }
+        for (WifiConfiguration wifiConfig : wifiConfigs) {
+            String ssid = wifiConfig.SSID;
+            ssid = ssid.replaceAll("\"", "");
+            Log.i(TAG, "removeWifiBySsid ssid=" + ssid);
+            if (ssid.equals(targetSsid)) {
+                Log.i(TAG, "removeWifiBySsid success, SSID = " + wifiConfig.SSID + " netId = " + String.valueOf(wifiConfig.networkId));
+                wifiManager.removeNetwork(wifiConfig.networkId);
+                wifiManager.saveConfiguration();
+                return;
+            }
+        }
+    }
+
+    public static boolean isSavePassWord(WifiManager wifiManager, String targetSsid) {
+
+        Log.i(TAG, "try to isSavePassWord, targetSsid=" + targetSsid);
+        if (wifiManager == null) {
+            return false;
+        }
+        List<WifiConfiguration> wifiConfigs = wifiManager.getConfiguredNetworks();
+        if (wifiConfigs == null) {
+            return false;
+        }
+
+        for (WifiConfiguration wifiConfig : wifiConfigs) {
+            String ssid = wifiConfig.SSID;
+            ssid = ssid.replaceAll("\"", "");
+            Log.i(TAG, "isSavePassWord ssid=" + ssid + ";targetSsid = " + targetSsid);
+            Log.i(TAG, "isSavePassWord equals=" + ssid.equals(targetSsid));
+            if (ssid.equals(targetSsid)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static WifiConfiguration getConfig(WifiManager wifiManager, String targetSsid) {
+        Log.i(TAG, "try to getConfig, targetSsid=" + targetSsid);
+        if (wifiManager == null) {
+            return null;
+        }
+        List<WifiConfiguration> wifiConfigs = wifiManager.getConfiguredNetworks();
+        if (wifiConfigs == null) {
+            return null;
+        }
+
+
+        for (WifiConfiguration wifiConfig : wifiConfigs) {
+            String ssid = wifiConfig.SSID;
+            ssid = ssid.replaceAll("\"", "");
+            Log.i(TAG, "getConfig ssid=" + ssid + ";targetSsid = " + targetSsid);
+            Log.i(TAG, "getConfig equals=" + ssid.equals(targetSsid));
+            if (ssid.equals(targetSsid)) {
+                return wifiConfig;
+            }
+        }
+        return null;
 
     }
 
