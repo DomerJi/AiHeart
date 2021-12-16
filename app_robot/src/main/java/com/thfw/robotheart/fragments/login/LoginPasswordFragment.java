@@ -19,6 +19,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.login.LoginActivity;
+import com.thfw.robotheart.activitys.login.SetPasswordActivity;
 import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.user.login.LoginStatus;
@@ -104,6 +105,9 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
         mTvLoginByMobile.setOnClickListener(v -> {
             LoginActivity loginActivity = (LoginActivity) getActivity();
             loginActivity.getFragmentLoader().load(LoginActivity.BY_MOBILE);
+        });
+        mTvForgetPassword.setOnClickListener(v -> {
+            SetPasswordActivity.startActivity(mContext, SetPasswordActivity.SET_CODE);
         });
     }
 

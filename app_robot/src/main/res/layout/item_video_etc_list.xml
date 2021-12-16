@@ -23,7 +23,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_play_white"
+        android:src="@mipmap/ic_item_play"
         app:layout_constraintBottom_toBottomOf="@id/riv_etc_bg"
         app:layout_constraintLeft_toLeftOf="@id/riv_etc_bg"
         app:layout_constraintRight_toRightOf="@id/riv_etc_bg"

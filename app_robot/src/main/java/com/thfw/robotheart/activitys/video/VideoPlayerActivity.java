@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,7 +43,6 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
-import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.BrightnessHelper;
 import com.thfw.ui.widget.ShowChangeLayout;
@@ -81,10 +81,12 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
     private RelativeLayout mRlError;
     private TextView mTvErrorHint;
     private ImageView mExoPlay;
-    private TitleRobotView mTitleRobotView;
     private ImageView mIvScreenAll;
     private boolean screenFull;
     private ImageView mIvForward;
+    private LinearLayout mLlTopControl;
+    private ImageView mIvBack;
+    private float speed;
 
     public static void startActivity(Context context, VideoModel videoModel) {
         context.startActivity(new Intent(context, VideoPlayerActivity.class).putExtra(KEY_DATA, videoModel));
@@ -107,11 +109,19 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
         mMPlayerView = (PlayerView) findViewById(R.id.mPlayerView);
         mPbBottom = (ProgressBar) findViewById(R.id.pb_bottom);
         mPbLoading = (ProgressBar) findViewById(R.id.pb_loading);
-        mTvTitle = (TextView) findViewById(R.id.tv_title);
+        mTvTitle = (TextView) findViewById(R.id.tv_video_top_title);
         mExoPlay = findViewById(R.id.exo_play);
         mVideoLayout = findViewById(R.id.video_play_constranint);
 
-        mTitleRobotView = findViewById(R.id.titleRobotView);
+        mLlTopControl = findViewById(R.id.ll_top_control);
+        mIvBack = findViewById(R.id.iv_back);
+        mIvBack.setOnClickListener(v -> {
+            if (screenFull) {
+                screenFull();
+            } else {
+                finish();
+            }
+        });
 
         mVideoPlayConstranint = (ConstraintLayout) findViewById(R.id.video_play_constranint);
         mFlVideo = (FrameLayout) findViewById(R.id.fl_video);
@@ -194,7 +204,7 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
         mMPlayerView.setControllerVisibilityListener(new PlayerControlView.VisibilityListener() {
             @Override
             public void onVisibilityChange(int visibility) {
-                mTitleRobotView.setVisibility(visibility);
+                mLlTopControl.setVisibility(visibility);
                 onBottomProgressBar(mPbBottom, visibility == VISIBLE);
             }
         });
@@ -540,6 +550,7 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
     public void onDoubleTapGesture(MotionEvent e) {
         Log.d(TAG, "onDoubleTapGesture: ");
         screenFull();
+        setSpeed(1);
     }
 
     @Override
@@ -557,16 +568,32 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
         }
     }
 
-    private void setSpeed(float speed) {
-        if (mIvForward == null) {
-            mIvForward = findViewById(R.id.iv_show_forward);
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Runnable speechRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mIvForward == null) {
+                mIvForward = findViewById(R.id.iv_show_forward);
+            }
+            mIvForward.setVisibility(speed > 1 ? VISIBLE : View.GONE);
+            if (mExoPlayer != null) {
+                PlaybackParameters playbackParameters = new PlaybackParameters(speed, 1.0F);
+                mExoPlayer.setPlaybackParameters(playbackParameters);
+            }
         }
-        mIvForward.setVisibility(speed > 1 ? VISIBLE : View.GONE);
-        if (mExoPlayer != null) {
-            PlaybackParameters playbackParameters = new PlaybackParameters(speed, 1.0F);
-            mExoPlayer.setPlaybackParameters(playbackParameters);
+    };
+
+    private void setSpeed(float s) {
+        speed = s;
+        if (speed > 1f) {
+            mHandler.removeCallbacks(speechRunnable);
+            mHandler.postDelayed(speechRunnable, 300);
+        } else {
+            mHandler.removeCallbacks(speechRunnable);
+            mHandler.post(speechRunnable);
         }
     }
+
 
     //=============== 结束 视频手势 =======================//
 

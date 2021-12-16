@@ -87,9 +87,9 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:src="@mipmap/ic_launcher" />
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@mipmap/ic_report_pen" />
 
                     <TextView
                         android:id="@+id/tv_see_port"
@@ -116,8 +116,8 @@
 
                     <ImageView
                         android:id="@+id/iv_collect"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:background="@drawable/start_selector" />
 
                     <TextView

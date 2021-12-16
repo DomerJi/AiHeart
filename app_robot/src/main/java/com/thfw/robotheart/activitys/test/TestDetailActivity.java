@@ -159,7 +159,7 @@ public class TestDetailActivity extends RobotBaseActivity<TestPresenter> impleme
                 ToastUtil.show(mIvCollect.isSelected() ? "收藏失败" : "取消收藏失败");
                 mIvCollect.setSelected(!mIvCollect.isSelected());
             }
-        }).addCollect(HistoryApi.TYPE_TEST, mTestId);
+        }).addCollect(HistoryApi.TYPE_COLLECT_TEST, mTestId);
     }
 
 

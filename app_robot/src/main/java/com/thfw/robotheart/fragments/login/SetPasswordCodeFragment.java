@@ -1,6 +1,7 @@
 package com.thfw.robotheart.fragments.login;
 
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -9,6 +10,8 @@ import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
+import com.thfw.base.timing.TimingHelper;
+import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NumberUtil;
 import com.thfw.base.utils.RegularUtil;
@@ -24,14 +27,19 @@ import com.trello.rxlifecycle2.LifecycleProvider;
  * Date: 2021/12/7 9:19
  * Describe:Todo
  */
-public class SetPasswordCodeFragment extends BaseFragment<LoginPresenter> implements LoginPresenter.LoginUi<CommonModel> {
+public class SetPasswordCodeFragment extends BaseFragment<LoginPresenter>
+        implements LoginPresenter.LoginUi<CommonModel>, TimingHelper.WorkListener {
     private TextView mTv01;
-    private TextView mTvPhone;
+    private EditText mEtPhone;
     private TextView mTv02;
     private EditText mEtCode;
     private Button mBtSubmit;
     private TextView mTv03;
     private EditText mEtPassword;
+    private TextView mTvSendSuccess;
+    private Button mBtGetCode;
+    private String phone;
+    private int secondCount;
 
     @Override
     public int getContentView() {
@@ -47,35 +55,44 @@ public class SetPasswordCodeFragment extends BaseFragment<LoginPresenter> implem
     public void initView() {
 
         mTv01 = (TextView) findViewById(R.id.tv_01);
-        mTvPhone = (TextView) findViewById(R.id.tv_phone);
+        mEtPhone = (EditText) findViewById(R.id.et_phone);
         mTv02 = (TextView) findViewById(R.id.tv_02);
         mEtCode = (EditText) findViewById(R.id.et_code);
         mBtSubmit = (Button) findViewById(R.id.bt_submit);
         mTv03 = (TextView) findViewById(R.id.tv_03);
         mEtPassword = (EditText) findViewById(R.id.et_password);
+        mTvSendSuccess = (TextView) findViewById(R.id.tv_send_success);
+        mBtGetCode = (Button) findViewById(R.id.bt_get_code);
     }
 
     @Override
     public void initData() {
-        String phone = UserManager.getInstance().getUser().getMobile();
-        LogUtil.d(TAG, "phone = " + phone);
-        mTvPhone.setText(NumberUtil.getConfoundAccount(phone));
-        new LoginPresenter(new LoginPresenter.LoginUi<CommonModel>() {
-            @Override
-            public LifecycleProvider getLifecycleProvider() {
-                return SetPasswordCodeFragment.this;
-            }
-
-            @Override
-            public void onSuccess(CommonModel data) {
-                ToastUtil.show("验证码发送成功");
-            }
-
-            @Override
-            public void onFail(ResponeThrowable throwable) {
-
-            }
-        }).onSendCode(phone, LoginPresenter.SendType.SET_PASSWORD);
+        if (!UserManager.getInstance().isLogin()) {
+            mTvSendSuccess.setVisibility(View.INVISIBLE);
+            mBtGetCode.setVisibility(View.VISIBLE);
+            mBtGetCode.setEnabled(false);
+            mEtPhone.addTextChangedListener(new MyTextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    phone = s.toString();
+                    mBtGetCode.setEnabled(RegularUtil.isPhone(phone));
+                }
+            });
+            mBtGetCode.setOnClickListener(v -> {
+                sendCode();
+                mBtGetCode.setEnabled(false);
+                secondCount = 60;
+                TimingHelper.getInstance().addWorkArriveListener(this);
+            });
+        } else {
+            mBtGetCode.setVisibility(View.GONE);
+            phone = UserManager.getInstance().getUser().getMobile();
+            LogUtil.d(TAG, "phone = " + phone);
+            mEtPhone.setFocusable(false);
+            mEtPhone.setClickable(false);
+            mEtPhone.setText(NumberUtil.getConfoundAccount(phone));
+            sendCode();
+        }
 
         MyTextWatcher myTextWatcher = new MyTextWatcher() {
             @Override
@@ -99,6 +116,25 @@ public class SetPasswordCodeFragment extends BaseFragment<LoginPresenter> implem
 
     }
 
+    private void sendCode() {
+        new LoginPresenter(new LoginPresenter.LoginUi<CommonModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return SetPasswordCodeFragment.this;
+            }
+
+            @Override
+            public void onSuccess(CommonModel data) {
+                ToastUtil.show("验证码发送成功");
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+
+            }
+        }).onSendCode(phone, LoginPresenter.SendType.SET_PASSWORD);
+    }
+
 
     @Override
     public LifecycleProvider getLifecycleProvider() {
@@ -116,5 +152,27 @@ public class SetPasswordCodeFragment extends BaseFragment<LoginPresenter> implem
     public void onFail(ResponeThrowable throwable) {
         LoadingDialog.hide();
         ToastUtil.show("修改失败:" + throwable.getMessage());
+    }
+
+    @Override
+    public void onArrive() {
+        secondCount--;
+        mBtGetCode.setText("重新获取(" + secondCount + ")");
+        if (secondCount <= 0) {
+            mBtGetCode.setText("重新获取");
+            mBtGetCode.setEnabled(true);
+            TimingHelper.getInstance().removeWorkArriveListener(this);
+        }
+    }
+
+    @Override
+    public WorkInt workInt() {
+        return WorkInt.SECOND;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        TimingHelper.getInstance().removeWorkArriveListener(this);
     }
 }

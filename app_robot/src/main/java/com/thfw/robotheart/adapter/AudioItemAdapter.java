@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.thfw.base.models.AudioItemModel;
+import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.robotheart.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,11 +20,11 @@ import java.util.List;
  * Date: 2021/12/3 14:36
  * Describe:Todo
  */
-public class AudioItemAdapter extends BaseAdapter<AudioItemModel, AudioItemAdapter.AudioItemHolder> {
+public class AudioItemAdapter extends BaseAdapter<AudioEtcDetailModel.AudioItemModel, AudioItemAdapter.AudioItemHolder> {
 
     private int mCurrentIndex = 0;
 
-    public AudioItemAdapter(List<AudioItemModel> dataList) {
+    public AudioItemAdapter(List<AudioEtcDetailModel.AudioItemModel> dataList) {
         super(dataList);
     }
 
@@ -42,7 +42,7 @@ public class AudioItemAdapter extends BaseAdapter<AudioItemModel, AudioItemAdapt
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull AudioItemHolder holder, int position) {
-        holder.mTvTitle.setText(mDataList.get(position).url);
+        holder.mTvTitle.setText(mDataList.get(position).getTitle());
         holder.mTvTitle.setSelected(mCurrentIndex == position);
         holder.mTvCurrentPlay.setVisibility(mCurrentIndex == position ? View.VISIBLE : View.GONE);
     }

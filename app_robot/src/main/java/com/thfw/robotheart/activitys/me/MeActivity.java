@@ -22,6 +22,7 @@ public class MeActivity extends RobotBaseActivity {
     private android.widget.LinearLayout mLlHistory;
     private android.widget.LinearLayout mLlTest;
     private android.widget.LinearLayout mLlExercise;
+    private android.widget.LinearLayout mLlSee;
     private android.widget.LinearLayout mLlMusic;
     private android.widget.LinearLayout mLlRead;
     private android.widget.LinearLayout mLlStudy;
@@ -30,6 +31,7 @@ public class MeActivity extends RobotBaseActivity {
     private android.widget.RelativeLayout mRlWork;
     private android.widget.RelativeLayout mRlBackHelp;
     private android.widget.RelativeLayout mRlAccountManager;
+    private RelativeLayout mRlMeMsg;
 
     @Override
     public int getContentView() {
@@ -50,6 +52,7 @@ public class MeActivity extends RobotBaseActivity {
         mLlHistory = (LinearLayout) findViewById(R.id.ll_history);
         mLlTest = (LinearLayout) findViewById(R.id.ll_test);
         mLlExercise = (LinearLayout) findViewById(R.id.ll_exercise);
+        mLlSee = (LinearLayout) findViewById(R.id.ll_see);
         mLlMusic = (LinearLayout) findViewById(R.id.ll_music);
         mLlRead = (LinearLayout) findViewById(R.id.ll_read);
         mLlStudy = (LinearLayout) findViewById(R.id.ll_study);
@@ -58,6 +61,7 @@ public class MeActivity extends RobotBaseActivity {
         mRlWork = (RelativeLayout) findViewById(R.id.rl_work);
         mRlBackHelp = (RelativeLayout) findViewById(R.id.rl_back_help);
         mRlAccountManager = (RelativeLayout) findViewById(R.id.rl_account_manager);
+        mRlMeMsg = (RelativeLayout) findViewById(R.id.rl_me_msg);
     }
 
     @Override
@@ -110,6 +114,10 @@ public class MeActivity extends RobotBaseActivity {
 
         mRlBackHelp.setOnClickListener(v -> {
             startActivity(new Intent(mContext, HelpBackActivity.class));
+        });
+
+        mLlSee.setOnClickListener(v -> {
+            HistoryActivity.startActivity(mContext, HistoryApi.TYPE_VIDEO);
         });
 
     }

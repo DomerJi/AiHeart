@@ -38,18 +38,20 @@ public class AudioEtcListAdapter extends BaseAdapter<AudioEtcModel, AudioEtcList
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull AudioEdtListHolder holder, int position) {
-        String mHour = "已练习至  <font color='" + UIConfig.COLOR_HOUR + "'>" + 1
-                + "</font>/" + position + 2 + "  课时";
 
+        AudioEtcModel bean = mDataList.get(position);
+        String mHour;
+        if (bean.getListenHistorySize() <= 0) {
+            mHour = "<font color='" + UIConfig.COLOR_HOUR + "'>" + bean.getMusicSize()
+                    + "</font>课时";
+        } else {
+            mHour = "已练习至  <font color='" + UIConfig.COLOR_HOUR + "'>" + bean.getListenHistorySize()
+                    + "</font>/" + bean.getMusicSize() + "  课时";
+        }
         holder.mTvHour.setText(Html.fromHtml(mHour));
-        holder.mTvTitle.setText("Title_" + position);
-        GlideUtil.load(mContext, R.mipmap.cat, holder.mRivImage);
+        holder.mTvTitle.setText(bean.getTitle());
+        GlideUtil.load(mContext, bean.getImg(), holder.mRivImage);
 
-    }
-
-    @Override
-    public int getItemCount() {
-        return 30;
     }
 
     public class AudioEdtListHolder extends RecyclerView.ViewHolder {

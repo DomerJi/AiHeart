@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.text.TextUtils;
 
 public class SharePreferenceUtil {
 
@@ -48,6 +49,15 @@ public class SharePreferenceUtil {
         editor.putString(key, value);
         editor.commit();
     }
+
+    public static <T> T getObject(String key, java.lang.reflect.Type type) {
+        String json = getSharedPreferences().getString(key, null);
+        if (TextUtils.isEmpty(json)) {
+            return null;
+        }
+        return GsonUtil.fromJson(json, type);
+    }
+
 
     public static long getLong(String key, long dValue) {
         long result = getSharedPreferences().getLong(key, dValue);

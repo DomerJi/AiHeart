@@ -21,8 +21,8 @@
         app:shutter_background_color="@color/transparent"
         app:surface_type="none" />
 
-    <ProgressBar
-        android:id="@+id/pb_loading"
+    <com.thfw.ui.widget.LoadingView
+        android:id="@+id/loadingView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -31,11 +31,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <com.thfw.robotheart.view.TitleRobotView
         android:id="@+id/titleRobotView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:trv_background="@color/transparent"
+        app:trv_centerText="@string/sort_type_listening"
         tools:ignore="MissingConstraints" />
 
 
@@ -49,20 +50,19 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="#8801182c"
+            android:background="#EE01182C"
             android:orientation="vertical"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintRight_toRightOf="parent">
 
             <TextView
-                android:id="@+id/tv_etc_title"
+                android:id="@+id/tv_etc_title_logcate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="12dp"
                 android:paddingTop="16dp"
-                android:paddingBottom="16dp"
                 android:textColor="@color/green_selected_text"
-                android:textSize="@dimen/textSize"
+                android:textSize="@dimen/textSize_large"
                 tools:text="@string/title" />
 
             <androidx.recyclerview.widget.RecyclerView

@@ -61,6 +61,7 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
 
     @Override
     public void onBindViewHolder(@NonNull WifiHolder holder, int position) {
+
         ScanResult scanResult = scanResults.get(position);
         String capabilities = getEncrypt(mWifiManager, scanResult);
         if (TextUtils.isEmpty(capabilities)) {
@@ -76,7 +77,11 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
         if (savePassWord.get(scanResult.SSID)) {
             holder.mTvPass.setVisibility(View.VISIBLE);
             holder.mTvPass.setText("已保存");
+            // todo 不需要密码
+            holder.mIvLock.setImageResource(R.mipmap.ic_set_lock_on);
         } else {
+            // todo 不需要密码
+            holder.mIvLock.setImageResource(R.mipmap.ic_wifi_local_off);
             holder.mTvPass.setVisibility(View.GONE);
         }
         holder.itemView.setOnClickListener(v -> {

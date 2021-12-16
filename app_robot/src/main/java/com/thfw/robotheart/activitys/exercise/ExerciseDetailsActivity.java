@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
-import com.thfw.base.models.AudioItemModel;
+import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.ExerciseLogcateAdapter;
 import com.thfw.robotheart.view.TitleRobotView;
@@ -60,9 +60,9 @@ public class ExerciseDetailsActivity extends RobotBaseActivity {
     public void initData() {
         mRvLike.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         mLogcateAdapter = new ExerciseLogcateAdapter(null);
-        mLogcateAdapter.setOnRvItemListener(new OnRvItemListener<AudioItemModel>() {
+        mLogcateAdapter.setOnRvItemListener(new OnRvItemListener<AudioEtcDetailModel.AudioItemModel>() {
             @Override
-            public void onItemClick(List<AudioItemModel> list, int position) {
+            public void onItemClick(List<AudioEtcDetailModel.AudioItemModel> list, int position) {
                 startActivity(new Intent(mContext, ExerciseIngActivity.class));
             }
         });

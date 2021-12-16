@@ -27,6 +27,13 @@ public interface HistoryApi {
     int TYPE_EXERCISE = 5;
     int TYPE_STUDY = 6;
 
+    int TYPE_COLLECT_TEST = 1;
+    int TYPE_COLLECT_BOOK = 2;
+    int TYPE_COLLECT_AUDIO = 3;
+    int TYPE_COLLECT_VIDEO = 4;
+    int TYPE_COLLECT_EXERCISE = 5;
+    int TYPE_COLLECT_STUDY = 6;
+
     /**
      * [获取历史记录]
      * rid 测评ID 如果传入测评ID则仅获取该测评的历史记录

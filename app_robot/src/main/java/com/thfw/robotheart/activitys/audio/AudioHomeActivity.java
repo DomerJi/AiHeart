@@ -1,8 +1,6 @@
 package com.thfw.robotheart.activitys.audio;
 
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -10,29 +8,37 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.base.base.IPresenter;
+import com.google.gson.reflect.TypeToken;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioTypeModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.AudioPresenter;
+import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.AudioEtcTypeAdapter;
 import com.thfw.robotheart.fragments.media.AudioEtcListFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
-import com.thfw.ui.widget.MyRobotSearchView;
+import com.thfw.ui.widget.LoadingView;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
-public class AudioHomeActivity extends RobotBaseActivity {
+public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> implements AudioPresenter.AudioUi<List<AudioTypeModel>> {
 
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.recyclerview.widget.RecyclerView mRvList;
     private android.widget.LinearLayout mLlTop;
     private android.widget.FrameLayout mFlContent;
     private AudioEtcListFragment mAudioEtcListFragment;
-    private android.widget.ImageView mIvHistory;
     private android.widget.TextView mTvLastAudio;
-    private com.thfw.ui.widget.MyRobotSearchView mRsvSearch;
+    private LinearLayout mLlHistory;
+    private AudioEtcTypeAdapter mAudioEtcTypeAdapter;
+    private static final String KEY_TYPE_LIST = "key.audio.type.list";
+    private com.thfw.ui.widget.LoadingView mLoadingView;
 
     @Override
     public int getContentView() {
@@ -40,8 +46,8 @@ public class AudioHomeActivity extends RobotBaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public AudioPresenter onCreatePresenter() {
+        return new AudioPresenter(this);
     }
 
     @Override
@@ -53,42 +59,66 @@ public class AudioHomeActivity extends RobotBaseActivity {
         mFlContent = (FrameLayout) findViewById(R.id.fl_content);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 
-        mIvHistory = (ImageView) findViewById(R.id.iv_history);
         mTvLastAudio = (TextView) findViewById(R.id.tv_last_audio);
-        mRsvSearch = (MyRobotSearchView) findViewById(R.id.rsv_search);
-        mRsvSearch.setOnSearchListener(new MyRobotSearchView.OnSearchListener() {
-            @Override
-            public void onSearch(String key, boolean clickSearch) {
 
-            }
-
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        mLlHistory = (LinearLayout) findViewById(R.id.ll_history);
+        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
     }
 
     @Override
     public void initData() {
-        FragmentLoader mLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
-        AudioEtcTypeAdapter mAudioEtcTypeAdapter = new AudioEtcTypeAdapter(null);
 
+        mAudioEtcTypeAdapter = new AudioEtcTypeAdapter(null);
+        mRvList.setAdapter(mAudioEtcTypeAdapter);
+
+        FragmentLoader mLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
         mAudioEtcTypeAdapter.setOnRvItemListener(new OnRvItemListener<AudioTypeModel>() {
             @Override
             public void onItemClick(List<AudioTypeModel> list, int position) {
-                // todo type
-                int id = position;
+//                // todo type
+                int id = list.get(position).getKey();
                 Fragment fragment = mLoader.load(id);
                 if (fragment == null) {
-                    mLoader.add(id, new AudioEtcListFragment(String.valueOf(id)));
+                    mLoader.add(id, new AudioEtcListFragment(id));
                 }
                 mAudioEtcListFragment = (AudioEtcListFragment) mLoader.load(id);
             }
         });
+        Type type = new TypeToken<List<AudioTypeModel>>() {
+        }.getType();
+        List<AudioTypeModel> cacheModel = SharePreferenceUtil.getObject(KEY_TYPE_LIST, type);
+        if (cacheModel != null) {
+            mAudioEtcTypeAdapter.setDataListNotify(cacheModel);
+            if (mAudioEtcTypeAdapter.getItemCount() > 0) {
+                mLoadingView.hide();
+                mAudioEtcTypeAdapter.getOnRvItemListener().onItemClick(mAudioEtcTypeAdapter.getDataList(), 0);
+            }
+        }
+        mPresenter.getAudioType();
+    }
 
-        mAudioEtcTypeAdapter.getOnRvItemListener().onItemClick(mAudioEtcTypeAdapter.getDataList(), 0);
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
 
-        mRvList.setAdapter(mAudioEtcTypeAdapter);
+    @Override
+    public void onSuccess(List<AudioTypeModel> data) {
+        if (data != null) {
+            data.add(0, new AudioTypeModel("全部", 0));
+        }
+        SharePreferenceUtil.setString(KEY_TYPE_LIST, GsonUtil.toJson(data));
+        mLoadingView.hide();
+        mAudioEtcTypeAdapter.setDataListNotify(data);
+    }
+
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        if (mAudioEtcTypeAdapter.getItemCount() == 0) {
+            mLoadingView.showFail(v -> {
+                mPresenter.getAudioType();
+            });
+        }
     }
 }

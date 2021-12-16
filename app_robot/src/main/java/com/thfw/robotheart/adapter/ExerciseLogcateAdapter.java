@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.thfw.base.models.AudioItemModel;
+import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.robotheart.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,11 +20,11 @@ import java.util.List;
  * Date: 2021/12/3 14:36
  * Describe:Todo
  */
-public class ExerciseLogcateAdapter extends BaseAdapter<AudioItemModel, ExerciseLogcateAdapter.LogcateItemHolder> {
+public class ExerciseLogcateAdapter extends BaseAdapter<AudioEtcDetailModel.AudioItemModel, ExerciseLogcateAdapter.LogcateItemHolder> {
 
     private int mCurrentIndex = 0;
 
-    public ExerciseLogcateAdapter(List<AudioItemModel> dataList) {
+    public ExerciseLogcateAdapter(List<AudioEtcDetailModel.AudioItemModel> dataList) {
         super(dataList);
     }
 

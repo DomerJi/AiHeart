@@ -69,10 +69,10 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/ic_set_audio_min" />
 
             <RelativeLayout
                 android:layout_width="0dp"
@@ -105,10 +105,10 @@
             </RelativeLayout>
 
             <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/ic_set_audio_max" />
 
         </LinearLayout>
 
@@ -162,10 +162,10 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/ic_set_audio_min" />
 
             <RelativeLayout
                 android:layout_width="0dp"
@@ -198,10 +198,10 @@
             </RelativeLayout>
 
             <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/ic_set_audio_max" />
 
         </LinearLayout>
 
@@ -255,10 +255,10 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/ic_set_audio_min" />
 
             <RelativeLayout
                 android:layout_width="0dp"
@@ -291,10 +291,10 @@
             </RelativeLayout>
 
             <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/ic_set_audio_max" />
 
         </LinearLayout>
 

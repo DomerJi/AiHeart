@@ -20,15 +20,12 @@ import java.util.List;
  * Date: 2021/12/2 16:24
  * Describe:音频合集类型列表
  */
-public class BookTypeAdapter extends BaseAdapter<BookTypeModel, BookTypeAdapter.BookTypeHolder> {
+public class BookTypeAdapter extends BaseAdapter<BookTypeModel.BookTypeImpModel, BookTypeAdapter.BookTypeHolder> {
 
-    private int selectedIndex = -1;
+    private int selectedIndex = 0;
 
-    public BookTypeAdapter(List<BookTypeModel> dataList) {
+    public BookTypeAdapter(List<BookTypeModel.BookTypeImpModel> dataList) {
         super(dataList);
-        if (getItemCount() > 0) {
-            selectedIndex = 0;
-        }
     }
 
     @NonNull
@@ -42,12 +39,7 @@ public class BookTypeAdapter extends BaseAdapter<BookTypeModel, BookTypeAdapter.
     public void onBindViewHolder(@NonNull @NotNull BookTypeHolder holder, int position) {
         holder.mTvType.setTextSize(selectedIndex == position ? UIConfig.LEFT_TAB_MAX_TEXTSIZE : UIConfig.LEFT_TAB_MIN_TEXTSIZE);
         holder.mTvType.setSelected(selectedIndex == position);
-        holder.mTvType.setText("Title_" + position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return 8;
+        holder.mTvType.setText(mDataList.get(position).value);
     }
 
     public class BookTypeHolder extends RecyclerView.ViewHolder {

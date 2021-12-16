@@ -1,8 +1,6 @@
 package com.thfw.robotheart.activitys.video;
 
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,7 +17,6 @@ import com.thfw.robotheart.fragments.media.VideoEtcListFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
-import com.thfw.ui.widget.MyRobotSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +28,8 @@ public class VideoHomeActivity extends RobotBaseActivity {
     private LinearLayout mLlTop;
     private FrameLayout mFlContent;
     private VideoEtcListFragment mVideoEtcListFragment;
-    private ImageView mIvHistory;
     private TextView mTvLastAudio;
-    private MyRobotSearchView mRsvSearch;
+    private LinearLayout mLlHistory;
 
     @Override
     public int getContentView() {
@@ -54,20 +50,9 @@ public class VideoHomeActivity extends RobotBaseActivity {
         mFlContent = (FrameLayout) findViewById(R.id.fl_content);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 
-        mIvHistory = (ImageView) findViewById(R.id.iv_history);
         mTvLastAudio = (TextView) findViewById(R.id.tv_last_audio);
-        mRsvSearch = (MyRobotSearchView) findViewById(R.id.rsv_search);
-        mRsvSearch.setOnSearchListener(new MyRobotSearchView.OnSearchListener() {
-            @Override
-            public void onSearch(String key, boolean clickSearch) {
 
-            }
-
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        mLlHistory = (LinearLayout) findViewById(R.id.ll_history);
     }
 
     @Override

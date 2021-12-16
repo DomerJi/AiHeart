@@ -136,11 +136,39 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.thfw.robotheart.view.TitleRobotView
-        android:id="@+id/titleRobotView"
+    <LinearLayout
+        android:id="@+id/ll_top_control"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:trv_background="@color/transparent" />
+        android:layout_height="@dimen/navigation_height"
+        tools:background="@color/black"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="16dp"
+            android:paddingRight="12dp"
+            android:src="@drawable/ic_back_white" />
+
+        <TextView
+            android:id="@+id/tv_video_top_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            tools:text="Title"
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/textSize"/>
+
+
+        <com.thfw.robotheart.view.TitleBarView
+            android:id="@+id/titleBarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            app:tbv_white="true" />
+
+    </LinearLayout>
 
 
     <com.thfw.ui.widget.MyScrollView

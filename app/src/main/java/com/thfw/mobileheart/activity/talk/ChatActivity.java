@@ -71,7 +71,6 @@ public class ChatActivity extends BaseActivity {
         mChatAdapter = new ChatAdapter(null);
         rvChatList.setAdapter(mChatAdapter);
 
-        mRvChatList = (RecyclerView) findViewById(R.id.rv_chatList);
         mRlSend = (RelativeLayout) findViewById(R.id.rl_send);
         mEtContent = (EditText) findViewById(R.id.et_content);
         mEtContent.addTextChangedListener(new MyTextWatcher() {

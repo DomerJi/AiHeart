@@ -39,10 +39,11 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginRight="8dp"
-        android:src="@mipmap/ic_launcher"
+        android:src="@mipmap/ic_hot_call_phone"
         app:layout_constraintBottom_toBottomOf="@id/tv_title"
         app:layout_constraintRight_toLeftOf="@id/tv_phone"
-        app:layout_constraintTop_toTopOf="@id/tv_title" />
+        app:layout_constraintTop_toTopOf="@id/tv_title"
+        app:tint="@color/colorRobotFore" />
 
     <TextView
         android:id="@+id/tv_phone"

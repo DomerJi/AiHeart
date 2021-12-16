@@ -86,7 +86,7 @@
 
 
     <TextView
-        android:id="@+id/tv_title"
+        android:id="@+id/tv_audio_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -108,8 +108,8 @@
         android:text="所属章节"
         android:textColor="@color/colorRobotFore"
         android:textSize="@dimen/textSize"
-        app:layout_constraintLeft_toLeftOf="@id/tv_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+        app:layout_constraintLeft_toLeftOf="@id/tv_audio_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_audio_title" />
 
 
     <ImageView
@@ -120,6 +120,7 @@
         android:layout_marginRight="120dp"
         android:padding="12dp"
         android:src="@mipmap/ic_play_random"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/ll_bottom_control"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -152,27 +153,27 @@
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
-<!--            <View-->
-<!--                android:id="@id/exo_progress_placeholder"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="15dp"-->
-<!--                android:layout_weight="1" />-->
+            <!--            <View-->
+            <!--                android:id="@id/exo_progress_placeholder"-->
+            <!--                android:layout_width="0dp"-->
+            <!--                android:layout_height="15dp"-->
+            <!--                android:layout_weight="1" />-->
 
             <com.google.android.exoplayer2.ui.DefaultTimeBar
                 android:id="@id/exo_progress"
                 android:layout_width="0dp"
                 android:layout_height="18dp"
                 android:layout_weight="1"
+                app:ad_marker_color="@color/seekbar_color"
+                app:ad_marker_width="50dp"
+                app:buffered_color="@color/seekbar_buffer_color"
                 app:layout_constraintBottom_toBottomOf="@id/exo_position"
                 app:layout_constraintLeft_toRightOf="@id/exo_position"
                 app:layout_constraintRight_toLeftOf="@id/exo_duration"
                 app:layout_constraintTop_toTopOf="@id/exo_position"
-                app:buffered_color="@color/seekbar_buffer_color"
                 app:played_ad_marker_color="@color/seekbar_color"
                 app:played_color="@color/seekbar_color"
-                app:ad_marker_color="@color/seekbar_color"
-                app:ad_marker_width="50dp"
-                app:unplayed_color="@color/white_20"/>
+                app:unplayed_color="@color/white_20" />
 
 
             <TextView
@@ -200,7 +201,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:padding="12dp"
-                android:src="@mipmap/ic_collect_white" />
+                android:src="@drawable/ic_audio_collect_selector" />
 
 
             <Space
@@ -213,7 +214,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@color/transparent"
-                android:src="@mipmap/ic_audio_last" />
+                android:src="@mipmap/ic_play_last" />
 
             <Space
                 android:layout_width="0dp"
@@ -221,24 +222,24 @@
                 android:layout_weight="1" />
 
             <RelativeLayout
-                android:layout_width="50dp"
-                android:layout_height="50dp">
+                android:layout_width="60dp"
+                android:layout_height="60dp">
 
                 <ImageButton
                     android:id="@id/exo_play"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:layout_centerInParent="true"
                     android:background="@color/transparent"
-                    android:src="@mipmap/ic_play_white" />
+                    android:src="@mipmap/ic_home_play_2" />
 
                 <ImageButton
                     android:id="@id/exo_pause"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:layout_centerInParent="true"
                     android:background="@color/transparent"
-                    android:src="@mipmap/ic_pause_white"
+                    android:src="@mipmap/ic_audio_pause"
                     android:visibility="gone" />
 
             </RelativeLayout>
@@ -253,7 +254,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@color/transparent"
-                android:src="@mipmap/ic_audio_next" />
+                android:src="@mipmap/ic_play_next" />
 
             <Space
                 android:layout_width="0dp"
@@ -265,7 +266,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:padding="12dp"
-                android:src="@mipmap/ic_catlogue" />
+                android:src="@mipmap/ic_audio_logcate" />
 
 
         </LinearLayout>

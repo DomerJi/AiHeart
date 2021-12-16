@@ -75,6 +75,11 @@ public class HistoryPresenter extends IPresenter<HistoryPresenter.HistoryUi> {
 
     }
 
+    /**
+     * 1测试 2文章
+     * @param type
+     * @param id
+     */
     public void addCollect(int type, int id) {
         Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(HistoryApi.class)
                 .addCollect(type, id);

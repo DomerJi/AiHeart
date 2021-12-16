@@ -132,7 +132,7 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
 
         mTvLoginByMobile.setOnClickListener(v -> {
             LoginActivity loginActivity = (LoginActivity) getActivity();
-            loginActivity.getFragmentLoader().load(LoginActivity.BY_MOBILE);
+            loginActivity.getFragmentLoader().load(LoginActivity.BY_PASSWORD);
         });
 
     }

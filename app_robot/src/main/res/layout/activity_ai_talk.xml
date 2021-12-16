@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".activitys.talk.AiTalkActivity">
 
     <com.thfw.robotheart.view.TitleRobotView
@@ -17,8 +18,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_anim"
         android:layout_width="0dp"
-        android:background="@color/white_10"
         android:layout_height="0dp"
+        android:background="@color/white_10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -33,11 +34,59 @@
         android:id="@+id/rv_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/rl_send"
         app:layout_constraintHorizontal_weight="3"
         app:layout_constraintLeft_toRightOf="@id/cl_anim"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView" />
 
 
+    <RelativeLayout
+        android:id="@+id/rl_send"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_toRightOf="@id/cl_anim"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/cl_anim"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_2px"
+            android:background="@color/divider" />
+
+
+        <TextView
+            android:id="@+id/tv_send"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/common_guadual_btn_selector"
+            android:gravity="center"
+            android:text="发送"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_small" />
+
+        <EditText
+            android:id="@+id/et_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_toLeftOf="@id/tv_send"
+            android:background="@drawable/bg_chat_radius_box_border"
+            android:hint="请输入您的问题"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:textColor="@color/text_hint"
+            android:textColorHint="@color/text_content"
+            android:textSize="@dimen/textSize_small" />
+
+
+    </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+

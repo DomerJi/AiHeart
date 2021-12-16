@@ -31,7 +31,7 @@ public class ThemeTalkAdapter extends BaseAdapter<ThemeTalkModel, ThemeTalkAdapt
     @NotNull
     @Override
     public AudioEdtListHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        return new AudioEdtListHolder(inflate(R.layout.item_audio_etc_list, parent));
+        return new AudioEdtListHolder(inflate(R.layout.item_theme_talk_list, parent));
     }
 
     @Override

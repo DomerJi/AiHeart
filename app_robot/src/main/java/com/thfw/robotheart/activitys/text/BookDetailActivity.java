@@ -1,5 +1,8 @@
 package com.thfw.robotheart.activitys.text;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -8,15 +11,24 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.DefaultWebClient;
-import com.thfw.base.base.IPresenter;
+import com.thfw.base.api.HistoryApi;
+import com.thfw.base.models.BookDetailModel;
+import com.thfw.base.models.CommonModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.BookPresenter;
+import com.thfw.base.presenter.HistoryPresenter;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.ui.widget.LoadingView;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,7 +37,7 @@ import org.jsoup.select.Elements;
 
 import java.util.Iterator;
 
-public class BookDetailActivity extends RobotBaseActivity {
+public class BookDetailActivity extends RobotBaseActivity<BookPresenter> implements BookPresenter.BookUi<BookDetailModel> {
 
     private AgentWeb mAgentWeb;
     private String contentHtml;
@@ -36,7 +48,14 @@ public class BookDetailActivity extends RobotBaseActivity {
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private FrameLayout mFlWebContent;
     private com.thfw.ui.widget.LoadingView mLoadingView;
+    private android.widget.LinearLayout mLlCollect;
+    private android.widget.ImageView mIvCollect;
+    private boolean requestIng = false;
+    private int bookId;
 
+    public static void startActivity(Context context, int id) {
+        context.startActivity(new Intent(context, BookDetailActivity.class).putExtra(KEY_DATA, id));
+    }
 
     @Override
     public int getContentView() {
@@ -44,8 +63,8 @@ public class BookDetailActivity extends RobotBaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public BookPresenter onCreatePresenter() {
+        return new BookPresenter(this);
     }
 
     @Override
@@ -54,11 +73,20 @@ public class BookDetailActivity extends RobotBaseActivity {
         mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
         mFlWebContent = (FrameLayout) findViewById(R.id.fl_web_content);
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
+        mLlCollect = (LinearLayout) findViewById(R.id.ll_collect);
+        mIvCollect = (ImageView) findViewById(R.id.iv_collect);
     }
 
     @Override
     public void initData() {
-        initHtmlData();
+        int mBookId = getIntent().getIntExtra(KEY_DATA, -1);
+        if (mBookId == -1) {
+            ToastUtil.show("参数错误");
+            finish();
+            return;
+        }
+
+        mPresenter.getArticleInfo(mBookId);
     }
 
 
@@ -87,7 +115,9 @@ public class BookDetailActivity extends RobotBaseActivity {
                     + title + "</title></head><body>" + titleHtml
                     + contentHtml + "</body></html>";
         }
-
+        mLlCollect.setOnClickListener(v -> {
+            addCollect();
+        });
         initAgentWeb((FrameLayout) findViewById(R.id.fl_web_content));
     }
 
@@ -150,6 +180,7 @@ public class BookDetailActivity extends RobotBaseActivity {
             mAgentWeb = preAgentWeb.get();
             Log.d("contentHtml", "contentHtml = " + contentHtml);
             WebView webView = mAgentWeb.getWebCreator().getWebView();
+            frameLayout.setBackgroundColor(Color.WHITE);
             webView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
             webView.getSettings().setDefaultTextEncodingName("UTF-8");//设置默认为utf-8
             webView.loadDataWithBaseURL(null, contentHtml, "text/html", "UTF-8", null);//中文解码  
@@ -241,5 +272,61 @@ public class BookDetailActivity extends RobotBaseActivity {
         if (mAgentWeb != null) {
             mAgentWeb.getWebLifeCycle().onDestroy();
         }
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(BookDetailModel data) {
+        if (data != null) {
+            mLoadingView.hide();
+            title = data.getTitle();
+            contentHtml = data.getContent();
+            bookId = data.getId();
+            mIvCollect.setSelected(data.isCollected());
+            initHtmlData();
+        } else {
+            mLoadingView.showFail(v -> {
+                initData();
+            });
+        }
+
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        mLoadingView.showFail(v -> {
+            initData();
+        });
+    }
+
+    public void addCollect() {
+        if (requestIng) {
+            return;
+        }
+        requestIng = true;
+        mIvCollect.setSelected(!mIvCollect.isSelected());
+        new HistoryPresenter(new HistoryPresenter.HistoryUi<CommonModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return BookDetailActivity.this;
+            }
+
+            @Override
+            public void onSuccess(CommonModel data) {
+                requestIng = false;
+                ToastUtil.show(mIvCollect.isSelected() ? "收藏成功" : "取消收藏成功");
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                requestIng = false;
+                ToastUtil.show(mIvCollect.isSelected() ? "收藏失败" : "取消收藏失败");
+                mIvCollect.setSelected(!mIvCollect.isSelected());
+            }
+        }).addCollect(HistoryApi.TYPE_COLLECT_BOOK, bookId);
     }
 }

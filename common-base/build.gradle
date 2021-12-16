@@ -102,7 +102,13 @@ dependencies {
     api "com.google.android.exoplayer:exoplayer-core:$exo_version"
     api "com.google.android.exoplayer:exoplayer-dash:$exo_version"
     api "com.google.android.exoplayer:exoplayer-ui:$exo_version"
-
+    api "com.google.android.exoplayer:exoplayer-hls:$exo_version"
+    api "com.google.android.exoplayer:exoplayer-smoothstreaming:$exo_version"
+//    exoplayer-core：核心功能 (必要)
+//    exoplayer-dash：支持DASH内容
+//    exoplayer-hls：支持HLS内容
+//    exoplayer-smoothstreaming：支持SmoothStreaming内容
+//    exoplayer-ui：用于ExoPlayer的UI组件和相关的资源。
 
     api files('libs/Msc.jar')
 }

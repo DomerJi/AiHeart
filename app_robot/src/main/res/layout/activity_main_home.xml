@@ -106,14 +106,16 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="@dimen/home_navigation_margin"
                 android:layout_weight="1"
-                android:background="@color/black_50"
+                android:background="@drawable/ic_shade_test_bg"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:layout_width="@dimen/home_tab_icon_height"
+                    android:layout_height="@dimen/home_tab_icon_height"
+                    android:background="@mipmap/ic_home_test_round_bg"
+                    android:padding="@dimen/home_bg_icon_padding"
+                    android:src="@mipmap/ic_home_test_icon" />
 
 
                 <TextView
@@ -132,14 +134,16 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/home_navigation_margin"
                 android:layout_weight="1"
-                android:background="@color/black_50"
+                android:background="@drawable/ic_shade_audio_bg"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:layout_width="@dimen/home_tab_icon_height"
+                    android:layout_height="@dimen/home_tab_icon_height"
+                    android:background="@mipmap/ic_home_audio_round"
+                    android:padding="@dimen/home_bg_icon_padding"
+                    android:src="@mipmap/ic_home_audio_icon" />
 
 
                 <TextView
@@ -171,14 +175,16 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="@dimen/home_navigation_margin"
                 android:layout_weight="1"
-                android:background="@color/black_50"
+                android:background="@drawable/ic_shade_ai_bg"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:layout_width="@dimen/home_tab_icon_height"
+                    android:layout_height="@dimen/home_tab_icon_height"
+                    android:background="@mipmap/ic_home_ai_round"
+                    android:padding="@dimen/home_bg_icon_padding"
+                    android:src="@mipmap/ic_home_ai_icon" />
 
 
                 <TextView
@@ -197,14 +203,16 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/home_navigation_margin"
                 android:layout_weight="1"
-                android:background="@color/black_50"
+                android:background="@drawable/ic_shade_video_bg"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:layout_width="@dimen/home_tab_icon_height"
+                    android:layout_height="@dimen/home_tab_icon_height"
+                    android:background="@mipmap/ic_home_video_round"
+                    android:padding="@dimen/home_bg_icon_padding"
+                    android:src="@mipmap/ic_home_video_icon" />
 
 
                 <TextView
@@ -236,14 +244,16 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="@dimen/home_navigation_margin"
                 android:layout_weight="1"
-                android:background="@color/black_50"
+                android:background="@drawable/ic_shade_tool_bg"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:background="@mipmap/ic_home_exer_round"
+                    android:padding="@dimen/home_bg_icon_padding"
+                    android:src="@mipmap/ic_home_exer_icon" />
 
 
                 <TextView
@@ -263,14 +273,16 @@
                 android:layout_marginTop="@dimen/home_navigation_margin"
                 android:layout_marginBottom="@dimen/home_navigation_margin"
                 android:layout_weight="1"
-                android:background="@color/black_50"
+                android:background="@drawable/ic_shade_book_bg"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:background="@mipmap/ic_home_book_round"
+                    android:padding="@dimen/home_bg_icon_padding"
+                    android:src="@mipmap/ic_home_book_icon" />
 
 
                 <TextView
@@ -289,14 +301,16 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/home_navigation_margin"
                 android:layout_weight="1"
-                android:background="@color/black_50"
+                android:background="@drawable/ic_shade_study_bg"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:background="@mipmap/ic_home_study_round"
+                    android:padding="@dimen/home_bg_icon_padding"
+                    android:src="@mipmap/ic_home_study_icon" />
 
 
                 <TextView
@@ -327,7 +341,7 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="@dimen/home_navigation_margin"
                 android:layout_weight="1"
-                android:background="@color/black_50"
+                android:background="@drawable/ic_shade_gray_bg"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -337,7 +351,7 @@
                     android:layout_marginLeft="45dp"
                     android:layout_marginRight="45dp"
                     android:adjustViewBounds="true"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@mipmap/ic_home_hot_call_icon" />
 
 
                 <TextView
@@ -365,15 +379,15 @@
                     android:layout_height="match_parent"
                     android:layout_marginRight="@dimen/home_navigation_margin"
                     android:layout_weight="1"
-                    android:background="@color/black_50"
+                    android:background="@drawable/ic_shade_gray_bg"
                     android:gravity="center"
                     android:orientation="vertical">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
                         android:adjustViewBounds="true"
-                        android:src="@mipmap/ic_launcher" />
+                        android:src="@mipmap/ic_home_set_icon" />
 
 
                     <TextView
@@ -392,15 +406,15 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/home_navigation_margin"
                     android:layout_weight="1"
-                    android:background="@color/black_50"
+                    android:background="@drawable/ic_shade_gray_bg"
                     android:gravity="center"
                     android:orientation="vertical">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:adjustViewBounds="true"
-                        android:src="@mipmap/ic_launcher" />
+                        android:src="@mipmap/ic_ihome_me_icon" />
 
 
                     <TextView

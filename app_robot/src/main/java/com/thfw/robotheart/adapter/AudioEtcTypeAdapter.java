@@ -22,13 +22,10 @@ import java.util.List;
  */
 public class AudioEtcTypeAdapter extends BaseAdapter<AudioTypeModel, AudioEtcTypeAdapter.AudioEctTypeHolder> {
 
-    private int selectedIndex = -1;
+    private int selectedIndex = 0;
 
     public AudioEtcTypeAdapter(List<AudioTypeModel> dataList) {
         super(dataList);
-        if (getItemCount() > 0) {
-            selectedIndex = 0;
-        }
     }
 
     @NonNull
@@ -43,13 +40,9 @@ public class AudioEtcTypeAdapter extends BaseAdapter<AudioTypeModel, AudioEtcTyp
     public void onBindViewHolder(@NonNull @NotNull AudioEctTypeHolder holder, int position) {
         holder.mTvType.setTextSize(selectedIndex == position ? UIConfig.LEFT_TAB_MAX_TEXTSIZE : UIConfig.LEFT_TAB_MIN_TEXTSIZE);
         holder.mTvType.setSelected(selectedIndex == position);
-        holder.mTvType.setText("Title_" + position);
+        holder.mTvType.setText(mDataList.get(position).getName());
     }
 
-    @Override
-    public int getItemCount() {
-        return 8;
-    }
 
     public class AudioEctTypeHolder extends RecyclerView.ViewHolder {
 

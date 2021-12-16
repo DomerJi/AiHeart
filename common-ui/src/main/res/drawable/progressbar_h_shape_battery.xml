@@ -3,6 +3,11 @@
 
     <solid android:color="@color/colorRobotFore" />
 
-    <corners android:radius="3dp" />
+    <corners android:radius="1dp" />
+
+
+    <stroke
+        android:width="6dp"
+        android:color="@color/transparent" />
 
 </shape>

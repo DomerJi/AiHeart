@@ -13,10 +13,11 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.widget.FrameLayout;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,8 +44,7 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
 
     private ImageView mIvTitleBarWifi;
     private TextView mTvTitleBarTime;
-    private FrameLayout mFlBattery;
-    private ImageView mIvBatteryProgress;
+    private RelativeLayout mFlBattery;
     private ProgressBar mPbBatteryProgress;
     private TextView mTvProgress;
     private Context mContext;
@@ -53,6 +53,8 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
     private BroadcastReceiver broadcastReceiver;
     private static volatile int level;
     private boolean colorFg = false;
+    private View mVBatteryHead;
+    private boolean colorFgWhite;
 
 
     public TitleBarView(@NonNull @NotNull Context context) {
@@ -71,12 +73,23 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
             TypedArray ta = context.obtainStyledAttributes(attrs, com.thfw.ui.R.styleable.TitleBarView);
             final int colorBg = ta.getColor(com.thfw.ui.R.styleable.TitleBarView_tbv_background, getResources().getColor(R.color.titlebar_background));
             colorFg = ta.getBoolean(com.thfw.ui.R.styleable.TitleBarView_tbv_black, false);
+            colorFgWhite = ta.getBoolean(com.thfw.ui.R.styleable.TitleBarView_tbv_white, false);
             if (colorFg) {
                 mIvTitleBarWifi.setColorFilter(Color.BLACK);
                 mTvTitleBarTime.setTextColor(Color.BLACK);
                 mPbBatteryProgress.setProgressTintList(ColorStateList.valueOf(Color.BLACK));
                 mPbBatteryProgress.setProgressBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+                mVBatteryHead.setBackgroundColor(Color.BLACK);
+                mTvProgress.setTextColor(Color.WHITE);
+            } else if (colorFgWhite) {
+                mIvTitleBarWifi.setColorFilter(Color.WHITE);
+                mTvTitleBarTime.setTextColor(Color.WHITE);
+                mPbBatteryProgress.setProgressTintList(ColorStateList.valueOf(Color.WHITE));
+                mPbBatteryProgress.setProgressBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+                mVBatteryHead.setBackgroundColor(Color.WHITE);
+                mTvProgress.setTextColor(Color.BLACK);
             }
+
             setBackgroundColor(colorBg);
         }
 
@@ -115,10 +128,10 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
     private void initView() {
         mIvTitleBarWifi = (ImageView) findViewById(R.id.iv_titleBar_wifi);
         mTvTitleBarTime = (TextView) findViewById(R.id.tv_titleBar_time);
-        mFlBattery = (FrameLayout) findViewById(R.id.fl_battery);
-        mIvBatteryProgress = (ImageView) findViewById(R.id.iv_battery_progress);
+        mFlBattery = (RelativeLayout) findViewById(R.id.rl_battery);
         mPbBatteryProgress = (ProgressBar) findViewById(R.id.pb_battery_progress);
         mTvProgress = (TextView) findViewById(R.id.tv_progress);
+        mVBatteryHead = findViewById(R.id.v_battery_head);
         if (level > 0) {
             updateBattery(level);
         }

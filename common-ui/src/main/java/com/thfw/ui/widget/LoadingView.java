@@ -80,6 +80,14 @@ public class LoadingView extends LinearLayout implements ILoading {
     }
 
     /**
+     * 显示loading，开始加载数据时调用
+     */
+    public void showLoadingNoText() {
+        showLoading();
+        mTvLoading.setVisibility(GONE);
+    }
+
+    /**
      * 展示空布局，通常在没有数据可展示之后
      */
     @Override

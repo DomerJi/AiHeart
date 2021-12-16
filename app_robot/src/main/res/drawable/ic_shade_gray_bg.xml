@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <corners android:radius="@dimen/home_tab_bg_padding" />
+
+    <gradient
+        android:endColor="#313B49"
+        android:startColor="#313B49" />
+
+</shape>

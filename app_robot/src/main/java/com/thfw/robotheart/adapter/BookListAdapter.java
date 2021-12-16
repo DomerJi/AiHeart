@@ -2,11 +2,12 @@ package com.thfw.robotheart.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.base.models.BookStudyItemModel;
+import com.thfw.base.models.BookItemModel;
 import com.thfw.robotheart.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -18,9 +19,9 @@ import java.util.List;
  * Date: 2021/12/9 14:32
  * Describe:Todo
  */
-public class BookListAdapter extends BaseAdapter<BookStudyItemModel, BookListAdapter.BookListHolder> {
+public class BookListAdapter extends BaseAdapter<BookItemModel, BookListAdapter.BookListHolder> {
 
-    public BookListAdapter(List<BookStudyItemModel> dataList) {
+    public BookListAdapter(List<BookItemModel> dataList) {
         super(dataList);
     }
 
@@ -28,23 +29,28 @@ public class BookListAdapter extends BaseAdapter<BookStudyItemModel, BookListAda
     @NotNull
     @Override
     public BookListAdapter.BookListHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        return new BookListHolder(inflate(R.layout.item_book_study, parent));
+        return new BookListHolder(inflate(R.layout.item_book_list, parent));
     }
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull BookListAdapter.BookListHolder holder, int position) {
-
+        holder.mTvTitle.setText(mDataList.get(position).getTitle());
     }
 
-    @Override
-    public int getItemCount() {
-        return 30;
-    }
 
     public class BookListHolder extends RecyclerView.ViewHolder {
 
+        private final TextView mTvTitle;
+
         public BookListHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            mTvTitle = itemView.findViewById(R.id.tv_title);
+            itemView.setOnClickListener(v -> {
+                if (mOnRvItemListener != null) {
+                    mOnRvItemListener.onItemClick(mDataList, getBindingAdapterPosition());
+                }
+            });
+
         }
     }
 }

@@ -41,6 +41,7 @@ public class GlideUtil {
         Glide.with(mContext)
                 .load(url)
                 .apply(getRequestOptions())
+//                .transition(DrawableTransitionOptions.withCrossFade())
                 .centerCrop()
                 .into(imageView);
     }
@@ -49,6 +50,7 @@ public class GlideUtil {
         Glide.with(mContext)
                 .load(resId)
                 .apply(getRequestOptions())
+//                .transition(DrawableTransitionOptions.withCrossFade())
                 .centerCrop()
                 .into(imageView);
     }
@@ -57,6 +59,7 @@ public class GlideUtil {
         Glide.with(mContext)
                 .load(url)
                 .apply(getRequestOptions())
+//                .transition(DrawableTransitionOptions.withCrossFade())
                 .centerCrop()
                 .into(imageView);
     }
@@ -65,6 +68,7 @@ public class GlideUtil {
         Glide.with(mContext)
                 .load(url)
                 .apply(getRequestOptions())
+//                .transition(DrawableTransitionOptions.withCrossFade())
                 .centerCrop()
                 .into(imageView);
     }

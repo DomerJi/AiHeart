@@ -38,22 +38,32 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="@string/bigText2"
-            android:textColor="@color/text_robot_time"
-            android:textSize="@dimen/textSize" />
+            android:textColor="@color/colorRobotFore"
+            android:textSize="@dimen/textSize_small" />
 
-        <com.thfw.ui.widget.MyRobotSearchView
-            android:id="@+id/rsv_search"
-            android:layout_width="260dp"
-            android:layout_height="@dimen/robot_search_height"
-            app:rsv_hint="减压"
-            app:rsv_hintColor="@color/text_robot_time" />
 
-        <ImageView
-            android:id="@+id/iv_history"
+        <LinearLayout
+            android:id="@+id/ll_history"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:padding="6dp"
-            android:src="@mipmap/ic_launcher" />
+            android:layout_height="match_parent"
+            android:paddingRight="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:src="@mipmap/ic_audio_history" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="播放记录"
+                android:textColor="@color/colorRobotFore"
+                android:textSize="@dimen/textSize_small" />
+
+        </LinearLayout>
 
 
     </LinearLayout>

@@ -1,5 +1,7 @@
 package com.thfw.robotheart.activitys.login;
 
+import android.content.Context;
+import android.content.Intent;
 import android.widget.FrameLayout;
 
 import com.thfw.base.base.IPresenter;
@@ -8,9 +10,10 @@ import com.thfw.robotheart.fragments.login.SetPasswordCodeFragment;
 import com.thfw.robotheart.fragments.login.SetPasswordOriginFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.user.login.UserManager;
 
-public class SetPasswordActivity extends BaseActivity {
+public class SetPasswordActivity extends RobotBaseActivity {
 
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private android.widget.FrameLayout mFlContent;
@@ -18,6 +21,10 @@ public class SetPasswordActivity extends BaseActivity {
     public static final int SET_CODE = 0;
     public static final int SET_ORIGIN = 1;
     private FragmentLoader mFragmentLoader;
+
+    public static void startActivity(Context context, int type) {
+        context.startActivity(new Intent(context, SetPasswordActivity.class).putExtra(KEY_DATA, type));
+    }
 
     @Override
     public int getContentView() {
@@ -34,14 +41,18 @@ public class SetPasswordActivity extends BaseActivity {
 
         mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
         mFlContent = (FrameLayout) findViewById(R.id.fl_content);
+        if (!UserManager.getInstance().isLogin()) {
+            mTitleRobotView.setCenterText("忘记密码");
+        }
     }
 
     @Override
     public void initData() {
+        int type = getIntent().getIntExtra(KEY_DATA, SET_ORIGIN);
         mFragmentLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
         mFragmentLoader.add(SET_CODE, new SetPasswordCodeFragment());
         mFragmentLoader.add(SET_ORIGIN, new SetPasswordOriginFragment());
-        mFragmentLoader.load(SET_ORIGIN);
+        mFragmentLoader.load(type);
     }
 
     public FragmentLoader getFragmentLoader() {

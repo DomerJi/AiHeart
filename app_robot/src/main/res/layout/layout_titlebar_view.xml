@@ -36,40 +36,42 @@
         app:tint="@color/titleBar_tint" />
 
 
-    <FrameLayout
-        android:id="@+id/fl_battery"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/rl_battery"
+        android:layout_width="35dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="16dp">
 
-        <ImageView
-            android:id="@+id/iv_battery_progress"
-            android:layout_width="38dp"
-            android:layout_height="18dp"
-            android:background="@color/colorPrimary"
-            android:visibility="gone" />
-
         <ProgressBar
             android:id="@+id/pb_battery_progress"
             style="@style/BatteryProgressBar"
-            android:layout_width="38dp"
-            android:layout_height="18dp"
+            android:layout_width="33dp"
+            android:layout_height="16dp"
+            android:layout_toLeftOf="@id/v_battery_head"
             android:background="@color/transparent"
             android:max="100"
             android:progress="60" />
+
+        <View
+            android:id="@+id/v_battery_head"
+            android:layout_width="2dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:background="@color/colorRobotFore"
+            android:layout_height="6dp"/>
 
         <TextView
             android:id="@+id/tv_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_centerInParent="true"
             android:text="16%"
             android:textColor="@color/white"
-            android:textSize="10sp" />
+            android:textSize="8sp" />
 
 
-    </FrameLayout>
+    </RelativeLayout>
 
 
 </merge>
