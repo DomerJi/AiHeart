@@ -40,47 +40,48 @@
             android:id="@+id/riv_etc"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="55dp"
+            android:layout_margin="38dp"
             android:src="@mipmap/ic_launcher"
             app:riv_oval="true" />
 
+
+
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="52dp"
+            android:layout_margin="35dp"
             android:background="@drawable/etc_border_bg_02" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="49dp"
-            android:background="@drawable/etc_border_bg_02" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="46dp"
+            android:layout_margin="32dp"
             android:background="@drawable/etc_border_bg_02" />
 
 
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="43dp"
+            android:layout_margin="29dp"
             android:background="@drawable/etc_border_bg_02" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="40dp"
+            android:layout_margin="26dp"
             android:background="@drawable/etc_border_bg_02" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="37dp"
+            android:layout_margin="23dp"
             android:background="@drawable/etc_border_bg_02" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="20dp"
+            android:background="@drawable/etc_border_bg_02" />
 
     </RelativeLayout>
 

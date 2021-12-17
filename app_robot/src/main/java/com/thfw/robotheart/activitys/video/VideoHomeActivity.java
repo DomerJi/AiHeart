@@ -8,20 +8,26 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.base.base.IPresenter;
+import com.google.gson.reflect.TypeToken;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.VideoTypeModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.VideoPresenter;
+import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.VideoEtcTypeAdapter;
 import com.thfw.robotheart.fragments.media.VideoEtcListFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.ui.widget.LoadingView;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
-import java.util.ArrayList;
+import java.lang.reflect.Type;
 import java.util.List;
 
-public class VideoHomeActivity extends RobotBaseActivity {
+public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> implements VideoPresenter.VideoUi<List<VideoTypeModel>> {
 
     private TitleRobotView mTitleRobotView;
     private RecyclerView mRvList;
@@ -30,6 +36,11 @@ public class VideoHomeActivity extends RobotBaseActivity {
     private VideoEtcListFragment mVideoEtcListFragment;
     private TextView mTvLastAudio;
     private LinearLayout mLlHistory;
+    private com.thfw.ui.widget.LoadingView mLoadingView;
+
+
+    private static final String KEY_TYPE_LIST = "key.video.type.list";
+    private VideoEtcTypeAdapter mVideoEtcTypeAdapter;
 
     @Override
     public int getContentView() {
@@ -37,8 +48,8 @@ public class VideoHomeActivity extends RobotBaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public VideoPresenter onCreatePresenter() {
+        return new VideoPresenter(this);
     }
 
     @Override
@@ -53,43 +64,15 @@ public class VideoHomeActivity extends RobotBaseActivity {
         mTvLastAudio = (TextView) findViewById(R.id.tv_last_audio);
 
         mLlHistory = (LinearLayout) findViewById(R.id.ll_history);
+        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
     }
 
     @Override
     public void initData() {
-
-        List<VideoTypeModel> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            VideoTypeModel model = new VideoTypeModel();
-            model.id = i;
-            model.name = "Praent_" + i;
-            if (i % 2 == 0) {
-                model.list = new ArrayList<>();
-                VideoTypeModel childModel = new VideoTypeModel();
-                childModel.id = (i + 1) * 1000 + 1;
-                childModel.name = "Child" + 1;
-                model.list.add(childModel);
-                VideoTypeModel childModel2 = new VideoTypeModel();
-                childModel2.id = (i + 1) * 1000 + 2;
-                childModel2.name = "Child" + 2;
-                model.list.add(childModel2);
-
-                VideoTypeModel childModel3 = new VideoTypeModel();
-                childModel3.id = (i + 1) * 1000 + 3;
-                childModel3.name = "Child" + 3;
-                model.list.add(childModel3);
-
-
-                VideoTypeModel childModel4 = new VideoTypeModel();
-                childModel4.id = (i + 1) * 1000 + 4;
-                childModel4.name = "Child" + 4;
-                model.list.add(childModel4);
-            }
-            list.add(model);
-        }
-
+        mVideoEtcTypeAdapter = new VideoEtcTypeAdapter(null);
+        mRvList.setAdapter(mVideoEtcTypeAdapter);
         FragmentLoader mLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
-        VideoEtcTypeAdapter mVideoEtcTypeAdapter = new VideoEtcTypeAdapter(list);
+
 
         mVideoEtcTypeAdapter.setOnRvItemListener(new OnRvItemListener<VideoTypeModel>() {
             @Override
@@ -98,14 +81,47 @@ public class VideoHomeActivity extends RobotBaseActivity {
                 int id = position;
                 Fragment fragment = mLoader.load(id);
                 if (fragment == null) {
-                    mLoader.add(id, new VideoEtcListFragment(String.valueOf(id)));
+                    mLoader.add(id, new VideoEtcListFragment(id));
                 }
                 mVideoEtcListFragment = (VideoEtcListFragment) mLoader.load(id);
             }
         });
 
-        mVideoEtcTypeAdapter.getOnRvItemListener().onItemClick(mVideoEtcTypeAdapter.getDataList(), 0);
+        Type type = new TypeToken<List<VideoTypeModel>>() {
+        }.getType();
+        List<VideoTypeModel> cacheModel = SharePreferenceUtil.getObject(KEY_TYPE_LIST, type);
+        if (cacheModel != null) {
+            mVideoEtcTypeAdapter.setDataListNotify(cacheModel);
+            if (mVideoEtcTypeAdapter.getItemCount() > 0) {
+                mLoadingView.hide();
+                mVideoEtcTypeAdapter.getOnRvItemListener().onItemClick(mVideoEtcTypeAdapter.getDataList(), 0);
+            }
+        }
+        mPresenter.getVideoType();
+    }
 
-        mRvList.setAdapter(mVideoEtcTypeAdapter);
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(List<VideoTypeModel> data) {
+        if (data != null) {
+            data.add(0, new VideoTypeModel("全部", 0));
+        }
+        SharePreferenceUtil.setString(KEY_TYPE_LIST, GsonUtil.toJson(data));
+        mLoadingView.hide();
+        mVideoEtcTypeAdapter.setDataListNotify(data);
+    }
+
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        if (mVideoEtcTypeAdapter.getItemCount() == 0) {
+            mLoadingView.showFail(v -> {
+                mPresenter.getVideoType();
+            });
+        }
     }
 }

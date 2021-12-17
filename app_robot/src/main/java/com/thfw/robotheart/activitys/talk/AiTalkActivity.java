@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -18,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.TalkModel;
 import com.thfw.robotheart.R;
@@ -38,6 +41,12 @@ public class AiTalkActivity extends RobotBaseActivity {
     private androidx.recyclerview.widget.RecyclerView mRvList;
     private ChatAdapter mChatAdapter;
     private EditText mEtContent;
+    private android.widget.RelativeLayout mRlSend;
+    private android.widget.RelativeLayout mRlVoice;
+    private android.widget.RelativeLayout mRlKeywordInput;
+    private TextView mTvSend;
+    private android.widget.RelativeLayout mRlVoiceSmall;
+    private android.widget.RelativeLayout mRlKeyword;
 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, AiTalkActivity.class).putExtra(KEY_DATA, talkModel));
@@ -60,19 +69,29 @@ public class AiTalkActivity extends RobotBaseActivity {
         mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
         mClAnim = (ConstraintLayout) findViewById(R.id.cl_anim);
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
-        TextView mTvSend = (TextView) findViewById(R.id.tv_send);
+        mTvSend = (TextView) findViewById(R.id.tv_send);
         mEtContent = (EditText) findViewById(R.id.et_content);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext));
         softInput();
         mTvSend.setOnClickListener(v -> {
             ChatEntity chatEntity = new ChatEntity();
-            chatEntity.type = new Random().nextInt(4);
+            chatEntity.type = new Random().nextInt(6);
             chatEntity.talk = mEtContent.getText().toString();
             mChatAdapter.addData(chatEntity);
             mChatAdapter.notifyItemInserted(mChatAdapter.getItemCount() - 1);
             mRvList.smoothScrollToPosition(mChatAdapter.getItemCount() - 1);
             mEtContent.setText("");
         });
+        mEtContent.addTextChangedListener(new MyTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mTvSend.setEnabled(!TextUtils.isEmpty(s.toString()));
+            }
+        });
+        mRlSend = (RelativeLayout) findViewById(R.id.rl_send);
+        mRlVoice = (RelativeLayout) findViewById(R.id.rl_voice);
+        mRlKeywordInput = (RelativeLayout) findViewById(R.id.rl_keyword_input);
+        mRlKeyword = (RelativeLayout) findViewById(R.id.rl_keyword);
     }
 
     @Override
@@ -123,6 +142,29 @@ public class AiTalkActivity extends RobotBaseActivity {
             finishService();
         });
         AndroidBug5497Workaround.assistActivity(this);
+
+        SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
+            @Override
+            public void keyBoardShow(int height) {
+                mRlKeyword.setVisibility(View.GONE);
+                mRlVoice.setVisibility(View.GONE);
+                mRlKeywordInput.setVisibility(View.VISIBLE);
+
+            }
+
+            @Override
+            public void keyBoardHide(int height) {
+                mRlKeywordInput.setVisibility(View.GONE);
+                mRlKeyword.setVisibility(View.VISIBLE);
+                mRlVoice.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        mRlKeyword.setOnClickListener(v -> {
+            mRlKeywordInput.setVisibility(View.VISIBLE);
+            showInput(mEtContent);
+        });
 
     }
 

@@ -11,6 +11,8 @@ import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.AudioPresenter;
+import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HourChangeHelper;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.adapter.AudioEtcListAdapter;
@@ -27,7 +29,8 @@ import java.util.List;
  * Date: 2021/12/2 16:15
  * Describe:Todo
  */
-public class AudioEtcListFragment extends RobotBaseFragment<AudioPresenter> implements AudioPresenter.AudioUi<List<AudioEtcModel>> {
+public class AudioEtcListFragment extends RobotBaseFragment<AudioPresenter>
+        implements AudioPresenter.AudioUi<List<AudioEtcModel>>, HourChangeHelper.HourChangeListener {
 
     private int type;
     private SmartRefreshLayout mRefreshLayout;
@@ -68,6 +71,7 @@ public class AudioEtcListFragment extends RobotBaseFragment<AudioPresenter> impl
                 initData();
             }
         });
+        HourChangeHelper.getInstance().add(this);
     }
 
     @Override
@@ -83,6 +87,10 @@ public class AudioEtcListFragment extends RobotBaseFragment<AudioPresenter> impl
     @Override
     public void onSuccess(List<AudioEtcModel> data) {
         if (page == 1) {
+            if (EmptyUtil.isEmpty(data)) {
+                mLoadingView.showEmpty();
+                return;
+            }
             mLoadingView.hide();
             mAudioEtcListAdapter = new AudioEtcListAdapter(data);
             mAudioEtcListAdapter.setOnRvItemListener(new OnRvItemListener<AudioEtcModel>() {
@@ -96,6 +104,7 @@ public class AudioEtcListFragment extends RobotBaseFragment<AudioPresenter> impl
         } else {
             mRefreshLayout.finishLoadMore(true);
             mAudioEtcListAdapter.addDataListNotify(data);
+            mRefreshLayout.setNoMoreData(EmptyUtil.isEmpty(data));
         }
         page++;
     }
@@ -109,5 +118,29 @@ public class AudioEtcListFragment extends RobotBaseFragment<AudioPresenter> impl
         } else {
             mRefreshLayout.finishLoadMore(false);
         }
+    }
+
+    @Override
+    public void hourChanged(int collectionId, int hour, int musicId) {
+        if (mAudioEtcListAdapter != null) {
+            List<AudioEtcModel> dataList = mAudioEtcListAdapter.getDataList();
+            if (EmptyUtil.isEmpty(dataList)) {
+                return;
+            }
+            for (AudioEtcModel bean : dataList) {
+                if (bean.getId() == collectionId) {
+                    bean.setLastMusicId(musicId);
+                    bean.setListenHistorySize(hour);
+                    mAudioEtcListAdapter.notifyDataSetChanged();
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        HourChangeHelper.getInstance().remove(this);
     }
 }

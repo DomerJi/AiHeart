@@ -1,5 +1,6 @@
 package com.thfw.base.models;
 
+import com.google.gson.annotations.SerializedName;
 import com.thfw.base.base.IModel;
 
 import java.util.ArrayList;
@@ -7,13 +8,99 @@ import java.util.List;
 
 public class VideoModel implements IModel {
 
+    /**
+     * id : 406
+     * file : http://resource.soulbuddy.cn/public/uploads/video/storydepression.mp4
+     * img : http://resource.soulbuddy.cn/public/uploads/videoPic/21011911060660064c9ed5ee7.jpg
+     * des : null
+     * num : 1000
+     * collected : 0
+     * history_time : 0
+     */
+    @SerializedName("title")
+    public String title;
+    @SerializedName("id")
+    private int id;
+    @SerializedName("file")
+    private String url;
+    @SerializedName("img")
+    private String img;
+    @SerializedName("des")
+    private String des;
+    @SerializedName("num")
+    private int num;
+    @SerializedName("collected")
+    private int collected;
+    @SerializedName("history_time")
+    private int historyTime;
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public Object getDes() {
+        return des;
+    }
+
+    public void setDes(String des) {
+        this.des = des;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
+
+    public int getCollected() {
+        return collected;
+    }
+
+    public void setCollected(int collected) {
+        this.collected = collected;
+    }
+
+    public int getHistoryTime() {
+        return historyTime;
+    }
+
+    public void setHistoryTime(int historyTime) {
+        this.historyTime = historyTime;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * 视频测试数据
+     */
     private static String videoUrl01 = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
     private static String videoUrl02 = "http://gslb.miaopai.com/stream/oxX3t3Vm5XPHKUeTS-zbXA__.mp4";
     private static String videoUrl03 = "http://flv2.bn.netease.com/videolib3/1611/28/nNTov5571/SD/nNTov5571-mobile.mp4";
-
-
-    public String url;
-    public String title;
 
     public static List<VideoModel> getVideoUrl() {
         List<VideoModel> videoModels = new ArrayList<>();
@@ -39,4 +126,5 @@ public class VideoModel implements IModel {
         return videoModels;
 
     }
+
 }

@@ -1,20 +1,25 @@
 package com.thfw.robotheart.fragments.media;
 
-import android.os.Handler;
-
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
-import com.thfw.base.base.IPresenter;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.VideoEtcModel;
-import com.thfw.base.models.VideoModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.VideoPresenter;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.VideoEtcListAdapter;
 import com.thfw.ui.base.RobotBaseFragment;
 import com.thfw.ui.widget.LoadingView;
+import com.trello.rxlifecycle2.LifecycleProvider;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -23,15 +28,17 @@ import java.util.List;
  * Date: 2021/12/2 16:15
  * Describe:Todo
  */
-public class VideoEtcListFragment extends RobotBaseFragment {
+public class VideoEtcListFragment extends RobotBaseFragment<VideoPresenter> implements VideoPresenter.VideoUi<List<VideoEtcModel>> {
 
-    private String type;
+    private int type;
     private SmartRefreshLayout mRefreshLayout;
     private RecyclerView mRvEtcList;
     private LoadingView mLoadingView;
     private VideoEtcListAdapter mVideoEtcListAdapter;
 
-    public VideoEtcListFragment(String type) {
+    private int page = 1;
+
+    public VideoEtcListFragment(int type) {
         super();
         this.type = type;
     }
@@ -42,8 +49,8 @@ public class VideoEtcListFragment extends RobotBaseFragment {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public VideoPresenter onCreatePresenter() {
+        return new VideoPresenter(this);
     }
 
     @Override
@@ -53,24 +60,60 @@ public class VideoEtcListFragment extends RobotBaseFragment {
         mRvEtcList = (RecyclerView) findViewById(R.id.rvEtcList);
         mRvEtcList.setLayoutManager(new GridLayoutManager(mContext, 4));
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
+
+        mRefreshLayout.setEnableLoadMore(false);
+        mRefreshLayout.setEnableRefresh(false);
+        mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull @NotNull RefreshLayout refreshLayout) {
+                initData();
+            }
+        });
     }
 
     @Override
     public void initData() {
+        mPresenter.getVideoList(type, page);
+    }
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mLoadingView.hide();
-                mVideoEtcListAdapter = new VideoEtcListAdapter(null);
-                mVideoEtcListAdapter.setOnRvItemListener(new OnRvItemListener<VideoEtcModel>() {
-                    @Override
-                    public void onItemClick(List<VideoEtcModel> list, int position) {
-                        VideoPlayerActivity.startActivity(mContext, VideoModel.getVideoUrl().get(1));
-                    }
-                });
-                mRvEtcList.setAdapter(mVideoEtcListAdapter);
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(List<VideoEtcModel> data) {
+        if (page == 1) {
+            if (EmptyUtil.isEmpty(data)) {
+                mLoadingView.showEmpty();
+                return;
             }
-        }, 500);
+            mLoadingView.hide();
+            mVideoEtcListAdapter = new VideoEtcListAdapter(data);
+            mVideoEtcListAdapter.setOnRvItemListener(new OnRvItemListener<VideoEtcModel>() {
+                @Override
+                public void onItemClick(List<VideoEtcModel> list, int position) {
+                    VideoPlayerActivity.startActivity(mContext, list, position);
+                }
+            });
+            mRefreshLayout.setEnableLoadMore(true);
+            mRvEtcList.setAdapter(mVideoEtcListAdapter);
+        } else {
+            mRefreshLayout.finishLoadMore(true);
+            mVideoEtcListAdapter.addDataListNotify(data);
+            mRefreshLayout.setNoMoreData(EmptyUtil.isEmpty(data));
+        }
+        page++;
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        if (page == 1) {
+            mLoadingView.showFail(v -> {
+                initData();
+            });
+        } else {
+            mRefreshLayout.finishLoadMore(false);
+        }
     }
 }

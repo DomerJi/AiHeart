@@ -3,26 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/robot_page_bg">
+    android:layout_height="match_parent">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/video_play_constranint"
-        android:layout_width="@dimen/robot_video_small_width"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/black"
         android:clipToPadding="true"
         android:fitsSystemWindows="true"
-        app:layout_constraintDimensionRatio="w,16:9"
-        app:layout_constraintHorizontal_weight="3">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-
-        <FrameLayout
-            android:id="@+id/fl_video"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/iv_bg"
@@ -44,66 +37,60 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
 
-        <!-- app:controller_layout_id="@layout/custom_exo_player_view"
-            app:player_layout_id="@layout/custom_exo_player_control_view"-->
-
+        <!--  声音 亮度改变 -->
         <com.thfw.ui.widget.ShowChangeLayout
             android:id="@+id/scl"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="90dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
 
 
-        <ProgressBar
-            android:id="@+id/pb_loading"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/ll_show_forward"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="90dp"
+            android:background="@drawable/volume_light_changed_bg"
+            android:gravity="center_horizontal"
+            android:paddingLeft="18dp"
+            android:paddingTop="8dp"
+            android:paddingRight="18dp"
+            android:paddingBottom="8dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <RelativeLayout
-            android:id="@+id/rl_error"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/black_20"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginLeft="8dp"
+                android:src="@drawable/ic_round_fast_forward" />
+
+
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:layout_height="25dp"
+                android:layout_marginLeft="12dp"
+                android:text="3.0X"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
 
-                <ImageView
-                    android:layout_width="38dp"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:src="@mipmap/ic_continue" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tv_error_hint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/textSize"
-                    tools:text="网络异常" />
 
-            </LinearLayout>
-
-        </RelativeLayout>
+        <com.thfw.ui.widget.LoadingView
+            android:id="@+id/loadingView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <ProgressBar
@@ -117,31 +104,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             tools:ignore="DuplicateIds" />
 
-        <ImageView
-            android:id="@+id/iv_show_forward"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            android:background="@color/black_50"
-            android:paddingLeft="26dp"
-            android:paddingTop="8dp"
-            android:paddingRight="26dp"
-            android:paddingBottom="8dp"
-            android:src="@drawable/ic_round_fast_forward"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+    <!--    顶部时间返回标题-->
     <LinearLayout
         android:id="@+id/ll_top_control"
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigation_height"
-        tools:background="@color/black"
-        android:orientation="horizontal">
+        android:background="@drawable/top_2_bottom_black_tran"
+        android:orientation="horizontal"
+        tools:ignore="MissingConstraints">
 
         <ImageView
             android:id="@+id/iv_back"
@@ -155,10 +129,10 @@
             android:id="@+id/tv_video_top_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            tools:text="Title"
             android:layout_gravity="center_vertical"
-            android:textSize="@dimen/textSize"/>
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize"
+            tools:text="Title" />
 
 
         <com.thfw.robotheart.view.TitleBarView
@@ -171,85 +145,77 @@
     </LinearLayout>
 
 
-    <com.thfw.ui.widget.MyScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/video_play_constranint"
-        app:layout_constraintRight_toRightOf="@id/video_play_constranint"
-        app:layout_constraintTop_toBottomOf="@id/video_play_constranint">
+    <!--简介-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_hint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <com.thfw.ui.widget.MyScrollView
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:background="@color/black_90"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingTop="16dp"
+                android:paddingRight="16dp">
+
+                <TextView
+                    android:id="@+id/tv_video_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bigText2"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize" />
+
+            </LinearLayout>
+
+        </com.thfw.ui.widget.MyScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--    视频目录-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:visibility="gone">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="#EE01182C"
             android:orientation="vertical"
-            android:paddingLeft="16dp"
-            android:paddingTop="16dp"
-            android:paddingRight="16dp">
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintRight_toRightOf="parent">
 
             <TextView
-                android:id="@+id/tv_video_title"
-                android:layout_width="match_parent"
+                android:id="@+id/tv_etc_title_logcate"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title"
-                android:textColor="@color/colorRobotFore"
-                android:textSize="20sp" />
+                android:paddingLeft="12dp"
+                android:paddingTop="16dp"
+                android:textColor="@color/green_selected_text"
+                android:textSize="@dimen/textSize_large"
+                tools:text="@string/title" />
 
-            <TextView
-                android:id="@+id/tv_video_content"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/bigText2"
-                android:textColor="@color/white"
-                android:textSize="@dimen/textSize" />
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 
-    </com.thfw.ui.widget.MyScrollView>
-
-    <LinearLayout
-        android:id="@+id/ll_like"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/video_play_constranint"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tv_like_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:paddingTop="18dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="12dp"
-            android:text="为你推荐"
-            android:textColor="@color/colorRobotFore"
-            android:textSize="20sp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_like"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/tv_like_changed"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/like_video_bg"
-            android:gravity="center"
-            android:paddingLeft="16dp"
-            android:paddingTop="8dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="8dp"
-            android:text="换一换" />
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

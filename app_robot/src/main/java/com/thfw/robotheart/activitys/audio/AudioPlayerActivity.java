@@ -42,6 +42,7 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.AudioPresenter;
 import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HourChangeHelper;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.AudioService;
@@ -167,6 +168,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             if (mRvList.getAdapter() == null) {
                 mTvEtcTitleLogcate.setText(mModel.getTitle() + mModel.getMusicSize() + "课时");
                 AudioItemAdapter audioItemAdapter = new AudioItemAdapter(mAudios);
+                audioItemAdapter.setCurrentIndex(player.getCurrentWindowIndex());
                 audioItemAdapter.setOnRvItemListener(new OnRvItemListener<AudioEtcDetailModel.AudioItemModel>() {
                     @Override
                     public void onItemClick(List<AudioEtcDetailModel.AudioItemModel> list, int position) {
@@ -248,7 +250,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         });
         // 章节与课时
         mTvEtcTitle.setText("所属章节：" + mModel.getTitle());
-        mTvAudioTitle.setText(mAudios.get(0).getTitle());
+        mTvAudioTitle.setText(mAudios.get(mModel.getLastHourIndex()).getTitle());
 
         ExoPlayerFactory.with(mContext).builder(ExoPlayerFactory.EXO_AUDIO);
         player = ExoPlayerFactory.getExoPlayer();
@@ -262,6 +264,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 //            player.addMediaItem(MediaItem.fromUri(mediaItem.getSfile()));
             player.addMediaSource(buildMediaSource(Uri.parse(mediaItem.getSfile())));
         }
+        player.seekTo(mModel.getLastHourIndex(), 0);
 
         player.prepare();
         // Start the playback.
@@ -343,6 +346,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
     @Override
     public void onSuccess(AudioEtcDetailModel data) {
+        if (mDetailModel != null) {
+            return;
+        }
         mPbBar.hide();
         if (data != null) {
             mDetailModel = data;
@@ -354,6 +360,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
     @Override
     public void onFail(ResponeThrowable throwable) {
+        if (mDetailModel != null) {
+            return;
+        }
         mPbBar.showFail(v -> {
             initData();
         });
@@ -450,6 +459,10 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             // 列表播放曲目切换监听
             LogUtil.d("onMediaItemTransition -> " + mediaItem.playbackProperties.uri);
             mTvAudioTitle.setText(mAudios.get(player.getCurrentWindowIndex()).getTitle());
+            int musicId = mAudios.get(player.getCurrentWindowIndex()).getId();
+            mPresenter.addAudioHistory(musicId, mModel.getId());
+            // 列表页更新
+            HourChangeHelper.getInstance().notify(mModel.getId(), player.getCurrentWindowIndex() + 1, musicId);
 //            if (player == null) {
 //                return;
 //            }

@@ -38,11 +38,25 @@ public class AudioEtcModel implements IModel {
     private String title;
     @SerializedName("music_size")
     private int musicSize;
-    @SerializedName("listen_history_size")
-    private int listenHistorySize;
+    @SerializedName("last_index")
+    private int listenHistorySize = -1;
+    @SerializedName("last_music_id")
+    private int lastMusicId;
+
+    public int getLastMusicId() {
+        return lastMusicId;
+    }
+
+    public void setLastMusicId(int lastMusicId) {
+        this.lastMusicId = lastMusicId;
+    }
 
     public int getListenHistorySize() {
-        return listenHistorySize;
+        return listenHistorySize >= 0 ? listenHistorySize : 0;
+    }
+
+    public int getLastHourIndex() {
+        return listenHistorySize > 0 ? listenHistorySize - 1 : 0;
     }
 
     public void setListenHistorySize(int listenHistorySize) {

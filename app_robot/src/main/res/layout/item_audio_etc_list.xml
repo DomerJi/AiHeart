@@ -54,7 +54,7 @@
         android:paddingRight="8dp"
         android:text="@string/title"
         android:textColor="@color/white"
-        android:textSize="@dimen/textSize_large"
+        android:textSize="@dimen/textSize"
         app:layout_constraintTop_toBottomOf="@id/riv_etc_bg" />
 
 

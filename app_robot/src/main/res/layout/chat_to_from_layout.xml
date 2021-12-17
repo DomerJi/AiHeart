@@ -22,10 +22,10 @@
             android:layout_alignParentRight="true"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@mipmap/ic_talk_text_bg"
             android:padding="12dp"
             android:text="test"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize" />
 
     </RelativeLayout>
 
@@ -34,7 +34,7 @@
         android:layout_width="43dp"
         android:layout_height="43dp"
         android:layout_marginRight="16dp"
-        android:src="@drawable/flow_voice_stop"
+        android:src="@mipmap/ic_launcher"
         app:riv_oval="true" />
 
 </LinearLayout>

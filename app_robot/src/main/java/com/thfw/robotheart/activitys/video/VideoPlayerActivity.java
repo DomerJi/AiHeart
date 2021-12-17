@@ -1,68 +1,88 @@
 package com.thfw.robotheart.activitys.video;
 
+import android.animation.Animator;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSpec;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.thfw.base.ContextApp;
-import com.thfw.base.base.IPresenter;
+import com.thfw.base.api.HistoryApi;
+import com.thfw.base.face.MyAnimationListener;
+import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.models.VideoModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.HistoryPresenter;
+import com.thfw.base.presenter.VideoPresenter;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
-import com.thfw.ui.base.BaseActivity;
+import com.thfw.robotheart.adapter.VideoItemAdapter;
+import com.thfw.robotheart.view.TitleBarView;
+import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.ui.widget.BrightnessHelper;
+import com.thfw.ui.widget.ILoading;
+import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
 import com.thfw.ui.widget.VideoGestureHelper;
+import com.trello.rxlifecycle2.LifecycleProvider;
 import com.yhao.floatwindow.FloatWindow;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.view.View.VISIBLE;
 
-public class VideoPlayerActivity extends BaseActivity implements VideoGestureHelper.VideoGestureListener {
+public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
+        implements VideoGestureHelper.VideoGestureListener, VideoPresenter.VideoUi<VideoModel> {
 
 
     private ImageView mIvBg;
     private PlayerView mMPlayerView;
     private ProgressBar mPbBottom;
-    private ProgressBar mPbLoading;
     private TextView mTvTitle;
     private SimpleExoPlayer mExoPlayer;
     private VideoModel mVideoModel;
@@ -76,20 +96,43 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
     private boolean isPlaying = false;
     private boolean windowPlay = false;
     private ConstraintLayout mVideoPlayConstranint;
-    private FrameLayout mFlVideo;
     private Handler handler;
-    private RelativeLayout mRlError;
-    private TextView mTvErrorHint;
     private ImageView mExoPlay;
-    private ImageView mIvScreenAll;
     private boolean screenFull;
-    private ImageView mIvForward;
+    private View mLLShowForWard;
     private LinearLayout mLlTopControl;
     private ImageView mIvBack;
     private float speed;
+    private static List<VideoEtcModel> mStaticVideoList;
+    private List<VideoEtcModel> mVideoList;
+    public static final String KEY_PLAY_POSITION = "key.position";
+    private int mPlayPosition;
+    private ShowChangeLayout mScl;
+    private boolean flDurationEnd;
+    private LoadingView mLoadingView;
+    private ImageView mIvShowForward;
+    private TextView mTvVideoTopTitle;
+    private TitleBarView mTitleBarView;
+    private TextView mTvVideoContent;
+    private ConstraintLayout mClContent;
+    private TextView mTvEtcTitleLogcate;
+    private RecyclerView mRvList;
+    private LinearLayout mLlCollect;
+    private LinearLayout mLlHint;
+    private LinearLayout mLlLogcate;
+    private ImageView mExoNext;
+    private boolean requestIng;
+
+    private ImageView mIvCollect;
+    private ConstraintLayout mClHint;
 
     public static void startActivity(Context context, VideoModel videoModel) {
         context.startActivity(new Intent(context, VideoPlayerActivity.class).putExtra(KEY_DATA, videoModel));
+    }
+
+    public static void startActivity(Context context, List<VideoEtcModel> list, int playPosition) {
+        mStaticVideoList = list;
+        context.startActivity(new Intent(context, VideoPlayerActivity.class).putExtra(KEY_PLAY_POSITION, playPosition));
     }
 
     @Override
@@ -98,17 +141,15 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public VideoPresenter onCreatePresenter() {
+        return new VideoPresenter(this);
     }
 
     @Override
     public void initView() {
-
         mIvBg = (ImageView) findViewById(R.id.iv_bg);
         mMPlayerView = (PlayerView) findViewById(R.id.mPlayerView);
         mPbBottom = (ProgressBar) findViewById(R.id.pb_bottom);
-        mPbLoading = (ProgressBar) findViewById(R.id.pb_loading);
         mTvTitle = (TextView) findViewById(R.id.tv_video_top_title);
         mExoPlay = findViewById(R.id.exo_play);
         mVideoLayout = findViewById(R.id.video_play_constranint);
@@ -116,25 +157,59 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
         mLlTopControl = findViewById(R.id.ll_top_control);
         mIvBack = findViewById(R.id.iv_back);
         mIvBack.setOnClickListener(v -> {
-            if (screenFull) {
-                screenFull();
-            } else {
-                finish();
-            }
+            finish();
         });
 
         mVideoPlayConstranint = (ConstraintLayout) findViewById(R.id.video_play_constranint);
-        mFlVideo = (FrameLayout) findViewById(R.id.fl_video);
 
-        mRlError = (RelativeLayout) findViewById(R.id.rl_error);
-        mTvErrorHint = (TextView) findViewById(R.id.tv_error_hint);
-        mIvScreenAll = (ImageView) findViewById(R.id.iv_screen_all);
+        mScl = (ShowChangeLayout) findViewById(R.id.scl);
+        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
+        mLoadingView.showLoadingNoText();
+        mTvVideoTopTitle = (TextView) findViewById(R.id.tv_video_top_title);
+        mTitleBarView = (TitleBarView) findViewById(R.id.titleBarView);
+        mTvVideoContent = (TextView) findViewById(R.id.tv_video_content);
+        mClContent = (ConstraintLayout) findViewById(R.id.cl_content);
+        mTvEtcTitleLogcate = (TextView) findViewById(R.id.tv_etc_title_logcate);
+        mRvList = (RecyclerView) findViewById(R.id.rv_list);
+        mRvList.setLayoutManager(new LinearLayoutManager(mContext));
+        mLlCollect = (LinearLayout) findViewById(R.id.ll_collect);
+        mLlHint = (LinearLayout) findViewById(R.id.ll_hint);
+        mLlLogcate = (LinearLayout) findViewById(R.id.ll_logcate);
+        mExoNext = (ImageView) findViewById(R.id.ic_exo_next);
+        mIvCollect = (ImageView) findViewById(R.id.iv_collect);
+        mClHint = (ConstraintLayout) findViewById(R.id.cl_hint);
+        // 防止误触关闭控制栏
+        findViewById(R.id.ll_video_control_root).setOnClickListener(v -> {
+        });
+
+        mLlLogcate.setOnClickListener(v -> {
+            videoLogcatue();
+        });
+        mClContent.setOnClickListener(v -> {
+            videoLogcatue();
+        });
+        mLlCollect.setOnClickListener(v -> {
+            addCollect();
+        });
+        mLlHint.setOnClickListener(v -> {
+            mClHint.setVisibility(VISIBLE);
+        });
+        mClHint.setOnClickListener(v -> {
+            mClHint.setVisibility(View.GONE);
+        });
+        mExoNext.setOnClickListener(v -> {
+            videoChanged(mPlayPosition + 1);
+        });
+        mMPlayerView.setControllerVisibilityListener(new PlayerControlView.VisibilityListener() {
+            @Override
+            public void onVisibilityChange(int visibility) {
+                mLlTopControl.setVisibility(visibility);
+                onBottomProgressBar(mPbBottom, visibility == VISIBLE);
+            }
+        });
         // 初始化手势
         initGesture();
 
-        mIvScreenAll.setOnClickListener(v -> {
-            screenFull();
-        });
     }
 
     private void screenFull() {
@@ -162,105 +237,203 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
                                     savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mVideoModel = (VideoModel) getIntent().getSerializableExtra(KEY_DATA);
-        if (mVideoModel == null) {
-            ToastUtil.show("视频参数为空");
-            finish();
-            return;
-        }
-        mTvTitle.setText(mVideoModel.title);
-        mExoPlayer = new SimpleExoPlayer.Builder(this).build();
+//        LogUtil.d("savedInstanceState = " + (savedInstanceState == null));
+//        if (savedInstanceState != null) {
+//            playPosition = savedInstanceState.getLong(CURRENT_POSITION, 0);
+//            mExoPlayer.seekTo(playPosition);
+//            mExoPlayer.prepare();
+//            LogUtil.d(TAG, "playPosition = " + playPosition);
+//            playState = savedInstanceState.getBoolean(PLAY_STATE, playState);
+//            if (playState) {
+//                mExoPlayer.play();
+//            } else {
+//                mExoPlayer.setPlayWhenReady(playState);
+//            }
+//        } else {
+//            playPosition = SharePreferenceUtil.getLong(CURRENT_POSITION, 0);
+//            mExoPlayer.seekTo(playPosition);
+//            mExoPlayer.prepare();
+//            mExoPlayer.setPlayWhenReady(true);
+//        }
 
-        mPbLoading.setVisibility(VISIBLE);
-        if (mPlayerListener != null) {
-            mExoPlayer.removeListener(mPlayerListener);
-        }
-        mPlayerListener = new PlayerListener();
-        mPlayerListener.setPbBar(mPbLoading);
-        mExoPlayer.addListener(mPlayerListener);
-        mMPlayerView.setPlayer(mExoPlayer);
-        MediaItem mediaItem = MediaItem.fromUri(mVideoModel.url);
-//            MediaSource mediaSource = new DefaultMediaSourceFactory(mContext).createMediaSource(mediaItem);
-        mExoPlayer.setMediaItem(mediaItem);
-
-        LogUtil.d("savedInstanceState = " + (savedInstanceState == null));
-        if (savedInstanceState != null) {
-            playPosition = savedInstanceState.getLong(CURRENT_POSITION, 0);
-            mExoPlayer.seekTo(playPosition);
-            mExoPlayer.prepare();
-            LogUtil.d(TAG, "playPosition = " + playPosition);
-            playState = savedInstanceState.getBoolean(PLAY_STATE, playState);
-            if (playState) {
-                mExoPlayer.play();
-            } else {
-                mExoPlayer.setPlayWhenReady(playState);
-            }
-        } else {
-            playPosition = SharePreferenceUtil.getLong(CURRENT_POSITION, 0);
-            mExoPlayer.seekTo(playPosition);
-            mExoPlayer.prepare();
-            mExoPlayer.setPlayWhenReady(true);
-        }
-        mMPlayerView.setControllerVisibilityListener(new PlayerControlView.VisibilityListener() {
-            @Override
-            public void onVisibilityChange(int visibility) {
-                mLlTopControl.setVisibility(visibility);
-                onBottomProgressBar(mPbBottom, visibility == VISIBLE);
-            }
-        });
-
-        initView();
     }
 
+    private void initExoPlayer() {
+        long positionMs = -1;
+        // 初始化ExoPlayer
+        if (mExoPlayer == null) {
+            mExoPlayer = new SimpleExoPlayer.Builder(this).build();
+            if (mPlayerListener != null) {
+                mExoPlayer.removeListener(mPlayerListener);
+            }
+            positionMs = VideoHistoryHelper.getPosition(mVideoModel.getId());
+            mPlayerListener = new PlayerListener();
+            mExoPlayer.addListener(mPlayerListener);
+            mMPlayerView.setPlayer(mExoPlayer);
+        }
+        mTvVideoContent.setText("简介：" + mVideoModel.getDes());
+        mIvCollect.setSelected(mVideoModel.getCollected() == 1);
+        mExoPlayer.setMediaSource(buildMediaSource(Uri.parse(mVideoModel.getUrl())));
+        mExoPlayer.prepare();
+        if (positionMs > 0) {
+            continuePlay(positionMs);
+        }
+        mExoPlayer.setPlayWhenReady(true);
+    }
 
-    @Override
-    public int getStatusBarColor() {
-        return STATUSBAR_TRANSPARENT;
+    private void continuePlay(long positionMs) {
+        mExoPlayer.seekTo(positionMs);
+        TextView mTvContinuePlay = findViewById(R.id.tv_continue_play);
+        mTvContinuePlay.setVisibility(VISIBLE);
+        mTvContinuePlay.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (EmptyUtil.isEmpty(VideoPlayerActivity.this)) {
+                    return;
+                }
+                mTvContinuePlay.setVisibility(View.GONE);
+            }
+        }, 3500);
+    }
+
+    private MediaSource buildMediaSource(Uri uri) {
+        DefaultBandwidthMeter mDefaultBandwidthMeter = new DefaultBandwidthMeter();
+        // 重定向 301 302 http 2 https
+        DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(this, mDefaultBandwidthMeter, new DefaultHttpDataSourceFactory("exoplayer-codelab", null, 15000, 15000, true));
+
+        return new ProgressiveMediaSource.Factory(upstreamFactory).createMediaSource(uri);
+        // 已弃用，无相关类
+//        return new ExtractorMediaSource.Factory(upstreamFactory). createMediaSource(uri); }
     }
 
     @Override
     public void initData() {
-
+        if (mVideoList == null && mStaticVideoList != null) {
+            mVideoList = new ArrayList<>();
+            mVideoList.addAll(mStaticVideoList);
+            mStaticVideoList = null;
+            int mPlayPosition = getIntent().getIntExtra(KEY_PLAY_POSITION, 0);
+            videoChanged(mPlayPosition);
+        }
     }
 
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    /**
+     * 目录显示隐藏
+     */
+    private void videoLogcatue() {
+        if (mClContent.getVisibility() == VISIBLE) {
+
+            mClContent.animate().alpha(0f).setListener(new MyAnimationListener() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    mClContent.setVisibility(View.GONE);
+                }
+            }).start();
+        } else {
+            if (mRvList.getAdapter() == null) {
+                mTvEtcTitleLogcate.setText("播放列表" + mVideoList.size());
+                VideoItemAdapter videoItemAdapter = new VideoItemAdapter(mVideoList);
+                videoItemAdapter.setOnRvItemListener(new OnRvItemListener<VideoEtcModel>() {
+                    @Override
+                    public void onItemClick(List<VideoEtcModel> list, int position) {
+                        videoChanged(position);
+                        videoLogcatue();
+                    }
+                });
+                mRvList.setAdapter(videoItemAdapter);
+            } else {
+                if (mExoPlayer != null) {
+                    ((VideoItemAdapter) mRvList.getAdapter()).setCurrentIndex(mPlayPosition);
+                }
+            }
+            mClContent.setAlpha(0f);
+            mClContent.setVisibility(VISIBLE);
+            flDurationEnd = false;
+            mClContent.animate().alpha(1f).setListener(new MyAnimationListener() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    flDurationEnd = true;
+                }
+            });
+        }
+    }
+
+    /**
+     * 切换视频
+     *
+     * @param playPosition
+     */
+    private void videoChanged(int playPosition) {
+        this.mPlayPosition = playPosition;
+        if (mExoPlayer != null) {
+            mMPlayerView.hideController();
+            mMPlayerView.onPause();
+            mExoPlayer.setPlayWhenReady(false);
+        }
+
+        if (mPlayPosition >= mVideoList.size() - 1) {
+            mPlayPosition = mVideoList.size() - 1;
+            mExoNext.setAlpha(0.4f);
+            mExoNext.setEnabled(false);
+        } else {
+            mExoNext.setAlpha(1f);
+            mExoNext.setEnabled(true);
+        }
+
+        if (mClContent.getVisibility() == VISIBLE && mRvList.getAdapter() != null) {
+            if (mExoPlayer != null) {
+                ((VideoItemAdapter) mRvList.getAdapter()).setCurrentIndex(mPlayPosition);
+            }
+        }
+        mTvTitle.setText(mVideoList.get(mPlayPosition).getTitle());
+        mPresenter.getVideoInfo(mVideoList.get(playPosition).getId());
+        mLoadingView.showLoadingNoText();
+    }
+
+    @Override
+    public void onSuccess(VideoModel data) {
+        mVideoModel = data;
+        mLoadingView.hide();
+        initExoPlayer();
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        mLoadingView.showFail(v -> {
+            videoChanged(mPlayPosition);
+        });
+    }
+
+    /**
+     * 视频事件监听
+     */
     public class PlayerListener implements Player.Listener {
-        private ProgressBar mPbBar;
-
-        public void setPbBar(ProgressBar mPbBar) {
-            this.mPbBar = mPbBar;
-        }
-
-        public ProgressBar getLoading() {
-            return mPbBar;
-        }
 
         @Override
         public void onPlaybackStateChanged(int state) {
-            ProgressBar mPbBar = getLoading();
-            if (mPbBar == null) {
-                return;
-            }
-
             if (state == Player.STATE_READY || state == Player.STATE_ENDED) {
-                mPbBar.setVisibility(View.GONE);
+                mLoadingView.hide();
+                // 视频播放完成
+                if (state == Player.STATE_ENDED) {
+                    if (mPlayPosition < mVideoList.size() - 1) {
+                        videoChanged(mPlayPosition + 1);
+                    }
+                }
             } else {
-                mPbBar.setVisibility(VISIBLE);
+                mLoadingView.showLoadingNoText();
             }
-            if ("error".equals(String.valueOf(mPbBar.getTag()))) {
-                mPbBar.setVisibility(View.GONE);
-                mPbBar.setTag("");
-            }
-
         }
 
         @Override
         public void onPlayerError(ExoPlaybackException error) {
-            ProgressBar mPbBar = getLoading();
-            if (mPbBar == null) {
-                return;
-            }
-            mPbBar.setTag("error");
-            mPbBar.setVisibility(View.GONE);
             String errorHint = null;
             if (error.type == ExoPlaybackException.TYPE_SOURCE) {
                 IOException cause = error.getSourceException();
@@ -293,22 +466,10 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
             } else if (error.type == ExoPlaybackException.TYPE_REMOTE) {
                 errorHint = "网络错误 - REMOTE";
             }
-            showError(errorHint);
-        }
-    }
-
-    private void showError(String error) {
-        if (TextUtils.isEmpty(error)) {
-            mRlError.setVisibility(View.GONE);
-            mTvErrorHint.setText("");
-        } else {
-            ToastUtil.show(error);
-            mRlError.setVisibility(VISIBLE);
-            mRlError.setOnClickListener(v -> {
-                mRlError.setVisibility(View.GONE);
-                mExoPlay.performClick();
+            mLoadingView.showFail(ILoading.Level.ERROR_NET, v -> {
+                // todo 重试
+                videoChanged(mPlayPosition);
             });
-            mTvErrorHint.setText(error);
         }
     }
 
@@ -324,7 +485,9 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
 
     @Override
     protected void onPause() {
+        addHistory();
         super.onPause();
+
         if (windowPlay) {
             return;
         }
@@ -333,6 +496,17 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
             isPlaying = mExoPlayer.isPlaying();
             mExoPlayer.setPlayWhenReady(false);
         }
+    }
+
+    /**
+     * 增加历史记录
+     */
+    private void addHistory() {
+        LogUtil.d(TAG, "addHistory+++++++++++++++++++++++++++++++");
+        if (mVideoModel == null || mExoPlayer == null) {
+            return;
+        }
+        VideoHistoryHelper.addHistory(mVideoModel, mExoPlayer.getCurrentPosition());
     }
 
     @Override
@@ -408,6 +582,34 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
         super.finish();
     }
 
+    public void addCollect() {
+        if (requestIng) {
+            return;
+        }
+        requestIng = true;
+        mIvCollect.setSelected(!mIvCollect.isSelected());
+        new HistoryPresenter(new HistoryPresenter.HistoryUi<CommonModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return VideoPlayerActivity.this;
+            }
+
+            @Override
+            public void onSuccess(CommonModel data) {
+                requestIng = false;
+                ToastUtil.show(mIvCollect.isSelected() ? "收藏成功" : "取消收藏成功");
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                requestIng = false;
+                ToastUtil.show(mIvCollect.isSelected() ? "收藏失败" : "取消收藏失败");
+                mIvCollect.setSelected(!mIvCollect.isSelected());
+            }
+        }).addCollect(HistoryApi.TYPE_COLLECT_VIDEO, mVideoModel.getId());
+    }
+
+
     //=============== 开始 视频手势 =======================//
 
     private VideoGestureHelper ly_VG;
@@ -457,7 +659,7 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
     @Override
     public void onEndFF_REW(MotionEvent e) {
         setSpeed(1);
-        ToastUtil.show("设置进度为" + newProgress);
+//        ToastUtil.show("设置进度为" + newProgress);
     }
 
     @Override
@@ -512,25 +714,25 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
     @Override
     public void onFF_REWGesture(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         setSpeed(1);
-        float offset = e2.getX() - e1.getX();
-        Log.d(TAG, "onFF_REWGesture: offset " + offset);
-        Log.d(TAG, "onFF_REWGesture: ly_VG.getWidth()" + ly_VG.getWidth());
-        //根据移动的正负决定快进还是快退
-        if (offset > 0) {
-            scl.setImageResource(R.drawable.ic_video_ff);
-            newProgress = (int) (oldProgress + offset / ly_VG.getWidth() * 100);
-            if (newProgress > 100) {
-                newProgress = 100;
-            }
-        } else {
-            scl.setImageResource(R.drawable.ic_video_fr);
-            newProgress = (int) (oldProgress + offset / ly_VG.getWidth() * 100);
-            if (newProgress < 0) {
-                newProgress = 0;
-            }
-        }
-        scl.setProgress(newProgress);
-        scl.show();
+//        float offset = e2.getX() - e1.getX();
+//        Log.d(TAG, "onFF_REWGesture: offset " + offset);
+//        Log.d(TAG, "onFF_REWGesture: ly_VG.getWidth()" + ly_VG.getWidth());
+//        //根据移动的正负决定快进还是快退
+//        if (offset > 0) {
+//            scl.setImageResource(R.drawable.ic_video_ff);
+//            newProgress = (int) (oldProgress + offset / ly_VG.getWidth() * 100);
+//            if (newProgress > 100) {
+//                newProgress = 100;
+//            }
+//        } else {
+//            scl.setImageResource(R.drawable.ic_video_fr);
+//            newProgress = (int) (oldProgress + offset / ly_VG.getWidth() * 100);
+//            if (newProgress < 0) {
+//                newProgress = 0;
+//            }
+//        }
+//        scl.setProgress(newProgress);
+//        scl.show();
     }
 
     @Override
@@ -549,7 +751,6 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
     @Override
     public void onDoubleTapGesture(MotionEvent e) {
         Log.d(TAG, "onDoubleTapGesture: ");
-        screenFull();
         setSpeed(1);
     }
 
@@ -572,10 +773,10 @@ public class VideoPlayerActivity extends BaseActivity implements VideoGestureHel
     private Runnable speechRunnable = new Runnable() {
         @Override
         public void run() {
-            if (mIvForward == null) {
-                mIvForward = findViewById(R.id.iv_show_forward);
+            if (mLLShowForWard == null) {
+                mLLShowForWard = findViewById(R.id.ll_show_forward);
             }
-            mIvForward.setVisibility(speed > 1 ? VISIBLE : View.GONE);
+            mLLShowForWard.setVisibility(speed > 1 ? VISIBLE : View.GONE);
             if (mExoPlayer != null) {
                 PlaybackParameters playbackParameters = new PlaybackParameters(speed, 1.0F);
                 mExoPlayer.setPlaybackParameters(playbackParameters);

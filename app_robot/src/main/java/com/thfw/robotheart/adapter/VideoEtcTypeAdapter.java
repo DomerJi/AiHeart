@@ -26,21 +26,17 @@ import java.util.List;
  */
 public class VideoEtcTypeAdapter extends BaseAdapter<VideoTypeModel, VideoEtcTypeAdapter.AudioEctTypeHolder> {
 
-    private int selectedIndex = -1;
+    private int selectedIndex = 0;
     private int childSelectedIndex = -1;
 
     public VideoEtcTypeAdapter(List<VideoTypeModel> dataList) {
         super(dataList);
-        if (getItemCount() > 0) {
-            selectedIndex = 0;
-        }
     }
 
     @NonNull
     @NotNull
     @Override
     public AudioEctTypeHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-
         return new AudioEctTypeHolder(inflate(R.layout.item_video_etc_type, parent));
     }
 
@@ -50,7 +46,7 @@ public class VideoEtcTypeAdapter extends BaseAdapter<VideoTypeModel, VideoEtcTyp
         VideoTypeModel bean = mDataList.get(position);
         holder.mTvType.setTextSize(selectedIndex == position ? UIConfig.LEFT_TAB_MAX_TEXTSIZE : UIConfig.LEFT_TAB_MIN_TEXTSIZE);
         holder.mTvType.setSelected(selectedIndex == position);
-        holder.mTvType.setText(bean.name + "_" + position);
+        holder.mTvType.setText(bean.name);
         LogUtil.d("VideoEtcTypeAdapter", "bean.list = " + !EmptyUtil.isEmpty(bean.list));
         if (selectedIndex == position) {
             if (!EmptyUtil.isEmpty(bean.list)) {

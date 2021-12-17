@@ -26,7 +26,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:background="@mipmap/ic_talk_text_from_bg"
             android:padding="12dp"
             android:text="test"
             android:textColor="@color/white"

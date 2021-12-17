@@ -13,15 +13,26 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_video_control_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="bottom"
-    android:background="#66000000"
+    android:background="@drawable/bottom_2_top_black_tran"
     android:layoutDirection="ltr"
     android:orientation="vertical"
     tools:targetApi="28">
+
+    <TextView
+        android:id="@+id/tv_continue_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="26dp"
+        android:paddingTop="18dp"
+        android:text="续播：从上次播放位置为您续播"
+        android:textColor="@color/text_yellow"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -72,81 +83,197 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginTop="12dp"
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <TextView
+                android:id="@id/exo_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <com.google.android.exoplayer2.ui.DefaultTimeBar
+                android:id="@id/exo_progress"
+                android:layout_width="0dp"
+                android:layout_height="18dp"
+                android:layout_weight="1"
+                app:ad_marker_color="@color/seekbar_color"
+                app:ad_marker_width="50dp"
+                app:buffered_color="@color/seekbar_buffer_color"
+                app:layout_constraintBottom_toBottomOf="@id/exo_position"
+                app:layout_constraintLeft_toRightOf="@id/exo_position"
+                app:layout_constraintRight_toLeftOf="@id/exo_duration"
+                app:layout_constraintTop_toTopOf="@id/exo_position"
+                app:played_ad_marker_color="@color/seekbar_color"
+                app:played_color="@color/seekbar_color"
+                app:unplayed_color="@color/white_20" />
+
+            <TextView
+                android:id="@id/exo_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <ImageView
+                    android:id="@id/exo_play"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@color/transparent"
+                    android:padding="12dp"
+                    android:src="@mipmap/ic_audio_play" />
+
+                <ImageView
+                    android:id="@id/exo_pause"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@color/transparent"
+                    android:padding="12dp"
+                    android:src="@mipmap/ic_play_pause_2"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
 
             <ImageView
-                android:id="@id/exo_play"
-                android:layout_width="40dp"
+                android:id="@+id/ic_exo_next"
+                android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:layout_marginLeft="8dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="12dp"
                 android:background="@color/transparent"
                 android:padding="12dp"
-                android:src="@mipmap/ic_play_white" />
+                android:src="@mipmap/ic_play_next_2" />
 
-            <ImageView
-                android:id="@id/exo_pause"
-                android:layout_width="40dp"
-                android:layout_height="45dp"
-                android:layout_marginLeft="8dp"
-                android:background="@color/transparent"
-                android:padding="12dp"
-                android:src="@mipmap/ic_pause_white"
-                android:visibility="gone" />
 
-        </RelativeLayout>
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
-        <TextView
-            android:id="@id/exo_position"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/ll_collect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:ignore="MissingConstraints">
 
-        <com.google.android.exoplayer2.ui.DefaultTimeBar
-            android:id="@id/exo_progress"
-            android:layout_width="0dp"
-            android:layout_height="18dp"
-            android:layout_weight="1"
-            app:layout_constraintBottom_toBottomOf="@id/exo_position"
-            app:layout_constraintLeft_toRightOf="@id/exo_position"
-            app:layout_constraintRight_toLeftOf="@id/exo_duration"
-            app:layout_constraintTop_toTopOf="@id/exo_position"
-            app:buffered_color="@color/seekbar_buffer_color"
-            app:played_ad_marker_color="@color/seekbar_color"
-            app:played_color="@color/seekbar_color"
-            app:ad_marker_color="@color/seekbar_color"
-            app:ad_marker_width="50dp"
-            app:unplayed_color="@color/white_20"/>
+                <ImageView
+                    android:id="@+id/iv_collect"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_audio_collect_selector" />
 
-        <TextView
-            android:id="@id/exo_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="收藏"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize" />
 
-        <ImageView
-            android:id="@+id/iv_screen_all"
-            android:layout_width="34dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="12dp"
-            android:adjustViewBounds="true"
-            android:padding="8dp"
-            android:src="@mipmap/ic_screen_all" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:ignore="MissingConstraints">
+
+                <ImageView
+                    android:id="@+id/iv_hint"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@mipmap/ic_video_hint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="简介"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_logcate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:ignore="MissingConstraints">
+
+                <ImageView
+                    android:id="@+id/iv_logcate"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@mipmap/ic_video_hint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="目录"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

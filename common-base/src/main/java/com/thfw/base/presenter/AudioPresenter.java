@@ -5,6 +5,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
 import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.base.models.AudioEtcModel;
+import com.thfw.base.models.AudioLastEtcModel;
 import com.thfw.base.models.AudioTypeModel;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.net.HttpResult;
@@ -48,6 +49,12 @@ public class AudioPresenter extends IPresenter<AudioPresenter.AudioUi> {
     public void addAudioHistory(int musicId,int collectId) {
         Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(AudioApi.class)
                 .addAudioHistory(musicId,collectId);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    public void getAudioLastHistory() {
+        Observable<HttpResult<AudioLastEtcModel>> observable = OkHttpUtil.createService(AudioApi.class)
+                .getAudioLastHistory(NetParams.crete());
         OkHttpUtil.request(observable, getUI());
     }
 

@@ -25,6 +25,7 @@ import com.thfw.robotheart.activitys.text.BookStudyActivity;
 import com.thfw.robotheart.activitys.video.VideoHomeActivity;
 import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.ui.widget.MyRobotSearchView;
 import com.thfw.ui.widget.WeekView;
 import com.thfw.user.login.User;
 import com.thfw.user.login.UserManager;
@@ -100,6 +101,19 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mLlSetting.setOnClickListener(this);
         mLlMe.setOnClickListener(this);
         mRlSpecialityTalk.setOnClickListener(this);
+
+        MyRobotSearchView mMySearch = findViewById(R.id.my_search);
+        mMySearch.setOnSearchListener(new MyRobotSearchView.OnSearchListener() {
+            @Override
+            public void onSearch(String key, boolean clickSearch) {
+
+            }
+
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(mContext, SearchActivity.class));
+            }
+        });
     }
 
 
@@ -133,7 +147,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         } else if (vId == R.id.rl_speciality_talk) {
             startActivity(new Intent(mContext, ThemeTalkActivity.class));
         } else if (vId == R.id.ll_talk) {
-            AiTalkActivity.startActivity(mContext,new TalkModel(TalkModel.TYPE_AI));
+            AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
         } else if (vId == R.id.ll_hot_call) {
             startActivity(new Intent(mContext, HotPhoneActivity.class));
         } else if (vId == R.id.ll_study) {

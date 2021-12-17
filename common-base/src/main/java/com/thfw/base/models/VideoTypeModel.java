@@ -12,5 +12,11 @@ public class VideoTypeModel {
     public String name;
     public int id;
 
+
+    public VideoTypeModel(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+
     public List<VideoTypeModel> list;
 }

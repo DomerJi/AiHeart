@@ -42,13 +42,15 @@ public class AudioEtcListAdapter extends BaseAdapter<AudioEtcModel, AudioEtcList
         AudioEtcModel bean = mDataList.get(position);
         String mHour;
         if (bean.getListenHistorySize() <= 0) {
-            mHour = "<font color='" + UIConfig.COLOR_HOUR + "'>" + bean.getMusicSize()
-                    + "</font>课时";
+//            mHour = "<font color='" + UIConfig.COLOR_HOUR + "'>" + bean.getMusicSize()
+//                    + "</font>课时";
+            holder.mTvHour.setText(bean.getMusicSize() + "课时");
         } else {
             mHour = "已练习至  <font color='" + UIConfig.COLOR_HOUR + "'>" + bean.getListenHistorySize()
                     + "</font>/" + bean.getMusicSize() + "  课时";
+            holder.mTvHour.setText(Html.fromHtml(mHour));
         }
-        holder.mTvHour.setText(Html.fromHtml(mHour));
+
         holder.mTvTitle.setText(bean.getTitle());
         GlideUtil.load(mContext, bean.getImg(), holder.mRivImage);
 

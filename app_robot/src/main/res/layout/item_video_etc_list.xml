@@ -38,6 +38,7 @@
         android:gravity="right|center_vertical"
         android:paddingRight="@dimen/card_image_bottom_padding"
         android:text="@string/title"
+        android:visibility="gone"
         android:textColor="@drawable/common_left_tab_textcolor_selector"
         android:textSize="@dimen/card_image_bottom_textSize"
         app:layout_constraintBottom_toBottomOf="@id/riv_etc_bg" />
@@ -54,7 +55,7 @@
         android:paddingRight="8dp"
         android:text="@string/title"
         android:textColor="@color/white"
-        android:textSize="@dimen/textSize_large"
+        android:textSize="@dimen/textSize"
         app:layout_constraintTop_toBottomOf="@id/riv_etc_bg" />
 
 

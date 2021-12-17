@@ -1,6 +1,5 @@
 package com.thfw.robotheart.adapter;
 
-import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.VideoEtcModel;
 import com.thfw.robotheart.R;
-import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.ui.utils.GlideUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -38,18 +36,9 @@ public class VideoEtcListAdapter extends BaseAdapter<VideoEtcModel, VideoEtcList
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull VideoEdtListHolder holder, int position) {
-        String mHour = "已练习至  <font color='" + UIConfig.COLOR_HOUR + "'>" + 1
-                + "</font>/" + position + 2 + "  课时";
+        holder.mTvTitle.setText(mDataList.get(position).getTitle());
+        GlideUtil.load(mContext, mDataList.get(position).getPic(), holder.mRivImage);
 
-        holder.mTvHour.setText(Html.fromHtml(mHour));
-        holder.mTvTitle.setText("Title_" + position);
-        GlideUtil.load(mContext, R.mipmap.cat, holder.mRivImage);
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return 30;
     }
 
     public class VideoEdtListHolder extends RecyclerView.ViewHolder {

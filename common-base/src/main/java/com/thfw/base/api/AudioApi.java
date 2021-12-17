@@ -2,6 +2,7 @@ package com.thfw.base.api;
 
 import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.base.models.AudioEtcModel;
+import com.thfw.base.models.AudioLastEtcModel;
 import com.thfw.base.models.AudioTypeModel;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.net.HttpResult;
@@ -56,8 +57,13 @@ public interface AudioApi {
      * @return
      */
     @FormUrlEncoded
-    @POST("history_remark")
+    @POST("music/history_remark")
     Observable<HttpResult<CommonModel>> addAudioHistory(@Field("music_id") int musicId, @Field("collection_id") int collectId);
+
+
+    @FormUrlEncoded
+    @POST("music/last_use")
+    Observable<HttpResult<AudioLastEtcModel>> getAudioLastHistory(@FieldMap Map<String, Object> params);
 
 
 }

@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#66333333"
-    android:padding="10dp">
+    android:layout_height="wrap_content"
+    android:background="@drawable/volume_light_changed_bg"
+    android:paddingLeft="18dp"
+    android:paddingTop="8dp"
+    android:paddingRight="18dp"
+    android:paddingBottom="8dp">
 
     <ImageView
         android:id="@+id/iv_center"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_centerVertical="true"
+        app:tint="@color/white" />
 
     <ProgressBar
         android:id="@+id/pb"
         style="@style/tallerBarStyle"
         android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_below="@+id/iv_center"
-        android:layout_marginTop="4dp"
+        android:layout_height="6dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="12dp"
+        android:layout_toRightOf="@id/iv_center"
         android:max="100"
-        android:progress="0" />
+        android:progress="0"
+        android:progressBackgroundTint="@color/white_50"
+        android:progressTint="@color/white" />
 
 
 </RelativeLayout>

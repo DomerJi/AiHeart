@@ -34,6 +34,10 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
                 return new ChatHolder(LayoutInflater.from(mContext).inflate(R.layout.chat_end_service_layout, parent, false));
             case ChatEntity.TYPE_FEEDBACK: // 您对本次回答满意吗？
                 return new ChatHolder(LayoutInflater.from(mContext).inflate(R.layout.chat_freeback_layout, parent, false));
+            case ChatEntity.TYPE_LINK: // 链接
+                return new ChatHolder(LayoutInflater.from(mContext).inflate(R.layout.chat_from_to_link_layout, parent, false));
+            case ChatEntity.TYPE_TIME: // 链接
+                return new ChatHolder(LayoutInflater.from(mContext).inflate(R.layout.chat_from_to_link_layout, parent, false));
             default:
                 return new ChatHolder(LayoutInflater.from(mContext).inflate(R.layout.chat_from_to_layout, parent, false));
         }

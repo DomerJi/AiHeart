@@ -43,6 +43,18 @@ public interface ILoading {
             this.hint = hint;
             this.btnText = btnText;
         }
+
+        public String getHint() {
+            return hint;
+        }
+
+        public int getLevel() {
+            return level;
+        }
+
+        public String getBtnText() {
+            return btnText;
+        }
     }
 
 

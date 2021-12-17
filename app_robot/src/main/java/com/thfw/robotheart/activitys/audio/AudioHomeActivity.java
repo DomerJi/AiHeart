@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.reflect.TypeToken;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.AudioLastEtcModel;
 import com.thfw.base.models.AudioTypeModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.AudioPresenter;
@@ -67,7 +68,6 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
 
     @Override
     public void initData() {
-
         mAudioEtcTypeAdapter = new AudioEtcTypeAdapter(null);
         mRvList.setAdapter(mAudioEtcTypeAdapter);
 
@@ -112,6 +112,42 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
         mAudioEtcTypeAdapter.setDataListNotify(data);
     }
 
+    /**
+     * 获得最后一次播放记录
+     */
+    private void getLastAudio() {
+        new AudioPresenter(new AudioPresenter.AudioUi<AudioLastEtcModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return AudioHomeActivity.this;
+            }
+
+            @Override
+            public void onSuccess(AudioLastEtcModel data) {
+                notifyLastAudioData(data);
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+
+            }
+        }).getAudioLastHistory();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getLastAudio();
+    }
+
+    private void notifyLastAudioData(AudioLastEtcModel data) {
+        if (data != null) {
+            mTvLastAudio.setText("上次播放：" + data.getTitle() + "     " + data.getAddTime());
+            mTvLastAudio.setOnClickListener(v -> {
+                AudioPlayerActivity.startActivity(mContext, data.toAudioEtcModel());
+            });
+        }
+    }
 
     @Override
     public void onFail(ResponeThrowable throwable) {

@@ -125,10 +125,11 @@ public class LoadingView extends LinearLayout implements ILoading {
         }
         hideLoading();
         hideEmpty();
-        mTvFail.setOnClickListener(view -> {
-            onClickListener.onClick(mIvFail);
+        mLayoutFail.setOnClickListener(view -> {
+            onClickListener.onClick(mLayoutFail);
             showLoading();
         });
+        mTvFail.setText(level.getHint());
         mIvFail.setVisibility(VISIBLE);
         mTvFail.setVisibility(VISIBLE);
         mLayoutFail.setVisibility(VISIBLE);
