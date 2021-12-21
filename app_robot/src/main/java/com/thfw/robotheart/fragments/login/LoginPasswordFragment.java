@@ -1,6 +1,8 @@
 package com.thfw.robotheart.fragments.login;
 
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -43,6 +45,8 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
     private TextView mTvProductUser;
     private TextView mTvProductMsg;
     private TextView mTvProductAgree;
+    private LinearLayout mLlLoginCenter;
+    private TextView mTvLoginByFace;
 
     public LoginPasswordFragment() {
         // Required empty public constructor
@@ -76,8 +80,29 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
 
+        mLlLoginCenter = (LinearLayout) findViewById(R.id.ll_login_center);
+        mTvLoginByFace = (TextView) findViewById(R.id.tv_login_by_face);
+
         Util.addUnderLine(mTvProduct3g, mTvProductUser, mTvProductMsg, mTvProductAgree);
 
+        mIvSeePassword.setOnClickListener(v -> {
+
+            mIvSeePassword.setSelected(!mIvSeePassword.isSelected());
+            LogUtil.i("mIvSeePassword.isSelected() = " + mIvSeePassword.isSelected());
+            if (mIvSeePassword.isSelected()) {
+                // 如果选中，显示密码
+                mEtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            } else {
+                // 否则隐藏密码
+                mEtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            }
+            mEtPassword.setSelection(mEtPassword.getText().length());
+        });
+
+        mTvLoginByFace.setOnClickListener(v -> {
+            LoginActivity loginActivity = (LoginActivity) getActivity();
+            loginActivity.getFragmentLoader().load(LoginActivity.BY_FACE);
+        });
 
     }
 

@@ -45,7 +45,8 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
 
     private int secondCount = 60;
     private LinearLayout mLlLoginCenter;
-    private TextView mTvLoginByMobile;
+    private TextView mTvLoginByPassword;
+    private TextView mTvLoginByFace;
 
     public LoginMobileCodeFragment() {
         // Required empty public constructor
@@ -75,7 +76,8 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
         mLlLoginCenter = (LinearLayout) findViewById(R.id.ll_login_center);
-        mTvLoginByMobile = (TextView) findViewById(R.id.tv_login_by_mobile);
+        mTvLoginByPassword = (TextView) findViewById(R.id.tv_login_by_password);
+        mTvLoginByFace = (TextView) findViewById(R.id.tv_login_by_face);
     }
 
     @Override
@@ -130,9 +132,14 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
             mPresenter.loginByMobile(phone, code);
         });
 
-        mTvLoginByMobile.setOnClickListener(v -> {
+        mTvLoginByPassword.setOnClickListener(v -> {
             LoginActivity loginActivity = (LoginActivity) getActivity();
             loginActivity.getFragmentLoader().load(LoginActivity.BY_PASSWORD);
+        });
+
+        mTvLoginByFace.setOnClickListener(v -> {
+            LoginActivity loginActivity = (LoginActivity) getActivity();
+            loginActivity.getFragmentLoader().load(LoginActivity.BY_FACE);
         });
 
     }

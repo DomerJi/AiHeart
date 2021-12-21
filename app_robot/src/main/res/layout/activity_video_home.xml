@@ -22,33 +22,37 @@
     <LinearLayout
         android:id="@+id/ll_top"
         android:layout_width="0dp"
-        android:layout_height="55dp"
+        android:layout_height="50dp"
         android:gravity="right|center_vertical"
         android:orientation="horizontal"
+        android:visibility="visible"
         app:layout_constraintLeft_toRightOf="@id/rvList"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView">
 
         <TextView
             android:id="@+id/tv_last_audio"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginRight="26dp"
+            android:background="@drawable/last_audio_history_bg"
             android:maxLines="1"
             android:paddingLeft="16dp"
+            android:paddingTop="8dp"
             android:paddingRight="16dp"
-            android:text="@string/bigText2"
+            android:paddingBottom="8dp"
             android:textColor="@color/colorRobotFore"
-            android:textSize="@dimen/textSize_small" />
-
+            android:textSize="10sp"
+            tools:text="上次播放：大自然的声音 17点13分" />
 
         <LinearLayout
             android:id="@+id/ll_history"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingRight="16dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingRight="16dp"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="wrap_content"

@@ -13,14 +13,35 @@
         android:layout_marginTop="16dp"
         android:paddingLeft="16dp"
         android:paddingTop="8dp"
+        android:drawablePadding="4dp"
+        android:drawableLeft="@mipmap/ic_login_password"
         android:paddingRight="16dp"
         android:paddingBottom="8dp"
-        android:text="密码登录"
-        android:textColor="@color/black"
+        android:text="账号登录"
+        android:textColor="@color/colorRobotFore"
         android:textSize="@dimen/textSize_robot_title"
         app:layout_constraintRight_toRightOf="@id/ll_login_center"
         app:layout_constraintTop_toTopOf="@id/ll_login_center" />
 
+
+    <TextView
+        android:id="@+id/tv_login_by_face"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:drawableLeft="@mipmap/ic_login_by_face"
+        android:drawablePadding="4dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="8dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp"
+        android:text="刷脸登录"
+        android:textColor="@color/colorRobotFore"
+        android:textSize="@dimen/textSize_robot_title"
+        app:layout_constraintRight_toLeftOf="@id/tv_login_by_password"
+        app:layout_constraintTop_toTopOf="@id/ll_login_center" />
 
     <LinearLayout
         android:id="@+id/ll_login_center"

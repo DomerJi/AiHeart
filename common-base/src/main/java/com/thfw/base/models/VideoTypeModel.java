@@ -1,5 +1,7 @@
 package com.thfw.base.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -10,13 +12,20 @@ import java.util.List;
 public class VideoTypeModel {
 
     public String name;
-    public int id;
+    public int id = 0;
 
+    @SerializedName("root_type")
+    public int rootType = -1;
 
     public VideoTypeModel(String name, int id) {
         this.name = name;
         this.id = id;
     }
 
+    @SerializedName("children")
     public List<VideoTypeModel> list;
+
+    public List<VideoTypeModel> getList() {
+        return list;
+    }
 }

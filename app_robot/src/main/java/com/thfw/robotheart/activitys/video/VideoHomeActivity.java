@@ -1,5 +1,6 @@
 package com.thfw.robotheart.activitys.video;
 
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -10,10 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.reflect.TypeToken;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.VideoLastEtcModel;
 import com.thfw.base.models.VideoTypeModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.VideoPresenter;
 import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.VideoEtcTypeAdapter;
@@ -40,6 +43,7 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
 
 
     private static final String KEY_TYPE_LIST = "key.video.type.list";
+    private static final String KEY_HAS_VIDEO = "key.video.has";
     private VideoEtcTypeAdapter mVideoEtcTypeAdapter;
 
     @Override
@@ -58,6 +62,9 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
         mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
         mRvList = (RecyclerView) findViewById(R.id.rvList);
         mLlTop = (LinearLayout) findViewById(R.id.ll_top);
+        if (!SharePreferenceUtil.getBoolean(KEY_HAS_VIDEO, false)) {
+            mLlTop.setVisibility(View.GONE);
+        }
         mFlContent = (FrameLayout) findViewById(R.id.fl_content);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 
@@ -78,10 +85,13 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
             @Override
             public void onItemClick(List<VideoTypeModel> list, int position) {
                 // todo type
-                int id = position;
+                int type = list.get(position).id;
+                int rootType = list.get(position).rootType;
+                int id = rootType <= 0 ? type : -rootType;
+                LogUtil.d("onItemClick id = " + id);
                 Fragment fragment = mLoader.load(id);
                 if (fragment == null) {
-                    mLoader.add(id, new VideoEtcListFragment(id));
+                    mLoader.add(id, new VideoEtcListFragment(type, rootType));
                 }
                 mVideoEtcListFragment = (VideoEtcListFragment) mLoader.load(id);
             }
@@ -121,6 +131,45 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
         if (mVideoEtcTypeAdapter.getItemCount() == 0) {
             mLoadingView.showFail(v -> {
                 mPresenter.getVideoType();
+            });
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getLastVideo();
+    }
+
+    /**
+     * 获得最后一次播放记录
+     */
+    private void getLastVideo() {
+        new VideoPresenter(new VideoPresenter.VideoUi<VideoLastEtcModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return VideoHomeActivity.this;
+            }
+
+            @Override
+            public void onSuccess(VideoLastEtcModel data) {
+                notifyLastData(data);
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+
+            }
+        }).getVideoLastHistory();
+    }
+
+    private void notifyLastData(VideoLastEtcModel data) {
+        if (data != null) {
+            SharePreferenceUtil.setBoolean(KEY_HAS_VIDEO, true);
+            mLlTop.setVisibility(View.VISIBLE);
+            mTvLastAudio.setText("上次播放：" + data.getTitle() + "  播放至" + data.getPercentTime() + "%  " + data.getAddTime());
+            mTvLastAudio.setOnClickListener(v -> {
+                VideoPlayerActivity.startActivity(mContext, data.toVideoModel(), 0);
             });
         }
     }

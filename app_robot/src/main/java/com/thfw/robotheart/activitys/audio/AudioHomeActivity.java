@@ -1,5 +1,6 @@
 package com.thfw.robotheart.activitys.audio;
 
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
     private LinearLayout mLlHistory;
     private AudioEtcTypeAdapter mAudioEtcTypeAdapter;
     private static final String KEY_TYPE_LIST = "key.audio.type.list";
+    private static final String KEY_HAS_AUDIO = "key.audio.has";
     private com.thfw.ui.widget.LoadingView mLoadingView;
 
     @Override
@@ -59,7 +61,9 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
         mLlTop = (LinearLayout) findViewById(R.id.ll_top);
         mFlContent = (FrameLayout) findViewById(R.id.fl_content);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-
+        if (!SharePreferenceUtil.getBoolean(KEY_HAS_AUDIO, false)) {
+            mLlTop.setVisibility(View.GONE);
+        }
         mTvLastAudio = (TextView) findViewById(R.id.tv_last_audio);
 
         mLlHistory = (LinearLayout) findViewById(R.id.ll_history);
@@ -142,6 +146,8 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
 
     private void notifyLastAudioData(AudioLastEtcModel data) {
         if (data != null) {
+            SharePreferenceUtil.setBoolean(KEY_HAS_AUDIO, true);
+            mLlTop.setVisibility(View.VISIBLE);
             mTvLastAudio.setText("上次播放：" + data.getTitle() + "     " + data.getAddTime());
             mTvLastAudio.setOnClickListener(v -> {
                 AudioPlayerActivity.startActivity(mContext, data.toAudioEtcModel());

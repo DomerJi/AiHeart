@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.VideoEtcModel;
 import com.thfw.robotheart.R;
+import com.thfw.ui.utils.GlideUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +33,7 @@ public class VideoItemAdapter extends BaseAdapter<VideoEtcModel, VideoItemAdapte
     @NotNull
     @Override
     public VideoItemAdapter.VideoItemHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        return new VideoItemHolder(inflate(R.layout.item_audio_item_list, parent));
+        return new VideoItemHolder(inflate(R.layout.item_video_item_list, parent));
     }
 
     public void setCurrentIndex(int mCurrentIndex) {
@@ -44,15 +45,13 @@ public class VideoItemAdapter extends BaseAdapter<VideoEtcModel, VideoItemAdapte
     public void onBindViewHolder(@NonNull @NotNull VideoItemAdapter.VideoItemHolder holder, int position) {
         holder.mTvTitle.setText(mDataList.get(position).getTitle());
         holder.mTvTitle.setSelected(mCurrentIndex == position);
-        holder.mTvCurrentPlay.setVisibility(mCurrentIndex == position ? View.VISIBLE : View.GONE);
+        GlideUtil.load(mContext, mDataList.get(position).getPic(), holder.mRivDot);
     }
 
     public class VideoItemHolder extends RecyclerView.ViewHolder {
 
         private RoundedImageView mRivDot;
         private TextView mTvTitle;
-        private TextView mTvCurrentPlay;
-        private TextView mTvCollectState;
 
         public VideoItemHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -67,10 +66,8 @@ public class VideoItemAdapter extends BaseAdapter<VideoEtcModel, VideoItemAdapte
         }
 
         private void initView(View itemView) {
-            mRivDot = (RoundedImageView) itemView.findViewById(R.id.riv_dot);
+            mRivDot = (RoundedImageView) itemView.findViewById(R.id.riv_pic);
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
-            mTvCurrentPlay = (TextView) itemView.findViewById(R.id.tv_current_play);
-            mTvCollectState = (TextView) itemView.findViewById(R.id.tv_collect_state);
         }
     }
 }

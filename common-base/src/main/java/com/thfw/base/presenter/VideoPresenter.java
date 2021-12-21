@@ -5,6 +5,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.VideoEtcModel;
+import com.thfw.base.models.VideoLastEtcModel;
 import com.thfw.base.models.VideoModel;
 import com.thfw.base.models.VideoTypeModel;
 import com.thfw.base.net.HttpResult;
@@ -33,9 +34,14 @@ public class VideoPresenter extends IPresenter<VideoPresenter.VideoUi> {
         OkHttpUtil.request(observable, getUI());
     }
 
-    public void getVideoList(int type, int page) {
+    public void getVideoList(int type, int page, int rootType) {
+        //type root_type page
+        NetParams netParams = NetParams.crete().add("type", type).add("page", page);
+        if (rootType > 0) {
+            netParams.add("root_type", rootType);
+        }
         Observable<HttpResult<List<VideoEtcModel>>> observable = OkHttpUtil.createService(VideoApi.class)
-                .getAudioList(type, page);
+                .getAudioList(netParams);
         OkHttpUtil.request(observable, getUI());
     }
 
@@ -45,9 +51,15 @@ public class VideoPresenter extends IPresenter<VideoPresenter.VideoUi> {
         OkHttpUtil.request(observable, getUI());
     }
 
-    public void addVideoHistory(int videoId, String time) {
+    public void addVideoHistory(int videoId, String time, String duration) {
         Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(VideoApi.class)
-                .addVideoHistory(videoId, time);
+                .addVideoHistory(videoId, time, duration);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    public void getVideoLastHistory() {
+        Observable<HttpResult<VideoLastEtcModel>> observable = OkHttpUtil.createService(VideoApi.class)
+                .getVideoLastHistory(NetParams.crete());
         OkHttpUtil.request(observable, getUI());
     }
 

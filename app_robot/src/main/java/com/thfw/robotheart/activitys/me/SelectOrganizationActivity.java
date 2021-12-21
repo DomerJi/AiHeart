@@ -1,7 +1,10 @@
 package com.thfw.robotheart.activitys.me;
 
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,6 +42,9 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
     private OrganSelectedAdapter mOranSelectedAdapter;
     private OrganSelectChildrenAdapter mOrganSelectChildrenAdapter;
     private android.widget.Button mBtConfirm;
+    private android.widget.LinearLayout mLlWelcome;
+    private android.widget.TextView mTvNickname;
+    private android.widget.TextView mTvChooseOrganization;
 
     @Override
     public int getContentView() {
@@ -55,7 +61,7 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
 
         mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
         mRvSelected = (RecyclerView) findViewById(R.id.rv_selected);
-        mRvSelected.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+        mRvSelected.setLayoutManager(new GridLayoutManager(mContext, 6));
         mRvSelectChildren = (RecyclerView) findViewById(R.id.rv_select_children);
         mRvSelectChildren.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
@@ -74,6 +80,9 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
             mSelecteds.addAll(list);
         }
 
+        mLlWelcome = (LinearLayout) findViewById(R.id.ll_welcome);
+        mTvNickname = (TextView) findViewById(R.id.tv_nickname);
+        mTvChooseOrganization = (TextView) findViewById(R.id.tv_choose_organization);
     }
 
     @Override
@@ -111,12 +120,12 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
                     }
                     mOranSelectedAdapter.notifyDataSetChanged();
                     mOrganSelectChildrenAdapter.setDataListNotify(mSelecteds.get(position).getChildren());
-
+                    notifySelectedOrganization();
                 }
             });
 
             mRvSelected.setAdapter(mOranSelectedAdapter);
-
+            notifySelectedOrganization();
 
             mLoadingView.hide();
 
@@ -129,6 +138,7 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
                     mSelecteds.add(bean);
                     mOranSelectedAdapter.notifyDataSetChanged();
                     mOrganSelectChildrenAdapter.setDataListNotify(bean.getChildren());
+                    notifySelectedOrganization();
                 }
             });
             mRvSelectChildren.setAdapter(mOrganSelectChildrenAdapter);
@@ -143,6 +153,21 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
             ToastUtil.show("选择成功");
             finish();
         }
+    }
+
+    private void notifySelectedOrganization() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("当前选择：");
+        int size = mSelecteds.size();
+
+        for (int i = 0; i < size; i++) {
+            sb.append(mSelecteds.get(i).getName());
+            if (i != size - 1) {
+                sb.append(" → ");
+            }
+        }
+
+        mTvChooseOrganization.setText(sb.toString());
     }
 
     @Override

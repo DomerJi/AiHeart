@@ -36,6 +36,8 @@ public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> imple
     private TextView mTvProductUser;
     private TextView mTvProductMsg;
     private TextView mTvProductAgree;
+    private TextView mTvLoginByFace;
+    private LinearLayout mLlLoginCenter;
 
     public LoginMobileFragment() {
         // Required empty public constructor
@@ -68,6 +70,8 @@ public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> imple
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
         Util.addUnderLine(mTvProduct3g, mTvProductUser, mTvProductMsg, mTvProductAgree);
+        mTvLoginByFace = (TextView) findViewById(R.id.tv_login_by_face);
+        mLlLoginCenter = (LinearLayout) findViewById(R.id.ll_login_center);
     }
 
     @Override
@@ -87,6 +91,11 @@ public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> imple
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mBtGetCode.setEnabled(RegularUtil.isPhone(String.valueOf(s)));
             }
+        });
+
+        mTvLoginByFace.setOnClickListener(v -> {
+            LoginActivity loginActivity = (LoginActivity) getActivity();
+            loginActivity.getFragmentLoader().load(LoginActivity.BY_FACE);
         });
     }
 

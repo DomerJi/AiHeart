@@ -2,6 +2,7 @@ package com.thfw.base.api;
 
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.VideoEtcModel;
+import com.thfw.base.models.VideoLastEtcModel;
 import com.thfw.base.models.VideoModel;
 import com.thfw.base.models.VideoTypeModel;
 import com.thfw.base.net.HttpResult;
@@ -39,7 +40,7 @@ public interface VideoApi {
      */
     @FormUrlEncoded
     @POST("video/list")
-    Observable<HttpResult<List<VideoEtcModel>>> getAudioList(@Field("type") int type, @Field("page") int page);
+    Observable<HttpResult<List<VideoEtcModel>>> getAudioList(@FieldMap Map<String, Object> params);
 
     /**
      * 视频详情
@@ -58,7 +59,20 @@ public interface VideoApi {
      */
     @FormUrlEncoded
     @POST("video/history_time_remark")
-    Observable<HttpResult<CommonModel>> addVideoHistory(@Field("video_id") int videoId, @Field("time") String time);
+    Observable<HttpResult<CommonModel>> addVideoHistory(@Field("video_id") int videoId,
+                                                        @Field("time") String time,
+                                                        @Field("duration") String duration);
+
+
+    /**
+     * 获取用户最后一次使用视频记录
+     *
+     * @param params
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("video/last_use")
+    Observable<HttpResult<VideoLastEtcModel>> getVideoLastHistory(@FieldMap Map<String, Object> params);
 
 
 }

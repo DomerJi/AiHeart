@@ -20,6 +20,8 @@ public class VideoHistoryHelper {
     private static HashMap<Integer, Long> positionMap = new HashMap<>();
     private static VideoModel lastVideoModel;
     private static VideoEtcModel lastVideoEtcModel;
+    // 视频开始，结尾小于2500毫秒，记录为从0开始
+    public static final long MIN_TIME_MS = 2500;
 
     public static void clearAll() {
         lastVideoModel = null;
@@ -30,8 +32,8 @@ public class VideoHistoryHelper {
         lastVideoEtcModel = videoEtcModel;
     }
 
-    public static void addHistory(VideoModel videoModel, long currentPosition) {
-        if (videoModel == null || currentPosition <= 0) {
+    public static void addHistory(VideoModel videoModel, long currentPosition, long duration) {
+        if (videoModel == null) {
             return;
         }
 
@@ -54,7 +56,7 @@ public class VideoHistoryHelper {
             public void onFail(ResponeThrowable throwable) {
                 LogUtil.d(TAG, "addHistory+++++++++++++++++++++++++++++++onFail");
             }
-        }).addVideoHistory(videoModel.getId(), String.valueOf(currentPosition));
+        }).addVideoHistory(videoModel.getId(), String.valueOf(currentPosition), String.valueOf(duration));
     }
 
     public static long getPosition(int videoId) {

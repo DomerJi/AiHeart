@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -231,33 +230,6 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         }
     }
 
-
-    @Override
-    protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle
-                                    savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-//        LogUtil.d("savedInstanceState = " + (savedInstanceState == null));
-//        if (savedInstanceState != null) {
-//            playPosition = savedInstanceState.getLong(CURRENT_POSITION, 0);
-//            mExoPlayer.seekTo(playPosition);
-//            mExoPlayer.prepare();
-//            LogUtil.d(TAG, "playPosition = " + playPosition);
-//            playState = savedInstanceState.getBoolean(PLAY_STATE, playState);
-//            if (playState) {
-//                mExoPlayer.play();
-//            } else {
-//                mExoPlayer.setPlayWhenReady(playState);
-//            }
-//        } else {
-//            playPosition = SharePreferenceUtil.getLong(CURRENT_POSITION, 0);
-//            mExoPlayer.seekTo(playPosition);
-//            mExoPlayer.prepare();
-//            mExoPlayer.setPlayWhenReady(true);
-//        }
-
-    }
-
     private void initExoPlayer() {
         long positionMs = -1;
         // 初始化ExoPlayer
@@ -266,7 +238,6 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
             if (mPlayerListener != null) {
                 mExoPlayer.removeListener(mPlayerListener);
             }
-            positionMs = VideoHistoryHelper.getPosition(mVideoModel.getId());
             mPlayerListener = new PlayerListener();
             mExoPlayer.addListener(mPlayerListener);
             mMPlayerView.setPlayer(mExoPlayer);
@@ -275,6 +246,10 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         mIvCollect.setSelected(mVideoModel.getCollected() == 1);
         mExoPlayer.setMediaSource(buildMediaSource(Uri.parse(mVideoModel.getUrl())));
         mExoPlayer.prepare();
+        positionMs = VideoHistoryHelper.getPosition(mVideoModel.getId());
+        if (positionMs <= 0) {
+            positionMs = mVideoModel.getHistoryTime();
+        }
         if (positionMs > 0) {
             continuePlay(positionMs);
         }
@@ -338,8 +313,9 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
             }).start();
         } else {
             if (mRvList.getAdapter() == null) {
-                mTvEtcTitleLogcate.setText("播放列表" + mVideoList.size());
+                mTvEtcTitleLogcate.setText("相关推荐");
                 VideoItemAdapter videoItemAdapter = new VideoItemAdapter(mVideoList);
+                videoItemAdapter.setCurrentIndex(mPlayPosition);
                 videoItemAdapter.setOnRvItemListener(new OnRvItemListener<VideoEtcModel>() {
                     @Override
                     public void onItemClick(List<VideoEtcModel> list, int position) {
@@ -374,6 +350,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     private void videoChanged(int playPosition) {
         this.mPlayPosition = playPosition;
         if (mExoPlayer != null) {
+            addHistory();
             mMPlayerView.hideController();
             mMPlayerView.onPause();
             mExoPlayer.setPlayWhenReady(false);
@@ -506,7 +483,14 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         if (mVideoModel == null || mExoPlayer == null) {
             return;
         }
-        VideoHistoryHelper.addHistory(mVideoModel, mExoPlayer.getCurrentPosition());
+        long currentPosition = mExoPlayer.getContentPosition();
+        long duration = mExoPlayer.getDuration();
+        if (duration - currentPosition < VideoHistoryHelper.MIN_TIME_MS) {
+            currentPosition = 0;
+        } else if (currentPosition < VideoHistoryHelper.MIN_TIME_MS) {
+            currentPosition = 0;
+        }
+        VideoHistoryHelper.addHistory(mVideoModel, currentPosition, duration);
     }
 
     @Override
@@ -529,6 +513,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
             }
         }
     }
+
 
     @Override
     public void onDestroy() {

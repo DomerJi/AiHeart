@@ -2,7 +2,6 @@ package com.thfw.robotheart.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,18 +35,16 @@ public class OrganSelectedAdapter extends BaseAdapter<OrganizationModel.Organiza
     @Override
     public void onBindViewHolder(@NonNull @NotNull OranSelectedHolder holder, int position) {
         holder.mTvName.setText(mDataList.get(position).getName());
-        holder.mIvNext.setVisibility(mDataList.get(position).isChild() ? View.INVISIBLE : View.VISIBLE);
+        holder.mTvName.setSelected(position == getItemCount() - 1);
     }
 
     public class OranSelectedHolder extends RecyclerView.ViewHolder {
 
         private final TextView mTvName;
-        private final ImageView mIvNext;
 
         public OranSelectedHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvName = itemView.findViewById(R.id.tv_name);
-            mIvNext = itemView.findViewById(R.id.iv_next);
             itemView.setOnClickListener(v -> {
                 if (mOnRvItemListener != null) {
                     mOnRvItemListener.onItemClick(mDataList, getBindingAdapterPosition());

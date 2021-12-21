@@ -24,7 +24,7 @@ public class VideoEtcModel implements IModel {
     private int id;
     @SerializedName("title")
     private String title;
-    @SerializedName("pic")
+    @SerializedName("img")
     private String pic;
     @SerializedName("num")
     private int num;

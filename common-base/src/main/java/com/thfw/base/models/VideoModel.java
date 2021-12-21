@@ -1,5 +1,7 @@
 package com.thfw.base.models;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 import com.thfw.base.base.IModel;
 
@@ -32,7 +34,7 @@ public class VideoModel implements IModel {
     @SerializedName("collected")
     private int collected;
     @SerializedName("history_time")
-    private int historyTime;
+    private String historyTime;
 
 
     public int getId() {
@@ -83,11 +85,22 @@ public class VideoModel implements IModel {
         this.collected = collected;
     }
 
-    public int getHistoryTime() {
-        return historyTime;
+    public long getHistoryTime() {
+        if (TextUtils.isEmpty(historyTime)) {
+            return 0;
+        } else {
+            long ms;
+            try {
+                ms = Long.parseLong(historyTime);
+            } catch (Exception e) {
+                ms = 0;
+            }
+            return ms;
+        }
+
     }
 
-    public void setHistoryTime(int historyTime) {
+    public void setHistoryTime(String historyTime) {
         this.historyTime = historyTime;
     }
 

@@ -70,6 +70,7 @@ public class VideoEtcTypeAdapter extends BaseAdapter<VideoTypeModel, VideoEtcTyp
             holder.mRvChild.removeAllViews();
             holder.mRvChild.setVisibility(View.GONE);
         }
+
     }
 
 
