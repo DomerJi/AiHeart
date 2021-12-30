@@ -1,5 +1,6 @@
 package com.thfw.robotheart.activitys.test;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.api.HistoryApi;
+import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.TestDetailModel;
 import com.thfw.base.net.ResponeThrowable;
@@ -49,7 +51,8 @@ public class TestDetailActivity extends RobotBaseActivity<TestPresenter> impleme
     private boolean requestIng = false;
 
     public static void startActivity(Context context, int id) {
-        context.startActivity(new Intent(context, TestDetailActivity.class).putExtra(KEY_DATA, id));
+        ((Activity) context).startActivityForResult(new Intent(context, TestDetailActivity.class)
+                .putExtra(KEY_DATA, id), ChatEntity.TYPE_RECOMMEND_TEXT);
     }
 
     @Override
@@ -162,6 +165,11 @@ public class TestDetailActivity extends RobotBaseActivity<TestPresenter> impleme
         }).addCollect(HistoryApi.TYPE_COLLECT_TEST, mTestId);
     }
 
+    @Override
+    public void finish() {
+        setResult(RESULT_OK);
+        super.finish();
+    }
 
     @Override
     public void onFail(ResponeThrowable throwable) {

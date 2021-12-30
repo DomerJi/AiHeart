@@ -93,7 +93,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_margin="50dp"
         android:gravity="left"
-        android:text="第一节 人际交往心理学概述"
+        tools:text="第一节 人际交往心理学概述"
         android:textColor="@color/white"
         android:textSize="@dimen/textSize_large"
         app:layout_constraintLeft_toRightOf="@id/rl_etc_control"

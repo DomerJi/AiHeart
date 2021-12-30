@@ -1,5 +1,6 @@
 package com.thfw.base.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -8,7 +9,10 @@ import java.util.Date;
  * 时间转换
  */
 public class HourUtil {
-
+    public static final long LEN_SECOND = 1000;
+    public static final long LEN_MINUTE = 60000;
+    public static final long LEN_HOUR = LEN_MINUTE * 1000;
+    public static final long LEN_DAY = LEN_HOUR * 24;
     private static final SimpleDateFormat formatyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat formatyyMMddHHmm = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private static final SimpleDateFormat formatHHmmss = new SimpleDateFormat("HH:mm:ss");
@@ -91,6 +95,22 @@ public class HourUtil {
             return getYYMMDD_HHMM(Long.parseLong(time));
         }
         return "";
+    }
+
+    /**
+     * @param time 2021-12-27 09:00:44
+     * @return
+     */
+    public static long getYYMMDD_HHMMSS(String time) {
+        try {
+            return format.parse(time).getTime();
+        } catch (ParseException e) {
+            return -1;
+        }
+    }
+
+    public static String getYYMMDD_HHMMSS(long time) {
+        return format.format(new Date(time));
     }
 
     public static String getWeek(long time) {

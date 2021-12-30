@@ -26,7 +26,7 @@
         android:layout_toRightOf="@id/iv_center"
         android:max="100"
         android:progress="0"
-        android:progressBackgroundTint="@color/white_50"
+        android:progressBackgroundTint="@color/white_30"
         android:progressTint="@color/white" />
 
 

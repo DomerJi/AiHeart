@@ -9,9 +9,10 @@
 
     <ImageView
         android:id="@+id/iv_load_fail"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_load_error"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:src="@mipmap/ic_load_net_error"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:ignore="MissingConstraints" />
@@ -22,6 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin"
         android:text="@string/load_fail"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/iv_load_fail"
         tools:ignore="MissingConstraints" />

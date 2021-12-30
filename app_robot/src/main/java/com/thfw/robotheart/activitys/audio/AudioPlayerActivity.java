@@ -2,6 +2,7 @@ package com.thfw.robotheart.activitys.audio;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +38,7 @@ import com.thfw.base.face.MyAnimationListener;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.base.models.AudioEtcModel;
+import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.AudioPresenter;
@@ -81,6 +83,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private ConstraintLayout mFlContent;
     private ImageView mIvCollect;
     private AudioEtcModel mModel;
+    private AudioEtcDetailModel.AudioItemModel mItemModel;
     private AudioEtcDetailModel mDetailModel;
     private TitleRobotView mTitleRobotView;
     private ConstraintLayout mClContent;
@@ -90,10 +93,16 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private PlayerListener playerListener;
     private boolean requestIng = false;
     private boolean audioByPagePause;
+    private static final String KEY_RECOMMEND = "key.recommend";
 
     public static void startActivity(Context context, AudioEtcModel audioEtcModel) {
-        context.startActivity(new Intent(context, AudioPlayerActivity.class)
-                .putExtra(KEY_DATA, audioEtcModel));
+        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
+                .putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
+    }
+
+    public static void startActivity(Context context, AudioEtcDetailModel.AudioItemModel audioItemModel) {
+        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
+                .putExtra(KEY_RECOMMEND, audioItemModel), ChatEntity.TYPE_RECOMMEND_AUDIO);
     }
 
     @Override
@@ -110,11 +119,13 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     public void initView() {
 
         mModel = (AudioEtcModel) getIntent().getSerializableExtra(KEY_DATA);
-        if (mModel == null) {
+        mItemModel = (AudioEtcDetailModel.AudioItemModel) getIntent().getSerializableExtra(KEY_RECOMMEND);
+        if (mModel == null && mItemModel == null) {
             ToastUtil.show("参数错误");
             finish();
             return;
         }
+
 
         mAudioView = (StyledPlayerView) findViewById(R.id.audio_view);
         mIvBlurBg = (ImageView) findViewById(R.id.iv_blur_bg);
@@ -166,7 +177,6 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             }).start();
         } else {
             if (mRvList.getAdapter() == null) {
-                mTvEtcTitleLogcate.setText(mModel.getTitle() + mModel.getMusicSize() + "课时");
                 AudioItemAdapter audioItemAdapter = new AudioItemAdapter(mAudios);
                 audioItemAdapter.setCurrentIndex(player.getCurrentWindowIndex());
                 audioItemAdapter.setOnRvItemListener(new OnRvItemListener<AudioEtcDetailModel.AudioItemModel>() {
@@ -221,9 +231,17 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
     @Override
     public void initData() {
-        GlideUtil.load(mContext, mModel.getImg(), mRivEtc);
-        mPresenter.getAudioEtcInfo(mModel.getId());
-        mPbBar.showLoadingNoText();
+
+        if (mItemModel != null) {
+            mAudios.add(mItemModel);
+            GlideUtil.load(mContext, mItemModel.getImg(), mRivEtc);
+            setAudioData();
+            mPbBar.hide();
+        } else {
+            GlideUtil.load(mContext, mModel.getImg(), mRivEtc);
+            mPresenter.getAudioEtcInfo(mModel.getId());
+            mPbBar.showLoadingNoText();
+        }
     }
 
     private void setAudioData() {
@@ -240,17 +258,10 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             ExoPlayerFactory.getExoPlayer().pause();
         });
 
+
         btPlay.setVisibility(View.GONE);
         btPause.setVisibility(View.VISIBLE);
 
-        // 是否收藏
-        mIvCollect.setSelected(mDetailModel.getCollectionInfo().getCollected() != 0);
-        mIvCollect.setOnClickListener(v -> {
-            addCollect();
-        });
-        // 章节与课时
-        mTvEtcTitle.setText("所属章节：" + mModel.getTitle());
-        mTvAudioTitle.setText(mAudios.get(mModel.getLastHourIndex()).getTitle());
 
         ExoPlayerFactory.with(mContext).builder(ExoPlayerFactory.EXO_AUDIO);
         player = ExoPlayerFactory.getExoPlayer();
@@ -264,7 +275,24 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 //            player.addMediaItem(MediaItem.fromUri(mediaItem.getSfile()));
             player.addMediaSource(buildMediaSource(Uri.parse(mediaItem.getSfile())));
         }
-        player.seekTo(mModel.getLastHourIndex(), 0);
+        if (mDetailModel != null) {
+            GlideUtil.load(mContext, mDetailModel.getCollectionInfo().getImg(), mRivEtc);
+            // 是否收藏
+            mIvCollect.setSelected(mDetailModel.getCollectionInfo().getCollected() != 0);
+            mIvCollect.setOnClickListener(v -> {
+                addCollect();
+            });
+            mTvEtcTitleLogcate.setText(mDetailModel.getCollectionInfo().getTitle() + mAudios.size() + "课时");
+            mTvEtcTitle.setText("所属章节：" + mDetailModel.getCollectionInfo().getTitle()
+                    + "  " + (mDetailModel.getCollectionInfo().getListenHistorySize()) + "/" + mAudios.size());
+            mTvAudioTitle.setText(mAudios.get(mDetailModel.getCollectionInfo().getLastHourIndex()).getTitle());
+            player.seekTo(mDetailModel.getCollectionInfo().getLastHourIndex(), 0);
+        } else {
+            mIvCollect.setVisibility(View.GONE);
+            mTvEtcTitle.setVisibility(View.GONE);
+            mIvPlayCateLogue.setVisibility(View.GONE);
+            mTvAudioTitle.setText(mAudios.get(0).getTitle());
+        }
 
         player.prepare();
         // Start the playback.
@@ -274,7 +302,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         mContext.bindService(mServiceIntent, connection, Context.BIND_AUTO_CREATE);
     }
 
-    //重定向
+    // 重定向
     public DefaultDataSourceFactory buildDataSourceFactory() {
 
         DefaultBandwidthMeter mDefaultBandwidthMeter = new DefaultBandwidthMeter();
@@ -369,7 +397,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     }
 
     public void addCollect() {
-        if (requestIng) {
+        if (requestIng || mDetailModel == null) {
             return;
         }
         requestIng = true;
@@ -392,7 +420,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                 ToastUtil.show(mIvCollect.isSelected() ? "收藏失败" : "取消收藏失败");
                 mIvCollect.setSelected(!mIvCollect.isSelected());
             }
-        }).addCollect(HistoryApi.TYPE_COLLECT_AUDIO, mModel.getId());
+        }).addCollect(HistoryApi.TYPE_COLLECT_AUDIO, mDetailModel.getCollectionInfo().getId());
     }
 
 
@@ -457,12 +485,18 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         @Override
         public void onMediaItemTransition(@Nullable @org.jetbrains.annotations.Nullable MediaItem mediaItem, int reason) {
             // 列表播放曲目切换监听
+            if (mDetailModel == null) {
+                return;
+            }
             LogUtil.d("onMediaItemTransition -> " + mediaItem.playbackProperties.uri);
             mTvAudioTitle.setText(mAudios.get(player.getCurrentWindowIndex()).getTitle());
+
+            mTvEtcTitle.setText("所属章节：" + mDetailModel.getCollectionInfo().getTitle()
+                    + "  " + (player.getCurrentWindowIndex() + 1) + "/" + mAudios.size());
             int musicId = mAudios.get(player.getCurrentWindowIndex()).getId();
-            mPresenter.addAudioHistory(musicId, mModel.getId());
+            mPresenter.addAudioHistory(musicId, mDetailModel.getCollectionInfo().getId());
             // 列表页更新
-            HourChangeHelper.getInstance().notify(mModel.getId(), player.getCurrentWindowIndex() + 1, musicId);
+            HourChangeHelper.getInstance().notify(mDetailModel.getCollectionInfo().getId(), player.getCurrentWindowIndex() + 1, musicId);
 //            if (player == null) {
 //                return;
 //            }
@@ -515,6 +549,11 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         }
     }
 
+    @Override
+    public void finish() {
+        setResult(RESULT_OK);
+        super.finish();
+    }
 
     @Override
     public void onDestroy() {

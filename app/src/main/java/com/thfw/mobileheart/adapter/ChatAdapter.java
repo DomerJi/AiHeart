@@ -26,7 +26,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
     @Override
     public ChatHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         switch (viewType) {
-            case ChatEntity.TYPE_FROM:// 【对方】 对话
+            case ChatEntity.TYPE_FROM_SELECT:// 【对方】 对话
                 return new ChatHolder(LayoutInflater.from(mContext).inflate(R.layout.chat_from_to_layout, parent, false));
             case ChatEntity.TYPE_TO: // 【我】对话
                 return new ChatHolder(LayoutInflater.from(mContext).inflate(R.layout.chat_to_from_layout, parent, false));

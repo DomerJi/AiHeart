@@ -1,6 +1,7 @@
 package com.thfw.robotheart.activitys.video;
 
 import android.animation.Animator;
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -43,6 +44,7 @@ import com.thfw.base.ContextApp;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.face.MyAnimationListener;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.models.VideoModel;
@@ -131,7 +133,8 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
 
     public static void startActivity(Context context, List<VideoEtcModel> list, int playPosition) {
         mStaticVideoList = list;
-        context.startActivity(new Intent(context, VideoPlayerActivity.class).putExtra(KEY_PLAY_POSITION, playPosition));
+        ((Activity) context).startActivityForResult(new Intent(context, VideoPlayerActivity.class)
+                .putExtra(KEY_PLAY_POSITION, playPosition), ChatEntity.TYPE_RECOMMEND_VIDEO);
     }
 
     @Override
@@ -563,6 +566,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
 
     @Override
     public void finish() {
+        setResult(RESULT_OK);
         overridePendingTransition(0, 0);
         super.finish();
     }

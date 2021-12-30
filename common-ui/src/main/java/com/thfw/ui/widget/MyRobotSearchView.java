@@ -122,6 +122,13 @@ public class MyRobotSearchView extends FrameLayout {
             }
         });
 
+        mIvSearch.setOnClickListener(v -> {
+            String key = mEtSearch.getText().toString();
+            if (!TextUtils.isEmpty(key)) {
+                onSearchKey(mEtSearch.getText().toString(), true);
+            }
+        });
+
     }
 
     public EditText getEditeText() {

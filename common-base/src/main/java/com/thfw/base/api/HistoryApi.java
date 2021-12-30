@@ -21,9 +21,9 @@ import retrofit2.http.POST;
 public interface HistoryApi {
 
     int TYPE_TEST = 1;
-    int TYPE_AUDIO = 2;
-    int TYPE_VIDEO = 3;
-    int TYPE_BOOK = 4;
+    int TYPE_AUDIO = 3;
+    int TYPE_VIDEO = 4;
+    int TYPE_BOOK = 2;
     int TYPE_EXERCISE = 5;
     int TYPE_STUDY = 6;
 

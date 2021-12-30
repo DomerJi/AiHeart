@@ -18,6 +18,7 @@ public class PageHelper<T> {
 
     private int firstPage = 1;
     private int currentPage = 1;
+    private boolean refreshEnable = true;
 
     private BaseAdapter adapter;
     private ILoading iLoading;
@@ -30,6 +31,10 @@ public class PageHelper<T> {
         this.refreshLayout = refreshLayout;
         this.refreshLayout.setEnableLoadMore(false);
         this.refreshLayout.setEnableRefresh(false);
+    }
+
+    public void setRefreshEnable(boolean enable) {
+        this.refreshEnable = enable;
     }
 
     /**
@@ -87,7 +92,7 @@ public class PageHelper<T> {
         }
 
         if (refreshLayout != null) {
-            refreshLayout.setEnableRefresh(!emptyDatas);
+            refreshLayout.setEnableRefresh(refreshEnable && !emptyDatas);
             refreshLayout.setEnableLoadMore(!emptyDatas);
             refreshLayout.setNoMoreData(emptyDatas);
 

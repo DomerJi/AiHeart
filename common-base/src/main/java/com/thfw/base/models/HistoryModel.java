@@ -1,8 +1,11 @@
 package com.thfw.base.models;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.base.IModel;
+import com.thfw.base.utils.RegularUtil;
 
 /**
  * Author:pengs
@@ -156,10 +159,97 @@ public class HistoryModel implements IModel {
 
     public static class HistoryVideoModel extends HistoryModel {
 
+        /**
+         * add_time : 2021-12-17 03:27:14
+         * id : 406
+         * title : 抑郁症动画暖心小故事
+         */
+
+        @SerializedName("add_time")
+        private String addTime;
+        @SerializedName("id")
+        private int id;
+        @SerializedName("title")
+        private String title;
+
+        public String getAddTime() {
+            return addTime;
+        }
+
+        public void setAddTime(String addTime) {
+            this.addTime = addTime;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
     }
 
     public static class HistoryAudioModel extends HistoryModel {
 
+
+        /**
+         * add_time : 2021-12-17 01:11:54
+         * id : 1828
+         * title : 改善睡眠 Day.1
+         * collection_id : 473
+         */
+
+        @SerializedName("add_time")
+        private String addTime;
+        @SerializedName("id")
+        private int id;
+        @SerializedName("title")
+        private String title;
+        @SerializedName("collection_id")
+        private String collectionId;
+
+        public String getAddTime() {
+            return addTime;
+        }
+
+        public void setAddTime(String addTime) {
+            this.addTime = addTime;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public int getCollectionId() {
+            if (TextUtils.isEmpty(collectionId) || !RegularUtil.isNumber(collectionId)) {
+                return 0;
+            }
+            return Integer.parseInt(collectionId);
+        }
+
+        public void setCollectionId(String collectionId) {
+            this.collectionId = collectionId;
+        }
     }
 
     public static class HistoryStudyModel extends HistoryModel {
@@ -168,6 +258,43 @@ public class HistoryModel implements IModel {
 
     public static class HistoryBookModel extends HistoryModel {
 
+
+        /**
+         * add_time : 2021-12-30 02:25:07
+         * id : 563
+         * title : 强迫性赌博是什么？
+         */
+
+        @SerializedName("add_time")
+        private String addTime;
+        @SerializedName("id")
+        private int id;
+        @SerializedName("title")
+        private String title;
+
+        public String getAddTime() {
+            return addTime;
+        }
+
+        public void setAddTime(String addTime) {
+            this.addTime = addTime;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
     }
 
     public static class HistoryExerciseModel extends HistoryModel {

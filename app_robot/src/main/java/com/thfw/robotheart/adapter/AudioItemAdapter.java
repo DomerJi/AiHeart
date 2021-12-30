@@ -45,6 +45,7 @@ public class AudioItemAdapter extends BaseAdapter<AudioEtcDetailModel.AudioItemM
         holder.mTvTitle.setText(mDataList.get(position).getTitle());
         holder.mTvTitle.setSelected(mCurrentIndex == position);
         holder.mTvCurrentPlay.setVisibility(mCurrentIndex == position ? View.VISIBLE : View.GONE);
+        holder.mTvOrder.setText((position + 1) + ".");
     }
 
     public class AudioItemHolder extends RecyclerView.ViewHolder {
@@ -53,6 +54,7 @@ public class AudioItemAdapter extends BaseAdapter<AudioEtcDetailModel.AudioItemM
         private TextView mTvTitle;
         private TextView mTvCurrentPlay;
         private TextView mTvCollectState;
+        private TextView mTvOrder;
 
         public AudioItemHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -69,6 +71,7 @@ public class AudioItemAdapter extends BaseAdapter<AudioEtcDetailModel.AudioItemM
         private void initView(View itemView) {
             mRivDot = (RoundedImageView) itemView.findViewById(R.id.riv_dot);
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
+            mTvOrder = (TextView) itemView.findViewById(R.id.tv_order);
             mTvCurrentPlay = (TextView) itemView.findViewById(R.id.tv_current_play);
             mTvCollectState = (TextView) itemView.findViewById(R.id.tv_collect_state);
         }

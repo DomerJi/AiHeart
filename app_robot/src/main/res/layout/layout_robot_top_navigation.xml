@@ -28,7 +28,8 @@
             android:layout_gravity="center_vertical"
             android:text="@string/back"
             android:textColor="@color/colorRobotFore"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

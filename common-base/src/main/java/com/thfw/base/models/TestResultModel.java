@@ -12,6 +12,11 @@ public class TestResultModel implements IModel {
     @SerializedName("result_id")
     private int resultId;
 
+    public TestResultModel setResultId(int resultId) {
+        this.resultId = resultId;
+        return this;
+    }
+
     public int getResultId() {
         return resultId;
     }

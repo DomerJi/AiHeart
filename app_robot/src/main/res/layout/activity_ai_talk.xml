@@ -135,6 +135,13 @@
         </RelativeLayout>
 
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/rl_keyword" />
+
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

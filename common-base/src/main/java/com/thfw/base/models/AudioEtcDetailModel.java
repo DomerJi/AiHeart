@@ -90,10 +90,28 @@ public class AudioEtcDetailModel implements IModel {
         private String miniprogramShowName;
         @SerializedName("music_size")
         private int musicSize;
-        @SerializedName("listen_history_size")
+        @SerializedName("last_index")
         private int listenHistorySize;
         @SerializedName("collected")
         private int collected;
+        @SerializedName("last_music_id")
+        private int lastMusicId;
+
+        public void setLastMusicId(int lastMusicId) {
+            this.lastMusicId = lastMusicId;
+        }
+
+        public int getLastMusicId() {
+            return lastMusicId;
+        }
+
+        public int getListenHistorySize() {
+            return listenHistorySize > 0 ? listenHistorySize : 1;
+        }
+
+        public int getLastHourIndex() {
+            return listenHistorySize > 0 ? listenHistorySize - 1 : 0;
+        }
 
         public int getId() {
             return id;
@@ -215,10 +233,6 @@ public class AudioEtcDetailModel implements IModel {
             this.musicSize = musicSize;
         }
 
-        public int getListenHistorySize() {
-            return listenHistorySize;
-        }
-
         public void setListenHistorySize(int listenHistorySize) {
             this.listenHistorySize = listenHistorySize;
         }
@@ -297,6 +311,9 @@ public class AudioEtcDetailModel implements IModel {
         @SerializedName("num")
         private int num;
 
+        @SerializedName("img")
+        private String img;
+
         public int getMusicId() {
             return musicId;
         }
@@ -343,6 +360,14 @@ public class AudioEtcDetailModel implements IModel {
 
         public void setSfile(String sfile) {
             this.sfile = sfile;
+        }
+
+        public void setImg(String img) {
+            this.img = img;
+        }
+
+        public String getImg() {
+            return img;
         }
 
         public String getSong() {

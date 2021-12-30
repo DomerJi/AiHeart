@@ -42,6 +42,13 @@ public class UserManager extends Observable {
         return instance;
     }
 
+    public String getUID() {
+        if (getUser() != null && getUser().getUserId() != null) {
+            return getUser().getUserId();
+        }
+        return "visitor";
+    }
+
     public User getUser() {
         return user;
 

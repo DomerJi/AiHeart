@@ -1,5 +1,6 @@
 package com.thfw.robotheart.activitys.text;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -19,6 +20,7 @@ import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.DefaultWebClient;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.models.BookDetailModel;
+import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.BookPresenter;
@@ -54,7 +56,8 @@ public class BookDetailActivity extends RobotBaseActivity<BookPresenter> impleme
     private int bookId;
 
     public static void startActivity(Context context, int id) {
-        context.startActivity(new Intent(context, BookDetailActivity.class).putExtra(KEY_DATA, id));
+        ((Activity) context).startActivityForResult(new Intent(context, BookDetailActivity.class)
+                .putExtra(KEY_DATA, id), ChatEntity.TYPE_RECOMMEND_TEXT);
     }
 
     @Override

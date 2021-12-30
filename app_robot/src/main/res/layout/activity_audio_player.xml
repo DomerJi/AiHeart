@@ -59,7 +59,7 @@
                 android:id="@+id/tv_etc_title_logcate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="12dp"
+                android:paddingLeft="16dp"
                 android:paddingTop="16dp"
                 android:textColor="@color/green_selected_text"
                 android:textSize="@dimen/textSize_large"

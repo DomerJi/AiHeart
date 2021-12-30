@@ -112,7 +112,7 @@ public class LoadingView extends LinearLayout implements ILoading {
      */
     @Override
     public void showFail(OnClickListener onClickListener) {
-        showFail(EMPTY, onClickListener);
+        showFail(Level.ERROR_NET, onClickListener);
     }
 
     @Override

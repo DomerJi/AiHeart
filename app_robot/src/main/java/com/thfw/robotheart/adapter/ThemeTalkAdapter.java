@@ -36,14 +36,10 @@ public class ThemeTalkAdapter extends BaseAdapter<ThemeTalkModel, ThemeTalkAdapt
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull AudioEdtListHolder holder, int position) {
-        holder.mTvTitle.setText("Title_" + position);
-        GlideUtil.load(mContext, R.mipmap.cat, holder.mRivImage);
+        ThemeTalkModel model = mDataList.get(position);
+        holder.mTvTitle.setText(model.getTitle());
+        GlideUtil.load(mContext, model.getPic(), holder.mRivImage);
 
-    }
-
-    @Override
-    public int getItemCount() {
-        return 30;
     }
 
     public class AudioEdtListHolder extends RecyclerView.ViewHolder {

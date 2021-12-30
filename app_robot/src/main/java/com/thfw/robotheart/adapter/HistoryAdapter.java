@@ -7,7 +7,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.base.api.HistoryApi;
 import com.thfw.base.models.HistoryModel;
 import com.thfw.robotheart.R;
 
@@ -20,7 +19,7 @@ import java.util.List;
  * Date: 2021/12/9 16:13
  * Describe:Todo
  */
-public class HistoryAdapter extends BaseAdapter<HistoryModel, RecyclerView.ViewHolder> {
+public class HistoryAdapter extends BaseAdapter<HistoryModel, HistoryAdapter.HistoryHolder> {
 
 
     public HistoryAdapter(List<HistoryModel> dataList) {
@@ -30,22 +29,31 @@ public class HistoryAdapter extends BaseAdapter<HistoryModel, RecyclerView.ViewH
     @NonNull
     @NotNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case HistoryApi.TYPE_TEST:
-                return new HistoryTestHolder(inflate(R.layout.item_history_test, parent));
-            default:
-                return new HistoryHolder(inflate(R.layout.item_history_test, parent));
-        }
+    public HistoryAdapter.HistoryHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+        return new HistoryHolder(inflate(R.layout.item_history_test, parent));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull @NotNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof HistoryTestHolder) {
-            HistoryModel.HistoryTestModel testModel = (HistoryModel.HistoryTestModel) mDataList.get(position);
-            HistoryTestHolder historyHolder = (HistoryTestHolder) holder;
-            historyHolder.mTvTitle.setText(testModel.getTitle());
-            historyHolder.mTvTime.setText(testModel.getAddTime());
+    public void onBindViewHolder(@NonNull @NotNull HistoryAdapter.HistoryHolder holder, int position) {
+        HistoryModel historyModel = mDataList.get(position);
+        if (historyModel instanceof HistoryModel.HistoryTestModel) {
+            HistoryModel.HistoryTestModel testModel = (HistoryModel.HistoryTestModel) historyModel;
+            holder.mTvTitle.setText(testModel.getTitle());
+            holder.mTvTime.setText("测试时间：" + testModel.getAddTime());
+        } else if (historyModel instanceof HistoryModel.HistoryVideoModel) {
+            HistoryModel.HistoryVideoModel videoModel = (HistoryModel.HistoryVideoModel) historyModel;
+            holder.mTvTitle.setText(videoModel.getTitle());
+            holder.mTvTime.setText("时间：" + videoModel.getAddTime());
+        } else if (historyModel instanceof HistoryModel.HistoryAudioModel) {
+            HistoryModel.HistoryAudioModel audioModel = (HistoryModel.HistoryAudioModel) historyModel;
+            holder.mTvTitle.setText(audioModel.getTitle());
+            holder.mTvSubTitle.setText("合集：" + audioModel.getTitle());
+            holder.mTvSubTitle.setVisibility(View.VISIBLE);
+            holder.mTvTime.setText("时间：" + audioModel.getAddTime());
+        } else if (historyModel instanceof HistoryModel.HistoryBookModel) {
+            HistoryModel.HistoryBookModel bookModel = (HistoryModel.HistoryBookModel) historyModel;
+            holder.mTvTitle.setText(bookModel.getTitle());
+            holder.mTvTime.setText("时间：" + bookModel.getAddTime());
         }
     }
 
@@ -56,19 +64,19 @@ public class HistoryAdapter extends BaseAdapter<HistoryModel, RecyclerView.ViewH
 
     public class HistoryHolder extends RecyclerView.ViewHolder {
         protected final TextView mTvTitle;
+        protected final TextView mTvSubTitle;
         protected final TextView mTvTime;
 
         public HistoryHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvTitle = itemView.findViewById(R.id.tv_title);
+            mTvSubTitle = itemView.findViewById(R.id.tv_sub_title);
             mTvTime = itemView.findViewById(R.id.tv_time);
-        }
-    }
-
-    public class HistoryTestHolder extends HistoryHolder {
-
-        public HistoryTestHolder(@NonNull @NotNull View itemView) {
-            super(itemView);
+            itemView.setOnClickListener(v -> {
+                if (mOnRvItemListener != null) {
+                    mOnRvItemListener.onItemClick(mDataList, getBindingAdapterPosition());
+                }
+            });
         }
     }
 }

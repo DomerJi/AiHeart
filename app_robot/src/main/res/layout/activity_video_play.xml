@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="90dp"
             android:background="@drawable/volume_light_changed_bg"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:paddingLeft="18dp"
             android:paddingTop="8dp"
             android:paddingRight="18dp"
@@ -63,22 +63,30 @@
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible">
 
             <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginLeft="8dp"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
                 android:src="@drawable/ic_round_fast_forward" />
-
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_marginLeft="12dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:text="3.0X"
+                android:textColor="@color/colorRobotFore"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="快进中"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 

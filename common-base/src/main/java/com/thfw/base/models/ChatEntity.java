@@ -1,18 +1,88 @@
 package com.thfw.base.models;
 
 import com.thfw.base.base.IModel;
+import com.thfw.base.utils.HourUtil;
 
 public class ChatEntity implements IModel {
 
-    public static final int TYPE_FROM = 0;
-    public static final int TYPE_TO = 1;
-    public static final int TYPE_LINK = 2;
-    public static final int TYPE_END_SERVICE = 3;
-    public static final int TYPE_FEEDBACK = 4;
-    public static final int TYPE_SELECT = 5;
-    public static final int TYPE_TIME = 6;
+
+    public static final int TYPE_TO = 1; // 1：用户输入
+    public static final int TYPE_FROM_NORMAL = 2; // 2：机器人正常对话回复
+    public static final int TYPE_FROM_SELECT = 3; // 单选题
+    public static final int TYPE_INPUT = 4; // 4：自由输入题目
+    public static final int TYPE_RECOMMEND_TEST = 5; // 测评推荐
+    public static final int TYPE_RECOMMEND_VIDEO = 6;// 视频推荐
+    public static final int TYPE_RECOMMEND_TEXT = 7; // 文章推荐
+    public static final int TYPE_RECOMMEND_AUDIO = 8; // 音频推荐
+    public static final int TYPE_RECOMMEND_AUDIO_ETC = 9; // 音频合集推荐
+    public static final int TYPE_END_SERVICE = 13;
+    public static final int TYPE_FEEDBACK = 14;
+
+    public static final int TYPE_SELECT = 15;
+    public static final int TYPE_TIME = 16;
 
     public int type;
     public String talk;
+    public long time;
 
+    public String getTalk() {
+        return talk == null ? "" : talk;
+    }
+
+    private DialogTalkModel talkModel;
+
+
+    public DialogTalkModel getTalkModel() {
+        return talkModel;
+    }
+
+    public ChatEntity() {
+
+    }
+
+    public ChatEntity(DialogTalkModel dialogTalkModel) {
+        this.talkModel = dialogTalkModel;
+        this.type = dialogTalkModel.getType();
+        this.talk = dialogTalkModel.getQuestion();
+        this.time = System.currentTimeMillis();
+    }
+
+    public ChatEntity(int type, DialogTalkModel dialogTalkModel) {
+        this.talkModel = dialogTalkModel;
+        this.type = type;
+        this.talk = dialogTalkModel.getQuestion();
+        this.time = System.currentTimeMillis();
+    }
+
+
+    public ChatEntity(int type, String talk) {
+        this.type = type;
+        this.talk = talk;
+        this.time = System.currentTimeMillis();
+    }
+
+
+    public static ChatEntity createTime() {
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_TIME;
+        chatEntity.time = System.currentTimeMillis();
+        chatEntity.talk = HourUtil.getYYMMDD_HHMMSS(chatEntity.time);
+        return chatEntity;
+    }
+
+    public String getRecommendType() {
+        switch (type) {
+            case ChatEntity.TYPE_RECOMMEND_TEST: // 测评
+                return "心理测评";
+            case ChatEntity.TYPE_RECOMMEND_VIDEO: // 视频
+                return "科普视频";
+            case ChatEntity.TYPE_RECOMMEND_TEXT: // 文章
+                return "科普文章";
+            case ChatEntity.TYPE_RECOMMEND_AUDIO: // 音频
+            case ChatEntity.TYPE_RECOMMEND_AUDIO_ETC:// 音频合集
+                return "正念冥想";
+            default:
+                return "";
+        }
+    }
 }
