@@ -22,6 +22,7 @@ import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.activitys.login.SetPasswordActivity;
+import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
 import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.user.login.LoginStatus;
@@ -107,6 +108,16 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
     }
 
     @Override
+    public void onVisible(boolean isVisible) {
+        super.onVisible(isVisible);
+        if (isVisible) {
+            mEtMobile.setText(LoginActivity.INPUT_PHONE);
+        } else {
+            LoginActivity.INPUT_PHONE = mEtMobile.getText().toString();
+        }
+    }
+
+    @Override
     public void initData() {
         MyTextWatcher myTextWatcher = new MyTextWatcher() {
             @Override
@@ -152,6 +163,9 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
             user.setLoginStatus(LoginStatus.LOGINED);
             UserManager.getInstance().login(user);
             LogUtil.d(TAG, "UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
+            if (data.isNoOrganization()) {
+                SelectOrganizationActivity.startActivity(mContext, true);
+            }
             getActivity().finish();
         } else {
             ToastUtil.show("token 参数错误");

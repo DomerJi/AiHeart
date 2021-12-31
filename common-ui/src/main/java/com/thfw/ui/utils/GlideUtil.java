@@ -46,6 +46,15 @@ public class GlideUtil {
                 .into(imageView);
     }
 
+    public static void load(Context mContext, Object url, ImageView imageView) {
+        Glide.with(mContext)
+                .load(url)
+                .apply(getRequestOptions())
+//                .transition(DrawableTransitionOptions.withCrossFade())
+                .centerCrop()
+                .into(imageView);
+    }
+
     public static void load(Context mContext, int  resId, ImageView imageView) {
         Glide.with(mContext)
                 .load(resId)

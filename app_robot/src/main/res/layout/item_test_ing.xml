@@ -65,10 +65,11 @@
         android:layout_marginRight="12dp"
         android:background="@drawable/common_green_selector"
         android:enabled="false"
-        android:text="下一题"
+        android:text="上一题"
         android:textColor="@color/white"
         android:textSize="@dimen/textSize"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
 

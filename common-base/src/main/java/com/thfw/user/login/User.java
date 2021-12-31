@@ -1,7 +1,11 @@
 package com.thfw.user.login;
 
+import android.text.TextUtils;
+
+import com.thfw.base.R;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.NumberUtil;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.user.IUser;
 import com.thfw.user.IUserInfo;
@@ -36,6 +40,23 @@ public class User implements IUser, IUserInfo {
             organStr += organList.get(size - 1).getName();
         }
         return organStr;
+    }
+
+    public Object getVisibleAvatar() {
+        if (TextUtils.isEmpty(getAvatar())) {
+            return R.drawable.ic_default_avatar;
+        }
+        return getAvatar();
+    }
+
+    /**
+     * 无昵称， 显示手机号 123****7890
+     */
+    public String getVisibleName() {
+        if (TextUtils.isEmpty(getNickName())) {
+            return NumberUtil.getConfoundAccount(mobile);
+        }
+        return getNickName();
     }
 
     public void setToken(String token) {

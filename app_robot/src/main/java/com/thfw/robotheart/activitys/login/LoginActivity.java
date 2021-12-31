@@ -31,6 +31,7 @@ public class LoginActivity extends BaseActivity {
     public static final int BY_FACE = 5;
 
     public static final String KEY_PHONE_NUMBER = "phone_number";
+    public static String INPUT_PHONE = "";
     private int type;
     private FragmentLoader fragmentLoader;
     private AlertDialog mDialog;
@@ -71,6 +72,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     public FragmentLoader getFragmentLoader() {
+        hideInput();
         return fragmentLoader;
     }
 

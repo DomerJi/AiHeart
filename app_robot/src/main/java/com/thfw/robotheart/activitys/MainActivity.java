@@ -13,6 +13,7 @@ import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
 import com.thfw.robotheart.activitys.exercise.ExerciseActivity;
+import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.activitys.me.HotPhoneActivity;
 import com.thfw.robotheart.activitys.me.MeActivity;
 import com.thfw.robotheart.activitys.me.PrivateSetActivity;
@@ -25,6 +26,7 @@ import com.thfw.robotheart.activitys.text.BookStudyActivity;
 import com.thfw.robotheart.activitys.video.VideoHomeActivity;
 import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.MyRobotSearchView;
 import com.thfw.ui.widget.WeekView;
 import com.thfw.user.login.User;
@@ -54,6 +56,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private android.widget.LinearLayout mLlHotCall;
     private android.widget.LinearLayout mLlSetting;
     private android.widget.LinearLayout mLlMe;
+    private MyRobotSearchView mMySearch;
+    private LinearLayout mLlRiv;
 
     @Override
     public int getContentView() {
@@ -101,8 +105,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mLlSetting.setOnClickListener(this);
         mLlMe.setOnClickListener(this);
         mRlSpecialityTalk.setOnClickListener(this);
+        mMySearch = (MyRobotSearchView) findViewById(R.id.my_search);
 
-        MyRobotSearchView mMySearch = findViewById(R.id.my_search);
         mMySearch.setOnSearchListener(new MyRobotSearchView.OnSearchListener() {
             @Override
             public void onSearch(String key, boolean clickSearch) {
@@ -114,18 +118,32 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 startActivity(new Intent(mContext, SearchActivity.class));
             }
         });
+
+        mLlRiv = (LinearLayout) findViewById(R.id.ll_riv);
     }
 
 
     @Override
     public void initData() {
         mWeekView.setOnClickListener(v -> {
-            if (ClickCountUtils.click(15)) {
+            if (ClickCountUtils.click(10)) {
                 startActivity(new Intent(mContext, PrivateSetActivity.class));
             }
         });
         if (UserManager.getInstance().isLogin()) {
-            mTvInstitution.setText(UserManager.getInstance().getUser().getOrganListStr());
+            setUserMessage(UserManager.getInstance().getUser());
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!UserManager.getInstance().isLogin()) {
+            LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+        } else {
+            mLlRiv.setOnClickListener(v -> {
+                startActivity(new Intent(mContext, MeActivity.class));
+            });
         }
     }
 
@@ -162,9 +180,15 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         return new UserObserver() {
             @Override
             public void onChanged(UserManager accountManager, User user) {
-                mTvInstitution.setText(user.getOrganListStr());
+                setUserMessage(user);
             }
         };
+    }
+
+    private void setUserMessage(User user) {
+        mTvInstitution.setText(user.getOrganListStr());
+        mTvNickname.setText(user.getVisibleName());
+        GlideUtil.load(mContext, user.getVisibleAvatar(), mRivAvatar);
     }
 
 }

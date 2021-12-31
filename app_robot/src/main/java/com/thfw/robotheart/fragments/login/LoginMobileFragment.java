@@ -100,6 +100,16 @@ public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> imple
     }
 
     @Override
+    public void onVisible(boolean isVisible) {
+        super.onVisible(isVisible);
+        if (isVisible) {
+            mEtMobile.setText(LoginActivity.INPUT_PHONE);
+        } else {
+            LoginActivity.INPUT_PHONE = mEtMobile.getText().toString();
+        }
+    }
+
+    @Override
     public LifecycleProvider getLifecycleProvider() {
         return this;
     }

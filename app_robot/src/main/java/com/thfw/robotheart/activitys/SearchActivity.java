@@ -394,6 +394,12 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
         });
     }
 
+    public void onViewPagerNext() {
+        if (mViewPager != null && myResultAdapter != null && myResultAdapter.getCount() > 1) {
+            mViewPager.setCurrentItem((mViewPager.getCurrentItem() + 1) % myResultAdapter.getCount(), false);
+        }
+    }
+
     /**
      * 搜索结果FragmentPagerAdapter
      */

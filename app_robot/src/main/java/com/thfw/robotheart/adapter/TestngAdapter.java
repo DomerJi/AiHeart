@@ -15,7 +15,6 @@ import com.thfw.robotheart.R;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -24,8 +23,6 @@ import java.util.List;
  * Describe:Todo
  */
 public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, TestngAdapter.TestngHolder> {
-
-    private HashMap<Integer, TestSelectAdapter> adapterHashMap = new HashMap<>();
 
     public TestngAdapter(List<TestDetailModel.SubjectListBean> dataList) {
         super(dataList);
@@ -44,24 +41,19 @@ public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, 
         holder.mTvPageSum.setText("/" + String.valueOf(getItemCount()));
         TestDetailModel.SubjectListBean subjectListBean = mDataList.get(position);
         holder.mTvTitle.setText(subjectListBean.getDes());
-        holder.mBtConfirm.setText(position == getItemCount() - 1 ? "提交" : "下一题");
-        TestSelectAdapter selectAdapter = adapterHashMap.get(position);
-        if (selectAdapter == null) {
-            selectAdapter = new TestSelectAdapter(subjectListBean.getOptionArray());
-            selectAdapter.setOnRvItemListener(new OnRvItemListener<TestDetailModel.SubjectListBean>() {
-                @Override
-                public void onItemClick(List<TestDetailModel.SubjectListBean> list, int position) {
-                    subjectListBean.setSelectedIndex(position);
-                    holder.mBtConfirm.setEnabled(true);
+        TestSelectAdapter selectAdapter = new TestSelectAdapter(subjectListBean.getOptionArray());
+        selectAdapter.setSelectedIndex(subjectListBean.getSelectedIndex());
+        holder.mRvSelect.setAdapter(selectAdapter);
+        selectAdapter.setOnRvItemListener(new OnRvItemListener<TestDetailModel.SubjectListBean>() {
+            @Override
+            public void onItemClick(List<TestDetailModel.SubjectListBean> list, int position) {
+                subjectListBean.setSelectedIndex(position);
+                if (mOnRvItemListener != null) {
+                    mOnRvItemListener.onItemClick(getDataList(), holder.getBindingAdapterPosition());
                 }
-            });
-            holder.mBtConfirm.setEnabled(selectAdapter.getSelectedIndex() != -1);
-            adapterHashMap.put(position, selectAdapter);
-            holder.mRvSelect.setAdapter(selectAdapter);
-        } else {
-            holder.mBtConfirm.setEnabled(selectAdapter.getSelectedIndex() != -1);
-            selectAdapter.notifyDataSetChanged();
-        }
+            }
+        });
+        holder.mBtConfirm.setEnabled(position != 0);
 
     }
 
@@ -89,11 +81,22 @@ public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, 
             mBtConfirm = (Button) itemView.findViewById(R.id.bt_confirm);
             mRvSelect = (RecyclerView) itemView.findViewById(R.id.rvSelect);
             mRvSelect.setLayoutManager(new GridLayoutManager(mContext, 2));
+
             mBtConfirm.setOnClickListener(v -> {
-                if (mOnRvItemListener != null) {
-                    mOnRvItemListener.onItemClick(getDataList(), getBindingAdapterPosition());
+                if (btnListener != null) {
+                    btnListener.onBtnClick(0);
                 }
             });
         }
+    }
+
+    OnBtnListener btnListener;
+
+    public void setBtnListener(OnBtnListener btnListener) {
+        this.btnListener = btnListener;
+    }
+
+    public interface OnBtnListener {
+        void onBtnClick(int type);
     }
 }

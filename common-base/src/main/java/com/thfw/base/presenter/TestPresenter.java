@@ -40,6 +40,11 @@ public class TestPresenter extends IPresenter<TestPresenter.TestUi> {
         OkHttpUtil.request(observable, getUI());
     }
 
+    public void onGetResult(int id) {
+        Observable<HttpResult<TestResultModel>> observable = OkHttpUtil.createService(TestApi.class).onGetResult(id);
+        OkHttpUtil.request(observable, getUI());
+    }
+
 
     public interface TestUi<T> extends UI<T> {
 

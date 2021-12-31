@@ -1,5 +1,7 @@
 package com.thfw.robotheart.activitys.me;
 
+import android.content.Context;
+import android.content.Intent;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -45,6 +47,12 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
     private android.widget.LinearLayout mLlWelcome;
     private android.widget.TextView mTvNickname;
     private android.widget.TextView mTvChooseOrganization;
+    private boolean mIsFirst;
+
+    public static void startActivity(Context context, boolean isFirst) {
+        context.startActivity(new Intent(context, SelectOrganizationActivity.class)
+                .putExtra(KEY_DATA, isFirst));
+    }
 
     @Override
     public int getContentView() {
@@ -87,6 +95,7 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
 
     @Override
     public void initData() {
+        mIsFirst = getIntent().getBooleanExtra(KEY_DATA, false);
         mPresenter.onGetOrganizationList();
     }
 
@@ -151,6 +160,7 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
             UserManager.getInstance().notifyUserInfo();
             LoadingDialog.hide();
             ToastUtil.show("选择成功");
+            mIsFirst = false;
             finish();
         }
     }
@@ -179,5 +189,13 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
         mLoadingView.showFail(v -> {
             initData();
         });
+    }
+
+    @Override
+    public void finish() {
+        if (mIsFirst) {
+            return;
+        }
+        super.finish();
     }
 }

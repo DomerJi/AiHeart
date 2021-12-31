@@ -1,6 +1,8 @@
 package com.thfw.robotheart.activitys.me;
 
 import android.content.Intent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -8,10 +10,12 @@ import android.widget.TextView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 
 public class MeActivity extends RobotBaseActivity {
@@ -32,6 +36,7 @@ public class MeActivity extends RobotBaseActivity {
     private android.widget.RelativeLayout mRlBackHelp;
     private android.widget.RelativeLayout mRlAccountManager;
     private RelativeLayout mRlMeMsg;
+    private android.widget.Button mBtLogout;
 
     @Override
     public int getContentView() {
@@ -62,6 +67,7 @@ public class MeActivity extends RobotBaseActivity {
         mRlBackHelp = (RelativeLayout) findViewById(R.id.rl_back_help);
         mRlAccountManager = (RelativeLayout) findViewById(R.id.rl_account_manager);
         mRlMeMsg = (RelativeLayout) findViewById(R.id.rl_me_msg);
+        mBtLogout = (Button) findViewById(R.id.bt_logout);
     }
 
     @Override
@@ -69,6 +75,15 @@ public class MeActivity extends RobotBaseActivity {
         mRivAvatar.setOnClickListener(v -> {
             if (!UserManager.getInstance().isLogin()) {
                 LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+            }
+        });
+
+        mBtLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+                ToastUtil.show("成功退出");
+                finish();
             }
         });
 

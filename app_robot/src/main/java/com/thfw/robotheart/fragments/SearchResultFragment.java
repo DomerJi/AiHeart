@@ -1,5 +1,9 @@
 package com.thfw.robotheart.fragments;
 
+import android.os.Handler;
+import android.view.MotionEvent;
+import android.view.View;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,6 +15,7 @@ import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.SearchActivity;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.activitys.talk.AiTalkActivity;
 import com.thfw.robotheart.activitys.test.TestDetailActivity;
@@ -114,6 +119,39 @@ public class SearchResultFragment extends RobotBaseFragment {
             }
         });
         mRvList.setAdapter(searchAdapter);
+
+        mRvList.setOnTouchListener(new View.OnTouchListener() {
+            private Handler handler = new Handler();
+            private boolean isRun;
+            private Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (getActivity() instanceof SearchActivity) {
+                        ((SearchActivity) getActivity()).onViewPagerNext();
+                    }
+                }
+            };
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    if (event.getY() > 0 && !mRvList.canScrollVertically(1)) {
+                        if (!isRun) {
+                            isRun = true;
+                            handler.postDelayed(runnable, 200);
+                        }
+                    } else {
+                        handler.removeCallbacks(runnable);
+                        isRun = false;
+                    }
+                } else {
+                    isRun = false;
+                    handler.removeCallbacks(runnable);
+                }
+                return false;
+            }
+
+        });
     }
 
     public String getTitle() {

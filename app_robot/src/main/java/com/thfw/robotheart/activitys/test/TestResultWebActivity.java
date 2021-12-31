@@ -9,20 +9,40 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.DefaultWebClient;
-import com.thfw.base.base.IPresenter;
+import com.just.agentweb.WebViewClient;
+import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.AudioEtcModel;
+import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.TestResultModel;
+import com.thfw.base.models.VideoEtcModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.TestPresenter;
+import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
+import com.thfw.robotheart.activitys.talk.AiTalkActivity;
+import com.thfw.robotheart.activitys.text.BookDetailActivity;
+import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
+import com.thfw.robotheart.adapter.TestRecommendAdapter;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
+import com.trello.rxlifecycle2.LifecycleProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 加载网页 如：协议
  * Created By jishuaipeng on 2021/4/29
  */
-public class TestResultWebActivity extends RobotBaseActivity {
+public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> implements TestPresenter.TestUi<TestResultModel> {
 
     private static final String KEY_URL = "key.url";
     private static final String KEY_TITLE = "key.title";
@@ -30,10 +50,13 @@ public class TestResultWebActivity extends RobotBaseActivity {
     private String url;
     private String title;
     private TitleRobotView tvTitleView;
+    private RecyclerView mRvCommend;
+    private TestResultModel testResultModel;
 
 
     public static void startActivity(Context context, TestResultModel testResultModel) {
         context.startActivity(new Intent(context, TestResultWebActivity.class)
+                .putExtra(KEY_DATA, testResultModel)
                 .putExtra(KEY_URL, "https://resource.soulbuddy.cn/public/soul_the_land/depth_result.html?id=" + testResultModel.getResultId())
                 .putExtra(KEY_TITLE, "测评结果"));
     }
@@ -44,21 +67,27 @@ public class TestResultWebActivity extends RobotBaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public TestPresenter onCreatePresenter() {
+        return new TestPresenter(this);
     }
 
     @Override
     public void initView() {
         tvTitleView = findViewById(R.id.titleView);
+        mRvCommend = findViewById(R.id.rv_recommend);
+        mRvCommend.setLayoutManager(new GridLayoutManager(mContext, 4));
+
     }
 
     @Override
     public void initData() {
         url = getIntent().getStringExtra(KEY_URL);
         title = getIntent().getStringExtra(KEY_TITLE);
+        testResultModel = (TestResultModel) getIntent().getSerializableExtra(KEY_DATA);
         initAgentWeb(findViewById(R.id.fl_web_content));
         tvTitleView.setCenterText(title);
+
+
     }
 
     private void initAgentWeb(FrameLayout frameLayout) {
@@ -69,6 +98,19 @@ public class TestResultWebActivity extends RobotBaseActivity {
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1) // 参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.DISALLOW)// 打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
                 .interceptUnkownUrl() // 拦截找不到相关页面的Url AgentWeb 3.0.0 加入。
+                .setWebViewClient(new WebViewClient() {
+                    @Override
+                    public void onPageFinished(WebView view, String url) {
+                        super.onPageFinished(view, url);
+                        if (testResultModel != null) {
+                            if (testResultModel.getRecommendInfo() != null) {
+                                setRecommend();
+                            } else {
+                                mPresenter.onGetResult(testResultModel.getResultId());
+                            }
+                        }
+                    }
+                })
                 .createAgentWeb()// 创建AgentWeb。
                 .ready()// 设置 WebSettings。
                 .go(url); // WebView载入该url地址的页面并显示。
@@ -126,6 +168,8 @@ public class TestResultWebActivity extends RobotBaseActivity {
                 return false;
             }
         });
+
+
     }
 
     @Override
@@ -144,5 +188,73 @@ public class TestResultWebActivity extends RobotBaseActivity {
     public void onDestroy() {
         super.onDestroy();
         mAgentWeb.getWebLifeCycle().onDestroy();
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(TestResultModel data) {
+        if (data != null) {
+            testResultModel = data;
+            setRecommend();
+        }
+    }
+
+    private void setRecommend() {
+        if (testResultModel == null) {
+            return;
+        }
+        if (!EmptyUtil.isEmpty(testResultModel.getRecommendInfo())) {
+            findViewById(R.id.tv_recommend_title).setVisibility(View.VISIBLE);
+            mRvCommend.setVisibility(View.VISIBLE);
+        }
+        TestRecommendAdapter recommendAdapter = new TestRecommendAdapter(testResultModel.getRecommendInfo());
+        recommendAdapter.setOnRvItemListener(new OnRvItemListener<TestResultModel.RecommendInfoBean>() {
+            @Override
+            public void onItemClick(List<TestResultModel.RecommendInfoBean> list, int position) {
+                TestResultModel.RecommendInfoBean infoBean = list.get(position);
+                if (infoBean == null || infoBean.getInfo() == null) {
+                    ToastUtil.show("数据异常");
+                    return;
+                }
+                switch (infoBean.getType()) {
+                    case 1: // 测评
+                        TestDetailActivity.startActivity(mContext, infoBean.getInfo().getId());
+                        break;
+                    case 2: // 主题对话
+                        AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
+                                .setId(infoBean.getInfo().getId()));
+                        break;
+                    case 3: // 音频
+                        AudioEtcModel audioEtcModel = new AudioEtcModel();
+                        audioEtcModel.setTitle(infoBean.getInfo().getTitle());
+                        audioEtcModel.setImg(infoBean.getInfo().getPic());
+                        audioEtcModel.setId(infoBean.getInfo().getId());
+                        AudioPlayerActivity.startActivity(mContext, audioEtcModel);
+                        break;
+                    case 4: // 视频
+                        ArrayList<VideoEtcModel> videoList = new ArrayList<>();
+                        VideoEtcModel videoEtcModel = new VideoEtcModel();
+                        videoEtcModel.setId(infoBean.getInfo().getId());
+                        videoEtcModel.setTitle(infoBean.getInfo().getTitle());
+                        videoList.add(videoEtcModel);
+                        VideoPlayerActivity.startActivity(mContext, videoList, 0);
+                        break;
+                    case 5: // 科普文章
+                        BookDetailActivity.startActivity(mContext, infoBean.getInfo().getId());
+                        break;
+
+                }
+            }
+        });
+        mRvCommend.setAdapter(recommendAdapter);
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+
     }
 }

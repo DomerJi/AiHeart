@@ -31,6 +31,10 @@ public class TestSelectAdapter extends BaseAdapter<TestDetailModel.SubjectListBe
         return selectedIndex;
     }
 
+    public void setSelectedIndex(int selectedIndex) {
+        this.selectedIndex = selectedIndex;
+    }
+
     @NonNull
     @NotNull
     @Override
@@ -42,11 +46,6 @@ public class TestSelectAdapter extends BaseAdapter<TestDetailModel.SubjectListBe
     public void onBindViewHolder(@NonNull @NotNull TestSelectHolder holder, int position) {
         holder.mTvSelect.setSelected(selectedIndex == position);
         holder.mTvSelect.setText(mDataList.get(position).getOption() + ". " + mDataList.get(position).getAnswer());
-    }
-
-    @Override
-    public int getItemCount() {
-        return 4;
     }
 
     public class TestSelectHolder extends RecyclerView.ViewHolder {

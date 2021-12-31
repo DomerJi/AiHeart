@@ -16,6 +16,7 @@
     <color name="colorRobotPrimaryDark">#008800</color>
     <color name="colorRobotAccent">#00FF88</color>
     <color name="colorRobotFore">#91dff3</color>
+    <color name="colorRobotFore88">#8891dff3</color>
 
     <!--页面通用背景-->
     <color name="page_background_gray">#F5F5F5</color>

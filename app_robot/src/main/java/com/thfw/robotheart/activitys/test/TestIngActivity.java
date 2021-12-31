@@ -65,15 +65,31 @@ public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements
         mTestIngAdapter = new TestngAdapter(mModel.getSubjectArray());
         mVpList.setAdapter(mTestIngAdapter);
         mTestIngAdapter.setOnRvItemListener(new OnRvItemListener<TestDetailModel.SubjectListBean>() {
+            Runnable runnable;
+
             @Override
             public void onItemClick(List<TestDetailModel.SubjectListBean> list, int position) {
-                mVpList.setUserInputEnabled(true);
+                mVpList.removeCallbacks(runnable);
                 // 结果
                 if (mVpList.getCurrentItem() == mTestIngAdapter.getItemCount() - 1) {
                     submit();
                 } else {
-                    mVpList.setCurrentItem(position + 1, false);
+                    if (runnable == null) {
+                        runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                mVpList.setCurrentItem(mVpList.getCurrentItem() + 1, false);
+                            }
+                        };
+                    }
+                    mVpList.postDelayed(runnable, 300);
                 }
+            }
+        });
+        mTestIngAdapter.setBtnListener(new TestngAdapter.OnBtnListener() {
+            @Override
+            public void onBtnClick(int type) {
+                mVpList.setCurrentItem(mVpList.getCurrentItem() - 1, true);
             }
         });
         mVpList.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {

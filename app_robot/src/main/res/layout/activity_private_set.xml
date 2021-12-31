@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:trv_background="@color/transparent"
-        app:trv_centerText="私人定制"
+        app:trv_centerText="设置机构"
         tools:ignore="MissingConstraints" />
 
     <ScrollView

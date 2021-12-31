@@ -48,4 +48,13 @@ public interface TestApi {
                                                      @Field("opts") String opts,
                                                      @Field("spend_time") int spendTime);
 
+    /**
+     * [获取测评详情]
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("testing/getResult")
+    Observable<HttpResult<TestResultModel>> onGetResult(@Field("result_id") int id);
+
 }
