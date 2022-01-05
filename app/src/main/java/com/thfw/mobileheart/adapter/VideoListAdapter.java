@@ -121,7 +121,7 @@ public class VideoListAdapter extends BaseAdapter<VideoModel, VideoListAdapter.V
             mPlayerListener.setPbBar(holder);
             player.addListener(mPlayerListener);
             holder.mPlayerView.setPlayer(player);
-            MediaItem mediaItem = MediaItem.fromUri(mDataList.get(position).url);
+            MediaItem mediaItem = MediaItem.fromUri(mDataList.get(position).getUrl());
 //            MediaSource mediaSource = new DefaultMediaSourceFactory(mContext).createMediaSource(mediaItem);
             player.setMediaItem(mediaItem);
             player.prepare();
@@ -133,7 +133,7 @@ public class VideoListAdapter extends BaseAdapter<VideoModel, VideoListAdapter.V
             recycleHolder(holder);
         }
 
-        GlideUtil.loadVideoScreenshot(mContext, mDataList.get(position).url, holder.mIvBg, 100);
+        GlideUtil.loadVideoScreenshot(mContext, mDataList.get(position).getUrl(), holder.mIvBg, 100);
 
     }
 

@@ -327,7 +327,7 @@ public class VideoPlayActivity extends BaseActivity implements VideoGestureHelpe
         mPlayerListener.setPbBar(mPbLoading);
         mExoPlayer.addListener(mPlayerListener);
         mMPlayerView.setPlayer(mExoPlayer);
-        MediaItem mediaItem = MediaItem.fromUri(mVideoModel.url);
+        MediaItem mediaItem = MediaItem.fromUri(mVideoModel.getUrl());
 //            MediaSource mediaSource = new DefaultMediaSourceFactory(mContext).createMediaSource(mediaItem);
         mExoPlayer.setMediaItem(mediaItem);
 

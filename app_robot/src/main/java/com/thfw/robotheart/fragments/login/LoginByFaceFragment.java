@@ -395,8 +395,9 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 //        Log.d(TAG, "facesArray.len = " + facesArray.length);
         if (facesArray.length == 1) {
             //  画眼睛
-            // onEyeDraw(mGray);
-            if (!inputFace || onEyeCheck2(mGray)) {
+            onEyeDraw(mGray);
+//            if (!inputFace || onEyeCheck2(mGray)) {
+            if (onEyeCheck2(mGray)) {
                 String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                 boolean saveImage = FaceUtil.saveImage(getContext(), mRgba, facesArray[0], fileName, true);
                 Log.d(TAG, "saveImage = " + saveImage);
@@ -414,9 +415,9 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             frameHandleIng = false;
         }
         // 画脸型
-//        for (int i = 0; i < facesArray.length; i++) {
-//            Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 3);
-//        }
+        for (int i = 0; i < facesArray.length; i++) {
+            Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 3);
+        }
         return mRgba;
     }
 
@@ -517,7 +518,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 
         Rect[] rects = faceDetections.toArray();
         if (rects == null || rects.length < 2) {
-            Log.d(TAG, "rects == null || rects.length < 2");
+            Log.d(TAG, "rects == null || rects.length < 1");
             return false;
         }
 

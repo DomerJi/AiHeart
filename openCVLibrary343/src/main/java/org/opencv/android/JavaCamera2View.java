@@ -263,7 +263,8 @@ public class JavaCamera2View extends CameraBridgeViewBase {
         }
     }
 
-    boolean calcPreviewSize(final int width, final int height) {
+    boolean calcPreviewSize(final int width, final int tempHeight) {
+        final int height = tempHeight;
         Log.i(LOGTAG, "calcPreviewSize: " + width + "x" + height);
         if (mCameraID == null) {
             Log.e(LOGTAG, "Camera isn't initialized!");
@@ -289,7 +290,7 @@ public class JavaCamera2View extends CameraBridgeViewBase {
 //                    bestHeight = h;
 //                }
                 // todo me 根据成像大小设置预览画面
-                if (h > height && h - height < min) {
+                if (h >= height && h - height < min) {
                     min = h - height;
                     bestWidth = w;
                     bestHeight = h;
