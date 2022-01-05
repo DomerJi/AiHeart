@@ -16,7 +16,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
-            abiFilters "armeabi-v7a"
+////            moduleName "detection_based_tracker"
+            abiFilters "armeabi", "x86"  // 输出指定三种abi体系结构下的so库。
         }
     }
 
@@ -28,16 +29,27 @@ android {
     }
 
     // 配置so文件在 libs目录下
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-        }
-    }
+//    sourceSets {
+//        main {
+//            jniLibs.srcDirs = ['libs']
+//        }
+//    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+        pickFirst 'org/bytedeco/javacpp/macosx-x86_64/libusb-1.0.dylib'
+        pickFirst 'META-INF/maven/org.bytedeco.javacpp-presets/opencv/pom.properties'
+        pickFirst 'META-INF/maven/org.bytedeco.javacpp-presets/opencv/pom.xml'
+        pickFirst 'META-INF/maven/org.bytedeco.javacpp-presets/ffmpeg/pom.properties'
+        pickFirst 'META-INF/maven/org.bytedeco.javacpp-presets/ffmpeg/pom.xml'
+    }
+
+    ndkVersion '23.1.7779620'
 }
 
 dependencies {
@@ -46,7 +58,7 @@ dependencies {
     implementation project(':common-ui')
     implementation project(':picture_library')
     implementation project(':calendarview')
-    implementation project(':circlecamerapreview')
+    implementation project(':openCVLibrary343')
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.android.support:multidex:1.0.1'

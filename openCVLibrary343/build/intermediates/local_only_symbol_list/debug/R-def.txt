@@ -1,0 +1,12 @@
+R_DEF: Internal format may change without notice
+local
+attr? camera_id
+attr? show_fps
+id any
+id back
+id front
+raw haarcascade_eye
+raw haarcascade_eye_tree_eyeglasses
+raw haarcascade_frontalface_alt
+raw lbpcascade_frontalface
+styleable CameraBridgeViewBase show_fps camera_id

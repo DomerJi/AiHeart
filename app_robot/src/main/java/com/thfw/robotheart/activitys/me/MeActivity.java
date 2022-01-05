@@ -1,6 +1,8 @@
 package com.thfw.robotheart.activitys.me;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -10,13 +12,18 @@ import android.widget.TextView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.room.face.Face;
+import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
+
+import java.util.List;
 
 public class MeActivity extends RobotBaseActivity {
 
@@ -37,6 +44,8 @@ public class MeActivity extends RobotBaseActivity {
     private android.widget.RelativeLayout mRlAccountManager;
     private RelativeLayout mRlMeMsg;
     private android.widget.Button mBtLogout;
+    private RelativeLayout mRlFace;
+    private TextView mTvInputState;
 
     @Override
     public int getContentView() {
@@ -68,6 +77,8 @@ public class MeActivity extends RobotBaseActivity {
         mRlAccountManager = (RelativeLayout) findViewById(R.id.rl_account_manager);
         mRlMeMsg = (RelativeLayout) findViewById(R.id.rl_me_msg);
         mBtLogout = (Button) findViewById(R.id.bt_logout);
+        mRlFace = (RelativeLayout) findViewById(R.id.rl_face);
+        mTvInputState = (TextView) findViewById(R.id.tv_input_state);
     }
 
     @Override
@@ -135,5 +146,32 @@ public class MeActivity extends RobotBaseActivity {
             HistoryActivity.startActivity(mContext, HistoryApi.TYPE_VIDEO);
         });
 
+        mRlFace.setOnClickListener(v -> {
+            LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
+        });
+
+    }
+
+    private void setInputState(){
+        if (UserManager.getInstance().isLogin()) {
+            new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+                    List<Face> faceList = MyApplication.getDatabase().faceDao().getAll();
+                    for (Face f : faceList) {
+                        if (StringUtil.contentEquals(UserManager.getInstance().getUser().getMobile(), f.getUid())) {
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mTvInputState.setText("已录入");
+                                }
+                            });
+                            break;
+                        }
+                    }
+                }
+            }.start();
+        }
     }
 }

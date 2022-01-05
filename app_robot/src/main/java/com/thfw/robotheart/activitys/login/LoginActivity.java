@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
@@ -22,6 +23,10 @@ import com.thfw.robotheart.fragments.login.LoginPasswordFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.ui.base.BaseActivity;
 
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+
 public class LoginActivity extends BaseActivity {
 
     public static final int BY_MOBILE = 0;
@@ -35,6 +40,7 @@ public class LoginActivity extends BaseActivity {
     private int type;
     private FragmentLoader fragmentLoader;
     private AlertDialog mDialog;
+    private boolean mOpenCvInited = false;
 
 
     public static void startActivity(Context context, int type) {
@@ -142,5 +148,42 @@ public class LoginActivity extends BaseActivity {
         mDialog = builder.create();
         mDialog.setCanceledOnTouchOutside(false);
         mDialog.show();
+    }
+
+
+    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+        @Override
+        public void onManagerConnected(int status) {
+            switch (status) {
+                case LoaderCallbackInterface.SUCCESS: {
+                    Log.i(TAG, "OpenCV loaded successfully");
+                    mOpenCvInited = true;
+                }
+                break;
+                default: {
+                    super.onManagerConnected(status);
+                }
+                break;
+            }
+        }
+    };
+
+    /**
+     * @return openCv 是否初始化成功
+     */
+    public boolean isOpenCvInited() {
+        return mOpenCvInited;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!OpenCVLoader.initDebug()) {
+            Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, mLoaderCallback);
+        } else {
+            Log.d(TAG, "OpenCV library found inside package. Using it!");
+            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+        }
     }
 }

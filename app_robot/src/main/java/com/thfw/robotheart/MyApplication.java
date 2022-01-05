@@ -3,6 +3,7 @@ package com.thfw.robotheart;
 import android.content.Context;
 
 import androidx.multidex.MultiDexApplication;
+import androidx.room.Room;
 
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
@@ -13,6 +14,7 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.DefaultRefreshFooterCreator;
 import com.scwang.smart.refresh.layout.listener.DefaultRefreshHeaderCreator;
 import com.thfw.base.ContextApp;
+import com.thfw.base.room.AppDatabase;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.ui.dialog.TDialog;
@@ -62,6 +64,10 @@ public class MyApplication extends MultiDexApplication {
 
         ToastUtil.init(this);
         TDialog.init(this);
+    }
+
+    public static AppDatabase getDatabase() {
+        return Room.databaseBuilder(app, AppDatabase.class, "database-name").build();
     }
 
 }

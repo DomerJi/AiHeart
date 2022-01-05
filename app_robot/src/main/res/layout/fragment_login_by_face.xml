@@ -27,6 +27,7 @@
 
 
         <TextView
+            android:id="@+id/tv_page_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -42,13 +43,14 @@
             android:layout_marginTop="12dp">
 
 
-            <com.github.cliven.circlecamerapreview.CircleCameraPreview
-                android:id="@+id/circleCameraPreview"
-                android:layout_width="427dp"
+            <org.opencv.android.JavaCamera2CircleView
+                android:id="@+id/javaCamera2CircleView"
+                android:layout_width="240dp"
                 android:layout_height="240dp"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                app:camera_id="front"
                 android:background="@color/transparent"
                 tools:ignore="MissingConstraints" />
 
