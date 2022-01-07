@@ -48,7 +48,7 @@ public class VideoLastEtcModel implements IModel {
     @SerializedName("add_time")
     private String addTime;
 
-    public List<VideoEtcModel> toVideoModel(){
+    public List<VideoEtcModel> toVideoModel() {
         VideoEtcModel videoModel = new VideoEtcModel();
         videoModel.setTitle(title);
         videoModel.setId(id);
@@ -56,6 +56,7 @@ public class VideoLastEtcModel implements IModel {
         videoModel.setNum(num);
         videoModel.setPic(pic);
         ArrayList<VideoEtcModel> videoEtcModels = new ArrayList<>();
+        videoEtcModels.add(videoModel);
         return videoEtcModels;
     }
 
