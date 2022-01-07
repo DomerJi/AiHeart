@@ -116,6 +116,8 @@ public class BuglyUtil {
                 Beta.checkUpgrade(true, true);
             } catch (Exception e) {
                 LogUtil.d("checkUpgrade", e.getMessage());
+                BuglyUtil.requestUpgradeStateListener.onVersion(false);
+                BuglyUtil.requestUpgradeStateListener = null;
             }
         }
     }
