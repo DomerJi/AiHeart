@@ -11,7 +11,7 @@ import com.thfw.base.base.IModel;
 public class TalkModel implements IModel {
 
     /**
-     * AI树洞
+     * 倾诉吐槽
      */
     public static final int TYPE_AI = TalkApi.JOIN_TYPE_AI;
 
@@ -34,7 +34,7 @@ public class TalkModel implements IModel {
         this.type = type;
         switch (type) {
             case TYPE_AI:
-                title = "AI树洞";
+                title = "倾诉吐槽";
                 break;
             case TYPE_THEME:
                 title = "咨询助理";

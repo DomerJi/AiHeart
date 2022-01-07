@@ -8,7 +8,6 @@
     android:orientation="vertical"
     android:paddingBottom="26dp"
     app:layout_constraintBottom_toBottomOf="parent"
-    tools:background="@drawable/robot_page_bg"
     tools:ignore="MissingConstraints">
 
     <TextView

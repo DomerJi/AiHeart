@@ -503,6 +503,9 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         user.setMobile(loginFace.getUid());
         user.setLoginStatus(LoginStatus.LOGINED);
         UserManager.getInstance().login(user);
+//        if (data.isNoOrganization()) {
+//            SelectOrganizationActivity.startActivity(mContext, true);
+//        }
         LogUtil.d(TAG, "UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
         getActivity().finish();
     }

@@ -2,6 +2,7 @@ package com.thfw.robotheart.activitys.me;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -97,6 +98,12 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
     public void initData() {
         mIsFirst = getIntent().getBooleanExtra(KEY_DATA, false);
         mPresenter.onGetOrganizationList();
+        if (mIsFirst) {
+            mTitleRobotView.getLlBack().setVisibility(View.GONE);
+        }
+        if (UserManager.getInstance().isLogin()) {
+            mTvNickname.setText(UserManager.getInstance().getUser().getVisibleName());
+        }
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
+import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.ui.base.RobotBaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
@@ -177,6 +178,9 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
             user.setLoginStatus(LoginStatus.LOGINED);
             UserManager.getInstance().login(user);
             LogUtil.d(TAG, "UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
+            if (data.isNoOrganization()) {
+                SelectOrganizationActivity.startActivity(mContext, true);
+            }
             getActivity().finish();
         } else {
             ToastUtil.show("token 参数错误");

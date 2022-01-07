@@ -61,8 +61,8 @@ public class VideoModel implements IModel {
         this.img = img;
     }
 
-    public Object getDes() {
-        return des;
+    public String getDes() {
+        return TextUtils.isEmpty(des) ? "抱歉，此视频无简介" : des;
     }
 
     public void setDes(String des) {

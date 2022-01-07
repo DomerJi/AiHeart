@@ -73,11 +73,11 @@ public class ChatEntity implements IModel {
     public String getRecommendType() {
         switch (type) {
             case ChatEntity.TYPE_RECOMMEND_TEST: // 测评
-                return "心理测评";
+                return "测评问卷";
             case ChatEntity.TYPE_RECOMMEND_VIDEO: // 视频
-                return "科普视频";
+                return "视频";
             case ChatEntity.TYPE_RECOMMEND_TEXT: // 文章
-                return "科普文章";
+                return "文章";
             case ChatEntity.TYPE_RECOMMEND_AUDIO: // 音频
             case ChatEntity.TYPE_RECOMMEND_AUDIO_ETC:// 音频合集
                 return "正念冥想";

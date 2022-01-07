@@ -23,7 +23,9 @@ import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.utils.GlideUtil;
 import com.thfw.user.login.LoginStatus;
+import com.thfw.user.login.User;
 import com.thfw.user.login.UserManager;
 
 import java.util.List;
@@ -172,13 +174,15 @@ public class MeActivity extends RobotBaseActivity {
         });
 
 
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         setInputState();
+        if (UserManager.getInstance().isLogin()) {
+            setUserMessage(UserManager.getInstance().getUser());
+        }
     }
 
     private void setInputState() {
@@ -203,4 +207,11 @@ public class MeActivity extends RobotBaseActivity {
             }.start();
         }
     }
+
+    private void setUserMessage(User user) {
+//        mTvInstitution.setText(user.getOrganListStr());
+        mTvNickname.setText(user.getVisibleName());
+        GlideUtil.load(mContext, user.getVisibleAvatar(), mRivAvatar);
+    }
+
 }
