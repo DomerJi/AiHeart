@@ -79,7 +79,7 @@ public class DeviceIdUtil {
                     context.getSystemService(Context.TELEPHONY_SERVICE);
             return tm.getDeviceId();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogUtil.d("getIMEI", ex.getMessage());
         }
         return "";
     }

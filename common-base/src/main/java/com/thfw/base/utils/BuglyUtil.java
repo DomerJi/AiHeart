@@ -97,14 +97,14 @@ public class BuglyUtil {
         if (BuglyUtil.requestUpgradeStateListener == null) {
             return;
         }
+
         if (Beta.getUpgradeInfo() != null) {
             String version = Util.getAppVersion(ContextApp.get());
             LogUtil.d("requestNewVersion = ");
             if (!TextUtils.isEmpty(version) && version.equals(Beta.getUpgradeInfo().versionName)) {
+                BuglyUtil.requestUpgradeStateListener.onUpgradeNoVersion(false);
                 BuglyUtil.requestUpgradeStateListener = null;
-                return;
-            }
-            if (BuglyUtil.requestUpgradeStateListener != null) {
+            } else {
                 BuglyUtil.requestUpgradeStateListener.onVersion(true);
                 BuglyUtil.requestUpgradeStateListener = null;
             }

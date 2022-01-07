@@ -3,4 +3,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <RelativeLayout
+        android:id="@+id/rl_wifi"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="26dp"
+        android:layout_marginRight="26dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:text="蓝牙"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_large" />
+
+
+        <Switch
+            android:id="@+id/switch_blue"
+            style="@style/switch_set_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="8dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_1px"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorRobotFore" />
+
+
+    </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,5 +16,8 @@ public class UIConfig {
 
     public static String[] NEEDED_PERMISSION = new String[]{Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.BLUETOOTH,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.CHANGE_WIFI_STATE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
 }

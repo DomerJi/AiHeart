@@ -51,8 +51,11 @@ import com.thfw.base.models.VideoModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.presenter.VideoPresenter;
+import com.thfw.base.timing.TimingHelper;
+import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.NetworkUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
@@ -61,7 +64,6 @@ import com.thfw.robotheart.adapter.VideoItemAdapter;
 import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.ui.widget.BrightnessHelper;
-import com.thfw.ui.widget.ILoading;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
 import com.thfw.ui.widget.VideoGestureHelper;
@@ -78,7 +80,7 @@ import java.util.List;
 import static android.view.View.VISIBLE;
 
 public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
-        implements VideoGestureHelper.VideoGestureListener, VideoPresenter.VideoUi<VideoModel> {
+        implements TimingHelper.WorkListener, VideoGestureHelper.VideoGestureListener, VideoPresenter.VideoUi<VideoModel> {
 
 
     private ImageView mIvBg;
@@ -412,7 +414,11 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
                     }
                 }
             } else {
-                mLoadingView.showLoadingNoText();
+                if (mExoPlayer.getPlayerError() == null) {
+                    mLoadingView.showLoadingNoText();
+                } else {
+                    videoError();
+                }
             }
         }
 
@@ -450,11 +456,40 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
             } else if (error.type == ExoPlaybackException.TYPE_REMOTE) {
                 errorHint = "网络错误 - REMOTE";
             }
-            mLoadingView.showFail(ILoading.Level.ERROR_NET, v -> {
-                // todo 重试
-                videoChanged(mPlayPosition);
-            });
+            videoError();
         }
+    }
+
+    /**
+     * 视频播放错误处理
+     */
+    private void videoError() {
+        mLoadingView.showFail(v -> {
+            if (NetworkUtil.isNetConnected(mContext)) {
+                mExoPlay.performClick();
+                TimingHelper.getInstance().removeWorkArriveListener(this);
+            } else {
+                videoError();
+                ToastUtil.show("网络异常");
+            }
+        });
+        TimingHelper.getInstance().addWorkArriveListener(this);
+    }
+
+    @Override
+    public void onArrive() {
+        LogUtil.d(TAG, "WorkInt.SECOND2++++++++++++++++++++++++++++");
+        if (NetworkUtil.isNetConnected(mContext)) {
+            if (!mExoPlayer.isPlaying()) {
+                mExoPlay.performClick();
+            }
+            TimingHelper.getInstance().removeWorkArriveListener(this);
+        }
+    }
+
+    @Override
+    public WorkInt workInt() {
+        return WorkInt.SECOND2;
     }
 
     @Override
@@ -528,6 +563,9 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         if (windowPlay) {
             return;
         }
+
+        TimingHelper.getInstance().removeWorkArriveListener(this);
+
         if (mExoPlayer != null) {
             mExoPlayer.release();
             mExoPlayer = null;

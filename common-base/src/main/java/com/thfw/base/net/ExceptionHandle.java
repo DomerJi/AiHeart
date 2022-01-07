@@ -6,6 +6,7 @@ import com.thfw.base.utils.LogUtil;
 import org.json.JSONException;
 
 import java.net.ConnectException;
+import java.net.UnknownHostException;
 
 import retrofit2.HttpException;
 
@@ -39,7 +40,7 @@ public class ExceptionHandle {
                 case SERVICE_UNAVAILABLE:
                 default:
                     //ex.code = httpException.code();
-                    ex.message = "网络错误";
+                    ex.message = "网络错误,请检查网络链接";
                     break;
             }
             return ex;
@@ -61,6 +62,10 @@ public class ExceptionHandle {
         } else if (e instanceof javax.net.ssl.SSLHandshakeException) {
             ex = new ResponeThrowable(e, ERROR.SSL_ERROR);
             ex.message = "证书验证失败";
+            return ex;
+        } else if (e instanceof UnknownHostException) {
+            ex = new ResponeThrowable(e, ERROR.NETWORD_ERROR);
+            ex.message = "网络错误,请检查网络链接";
             return ex;
         } else {
             ex = new ResponeThrowable(e, ERROR.UNKNOWN);

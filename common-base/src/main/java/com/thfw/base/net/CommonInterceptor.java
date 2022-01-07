@@ -5,14 +5,11 @@ import android.text.TextUtils;
 
 import com.thfw.base.utils.LogUtil;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.Charset;
+import java.io.IOException;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * 通用拦截器
@@ -23,21 +20,11 @@ import okhttp3.ResponseBody;
 public class CommonInterceptor implements Interceptor {
 
     @Override
-    public synchronized Response intercept(Chain chain) {
+    public synchronized Response intercept(Chain chain) throws IOException {
         Request request = rebuildRequest(chain.request());
-        Response response = null;
-
-        try {
-            response = chain.proceed(request);
-            Charset charset = Charset.forName("UTF-8");
-            ResponseBody responseBody = response.peekBody(Long.MAX_VALUE);
-            Reader jsonReader = new InputStreamReader(responseBody.byteStream(), charset);
-            String json = responseBody.string();
-            LogUtil.d("CommonInterceptor", "json = " + json);
-        } catch (Exception e) {
-            e.printStackTrace();
-            LogUtil.d(e.toString());
-        }
+        Response response = chain.proceed(request);
+        String json = response.peekBody(Long.MAX_VALUE).string();
+        LogUtil.d("CommonInterceptor", "json = " + json);
         return response;
     }
 
@@ -48,15 +35,15 @@ public class CommonInterceptor implements Interceptor {
         } else {
             requestBuilder = request.newBuilder();
         }
+
         // TODO 添加头部 cookie token
-//        requestBuilder.addHeader("Authorization", "TOKEN");
-//        requestBuilder.addHeader("Cookie", "BDUSS=");
-        if (tokenListener != null && requestBuilder != null) {
+        if (tokenListener != null) {
             String token = tokenListener.getToken();
             if (!TextUtils.isEmpty(token)) {
                 requestBuilder.addHeader("Token", token);
             }
         }
+
         return requestBuilder.build();
     }
 

@@ -11,7 +11,8 @@ public enum WorkInt {
     LOGOUT(1, 1 * 60, false),
     TIME(2, 60, true),
     HINT(3, 20, true),
-    SECOND(4, 1, true);
+    SECOND(4, 1, true),
+    SECOND2(5, 2, true);
 
     /**
      * 标识
