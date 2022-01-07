@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_robot_background"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/page_margin"
+        android:text="@string/title"
+        android:textColor="@color/text_common"
+        android:textSize="@dimen/textSize_large"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:minHeight="80dp"
+        android:padding="16dp"
+        android:text="@string/title"
+        android:textColor="@color/text_content"
+        android:textSize="@dimen/textSize"
+        tools:ignore="MissingConstraints" />
+
+    <View
+        android:id="@+id/vline_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_2px"
+        android:background="@color/dialog_divider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_one"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/dialog_left_button_selector"
+            android:gravity="center"
+            android:text="保存进度并退出"
+            android:textColor="@color/exercise_text"
+            android:textSize="@dimen/textSize" />
+
+        <View
+            android:id="@+id/vline_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="@color/dialog_divider" />
+
+
+        <TextView
+            android:id="@+id/tv_two"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/bg_white_gray_selector"
+            android:gravity="center"
+            android:text="直接退出"
+            android:textColor="@color/exercise_text"
+            android:textSize="@dimen/textSize" />
+
+        <View
+            android:id="@+id/vline_vertical2"
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="@color/dialog_divider" />
+
+
+        <TextView
+            android:id="@+id/tv_three"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/bg_white_gray_selector"
+            android:gravity="center"
+            android:text="继续练习"
+            android:textColor="@color/exercise_text"
+            android:textSize="@dimen/textSize" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

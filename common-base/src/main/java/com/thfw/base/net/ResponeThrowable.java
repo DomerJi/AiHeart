@@ -15,6 +15,7 @@ public class ResponeThrowable extends Exception implements IResult {
 
     public ResponeThrowable(int code, String message) {
         super(message);
+        this.message = message;
         this.code = code;
     }
 

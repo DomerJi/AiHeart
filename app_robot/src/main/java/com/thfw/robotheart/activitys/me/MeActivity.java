@@ -18,8 +18,11 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.login.LoginActivity;
+import com.thfw.robotheart.view.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 
@@ -92,9 +95,27 @@ public class MeActivity extends RobotBaseActivity {
         mBtLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
-                ToastUtil.show("成功退出");
-                finish();
+                DialogRobotFactory.createCustomDialog(MeActivity.this, new DialogRobotFactory.OnViewCallBack() {
+
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                        if (view.getId() == R.id.tv_right) {
+                            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+                            ToastUtil.show("成功退出");
+                            finish();
+                        }
+                        tDialog.dismiss();
+                    }
+
+                    @Override
+                    public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                        mTvHint.setText("确定退出登录吗");
+                        mTvTitle.setVisibility(View.GONE);
+                        mTvLeft.setText("取消");
+                        mTvRight.setText("确定");
+                    }
+                });
+
             }
         });
 
@@ -150,9 +171,17 @@ public class MeActivity extends RobotBaseActivity {
             LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
         });
 
+
+
     }
 
-    private void setInputState(){
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setInputState();
+    }
+
+    private void setInputState() {
         if (UserManager.getInstance().isLogin()) {
             new Thread() {
                 @Override

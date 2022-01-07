@@ -36,6 +36,9 @@ public class TalkModel implements IModel {
             case TYPE_AI:
                 title = "AI树洞";
                 break;
+            case TYPE_THEME:
+                title = "咨询助理";
+                break;
             default:
                 title = "主题对话";
                 break;

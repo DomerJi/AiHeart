@@ -2,6 +2,8 @@ package com.thfw.robotheart.activitys.test;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -14,9 +16,12 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.TestngAdapter;
+import com.thfw.robotheart.view.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.Iterator;
@@ -136,5 +141,29 @@ public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements
     public void onFail(ResponeThrowable throwable) {
         LoadingDialog.hide();
         ToastUtil.show("提交失败");
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        DialogRobotFactory.createCustomDialog(this, new DialogRobotFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvHint.setText("确认结束测评吗");
+                mTvTitle.setVisibility(View.GONE);
+                mTvLeft.setText("取消");
+                mTvRight.setText("确定");
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                if (view.getId() == R.id.tv_left) {
+                    tDialog.dismiss();
+                } else {
+                    tDialog.dismiss();
+                    finish();
+                }
+            }
+        });
     }
 }

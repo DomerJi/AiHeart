@@ -2,6 +2,7 @@ package com.thfw.robotheart.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,18 +34,22 @@ public class BookStudyListAdapter extends BaseAdapter<BookStudyItemModel, BookSt
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull BookStudyHolder holder, int position) {
-
+        holder.mTvTitle.setText(mDataList.get(position).getTitle());
     }
 
-    @Override
-    public int getItemCount() {
-        return 30;
-    }
 
     public class BookStudyHolder extends RecyclerView.ViewHolder {
 
+        private final TextView mTvTitle;
+
         public BookStudyHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            mTvTitle = itemView.findViewById(R.id.tv_title);
+            itemView.setOnClickListener(v -> {
+                if (mOnRvItemListener != null) {
+                    mOnRvItemListener.onItemClick(mDataList, getBindingAdapterPosition());
+                }
+            });
         }
     }
 }

@@ -122,7 +122,14 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
         }
         SharePreferenceUtil.setString(KEY_TYPE_LIST, GsonUtil.toJson(data));
         mLoadingView.hide();
+        boolean isSetEmpty = false;
+        if (mVideoEtcTypeAdapter.getItemCount() == 0) {
+            isSetEmpty = true;
+        }
         mVideoEtcTypeAdapter.setDataListNotify(data);
+        if (isSetEmpty) {
+            mVideoEtcTypeAdapter.getOnRvItemListener().onItemClick(mVideoEtcTypeAdapter.getDataList(), 0);
+        }
     }
 
 

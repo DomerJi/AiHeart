@@ -25,14 +25,11 @@ import java.util.List;
  */
 public class BookStudyTypeAdapter extends BaseAdapter<BookStudyTypeModel, BookStudyTypeAdapter.BookStudyTypeHolder> {
 
-    private int selectedIndex = -1;
+    private int selectedIndex = 0;
     private int childSelectedIndex = -1;
 
     public BookStudyTypeAdapter(List<BookStudyTypeModel> dataList) {
         super(dataList);
-        if (getItemCount() > 0) {
-            selectedIndex = 0;
-        }
     }
 
     @NonNull

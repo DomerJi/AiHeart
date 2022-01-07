@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
@@ -36,6 +37,7 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity imp
     public static final long TOAST_DELAY_MILLIS = 1500;
     protected final String TAG = this.getClass().getSimpleName();
     protected T mPresenter;
+    private int resumed = -1;
     protected Context mContext;
     UserObserver userObserver;
     private int statusBarColor = STATUSBAR_WHITE;
@@ -192,5 +194,30 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity imp
         if (null != v) {
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (resumed == -1) {
+            resumed = 1;
+        } else {
+            resumed = 2;
+        }
+    }
+
+    public boolean isMeResumed() {
+        return resumed > 0;
+    }
+
+    public boolean isMeResumed2() {
+        return resumed == 2;
+    }
+
+    @Override
+    @CallSuper
+    protected void onPause() {
+        super.onPause();
+        resumed = 0;
     }
 }

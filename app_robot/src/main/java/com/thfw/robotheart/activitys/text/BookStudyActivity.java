@@ -6,25 +6,34 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.base.base.IPresenter;
+import com.google.gson.reflect.TypeToken;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.BookStudyTypeModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.BookPresenter;
+import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.BookStudyTypeAdapter;
 import com.thfw.robotheart.fragments.text.BookStudyFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.ui.widget.LoadingView;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
-import java.util.ArrayList;
+import java.lang.reflect.Type;
 import java.util.List;
 
-public class BookStudyActivity extends RobotBaseActivity {
+public class BookStudyActivity extends RobotBaseActivity<BookPresenter> implements BookPresenter.BookUi<List<BookStudyTypeModel>> {
 
 
+    private static final String KEY_TYPE_LIST = "key_booy_study_type_list";
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.recyclerview.widget.RecyclerView mRvType;
     private android.widget.FrameLayout mFlContent;
+    private com.thfw.ui.widget.LoadingView mLoadingView;
+    private BookStudyTypeAdapter studyTypeAdapter;
 
     @Override
     public int getContentView() {
@@ -32,8 +41,8 @@ public class BookStudyActivity extends RobotBaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public BookPresenter onCreatePresenter() {
+        return new BookPresenter(this);
     }
 
     @Override
@@ -43,41 +52,13 @@ public class BookStudyActivity extends RobotBaseActivity {
         mRvType = (RecyclerView) findViewById(R.id.rv_type);
         mFlContent = (FrameLayout) findViewById(R.id.fl_content);
         mRvType.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
     }
 
     @Override
     public void initData() {
-        List<BookStudyTypeModel> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            BookStudyTypeModel model = new BookStudyTypeModel();
-            model.id = i;
-            model.name = "Praent_" + i;
-            if (i % 2 == 0) {
-                model.list = new ArrayList<>();
-                BookStudyTypeModel childModel = new BookStudyTypeModel();
-                childModel.id = (i + 1) * 1000 + 1;
-                childModel.name = "Child" + 1;
-                model.list.add(childModel);
-                BookStudyTypeModel childModel2 = new BookStudyTypeModel();
-                childModel2.id = (i + 1) * 1000 + 2;
-                childModel2.name = "Child" + 2;
-                model.list.add(childModel2);
-
-                BookStudyTypeModel childModel3 = new BookStudyTypeModel();
-                childModel3.id = (i + 1) * 1000 + 3;
-                childModel3.name = "Child" + 3;
-                model.list.add(childModel3);
-
-
-                BookStudyTypeModel childModel4 = new BookStudyTypeModel();
-                childModel4.id = (i + 1) * 1000 + 4;
-                childModel4.name = "Child" + 4;
-                model.list.add(childModel4);
-            }
-            list.add(model);
-        }
         FragmentLoader fragmentLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
-        BookStudyTypeAdapter studyTypeAdapter = new BookStudyTypeAdapter(list);
+        studyTypeAdapter = new BookStudyTypeAdapter(null);
         studyTypeAdapter.setOnRvItemListener(new OnRvItemListener<BookStudyTypeModel>() {
 
             @Override
@@ -85,12 +66,55 @@ public class BookStudyActivity extends RobotBaseActivity {
                 int id = list.get(position).id;
                 Fragment fragment = fragmentLoader.load(id);
                 if (fragment == null) {
-                    fragmentLoader.add(id, new BookStudyFragment(id + ""));
+                    fragmentLoader.add(id, new BookStudyFragment(id));
                 }
                 fragmentLoader.load(id);
             }
         });
-        studyTypeAdapter.getOnRvItemListener().onItemClick(studyTypeAdapter.getDataList(), 0);
         mRvType.setAdapter(studyTypeAdapter);
+
+        Type type = new TypeToken<List<BookStudyTypeModel>>() {
+        }.getType();
+        List<BookStudyTypeModel> cacheModel = SharePreferenceUtil.getObject(KEY_TYPE_LIST, type);
+        if (cacheModel != null) {
+            studyTypeAdapter.setDataListNotify(cacheModel);
+            if (studyTypeAdapter.getItemCount() > 0) {
+                mLoadingView.hide();
+                studyTypeAdapter.getOnRvItemListener().onItemClick(studyTypeAdapter.getDataList(), 0);
+            }
+        }
+        mPresenter.getIdeologyArticleType();
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(List<BookStudyTypeModel> data) {
+        if (data != null) {
+            data.add(0, new BookStudyTypeModel("全部", 0));
+        }
+
+        SharePreferenceUtil.setString(KEY_TYPE_LIST, GsonUtil.toJson(data));
+        mLoadingView.hide();
+        boolean isSetEmpty = false;
+        if (studyTypeAdapter.getItemCount() == 0) {
+            isSetEmpty = true;
+        }
+        studyTypeAdapter.setDataListNotify(data);
+        if (isSetEmpty) {
+            studyTypeAdapter.getOnRvItemListener().onItemClick(studyTypeAdapter.getDataList(), 0);
+        }
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        if (studyTypeAdapter.getItemCount() == 0) {
+            mLoadingView.showFail(v -> {
+                mPresenter.getIdeologyArticleType();
+            });
+        }
     }
 }

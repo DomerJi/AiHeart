@@ -29,10 +29,10 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':common-base')
-    implementation 'com.drakeet.multitype:multitype:4.2.0'
-    implementation 'androidx.appcompat:appcompat:' + rootProject.ext.appcompat
-    implementation 'androidx.constraintlayout:constraintlayout:' + rootProject.ext.constraintlayout
-    implementation 'androidx.legacy:' + rootProject.ext.legacySupport
+    api 'com.drakeet.multitype:multitype:4.2.0'
+    api 'androidx.appcompat:appcompat:' + rootProject.ext.appcompat
+    api 'androidx.constraintlayout:constraintlayout:' + rootProject.ext.constraintlayout
+    api 'androidx.legacy:' + rootProject.ext.legacySupport
     api 'com.jaeger.statusbarutil:library:' + rootProject.ext.statusbarutil
     api 'com.youth.banner:banner:' + rootProject.ext.banner
     api 'com.github.yhaolpz:FloatWindow:1.0.9'

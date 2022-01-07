@@ -16,7 +16,9 @@ import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
+import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.ui.base.RobotBaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -32,7 +34,6 @@ public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> imple
     private RoundedImageView mRivWechat;
     private RoundedImageView mRivQq;
     private CheckBox mCbProduct;
-    private TextView mTvProduct3g;
     private TextView mTvProductUser;
     private TextView mTvProductMsg;
     private TextView mTvProductAgree;
@@ -65,13 +66,26 @@ public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> imple
         mRivWechat = (RoundedImageView) findViewById(R.id.riv_wechat);
         mRivQq = (RoundedImageView) findViewById(R.id.riv_qq);
         mCbProduct = (CheckBox) findViewById(R.id.cb_product);
-        mTvProduct3g = (TextView) findViewById(R.id.tv_product_3g);
         mTvProductUser = (TextView) findViewById(R.id.tv_product_user);
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
-        Util.addUnderLine(mTvProduct3g, mTvProductUser, mTvProductMsg, mTvProductAgree);
+        Util.addUnderLine(mTvProductUser, mTvProductMsg, mTvProductAgree);
         mTvLoginByFace = (TextView) findViewById(R.id.tv_login_by_face);
         mLlLoginCenter = (LinearLayout) findViewById(R.id.ll_login_center);
+
+        initAgreeClick();
+    }
+
+    private void initAgreeClick(){
+        mTvProductAgree.setOnClickListener(v -> {
+            WebActivity.startActivity(mContext, AgreeOn.AGREE_AGREE);
+        });
+        mTvProductUser.setOnClickListener(v -> {
+            WebActivity.startActivity(mContext, AgreeOn.AGREE_USER);
+        });
+        mTvProductMsg.setOnClickListener(v -> {
+            WebActivity.startActivity(mContext, AgreeOn.AGREE_MSG);
+        });
     }
 
     @Override

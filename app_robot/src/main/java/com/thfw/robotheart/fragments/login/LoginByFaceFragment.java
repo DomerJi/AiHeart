@@ -29,7 +29,9 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
+import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.ui.base.RobotBaseFragment;
 import com.thfw.user.login.LoginStatus;
@@ -68,7 +70,6 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     private RoundedImageView mRivWechat;
     private RoundedImageView mRivQq;
     private CheckBox mCbProduct;
-    private TextView mTvProduct3g;
     private TextView mTvProductUser;
     private TextView mTvProductMsg;
     private TextView mTvProductAgree;
@@ -101,7 +102,6 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         mRivWechat = (RoundedImageView) findViewById(R.id.riv_wechat);
         mRivQq = (RoundedImageView) findViewById(R.id.riv_qq);
         mCbProduct = (CheckBox) findViewById(R.id.cb_product);
-        mTvProduct3g = (TextView) findViewById(R.id.tv_product_3g);
         mTvProductUser = (TextView) findViewById(R.id.tv_product_user);
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
@@ -117,6 +117,20 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         mJavaCamera2CircleView = (JavaCamera2CircleView) findViewById(R.id.javaCamera2CircleView);
         mIvBorder = (ImageView) findViewById(R.id.iv_border);
         mIvLine = (ImageView) findViewById(R.id.iv_line);
+        Util.addUnderLine(mTvProductUser, mTvProductMsg, mTvProductAgree);
+        initAgreeClick();
+    }
+
+    private void initAgreeClick() {
+        mTvProductAgree.setOnClickListener(v -> {
+            WebActivity.startActivity(mContext, AgreeOn.AGREE_AGREE);
+        });
+        mTvProductUser.setOnClickListener(v -> {
+            WebActivity.startActivity(mContext, AgreeOn.AGREE_USER);
+        });
+        mTvProductMsg.setOnClickListener(v -> {
+            WebActivity.startActivity(mContext, AgreeOn.AGREE_MSG);
+        });
     }
 
     @Override
@@ -289,9 +303,9 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         try {
 
             // load cascade file from application resources
-            InputStream is = getResources().openRawResource(org.opencv.R.raw.lbpcascade_frontalface);
+            InputStream is = getResources().openRawResource(org.opencv.R.raw.haarcascade_frontalface_default);
             File cascadeDir = getActivity().getDir("cascade", Context.MODE_PRIVATE);
-            mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
+            mCascadeFile = new File(cascadeDir, "haarcascade_frontalface_default.xml");
             FileOutputStream os = new FileOutputStream(mCascadeFile);
 
             byte[] buffer = new byte[4096];
@@ -395,25 +409,25 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 //        Log.d(TAG, "facesArray.len = " + facesArray.length);
         if (facesArray.length == 1) {
             //  画眼睛
-            onEyeDraw(mGray);
+//            onEyeDraw(mGray);
 //            if (!inputFace || onEyeCheck2(mGray)) {
-            if (onEyeCheck2(mGray)) {
-                String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                boolean saveImage = FaceUtil.saveImage(getContext(), mRgba, facesArray[0], fileName, true);
-                Log.d(TAG, "saveImage = " + saveImage);
-                frameHandleIng = saveImage;
-                if (saveImage) {
-                    loginOrInput(fileName);
-                } else {
-                    // 保存失败 重新开始处理
-                    frameHandleIng = false;
-                }
+//            if (onEyeCheck2(mGray)) {
+            String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            boolean saveImage = FaceUtil.saveImage(getContext(), mGray, facesArray[0], fileName, true);
+            Log.d(TAG, "saveImage = " + saveImage);
+            frameHandleIng = saveImage;
+            if (saveImage) {
+                loginOrInput(fileName);
             } else {
+                // 保存失败 重新开始处理
                 frameHandleIng = false;
             }
         } else {
             frameHandleIng = false;
         }
+//        } else {
+//            frameHandleIng = false;
+//        }
         // 画脸型
         for (int i = 0; i < facesArray.length; i++) {
             Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 3);

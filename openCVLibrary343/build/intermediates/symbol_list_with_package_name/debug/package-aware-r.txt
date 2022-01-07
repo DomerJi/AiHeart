@@ -7,5 +7,7 @@ id front
 raw haarcascade_eye
 raw haarcascade_eye_tree_eyeglasses
 raw haarcascade_frontalface_alt
+raw haarcascade_frontalface_alt_tree
+raw haarcascade_frontalface_default
 raw lbpcascade_frontalface
 styleable CameraBridgeViewBase camera_id show_fps

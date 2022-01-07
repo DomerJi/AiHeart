@@ -1,14 +1,19 @@
 package com.thfw.robotheart.activitys.me;
 
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.face.SimpleUpgradeStateListener;
+import com.thfw.base.utils.BuglyUtil;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.fragments.sets.SetBlueFragment;
 import com.thfw.robotheart.fragments.sets.SetLightFragment;
@@ -34,9 +39,10 @@ public class SettingActivity extends RobotBaseActivity {
     private android.widget.TextView mTvSetBlue;
     private android.widget.TextView mTvSetShutdown;
     private android.widget.TextView mTvSetUpdate;
-    private TextView[] mTabs;
+    private View[] mTabs;
 
     private Fragment mFragment;
+    private RelativeLayout mRlSetUpdate;
 
     @Override
     public int getContentView() {
@@ -61,7 +67,8 @@ public class SettingActivity extends RobotBaseActivity {
         mTvSetBlue = (TextView) findViewById(R.id.tv_set_blue);
         mTvSetShutdown = (TextView) findViewById(R.id.tv_set_shutdown);
         mTvSetUpdate = (TextView) findViewById(R.id.tv_set_update);
-        mTabs = new TextView[]{mTvSetNet, mTvSetVolume, mTvSetLight, mTvSetBlue, mTvSetShutdown, mTvSetUpdate};
+        mRlSetUpdate = (RelativeLayout) findViewById(R.id.rl_set_update);
+        mTabs = new View[]{mTvSetNet, mTvSetVolume, mTvSetLight, mTvSetBlue, mTvSetShutdown, mRlSetUpdate};
     }
 
     @Override
@@ -73,21 +80,25 @@ public class SettingActivity extends RobotBaseActivity {
         mLoader.add(R.id.tv_set_light, new SetLightFragment());
         mLoader.add(R.id.tv_set_blue, new SetBlueFragment());
         mLoader.add(R.id.tv_set_shutdown, new SetShutdownFragment());
-        mLoader.add(R.id.tv_set_update, new SetUpdateFragment());
+        mLoader.add(R.id.rl_set_update, new SetUpdateFragment());
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
-
 
             @Override
             public void onClick(View v) {
                 mFragment = mLoader.load(v.getId());
-                for (TextView tab : mTabs) {
+                for (View tab : mTabs) {
                     tab.setSelected(tab.getId() == v.getId());
-                    tab.setTypeface(Typeface.defaultFromStyle(tab.getId() == v.getId() ? Typeface.BOLD : Typeface.NORMAL));
+                    if (tab.getId() == R.id.rl_set_update) {
+                        mTvSetUpdate.setTypeface(Typeface.defaultFromStyle(tab.getId() == v.getId() ? Typeface.BOLD : Typeface.NORMAL));
+                    } else {
+                        TextView mTvTab = (TextView) tab;
+                        mTvTab.setTypeface(Typeface.defaultFromStyle(tab.getId() == v.getId() ? Typeface.BOLD : Typeface.NORMAL));
+                    }
                 }
             }
         };
-        for (TextView tab : mTabs) {
+        for (View tab : mTabs) {
             tab.setOnClickListener(onClickListener);
         }
         mTabs[0].performClick();
@@ -102,6 +113,27 @@ public class SettingActivity extends RobotBaseActivity {
                 }
             }
             finish();
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BuglyUtil.requestNewVersion(new SimpleUpgradeStateListener() {
+            @Override
+            public void onVersion(boolean hasNewVersion) {
+                super.onVersion(hasNewVersion);
+                Log.d("requestNewVersion", "hasNewVersion = " + hasNewVersion);
+                if (EmptyUtil.isEmpty(SettingActivity.this)) {
+                    return;
+                }
+                TextView view = findViewById(R.id.tv_new_version_hint);
+                if (view == null) {
+                    return;
+                }
+                view.setText("新");
+                view.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
+            }
         });
     }
 }

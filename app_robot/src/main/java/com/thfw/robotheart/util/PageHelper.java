@@ -94,7 +94,7 @@ public class PageHelper<T> {
         if (refreshLayout != null) {
             refreshLayout.setEnableRefresh(refreshEnable && !emptyDatas);
             refreshLayout.setEnableLoadMore(!emptyDatas);
-            refreshLayout.setNoMoreData(emptyDatas);
+            refreshLayout.setNoMoreData(EmptyUtil.isEmpty(list));
 
             if (refreshLayout.isRefreshing()) {
                 refreshLayout.finishRefresh();

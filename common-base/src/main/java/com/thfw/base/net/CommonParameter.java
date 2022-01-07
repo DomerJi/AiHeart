@@ -53,7 +53,8 @@ public class CommonParameter {
     }
 
     public static String getOrganizationId() {
-        return SharePreferenceUtil.getString(KEY_ORGANIZATION_ID, null);
+        String id = SharePreferenceUtil.getString(KEY_ORGANIZATION_ID, null);
+        return TextUtils.isEmpty(id) ? "1" : id;
     }
 
     public static void setOrganizationId(String organizationId) {

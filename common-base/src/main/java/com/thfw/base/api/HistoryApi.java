@@ -26,13 +26,14 @@ public interface HistoryApi {
     int TYPE_BOOK = 2;
     int TYPE_EXERCISE = 5;
     int TYPE_STUDY = 6;
-
+    // 1-测评  2-文章 3-音频 4-视频 5-话术 6-思政文章 7-思政视频
     int TYPE_COLLECT_TEST = 1;
     int TYPE_COLLECT_BOOK = 2;
     int TYPE_COLLECT_AUDIO = 3;
     int TYPE_COLLECT_VIDEO = 4;
-    int TYPE_COLLECT_EXERCISE = 5;
-    int TYPE_COLLECT_STUDY = 6;
+    int TYPE_COLLECT_DIALOG = 5;
+    int TYPE_COLLECT_IDEO_BOOK = 6;
+    int TYPE_COLLECT_IDEO_VIDEO = 7;
 
     /**
      * [获取历史记录]

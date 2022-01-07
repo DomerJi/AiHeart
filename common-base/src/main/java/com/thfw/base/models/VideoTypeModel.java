@@ -1,6 +1,7 @@
 package com.thfw.base.models;
 
 import com.google.gson.annotations.SerializedName;
+import com.thfw.base.base.IModel;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * Date: 2021/12/2 16:37
  * Describe:Todo
  */
-public class VideoTypeModel {
+public class VideoTypeModel implements IModel {
 
     public String name;
     public int id = 0;

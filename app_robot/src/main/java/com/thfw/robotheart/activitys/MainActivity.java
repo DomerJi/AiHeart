@@ -1,15 +1,22 @@
 package com.thfw.robotheart.activitys;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.TalkModel;
+import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.ClickCountUtils;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
 import com.thfw.robotheart.activitys.exercise.ExerciseActivity;
@@ -58,6 +65,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private android.widget.LinearLayout mLlMe;
     private MyRobotSearchView mMySearch;
     private LinearLayout mLlRiv;
+    private ConstraintLayout mClMe;
+    private ConstraintLayout mClSetting;
 
     @Override
     public int getContentView() {
@@ -93,6 +102,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mLlHotCall = (LinearLayout) findViewById(R.id.ll_hot_call);
         mLlSetting = (LinearLayout) findViewById(R.id.ll_setting);
         mLlMe = (LinearLayout) findViewById(R.id.ll_me);
+        mClSetting = (ConstraintLayout) findViewById(R.id.cl_setting);
+        mClMe = (ConstraintLayout) findViewById(R.id.cl_me);
 
         mLlTest.setOnClickListener(this);
         mLlTalk.setOnClickListener(this);
@@ -102,8 +113,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mLlBook.setOnClickListener(this);
         mLlStudy.setOnClickListener(this);
         mLlHotCall.setOnClickListener(this);
-        mLlSetting.setOnClickListener(this);
-        mLlMe.setOnClickListener(this);
+        mClSetting.setOnClickListener(this);
+        mClMe.setOnClickListener(this);
         mRlSpecialityTalk.setOnClickListener(this);
         mMySearch = (MyRobotSearchView) findViewById(R.id.my_search);
 
@@ -145,14 +156,43 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 startActivity(new Intent(mContext, MeActivity.class));
             });
         }
+        // 检查版本更新
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (EmptyUtil.isEmpty(MainActivity.this)) {
+                    return;
+                }
+                checkVersion();
+            }
+        }, isMeResumed2() ? 1000 : 2500);
+    }
+
+    private void checkVersion() {
+        BuglyUtil.requestNewVersion(new SimpleUpgradeStateListener() {
+            @Override
+            public void onVersion(boolean hasNewVersion) {
+                super.onVersion(hasNewVersion);
+                Log.d("requestNewVersion", "hasNewVersion = " + hasNewVersion);
+                if (EmptyUtil.isEmpty(MainActivity.this)) {
+                    return;
+                }
+                TextView view = findViewById(R.id.tv_set_dot_hint);
+                if (view == null) {
+                    return;
+                }
+                view.setText("新版本");
+                view.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         int vId = v.getId();
-        if (vId == R.id.ll_me) {
+        if (vId == R.id.cl_me) {
             startActivity(new Intent(mContext, MeActivity.class));
-        } else if (vId == R.id.ll_setting) {
+        } else if (vId == R.id.cl_setting) {
             startActivity(new Intent(mContext, SettingActivity.class));
         } else if (vId == R.id.ll_music) {
             startActivity(new Intent(mContext, AudioHomeActivity.class));

@@ -186,4 +186,10 @@ public class LoginActivity extends BaseActivity {
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
     }
+
+    @Override
+    public void onDestroy() {
+        INPUT_PHONE = "";
+        super.onDestroy();
+    }
 }

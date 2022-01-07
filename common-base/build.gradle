@@ -58,6 +58,9 @@ dependencies {
     api 'com.squareup.okhttp3:logging-interceptor:3.4.0'
     // rxjava 绑定生命周期
     api 'com.trello.rxlifecycle2:rxlifecycle-android:+'
+    // 腾讯bugly
+    api 'com.tencent.bugly:crashreport_upgrade:1.5.23'
+    api 'com.tencent.bugly:nativecrashreport:3.8.0'
 
     /**
      * ======================= 结束 OkHttp Rxjava2 retrofit2 =====================

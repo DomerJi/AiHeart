@@ -18,7 +18,7 @@
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <!--    <uses-permission android:name="android.permission.WRITE_SETTINGS" />-->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -33,9 +33,9 @@
         android:resizeable="true"
         android:smallScreens="true" />
 
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="30" />
+    <!--    <uses-sdk-->
+    <!--        android:minSdkVersion="17"-->
+    <!--        android:targetSdkVersion="30" />-->
 
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -67,39 +67,119 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activitys.SearchActivity"></activity>
-        <activity android:name=".activitys.text.BookDetailActivity" />
-        <activity android:name=".activitys.test.TestResultWebActivity" />
-        <activity android:name=".activitys.WebActivity" />
-        <activity android:name=".activitys.me.HelpBackActivity" />
-        <activity android:name=".activitys.me.TaskActivity" />
-        <activity android:name=".activitys.me.CollectActivity" />
-        <activity android:name=".activitys.me.HistoryActivity" />
-        <activity android:name=".activitys.me.HotPhoneActivity" />
-        <activity android:name=".activitys.talk.ThemeTalkActivity" />
-        <activity android:name=".activitys.talk.AiTalkActivity" />
-        <activity android:name=".activitys.text.BookStudyActivity" />
-        <activity android:name=".activitys.text.BookActivity" />
-        <activity android:name=".activitys.test.TestIngActivity" />
-        <activity android:name=".activitys.test.TestDetailActivity" />
-        <activity android:name=".activitys.me.SelectOrganizationActivity" />
-        <activity android:name=".activitys.me.PrivateSetActivity" />
-        <activity android:name=".activitys.me.InfoActivity" />
-        <activity android:name=".activitys.login.SetPasswordActivity" />
-        <activity android:name=".activitys.me.AccountManagerActivity" />
-        <activity android:name=".activitys.exercise.ExerciseIngActivity" />
-        <activity android:name=".activitys.exercise.ExerciseDetailsActivity" />
-        <activity android:name=".activitys.exercise.ExerciseActivity" />
-        <activity android:name=".activitys.video.VideoPlayerActivity" />
-        <activity android:name=".activitys.video.VideoHomeActivity" />
-        <activity android:name=".activitys.audio.AudioHomeActivity" />
-        <activity android:name=".activitys.test.TestActivity" />
+
+        <!-- 接收覆盖安装事件的Receiver -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <activity
+            android:name=".activitys.me.SystemAppActivity"
+            android:screenOrientation="landscape"></activity>
+
+        <activity
+            android:name=".activitys.SearchActivity"
+            android:screenOrientation="landscape"></activity>
+        <activity
+            android:name=".activitys.text.BookDetailActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.test.TestResultWebActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.text.BookIdeoDetailActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.WebActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.me.HelpBackActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.me.TaskActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.me.CollectActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.me.HistoryActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.me.HotPhoneActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.talk.ThemeTalkActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.talk.AiTalkActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.text.BookStudyActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.text.BookActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.test.TestIngActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.test.TestDetailActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.me.SelectOrganizationActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.me.PrivateSetActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.me.InfoActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.login.SetPasswordActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.me.AccountManagerActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.exercise.ExerciseIngActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.exercise.ExerciseDetailsActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.exercise.ExerciseActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.video.VideoPlayerActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.video.VideoHomeActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.audio.AudioHomeActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.test.TestActivity"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.login.LoginActivity"
+            android:screenOrientation="landscape"
             android:theme="@style/LoginTheme" />
-        <activity android:name=".activitys.me.SettingActivity" />
-        <activity android:name=".activitys.me.MeActivity" />
-        <activity android:name=".activitys.audio.AudioPlayerActivity" />
+        <activity
+            android:name=".activitys.me.SettingActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.me.MeActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.audio.AudioPlayerActivity"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.MainActivity"
             android:screenOrientation="landscape">

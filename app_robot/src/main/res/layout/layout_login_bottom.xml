@@ -5,10 +5,10 @@
     android:id="@+id/cl_bottom"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:background="@drawable/robot_page_bg"
     android:orientation="vertical"
     android:paddingBottom="26dp"
     app:layout_constraintBottom_toBottomOf="parent"
+    tools:background="@drawable/robot_page_bg"
     tools:ignore="MissingConstraints">
 
     <TextView
@@ -61,6 +61,9 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="2dp"
             android:buttonTint="@color/white"
+            android:checked="true"
+            android:clickable="false"
+            android:focusable="false"
             android:scaleX="0.6"
             android:scaleY="0.6" />
 
@@ -68,24 +71,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="登录代表同意"
-            android:textColor="@color/white"
-            android:textSize="@dimen/textSize_product" />
-
-        <TextView
-            android:id="@+id/tv_product_3g"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:autoLink="all"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"
-            android:text="《中国移动认证服务条款》"
-            android:textColor="@color/white"
-            android:textSize="@dimen/textSize_product" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="和"
             android:textColor="@color/white"
             android:textSize="@dimen/textSize_product" />
 
@@ -120,6 +105,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="，"
+            android:textColor="@color/white"
             android:textSize="@dimen/textSize_product" />
 
         <TextView

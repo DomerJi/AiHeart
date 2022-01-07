@@ -15,8 +15,11 @@ import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
+import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.ui.base.RobotBaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.InputBoxSquareView;
@@ -35,7 +38,6 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
     private RoundedImageView mRivWechat;
     private RoundedImageView mRivQq;
     private CheckBox mCbProduct;
-    private TextView mTvProduct3g;
     private TextView mTvProductUser;
     private TextView mTvProductMsg;
     private TextView mTvProductAgree;
@@ -71,13 +73,26 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
         mRivWechat = (RoundedImageView) findViewById(R.id.riv_wechat);
         mRivQq = (RoundedImageView) findViewById(R.id.riv_qq);
         mCbProduct = (CheckBox) findViewById(R.id.cb_product);
-        mTvProduct3g = (TextView) findViewById(R.id.tv_product_3g);
         mTvProductUser = (TextView) findViewById(R.id.tv_product_user);
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
         mLlLoginCenter = (LinearLayout) findViewById(R.id.ll_login_center);
         mTvLoginByPassword = (TextView) findViewById(R.id.tv_login_by_password);
         mTvLoginByFace = (TextView) findViewById(R.id.tv_login_by_face);
+        Util.addUnderLine(mTvProductUser, mTvProductMsg, mTvProductAgree);
+        initAgreeClick();
+    }
+
+    private void initAgreeClick() {
+        mTvProductAgree.setOnClickListener(v -> {
+            WebActivity.startActivity(mContext, AgreeOn.AGREE_AGREE);
+        });
+        mTvProductUser.setOnClickListener(v -> {
+            WebActivity.startActivity(mContext, AgreeOn.AGREE_USER);
+        });
+        mTvProductMsg.setOnClickListener(v -> {
+            WebActivity.startActivity(mContext, AgreeOn.AGREE_MSG);
+        });
     }
 
     @Override
@@ -116,6 +131,8 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
             public void onComplete(String text) {
                 code = text;
                 mBtGetCode.setEnabled(true);
+                hideInput();
+                mBtGetCode.performClick();
             }
 
             @Override

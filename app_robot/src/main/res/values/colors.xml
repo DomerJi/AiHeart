@@ -16,6 +16,7 @@
     <color name="colorRobotPrimaryDark">#008800</color>
     <color name="colorRobotAccent">#00FF88</color>
     <color name="colorRobotFore">#91dff3</color>
+    <color name="colorRobotForeDark">#74b5c6</color>
     <color name="colorRobotFore88">#8891dff3</color>
 
     <!--页面通用背景-->
@@ -58,6 +59,7 @@
     <color name="gray">#888888</color>
     <color name="gray_ccc">#CCCCCC</color>
     <color name="divider">#3a6683</color>
+    <color name="dialog_divider">@color/colorRobotForeDark</color>
     <color name="seekbar_color">#2cc7ec</color>
     <color name="seekbar_buffer_color">#bcecf8</color>
 

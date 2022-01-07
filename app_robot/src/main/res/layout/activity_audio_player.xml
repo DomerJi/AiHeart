@@ -21,6 +21,18 @@
         app:shutter_background_color="@color/transparent"
         app:surface_type="none" />
 
+
+    <!--  声音 亮度改变 -->
+    <com.thfw.ui.widget.ShowChangeLayout
+        android:id="@+id/scl"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
     <com.thfw.ui.widget.LoadingView
         android:id="@+id/loadingView"
         android:layout_width="wrap_content"
@@ -46,6 +58,7 @@
         android:layout_height="match_parent"
         android:background="@color/transparent"
         android:visibility="gone">
+
 
         <LinearLayout
             android:layout_width="0dp"

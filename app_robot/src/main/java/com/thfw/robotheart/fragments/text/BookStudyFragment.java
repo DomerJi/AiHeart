@@ -1,20 +1,25 @@
 package com.thfw.robotheart.fragments.text;
 
-import android.os.Handler;
-
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
-import com.thfw.base.base.IPresenter;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.BookStudyItemModel;
-import com.thfw.base.models.VideoModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.BookPresenter;
 import com.thfw.robotheart.R;
-import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
+import com.thfw.robotheart.activitys.text.BookIdeoDetailActivity;
 import com.thfw.robotheart.adapter.BookStudyListAdapter;
+import com.thfw.robotheart.util.PageHelper;
 import com.thfw.ui.base.RobotBaseFragment;
 import com.thfw.ui.widget.LoadingView;
+import com.trello.rxlifecycle2.LifecycleProvider;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -23,15 +28,16 @@ import java.util.List;
  * Date: 2021/12/2 16:15
  * Describe:Todo
  */
-public class BookStudyFragment extends RobotBaseFragment {
+public class BookStudyFragment extends RobotBaseFragment<BookPresenter> implements BookPresenter.BookUi<List<BookStudyItemModel>> {
 
-    private String type;
+    private int type;
     private SmartRefreshLayout mRefreshLayout;
     private RecyclerView mRvList;
     private LoadingView mLoadingView;
     private BookStudyListAdapter mBookStudyListAdapter;
+    private PageHelper<BookStudyItemModel> pageHelper;
 
-    public BookStudyFragment(String type) {
+    public BookStudyFragment(int type) {
         super();
         this.type = type;
     }
@@ -42,8 +48,8 @@ public class BookStudyFragment extends RobotBaseFragment {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public BookPresenter onCreatePresenter() {
+        return new BookPresenter(this);
     }
 
     @Override
@@ -53,24 +59,44 @@ public class BookStudyFragment extends RobotBaseFragment {
         mRvList = (RecyclerView) findViewById(R.id.rvList);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
+        mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull @NotNull RefreshLayout refreshLayout) {
+                mPresenter.getIdeologyArticleList(type, pageHelper.getPage());
+            }
+        });
+
     }
 
     @Override
     public void initData() {
-
-        new Handler().postDelayed(new Runnable() {
+        mBookStudyListAdapter = new BookStudyListAdapter(null);
+        mBookStudyListAdapter.setOnRvItemListener(new OnRvItemListener<BookStudyItemModel>() {
             @Override
-            public void run() {
-                mLoadingView.hide();
-                mBookStudyListAdapter = new BookStudyListAdapter(null);
-                mBookStudyListAdapter.setOnRvItemListener(new OnRvItemListener<BookStudyItemModel>() {
-                    @Override
-                    public void onItemClick(List<BookStudyItemModel> list, int position) {
-                        VideoPlayerActivity.startActivity(mContext, VideoModel.getVideoUrl().get(1));
-                    }
-                });
-                mRvList.setAdapter(mBookStudyListAdapter);
+            public void onItemClick(List<BookStudyItemModel> list, int position) {
+                BookIdeoDetailActivity.startActivity(mContext, list.get(position).getId());
             }
-        }, 500);
+        });
+        mRvList.setAdapter(mBookStudyListAdapter);
+        pageHelper = new PageHelper<>(mLoadingView, mRefreshLayout, mBookStudyListAdapter);
+        pageHelper.setRefreshEnable(false);
+        mPresenter.getIdeologyArticleList(type, pageHelper.getPage());
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(List<BookStudyItemModel> data) {
+        pageHelper.onSuccess(data);
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        pageHelper.onFail(v -> {
+            mPresenter.getIdeologyArticleList(type, pageHelper.getPage());
+        });
     }
 }

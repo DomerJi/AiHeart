@@ -37,7 +37,6 @@ import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
-import com.thfw.robotheart.adapter.ChatSelectAdapter;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.activitys.test.TestDetailActivity;
@@ -45,10 +44,11 @@ import com.thfw.robotheart.activitys.text.BookActivity;
 import com.thfw.robotheart.activitys.text.BookDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.ChatAdapter;
+import com.thfw.robotheart.adapter.ChatSelectAdapter;
 import com.thfw.robotheart.util.PageJumpUtils;
+import com.thfw.robotheart.view.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
-import com.thfw.ui.dialog.DialogFactory;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -233,6 +233,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 mRlKeyword.setVisibility(View.GONE);
                 mRlVoice.setVisibility(View.GONE);
                 mRlKeywordInput.setVisibility(View.VISIBLE);
+                mRvSelect.setVisibility(View.GONE);
 
             }
 
@@ -241,6 +242,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 mRlKeywordInput.setVisibility(View.GONE);
                 mRlKeyword.setVisibility(View.VISIBLE);
                 mRlVoice.setVisibility(View.VISIBLE);
+                mRvSelect.setVisibility(View.VISIBLE);
             }
         });
 
@@ -257,7 +259,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
      * 【弹框】 结束服务提醒
      */
     private void finishService() {
-        DialogFactory.createCustomDialog(this, new DialogFactory.OnViewCallBack() {
+        DialogRobotFactory.createCustomDialog(this, new DialogRobotFactory.OnViewCallBack() {
             @Override
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
                 mTvTitle.setText(R.string.finishServiceTitle);
@@ -371,6 +373,13 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mHelper.setTalks(data);
         onTalkEngine();
     }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        finishService();
+    }
+
 
     public void onTalkEngine() {
         if (mHelper.hasNext()) {

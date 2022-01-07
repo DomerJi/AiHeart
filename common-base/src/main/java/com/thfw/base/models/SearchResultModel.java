@@ -120,14 +120,21 @@ public class SearchResultModel implements IModel {
         @SerializedName("title")
         private String title;
 
-        public int type;
+        @SerializedName("type")
+        private int type;
+
+        public int getVideoType() {
+            return type;
+        }
+
+        public int contentType;
 
         public void setType(int type) {
-            this.type = type;
+            this.contentType = type;
         }
 
         public int getType() {
-            return type;
+            return contentType;
         }
 
         public int getId() {

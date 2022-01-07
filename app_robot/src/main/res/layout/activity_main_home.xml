@@ -26,14 +26,14 @@
     <com.thfw.ui.widget.MyRobotSearchView
         android:id="@+id/my_search"
         android:layout_width="260dp"
-        app:rsv_isEdit="false"
         android:layout_height="40dp"
-        app:rsv_hintColor="@color/white_50"
         app:layout_constraintBottom_toBottomOf="@id/ll_riv"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/ll_riv"
-        app:rsv_hint="请输入您要搜索的内容" />
+        app:rsv_hint="请输入您要搜索的内容"
+        app:rsv_hintColor="@color/white_50"
+        app:rsv_isEdit="false" />
 
     <LinearLayout
         android:id="@+id/ll_riv"
@@ -87,6 +87,15 @@
         app:layout_constraintBottom_toBottomOf="@id/ll_navigation"
         app:layout_constraintTop_toTopOf="@id/ll_navigation"
         tools:ignore="MissingConstraints">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="主题对话"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
 
     </RelativeLayout>
@@ -387,8 +396,8 @@
                 android:orientation="horizontal"
                 android:weightSum="2">
 
-                <LinearLayout
-                    android:id="@+id/ll_setting"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_setting"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="@dimen/home_navigation_margin"
@@ -397,25 +406,57 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_width="38dp"
-                        android:layout_height="38dp"
-                        android:adjustViewBounds="true"
-                        android:src="@mipmap/ic_home_set_icon" />
-
-
                     <TextView
+                        android:id="@+id/tv_set_dot_hint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/me_setting"
+                        android:layout_marginLeft="18dp"
+                        android:background="@drawable/new_version_bg"
+                        android:paddingLeft="6dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="6dp"
+                        android:paddingBottom="2dp"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/home_textSize" />
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toTopOf="@id/ll_setting"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        tools:text="99+"
+                        tools:visibility="visible" />
 
-                </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/ll_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
-                    android:id="@+id/ll_me"
+                        <ImageView
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:adjustViewBounds="true"
+                            android:src="@mipmap/ic_home_set_icon" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/me_setting"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/home_textSize" />
+
+                    </LinearLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_me"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/home_navigation_margin"
@@ -424,22 +465,53 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:adjustViewBounds="true"
-                        android:src="@mipmap/ic_ihome_me_icon" />
-
-
                     <TextView
+                        android:id="@+id/tv_me_dot_hint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/me"
+                        android:layout_marginLeft="16dp"
+                        android:background="@drawable/new_version_bg"
+                        android:paddingLeft="6dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="6dp"
+                        android:paddingBottom="2dp"
+                        android:text="1"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/home_textSize" />
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toTopOf="@id/ll_me"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        tools:visibility="visible" />
 
-                </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/ll_me"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:adjustViewBounds="true"
+                            android:src="@mipmap/ic_ihome_me_icon" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/me"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/home_textSize" />
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             </LinearLayout>

@@ -102,6 +102,10 @@ public class TitleRobotView extends FrameLayout {
     }
 
 
+    public View getLlBack() {
+        return mLlBack;
+    }
+
     public ImageView getIvBack() {
         return mIvBack;
     }

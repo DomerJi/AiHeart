@@ -40,8 +40,8 @@ public class LoadingDialog {
                     .setLayoutRes(R.layout.dialog_loading)
                     .setDialogAnimationRes(R.style.animate_dialog_fade)
                     .setGravity(Gravity.CENTER)
+                    .setWidth(220)
                     .setCancelableOutside(false)
-                    .setScreenWidthAspect(activity, 0.3f)
                     .setOnBindViewListener(viewHolder -> {
                         mTvLoading = viewHolder.getView(R.id.tv_loading);
                         if (mTvLoading != null && !TextUtils.isEmpty(tip)) {

@@ -6,6 +6,8 @@ int id front 0x0
 int raw haarcascade_eye 0x0
 int raw haarcascade_eye_tree_eyeglasses 0x0
 int raw haarcascade_frontalface_alt 0x0
+int raw haarcascade_frontalface_alt_tree 0x0
+int raw haarcascade_frontalface_default 0x0
 int raw lbpcascade_frontalface 0x0
 int[] styleable CameraBridgeViewBase { 0x0, 0x0 }
 int styleable CameraBridgeViewBase_camera_id 0

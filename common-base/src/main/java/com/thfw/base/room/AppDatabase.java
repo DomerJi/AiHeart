@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase;
 import com.thfw.base.room.face.Face;
 import com.thfw.base.room.face.FaceDao;
 
-@Database(entities = {Face.class}, version = 1)
+@Database(entities = {Face.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract FaceDao faceDao();
 }

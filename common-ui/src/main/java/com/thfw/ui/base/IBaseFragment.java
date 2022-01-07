@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -19,6 +21,8 @@ import com.thfw.base.role.Limits;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
 import com.trello.rxlifecycle2.android.FragmentEvent;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  * 通用基础Fragment
@@ -177,5 +181,28 @@ public abstract class IBaseFragment<T extends IPresenter> extends RxFragment imp
         view.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         return isVisible;
     }
+
+    /**
+     * 显示键盘
+     *
+     * @param et 输入焦点
+     */
+    public void showInput(final EditText et) {
+        et.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+        imm.showSoftInput(et, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    /**
+     * 隐藏键盘
+     */
+    protected void hideInput() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+        View v = getActivity().getWindow().peekDecorView();
+        if (null != v) {
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
+    }
+
 
 }

@@ -3,13 +3,19 @@ package com.thfw.robotheart.activitys.audio;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.IBinder;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -56,6 +62,8 @@ import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.LoadingView;
+import com.thfw.ui.widget.ShowChangeLayout;
+import com.thfw.ui.widget.VideoGestureHelper;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.io.IOException;
@@ -63,7 +71,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> implements AudioPresenter.AudioUi<AudioEtcDetailModel> {
+public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> implements
+        VideoGestureHelper.VideoGestureListener, AudioPresenter.AudioUi<AudioEtcDetailModel> {
 
 
     private StyledPlayerView mAudioView;
@@ -160,6 +169,8 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         mTvEtcTitle = (TextView) findViewById(R.id.tv_etc_title);
         mTvEtcTitleLogcate = (TextView) findViewById(R.id.tv_etc_title_logcate);
         mTvAudioTitle = (TextView) findViewById(R.id.tv_audio_title);
+
+        initGesture();
     }
 
     /**
@@ -565,4 +576,92 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
         }
     }
+
+
+    //=============== 开始 视频手势 =======================//
+
+    private VideoGestureHelper ly_VG;
+    private ShowChangeLayout scl;
+    private AudioManager mAudioManager;
+    private int maxVolume = 0;
+    private int oldVolume = 0;
+    private int newProgress = 0, oldProgress = 0;
+    private Window mWindow;
+    private WindowManager.LayoutParams mLayoutParams;
+
+    private void initGesture() {
+        ly_VG = new VideoGestureHelper(mContext, mAudioView);
+        ly_VG.setVideoGestureListener(this);
+
+        scl = (ShowChangeLayout) findViewById(R.id.scl);
+
+        //初始化获取音量属性
+        mAudioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
+        maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+
+        //下面这是设置当前APP亮度的方法配置
+        mWindow = getWindow();
+        mLayoutParams = mWindow.getAttributes();
+
+    }
+
+
+    @Override
+    public void onDown(MotionEvent e) {
+        oldVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+    }
+
+    @Override
+    public void onEndFF_REW(MotionEvent e) {
+    }
+
+    @Override
+    public void onVolumeGesture(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        Log.d(TAG, "onVolumeGesture: oldVolume " + oldVolume);
+        int value = ly_VG.getHeight() / maxVolume;
+        int newVolume = (int) ((e1.getY() - e2.getY()) / value + oldVolume);
+
+        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, AudioManager.FLAG_PLAY_SOUND);
+
+        Log.d(TAG, "onVolumeGesture: value" + value);
+        Log.d(TAG, "onVolumeGesture: newVolume " + newVolume);
+        //要强行转Float类型才能算出小数点，不然结果一直为0
+        int volumeProgress = (int) (newVolume / Float.valueOf(maxVolume) * 100);
+        if (volumeProgress >= 50) {
+            scl.setImageResource(R.drawable.ic_volume_higher_w);
+        } else if (volumeProgress > 0) {
+            scl.setImageResource(R.drawable.ic_volume_lower_w);
+        } else {
+            scl.setImageResource(R.drawable.ic_volume_off_w);
+        }
+        scl.setProgress(volumeProgress);
+        scl.show();
+    }
+
+    @Override
+    public void onBrightnessGesture(MotionEvent e1, MotionEvent e2, float distanceX,
+                                    float distanceY) {
+        onVolumeGesture(e1, e2, distanceX, distanceY);
+    }
+
+    @Override
+    public void onFF_REWGesture(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        Log.d(TAG, "onFF_REWGesture: ");
+    }
+
+    @Override
+    public void onSingleTapGesture(MotionEvent e) {
+        Log.d(TAG, "onSingleTapGesture: ");
+    }
+
+    @Override
+    public void onDoubleTapGesture(MotionEvent e) {
+        Log.d(TAG, "onDoubleTapGesture: ");
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+        Log.d(TAG, "onLongPress: ");
+    }
+
 }

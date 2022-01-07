@@ -7,16 +7,16 @@
     <string name="message">消息</string>
     <string name="me">我的</string>
     <string name="local_one_step_login">本机号码一键登录</string>
-
-    <string name="sort_type_talk">AI树洞</string>
+    <!--    心理文库、成长训练、思政文库、正念冥想、测评问卷、视频集锦、主题对话、倾诉吐槽-->
+    <string name="sort_type_talk">倾诉吐槽</string>
     <string name="sort_type_theme_talk">主题对话</string>
     <string name="sort_type_what">咨询助理</string>
-    <string name="sort_type_test">心理测评</string>
-    <string name="sort_type_exercise">成长练习</string>
+    <string name="sort_type_test">测评问卷</string>
+    <string name="sort_type_exercise">成长训练</string>
     <string name="sort_type_listening">正念冥想</string>
-    <string name="sort_type_see">科普视频</string>
-    <string name="sort_type_read">科普文章</string>
-    <string name="sort_type_study">学习强军</string>
+    <string name="sort_type_see">视频集锦</string>
+    <string name="sort_type_read">心理文库</string>
+    <string name="sort_type_study">思政文库</string>
     <string name="sort_type_hot_call">全国心理服务热线</string>
 
     <string name="xt_hint_title">小天温馨提示：</string>

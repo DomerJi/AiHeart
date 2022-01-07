@@ -30,6 +30,7 @@
         android:layout_marginRight="16dp"
         android:gravity="center_vertical"
         android:padding="8dp"
+        android:visibility="gone"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView">
 

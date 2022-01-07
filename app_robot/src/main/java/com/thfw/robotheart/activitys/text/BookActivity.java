@@ -90,7 +90,15 @@ public class BookActivity extends RobotBaseActivity<BookPresenter> implements Bo
     public void onSuccess(BookTypeModel data) {
         SharePreferenceUtil.setString(KEY_TYPE_LIST, GsonUtil.toJson(data));
         mLoadingView.hide();
+
+        boolean isSetEmpty = false;
+        if (mBookTypeAdapter.getItemCount() == 0) {
+            isSetEmpty = true;
+        }
         mBookTypeAdapter.setDataListNotify(data.getList());
+        if (isSetEmpty) {
+            mBookTypeAdapter.getOnRvItemListener().onItemClick(mBookTypeAdapter.getDataList(), 0);
+        }
     }
 
     @Override

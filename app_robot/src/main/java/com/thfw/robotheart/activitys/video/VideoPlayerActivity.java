@@ -107,6 +107,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     private static List<VideoEtcModel> mStaticVideoList;
     private List<VideoEtcModel> mVideoList;
     public static final String KEY_PLAY_POSITION = "key.position";
+    public static final String KEY_PLAY_ROOTTYPE = "key.roottype";
     private int mPlayPosition;
     private ShowChangeLayout mScl;
     private boolean flDurationEnd;
@@ -126,6 +127,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
 
     private ImageView mIvCollect;
     private ConstraintLayout mClHint;
+    private int rootType;
 
     public static void startActivity(Context context, VideoModel videoModel) {
         context.startActivity(new Intent(context, VideoPlayerActivity.class).putExtra(KEY_DATA, videoModel));
@@ -149,6 +151,8 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
 
     @Override
     public void initView() {
+
+        rootType = getIntent().getIntExtra(KEY_PLAY_ROOTTYPE, 1);
         mIvBg = (ImageView) findViewById(R.id.iv_bg);
         mMPlayerView = (PlayerView) findViewById(R.id.mPlayerView);
         mPbBottom = (ProgressBar) findViewById(R.id.pb_bottom);

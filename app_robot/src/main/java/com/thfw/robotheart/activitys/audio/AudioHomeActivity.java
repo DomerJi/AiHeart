@@ -113,7 +113,15 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
         }
         SharePreferenceUtil.setString(KEY_TYPE_LIST, GsonUtil.toJson(data));
         mLoadingView.hide();
+
+        boolean isSetEmpty = false;
+        if (mAudioEtcTypeAdapter.getItemCount() == 0) {
+            isSetEmpty = true;
+        }
         mAudioEtcTypeAdapter.setDataListNotify(data);
+        if (isSetEmpty) {
+            mAudioEtcTypeAdapter.getOnRvItemListener().onItemClick(mAudioEtcTypeAdapter.getDataList(), 0);
+        }
     }
 
     /**
@@ -163,4 +171,5 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
             });
         }
     }
+
 }

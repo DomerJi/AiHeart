@@ -171,7 +171,6 @@ public class JavaCamera2View extends CameraBridgeViewBase {
                     // nv21没有问题
                     Mat mFrameChain = new Mat(mFrameHeight + (mFrameHeight / 2), mFrameWidth, CvType.CV_8UC1);
                     mFrameChain.put(0, 0, ImageUtils.YUV_420_888toNV21(image));
-                    mPreviewFormat = ImageFormat.NV21;
                     JavaCameraFrame javaCameraFrame = new JavaCameraFrame(mFrameChain, mFrameWidth, mFrameHeight);
                     deliverAndDrawFrame(javaCameraFrame);
                     image.close();
@@ -347,6 +346,8 @@ public class JavaCamera2View extends CameraBridgeViewBase {
 
 
     private class JavaCameraFrame implements CvCameraViewFrame {
+        int mPreviewFormat;
+
         @Override
         public Mat gray() {
             return mYuvFrameData.submat(0, mHeight, 0, mWidth);
@@ -366,6 +367,7 @@ public class JavaCamera2View extends CameraBridgeViewBase {
 
         public JavaCameraFrame(Mat Yuv420sp, int width, int height) {
             super();
+            this.mPreviewFormat = ImageFormat.NV21;
             mWidth = width;
             mHeight = height;
             mYuvFrameData = Yuv420sp;
