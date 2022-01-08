@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".activitys.login.LoginActivity">
 
 
     <LinearLayout
         android:id="@+id/ll_login_center"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="80dp"
+        android:layout_marginBottom="80dp"
         android:background="@drawable/login_radius_bg"
         android:orientation="vertical"
-        android:paddingLeft="50dp"
-        android:paddingTop="40dp"
-        android:paddingRight="50dp"
-        android:paddingBottom="10dp"
+        android:paddingLeft="100dp"
+        android:paddingTop="60dp"
+        android:paddingRight="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -25,56 +27,62 @@
 
 
         <TextView
+            android:id="@+id/tv_page_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:text="手机号登录"
+            android:text="刷脸登录"
             android:textColor="@color/text_yellow"
             android:textSize="@dimen/textSize_login_title" />
 
-        <TextView
+
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginLeft="12dp"
-            android:text="请输入验证码"
-            android:textColor="@color/black_80"
-            android:textSize="@dimen/textSize" />
+            android:layout_height="275dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp">
 
 
-        <com.thfw.ui.widget.InputBoxSquareView
-            android:id="@+id/ibv_code"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_below="@id/tv_title"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
-            app:ibs_codeCount="6"
-            app:ibs_encryption="false"
-            app:ibs_softKeyboardAuto="true" />
+            <org.opencv.android.JavaCamera2CircleView
+                android:id="@+id/javaCamera2CircleView"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                app:camera_id="front"
+                android:background="@color/transparent"
+                tools:ignore="MissingConstraints" />
 
+            <ImageView
+                android:id="@+id/iv_border"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:adjustViewBounds="true"
+                android:src="@mipmap/ic_face_border" />
 
-        <Button
-            android:id="@+id/bt_get_code"
-            style="@style/common_button"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height_phone"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="26dp"
-            android:layout_marginRight="8dp"
-            android:text="登录"
-            android:textSize="@dimen/textSize_large" />
+            <ImageView
+                android:id="@+id/iv_line"
+                android:layout_width="wrap_content"
+                android:layout_height="8dp"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
+                android:scaleType="fitXY"
+                android:src="@mipmap/iv_face_scan_line" />
+
+        </RelativeLayout>
 
 
         <TextView
-            android:id="@+id/tv_reget_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:padding="18dp"
-            android:text="重新获取(60)"
-            android:textSize="@dimen/textSize_large" />
+            android:layout_marginTop="6dp"
+            android:text="请正对屏幕，保持脸在取景框内"
+            android:textColor="#666"
+            android:textSize="@dimen/textSize" />
+
 
     </LinearLayout>
 
@@ -98,19 +106,19 @@
 
 
     <TextView
-        android:id="@+id/tv_login_by_face"
+        android:id="@+id/tv_login_by_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
-        android:drawableLeft="@mipmap/ic_login_by_face"
+        android:drawableLeft="@mipmap/ic_login_code"
         android:drawablePadding="4dp"
         android:paddingLeft="16dp"
         android:paddingTop="8dp"
         android:paddingRight="16dp"
         android:paddingBottom="8dp"
-        android:text="刷脸登录"
+        android:text="免密登录"
         android:textColor="@color/colorRobotFore"
         android:textSize="@dimen/textSize_robot_title"
         app:layout_constraintRight_toLeftOf="@id/tv_login_by_password"

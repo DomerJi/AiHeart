@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
+import com.thfw.base.utils.Util;
 import com.thfw.ui.R;
 
 
@@ -40,7 +41,7 @@ public class LoadingDialog {
                     .setLayoutRes(R.layout.dialog_loading)
                     .setDialogAnimationRes(R.style.animate_dialog_fade)
                     .setGravity(Gravity.CENTER)
-                    .setWidth(220)
+                    .setWidth(Util.isPad(activity) ? 220 : 300)
                     .setCancelableOutside(false)
                     .setOnBindViewListener(viewHolder -> {
                         mTvLoading = viewHolder.getView(R.id.tv_loading);
