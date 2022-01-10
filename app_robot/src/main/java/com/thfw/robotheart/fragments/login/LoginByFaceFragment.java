@@ -40,6 +40,7 @@ import com.thfw.user.login.UserManager;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCamera2CircleView;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
@@ -230,7 +231,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                 float value = (float) animation.getAnimatedValue();
                 // 知道半径是R，圆心到直线的距离是d，
                 // 那么这条直线的长度计算可以利用勾股定理
-                // L=2√(R²+d²)
+                // L=2√(R²-d²)
                 int r = mRCircle;
                 int d = (int) Math.abs(value - mRCircle);
                 int l = (int) (2 * Math.sqrt(r * r - d * d));
@@ -412,6 +413,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 //            onEyeDraw(mGray);
 //            if (!inputFace || onEyeCheck2(mGray)) {
 //            if (onEyeCheck2(mGray)) {
+
             String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             boolean saveImage = FaceUtil.saveImage(getContext(), mGray, facesArray[0], fileName, true);
             Log.d(TAG, "saveImage = " + saveImage);

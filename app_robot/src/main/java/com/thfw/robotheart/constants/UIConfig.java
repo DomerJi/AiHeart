@@ -18,6 +18,7 @@ public class UIConfig {
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.BLUETOOTH,
             Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.CHANGE_WIFI_STATE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
 }

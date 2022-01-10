@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:layout_marginLeft="26dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginRight="26dp">
+
+
+    <TextView
+        android:id="@+id/tv_device_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize"
+        tools:text="设备名称" />
+
+
+    <TextView
+        android:id="@+id/tv_state"
+        style="@style/switch_set_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="8dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize"
+        tools:ignore="DuplicateIds"
+        tools:text="123" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_1px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/set_divider" />
+
+
+</RelativeLayout>
