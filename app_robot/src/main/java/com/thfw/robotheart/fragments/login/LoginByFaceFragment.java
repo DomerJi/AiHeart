@@ -40,7 +40,6 @@ import com.thfw.user.login.UserManager;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCamera2CircleView;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
@@ -174,6 +173,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             mTvLoginByCode.setEnabled(false);
             TextView mTvPageTitle = (TextView) findViewById(R.id.tv_page_title);
             mTvPageTitle.setText("人脸录入");
+            mClBottom.setVisibility(View.GONE);
 
         }
         mIvBorder.post(new Runnable() {
@@ -272,7 +272,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
      */
     private boolean frameHandleIng = false;
     private int failCount = 0;
-    private static final int FAIL_COUNT_MAX = 100;
+    private static final int FAIL_COUNT_MAX = 200;
     private Mat mRgba; //图像容器
     private Mat mGray;
 
@@ -304,9 +304,9 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         try {
 
             // load cascade file from application resources
-            InputStream is = getResources().openRawResource(org.opencv.R.raw.haarcascade_frontalface_default);
+            InputStream is = getResources().openRawResource(org.opencv.R.raw.lbpcascade_frontalface);
             File cascadeDir = getActivity().getDir("cascade", Context.MODE_PRIVATE);
-            mCascadeFile = new File(cascadeDir, "haarcascade_frontalface_default.xml");
+            mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
             FileOutputStream os = new FileOutputStream(mCascadeFile);
 
             byte[] buffer = new byte[4096];
@@ -342,9 +342,9 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         try {
 
             // load cascade file from application resources
-            InputStream is = getResources().openRawResource(org.opencv.R.raw.haarcascade_eye_tree_eyeglasses);
+            InputStream is = getResources().openRawResource(org.opencv.R.raw.haarcascade_eye);
             File cascadeDir = getActivity().getDir("cascade", Context.MODE_PRIVATE);
-            mCascadeEyeFile = new File(cascadeDir, "haarcascade_eye_tree_eyeglasses.xml");
+            mCascadeEyeFile = new File(cascadeDir, "haarcascade_eye.xml");
             FileOutputStream os = new FileOutputStream(mCascadeEyeFile);
 
             byte[] buffer = new byte[4096];
@@ -407,29 +407,27 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 
 
         Rect[] facesArray = faces.toArray();
-//        Log.d(TAG, "facesArray.len = " + facesArray.length);
+        Log.d(TAG, "facesArray.len = " + facesArray.length);
         if (facesArray.length == 1) {
             //  画眼睛
-//            onEyeDraw(mGray);
-//            if (!inputFace || onEyeCheck2(mGray)) {
-//            if (onEyeCheck2(mGray)) {
-
-            String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            boolean saveImage = FaceUtil.saveImage(getContext(), mGray, facesArray[0], fileName, true);
-            Log.d(TAG, "saveImage = " + saveImage);
-            frameHandleIng = saveImage;
-            if (saveImage) {
-                loginOrInput(fileName);
+            onEyeDraw(mGray);
+            if (!inputFace || onEyeCheck2(mGray)) {
+                String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                boolean saveImage = FaceUtil.saveImage(getContext(), mRgba, facesArray[0], fileName, true);
+                Log.d(TAG, "saveImage = " + saveImage);
+                frameHandleIng = saveImage;
+                if (saveImage) {
+                    loginOrInput(fileName);
+                } else {
+                    // 保存失败 重新开始处理
+                    frameHandleIng = false;
+                }
             } else {
-                // 保存失败 重新开始处理
                 frameHandleIng = false;
             }
         } else {
             frameHandleIng = false;
         }
-//        } else {
-//            frameHandleIng = false;
-//        }
         // 画脸型
         for (int i = 0; i < facesArray.length; i++) {
             Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 3);
@@ -458,10 +456,25 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                     break;
                 }
             }
+
+//            List<Mat> mats = new ArrayList<>();
+//            mats.add(Imgcodecs.imread(fileName));
+//            Mat lables = new Mat(1, 1, CV_32SC1);//对应20个标签值
+//            FisherFaceRecognizer faceRecognizer = FisherFaceRecognizer.create(1);
+//            faceRecognizer.train(mats, lables);
+//            faceRecognizer.save(FaceUtil.getFilePath(mContext, "FisherRecognize.xml"));
+            frameHandleIng = false;
         } else {
             List<Face> faceList = MyApplication.getDatabase().faceDao().getAll();
             LogUtil.d(TAG, "faceList[] = " + GsonUtil.toJson(faceList));
+//            FisherFaceRecognizer faceRecognizer = FisherFaceRecognizer.create(1);
+//            faceRecognizer.read(FaceUtil.getFilePath(mContext, "FisherRecognize.xml"));
+//            int lable = faceRecognizer.predict_label(Imgcodecs.imread(fileName));
+//            ToastUtil.show("lable = " + lable);
+//            LogUtil.d(TAG, "lable = " + lable);
+
             if (EmptyUtil.isEmpty(faceList)) {
+                frameHandleIng = false;
                 ToastUtil.show("本地无人脸数据！！！！！");
                 LogUtil.d(TAG, "本地无人脸数据！！！！！!======================================================");
                 LogUtil.d(TAG, "本地无人脸数据！！！！！!======================================================");
@@ -485,6 +498,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                 LogUtil.d(TAG, "人脸【登录】成功！！！！！!======================================================" + loginFace.getUid());
                 LogUtil.d(TAG, "人脸【登录】成功！！！！！!======================================================" + loginFace.getUid());
                 loginByFace(loginFace);
+                frameHandleIng = false;
             } else {
                 failCount++;
                 frameHandleIng = false;

@@ -8,8 +8,8 @@ package com.thfw.robotheart.util;
 public class FaceTest {
 
     private void testFace() {
-//        opencv_face.FaceRecognizer faceRecognizer;
-//        faceRecognizer.predict();
+//        FisherFaceRecognizer faceRecognizer = FisherFaceRecognizer.create();
+//        faceRecognizer.train();
 //
 //        opencv_stitching.AffineWarper affineWarper;
 //        affineWarper.
