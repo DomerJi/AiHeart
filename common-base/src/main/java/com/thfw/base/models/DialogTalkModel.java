@@ -94,6 +94,11 @@ public class DialogTalkModel implements IModel {
         this.dialogId = dialogId;
     }
 
+    /**
+     * 主题对话or树洞
+     * @param originScene
+     * @return
+     */
     public int getScene(int originScene) {
         return scene > 0 ? scene : originScene;
     }

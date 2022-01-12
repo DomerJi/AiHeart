@@ -11,6 +11,7 @@ public class TtsModel {
     public String text;
 
     public TtsModel(String text) {
+        this.text = text;
         this.ttsType = TtsType.READ_NORMAL;
     }
 

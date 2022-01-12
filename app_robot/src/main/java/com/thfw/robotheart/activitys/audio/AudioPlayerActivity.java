@@ -301,8 +301,11 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         } else {
             mIvCollect.setVisibility(View.GONE);
             mTvEtcTitle.setVisibility(View.GONE);
+            findViewById(R.id.exo_next).setVisibility(View.GONE);
+            findViewById(R.id.exo_prev).setVisibility(View.GONE);
             mIvPlayCateLogue.setVisibility(View.GONE);
             mTvAudioTitle.setText(mAudios.get(0).getTitle());
+            player.seekTo(0, 0);
         }
 
         player.prepare();

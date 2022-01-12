@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.DialogTalkModel;
+import com.thfw.base.utils.HourUtil;
 import com.thfw.robotheart.R;
 import com.thfw.ui.utils.GlideUtil;
 
@@ -44,7 +45,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             case ChatEntity.TYPE_RECOMMEND_AUDIO_ETC: // 音频合集
                 return new RecommendHolder(inflate(R.layout.chat_from_to_link_layout, parent));
             case ChatEntity.TYPE_TIME: // 时间
-                return new ChatHolder(inflate(R.layout.chat_time_layout, parent));
+                return new TimeHolder(inflate(R.layout.chat_time_layout, parent));
             case ChatEntity.TYPE_END_SERVICE: // 您已结束本次服务
                 return new ChatHolder(inflate(R.layout.chat_end_service_layout, parent));
             case ChatEntity.TYPE_FEEDBACK: // 您对本次回答满意吗？
@@ -94,7 +95,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             case ChatEntity.TYPE_TIME:
                 if (holder instanceof TimeHolder) {
                     TimeHolder timeHolder = (TimeHolder) holder;
-                    timeHolder.mTvTime.setText(chatEntity.getTalk());
+                    timeHolder.mTvTime.setText(HourUtil.getYYMMDD_HHMMSS(chatEntity.time));
                 }
                 break;
         }

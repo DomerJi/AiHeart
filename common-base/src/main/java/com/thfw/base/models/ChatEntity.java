@@ -29,6 +29,10 @@ public class ChatEntity implements IModel {
         return talk == null ? "" : talk;
     }
 
+    public boolean isFrom() {
+        return type == TYPE_FROM_NORMAL || type == TYPE_FROM_SELECT || type == TYPE_INPUT;
+    }
+
     private DialogTalkModel talkModel;
 
 

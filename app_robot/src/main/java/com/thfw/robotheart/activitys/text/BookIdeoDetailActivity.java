@@ -114,7 +114,9 @@ public class BookIdeoDetailActivity extends RobotBaseActivity<BookPresenter> imp
                     "  margin-left: auto;\n" +
                     "  margin-right: auto;\n" +
                     "}" + "body{padding-top:20px; padding-bottom:20px; padding-left:20px;padding-right:20px;}" +
-                    "span{" + fontSize + "}" + "</style>" + "<title>"
+                    "span{" + fontSize + "}"
+                    + "p{" + fontSize + "}"
+                    + "</style>" + "<title>"
                     + title + "</title></head><body>" + titleHtml
                     + contentHtml + "</body></html>";
         }

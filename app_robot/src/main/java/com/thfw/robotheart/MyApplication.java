@@ -5,6 +5,9 @@ import android.content.Context;
 import androidx.multidex.MultiDexApplication;
 import androidx.room.Room;
 
+import com.iflytek.cloud.Setting;
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechUtility;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -59,13 +62,27 @@ public class MyApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         app = this;
-        SharePreferenceUtil.init(this);
         ContextApp.init(app);
+        SharePreferenceUtil.init(this);
         BuglyUtil.init("382fc62522");
         ContextApp.setDeviceType(ContextApp.DeviceType.ROBOT);
-
         ToastUtil.init(this);
         TDialog.init(this);
+        initSpeech();
+    }
+
+    private void initSpeech() {
+        /*
+         * 科大讯飞
+         */
+        StringBuffer param = new StringBuffer();
+        //5f3de60d.jet
+        param.append(SpeechConstant.APPID + "=5f3de60d");
+        param.append(",");
+        // 设置使用v5+
+        param.append(SpeechConstant.ENGINE_MODE + "=" + SpeechConstant.MODE_MSC);
+        SpeechUtility.createUtility(app, param.toString());
+        Setting.setShowLog(false);
     }
 
     public static AppDatabase getDatabase() {

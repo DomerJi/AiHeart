@@ -1,5 +1,6 @@
 package com.thfw.ui.voice.tts;
 
+import com.iflytek.cloud.SynthesizerListener;
 import com.thfw.ui.voice.ILife;
 
 /**
@@ -9,5 +10,5 @@ import com.thfw.ui.voice.ILife;
  */
 public interface ITtsFace extends ILife {
 
-    boolean start(TtsModel ttsModel, TtsHelper.CustomSynthesizerListener synthesizerListener);
+    boolean start(TtsModel ttsModel, SynthesizerListener synthesizerListener);
 }

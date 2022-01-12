@@ -34,11 +34,25 @@ public class TtsHelper implements ITtsFace {
     private SpeechSynthesizer mTts;
     private CustomSynthesizerListener customSynthesizerListener;
 
+    private static TtsHelper ttsHelper;
+
     private TtsModel ttsModel;
-    private CustomSynthesizerListener currentSynthesizerListener;
+    private SynthesizerListener currentSynthesizerListener;
 
     private TtsHelper() {
         customSynthesizerListener = new CustomSynthesizerListener();
+    }
+
+    public static TtsHelper getInstance() {
+        if (ttsHelper == null) {
+            synchronized (TtsHelper.class) {
+                if (ttsHelper == null) {
+                    ttsHelper = new TtsHelper();
+                    ttsHelper.init();
+                }
+            }
+        }
+        return ttsHelper;
     }
 
     @Override
@@ -95,7 +109,7 @@ public class TtsHelper implements ITtsFace {
     }
 
     @Override
-    public boolean start(TtsModel ttsModel, CustomSynthesizerListener synthesizerListener) {
+    public boolean start(TtsModel ttsModel, SynthesizerListener synthesizerListener) {
         this.ttsModel = ttsModel;
         this.currentSynthesizerListener = synthesizerListener;
         return start();
@@ -108,7 +122,9 @@ public class TtsHelper implements ITtsFace {
             return false;
         }
         prepare();
+//        setTtsParam();
         VoiceTypeManager.getManager().setVoiceType(VoiceType.READ_START);
+        LogUtil.d(TAG, "ttsModel.text = " + ttsModel.text);
         if (ErrorCode.SUCCESS == mTts.startSpeaking(ttsModel.text, customSynthesizerListener)) {
             VoiceTypeManager.getManager().setVoiceType(VoiceType.READ_ING);
             return true;
@@ -128,6 +144,44 @@ public class TtsHelper implements ITtsFace {
     public void stop() {
         if (initialized()) {
             mTts.stopSpeaking();
+        }
+    }
+
+    public static class SimpleSynthesizerListener implements SynthesizerListener {
+
+        @Override
+        public void onSpeakBegin() {
+
+        }
+
+        @Override
+        public void onBufferProgress(int i, int i1, int i2, String s) {
+
+        }
+
+        @Override
+        public void onSpeakPaused() {
+
+        }
+
+        @Override
+        public void onSpeakResumed() {
+
+        }
+
+        @Override
+        public void onSpeakProgress(int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onCompleted(SpeechError speechError) {
+
+        }
+
+        @Override
+        public void onEvent(int i, int i1, int i2, Bundle bundle) {
+
         }
     }
 

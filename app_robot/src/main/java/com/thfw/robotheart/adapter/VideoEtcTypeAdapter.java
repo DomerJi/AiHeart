@@ -27,6 +27,7 @@ import java.util.List;
 public class VideoEtcTypeAdapter extends BaseAdapter<VideoTypeModel, VideoEtcTypeAdapter.AudioEctTypeHolder> {
 
     private int selectedIndex = 0;
+    private boolean expand = true;
     private int childSelectedIndex = -1;
 
     public VideoEtcTypeAdapter(List<VideoTypeModel> dataList) {
@@ -48,7 +49,7 @@ public class VideoEtcTypeAdapter extends BaseAdapter<VideoTypeModel, VideoEtcTyp
         holder.mTvType.setSelected(selectedIndex == position);
         holder.mTvType.setText(bean.name);
         LogUtil.d("VideoEtcTypeAdapter", "bean.list = " + !EmptyUtil.isEmpty(bean.list));
-        if (selectedIndex == position) {
+        if (selectedIndex == position && expand) {
             if (!EmptyUtil.isEmpty(bean.list)) {
                 VideoChildTypeAdapter childAdapter = new VideoChildTypeAdapter(bean.list);
                 childAdapter.setSelectedIndex(childSelectedIndex);
@@ -85,6 +86,11 @@ public class VideoEtcTypeAdapter extends BaseAdapter<VideoTypeModel, VideoEtcTyp
             mRvChild = itemView.findViewById(R.id.rv_child);
             mRvChild.setLayoutManager(new LinearLayoutManager(mContext));
             itemView.setOnClickListener(v -> {
+                if (getBindingAdapterPosition() == selectedIndex) {
+                    expand = !expand;
+                } else {
+                    expand = true;
+                }
                 selectedIndex = getBindingAdapterPosition();
                 childSelectedIndex = -1;
                 notifyDataSetChanged();

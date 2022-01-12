@@ -25,6 +25,7 @@ import java.util.List;
  */
 public class BookStudyTypeAdapter extends BaseAdapter<BookStudyTypeModel, BookStudyTypeAdapter.BookStudyTypeHolder> {
 
+    private boolean expand = false;
     private int selectedIndex = 0;
     private int childSelectedIndex = -1;
 
@@ -46,7 +47,7 @@ public class BookStudyTypeAdapter extends BaseAdapter<BookStudyTypeModel, BookSt
         holder.mTvType.setTextSize(selectedIndex == position ? UIConfig.LEFT_TAB_MAX_TEXTSIZE : UIConfig.LEFT_TAB_MIN_TEXTSIZE);
         holder.mTvType.setText(bean.name);
         holder.mTvType.setSelected(selectedIndex == position);
-        if (selectedIndex == position) {
+        if (selectedIndex == position && expand) {
             if (!EmptyUtil.isEmpty(bean.list)) {
                 BookStudyChildTypeAdapter childAdapter = new BookStudyChildTypeAdapter(bean.list);
                 childAdapter.setSelectedIndex(childSelectedIndex);
@@ -81,6 +82,11 @@ public class BookStudyTypeAdapter extends BaseAdapter<BookStudyTypeModel, BookSt
             mRvChild = itemView.findViewById(R.id.rv_child);
             mRvChild.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
             itemView.setOnClickListener(v -> {
+                if (getBindingAdapterPosition() == selectedIndex) {
+                    expand = !expand;
+                } else {
+                    expand = true;
+                }
                 selectedIndex = getBindingAdapterPosition();
                 childSelectedIndex = -1;
                 notifyDataSetChanged();

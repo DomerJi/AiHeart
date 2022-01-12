@@ -27,6 +27,56 @@
         app:layout_constraintTop_toBottomOf="@id/titleRobotView"
         tools:ignore="MissingConstraints">
 
+        <LinearLayout
+            android:id="@+id/ll_talk_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:gravity="center_vertical"
+            android:padding="8dp"
+            app:layout_constraintLeft_toLeftOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_talk_switch"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@mipmap/ic_history_new" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="历史记录"
+                android:textColor="@color/colorRobotFore"
+                android:textSize="@dimen/textSize_small" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_volume_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            app:layout_constraintLeft_toRightOf="@id/ll_talk_history">
+
+            <ImageView
+                android:id="@+id/iv_volume_switch"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_volume_switch_selector"
+                app:tint="@color/colorRobotFore" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="语音播报"
+                android:textColor="@color/colorRobotFore"
+                android:textSize="@dimen/textSize_small" />
+
+        </LinearLayout>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -58,11 +108,12 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:id="@+id/iv_talk_model"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginLeft="16dp"
                 android:adjustViewBounds="true"
-                android:src="@mipmap/ic_talk_model_on" />
+                android:background="@drawable/talk_mode_switch_selector" />
 
 
         </RelativeLayout>
@@ -121,7 +172,8 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp">
+            android:layout_marginRight="12dp"
+            android:visibility="invisible">
 
             <ImageView
                 android:layout_width="60dp"
@@ -135,14 +187,30 @@
         </RelativeLayout>
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_select"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/rl_keyword" />
-
     </RelativeLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_select"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:minHeight="46dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/rv_list"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+    <com.thfw.ui.widget.SpeechTextView
+        android:id="@+id/stv_text"
+        android:background="@drawable/bottom_2_top_black_tran"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

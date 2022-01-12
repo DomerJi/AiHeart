@@ -41,4 +41,8 @@ dependencies {
     api 'com.scwang.smart:refresh-layout-kernel:' + rootProject.ext.smartRefresh      //核心必须依赖
     api 'com.scwang.smart:refresh-header-classics:' + rootProject.ext.smartRefresh    //经典刷新头
     api 'com.scwang.smart:refresh-footer-classics:' + rootProject.ext.smartRefresh    //经典加载
+
+//    api 'com.scwang.wave:MultiWaveHeader:1.0.0'
+    //androidx
+    api 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
 }

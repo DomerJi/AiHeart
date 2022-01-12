@@ -2,6 +2,7 @@ package com.thfw.ui.voice.speech;
 
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
@@ -12,8 +13,11 @@ import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechRecognizer;
 import com.thfw.base.ContextApp;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.ui.voice.JsonParser;
+import com.thfw.ui.voice.PolicyHelper;
 import com.thfw.ui.voice.VoiceType;
 import com.thfw.ui.voice.VoiceTypeManager;
+import com.thfw.ui.voice.tts.TtsHelper;
 
 /**
  * Author:pengs
@@ -28,9 +32,29 @@ public class SpeechHelper implements ISpeechFace {
     private static final long VAD_BOS = 6000;// 语音前端点（开始后6秒无语音结束对话）
     private static final String DEFAULT_TEXT = "...";
     private static final String DEFAULT_EMPTY = "";
+    private StringBuilder mSpeechResult = new StringBuilder();
 
     private SpeechRecognizer mIat;
     private CustomRecognizerListener mListener;
+    private static SpeechHelper speechHelper;
+    private static int ingState = -1;
+    private String text = "";
+
+    private SpeechHelper() {
+        mListener = new CustomRecognizerListener();
+    }
+
+    public static SpeechHelper getInstance() {
+        if (speechHelper == null) {
+            synchronized (TtsHelper.class) {
+                if (speechHelper == null) {
+                    speechHelper = new SpeechHelper();
+                    speechHelper.init();
+                }
+            }
+        }
+        return speechHelper;
+    }
 
     @Override
     public boolean initialized() {
@@ -105,6 +129,12 @@ public class SpeechHelper implements ISpeechFace {
         }
     }
 
+    public void setResultListener(ResultListener resultListener) {
+        this.resultListener = resultListener;
+        ingState = -1;
+        checkIngState();
+    }
+
     @Override
     public boolean isIng() {
         return initialized() && mIat.isListening();
@@ -121,6 +151,15 @@ public class SpeechHelper implements ISpeechFace {
     @Override
     public void onResult(StringBuilder stringBuilder, boolean append, boolean end) {
 
+        LogUtil.d(TAG, "String -> " + text);
+
+        if (text != null && !text.equals(stringBuilder.toString())) {
+            text = stringBuilder.toString();
+            if (this.resultListener != null) {
+                this.resultListener.onResult(text, end);
+            }
+        }
+
     }
 
     public class CustomRecognizerListener implements RecognizerListener {
@@ -132,26 +171,79 @@ public class SpeechHelper implements ISpeechFace {
 
         @Override
         public void onBeginOfSpeech() {
-
+            mSpeechResult = new StringBuilder();
+            checkIngState();
         }
 
         @Override
         public void onEndOfSpeech() {
-
+            isRestart();
+            checkIngState();
         }
 
         @Override
-        public void onResult(RecognizerResult recognizerResult, boolean b) {
+        public void onResult(RecognizerResult recognizerResult, boolean isLast) {
             VoiceTypeManager.getManager().setVoiceType(VoiceType.ACCEPT_TEXT);
+
+            String text = JsonParser.parseIatResult(recognizerResult.getResultString());
+            LogUtil.i(TAG, "onResult -> text = " + text + "; isLast = " + isLast);
+            if (!TextUtils.isEmpty(text)) {
+                if (text.contains("小蜜")) {
+                    text.replaceAll("小蜜", "小密");
+                }
+            }
+
+            if (isLast) {
+                if (text.endsWith("。")) {
+                    text = text.substring(0, text.length() - 1);
+                }
+                mSpeechResult.append(text);
+            } else {
+                mSpeechResult.append(text);
+            }
+            String result = mSpeechResult.toString();
+            LogUtil.i(TAG, "onResult -> result = " + result);
+            SpeechHelper.this.onResult(mSpeechResult, true, isLast);
+            isRestart();
+            checkIngState();
         }
 
         @Override
         public void onError(SpeechError speechError) {
+            isRestart();
+            checkIngState();
         }
 
         @Override
         public void onEvent(int i, int i1, int i2, Bundle bundle) {
-
+            isRestart();
+            checkIngState();
         }
+    }
+
+    private void isRestart() {
+        if ((PolicyHelper.getInstance().isSpeechMode()
+                || (PolicyHelper.getInstance().isPressMode() && PolicyHelper.getInstance().isPressed()))
+                && !isIng()) {
+            start();
+        }
+    }
+
+    private void checkIngState() {
+        if (resultListener != null) {
+            int state = isIng() ? 1 : 0;
+            if (ingState == -1 || state != ingState) {
+                ingState = state;
+                resultListener.onIng(isIng());
+            }
+        }
+    }
+
+    public ResultListener resultListener;
+
+    public interface ResultListener {
+        void onResult(String result, boolean end);
+
+        void onIng(boolean ing);
     }
 }

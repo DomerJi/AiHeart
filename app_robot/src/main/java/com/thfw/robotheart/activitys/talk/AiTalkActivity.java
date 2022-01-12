@@ -14,6 +14,8 @@ import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,6 +24,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
+import com.iflytek.cloud.SpeechError;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcDetailModel;
@@ -33,8 +40,10 @@ import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TalkPresenter;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
@@ -51,9 +60,16 @@ import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.voice.PolicyHelper;
+import com.thfw.ui.voice.speech.SpeechHelper;
+import com.thfw.ui.voice.tts.TtsHelper;
+import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.ui.widget.SpeechTextView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements TalkPresenter.TalkUi<List<DialogTalkModel>> {
@@ -75,8 +91,23 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private Helper mHelper = new Helper();
+    private LinkedList<TtsModel> mTtsQueue = new LinkedList<>();
+    private boolean mTtsFinished = false;
     // 1、树洞聊天 2、咨询助理
     private int mScene;
+    private android.widget.LinearLayout mLlTalkHistory;
+    private android.widget.ImageView mIvTalkSwitch;
+    private android.widget.LinearLayout mLlVolumeSwitch;
+    private android.widget.ImageView mIvVolumeSwitch;
+    private int mCurrentChatType;
+    private boolean softKeyBoardShow;
+    private boolean softKeyBoardShowStvText;
+    private ImageView mIvTalkModel;
+
+    long downTime;
+    boolean currentSelect = false;
+    private SpeechTextView mStvText;
+    private boolean mPauseStvTextShow;
 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, AiTalkActivity.class).putExtra(KEY_DATA, talkModel));
@@ -95,32 +126,28 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     @Override
     public void initView() {
-
         mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
         mClAnim = (ConstraintLayout) findViewById(R.id.cl_anim);
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
         mRvSelect = (RecyclerView) findViewById(R.id.rv_select);
+        // 设置布局管理器
+        FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(mContext);
+        // flexDirection 属性决定主轴的方向（即项目的排列方向）。类似 LinearLayout 的 vertical 和 horizontal。
+        flexboxLayoutManager.setFlexDirection(FlexDirection.ROW_REVERSE);
+        // 主轴为水平方向，起点在左端。
+        // flexWrap 默认情况下 Flex 跟 LinearLayout 一样，都是不带换行排列的，但是flexWrap属性可以支持换行排列。
+        flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP);
+        // 按正常方向换行
+        // justifyContent 属性定义了项目在主轴上的对齐方式。
+        flexboxLayoutManager.setJustifyContent(JustifyContent.FLEX_START);//交叉轴的起点对齐。
+        mRvSelect.setLayoutManager(flexboxLayoutManager);
         mTvSend = (TextView) findViewById(R.id.tv_send);
+        mStvText = (SpeechTextView) findViewById(R.id.stv_text);
         mEtContent = (EditText) findViewById(R.id.et_content);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext));
-        mRvSelect.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, true));
         softInput();
         mTvSend.setOnClickListener(v -> {
-            if (mHelper.getTalkModel() == null) {
-                LogUtil.d(TAG, "mHelper.getTalkModel() == null 对话还未开始！！！");
-                return;
-            }
-            ChatEntity chatEntity = new ChatEntity();
-            chatEntity.type = ChatEntity.TYPE_TO;
-            chatEntity.talk = mEtContent.getText().toString();
-
-
-            NetParams netParams = NetParams.crete().add("id", mHelper.getTalkModel().getId())
-                    .add("question", chatEntity.talk);
-            mPresenter.onDialog(mScene, netParams);
-
-            sendData(chatEntity);
-            mEtContent.setText("");
+            sendInputText(mEtContent.getText().toString());
         });
         mEtContent.addTextChangedListener(new MyTextWatcher() {
             @Override
@@ -130,8 +157,67 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         });
         mRlSend = (RelativeLayout) findViewById(R.id.rl_send);
         mRlVoice = (RelativeLayout) findViewById(R.id.rl_voice);
+        mIvTalkModel = (ImageView) findViewById(R.id.iv_talk_model);
         mRlKeywordInput = (RelativeLayout) findViewById(R.id.rl_keyword_input);
         mRlKeyword = (RelativeLayout) findViewById(R.id.rl_keyword);
+        mLlTalkHistory = (LinearLayout) findViewById(R.id.ll_talk_history);
+        mIvTalkSwitch = (ImageView) findViewById(R.id.iv_talk_switch);
+        mLlVolumeSwitch = (LinearLayout) findViewById(R.id.ll_volume_switch);
+        mIvVolumeSwitch = (ImageView) findViewById(R.id.iv_volume_switch);
+        mLlVolumeSwitch.setOnClickListener(v -> {
+            if (PolicyHelper.getInstance().isSpeechMode()) {
+                ToastUtil.show("正在倾听，无法打开");
+                return;
+            }
+            mIvVolumeSwitch.setSelected(!mIvVolumeSwitch.isSelected());
+            if (mIvVolumeSwitch.isSelected()) {
+                if (mTtsFinished) {
+                    return;
+                }
+                if (EmptyUtil.isEmpty(mChatAdapter.getDataList())) {
+                    return;
+                }
+                List<ChatEntity> chatEntities = mChatAdapter.getDataList();
+                List<ChatEntity> ttsEntitys = new ArrayList<>();
+                for (int i = chatEntities.size() - 1; i >= 0; i--) {
+                    ChatEntity chatEntity = chatEntities.get(i);
+                    if (chatEntity.isFrom()) {
+                        ttsEntitys.add(chatEntity);
+                    } else {
+                        break;
+                    }
+                }
+                Collections.reverse(ttsEntitys);
+                LogUtil.d(TAG, "ttsEntitys.size = " + ttsEntitys.size());
+                for (ChatEntity chatEntity : ttsEntitys) {
+                    ttsHandle(chatEntity);
+                }
+            } else {
+                TtsHelper.getInstance().stop();
+                mTtsQueue.clear();
+            }
+        });
+        // 历史记录
+        mLlTalkHistory.setOnClickListener(v -> {
+            // todo 去历史记录页面
+        });
+    }
+
+    private void sendInputText(String inputText) {
+        if (mHelper.getTalkModel() == null) {
+            LogUtil.d(TAG, "mHelper.getTalkModel() == null 对话还未开始！！！");
+            return;
+        }
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_TO;
+        chatEntity.talk = inputText;
+
+        NetParams netParams = NetParams.crete().add("id", mHelper.getTalkModel().getId())
+                .add("question", chatEntity.talk);
+        mPresenter.onDialog(mScene, netParams);
+
+        sendData(chatEntity);
+        mEtContent.setText("");
     }
 
     @Override
@@ -230,19 +316,29 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
             @Override
             public void keyBoardShow(int height) {
-                mRlKeyword.setVisibility(View.GONE);
                 mRlVoice.setVisibility(View.GONE);
                 mRlKeywordInput.setVisibility(View.VISIBLE);
-                mRvSelect.setVisibility(View.GONE);
-
+                mRlKeyword.setVisibility(View.GONE);
+                softKeyBoardShow = true;
+                softKeyBoardShowStvText = mStvText.isShow();
+                mStvText.hide();
             }
 
             @Override
             public void keyBoardHide(int height) {
+                softKeyBoardShow = false;
                 mRlKeywordInput.setVisibility(View.GONE);
-                mRlKeyword.setVisibility(View.VISIBLE);
                 mRlVoice.setVisibility(View.VISIBLE);
-                mRvSelect.setVisibility(View.VISIBLE);
+                if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
+                    mRlKeyword.setVisibility(View.VISIBLE);
+                } else {
+                    mRlKeyword.setVisibility(View.GONE);
+                }
+
+                if (softKeyBoardShowStvText) {
+                    mStvText.show();
+                }
+
             }
         });
 
@@ -251,6 +347,113 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             mRlKeywordInput.setVisibility(View.VISIBLE);
             showInput(mEtContent);
         });
+        mIvTalkModel.setOnClickListener(v -> {
+            mIvTalkModel.setSelected(!mIvTalkModel.isSelected());
+        });
+
+        PolicyHelper.getInstance().setResultListener(new SpeechHelper.ResultListener() {
+            boolean showOriginVolume = false;
+
+            @Override
+            public void onResult(String result, boolean end) {
+                LogUtil.d(TAG, "result =================================== " + result);
+                if (!mStvText.isShow()) {
+                    return;
+                }
+
+                mStvText.setSpeechText(result);
+                chooseOption(mStvText.getText(), end);
+            }
+
+            @Override
+            public void onIng(boolean ing) {
+                LogUtil.d(TAG, "ing =================================== " + ing);
+//                mStvText.show();
+                if (ing) {
+                    showOriginVolume = mIvVolumeSwitch.isSelected();
+                    if (mIvVolumeSwitch.isSelected()) {
+                        mLlVolumeSwitch.performClick();
+                    }
+                    mStvText.show();
+                } else {
+                    mStvText.hide();
+                    if (showOriginVolume) {
+                        if (!mIvVolumeSwitch.isSelected()) {
+                            mLlVolumeSwitch.performClick();
+                        }
+                    }
+                }
+            }
+        });
+
+
+        mIvTalkModel.setOnTouchListener(new View.OnTouchListener() {
+
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                switch (event.getAction()) {
+
+                    case MotionEvent.ACTION_DOWN:
+                        downTime = System.currentTimeMillis();
+                        mIvTalkModel.setSelected(true);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (System.currentTimeMillis() - downTime < 300) {
+                            currentSelect = !currentSelect;
+                            mIvTalkModel.setSelected(currentSelect);
+                        } else {
+                            mIvTalkModel.setSelected(currentSelect);
+                        }
+                        if (currentSelect) {
+                            PolicyHelper.getInstance().startSpeech();
+                        } else {
+                            PolicyHelper.getInstance().end();
+                        }
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (!currentSelect) {
+                            PolicyHelper.getInstance().startPressed();
+                        }
+                        mIvTalkModel.setSelected(true);
+                        LogUtil.d(TAG, "mRlVoice - ing " + SpeechHelper.getInstance().isIng());
+                        break;
+                }
+                LogUtil.d(TAG, "mRlVoice - mIvTalkModel.isSelected() " + mIvTalkModel.isSelected());
+                return true;
+            }
+        });
+
+    }
+
+    private void chooseOption(String result, boolean end) {
+        LogUtil.d(TAG, "chooseOption(result)" + result + "; end = " + end);
+        LogUtil.d(TAG, "chooseOption(result) mCurrentChatType = " + mCurrentChatType);
+        if (StringUtil.isEmpty(result)) {
+            return;
+        }
+        if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
+            if (end) {
+                sendInputText(result);
+            }
+        } else if (mCurrentChatType == ChatEntity.TYPE_FROM_SELECT) {
+            if (mSelectAdapter == null) {
+                return;
+            }
+
+            List<DialogTalkModel.CheckRadioBean> list = mSelectAdapter.getDataList();
+            if (EmptyUtil.isEmpty(list)) {
+                return;
+            }
+
+            for (int i = 0, size = list.size(); i < size; i++) {
+                if (result.equals(list.get(i).getValue())) {
+                    mSelectAdapter.getOnRvItemListener().onItemClick(list, i);
+                    break;
+                }
+            }
+        }
 
     }
 
@@ -262,8 +465,8 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         DialogRobotFactory.createCustomDialog(this, new DialogRobotFactory.OnViewCallBack() {
             @Override
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-                mTvTitle.setText(R.string.finishServiceTitle);
-                mTvHint.setText(R.string.finishServiceHint);
+                mTvHint.setText(R.string.finishServiceTitle);
+                mTvTitle.setVisibility(View.GONE);
             }
 
             @Override
@@ -351,7 +554,8 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                     }
                 }
             }
-
+        } else {
+            mChatAdapter.addData(ChatEntity.createTime());
         }
         mChatAdapter.addData(chatEntity);
         mChatAdapter.notifyItemInserted(mChatAdapter.getItemCount() - 1);
@@ -371,6 +575,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     @Override
     public void onSuccess(List<DialogTalkModel> data) {
         mHelper.setTalks(data);
+        mTtsQueue.clear();
         onTalkEngine();
     }
 
@@ -425,6 +630,47 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         }
     }
 
+    private void ttsHandle(ChatEntity chatEntity) {
+        if (!mIvVolumeSwitch.isSelected()) {
+            return;
+        }
+
+        if (chatEntity.isFrom()) {
+            boolean originEmpty = mTtsQueue.isEmpty() && !TtsHelper.getInstance().isIng();
+            TtsModel ttsModel = new TtsModel(chatEntity.getTalk());
+            mTtsQueue.add(ttsModel);
+            mTtsFinished = false;
+            LogUtil.d(TAG, "  mTtsQueue.add(ttsModel); text =  " + ttsModel.text);
+            if (!originEmpty) {
+                return;
+            }
+            if (mTtsQueue.isEmpty()) {
+                return;
+            }
+            LogUtil.d(TAG, "TtsHelper.getInstance().start begin");
+            TtsHelper.getInstance().start(mTtsQueue.poll(), new TtsHelper.SimpleSynthesizerListener() {
+                @Override
+                public void onCompleted(SpeechError speechError) {
+                    super.onCompleted(speechError);
+                    LogUtil.d(TAG, "TtsHelper.getInstance().start onCompleted");
+                    if (!mTtsQueue.isEmpty()) {
+                        LogUtil.d(TAG, "TtsHelper.getInstance().start continue");
+                        TtsHelper.getInstance().start(mTtsQueue.poll(), this);
+                    } else {
+                        mTtsFinished = true;
+                    }
+                }
+            });
+        }
+
+
+    }
+
+    /**
+     * 处理对话数据
+     *
+     * @param talkModel
+     */
     private void onTalkData(DialogTalkModel talkModel) {
         Log.d(TAG, talkModel != null ? talkModel.toString() : "talkModel is null");
         if (talkModel == null) {
@@ -432,48 +678,61 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         }
         mScene = talkModel.getScene(mScene);
         final ChatEntity chatEntity = new ChatEntity(talkModel);
+        mCurrentChatType = chatEntity.type;
         sendData(chatEntity);
+        ttsHandle(chatEntity);
         if (chatEntity.type == ChatEntity.TYPE_FROM_SELECT) {
+            hideInput();
+            mRvSelect.setVisibility(View.VISIBLE);
+            mRlKeyword.setVisibility(View.GONE);
             if (mSelectAdapter == null) {
                 mSelectAdapter = new ChatSelectAdapter(talkModel.getCheckRadio());
                 mRvSelect.setAdapter(mSelectAdapter);
             } else {
                 mSelectAdapter.setDataListNotify(talkModel.getCheckRadio());
             }
-            mSelectAdapter.setOnRvItemListener(new OnRvItemListener<DialogTalkModel.CheckRadioBean>() {
-                @Override
-                public void onItemClick(List<DialogTalkModel.CheckRadioBean> list, int position) {
-                    DialogTalkModel.CheckRadioBean radioBean = list.get(position);
-
-                    sendData(new ChatEntity(ChatEntity.TYPE_TO, radioBean.getValue()));
-                    if (radioBean.getKey() > 0) {
-                        NetParams netParams = NetParams.crete().add("id", chatEntity.getTalkModel().getId())
-                                .add("value", radioBean.getKey());
-                        mPresenter.onDialog(mScene, netParams);
-                    } else {
-                        PageJumpUtils.jump(radioBean.getHref(), new PageJumpUtils.OnJumpListener() {
-                            @Override
-                            public void onJump(int type, Object obj) {
-                                switch (type) {
-                                    case PageJumpUtils.JUMP_TEXT:
-                                        startActivity(new Intent(mContext, BookActivity.class));
-                                        break;
-                                    case PageJumpUtils.JUMP_MUSIC:
-                                        startActivity(new Intent(mContext, AudioHomeActivity.class));
-                                        break;
-                                    case PageJumpUtils.JUMP_AI_HOME:
-                                        break;
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-        } else {
-            if (mSelectAdapter != null) {
-                mSelectAdapter.setDataListNotify(null);
+            setSelectItemListener(chatEntity);
+        } else if (chatEntity.type == ChatEntity.TYPE_INPUT) {
+            if (!softKeyBoardShow) {
+                mRlKeyword.setVisibility(View.VISIBLE);
             }
+            mRvSelect.setVisibility(View.GONE);
+        } else {
+            mRlKeyword.setVisibility(View.GONE);
+            mRvSelect.setVisibility(View.GONE);
         }
+    }
+
+    private void setSelectItemListener(ChatEntity chatEntity) {
+        mSelectAdapter.setOnRvItemListener(new OnRvItemListener<DialogTalkModel.CheckRadioBean>() {
+            @Override
+            public void onItemClick(List<DialogTalkModel.CheckRadioBean> list, int position) {
+                DialogTalkModel.CheckRadioBean radioBean = list.get(position);
+
+                sendData(new ChatEntity(ChatEntity.TYPE_TO, radioBean.getValue()));
+                if (radioBean.getKey() > 0) {
+                    NetParams netParams = NetParams.crete().add("id", chatEntity.getTalkModel().getId())
+                            .add("value", radioBean.getKey());
+                    mPresenter.onDialog(mScene, netParams);
+                } else {
+                    PageJumpUtils.jump(radioBean.getHref(), new PageJumpUtils.OnJumpListener() {
+                        @Override
+                        public void onJump(int type, Object obj) {
+                            switch (type) {
+                                case PageJumpUtils.JUMP_TEXT:
+                                    startActivity(new Intent(mContext, BookActivity.class));
+                                    break;
+                                case PageJumpUtils.JUMP_MUSIC:
+                                    startActivity(new Intent(mContext, AudioHomeActivity.class));
+                                    break;
+                                case PageJumpUtils.JUMP_AI_HOME:
+                                    break;
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override
@@ -501,5 +760,28 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 ToastUtil.show("未处理该类型结果 -> " + requestCode);
                 break;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPauseStvTextShow = mStvText.isShow();
+        if (mPauseStvTextShow) {
+            mStvText.hide();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mPauseStvTextShow) {
+            mStvText.show();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        PolicyHelper.getInstance().end();
     }
 }

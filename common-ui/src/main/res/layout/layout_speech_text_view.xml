@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+
+    <TextView
+        android:id="@+id/tv_speech_text"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:hint="我在听..."
+        android:textColor="@color/white"
+        android:textColorHint="@color/white_60"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintBottom_toTopOf="@id/waveHeader"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <com.scwang.wave.MultiWaveHeader
+        android:id="@+id/waveHeader"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:scaleY="-1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:mwhCloseColor="@color/text_yellow"
+        app:mwhColorAlpha="0.45"
+        app:mwhGradientAngle="45"
+        app:mwhIsRunning="false"
+        app:mwhProgress="1"
+        app:mwhStartColor="@color/colorRobotPrimary"
+        app:mwhVelocity="50"
+        app:mwhWaveHeight="20dp"
+        app:mwhWaves="MultiWave" />
+
+
+</merge>

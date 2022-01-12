@@ -151,8 +151,6 @@ public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
                 mTvHint.setText("确认结束测评吗");
                 mTvTitle.setVisibility(View.GONE);
-                mTvLeft.setText("取消");
-                mTvRight.setText("确定");
             }
 
             @Override
