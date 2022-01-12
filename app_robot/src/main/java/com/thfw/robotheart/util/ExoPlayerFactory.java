@@ -4,6 +4,10 @@ import android.content.Context;
 
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.AudioAttributes;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
 public class ExoPlayerFactory {
     private static SimpleExoPlayer exoPlayer;
@@ -29,14 +33,24 @@ public class ExoPlayerFactory {
 
             release();
             ExoPlayerFactory.type = type;
+            DefaultBandwidthMeter mDefaultBandwidthMeter = new DefaultBandwidthMeter
+                    .Builder(mContext)
+                    .build();
+            DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(mContext, mDefaultBandwidthMeter,
+                    new DefaultHttpDataSourceFactory("exoplayer-codelab", null, 15000, 15000, true));
+
             switch (type) {
                 case EXO_AUDIO:
+
                     exoPlayer = new SimpleExoPlayer.Builder(mContext)
+                            .setMediaSourceFactory(new ProgressiveMediaSource.Factory(upstreamFactory))
                             .setAudioAttributes(AudioAttributes.DEFAULT, true)
                             .build();
                     break;
                 case EXO_VIDEO:
-                    exoPlayer = new SimpleExoPlayer.Builder(mContext).build();
+                    exoPlayer = new SimpleExoPlayer.Builder(mContext)
+                            .setMediaSourceFactory(new ProgressiveMediaSource.Factory(upstreamFactory))
+                            .build();
                     break;
             }
         }

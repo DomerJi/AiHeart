@@ -26,8 +26,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -78,6 +81,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
+import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS;
+import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS;
+import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_MAX_BUFFER_MS;
+import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_MIN_BUFFER_MS;
 
 public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         implements TimingHelper.WorkListener, VideoGestureHelper.VideoGestureListener, VideoPresenter.VideoUi<VideoModel> {
@@ -243,7 +250,23 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         long positionMs = -1;
         // 初始化ExoPlayer
         if (mExoPlayer == null) {
-            mExoPlayer = new SimpleExoPlayer.Builder(this).build();
+
+            DefaultBandwidthMeter mDefaultBandwidthMeter = new DefaultBandwidthMeter
+                    .Builder(mContext)
+                    .build();
+
+            LoadControl loadControl = new DefaultLoadControl.Builder()
+                    .setBufferDurationsMs(DEFAULT_MIN_BUFFER_MS * 2,
+                            DEFAULT_MAX_BUFFER_MS * 10,
+                            DEFAULT_BUFFER_FOR_PLAYBACK_MS * 2,
+                            DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS * 5).build();
+
+            DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(this, mDefaultBandwidthMeter, new DefaultHttpDataSourceFactory("exoplayer-codelab", null, 15000, 15000, true));
+            mExoPlayer = new SimpleExoPlayer.Builder(this)
+                    .setMediaSourceFactory(new ProgressiveMediaSource.Factory(upstreamFactory))
+                    .setBandwidthMeter(mDefaultBandwidthMeter)
+                    .setLoadControl(loadControl).build();
+
             if (mPlayerListener != null) {
                 mExoPlayer.removeListener(mPlayerListener);
             }
@@ -253,7 +276,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         }
         mTvVideoContent.setText("简介：" + mVideoModel.getDes());
         mIvCollect.setSelected(mVideoModel.getCollected() == 1);
-        mExoPlayer.setMediaSource(buildMediaSource(Uri.parse(mVideoModel.getUrl())));
+        mExoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(mVideoModel.getUrl())));
         mExoPlayer.prepare();
         positionMs = VideoHistoryHelper.getPosition(mVideoModel.getId());
         if (positionMs <= 0) {

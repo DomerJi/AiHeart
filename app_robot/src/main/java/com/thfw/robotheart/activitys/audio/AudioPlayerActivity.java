@@ -283,8 +283,8 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         mAudioView.setPlayer(player);
         for (AudioEtcDetailModel.AudioItemModel mediaItem : mAudios) {
             LogUtil.d(TAG, "url = " + mediaItem.getSfile());
-//            player.addMediaItem(MediaItem.fromUri(mediaItem.getSfile()));
-            player.addMediaSource(buildMediaSource(Uri.parse(mediaItem.getSfile())));
+            player.addMediaItem(MediaItem.fromUri(mediaItem.getSfile()));
+//            player.addMediaSource(buildMediaSource(Uri.parse(mediaItem.getSfile())));
         }
         if (mDetailModel != null) {
             GlideUtil.load(mContext, mDetailModel.getCollectionInfo().getImg(), mRivEtc);
