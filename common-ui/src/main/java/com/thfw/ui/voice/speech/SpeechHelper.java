@@ -149,12 +149,12 @@ public class SpeechHelper implements ISpeechFace {
     }
 
     @Override
-    public void onResult(StringBuilder stringBuilder, boolean append, boolean end) {
+    public void onResult(String newText, boolean append, boolean end) {
 
         LogUtil.d(TAG, "String -> " + text);
 
-        if (text != null && !text.equals(stringBuilder.toString())) {
-            text = stringBuilder.toString();
+        if (text != null && !text.equals(newText)) {
+            text = newText;
             if (this.resultListener != null) {
                 this.resultListener.onResult(text, end);
             }
@@ -203,7 +203,7 @@ public class SpeechHelper implements ISpeechFace {
             }
             String result = mSpeechResult.toString();
             LogUtil.i(TAG, "onResult -> result = " + result);
-            SpeechHelper.this.onResult(mSpeechResult, true, isLast);
+            SpeechHelper.this.onResult(result, true, isLast);
             isRestart();
             checkIngState();
         }

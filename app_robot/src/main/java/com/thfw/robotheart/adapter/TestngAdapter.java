@@ -80,7 +80,20 @@ public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, 
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             mBtConfirm = (Button) itemView.findViewById(R.id.bt_confirm);
             mRvSelect = (RecyclerView) itemView.findViewById(R.id.rvSelect);
-            mRvSelect.setLayoutManager(new GridLayoutManager(mContext, 2));
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext, 2);
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    if (mRvSelect.getAdapter() != null
+                            && mRvSelect.getAdapter().getItemCount() - 1 == position
+                            && position % 2 == 0) {
+                        return 2;
+                    } else {
+                        return 1;
+                    }
+                }
+            });
+            mRvSelect.setLayoutManager(gridLayoutManager);
 
             mBtConfirm.setOnClickListener(v -> {
                 if (btnListener != null) {

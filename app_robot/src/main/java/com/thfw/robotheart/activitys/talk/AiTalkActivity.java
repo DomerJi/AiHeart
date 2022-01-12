@@ -707,8 +707,12 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mSelectAdapter.setOnRvItemListener(new OnRvItemListener<DialogTalkModel.CheckRadioBean>() {
             @Override
             public void onItemClick(List<DialogTalkModel.CheckRadioBean> list, int position) {
-                DialogTalkModel.CheckRadioBean radioBean = list.get(position);
 
+                DialogTalkModel.CheckRadioBean radioBean = list.get(position);
+                if (list.size() == 1 && "再见".equals(radioBean.getValue())) {
+                    finish();
+                    return;
+                }
                 sendData(new ChatEntity(ChatEntity.TYPE_TO, radioBean.getValue()));
                 if (radioBean.getKey() > 0) {
                     NetParams netParams = NetParams.crete().add("id", chatEntity.getTalkModel().getId())

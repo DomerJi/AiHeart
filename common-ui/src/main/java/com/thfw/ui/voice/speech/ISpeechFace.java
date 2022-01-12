@@ -9,5 +9,5 @@ import com.thfw.ui.voice.ILife;
  */
 public interface ISpeechFace extends ILife {
 
-    void onResult(StringBuilder stringBuilder, boolean append, boolean end);
+    void onResult(String newText, boolean append, boolean end);
 }
