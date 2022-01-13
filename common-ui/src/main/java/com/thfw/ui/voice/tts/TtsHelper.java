@@ -147,6 +147,18 @@ public class TtsHelper implements ITtsFace {
         }
     }
 
+    public void pause() {
+        if (initialized()) {
+            mTts.pauseSpeaking();
+        }
+    }
+
+    public void resume() {
+        if (initialized()) {
+            mTts.resumeSpeaking();
+        }
+    }
+
     public static class SimpleSynthesizerListener implements SynthesizerListener {
 
         @Override

@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -138,6 +139,8 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     private ImageView mIvCollect;
     private ConstraintLayout mClHint;
     private int rootType;
+    private boolean autoFinished;
+    private VideoItemAdapter videoItemAdapter;
 
     public static void startActivity(Context context, VideoModel videoModel) {
         context.startActivity(new Intent(context, VideoPlayerActivity.class).putExtra(KEY_DATA, videoModel));
@@ -318,6 +321,9 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     @Override
     public void initData() {
         if (mVideoList == null && mStaticVideoList != null) {
+            if (mStaticVideoList.size() == 1) {
+                autoFinished = mStaticVideoList.get(0).isAutoFinished();
+            }
             mVideoList = new ArrayList<>();
             mVideoList.addAll(mStaticVideoList);
             mStaticVideoList = null;
@@ -348,7 +354,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         } else {
             if (mRvList.getAdapter() == null) {
                 mTvEtcTitleLogcate.setText("相关推荐");
-                VideoItemAdapter videoItemAdapter = new VideoItemAdapter(mVideoList);
+                videoItemAdapter = new VideoItemAdapter(mVideoList);
                 videoItemAdapter.setCurrentIndex(mPlayPosition);
                 videoItemAdapter.setOnRvItemListener(new OnRvItemListener<VideoEtcModel>() {
                     @Override
@@ -434,6 +440,10 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
                 mLoadingView.hide();
                 // 视频播放完成
                 if (state == Player.STATE_ENDED) {
+                    if (autoFinished) {
+                        finish();
+                        return;
+                    }
                     if (mPlayPosition < mVideoList.size() - 1) {
                         videoChanged(mPlayPosition + 1);
                     }
@@ -444,6 +454,17 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
                 } else {
                     videoError();
                 }
+            }
+        }
+
+        @Override
+        public void onMediaItemTransition(@Nullable @org.jetbrains.annotations.Nullable MediaItem mediaItem, int reason) {
+            if (autoFinished && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
+                finish();
+                return;
+            }
+            if (videoItemAdapter != null && mExoPlayer != null && mRvList != null) {
+                mRvList.scrollToPosition(mExoPlayer.getCurrentWindowIndex());
             }
         }
 

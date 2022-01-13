@@ -104,6 +104,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private boolean requestIng = false;
     private boolean audioByPagePause;
     private static final String KEY_RECOMMEND = "key.recommend";
+    private boolean autoFinished;
 
     public static void startActivity(Context context, AudioEtcModel audioEtcModel) {
         ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
@@ -249,7 +250,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             GlideUtil.load(mContext, mItemModel.getImg(), mRivEtc);
             setAudioData();
             mPbBar.hide();
+            autoFinished = mItemModel.isAutoFinished();
         } else {
+            autoFinished = mModel.isAutoFinished();
             GlideUtil.load(mContext, mModel.getImg(), mRivEtc);
             mPresenter.getAudioEtcInfo(mModel.getId());
             mPbBar.showLoadingNoText();
@@ -471,6 +474,10 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
             if (state == Player.STATE_READY || state == Player.STATE_ENDED) {
                 uiPlayOrPause(true);
+                if (autoFinished && state == Player.STATE_ENDED) {
+                    finish();
+                    return;
+                }
             } else {
                 uiPlayOrPause(false);
             }
@@ -499,6 +506,11 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
          */
         @Override
         public void onMediaItemTransition(@Nullable @org.jetbrains.annotations.Nullable MediaItem mediaItem, int reason) {
+            LogUtil.d(TAG, "onMediaItemTransition reason = " + reason);
+            if (autoFinished && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
+                finish();
+                return;
+            }
             // 列表播放曲目切换监听
             if (mDetailModel == null) {
                 return;

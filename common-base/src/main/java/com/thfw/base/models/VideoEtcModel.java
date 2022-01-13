@@ -33,6 +33,18 @@ public class VideoEtcModel implements IModel {
     @SerializedName("have_seen")
     private boolean haveSeen;
 
+    // 自定义 字段
+    // 自动返回;
+    private boolean autoFinished;
+
+    public void setAutoFinished(boolean autoFinished) {
+        this.autoFinished = autoFinished;
+    }
+
+    public boolean isAutoFinished() {
+        return autoFinished;
+    }
+
     public int getId() {
         return id;
     }

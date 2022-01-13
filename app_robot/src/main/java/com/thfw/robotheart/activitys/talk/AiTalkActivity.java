@@ -111,6 +111,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     boolean currentSelect = false;
     private SpeechTextView mStvText;
     private boolean mPauseStvTextShow;
+    private boolean ttsPauseIng;
 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, AiTalkActivity.class).putExtra(KEY_DATA, talkModel));
@@ -136,7 +137,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         // 设置布局管理器
         FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(mContext);
         // flexDirection 属性决定主轴的方向（即项目的排列方向）。类似 LinearLayout 的 vertical 和 horizontal。
-        flexboxLayoutManager.setFlexDirection(FlexDirection.ROW_REVERSE);
+        flexboxLayoutManager.setFlexDirection(FlexDirection.ROW);
         // 主轴为水平方向，起点在左端。
         // flexWrap 默认情况下 Flex 跟 LinearLayout 一样，都是不带换行排列的，但是flexWrap属性可以支持换行排列。
         flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP);
@@ -168,7 +169,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mLlVolumeSwitch = (LinearLayout) findViewById(R.id.ll_volume_switch);
         mIvVolumeSwitch = (ImageView) findViewById(R.id.iv_volume_switch);
         mLlVolumeSwitch.setOnClickListener(v -> {
-            if (PolicyHelper.getInstance().isSpeechMode()) {
+            if (!mIvVolumeSwitch.isSelected() && PolicyHelper.getInstance().isSpeechMode()) {
                 ToastUtil.show("正在倾听，无法打开");
                 return;
             }
@@ -203,6 +204,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         // 历史记录
         mLlTalkHistory.setOnClickListener(v -> {
             // todo 去历史记录页面
+            TalkHistoryActivity.startActivity(mContext, mScene);
         });
     }
 
@@ -264,6 +266,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                     VideoEtcModel videoEtcModel = new VideoEtcModel();
                     videoEtcModel.setId(recommendInfoBean.getId());
                     videoEtcModel.setTitle(recommendInfoBean.getTitle());
+                    videoEtcModel.setAutoFinished(true);
                     videoList.add(videoEtcModel);
                     VideoPlayerActivity.startActivity(mContext, videoList, 0);
                     break;
@@ -274,6 +277,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                     audioItemModel.setSfile(recommendInfoBean.getFile());
                     audioItemModel.setImg(recommendInfoBean.getImg());
                     audioItemModel.setTitle(recommendInfoBean.getTitle());
+                    audioItemModel.setAutoFinished(true);
                     AudioPlayerActivity.startActivity(mContext, audioItemModel);
                     break;
                 case ChatEntity.TYPE_RECOMMEND_AUDIO_ETC:
@@ -281,6 +285,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                     audioEtcModel.setTitle(recommendInfoBean.getTitle());
                     audioEtcModel.setImg(recommendInfoBean.getImg());
                     audioEtcModel.setId(recommendInfoBean.getId());
+                    audioEtcModel.setAutoFinished(true);
                     AudioPlayerActivity.startActivity(mContext, audioEtcModel);
                     break;
                 case ChatEntity.TYPE_RECOMMEND_TEST:
@@ -365,7 +370,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 }
 
                 mStvText.setSpeechText(result);
-                chooseOption(mStvText.getText(), end);
+                if (end) {
+                    chooseOption(mStvText.getText(), end);
+                }
             }
 
             @Override
@@ -427,6 +434,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 return true;
             }
         });
+
 
     }
 
@@ -717,11 +725,14 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             return;
         }
         final ChatEntity chatEntity = new ChatEntity(talkModel);
-        // 树洞 自由输入判断
-        if (mScene == 1 && chatEntity.getType() == ChatEntity.TYPE_FROM_NORMAL
-                && EmptyUtil.isEmpty(chatEntity.getTalkModel().getCheckRadio())) {
-            mCurrentChatType = ChatEntity.TYPE_INPUT;
-            chatEntity.type = mCurrentChatType;
+        // 树洞 自由输入逻辑判断
+        if (mScene == 1) {
+            if (chatEntity.type == ChatEntity.TYPE_FROM_SELECT
+                    && EmptyUtil.isEmpty(chatEntity.getTalkModel().getCheckRadio())) {
+                mCurrentChatType = chatEntity.type;
+            } else {
+                mCurrentChatType = ChatEntity.TYPE_INPUT;
+            }
         } else {
             mCurrentChatType = chatEntity.type;
         }
@@ -739,7 +750,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 mSelectAdapter.setDataListNotify(talkModel.getCheckRadio());
             }
             setSelectItemListener(chatEntity);
-        } else if (chatEntity.type == ChatEntity.TYPE_INPUT) {
+        } else if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
             if (!softKeyBoardShow) {
                 mRlKeyword.setVisibility(View.VISIBLE);
             }
@@ -797,6 +808,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         if (resultCode != RESULT_OK) {
             return;
         }
+        if (mScene == 1) {
+            return;
+        }
         switch (requestCode) {
             case ChatEntity.TYPE_RECOMMEND_TEXT:
             case ChatEntity.TYPE_RECOMMEND_VIDEO:
@@ -819,14 +833,30 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mPauseStvTextShow = mStvText.isShow();
         if (mPauseStvTextShow) {
             mStvText.hide();
+            PolicyHelper.getInstance().end();
+        }
+
+        ttsPauseIng = TtsHelper.getInstance().isIng();
+        if (ttsPauseIng) {
+            TtsHelper.getInstance().pause();
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         if (mPauseStvTextShow) {
             mStvText.show();
+            if (currentSelect) {
+                PolicyHelper.getInstance().startSpeech();
+            } else {
+                PolicyHelper.getInstance().end();
+            }
+        }
+
+        if (ttsPauseIng) {
+            TtsHelper.getInstance().resume();
         }
     }
 
@@ -834,5 +864,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     public void onDestroy() {
         super.onDestroy();
         PolicyHelper.getInstance().end();
+        TtsHelper.getInstance().stop();
     }
 }

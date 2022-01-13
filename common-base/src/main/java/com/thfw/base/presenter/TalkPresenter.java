@@ -59,6 +59,12 @@ public class TalkPresenter<T> extends IPresenter<TalkPresenter.TalkUi> {
         OkHttpUtil.request(observable, getUI());
     }
 
+    public void onDialogHistory(int scene, int page) {
+        Observable<HttpResult<List<DialogTalkModel>>> observable = OkHttpUtil.createService(TalkApi.class)
+                .onDialogHistory(scene, page);
+        OkHttpUtil.request(observable, getUI());
+    }
+
     public void onJoinDialog(int enter_type) {
         onJoinDialog(enter_type, -1);
     }

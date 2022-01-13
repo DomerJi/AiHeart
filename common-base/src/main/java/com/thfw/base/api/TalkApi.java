@@ -89,10 +89,12 @@ public interface TalkApi {
     @POST("dialog/tree_hole")
     Observable<HttpResult<List<DialogTalkModel>>> onAIDialog(@FieldMap Map<String, Object> params);
 
-
     @FormUrlEncoded
     @POST("dialog/choose_option")
     Observable<HttpResult<ChosenModel>> onChooseOption(@Field("input_text") String inputText, @Field("radio") String radio);
 
+    @FormUrlEncoded
+    @POST("dialog/history")
+    Observable<HttpResult<List<DialogTalkModel>>> onDialogHistory(@Field("scene") int scene, @Field("page") int page);
 
 }

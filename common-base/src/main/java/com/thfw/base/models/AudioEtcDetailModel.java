@@ -314,6 +314,19 @@ public class AudioEtcDetailModel implements IModel {
         @SerializedName("img")
         private String img;
 
+        // 自定义 字段
+        // 自动返回;
+        private boolean autoFinished;
+
+        public void setAutoFinished(boolean autoFinished) {
+            this.autoFinished = autoFinished;
+        }
+
+        public boolean isAutoFinished() {
+            return autoFinished;
+        }
+
+
         public int getMusicId() {
             return musicId;
         }

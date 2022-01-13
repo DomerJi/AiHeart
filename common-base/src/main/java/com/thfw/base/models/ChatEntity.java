@@ -23,7 +23,7 @@ public class ChatEntity implements IModel {
 
     public int type;
     public String talk;
-    public long time;
+    public long time = System.currentTimeMillis();
 
     public int getType() {
         return type;
