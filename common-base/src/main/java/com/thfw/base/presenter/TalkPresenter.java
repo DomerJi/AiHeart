@@ -3,13 +3,16 @@ package com.thfw.base.presenter;
 import com.thfw.base.api.TalkApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
+import com.thfw.base.models.ChosenModel;
 import com.thfw.base.models.DialogDetailModel;
 import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.models.ThemeTalkModel;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.OkHttpUtil;
+import com.thfw.base.utils.GsonUtil;
 
+import java.util.HashMap;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -50,6 +53,12 @@ public class TalkPresenter<T> extends IPresenter<TalkPresenter.TalkUi> {
         OkHttpUtil.request(observable, getUI());
     }
 
+    public void onChooseOption(String inputText, HashMap<String, String> radio) {
+        Observable<HttpResult<ChosenModel>> observable = OkHttpUtil.createService(TalkApi.class)
+                .onChooseOption(inputText, GsonUtil.toJson(radio));
+        OkHttpUtil.request(observable, getUI());
+    }
+
     public void onJoinDialog(int enter_type) {
         onJoinDialog(enter_type, -1);
     }
@@ -69,7 +78,7 @@ public class TalkPresenter<T> extends IPresenter<TalkPresenter.TalkUi> {
     }
 
     public void onAIDialog(NetParams netParams) {
-        Observable<HttpResult<DialogDetailModel>> observable = OkHttpUtil.createService(TalkApi.class)
+        Observable<HttpResult<List<DialogTalkModel>>> observable = OkHttpUtil.createService(TalkApi.class)
                 .onAIDialog(netParams);
         OkHttpUtil.request(observable, getUI());
     }

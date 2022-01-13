@@ -8,6 +8,7 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.thfw.robotheart.constants.UIConfig;
 
 public class ExoPlayerFactory {
     private static SimpleExoPlayer exoPlayer;
@@ -37,7 +38,7 @@ public class ExoPlayerFactory {
                     .Builder(mContext)
                     .build();
             DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(mContext, mDefaultBandwidthMeter,
-                    new DefaultHttpDataSourceFactory("exoplayer-codelab", null, 15000, 15000, true));
+                    new DefaultHttpDataSourceFactory(UIConfig.getUserAgent(), null, 15000, 15000, true));
 
             switch (type) {
                 case EXO_AUDIO:

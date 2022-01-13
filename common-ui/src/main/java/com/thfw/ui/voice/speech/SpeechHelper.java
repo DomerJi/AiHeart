@@ -32,7 +32,7 @@ public class SpeechHelper implements ISpeechFace {
     private static final long VAD_BOS = 6000;// 语音前端点（开始后6秒无语音结束对话）
     private static final String DEFAULT_TEXT = "...";
     private static final String DEFAULT_EMPTY = "";
-    private StringBuilder mSpeechResult = new StringBuilder();
+    private StringBuilder mSpeechResult;
 
     private SpeechRecognizer mIat;
     private CustomRecognizerListener mListener;
@@ -41,6 +41,7 @@ public class SpeechHelper implements ISpeechFace {
     private String text = "";
 
     private SpeechHelper() {
+        mSpeechResult = new StringBuilder();
         mListener = new CustomRecognizerListener();
     }
 
@@ -84,6 +85,7 @@ public class SpeechHelper implements ISpeechFace {
      * @return
      */
     private void setSpeechParam() {
+
         if (mIat == null) {
             return;
         }
@@ -151,15 +153,10 @@ public class SpeechHelper implements ISpeechFace {
     @Override
     public void onResult(String newText, boolean append, boolean end) {
 
-        LogUtil.d(TAG, "String -> " + text);
-
-        if (text != null && !text.equals(newText)) {
-            text = newText;
-            if (this.resultListener != null) {
-                this.resultListener.onResult(text, end);
-            }
+        LogUtil.d(TAG, "String -> " + newText + " ; end = " + end);
+        if (this.resultListener != null) {
+            this.resultListener.onResult(newText, end);
         }
-
     }
 
     public class CustomRecognizerListener implements RecognizerListener {
@@ -171,7 +168,7 @@ public class SpeechHelper implements ISpeechFace {
 
         @Override
         public void onBeginOfSpeech() {
-            mSpeechResult = new StringBuilder();
+            SpeechHelper.this.onResult("", true, false);
             checkIngState();
         }
 
@@ -202,6 +199,9 @@ public class SpeechHelper implements ISpeechFace {
                 mSpeechResult.append(text);
             }
             String result = mSpeechResult.toString();
+            if (isLast) {
+                mSpeechResult.setLength(0);
+            }
             LogUtil.i(TAG, "onResult -> result = " + result);
             SpeechHelper.this.onResult(result, true, isLast);
             isRestart();

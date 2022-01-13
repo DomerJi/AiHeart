@@ -65,6 +65,7 @@ public class SpeechTextView extends ConstraintLayout {
         if (getVisibility() == VISIBLE) {
             return;
         }
+        mTvSpeechText.setText("");
         setAlpha(0f);
         setVisibility(VISIBLE);
         if (!mWaveHeader.isRunning()) {

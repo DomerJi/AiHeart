@@ -2,6 +2,9 @@ package com.thfw.robotheart.constants;
 
 import android.Manifest;
 
+import com.thfw.robotheart.MyApplication;
+import com.thfw.robotheart.R;
+
 /**
  * Author:pengs
  * Date: 2021/12/2 17:02
@@ -13,6 +16,11 @@ public class UIConfig {
     public static final int LEFT_TAB_CHILD_MAX_TEXTSIZE = 20;
     public static final int LEFT_TAB_CHILD_MIN_TEXTSIZE = 18;
     public static final String COLOR_HOUR = "#FD9D56";
+
+    public static final String getUserAgent() {
+        return com.google.android.exoplayer2.util.Util.getUserAgent(MyApplication.getApp(), MyApplication.getApp().getResources().getString(R.string.app_name));
+    }
+
 
     public static String[] NEEDED_PERMISSION = new String[]{Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,

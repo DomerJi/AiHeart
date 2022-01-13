@@ -34,6 +34,7 @@ import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.ChatEntity;
+import com.thfw.base.models.ChosenModel;
 import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.VideoEtcModel;
@@ -41,6 +42,7 @@ import com.thfw.base.net.NetParams;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TalkPresenter;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.StringUtil;
@@ -69,6 +71,7 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -356,7 +359,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
             @Override
             public void onResult(String result, boolean end) {
-                LogUtil.d(TAG, "result =================================== " + result);
+                LogUtil.d(TAG, "result =================================== " + result + " ; end = " + end);
                 if (!mStvText.isShow()) {
                     return;
                 }
@@ -450,9 +453,45 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             for (int i = 0, size = list.size(); i < size; i++) {
                 if (result.equals(list.get(i).getValue())) {
                     mSelectAdapter.getOnRvItemListener().onItemClick(list, i);
-                    break;
+                    return;
                 }
             }
+            if (!end) {
+                return;
+            }
+            HashMap<String, String> radio = new HashMap<>();
+            for (DialogTalkModel.CheckRadioBean bean : list) {
+                radio.put(String.valueOf(bean.getKey()), bean.getValue());
+            }
+            LogUtil.d(TAG, "ChosenModel = " + GsonUtil.toJson(radio));
+            new TalkPresenter(new TalkPresenter.TalkUi<ChosenModel>() {
+                @Override
+                public LifecycleProvider getLifecycleProvider() {
+                    return AiTalkActivity.this;
+                }
+
+                @Override
+                public void onSuccess(ChosenModel data) {
+                    LogUtil.d(TAG, "ChosenModel = " + GsonUtil.toJson(data));
+                    if (data != null && !TextUtils.isEmpty(data.chosen)) {
+                        if (mSelectAdapter == null || mSelectAdapter.getOnRvItemListener() == null) {
+                            return;
+                        }
+                        for (int i = 0, size = list.size(); i < size; i++) {
+                            if (data.chosen.equals(String.valueOf(list.get(i).getKey()))) {
+                                LogUtil.d(TAG, "ChosenModel = data.chosen = " + list.get(i).getValue());
+                                mSelectAdapter.getOnRvItemListener().onItemClick(list, i);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFail(ResponeThrowable throwable) {
+
+                }
+            }).onChooseOption(result, radio);
         }
 
     }
@@ -574,6 +613,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     @Override
     public void onSuccess(List<DialogTalkModel> data) {
+        LogUtil.d(TAG, "onSuccess = " + data.size());
         mHelper.setTalks(data);
         mTtsQueue.clear();
         onTalkEngine();
@@ -676,12 +716,19 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         if (talkModel == null) {
             return;
         }
-        mScene = talkModel.getScene(mScene);
         final ChatEntity chatEntity = new ChatEntity(talkModel);
-        mCurrentChatType = chatEntity.type;
+        // 树洞 自由输入判断
+        if (mScene == 1 && chatEntity.getType() == ChatEntity.TYPE_FROM_NORMAL
+                && EmptyUtil.isEmpty(chatEntity.getTalkModel().getCheckRadio())) {
+            mCurrentChatType = ChatEntity.TYPE_INPUT;
+            chatEntity.type = mCurrentChatType;
+        } else {
+            mCurrentChatType = chatEntity.type;
+        }
+        mScene = talkModel.getScene(mScene);
         sendData(chatEntity);
         ttsHandle(chatEntity);
-        if (chatEntity.type == ChatEntity.TYPE_FROM_SELECT) {
+        if (mCurrentChatType == ChatEntity.TYPE_FROM_SELECT) {
             hideInput();
             mRvSelect.setVisibility(View.VISIBLE);
             mRlKeyword.setVisibility(View.GONE);
@@ -741,7 +788,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     @Override
     public void onFail(ResponeThrowable throwable) {
-
+        LogUtil.d(TAG, "onFail = " + throwable.getMessage());
     }
 
     @Override

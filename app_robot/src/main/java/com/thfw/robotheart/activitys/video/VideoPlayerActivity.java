@@ -64,6 +64,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.VideoItemAdapter;
+import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.ui.widget.BrightnessHelper;
@@ -259,9 +260,10 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
                     .setBufferDurationsMs(DEFAULT_MIN_BUFFER_MS * 2,
                             DEFAULT_MAX_BUFFER_MS * 10,
                             DEFAULT_BUFFER_FOR_PLAYBACK_MS * 2,
-                            DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS * 5).build();
+                            DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS * 3).build();
 
-            DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(this, mDefaultBandwidthMeter, new DefaultHttpDataSourceFactory("exoplayer-codelab", null, 15000, 15000, true));
+
+            DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(mContext, mDefaultBandwidthMeter, new DefaultHttpDataSourceFactory(UIConfig.getUserAgent(), null, 15000, 15000, true));
             mExoPlayer = new SimpleExoPlayer.Builder(this)
                     .setMediaSourceFactory(new ProgressiveMediaSource.Factory(upstreamFactory))
                     .setBandwidthMeter(mDefaultBandwidthMeter)
@@ -306,7 +308,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     private MediaSource buildMediaSource(Uri uri) {
         DefaultBandwidthMeter mDefaultBandwidthMeter = new DefaultBandwidthMeter();
         // 重定向 301 302 http 2 https
-        DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(this, mDefaultBandwidthMeter, new DefaultHttpDataSourceFactory("exoplayer-codelab", null, 15000, 15000, true));
+        DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(this, mDefaultBandwidthMeter, new DefaultHttpDataSourceFactory(UIConfig.getUserAgent(), null, 15000, 15000, true));
 
         return new ProgressiveMediaSource.Factory(upstreamFactory).createMediaSource(uri);
         // 已弃用，无相关类

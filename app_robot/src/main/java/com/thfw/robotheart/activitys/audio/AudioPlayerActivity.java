@@ -56,6 +56,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.AudioService;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.AudioItemAdapter;
+import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.util.AudioModel;
 import com.thfw.robotheart.util.ExoPlayerFactory;
 import com.thfw.robotheart.view.TitleRobotView;
@@ -330,7 +331,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private MediaSource buildMediaSource(Uri uri) {
         DefaultBandwidthMeter mDefaultBandwidthMeter = new DefaultBandwidthMeter();
         // 重定向 301 302 http 2 https
-        DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(this, mDefaultBandwidthMeter, new DefaultHttpDataSourceFactory("exoplayer-codelab", null, 15000, 15000, true));
+        DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(this, mDefaultBandwidthMeter, new DefaultHttpDataSourceFactory(UIConfig.getUserAgent(), null, 15000, 15000, true));
 
         return new ProgressiveMediaSource.Factory(upstreamFactory).createMediaSource(uri);
         // 已弃用，无相关类

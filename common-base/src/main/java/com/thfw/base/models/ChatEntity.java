@@ -25,6 +25,10 @@ public class ChatEntity implements IModel {
     public String talk;
     public long time;
 
+    public int getType() {
+        return type;
+    }
+
     public String getTalk() {
         return talk == null ? "" : talk;
     }
