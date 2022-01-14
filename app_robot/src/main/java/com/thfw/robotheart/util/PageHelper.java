@@ -67,19 +67,29 @@ public class PageHelper<T> {
         return currentPage;
     }
 
+
+    public void onSuccess(List<T> list) {
+        onSuccess(list, false);
+    }
+
+
     /**
      * 加载数据-成功
      *
      * @param list
      */
-    public void onSuccess(List<T> list) {
+    public void onSuccess(List<T> list, boolean isTop) {
         if (adapter == null) {
             return;
         }
         if (firstPage == currentPage) {
             adapter.setDataListNotify(list);
         } else {
-            adapter.addDataListNotify(list);
+            if (isTop) {
+                adapter.addDataListNotify(list, isTop);
+            } else {
+                adapter.addDataListNotify(list);
+            }
         }
 
         boolean emptyDatas = EmptyUtil.isEmpty(adapter.getDataList());

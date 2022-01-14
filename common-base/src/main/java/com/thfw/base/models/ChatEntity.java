@@ -20,10 +20,15 @@ public class ChatEntity implements IModel {
 
     public static final int TYPE_SELECT = 15;
     public static final int TYPE_TIME = 16;
+    public static final int TYPE_HINT = 17;
 
     public int type;
     public String talk;
     public long time = System.currentTimeMillis();
+
+    public void setTime(long time) {
+        this.time = time;
+    }
 
     public int getType() {
         return type;
@@ -74,6 +79,22 @@ public class ChatEntity implements IModel {
         ChatEntity chatEntity = new ChatEntity();
         chatEntity.type = ChatEntity.TYPE_TIME;
         chatEntity.time = System.currentTimeMillis();
+        chatEntity.talk = HourUtil.getYYMMDD_HHMMSS(chatEntity.time);
+        return chatEntity;
+    }
+
+    public static ChatEntity createHint(String hint) {
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_HINT;
+        chatEntity.time = System.currentTimeMillis();
+        chatEntity.talk = hint;
+        return chatEntity;
+    }
+
+    public static ChatEntity createTime(long time) {
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_TIME;
+        chatEntity.time = time;
         chatEntity.talk = HourUtil.getYYMMDD_HHMMSS(chatEntity.time);
         return chatEntity;
     }

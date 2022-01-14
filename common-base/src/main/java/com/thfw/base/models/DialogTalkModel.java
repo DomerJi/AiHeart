@@ -2,6 +2,7 @@ package com.thfw.base.models;
 
 import com.google.gson.annotations.SerializedName;
 import com.thfw.base.base.IModel;
+import com.thfw.base.utils.HourUtil;
 
 import java.io.Serializable;
 import java.util.List;
@@ -54,6 +55,19 @@ public class DialogTalkModel implements IModel {
     @SerializedName("check_radio")
     private List<CheckRadioBean> checkRadio;
 
+    private long timeMills;
+
+    public long getTimeMills() {
+        if (timeMills <= 0) {
+            if (createdTime != null) {
+                timeMills = HourUtil.getYYMMDD_HHMMSS(createdTime);
+            } else {
+                timeMills = System.currentTimeMillis() - 100000;
+            }
+        }
+        return timeMills;
+    }
+
     public int getId() {
         return id;
     }
@@ -96,6 +110,7 @@ public class DialogTalkModel implements IModel {
 
     /**
      * 主题对话or树洞
+     *
      * @param originScene
      * @return
      */

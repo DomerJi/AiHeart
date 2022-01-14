@@ -771,7 +771,7 @@ public final class CalendarUtil {
      * @param delegate delegate
      * @return 获取边界访问日期
      */
-    static Calendar getRangeEdgeCalendar(Calendar calendar, CalendarViewDelegate delegate) {
+    public static Calendar getRangeEdgeCalendar(Calendar calendar, CalendarViewDelegate delegate) {
         if (CalendarUtil.isCalendarInRange(delegate.getCurrentDay(), delegate)
                 && delegate.getDefaultCalendarSelectDay() != CalendarViewDelegate.LAST_MONTH_VIEW_SELECT_DAY_IGNORE_CURRENT) {
             return delegate.createCurrentDate();
@@ -808,7 +808,7 @@ public final class CalendarUtil {
      * @param dpValue dp
      * @return px
      */
-    static int dipToPx(Context context, float dpValue) {
+    public static int dipToPx(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }

@@ -46,6 +46,8 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
                 return new RecommendHolder(inflate(R.layout.chat_from_to_link_layout, parent));
             case ChatEntity.TYPE_TIME: // 时间
                 return new TimeHolder(inflate(R.layout.chat_time_layout, parent));
+            case ChatEntity.TYPE_HINT: // 提醒已到最前时间 或 *******
+                return new HintHolder(inflate(R.layout.chat_hint_layout, parent));
             case ChatEntity.TYPE_END_SERVICE: // 您已结束本次服务
                 return new ChatHolder(inflate(R.layout.chat_end_service_layout, parent));
             case ChatEntity.TYPE_FEEDBACK: // 您对本次回答满意吗？
@@ -96,6 +98,12 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
                 if (holder instanceof TimeHolder) {
                     TimeHolder timeHolder = (TimeHolder) holder;
                     timeHolder.mTvTime.setText(HourUtil.getYYMMDD_HHMMSS(chatEntity.time));
+                }
+                break;
+            case ChatEntity.TYPE_HINT:
+                if (holder instanceof HintHolder) {
+                    HintHolder hintHolder = (HintHolder) holder;
+                    hintHolder.mTvHint.setText(chatEntity.getTalk());
                 }
                 break;
         }
@@ -162,6 +170,16 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
         public TimeHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvTime = itemView.findViewById(R.id.tv_time);
+        }
+
+    }
+
+    public class HintHolder extends ChatHolder {
+        private TextView mTvHint;
+
+        public HintHolder(@NonNull @NotNull View itemView) {
+            super(itemView);
+            mTvHint = itemView.findViewById(R.id.tv_hint);
         }
 
     }

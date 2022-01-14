@@ -93,8 +93,26 @@ public interface TalkApi {
     @POST("dialog/choose_option")
     Observable<HttpResult<ChosenModel>> onChooseOption(@Field("input_text") String inputText, @Field("radio") String radio);
 
+    /**
+     * @param scene 树洞或者
+     * @param date  获取某一天的历史记录 格式：yyyy-mm-dd（默认从这一天开始往后取10条）
+     * @param id    从某个ID起向前或先后翻页
+     * @param type  "next"：向前, "prev"：向后
+     * @return
+     */
     @FormUrlEncoded
     @POST("dialog/history")
-    Observable<HttpResult<List<DialogTalkModel>>> onDialogHistory(@Field("scene") int scene, @Field("page") int page);
+    Observable<HttpResult<List<DialogTalkModel>>> onDialogHistory(@Field("scene") int scene,
+                                                              @Field("date") String date,
+                                                              @Field("id") int id,
+                                                              @Field("type") String type);
+
+    /**
+     * @param month 月份 格式: yyyy-mm （必须）
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("dialog/getTalkingDays")
+    Observable<HttpResult<List<String>>> onMonthHasDay(@Field("scene") int scene, @Field("month") String month);
 
 }

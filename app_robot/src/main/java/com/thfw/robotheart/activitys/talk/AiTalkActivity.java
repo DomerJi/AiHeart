@@ -31,13 +31,10 @@ import com.google.android.flexbox.JustifyContent;
 import com.iflytek.cloud.SpeechError;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.face.OnRvItemListener;
-import com.thfw.base.models.AudioEtcDetailModel;
-import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.ChosenModel;
 import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.models.TalkModel;
-import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TalkPresenter;
@@ -49,11 +46,7 @@ import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
-import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
-import com.thfw.robotheart.activitys.test.TestDetailActivity;
 import com.thfw.robotheart.activitys.text.BookActivity;
-import com.thfw.robotheart.activitys.text.BookDetailActivity;
-import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.ChatAdapter;
 import com.thfw.robotheart.adapter.ChatSelectAdapter;
 import com.thfw.robotheart.util.PageJumpUtils;
@@ -257,44 +250,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         });
 
         mChatAdapter.setRecommendListener((type, recommendInfoBean) -> {
-            switch (type) {
-                case ChatEntity.TYPE_RECOMMEND_TEXT:
-                    BookDetailActivity.startActivity(mContext, recommendInfoBean.getId());
-                    break;
-                case ChatEntity.TYPE_RECOMMEND_VIDEO:
-                    ArrayList<VideoEtcModel> videoList = new ArrayList<>();
-                    VideoEtcModel videoEtcModel = new VideoEtcModel();
-                    videoEtcModel.setId(recommendInfoBean.getId());
-                    videoEtcModel.setTitle(recommendInfoBean.getTitle());
-                    videoEtcModel.setAutoFinished(true);
-                    videoList.add(videoEtcModel);
-                    VideoPlayerActivity.startActivity(mContext, videoList, 0);
-                    break;
-                case ChatEntity.TYPE_RECOMMEND_AUDIO:
-                    AudioEtcDetailModel.AudioItemModel audioItemModel = new AudioEtcDetailModel.AudioItemModel();
-                    audioItemModel.setId(recommendInfoBean.getId());
-                    audioItemModel.setMusicId(recommendInfoBean.getId());
-                    audioItemModel.setSfile(recommendInfoBean.getFile());
-                    audioItemModel.setImg(recommendInfoBean.getImg());
-                    audioItemModel.setTitle(recommendInfoBean.getTitle());
-                    audioItemModel.setAutoFinished(true);
-                    AudioPlayerActivity.startActivity(mContext, audioItemModel);
-                    break;
-                case ChatEntity.TYPE_RECOMMEND_AUDIO_ETC:
-                    AudioEtcModel audioEtcModel = new AudioEtcModel();
-                    audioEtcModel.setTitle(recommendInfoBean.getTitle());
-                    audioEtcModel.setImg(recommendInfoBean.getImg());
-                    audioEtcModel.setId(recommendInfoBean.getId());
-                    audioEtcModel.setAutoFinished(true);
-                    AudioPlayerActivity.startActivity(mContext, audioEtcModel);
-                    break;
-                case ChatEntity.TYPE_RECOMMEND_TEST:
-                    TestDetailActivity.startActivity(mContext, recommendInfoBean.getId());
-                    break;
-                default:
-                    ToastUtil.show("未处理该类型跳转 ->" + type);
-                    break;
-            }
+            TalkItemJumpHelper.onItemClick(mContext, type, recommendInfoBean);
         });
 
         FrameLayout parentContent = findViewById(android.R.id.content);

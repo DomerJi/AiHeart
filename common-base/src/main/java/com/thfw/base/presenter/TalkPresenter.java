@@ -59,9 +59,9 @@ public class TalkPresenter<T> extends IPresenter<TalkPresenter.TalkUi> {
         OkHttpUtil.request(observable, getUI());
     }
 
-    public void onDialogHistory(int scene, int page) {
+    public void onDialogHistory(int scene, String data, int id, String type) {
         Observable<HttpResult<List<DialogTalkModel>>> observable = OkHttpUtil.createService(TalkApi.class)
-                .onDialogHistory(scene, page);
+                .onDialogHistory(scene, data, id, type);
         OkHttpUtil.request(observable, getUI());
     }
 
@@ -86,6 +86,12 @@ public class TalkPresenter<T> extends IPresenter<TalkPresenter.TalkUi> {
     public void onAIDialog(NetParams netParams) {
         Observable<HttpResult<List<DialogTalkModel>>> observable = OkHttpUtil.createService(TalkApi.class)
                 .onAIDialog(netParams);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    public void onMonthHasDay(int scene, String month) {
+        Observable<HttpResult<List<String>>> observable = OkHttpUtil.createService(TalkApi.class)
+                .onMonthHasDay(scene, month);
         OkHttpUtil.request(observable, getUI());
     }
 

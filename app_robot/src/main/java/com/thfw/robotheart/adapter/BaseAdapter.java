@@ -56,6 +56,28 @@ public abstract class BaseAdapter<T, V extends RecyclerView.ViewHolder> extends 
         this.mDataList.addAll(mDataList);
     }
 
+    public void addDataList(List<T> mDataList, boolean addHead) {
+        if (this.mDataList == null) {
+            this.mDataList = new ArrayList<>();
+        }
+        if (addHead) {
+            this.mDataList.addAll(0, mDataList);
+        } else {
+            this.mDataList.addAll(mDataList);
+        }
+    }
+
+    public void addDataListNotify(List<T> mDataList, boolean addHead) {
+        addDataList(mDataList, addHead);
+        if (addHead) {
+            int addHeadCount = mDataList != null ? mDataList.size() : 0;
+            notifyItemRangeInserted(0, addHeadCount);
+        } else {
+            notifyDataSetChanged();
+        }
+
+    }
+
     public void addDataListNotify(List<T> mDataList) {
         addDataList(mDataList);
         notifyDataSetChanged();
