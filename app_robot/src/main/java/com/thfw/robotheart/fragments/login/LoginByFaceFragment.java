@@ -38,6 +38,7 @@ import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.User;
 import com.thfw.user.login.UserManager;
 
+import org.bytedeco.opencv.opencv_face.FisherFaceRecognizer;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCamera2CircleView;
 import org.opencv.core.Mat;
@@ -304,7 +305,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         try {
 
             // load cascade file from application resources
-            InputStream is = getResources().openRawResource(org.opencv.R.raw.lbpcascade_frontalface);
+            InputStream is = getResources().openRawResource(R.raw.lbpcascade_frontalface);
             File cascadeDir = getActivity().getDir("cascade", Context.MODE_PRIVATE);
             mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
             FileOutputStream os = new FileOutputStream(mCascadeFile);
@@ -342,7 +343,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         try {
 
             // load cascade file from application resources
-            InputStream is = getResources().openRawResource(org.opencv.R.raw.haarcascade_eye);
+            InputStream is = getResources().openRawResource(R.raw.haarcascade_eye);
             File cascadeDir = getActivity().getDir("cascade", Context.MODE_PRIVATE);
             mCascadeEyeFile = new File(cascadeDir, "haarcascade_eye.xml");
             FileOutputStream os = new FileOutputStream(mCascadeEyeFile);
@@ -460,15 +461,29 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 //            List<Mat> mats = new ArrayList<>();
 //            mats.add(Imgcodecs.imread(fileName));
 //            Mat lables = new Mat(1, 1, CV_32SC1);//对应20个标签值
-//            FisherFaceRecognizer faceRecognizer = FisherFaceRecognizer.create(1);
+//            FisherFaceRecognizer faceRecognizer = FisherFaceRecognizer.create();
 //            faceRecognizer.train(mats, lables);
 //            faceRecognizer.save(FaceUtil.getFilePath(mContext, "FisherRecognize.xml"));
             frameHandleIng = false;
         } else {
             List<Face> faceList = MyApplication.getDatabase().faceDao().getAll();
             LogUtil.d(TAG, "faceList[] = " + GsonUtil.toJson(faceList));
-//            FisherFaceRecognizer faceRecognizer = FisherFaceRecognizer.create(1);
-//            faceRecognizer.read(FaceUtil.getFilePath(mContext, "FisherRecognize.xml"));
+            FisherFaceRecognizer faceRecognizer = FisherFaceRecognizer.create();
+            String filename = "FisherRecognize.xml";
+
+            File file = new File(mContext.getApplicationContext().getFilesDir(), fileName);
+
+            if (!file.exists()) {
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            LogUtil.d(TAG, "filename = " + filename + "____" + file.exists());
+            LogUtil.d(TAG, "filename = " + file.getAbsolutePath() + File.separator + filename);
+//            faceRecognizer.read(file.getAbsolutePath() + File.separator + filename);
+//            faceRecognizer.read(filename);
 //            int lable = faceRecognizer.predict_label(Imgcodecs.imread(fileName));
 //            ToastUtil.show("lable = " + lable);
 //            LogUtil.d(TAG, "lable = " + lable);
