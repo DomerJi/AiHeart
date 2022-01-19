@@ -30,51 +30,52 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
+        android:id="@+id/tv_hint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/colorRobotFore"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintLeft_toRightOf="@id/riv_avatar"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:text="@string/title" />
+
+
+    <TextView
         android:id="@+id/tv_hour"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="11课时"
         android:textColor="@color/colorRobotFore"
-        android:textSize="@dimen/textSize"
-        app:layout_constraintLeft_toRightOf="@id/riv_avatar"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title" />
-
-
-    <TextView
-        android:id="@+id/tv_people_number"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="@string/title"
-        android:textColor="@color/white"
         android:textSize="@dimen/textSize_small"
         app:layout_constraintBottom_toBottomOf="@id/riv_avatar"
-        app:layout_constraintLeft_toRightOf="@id/riv_avatar" />
+        app:layout_constraintLeft_toRightOf="@id/riv_avatar"
+        tools:text="11课时" />
 
 
     <ImageView
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:src="@mipmap/ic_launcher"
-        app:layout_constraintBottom_toBottomOf="@id/tv_current_hour"
-        app:layout_constraintRight_toLeftOf="@id/tv_current_hour"
-        app:layout_constraintTop_toTopOf="@id/tv_current_hour" />
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tv_state"
+        app:layout_constraintRight_toLeftOf="@id/tv_state"
+        app:layout_constraintTop_toTopOf="@id/tv_state" />
 
     <TextView
-        android:id="@+id/tv_current_hour"
+        android:id="@+id/tv_state"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="@string/title"
-        android:textColor="@color/text_yellow"
+        android:text="已完成"
+        android:textColor="@color/text_green"
         android:textSize="@dimen/textSize_small"
         app:layout_constraintBottom_toBottomOf="@id/riv_avatar"
         app:layout_constraintRight_toRightOf="parent" />

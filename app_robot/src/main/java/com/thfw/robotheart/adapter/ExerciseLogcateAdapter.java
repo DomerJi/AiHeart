@@ -2,13 +2,13 @@ package com.thfw.robotheart.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.makeramen.roundedimageview.RoundedImageView;
-import com.thfw.base.models.AudioEtcDetailModel;
+import com.thfw.base.models.ExerciseModel;
 import com.thfw.robotheart.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,11 +20,11 @@ import java.util.List;
  * Date: 2021/12/3 14:36
  * Describe:Todo
  */
-public class ExerciseLogcateAdapter extends BaseAdapter<AudioEtcDetailModel.AudioItemModel, ExerciseLogcateAdapter.LogcateItemHolder> {
+public class ExerciseLogcateAdapter extends BaseAdapter<ExerciseModel.LinkModel, ExerciseLogcateAdapter.LogcateItemHolder> {
 
     private int mCurrentIndex = 0;
 
-    public ExerciseLogcateAdapter(List<AudioEtcDetailModel.AudioItemModel> dataList) {
+    public ExerciseLogcateAdapter(List<ExerciseModel.LinkModel> dataList) {
         super(dataList);
     }
 
@@ -42,22 +42,35 @@ public class ExerciseLogcateAdapter extends BaseAdapter<AudioEtcDetailModel.Audi
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull LogcateItemHolder holder, int position) {
-//        holder.mTvTitle.setText(mDataList.get(position).url);
-//        holder.mTvTitle.setSelected(mCurrentIndex == position);
-//        holder.mTvCurrentPlay.setVisibility(mCurrentIndex == position ? View.VISIBLE : View.GONE);
+        ExerciseModel.LinkModel linkModel = mDataList.get(position);
+        holder.mTvTitle.setText(linkModel.getTitle());
+        holder.mTvOrder.setText((position + 1) + ".");
+        switch (linkModel.getStatus()) {
+            case 0:
+                holder.mTvState.setVisibility(View.GONE);
+                holder.mIvLock.setImageResource(R.mipmap.ic_wifi_lock_on);
+                holder.mIvLock.setVisibility(View.VISIBLE);
+                break;
+            case 1:
+                holder.mTvState.setText("已完成");
+                holder.mTvState.setVisibility(View.VISIBLE);
+                holder.mIvLock.setVisibility(View.GONE);
+                break;
+            default:
+                holder.mTvState.setVisibility(View.GONE);
+                holder.mIvLock.setImageResource(R.mipmap.ic_wifi_local_off);
+                holder.mIvLock.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 
-    @Override
-    public int getItemCount() {
-        return 5;
-    }
 
     public class LogcateItemHolder extends RecyclerView.ViewHolder {
 
-        private RoundedImageView mRivDot;
         private TextView mTvTitle;
-        private TextView mTvCurrentPlay;
-        private TextView mTvCollectState;
+        private TextView mTvOrder;
+        private TextView mTvState;
+        private ImageView mIvLock;
 
         public LogcateItemHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -72,10 +85,10 @@ public class ExerciseLogcateAdapter extends BaseAdapter<AudioEtcDetailModel.Audi
         }
 
         private void initView(View itemView) {
-            mRivDot = (RoundedImageView) itemView.findViewById(R.id.riv_dot);
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
-            mTvCurrentPlay = (TextView) itemView.findViewById(R.id.tv_current_play);
-            mTvCollectState = (TextView) itemView.findViewById(R.id.tv_collect_state);
+            mTvOrder = (TextView) itemView.findViewById(R.id.tv_order);
+            mTvState = (TextView) itemView.findViewById(R.id.tv_state);
+            mIvLock = (ImageView) itemView.findViewById(R.id.iv_lock);
         }
     }
 }

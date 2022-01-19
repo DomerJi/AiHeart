@@ -31,6 +31,8 @@ public interface TalkApi {
     int JOIN_TYPE_GUIDANCE = 2;
     // 3-密友树洞点击进入
     int JOIN_TYPE_AI = 3;
+    // 4-工具包
+    int JOIN_TYPE_TOOL = 4;
 
     /**
      * [获取主题对话列表]
@@ -103,9 +105,9 @@ public interface TalkApi {
     @FormUrlEncoded
     @POST("dialog/history")
     Observable<HttpResult<List<DialogTalkModel>>> onDialogHistory(@Field("scene") int scene,
-                                                              @Field("date") String date,
-                                                              @Field("id") int id,
-                                                              @Field("type") String type);
+                                                                  @Field("date") String date,
+                                                                  @Field("id") int id,
+                                                                  @Field("type") String type);
 
     /**
      * @param month 月份 格式: yyyy-mm （必须）

@@ -105,6 +105,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
 
 
+    api 'me.samlss:bloom:1.0.0'
+
     api 'org.bytedeco:openblas:0.3.17-1.5.6'
     api 'org.bytedeco:openblas:0.3.17-1.5.6:android-arm'
 

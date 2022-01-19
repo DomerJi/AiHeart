@@ -17,9 +17,11 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.SearchActivity;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
+import com.thfw.robotheart.activitys.exercise.ExerciseDetailsActivity;
 import com.thfw.robotheart.activitys.talk.AiTalkActivity;
 import com.thfw.robotheart.activitys.test.TestDetailActivity;
 import com.thfw.robotheart.activitys.text.BookDetailActivity;
+import com.thfw.robotheart.activitys.text.BookIdeoDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.SearchAdapter;
 import com.thfw.ui.base.RobotBaseFragment;
@@ -88,6 +90,8 @@ public class SearchResultFragment extends RobotBaseFragment {
                 switch (type) {
                     case SearchResultModel.TYPE_TEXT:
                         BookDetailActivity.startActivity(mContext, resultBean.getId());
+                    case SearchResultModel.TYPE_IDEO_TEXT:
+                        BookIdeoDetailActivity.startActivity(mContext, resultBean.getId());
                         break;
                     case SearchResultModel.TYPE_VIDEO:
                         ArrayList<VideoEtcModel> videoList = new ArrayList<>();
@@ -106,6 +110,9 @@ public class SearchResultFragment extends RobotBaseFragment {
                         break;
                     case SearchResultModel.TYPE_TEST:
                         TestDetailActivity.startActivity(mContext, resultBean.getId());
+                        break;
+                    case SearchResultModel.TYPE_TOOL:
+                        ExerciseDetailsActivity.startActivity(mContext, resultBean.getId());
                         break;
                     case SearchResultModel.TYPE_DIALOG:
                         AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)

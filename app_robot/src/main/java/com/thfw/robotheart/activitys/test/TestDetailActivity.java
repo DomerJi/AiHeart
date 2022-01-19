@@ -23,6 +23,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.me.HistoryActivity;
 import com.thfw.robotheart.adapter.TestHintAdapter;
+import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.ui.utils.GlideUtil;
@@ -153,7 +154,7 @@ public class TestDetailActivity extends RobotBaseActivity<TestPresenter> impleme
             @Override
             public void onSuccess(CommonModel data) {
                 requestIng = false;
-                ToastUtil.show(mIvCollect.isSelected() ? "收藏成功" : "取消收藏成功");
+                ToastUtil.show(mIvCollect.isSelected() ? UIConfig.COLLECTED : UIConfig.COLLECTED_UN);
             }
 
             @Override

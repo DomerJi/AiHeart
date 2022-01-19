@@ -10,15 +10,152 @@
         android:id="@+id/titleRobotView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:trv_centerText="训练工具包"
         tools:ignore="MissingConstraints" />
 
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vp_list"
-        android:layout_width="match_parent"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/rl_send"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView" />
+
+
+    <RelativeLayout
+        android:id="@+id/rl_send"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleRobotView"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="MissingConstraints">
+
+
+        <RelativeLayout
+            android:id="@+id/rl_keyword_input"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:visibility="gone"
+            tools:ignore="MissingConstraints">
+
+
+            <TextView
+                android:id="@+id/tv_send"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/common_green_selector"
+                android:enabled="false"
+                android:gravity="center"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:text="发送"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textSize_small" />
+
+
+            <EditText
+                android:id="@+id/et_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="45dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="4dp"
+                android:layout_toLeftOf="@id/tv_send"
+                android:background="@drawable/talk_input_bg"
+                android:hint="请输入"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black_60"
+                android:textSize="@dimen/textSize_small" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rl_keyword"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:visibility="invisible">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:background="@drawable/keyword_round_bg"
+                android:padding="12dp"
+                android:src="@mipmap/ic_talk_keyword" />
+
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/rv_list"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:minHeight="46dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_lizi"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.thfw.robotheart.view.fall.FallingView
+            android:id="@+id/fallingView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginRight="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints">
+
+        </com.thfw.robotheart.view.fall.FallingView>
+
+
+        <ImageView
+            android:id="@+id/iv_lizi_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="140dp"
+            android:layout_marginRight="140dp"
+            android:adjustViewBounds="true"
+            android:paddingTop="55dp"
+            android:src="@drawable/ic_finish_tool"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

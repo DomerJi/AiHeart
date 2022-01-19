@@ -15,14 +15,13 @@ import com.thfw.base.api.HistoryApi;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.HistoryModel;
-import com.thfw.base.models.TestResultModel;
 import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
-import com.thfw.robotheart.activitys.test.TestResultWebActivity;
+import com.thfw.robotheart.activitys.test.TestDetailActivity;
 import com.thfw.robotheart.activitys.text.BookDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.HistoryAdapter;
@@ -136,7 +135,8 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
                 HistoryModel historyModel = list.get(position);
                 if (historyModel instanceof HistoryModel.HistoryTestModel) { // 测评
                     HistoryModel.HistoryTestModel testModel = (HistoryModel.HistoryTestModel) historyModel;
-                    TestResultWebActivity.startActivity(mContext, new TestResultModel().setResultId(testModel.getId()));
+                    TestDetailActivity.startActivity(mContext,testModel.getId());
+//                    TestResultWebActivity.startActivity(mContext, new TestResultModel().setResultId(testModel.getId()));
                 } else if (historyModel instanceof HistoryModel.HistoryVideoModel) { // 视频
                     HistoryModel.HistoryVideoModel videoModel = (HistoryModel.HistoryVideoModel) historyModel;
                     ArrayList<VideoEtcModel> videoList = new ArrayList<>();

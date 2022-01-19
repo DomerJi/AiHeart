@@ -21,7 +21,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:scaleType="centerCrop"
-            android:src="@mipmap/cat"
             app:layout_constraintDimensionRatio="h,16:9" />
 
 
@@ -56,17 +55,54 @@
                 android:id="@+id/tv_video_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/title"
-                android:textColor="@color/colorRobotFore"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/tv_video_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/bigText2"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textSize" />
+                android:textSize="20sp"
+                tools:text="@string/title" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fillViewport="true">
+
+                <TextView
+                    android:id="@+id/tv_video_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize"
+                    tools:text="@string/bigText2" />
+
+
+            </ScrollView>
+
+            <LinearLayout
+                android:id="@+id/ll_collect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+
+                <ImageView
+                    android:id="@+id/iv_collect"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:background="@drawable/ic_audio_collect_selector" />
+
+                <TextView
+                    android:id="@+id/tv_collect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="收藏"
+                    android:textColor="@color/colorRobotFore"
+                    android:textSize="@dimen/textSize_large" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -80,40 +116,33 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/cl_bg"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView">
 
         <TextView
             android:id="@+id/tv_like_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="16dp"
-            android:paddingTop="18dp"
             android:paddingRight="16dp"
             android:paddingBottom="12dp"
-            android:text="为你推荐"
-            android:textColor="@color/colorRobotFore"
-            android:textSize="20sp" />
+            android:textColor="@color/text_green"
+            android:textSize="20sp"
+            tools:text="新兵适应训练工具" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_like"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/tv_like_changed"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/like_video_bg"
-            android:gravity="center"
-            android:paddingLeft="16dp"
-            android:paddingTop="8dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="8dp"
-            android:text="换一换" />
 
     </LinearLayout>
+
+    <com.thfw.ui.widget.LoadingView
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -66,6 +66,8 @@ public class TalkHistoryActivity extends RobotBaseActivity<TalkPresenter> implem
     private int requestLoad = -1;
     private int upId = 0;
     private int downId = 0;
+    private boolean enableRefresh = true;
+    private boolean enableLoadMore = true;
 
     @Override
     public int getContentView() {
@@ -298,7 +300,11 @@ public class TalkHistoryActivity extends RobotBaseActivity<TalkPresenter> implem
                     }
                     pageHelper.onSuccess(list, false);
                     if (end) {
+                        enableRefresh = false;
                         mRefreshLayout.setEnableLoadMore(false);
+                        if (!enableRefresh) {
+                            mRefreshLayout.setEnableRefresh(false);
+                        }
                     }
                     break;
                 case 0: // 刷新向上，以前的
@@ -311,7 +317,11 @@ public class TalkHistoryActivity extends RobotBaseActivity<TalkPresenter> implem
                     }
                     pageHelper.onSuccess(list, true);
                     if (end) {
+                        enableRefresh = false;
                         mRefreshLayout.setEnableRefresh(false);
+                        if (!enableLoadMore) {
+                            mRefreshLayout.setEnableLoadMore(false);
+                        }
                     }
                     break;
             }

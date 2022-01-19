@@ -33,4 +33,16 @@ public class ScreenUtils {
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
         return localDisplayMetrics.widthPixels;
     }
+
+    /**
+     * getScreenHeight
+     *
+     * @param context
+     * @return
+     */
+    public static int getScreenHeight(Context context) {
+        DisplayMetrics localDisplayMetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
+        return localDisplayMetrics.heightPixels;
+    }
 }

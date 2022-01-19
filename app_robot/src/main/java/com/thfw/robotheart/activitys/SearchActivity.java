@@ -307,7 +307,7 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
                 fragmentMaps.get(SearchResultModel.TYPE_TEST).setResultBeans(data.getPsychTest());
             } else {
                 fragmentMaps.put(SearchResultModel.TYPE_TEST,
-                        new SearchResultFragment(SearchResultModel.TYPE_TEST, "心理测评", data.getPsychTest()));
+                        new SearchResultFragment(SearchResultModel.TYPE_TEST, "测评问卷", data.getPsychTest()));
             }
             fragments.add(SearchResultModel.TYPE_TEST);
 
@@ -318,9 +318,20 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
                 fragmentMaps.get(SearchResultModel.TYPE_VIDEO).setResultBeans(data.getVideoList());
             } else {
                 fragmentMaps.put(SearchResultModel.TYPE_VIDEO,
-                        new SearchResultFragment(SearchResultModel.TYPE_VIDEO, "科普视频", data.getVideoList()));
+                        new SearchResultFragment(SearchResultModel.TYPE_VIDEO, "视频集锦", data.getVideoList()));
             }
             fragments.add(SearchResultModel.TYPE_VIDEO);
+
+        }
+
+        if (!EmptyUtil.isEmpty(data.getIdeologyList())) {
+            if (fragmentMaps.containsKey(SearchResultModel.TYPE_IDEO_TEXT)) {
+                fragmentMaps.get(SearchResultModel.TYPE_IDEO_TEXT).setResultBeans(data.getIdeologyList());
+            } else {
+                fragmentMaps.put(SearchResultModel.TYPE_IDEO_TEXT,
+                        new SearchResultFragment(SearchResultModel.TYPE_IDEO_TEXT, "思政文章", data.getVideoList()));
+            }
+            fragments.add(SearchResultModel.TYPE_IDEO_TEXT);
 
         }
 
@@ -329,11 +340,24 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
                 fragmentMaps.get(SearchResultModel.TYPE_TEXT).setResultBeans(data.getVideoList());
             } else {
                 fragmentMaps.put(SearchResultModel.TYPE_TEXT,
-                        new SearchResultFragment(SearchResultModel.TYPE_TEXT, "科普文章", data.getVideoList()));
+                        new SearchResultFragment(SearchResultModel.TYPE_TEXT, "心理文章", data.getVideoList()));
             }
             fragments.add(SearchResultModel.TYPE_TEXT);
 
         }
+
+
+        if (!EmptyUtil.isEmpty(data.getToolPackageList())) {
+            if (fragmentMaps.containsKey(SearchResultModel.TYPE_TOOL)) {
+                fragmentMaps.get(SearchResultModel.TYPE_TOOL).setResultBeans(data.getToolPackageList());
+            } else {
+                fragmentMaps.put(SearchResultModel.TYPE_TOOL,
+                        new SearchResultFragment(SearchResultModel.TYPE_TOOL, "成长训练", data.getToolPackageList()));
+            }
+            fragments.add(SearchResultModel.TYPE_TOOL);
+
+        }
+
 
         /**
          * setMaxLifecycle fragment 可见监听

@@ -17,6 +17,8 @@ public class SearchResultModel implements IModel {
     public static final int TYPE_AUDIO = 3;
     public static final int TYPE_VIDEO = 4;
     public static final int TYPE_TEXT = 5;
+    public static final int TYPE_IDEO_TEXT = 6;
+    public static final int TYPE_TOOL = 7;
 
     public static class TypeTitleBean {
         public int type;
@@ -55,11 +57,21 @@ public class SearchResultModel implements IModel {
                 bean.setType(TYPE_TEXT);
             }
 
+            for (ResultBean bean : ideologyList) {
+                bean.setType(TYPE_IDEO_TEXT);
+            }
+
+            for (ResultBean bean : toolPackageList) {
+                bean.setType(TYPE_TOOL);
+            }
+
             allList.addAll(psychTest);
             allList.addAll(collection);
             allList.addAll(videoList);
             allList.addAll(dialogList);
             allList.addAll(articleList);
+            allList.addAll(ideologyList);
+            allList.addAll(toolPackageList);
         }
         return allList;
     }
@@ -92,6 +104,27 @@ public class SearchResultModel implements IModel {
     @SerializedName("video_list")
     private List<ResultBean> videoList;
 
+    /**
+     * 成长练习
+     */
+    @SerializedName("tool_package_list")
+    private List<ResultBean> toolPackageList;
+
+    /**
+     * 思政文章
+     *
+     * @return
+     */
+    @SerializedName("ideology_article")
+    private List<ResultBean> ideologyList;
+
+    public List<ResultBean> getIdeologyList() {
+        return ideologyList;
+    }
+
+    public List<ResultBean> getToolPackageList() {
+        return toolPackageList;
+    }
 
     public List<ResultBean> getPsychTest() {
         return psychTest;
@@ -112,6 +145,7 @@ public class SearchResultModel implements IModel {
     public List<ResultBean> getArticleList() {
         return articleList;
     }
+
 
     public static class ResultBean {
 

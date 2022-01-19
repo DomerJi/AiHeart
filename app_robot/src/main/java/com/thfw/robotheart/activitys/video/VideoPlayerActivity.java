@@ -674,7 +674,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
             @Override
             public void onSuccess(CommonModel data) {
                 requestIng = false;
-                ToastUtil.show(mIvCollect.isSelected() ? "收藏成功" : "取消收藏成功");
+                ToastUtil.show(mIvCollect.isSelected() ? UIConfig.COLLECTED : UIConfig.COLLECTED_UN);
             }
 
             @Override

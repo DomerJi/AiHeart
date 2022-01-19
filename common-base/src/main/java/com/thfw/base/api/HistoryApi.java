@@ -33,7 +33,7 @@ public interface HistoryApi {
     int TYPE_COLLECT_VIDEO = 4;
     int TYPE_COLLECT_DIALOG = 5;
     int TYPE_COLLECT_IDEO_BOOK = 6;
-    int TYPE_COLLECT_IDEO_VIDEO = 7;
+    int TYPE_COLLECT_TOOL = 7;
 
     /**
      * [获取历史记录]
@@ -45,6 +45,17 @@ public interface HistoryApi {
     @FormUrlEncoded
     @POST("getUserHistoryList")
     Observable<HttpResult<List<HistoryModel.HistoryTestModel>>> getHistoryTest(@FieldMap Map<String, Object> params);
+
+    /**
+     * [获取历史测评结果]
+     * rid 测评ID 如果传入测评ID则仅获取该测评的历史记录
+     * type 1-测评 2-音频  3-视频  4-文章
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("testingResultHistory")
+    Observable<HttpResult<List<HistoryModel.HistoryTestModel>>> getHistoryTestResult(@FieldMap Map<String, Object> params);
 
     /**
      * [获取历史记录]
