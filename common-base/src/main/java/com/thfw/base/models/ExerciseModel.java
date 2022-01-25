@@ -1,5 +1,7 @@
 package com.thfw.base.models;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 import com.thfw.base.base.IModel;
 
@@ -89,7 +91,7 @@ public class ExerciseModel implements IModel {
     }
 
     public String getDesc() {
-        return desc;
+        return TextUtils.isEmpty(desc) ? "暂无" : desc;
     }
 
     public int getId() {

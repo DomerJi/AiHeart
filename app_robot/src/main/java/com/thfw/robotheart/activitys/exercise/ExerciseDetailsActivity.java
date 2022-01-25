@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -171,5 +172,13 @@ public class ExerciseDetailsActivity extends RobotBaseActivity<UserToolPresenter
         mLoadingView.showFail(v -> {
             mPresenter.onGetInfo(mId);
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == ExerciseIngActivity.REQUEST_CODE) {
+            mPresenter.onGetInfo(mId);
+        }
     }
 }

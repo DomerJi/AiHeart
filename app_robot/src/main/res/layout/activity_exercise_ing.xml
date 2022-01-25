@@ -6,12 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".activitys.exercise.ExerciseIngActivity">
 
-    <com.thfw.robotheart.view.TitleRobotView
-        android:id="@+id/titleRobotView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:trv_centerText="训练工具包"
-        tools:ignore="MissingConstraints" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
@@ -167,8 +161,27 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
+        <TextView
+            android:id="@+id/tv_finish_3s"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:layout_marginRight="80dp"
+            android:letterSpacing="0.2"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_large"
+            android:textStyle="bold"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="3秒后自动关闭" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.thfw.robotheart.view.TitleRobotView
+        android:id="@+id/titleRobotView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:trv_centerText="训练工具包"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

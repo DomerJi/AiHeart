@@ -1,5 +1,6 @@
 package com.thfw.robotheart.activitys.exercise;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -39,6 +40,7 @@ import com.thfw.base.net.NetParams;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TalkPresenter;
 import com.thfw.base.presenter.UserToolPresenter;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -90,10 +92,12 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
     private android.widget.ImageView mIvLiziText;
     private boolean mIsAchieve;
 
+    public static final int REQUEST_CODE = 1;
+    private int countDownFinish;
 
     public static void startActivity(Context context, int id) {
-        context.startActivity(new Intent(context, ExerciseIngActivity.class)
-                .putExtra(KEY_DATA, id));
+        ((Activity) context).startActivityForResult(new Intent(context, ExerciseIngActivity.class)
+                .putExtra(KEY_DATA, id), REQUEST_CODE);
     }
 
     @Override
@@ -191,7 +195,9 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
         });
 
         mTitleRobotView.getIvBack().setOnClickListener(v -> {
-            finishService();
+            if (!mIsAchieve) {
+                finishService();
+            }
         });
         AndroidBug5497Workaround.assistActivity(this);
 
@@ -222,16 +228,6 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
             mRlKeywordInput.setVisibility(View.VISIBLE);
             showInput(mEtContent);
         });
-
-        mEtContent.addTextChangedListener(new MyTextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-        });
-        // todo 开启训练完成动画
-//        startFinishAnim(true);
-
     }
 
     private void startFinishAnim(boolean isBoom) {
@@ -305,11 +301,30 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
                     mIvLiziText.animate().translationY(height / 2 + mIvLiziText.getHeight() / 2)
                             .setInterpolator(new BounceInterpolator())
                             .setDuration(800).setStartDelay(800);
+                    mFallingView.setFocusable(false);
 
                 }
             });
 
         }
+
+        TextView tvFinish = findViewById(R.id.tv_finish_3s);
+        countDownFinish = 3;
+        mMainHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (EmptyUtil.isEmpty(ExerciseIngActivity.this)) {
+                    return;
+                }
+                countDownFinish--;
+                if (countDownFinish <= 0) {
+                    finish();
+                } else {
+                    tvFinish.setText(countDownFinish + "秒后自动关闭");
+                    mMainHandler.postDelayed(this, 1000);
+                }
+            }
+        }, 3000);
 
 
     }
@@ -424,6 +439,15 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
     }
 
     @Override
+    public void finish() {
+        if (mIsAchieve) {
+            setResult(RESULT_OK);
+        }
+        super.finish();
+
+    }
+
+    @Override
     public void initData() {
         mToolPackageId = getIntent().getIntExtra(KEY_DATA, -1);
         if (mToolPackageId == -1) {
@@ -467,8 +491,6 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
             netParams.add("question", question);
         }
 
-        netParams.add("tool_package_id", toolPackageId);
-
         mPresenter.onDialogTool(netParams);
     }
 
@@ -486,6 +508,10 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
 
         mIsAchieve = data.isAchieve();
         onListDialog(data.getData());
+        if (mIsAchieve) {
+            startFinishAnim(new Random().nextBoolean());
+            return;
+        }
     }
 
     private void onListDialog(List<DialogTalkModel> data) {
@@ -496,8 +522,11 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
-        finishService();
+        if (mIsAchieve) {
+            super.onBackPressed();
+        } else {
+            finishService();
+        }
     }
 
 
@@ -589,7 +618,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
     @Override
     public void onFail(ResponeThrowable throwable) {
         LogUtil.d(TAG, "fail = " + throwable.getMessage());
-        ToastUtil.show("fail = " + throwable.getMessage());
+        ToastUtil.show(throwable.getMessage());
     }
 
     @Override
@@ -608,7 +637,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
             case ChatEntity.TYPE_RECOMMEND_AUDIO_ETC:
             case ChatEntity.TYPE_RECOMMEND_TEST:
                 mPresenter.onDialogTool(NetParams.crete()
-                        .add("tool_package_id", mToolPackageId)
+//                        .add("tool_package_id", mToolPackageId)
                         .add("value", "talking_recommend"));
                 break;
             default:
@@ -649,5 +678,11 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
         public void setTalkModel(DialogTalkModel talkModel) {
             this.talkModel = talkModel;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMainHandler.removeCallbacksAndMessages(null);
     }
 }

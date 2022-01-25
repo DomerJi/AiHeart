@@ -39,7 +39,7 @@ public class ExerciseAdapter extends BaseAdapter<ExerciseModel, ExerciseAdapter.
     public void onBindViewHolder(@NonNull @NotNull ExerciseHolder holder, int position) {
         ExerciseModel model = mDataList.get(position);
         holder.mTvTitle.setText(model.getTitle());
-        holder.mTvHint.setText("null");
+        holder.mTvHint.setText(model.getDesc());
         GlideUtil.load(mContext, model.getPic(), holder.mRivAvatar);
         if (model.getHistoryCount() == model.getCount()) {
             holder.mTvHour.setText(model.getCount() + "课时");

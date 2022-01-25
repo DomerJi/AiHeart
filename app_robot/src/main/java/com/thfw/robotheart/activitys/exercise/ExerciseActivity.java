@@ -58,6 +58,11 @@ public class ExerciseActivity extends RobotBaseActivity<UserToolPresenter> imple
         });
         mRvList.setAdapter(mExerciseAdapter);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         mPresenter.onGetList();
     }
 
