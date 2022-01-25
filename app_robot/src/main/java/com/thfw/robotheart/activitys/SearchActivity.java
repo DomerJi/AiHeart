@@ -51,6 +51,7 @@ import java.util.List;
 
 public class SearchActivity extends RobotBaseActivity<SearchPresenter> implements SearchPresenter.SearchUi<SearchResultModel> {
 
+    private static String KEY_HISTORY = "search.history";
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private com.thfw.ui.widget.MyRobotSearchView mMySearch;
     private androidx.constraintlayout.widget.ConstraintLayout mClHistory;
@@ -65,7 +66,6 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
     private com.google.android.material.tabs.TabItem mTiStudy;
     private ViewPager mViewPager;
     private com.thfw.ui.widget.LoadingView mLoadingView;
-    private static String KEY_HISTORY = "search.history";
     private SearchHistoryAdapter searchHistoryAdapter;
     private List<String> mKeyHistoryList = new ArrayList<>();
     private MyResultAdapter myResultAdapter;

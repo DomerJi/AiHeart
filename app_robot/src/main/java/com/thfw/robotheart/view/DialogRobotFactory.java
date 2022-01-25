@@ -1,18 +1,40 @@
 package com.thfw.robotheart.view;
 
+import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
+import com.bigkoo.pickerview.builder.TimePickerBuilder;
+import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
+import com.bigkoo.pickerview.listener.OnTimeSelectListener;
+import com.bigkoo.pickerview.view.OptionsPickerView;
+import com.bigkoo.pickerview.view.TimePickerView;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
+import com.thfw.base.models.AreaModel;
+import com.thfw.base.models.PickerData;
+import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.Util;
+import com.thfw.robotheart.adapter.BaseAdapter;
+import com.thfw.robotheart.adapter.DialogLikeAdapter;
+import com.thfw.robotheart.util.AreaUtil;
 import com.thfw.ui.R;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnBindViewListener;
 import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.widget.InputBoxView;
+
+import java.util.List;
 
 /**
  * 弹框工厂
@@ -31,7 +53,7 @@ public class DialogRobotFactory {
                 .setLayoutRes(R.layout.dialog_custom_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
                 .addOnClickListener(R.id.tv_left, R.id.tv_right)
-                .setScreenWidthAspect(activity,0.4f)
+                .setScreenWidthAspect(activity, 0.4f)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     TextView mTvTitle = viewHolder.getView(R.id.tv_title);
@@ -42,6 +64,145 @@ public class DialogRobotFactory {
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
                 })
                 .setOnViewClickListener(onViewCallBack).create().show();
+    }
+
+    public static void createAddressBirthDay(Context mContext, ViewGroup decorView, OnTimeSelectListener optionsSelectListener) {
+        TimePickerBuilder builder = new TimePickerBuilder(mContext, optionsSelectListener).setDecorView(decorView)
+                .setTitleText("选择年月日")//标题文字
+                .setTitleSize(17)//标题文字大小
+                .setTitleColor(mContext.getResources().getColor(R.color.black))//标题文字颜色
+                .setCancelText("取消")//取消按钮文字
+                .setCancelColor(mContext.getResources().getColor(R.color.text_content))//取消按钮文字颜色
+                .setSubmitText("确定")//确认按钮文字
+                .setSubmitColor(mContext.getResources().getColor(R.color.black))//确定按钮文字颜色
+                .setContentTextSize(17)//滚轮文字大小
+                .setTextColorOut(mContext.getResources().getColor(R.color.text_content))
+                .setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
+                .setSubCalSize(14)
+                .setBgColor(mContext.getResources().getColor(R.color.colorRobotDialogBg))
+                .setLineSpacingMultiplier(2.2f)//行间距
+                .setDividerColor(mContext.getResources().getColor(R.color.black_10));//设置分割线的颜色
+        TimePickerView timePickerView = builder.build();
+        setOptionPickerView(timePickerView, mContext);
+        timePickerView.show();
+    }
+
+    /**
+     * 单选/多选+自定义
+     *
+     * @param activity
+     * @param onViewCallBack
+     * @return
+     */
+    public static TDialog createSelectCustomText(FragmentActivity activity, String title, List<PickerData> likeModels, OnViewSelectCallBack onViewCallBack) {
+        return new TDialog.Builder(activity.getSupportFragmentManager())
+                .setLayoutRes(com.thfw.robotheart.R.layout.dialog_select_custom_layout)
+                .setGravity(Gravity.BOTTOM)
+                .setDialogAnimationRes(R.style.animate_dialog)
+                .addOnClickListener(R.id.btnCancel, R.id.btnSubmit)
+                .setScreenWidthAspect(activity, 1f)
+                // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
+                .setOnBindViewListener(viewHolder -> {
+                    RecyclerView mRvSelect = viewHolder.getView(com.thfw.robotheart.R.id.rv_select);
+                    TextView mTvTitle = viewHolder.getView(com.thfw.robotheart.R.id.tvTitle);
+                    mTvTitle.setText(title);
+
+                    // 设置布局管理器
+                    FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(activity);
+                    // flexDirection 属性决定主轴的方向（即项目的排列方向）。类似 LinearLayout 的 vertical 和 horizontal。
+                    flexboxLayoutManager.setFlexDirection(FlexDirection.ROW);
+                    // 主轴为水平方向，起点在左端。
+                    // flexWrap 默认情况下 Flex 跟 LinearLayout 一样，都是不带换行排列的，但是flexWrap属性可以支持换行排列。
+                    flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP);
+                    // 按正常方向换行
+                    // justifyContent 属性定义了项目在主轴上的对齐方式。
+                    flexboxLayoutManager.setJustifyContent(JustifyContent.FLEX_START);// 交叉轴的起点对齐。
+                    mRvSelect.setLayoutManager(flexboxLayoutManager);
+                    DialogLikeAdapter dialogLikeAdapter = new DialogLikeAdapter(likeModels);
+                    mRvSelect.setAdapter(dialogLikeAdapter);
+                    onViewCallBack.callBack(dialogLikeAdapter);
+
+                })
+                .setOnViewClickListener(onViewCallBack).create().show();
+    }
+
+
+    /**
+     * 创建地区选择弹框
+     */
+    public static void createAddressDialog(Context mContext, ViewGroup decorView, OnOptionsSelectListener optionsSelectListener, int... opsitions) {
+        OptionsPickerBuilder optionsPickerBuilder = new OptionsPickerBuilder(mContext, optionsSelectListener).setDecorView(decorView)//必须是RelativeLayout，不设置setDecorView的话，底部虚拟导航栏会显示在弹出的选择器区域
+                .setTitleText("选择地区")//标题文字
+                .setTitleSize(17)//标题文字大小
+                .setTitleColor(mContext.getResources().getColor(R.color.black))//标题文字颜色
+                .setCancelText("取消")//取消按钮文字
+                .setCancelColor(mContext.getResources().getColor(R.color.text_content))//取消按钮文字颜色
+                .setSubmitText("确定")//确认按钮文字
+                .setSubmitColor(mContext.getResources().getColor(R.color.black))//确定按钮文字颜色
+                .setContentTextSize(17)//滚轮文字大小
+                .setTextColorOut(mContext.getResources().getColor(R.color.text_content))
+                .setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
+                .setSubCalSize(14)
+                .setBgColor(mContext.getResources().getColor(R.color.colorRobotDialogBg))
+                .setLineSpacingMultiplier(2.2f)//行间距
+                .setDividerColor(mContext.getResources().getColor(R.color.black_10));//设置分割线的颜色
+
+        if (!EmptyUtil.isEmpty(opsitions) && opsitions.length == 3) {
+            optionsPickerBuilder.setSelectOptions(opsitions[0], opsitions[1], opsitions[2]);
+        }
+
+        OptionsPickerView<AreaModel> optionsPickerView = optionsPickerBuilder.build();
+        setOptionPickerView(optionsPickerView, mContext);
+        optionsPickerView.setPicker(AreaUtil.getOp1(), AreaUtil.getOp2());
+        optionsPickerView.show();
+    }
+
+    /**
+     * 创建通用单选选择框
+     */
+    public static void createSelectDialog(Context mContext, ViewGroup decorView,
+                                          OnOptionsSelectListener optionsSelectListener,
+                                          String title, List<PickerData> list) {
+
+        OptionsPickerBuilder optionsPickerBuilder = new OptionsPickerBuilder(mContext, optionsSelectListener).setDecorView(decorView)//必须是RelativeLayout，不设置setDecorView的话，底部虚拟导航栏会显示在弹出的选择器区域
+                .setTitleText(title) // 标题文字
+                .setTitleSize(17)//标题文字大小
+                .setTitleColor(mContext.getResources().getColor(R.color.black))//标题文字颜色
+                .setCancelText("取消")//取消按钮文字
+                .setCancelColor(mContext.getResources().getColor(R.color.text_content))//取消按钮文字颜色
+                .setSubmitText("确定")//确认按钮文字
+                .setSubmitColor(mContext.getResources().getColor(R.color.black))//确定按钮文字颜色
+                .setContentTextSize(17)//滚轮文字大小
+                .setTextColorOut(mContext.getResources().getColor(R.color.text_content))
+                .setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
+                .setSubCalSize(14)
+                .setBgColor(mContext.getResources().getColor(R.color.colorRobotDialogBg))
+                .setLineSpacingMultiplier(2.2f) // 行间距
+                .setDividerColor(mContext.getResources().getColor(R.color.black_10));// 设置分割线的颜色
+
+
+        OptionsPickerView<PickerData> optionsPickerView = optionsPickerBuilder.build();
+        setOptionPickerView(optionsPickerView, mContext);
+        optionsPickerView.setPicker(list);
+        optionsPickerView.show();
+    }
+
+    private static void setOptionPickerView(OptionsPickerView optionsPickerView, Context mContext) {
+        LinearLayout picker = (LinearLayout) optionsPickerView.findViewById(R.id.optionspicker);
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) picker.getLayoutParams();
+        layoutParams.height = Util.dipToPx(260, mContext);
+        picker.setLayoutParams(layoutParams);
+        optionsPickerView.findViewById(R.id.rv_topbar).setBackgroundResource(R.drawable.bg_top_radius_theme_dialog);
+
+    }
+
+    private static void setOptionPickerView(TimePickerView optionsPickerView, Context mContext) {
+        LinearLayout picker = (LinearLayout) optionsPickerView.findViewById(R.id.timepicker);
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) picker.getLayoutParams();
+        layoutParams.height = Util.dipToPx(260, mContext);
+        picker.setLayoutParams(layoutParams);
+        optionsPickerView.findViewById(R.id.rv_topbar).setBackgroundResource(R.drawable.bg_top_radius_theme_dialog);
+
     }
 
 
@@ -199,6 +360,10 @@ public class DialogRobotFactory {
                 .addOnClickListener(R.id.tv_confirm, R.id.iv_close)
                 .setOnBindViewListener(onBindViewListener)
                 .setOnViewClickListener(onViewClickListener).create().show();
+    }
+
+    public interface OnViewSelectCallBack extends OnViewClickListener {
+        void callBack(BaseAdapter baseAdapter);
     }
 
     public interface OnViewCallBack extends OnViewClickListener {

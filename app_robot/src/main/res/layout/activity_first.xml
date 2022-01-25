@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activitys.me.FirstInfoActivity">
+
+    <com.thfw.robotheart.view.TitleRobotView
+        android:id="@+id/titleRobotView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:trv_centerText="填写信息"
+        tools:ignore="MissingConstraints" />
+
+    <LinearLayout
+        android:id="@+id/ll_welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="欢迎您，"
+            android:textColor="@color/colorRobotFore"
+            android:textSize="@dimen/textSize_large" />
+
+        <TextView
+            android:id="@+id/tv_wel_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_yellow"
+            android:textSize="@dimen/textSize_large"
+            tools:text="许三多" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="请完善您的个人资料"
+            android:textColor="@color/colorRobotFore"
+            android:textSize="@dimen/textSize_large" />
+
+    </LinearLayout>
+
+
+    <com.thfw.ui.widget.MyScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="26dp"
+        app:layout_constraintBottom_toTopOf="@id/bt_confirm"
+        app:layout_constraintTop_toBottomOf="@id/ll_welcome">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:id="@+id/rl_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="46dp"
+                android:layout_marginRight="46dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_avatar_title"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:text="@string/info_avatar"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize" />
+
+                <TextView
+                    android:id="@+id/tv_avatar_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/iv_arrow_00"
+                    android:gravity="right"
+                    android:text="@string/info_hint_select_avatar"
+                    android:textColor="@color/colorRobotFore"
+                    android:textSize="@dimen/textSize" />
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/riv_avatar"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/iv_arrow_00"
+                    android:src="@color/white_50"
+                    android:visibility="gone"
+                    app:riv_oval="true" />
+
+
+                <ImageView
+                    android:id="@+id/iv_arrow_00"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="12dp"
+                    android:src="@drawable/ic_arrow_right" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_2px"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="16dp"
+                    android:layout_toRightOf="@id/tv_avatar_title"
+                    android:background="@color/divider" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_nickname"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="46dp"
+                android:layout_marginRight="46dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_nickname_title"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:text="@string/info_nickname"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize" />
+
+                <TextView
+                    android:id="@+id/tv_nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/iv_arrow_01"
+                    android:gravity="right"
+                    android:hint="@string/info_hint_please_input"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white_50"
+                    android:textSize="@dimen/textSize" />
+
+                <ImageView
+                    android:id="@+id/iv_arrow_01"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="12dp"
+                    android:src="@drawable/ic_arrow_right" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_2px"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="16dp"
+                    android:layout_toRightOf="@id/tv_nickname_title"
+                    android:background="@color/divider" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rl_true_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="46dp"
+                android:layout_marginRight="46dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_true_name_title"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:text="@string/info_name"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@id/tv_true_name_title"
+                    android:gravity="bottom"
+                    android:text="*"
+                    android:textColor="@color/text_red"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:id="@+id/tv_true_name"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/iv_arrow_011"
+                    android:gravity="right"
+                    android:hint="@string/info_hint_please_input"
+                    android:maxLength="15"
+                    android:maxLines="1"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white_50"
+                    android:textSize="@dimen/textSize" />
+
+                <ImageView
+                    android:id="@+id/iv_arrow_011"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="12dp"
+                    android:src="@drawable/ic_arrow_right" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_2px"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="24dp"
+                    android:layout_toRightOf="@id/tv_true_name_title"
+                    android:background="@color/divider" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rl_birth_day"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="46dp"
+                android:layout_marginRight="46dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_birth_day_title"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:text="@string/info_birthday"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@id/tv_birth_day_title"
+                    android:gravity="bottom"
+                    android:text="*"
+                    android:textColor="@color/text_red"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:id="@+id/tv_birth_day_name"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/iv_arrow_02"
+                    android:gravity="right"
+                    android:hint="@string/info_hint_please_select"
+                    android:maxLength="15"
+                    android:maxLines="1"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white_50"
+                    android:textSize="@dimen/textSize" />
+
+
+                <ImageView
+                    android:id="@+id/iv_arrow_02"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="12dp"
+                    android:src="@drawable/ic_arrow_right" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_2px"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="24dp"
+                    android:layout_toRightOf="@id/tv_birth_day_title"
+                    android:background="@color/divider" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rl_sex"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="46dp"
+                android:layout_marginRight="46dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_sex_title"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:text="@string/info_sex"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@id/tv_sex_title"
+                    android:gravity="bottom"
+                    android:text="*"
+                    android:textColor="@color/text_red"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:id="@+id/tv_sex_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/iv_arrow_03"
+                    android:gravity="right"
+                    android:hint="@string/info_hint_please_select"
+                    android:maxLength="15"
+                    android:maxLines="1"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white_50"
+                    android:textSize="@dimen/textSize" />
+
+
+                <ImageView
+                    android:id="@+id/iv_arrow_03"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="12dp"
+                    android:src="@drawable/ic_arrow_right" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_2px"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="24dp"
+                    android:layout_toRightOf="@id/tv_sex_title"
+                    android:background="@color/divider" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rl_mobile"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="46dp"
+                android:layout_marginRight="46dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_mobile_title"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:text="@string/info_mobile"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@id/tv_mobile_title"
+                    android:gravity="bottom"
+                    android:text="*"
+                    android:textColor="@color/text_red"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:id="@+id/tv_mobile_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/iv_arrow_04"
+                    android:gravity="right"
+                    android:hint="@string/info_hint_please_input"
+                    android:maxLength="15"
+                    android:maxLines="1"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white_50"
+                    android:textSize="@dimen/textSize" />
+
+
+                <ImageView
+                    android:id="@+id/iv_arrow_04"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="12dp"
+                    android:src="@drawable/ic_arrow_right" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_2px"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="24dp"
+                    android:layout_toRightOf="@id/tv_mobile_title"
+                    android:background="@color/divider" />
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+
+    </com.thfw.ui.widget.MyScrollView>
+
+
+    <Button
+        android:id="@+id/bt_confirm"
+        android:layout_width="220dp"
+        android:layout_height="42dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/common_green_selector"
+        android:text="确认"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

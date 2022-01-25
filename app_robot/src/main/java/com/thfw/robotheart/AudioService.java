@@ -34,6 +34,18 @@ public class AudioService extends Service {
     private RemoteViews notifyLayout;
     private NotifyHelper mNotifyHelper;
     private AudioModel picture;
+    private Player.Listener listener = new Player.Listener() {
+
+
+        @Override
+        public void onPlayWhenReadyChanged(boolean playWhenReady, int reason) {
+            if (playWhenReady) {
+                playMusicState(picture);
+            } else {
+                pauseMusicState(picture);
+            }
+        }
+    };
 
     @Override
     public void onCreate() {
@@ -47,47 +59,9 @@ public class AudioService extends Service {
         return new MyBinder();
     }
 
-    public class MyBinder extends Binder {
-
-        MyBinder() {
-            super();
-        }
-
-        public AudioService getService() {
-            return AudioService.this;
-        }
-
-        public void setMusic(final AudioModel picture) {
-            if (ExoPlayerFactory.getExoPlayer() == null) {
-                return;
-            }
-            setPicture(picture);
-            ExoPlayerFactory.getExoPlayer().addListener(listener);
-            if (ExoPlayerFactory.getExoPlayer().getPlayWhenReady()) {
-                playMusicState(picture);
-            } else {
-                pauseMusicState(picture);
-            }
-        }
-    }
-
-
     public void setPicture(AudioModel picture) {
         this.picture = picture;
     }
-
-    private Player.Listener listener = new Player.Listener() {
-
-
-        @Override
-        public void onPlayWhenReadyChanged(boolean playWhenReady, int reason) {
-            if (playWhenReady) {
-                playMusicState(picture);
-            } else {
-                pauseMusicState(picture);
-            }
-        }
-    };
 
     private void init() {
         mNotifyHelper = NotifyHelper.getInstance(ToastUtil.getAppContext());
@@ -178,6 +152,30 @@ public class AudioService extends Service {
                 .putExtra(CMD_KEY, cmd);
         return PendingIntent.getService(AudioService.this, cmd, intent, FLAG_UPDATE_CURRENT);
 
+    }
+
+    public class MyBinder extends Binder {
+
+        MyBinder() {
+            super();
+        }
+
+        public AudioService getService() {
+            return AudioService.this;
+        }
+
+        public void setMusic(final AudioModel picture) {
+            if (ExoPlayerFactory.getExoPlayer() == null) {
+                return;
+            }
+            setPicture(picture);
+            ExoPlayerFactory.getExoPlayer().addListener(listener);
+            if (ExoPlayerFactory.getExoPlayer().getPlayWhenReady()) {
+                playMusicState(picture);
+            } else {
+                pauseMusicState(picture);
+            }
+        }
     }
 
 }

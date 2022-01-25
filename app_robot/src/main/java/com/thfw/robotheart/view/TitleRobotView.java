@@ -126,10 +126,6 @@ public class TitleRobotView extends FrameLayout {
         return centerText;
     }
 
-    public TextView getTvTitle() {
-        return mTvTitle;
-    }
-
     public void setCenterText(@StringRes int rightText) {
         setCenterText(getResources().getString(rightText));
     }
@@ -139,6 +135,10 @@ public class TitleRobotView extends FrameLayout {
         if (!TextUtils.isEmpty(centerText)) {
             mTvTitle.setText(centerText);
         }
+    }
+
+    public TextView getTvTitle() {
+        return mTvTitle;
     }
 
     public int getCenterTextColor() {

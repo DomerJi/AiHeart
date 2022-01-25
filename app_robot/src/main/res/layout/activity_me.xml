@@ -26,7 +26,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView"
         app:layout_constraintVertical_chainStyle="packed"
-        app:riv_border_color="@color/white"
+        app:riv_border_color="@color/colorRobotFore"
         app:riv_border_width="2dp"
         app:riv_oval="true" />
 
@@ -36,12 +36,32 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/test_nickname"
-        android:textColor="@color/white"
+        android:textColor="@color/colorRobotFore"
         android:textSize="@dimen/textSize_robot_title"
-        app:layout_constraintBottom_toBottomOf="@id/bt_logout"
+        app:layout_constraintBottom_toTopOf="@id/tv_team"
         app:layout_constraintLeft_toLeftOf="@id/riv_avatar"
         app:layout_constraintRight_toRightOf="@id/riv_avatar"
         app:layout_constraintTop_toBottomOf="@id/riv_avatar" />
+
+
+    <TextView
+        android:id="@+id/tv_team"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/radius_robot_bg"
+        android:maxLines="1"
+        android:paddingLeft="12dp"
+        android:paddingTop="4dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="4dp"
+        android:text="@string/test_nickname"
+        android:textColor="@color/text_common"
+        android:textSize="@dimen/textSize_small_2"
+        app:layout_constraintBottom_toTopOf="@id/bt_logout"
+        app:layout_constraintLeft_toLeftOf="@id/riv_avatar"
+        app:layout_constraintRight_toRightOf="@id/riv_avatar"
+        app:layout_constraintTop_toBottomOf="@id/tv_nickname" />
 
 
     <Button
@@ -53,10 +73,11 @@
         android:background="@drawable/common_red_btn_selector"
         android:text="退出登录"
         android:textColor="@color/white"
+        android:textSize="@dimen/textSize"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/riv_avatar"
         app:layout_constraintRight_toRightOf="@id/riv_avatar"
-        app:layout_constraintTop_toBottomOf="@id/tv_nickname" />
+        app:layout_constraintTop_toBottomOf="@id/tv_team" />
 
     <LinearLayout
         android:id="@+id/ll_history"

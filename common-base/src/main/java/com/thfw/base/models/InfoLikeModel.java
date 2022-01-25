@@ -5,10 +5,9 @@ package com.thfw.base.models;
  * Date: 2021/10/12 9:54
  * Describe:Todo
  */
-public class InfoLikeModel {
-    public String name;
+public class InfoLikeModel extends PickerData {
 
     public InfoLikeModel(String name) {
-        this.name = name;
+        super(name);
     }
 }

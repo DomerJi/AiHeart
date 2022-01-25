@@ -142,6 +142,18 @@
         </com.thfw.robotheart.view.fall.FallingView>
 
 
+        <com.thfw.robotheart.view.boom.ExplosionField
+            android:id="@+id/explosionField"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginRight="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
         <ImageView
             android:id="@+id/iv_lizi_text"
             android:layout_width="match_parent"
@@ -154,6 +166,7 @@
             app:layout_constraintBottom_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

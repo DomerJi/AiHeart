@@ -13,37 +13,30 @@ import java.util.Random;
  */
 
 public class FallObject {
-    private int initX;
-    private int initY;
-    private Random random;
-    private static Random randomSta;
-    private int parentWidth;//父容器宽度
-    private int parentHeight;//父容器高度
-    private float objectWidth;//下落物体宽度
-    private float objectHeight;//下落物体高度
-
-    public int initSpeed;//初始下降速度
-    public int initWindLevel;//初始风力等级
-
-    public float presentX;//当前位置X坐标
-    public float presentY;//当前位置Y坐标
-    public float presentSpeed;//当前下降速度
-    private float angle;//物体下落角度
-
-    private Bitmap bitmap;
-    public Builder builder;
-
-    private boolean isSpeedRandom;//物体初始下降速度比例是否随机
-    private boolean isSizeRandom;//物体初始大小比例是否随机
-    private boolean isWindRandom;//物体初始风向和风力大小比例是否随机
-    private boolean isWindChange;//物体下落过程中风向和风力是否产生随机变化
-
     private static final int defaultSpeed = 10;//默认下降速度
     private static final int defaultWindLevel = 0;//默认风力等级
     private static final int defaultWindSpeed = 10;//默认单位风速
     private static final float HALF_PI = (float) Math.PI / 2;//π/2
-
-
+    private static Random randomSta;
+    public int initSpeed;//初始下降速度
+    public int initWindLevel;//初始风力等级
+    public float presentX;//当前位置X坐标
+    public float presentY;//当前位置Y坐标
+    public float presentSpeed;//当前下降速度
+    public Builder builder;
+    private int initX;
+    private int initY;
+    private Random random;
+    private int parentWidth;//父容器宽度
+    private int parentHeight;//父容器高度
+    private float objectWidth;//下落物体宽度
+    private float objectHeight;//下落物体高度
+    private float angle;//物体下落角度
+    private Bitmap bitmap;
+    private boolean isSpeedRandom;//物体初始下降速度比例是否随机
+    private boolean isSizeRandom;//物体初始大小比例是否随机
+    private boolean isWindRandom;//物体初始风向和风力大小比例是否随机
+    private boolean isWindChange;//物体下落过程中风向和风力是否产生随机变化
     public FallObject(Builder builder, int parentWidth, int parentHeight) {
         random = new Random();
         this.parentWidth = parentWidth;
@@ -65,6 +58,7 @@ public class FallObject {
         randomWind();
     }
 
+
     private FallObject(Builder builder) {
         random = new Random();
         this.builder = builder;
@@ -75,6 +69,149 @@ public class FallObject {
         isSizeRandom = builder.isSizeRandom;
         isWindRandom = builder.isWindRandom;
         isWindChange = builder.isWindChange;
+    }
+
+    /**
+     * drawable图片资源转bitmap
+     *
+     * @param drawable
+     * @return
+     */
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        Bitmap bitmap = Bitmap.createBitmap(
+                drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(),
+                drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+                        : Bitmap.Config.RGB_565);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+    /**
+     * 改变bitmap的大小
+     *
+     * @param bitmap 目标bitmap
+     * @param newW   目标宽度
+     * @param newH   目标高度
+     * @return
+     */
+    public static Bitmap changeBitmapSize(Bitmap bitmap, int newW, int newH) {
+        int oldW = bitmap.getWidth();
+        int oldH = bitmap.getHeight();
+        if (randomSta == null) {
+            randomSta = new Random();
+        }
+        // 计算缩放比例
+        float scaleWidth = ((float) newW) / oldW;
+        float scaleHeight = ((float) newH) / oldH;
+
+        // 取得想要缩放的matrix参数
+        Matrix matrix = new Matrix();
+        float[] pt = {randomSta.nextFloat(), randomSta.nextFloat()};
+        matrix.mapPoints(pt);
+        matrix.postRotate(randomSta.nextInt(180));
+        matrix.postScale(scaleWidth, scaleHeight);
+        // 得到新的图片
+        bitmap = Bitmap.createBitmap(bitmap, 0, 0, oldW, oldH, matrix, true);
+        return bitmap;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    /**
+     * 绘制物体对象
+     *
+     * @param canvas
+     */
+    public void drawObject(Canvas canvas) {
+        moveObject();
+        canvas.drawBitmap(bitmap, presentX, presentY, null);
+    }
+
+    /**
+     * 移动物体对象
+     */
+    private void moveObject() {
+        moveX();
+        moveY();
+        if (presentY > parentHeight || presentX < -bitmap.getWidth() || presentX > parentWidth + bitmap.getWidth()) {
+            reset();
+        }
+    }
+
+    /**
+     * X轴上的移动逻辑
+     */
+    private void moveX() {
+        presentX += defaultWindSpeed * Math.sin(angle);
+        if (isWindChange) {
+            angle += (float) (random.nextBoolean() ? -1 : 1) * Math.random() * 0.0025;
+        }
+    }
+
+    /**
+     * Y轴上的移动逻辑
+     */
+    private void moveY() {
+        presentY += presentSpeed;
+    }
+
+    /**
+     * 重置object位置
+     */
+    private void reset() {
+        presentY = -objectHeight;
+        randomSpeed();//记得重置时速度也一起重置，这样效果会好很多
+        randomWind();//记得重置一下初始角度，不然雪花会越下越少（因为角度累加会让雪花越下越偏）
+    }
+
+    /**
+     * 随机物体初始下落速度
+     */
+    private void randomSpeed() {
+        if (isSpeedRandom) {
+            presentSpeed = (float) ((random.nextInt(3) + 1) * 0.1 + 1) * initSpeed;//这些随机数大家可以按自己的需要进行调整
+        } else {
+            presentSpeed = initSpeed;
+        }
+    }
+
+    /**
+     * 随机物体初始大小比例
+     */
+    public void randomSize() {
+        if (isSizeRandom) {
+            float r = (random.nextInt(10) + 1) * 0.1f;
+            float rW = r * builder.bitmap.getWidth();
+            float rH = r * builder.bitmap.getHeight();
+            bitmap = changeBitmapSize(builder.bitmap, (int) rW, (int) rH);
+        } else {
+            bitmap = builder.bitmap;
+        }
+        objectWidth = bitmap.getWidth();
+        objectHeight = bitmap.getHeight();
+    }
+
+    /**
+     * 随机风的风向和风力大小比例，即随机物体初始下落角度
+     */
+    private void randomWind() {
+        if (isWindRandom) {
+            angle = (float) ((random.nextBoolean() ? -1 : 1) * Math.random() * initWindLevel / 50);
+        } else {
+            angle = (float) initWindLevel / 50;
+        }
+
+        //限制angle的最大最小值
+        if (angle > HALF_PI) {
+            angle = HALF_PI;
+        } else if (angle < -HALF_PI) {
+            angle = -HALF_PI;
+        }
     }
 
     public static final class Builder {
@@ -177,146 +314,6 @@ public class FallObject {
         public FallObject build() {
             return new FallObject(this);
         }
-    }
-
-    /**
-     * 绘制物体对象
-     *
-     * @param canvas
-     */
-    public void drawObject(Canvas canvas) {
-        moveObject();
-        canvas.drawBitmap(bitmap, presentX, presentY, null);
-    }
-
-
-    /**
-     * 移动物体对象
-     */
-    private void moveObject() {
-        moveX();
-        moveY();
-        if (presentY > parentHeight || presentX < -bitmap.getWidth() || presentX > parentWidth + bitmap.getWidth()) {
-            reset();
-        }
-    }
-
-    /**
-     * X轴上的移动逻辑
-     */
-    private void moveX() {
-        presentX += defaultWindSpeed * Math.sin(angle);
-        if (isWindChange) {
-            angle += (float) (random.nextBoolean() ? -1 : 1) * Math.random() * 0.0025;
-        }
-    }
-
-    /**
-     * Y轴上的移动逻辑
-     */
-    private void moveY() {
-        presentY += presentSpeed;
-    }
-
-    /**
-     * 重置object位置
-     */
-    private void reset() {
-        presentY = -objectHeight;
-        randomSpeed();//记得重置时速度也一起重置，这样效果会好很多
-        randomWind();//记得重置一下初始角度，不然雪花会越下越少（因为角度累加会让雪花越下越偏）
-    }
-
-    /**
-     * 随机物体初始下落速度
-     */
-    private void randomSpeed() {
-        if (isSpeedRandom) {
-            presentSpeed = (float) ((random.nextInt(3) + 1) * 0.1 + 1) * initSpeed;//这些随机数大家可以按自己的需要进行调整
-        } else {
-            presentSpeed = initSpeed;
-        }
-    }
-
-    /**
-     * 随机物体初始大小比例
-     */
-    private void randomSize() {
-        if (isSizeRandom) {
-            float r = (random.nextInt(10) + 1) * 0.1f;
-            float rW = r * builder.bitmap.getWidth();
-            float rH = r * builder.bitmap.getHeight();
-            bitmap = changeBitmapSize(builder.bitmap, (int) rW, (int) rH);
-        } else {
-            bitmap = builder.bitmap;
-        }
-        objectWidth = bitmap.getWidth();
-        objectHeight = bitmap.getHeight();
-    }
-
-    /**
-     * 随机风的风向和风力大小比例，即随机物体初始下落角度
-     */
-    private void randomWind() {
-        if (isWindRandom) {
-            angle = (float) ((random.nextBoolean() ? -1 : 1) * Math.random() * initWindLevel / 50);
-        } else {
-            angle = (float) initWindLevel / 50;
-        }
-
-        //限制angle的最大最小值
-        if (angle > HALF_PI) {
-            angle = HALF_PI;
-        } else if (angle < -HALF_PI) {
-            angle = -HALF_PI;
-        }
-    }
-
-    /**
-     * drawable图片资源转bitmap
-     *
-     * @param drawable
-     * @return
-     */
-    public static Bitmap drawableToBitmap(Drawable drawable) {
-        Bitmap bitmap = Bitmap.createBitmap(
-                drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(),
-                drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
-                        : Bitmap.Config.RGB_565);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
-
-    /**
-     * 改变bitmap的大小
-     *
-     * @param bitmap 目标bitmap
-     * @param newW   目标宽度
-     * @param newH   目标高度
-     * @return
-     */
-    public static Bitmap changeBitmapSize(Bitmap bitmap, int newW, int newH) {
-        int oldW = bitmap.getWidth();
-        int oldH = bitmap.getHeight();
-        if (randomSta == null) {
-            randomSta = new Random();
-        }
-        // 计算缩放比例
-        float scaleWidth = ((float) newW) / oldW;
-        float scaleHeight = ((float) newH) / oldH;
-
-        // 取得想要缩放的matrix参数
-        Matrix matrix = new Matrix();
-        float[] pt = {randomSta.nextFloat(), randomSta.nextFloat()};
-        matrix.mapPoints(pt);
-        matrix.postRotate(randomSta.nextInt(180));
-        matrix.postScale(scaleWidth, scaleHeight);
-        // 得到新的图片
-        bitmap = Bitmap.createBitmap(bitmap, 0, 0, oldW, oldH, matrix, true);
-        return bitmap;
     }
 
 

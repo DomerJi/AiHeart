@@ -2,6 +2,7 @@ package com.thfw.user.login;
 
 import android.text.TextUtils;
 
+import com.google.gson.annotations.SerializedName;
 import com.thfw.base.R;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.utils.EmptyUtil;
@@ -10,6 +11,7 @@ import com.thfw.base.utils.StringUtil;
 import com.thfw.user.IUser;
 import com.thfw.user.IUserInfo;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,6 +20,79 @@ public class User implements IUser, IUserInfo {
     private int loginStatus;
     private String token;
     private String mobile;
+
+    private UserInfo userInfo = new UserInfo();
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public static class UserInfo implements Serializable {
+
+        /**
+         * user_name :
+         * pic :
+         * true_name :
+         * organization : 6
+         * id : 100001
+         * birth :
+         * sex : 0
+         * mobile : 16630007656
+         * education : 0
+         * marital_status : 0
+         * child_status : 0
+         * political_outlook : 0
+         * rank :
+         * hobby : []
+         * support : []
+         * native :
+         * nation :
+         */
+
+        @SerializedName("user_name")
+        public String userName;
+        @SerializedName("pic")
+        public String pic;
+        @SerializedName("true_name")
+        public String trueName;
+        @SerializedName("organization")
+        public int organization;
+        @SerializedName("id")
+        public int id;
+        @SerializedName("birth")
+        public String birth;
+        @SerializedName("sex")
+        public int sex;
+        @SerializedName("mobile")
+        public String mobile;
+        @SerializedName("education")
+        public int education;
+        @SerializedName("marital_status")
+        public int maritalStatus;
+        @SerializedName("child_status")
+        public int childStatus;
+        @SerializedName("political_outlook")
+        public int politicalOutlook;
+        @SerializedName("join_time")
+        public String joinTime;
+        @SerializedName("rank")
+        public String rank;
+        @SerializedName("department")
+        public String department;
+        @SerializedName("native")
+        public String nativeX;
+        @SerializedName("nation")
+        public String nation;
+        @SerializedName("hobby")
+        public List<String> hobby;
+        @SerializedName("support")
+        public List<String> support;
+    }
+
     private List<OrganizationModel.OrganizationBean> organList;
 
     public void setOrganList(List<OrganizationModel.OrganizationBean> organList) {
@@ -85,7 +160,7 @@ public class User implements IUser, IUserInfo {
 
     @Override
     public String getUserId() {
-        return null;
+        return userInfo != null ? String.valueOf(userInfo.id) : "";
     }
 
     @Override
@@ -105,17 +180,22 @@ public class User implements IUser, IUserInfo {
 
     @Override
     public String getAvatar() {
-        return null;
+        return userInfo != null ? userInfo.pic : null;
     }
 
     @Override
     public String getMobile() {
-        return mobile;
+        if (TextUtils.isEmpty(mobile)) {
+            return userInfo != null ? userInfo.mobile : null;
+        } else {
+            return mobile;
+        }
+
     }
 
     @Override
     public String getNickName() {
-        return null;
+        return userInfo != null ? userInfo.userName : null;
     }
 
     @Override

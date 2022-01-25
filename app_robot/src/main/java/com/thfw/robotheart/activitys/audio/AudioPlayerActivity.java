@@ -76,6 +76,8 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         VideoGestureHelper.VideoGestureListener, AudioPresenter.AudioUi<AudioEtcDetailModel> {
 
 
+    private static final String KEY_RECOMMEND = "key.recommend";
+    boolean flDurationEnd = true;
     private StyledPlayerView mAudioView;
     private ImageView mIvBlurBg;
     private LoadingView mPbBar;
@@ -89,7 +91,6 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private SimpleExoPlayer player;
     private ImageView mIvPlayCateLogue;
     private RecyclerView mRvList;
-    boolean flDurationEnd = true;
     private ConstraintLayout mFlContent;
     private ImageView mIvCollect;
     private AudioEtcModel mModel;
@@ -103,8 +104,28 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private PlayerListener playerListener;
     private boolean requestIng = false;
     private boolean audioByPagePause;
-    private static final String KEY_RECOMMEND = "key.recommend";
     private boolean autoFinished;
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            AudioService.MyBinder mMyBinder = (AudioService.MyBinder) service;
+            AudioService mMyService = mMyBinder.getService();
+            mMyBinder.setMusic(new AudioModel());
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+    private VideoGestureHelper ly_VG;
+    private ShowChangeLayout scl;
+    private AudioManager mAudioManager;
+    private int maxVolume = 0;
+    private int oldVolume = 0;
+    private int newProgress = 0, oldProgress = 0;
+    private Window mWindow;
+    private WindowManager.LayoutParams mLayoutParams;
 
     public static void startActivity(Context context, AudioEtcModel audioEtcModel) {
         ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
@@ -341,21 +362,6 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 //        return new ExtractorMediaSource.Factory(upstreamFactory). createMediaSource(uri); }
     }
 
-
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            AudioService.MyBinder mMyBinder = (AudioService.MyBinder) service;
-            AudioService mMyService = mMyBinder.getService();
-            mMyBinder.setMusic(new AudioModel());
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -366,7 +372,6 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             audioByPagePause = false;
         }
     }
-
 
     @Override
     protected void onResume() {
@@ -379,6 +384,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         mAudioView.setControllerShowTimeoutMs(0);
         mAudioView.showController();
     }
+
+
+    //=============== 开始 视频手势 =======================//
 
     @Override
     public int getStatusBarColor() {
@@ -441,6 +449,96 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         }).addCollect(HistoryApi.TYPE_COLLECT_AUDIO, mDetailModel.getCollectionInfo().getId());
     }
 
+    @Override
+    public void finish() {
+        setResult(RESULT_OK);
+        super.finish();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ExoPlayerFactory.release();
+        try {
+            mContext.unbindService(connection);
+        } catch (Exception e) {
+
+        }
+    }
+
+    private void initGesture() {
+        ly_VG = new VideoGestureHelper(mContext, mAudioView);
+        ly_VG.setVideoGestureListener(this);
+
+        scl = (ShowChangeLayout) findViewById(R.id.scl);
+
+        //初始化获取音量属性
+        mAudioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
+        maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+
+        //下面这是设置当前APP亮度的方法配置
+        mWindow = getWindow();
+        mLayoutParams = mWindow.getAttributes();
+
+    }
+
+    @Override
+    public void onDown(MotionEvent e) {
+        oldVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+    }
+
+    @Override
+    public void onEndFF_REW(MotionEvent e) {
+    }
+
+    @Override
+    public void onVolumeGesture(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        Log.d(TAG, "onVolumeGesture: oldVolume " + oldVolume);
+        int value = ly_VG.getHeight() / maxVolume;
+        int newVolume = (int) ((e1.getY() - e2.getY()) / value + oldVolume);
+
+        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, AudioManager.FLAG_PLAY_SOUND);
+
+        Log.d(TAG, "onVolumeGesture: value" + value);
+        Log.d(TAG, "onVolumeGesture: newVolume " + newVolume);
+        //要强行转Float类型才能算出小数点，不然结果一直为0
+        int volumeProgress = (int) (newVolume / Float.valueOf(maxVolume) * 100);
+        if (volumeProgress >= 50) {
+            scl.setImageResource(R.drawable.ic_volume_higher_w);
+        } else if (volumeProgress > 0) {
+            scl.setImageResource(R.drawable.ic_volume_lower_w);
+        } else {
+            scl.setImageResource(R.drawable.ic_volume_off_w);
+        }
+        scl.setProgress(volumeProgress);
+        scl.show();
+    }
+
+    @Override
+    public void onBrightnessGesture(MotionEvent e1, MotionEvent e2, float distanceX,
+                                    float distanceY) {
+        onVolumeGesture(e1, e2, distanceX, distanceY);
+    }
+
+    @Override
+    public void onFF_REWGesture(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        Log.d(TAG, "onFF_REWGesture: ");
+    }
+
+    @Override
+    public void onSingleTapGesture(MotionEvent e) {
+        Log.d(TAG, "onSingleTapGesture: ");
+    }
+
+    @Override
+    public void onDoubleTapGesture(MotionEvent e) {
+        Log.d(TAG, "onDoubleTapGesture: ");
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+        Log.d(TAG, "onLongPress: ");
+    }
 
     public class PlayerListener implements Player.Listener {
         private LoadingView mPbBar;
@@ -574,110 +672,6 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             }
 
         }
-    }
-
-    @Override
-    public void finish() {
-        setResult(RESULT_OK);
-        super.finish();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        ExoPlayerFactory.release();
-        try {
-            mContext.unbindService(connection);
-        } catch (Exception e) {
-
-        }
-    }
-
-
-    //=============== 开始 视频手势 =======================//
-
-    private VideoGestureHelper ly_VG;
-    private ShowChangeLayout scl;
-    private AudioManager mAudioManager;
-    private int maxVolume = 0;
-    private int oldVolume = 0;
-    private int newProgress = 0, oldProgress = 0;
-    private Window mWindow;
-    private WindowManager.LayoutParams mLayoutParams;
-
-    private void initGesture() {
-        ly_VG = new VideoGestureHelper(mContext, mAudioView);
-        ly_VG.setVideoGestureListener(this);
-
-        scl = (ShowChangeLayout) findViewById(R.id.scl);
-
-        //初始化获取音量属性
-        mAudioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
-        maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-
-        //下面这是设置当前APP亮度的方法配置
-        mWindow = getWindow();
-        mLayoutParams = mWindow.getAttributes();
-
-    }
-
-
-    @Override
-    public void onDown(MotionEvent e) {
-        oldVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-    }
-
-    @Override
-    public void onEndFF_REW(MotionEvent e) {
-    }
-
-    @Override
-    public void onVolumeGesture(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.d(TAG, "onVolumeGesture: oldVolume " + oldVolume);
-        int value = ly_VG.getHeight() / maxVolume;
-        int newVolume = (int) ((e1.getY() - e2.getY()) / value + oldVolume);
-
-        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, AudioManager.FLAG_PLAY_SOUND);
-
-        Log.d(TAG, "onVolumeGesture: value" + value);
-        Log.d(TAG, "onVolumeGesture: newVolume " + newVolume);
-        //要强行转Float类型才能算出小数点，不然结果一直为0
-        int volumeProgress = (int) (newVolume / Float.valueOf(maxVolume) * 100);
-        if (volumeProgress >= 50) {
-            scl.setImageResource(R.drawable.ic_volume_higher_w);
-        } else if (volumeProgress > 0) {
-            scl.setImageResource(R.drawable.ic_volume_lower_w);
-        } else {
-            scl.setImageResource(R.drawable.ic_volume_off_w);
-        }
-        scl.setProgress(volumeProgress);
-        scl.show();
-    }
-
-    @Override
-    public void onBrightnessGesture(MotionEvent e1, MotionEvent e2, float distanceX,
-                                    float distanceY) {
-        onVolumeGesture(e1, e2, distanceX, distanceY);
-    }
-
-    @Override
-    public void onFF_REWGesture(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Log.d(TAG, "onFF_REWGesture: ");
-    }
-
-    @Override
-    public void onSingleTapGesture(MotionEvent e) {
-        Log.d(TAG, "onSingleTapGesture: ");
-    }
-
-    @Override
-    public void onDoubleTapGesture(MotionEvent e) {
-        Log.d(TAG, "onDoubleTapGesture: ");
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-        Log.d(TAG, "onLongPress: ");
     }
 
 }

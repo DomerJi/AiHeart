@@ -48,15 +48,12 @@ public class CustomDividerItemDecoration extends RecyclerView.ItemDecoration {
 
     private static final String TAG = "CustomDividerItem";
     private static final int[] ATTRS = new int[]{android.R.attr.listDivider};
-
+    private final Rect mBounds = new Rect();
     private Drawable mDivider;
-
     /**
      * Current orientation. Either {@link #HORIZONTAL} or {@link #VERTICAL}.
      */
     private int mOrientation;
-
-    private final Rect mBounds = new Rect();
 
     /**
      * Creates a divider {@link RecyclerView.ItemDecoration} that can be used with a
@@ -109,6 +106,14 @@ public class CustomDividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     /**
+     * @return the {@link Drawable} for this divider.
+     */
+    @Nullable
+    public Drawable getDrawable() {
+        return mDivider;
+    }
+
+    /**
      * Sets the {@link Drawable} for this divider.
      *
      * @param drawable Drawable that should be used as a divider.
@@ -118,14 +123,6 @@ public class CustomDividerItemDecoration extends RecyclerView.ItemDecoration {
             throw new IllegalArgumentException("Drawable cannot be null.");
         }
         mDivider = drawable;
-    }
-
-    /**
-     * @return the {@link Drawable} for this divider.
-     */
-    @Nullable
-    public Drawable getDrawable() {
-        return mDivider;
     }
 
     @Override

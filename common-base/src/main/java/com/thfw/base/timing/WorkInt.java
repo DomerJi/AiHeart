@@ -12,7 +12,9 @@ public enum WorkInt {
     TIME(2, 60, true),
     HINT(3, 20, true),
     SECOND(4, 1, true),
-    SECOND2(5, 2, true);
+    SECOND5(5, 5, false),
+    SECOND5_1(5, 5, false),
+    SECOND2(6, 2, true);
 
     /**
      * 标识

@@ -34,10 +34,6 @@ public class MyApplication extends MultiDexApplication {
 
     private static MyApplication app;
 
-    public static MyApplication getApp() {
-        return app;
-    }
-
     // static 代码段可以防止内存泄露
     static {
         // 设置全局的Header构建器
@@ -56,6 +52,14 @@ public class MyApplication extends MultiDexApplication {
                 return new ClassicsFooter(context).setDrawableSize(20);
             }
         });
+    }
+
+    public static MyApplication getApp() {
+        return app;
+    }
+
+    public static AppDatabase getDatabase() {
+        return Room.databaseBuilder(app, AppDatabase.class, "database-name").build();
     }
 
     @Override
@@ -83,10 +87,6 @@ public class MyApplication extends MultiDexApplication {
         param.append(SpeechConstant.ENGINE_MODE + "=" + SpeechConstant.MODE_MSC);
         SpeechUtility.createUtility(app, param.toString());
         Setting.setShowLog(false);
-    }
-
-    public static AppDatabase getDatabase() {
-        return Room.databaseBuilder(app, AppDatabase.class, "database-name").build();
     }
 
 }

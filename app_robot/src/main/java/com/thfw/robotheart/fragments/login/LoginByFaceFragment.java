@@ -64,6 +64,10 @@ import java.util.List;
  */
 public class LoginByFaceFragment extends RobotBaseFragment implements CameraBridgeViewBase.CvCameraViewListener2 {
 
+    public static final int JAVA_DETECTOR = 0;
+    public static final int NATIVE_DETECTOR = 1;
+    private static final int FAIL_COUNT_MAX = 200;
+    private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
     private LinearLayout mLlLoginCenter;
     private TextView mTvLoginByPassword;
     private TextView mTvLoginByCode;
@@ -81,7 +85,23 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     private boolean mLineUpAnim = true;
     // true 录入人脸  false 人脸识别
     private boolean inputFace;
-
+    /**
+     * 正在处理图像数据
+     */
+    private boolean frameHandleIng = false;
+    private int failCount = 0;
+    private Mat mRgba; //图像容器
+    private Mat mGray;
+    private File mCascadeFile;
+    private File mCascadeEyeFile;
+    private CascadeClassifier mJavaDetector;
+    private CascadeClassifier mJavaEyeDetector;
+    private DetectionBasedTracker mNativeDetector;
+    private DetectionBasedTracker mNativeEyeDetector;
+    private int mDetectorType = NATIVE_DETECTOR;
+    private String[] mDetectorName;
+    private float mRelativeFaceSize = 0.2f;
+    private int mAbsoluteFaceSize = 0;
 
     @Override
     public int getContentView() {
@@ -151,7 +171,6 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 
     }
 
-
     public void startBorderAnim() {
         mIvBorder.clearAnimation();
         borderAnimation = ObjectAnimator.ofFloat(mIvBorder, "rotation", 0, 360);
@@ -204,7 +223,6 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             mJavaCamera2CircleView.disableView();
         }
     }
-
 
     public void startLineAnim() {
         mIvLine.clearAnimation();
@@ -267,30 +285,6 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         return onCameraFrameHandle(inputFrame);
     }
-
-    /**
-     * 正在处理图像数据
-     */
-    private boolean frameHandleIng = false;
-    private int failCount = 0;
-    private static final int FAIL_COUNT_MAX = 200;
-    private Mat mRgba; //图像容器
-    private Mat mGray;
-
-    private File mCascadeFile;
-    private File mCascadeEyeFile;
-    private CascadeClassifier mJavaDetector;
-    private CascadeClassifier mJavaEyeDetector;
-    private DetectionBasedTracker mNativeDetector;
-    private DetectionBasedTracker mNativeEyeDetector;
-    private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
-    public static final int JAVA_DETECTOR = 0;
-    public static final int NATIVE_DETECTOR = 1;
-    private int mDetectorType = NATIVE_DETECTOR;
-    private String[] mDetectorName;
-
-    private float mRelativeFaceSize = 0.2f;
-    private int mAbsoluteFaceSize = 0;
 
     /**
      * 初始化人脸检测

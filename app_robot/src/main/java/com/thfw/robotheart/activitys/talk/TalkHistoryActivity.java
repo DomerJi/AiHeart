@@ -69,14 +69,14 @@ public class TalkHistoryActivity extends RobotBaseActivity<TalkPresenter> implem
     private boolean enableRefresh = true;
     private boolean enableLoadMore = true;
 
-    @Override
-    public int getContentView() {
-        return R.layout.activity_talk_history;
-    }
-
     public static void startActivity(Context context, int scene) {
         context.startActivity(new Intent(context, TalkHistoryActivity.class)
                 .putExtra(KEY_DATA, scene));
+    }
+
+    @Override
+    public int getContentView() {
+        return R.layout.activity_talk_history;
     }
 
     @Override

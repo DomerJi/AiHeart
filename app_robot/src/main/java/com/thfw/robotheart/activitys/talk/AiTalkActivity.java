@@ -71,6 +71,8 @@ import java.util.List;
 public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements TalkPresenter.TalkUi<List<DialogTalkModel>> {
 
 
+    long downTime;
+    boolean currentSelect = false;
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.constraintlayout.widget.ConstraintLayout mClAnim;
     private androidx.recyclerview.widget.RecyclerView mRvList;
@@ -84,7 +86,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     private android.widget.RelativeLayout mRlKeyword;
     private RecyclerView mRvSelect;
     private ChatSelectAdapter mSelectAdapter;
-
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private Helper mHelper = new Helper();
     private LinkedList<TtsModel> mTtsQueue = new LinkedList<>();
@@ -99,9 +100,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     private boolean softKeyBoardShow;
     private boolean softKeyBoardShowStvText;
     private ImageView mIvTalkModel;
-
-    long downTime;
-    boolean currentSelect = false;
     private SpeechTextView mStvText;
     private boolean mPauseStvTextShow;
     private boolean ttsPauseIng;
@@ -604,36 +602,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         }
     }
 
-    public class Helper {
-
-        private List<DialogTalkModel> mTalks;
-        private int index = 0;
-        private DialogTalkModel talkModel;
-
-        public void setTalks(List<DialogTalkModel> mTalks) {
-            this.mTalks = mTalks;
-            this.index = 0;
-        }
-
-        public boolean hasNext() {
-            return mTalks != null && mTalks.size() > index;
-        }
-
-        public synchronized DialogTalkModel next() {
-            if (hasNext()) {
-                talkModel = mTalks.get(index);
-                index++;
-                return talkModel;
-            } else {
-                return null;
-            }
-        }
-
-        public DialogTalkModel getTalkModel() {
-            return talkModel;
-        }
-    }
-
     private void ttsHandle(ChatEntity chatEntity) {
         if (!mIvVolumeSwitch.isSelected()) {
             return;
@@ -712,6 +680,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             }
             mRvSelect.setVisibility(View.GONE);
         } else {
+            hideInput();
             mRlKeyword.setVisibility(View.GONE);
             mRvSelect.setVisibility(View.GONE);
         }
@@ -821,5 +790,35 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         super.onDestroy();
         PolicyHelper.getInstance().end();
         TtsHelper.getInstance().stop();
+    }
+
+    public class Helper {
+
+        private List<DialogTalkModel> mTalks;
+        private int index = 0;
+        private DialogTalkModel talkModel;
+
+        public void setTalks(List<DialogTalkModel> mTalks) {
+            this.mTalks = mTalks;
+            this.index = 0;
+        }
+
+        public boolean hasNext() {
+            return mTalks != null && mTalks.size() > index;
+        }
+
+        public synchronized DialogTalkModel next() {
+            if (hasNext()) {
+                talkModel = mTalks.get(index);
+                index++;
+                return talkModel;
+            } else {
+                return null;
+            }
+        }
+
+        public DialogTalkModel getTalkModel() {
+            return talkModel;
+        }
     }
 }

@@ -12,11 +12,10 @@ import java.util.Arrays;
  */
 public class PageJumpUtils {
 
-    private static final String TAG = PageJumpUtils.class.getSimpleName();
-
     public static final int JUMP_TEXT = 1;
     public static final int JUMP_MUSIC = 2;
     public static final int JUMP_AI_HOME = 3;
+    private static final String TAG = PageJumpUtils.class.getSimpleName();
 
     /**
      * @param href pages/text/text=>心理测评

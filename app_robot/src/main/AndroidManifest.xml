@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 安装应用权限 -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android；     ‘.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -65,8 +65,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activitys.talk.TalkHistoryActivity"></activity>
-        <!-- 接收覆盖安装事件的Receiver -->
+        <activity
+            android:name=".activitys.me.EditInfoActivity"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".activitys.login.BindPhoneActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.talk.TalkHistoryActivity"
+            android:screenOrientation="landscape" /> <!-- 接收覆盖安装事件的Receiver -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

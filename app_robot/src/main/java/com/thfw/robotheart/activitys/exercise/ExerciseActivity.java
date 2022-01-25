@@ -76,7 +76,6 @@ public class ExerciseActivity extends RobotBaseActivity<UserToolPresenter> imple
     public void onFail(ResponeThrowable throwable) {
         mLoadingView.showFail(v -> {
             mPresenter.onGetList();
-            ExerciseIngActivity.startActivity(mContext,1);
         });
     }
 }

@@ -19,14 +19,14 @@ import com.thfw.ui.base.RobotBaseFragment;
  */
 public class SetLightFragment extends RobotBaseFragment {
 
+    // 渐变色计算类
+    final ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private RelativeLayout mRlTop;
     private Switch mSwitchAllLight;
     private RoundedImageView mRivLight;
     private LinearLayout mLlSeekbarHintVolume;
     private TextView mTvHintLightProgress;
     private SeekBar mSbHintLight;
-    // 渐变色计算类
-    final ArgbEvaluator argbEvaluator = new ArgbEvaluator();
 
     @Override
     public int getContentView() {

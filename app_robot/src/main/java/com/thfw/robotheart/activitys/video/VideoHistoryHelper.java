@@ -16,12 +16,12 @@ import java.util.HashMap;
  * Describe:Todo
  */
 public class VideoHistoryHelper {
+    // 视频开始，结尾小于2500毫秒，记录为从0开始
+    public static final long MIN_TIME_MS = 2500;
     private static final String TAG = VideoHistoryHelper.class.getSimpleName();
     private static HashMap<Integer, Long> positionMap = new HashMap<>();
     private static VideoModel lastVideoModel;
     private static VideoEtcModel lastVideoEtcModel;
-    // 视频开始，结尾小于2500毫秒，记录为从0开始
-    public static final long MIN_TIME_MS = 2500;
 
     public static void clearAll() {
         lastVideoModel = null;

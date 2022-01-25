@@ -9,12 +9,22 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
-import com.thfw.mobileheart.adapter.InfoLikeAdapter;
 import com.thfw.base.models.InfoLikeModel;
+import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.adapter.InfoLikeAdapter;
+import com.thfw.mobileheart.util.GlideImageEngine;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.TitleView;
 
 import java.util.ArrayList;
@@ -92,6 +102,11 @@ public class InfoActivity extends BaseActivity {
         mRvInfoHobby = (RecyclerView) findViewById(R.id.rv_info_hobby);
         mLlLike = (LinearLayout) findViewById(R.id.ll_like);
         mRvInfoLike = (RecyclerView) findViewById(R.id.rv_info_like);
+
+        mRivAvatar.setOnClickListener(v -> {
+//            showAlbum();
+            ToastUtil.show(getResources().getString(R.string.cancel));
+        });
     }
 
     @Override
@@ -129,5 +144,45 @@ public class InfoActivity extends BaseActivity {
         List<InfoLikeModel> likeList = new ArrayList<>();
         InfoLikeAdapter infoLikeAdapter = new InfoLikeAdapter(likeList, 10);
         mRvInfoLike.setAdapter(infoLikeAdapter);
+
+    }
+
+    /**
+     * 选择图片
+     */
+    private void showAlbum() {
+        ToastUtil.show(getResources().getString(R.string.cancel));
+        //参数很多，根据需要添加
+        PictureSelector.create(this)
+                .openGallery(PictureMimeType.ofImage())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
+                .imageEngine(new GlideImageEngine())
+                .maxSelectNum(1)// 最大图片选择数量
+                .minSelectNum(1) // 最小选择数量
+                .imageSpanCount(4)// 每行显示个数
+                .selectionMode(PictureConfig.SINGLE)// 多选 or 单选PictureConfig.MULTIPLE : PictureConfig.SINGLE
+                .isPreviewImage(true)// 是否可预览图片
+                .isCamera(true)// 是否显示拍照按钮
+                .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
+                .isCompress(true)// 是否压缩
+                .withAspectRatio(1, 1)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
+                .isEnableCrop(true)
+                .videoMaxSecond(15) // 过滤掉15秒以上的视频
+                .videoMinSecond(2) // 过滤掉2秒以下的视频
+                .rotateEnabled(true) // 裁剪是否可旋转图片
+                .forResult(new OnResultCallbackListener<LocalMedia>() {
+                    @Override
+                    public void onResult(List<LocalMedia> result) {
+                        LogUtil.e("onResult = " + result.size());
+                        LogUtil.e("onResult = " + GsonUtil.toJson(result));
+                        String avatarUrl = result.get(0).getCompressPath();
+                        GlideUtil.load(mContext, avatarUrl, mRivAvatar);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        ToastUtil.show(getResources().getString(R.string.cancel));
+                    }
+                });
+
     }
 }

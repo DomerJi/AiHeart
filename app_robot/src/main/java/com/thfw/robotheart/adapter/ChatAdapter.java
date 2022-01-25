@@ -3,6 +3,7 @@ package com.thfw.robotheart.adapter;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.robotheart.R;
 import com.thfw.ui.utils.GlideUtil;
+import com.thfw.user.login.UserManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,8 +25,12 @@ import java.util.List;
 public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder> {
 
 
+    private final Object visibleAvatar;
+    OnRecommendListener mRecommendListener;
+
     public ChatAdapter(List<ChatEntity> dataList) {
         super(dataList);
+        visibleAvatar = UserManager.getInstance().getUser().getVisibleAvatar();
     }
 
     @NonNull
@@ -79,6 +85,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
                     } else {
                         chatToHolder.mPbToTalk.setVisibility(View.GONE);
                     }
+                    GlideUtil.load(mContext, visibleAvatar, chatToHolder.mRivToAvatar);
                 }
                 break;
             case ChatEntity.TYPE_RECOMMEND_TEST: // 测评
@@ -114,6 +121,14 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
         return mDataList.get(position).type;
     }
 
+    public void setRecommendListener(OnRecommendListener recommendListener) {
+        this.mRecommendListener = recommendListener;
+    }
+
+    public interface OnRecommendListener {
+        void onRecommend(int type, DialogTalkModel.RecommendInfoBean recommendInfoBean);
+    }
+
     public class ChatHolder extends RecyclerView.ViewHolder {
         public ChatHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -134,9 +149,11 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
 
         private final TextView mTvTalk;
         private final ProgressBar mPbToTalk;
+        private final ImageView mRivToAvatar;
 
         public ChatToHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            mRivToAvatar = itemView.findViewById(R.id.riv_to_avatar);
             mTvTalk = itemView.findViewById(R.id.tv_talk);
             mPbToTalk = itemView.findViewById(R.id.pb_to_talk);
         }
@@ -182,15 +199,5 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             mTvHint = itemView.findViewById(R.id.tv_hint);
         }
 
-    }
-
-    OnRecommendListener mRecommendListener;
-
-    public void setRecommendListener(OnRecommendListener recommendListener) {
-        this.mRecommendListener = recommendListener;
-    }
-
-    public interface OnRecommendListener {
-        void onRecommend(int type, DialogTalkModel.RecommendInfoBean recommendInfoBean);
     }
 }

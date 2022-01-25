@@ -32,6 +32,8 @@ import java.util.List;
 
 public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> implements VideoPresenter.VideoUi<List<VideoTypeModel>> {
 
+    private static final String KEY_TYPE_LIST = "key.video.type.list";
+    private static final String KEY_HAS_VIDEO = "key.video.has";
     private TitleRobotView mTitleRobotView;
     private RecyclerView mRvList;
     private LinearLayout mLlTop;
@@ -40,10 +42,6 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
     private TextView mTvLastAudio;
     private LinearLayout mLlHistory;
     private com.thfw.ui.widget.LoadingView mLoadingView;
-
-
-    private static final String KEY_TYPE_LIST = "key.video.type.list";
-    private static final String KEY_HAS_VIDEO = "key.video.has";
     private VideoEtcTypeAdapter mVideoEtcTypeAdapter;
 
     @Override

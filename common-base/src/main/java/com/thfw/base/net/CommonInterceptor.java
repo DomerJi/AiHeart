@@ -54,6 +54,10 @@ public class CommonInterceptor implements Interceptor {
 
     private static OnTokenListener tokenListener;
 
+    public static String getToken() {
+        return tokenListener != null ? tokenListener.getToken() : "token";
+    }
+
     public interface OnTokenListener {
         String getToken();
     }

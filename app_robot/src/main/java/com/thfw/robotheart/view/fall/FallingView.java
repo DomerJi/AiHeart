@@ -15,17 +15,21 @@ import java.util.List;
 
 public class FallingView extends View {
 
-    private Context mContext;
-    private AttributeSet mAttrs;
-
-    private List<FallObject> fallObjects;
-
-    private int viewWidth;
-    private int viewHeight;
-
     private static final int defaultWidth = 600;//默认宽度
     private static final int defaultHeight = 1000;//默认高度
     private static final int intervalTime = 5;//重绘间隔时间
+    private Context mContext;
+    private AttributeSet mAttrs;
+    private List<FallObject> fallObjects;
+    private int viewWidth;
+    private int viewHeight;
+    // 重绘线程
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            invalidate();
+        }
+    };
 
     public FallingView(Context context) {
         super(context);
@@ -80,14 +84,6 @@ public class FallingView extends View {
             getHandler().postDelayed(runnable, intervalTime);
         }
     }
-
-    // 重绘线程
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            invalidate();
-        }
-    };
 
     /**
      * 向View添加下落物体对象

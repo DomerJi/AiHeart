@@ -2,6 +2,7 @@ package com.thfw.base.api;
 
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.OrganizationModel;
+import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.net.HttpResult;
 
 import io.reactivex.Observable;
@@ -24,6 +25,16 @@ public interface OrganizationApi {
     @FormUrlEncoded
     @POST("organization_list")
     Observable<HttpResult<OrganizationModel>> onGetOrganizationList(@Field("id") String organizationId);
+
+    /**
+     * [获取组织层级列表]
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("get_organization_pwd")
+    Observable<HttpResult<OrganizationSelectedModel>> onGetJoinedList(@Field("id") String organizationId);
+
 
     /**
      * [选择加入组织]

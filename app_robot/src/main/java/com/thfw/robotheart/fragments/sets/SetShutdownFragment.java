@@ -31,18 +31,16 @@ import java.util.List;
  */
 public class SetShutdownFragment extends RobotBaseFragment implements TimingHelper.WorkListener {
 
+    private static long shutdownTime;
     private Switch mSwitchAllVolume;
     private RecyclerView mRvHour;
     private RecyclerView mRvMin;
     private RecyclerView mRvSecond;
     private TextView mTvTint;
-
     private List<String> mHour = new ArrayList<>();
     private List<String> mSecond = new ArrayList<>();
     private List<String> mMin = new ArrayList<>();
     private TextView mTvEcecute;
-
-    private static long shutdownTime;
 
     @Override
     public int getContentView() {

@@ -22,7 +22,6 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.ExerciseLogcateAdapter;
 import com.thfw.robotheart.constants.UIConfig;
-import com.thfw.robotheart.view.MeRectShapeDistributor;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.ui.utils.GlideUtil;
@@ -31,11 +30,9 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.List;
 
-import me.samlss.bloom.Bloom;
-import me.samlss.bloom.effector.BloomEffector;
-
 public class ExerciseDetailsActivity extends RobotBaseActivity<UserToolPresenter> implements UserToolPresenter.UserToolUi<ExerciseModel> {
 
+    public static final String KEY_ID = "key.id";
     private android.widget.ImageView mIvBg;
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private android.widget.TextView mTvVideoTitle;
@@ -45,8 +42,6 @@ public class ExerciseDetailsActivity extends RobotBaseActivity<UserToolPresenter
     private androidx.recyclerview.widget.RecyclerView mRvLike;
     private androidx.constraintlayout.widget.ConstraintLayout mClBg;
     private ExerciseLogcateAdapter mLogcateAdapter;
-
-    public static final String KEY_ID = "key.id";
     private int mId = -1;
     private ExerciseModel mSimpleModel;
     private com.thfw.ui.widget.LoadingView mLoadingView;

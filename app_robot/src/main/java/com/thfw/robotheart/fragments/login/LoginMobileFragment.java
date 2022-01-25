@@ -76,7 +76,7 @@ public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> imple
         initAgreeClick();
     }
 
-    private void initAgreeClick(){
+    private void initAgreeClick() {
         mTvProductAgree.setOnClickListener(v -> {
             WebActivity.startActivity(mContext, AgreeOn.AGREE_AGREE);
         });

@@ -38,19 +38,19 @@ public class PageHelper<T> {
     }
 
     /**
+     * @return 当前页是否是第一页
+     */
+    public boolean isFirstPage() {
+        return currentPage == firstPage;
+    }
+
+    /**
      * 重置第一页页码 页码不为1的情况
      *
      * @param firstPage
      */
     public void setFirstPage(int firstPage) {
         this.firstPage = firstPage;
-    }
-
-    /**
-     * @return 当前页是否是第一页
-     */
-    public boolean isFirstPage() {
-        return currentPage == firstPage;
     }
 
     /**

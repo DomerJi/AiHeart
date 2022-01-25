@@ -31,6 +31,8 @@ import java.util.List;
 
 public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> implements AudioPresenter.AudioUi<List<AudioTypeModel>> {
 
+    private static final String KEY_TYPE_LIST = "key.audio.type.list";
+    private static final String KEY_HAS_AUDIO = "key.audio.has";
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.recyclerview.widget.RecyclerView mRvList;
     private android.widget.LinearLayout mLlTop;
@@ -39,8 +41,6 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
     private android.widget.TextView mTvLastAudio;
     private LinearLayout mLlHistory;
     private AudioEtcTypeAdapter mAudioEtcTypeAdapter;
-    private static final String KEY_TYPE_LIST = "key.audio.type.list";
-    private static final String KEY_HAS_AUDIO = "key.audio.has";
     private com.thfw.ui.widget.LoadingView mLoadingView;
 
     @Override

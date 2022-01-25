@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.thfw.base.base.IModel;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.OrganizationModel;
+import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.OrganizationPresenter;
@@ -35,12 +36,12 @@ import java.util.List;
 public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPresenter> implements OrganizationPresenter.OrganizationUi<IModel> {
 
 
+    public static boolean isNoSetUserInfo = false;
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.recyclerview.widget.RecyclerView mRvSelected;
     private androidx.recyclerview.widget.RecyclerView mRvSelectChildren;
     private com.thfw.ui.widget.LoadingView mLoadingView;
     private OrganizationModel mOrganizationModel;
-
     private ArrayList<OrganizationModel.OrganizationBean> mSelecteds = new ArrayList<>();
     private OrganSelectedAdapter mOranSelectedAdapter;
     private OrganSelectChildrenAdapter mOrganSelectChildrenAdapter;
@@ -49,6 +50,9 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
     private android.widget.TextView mTvNickname;
     private android.widget.TextView mTvChooseOrganization;
     private boolean mIsFirst;
+
+    private List<OrganizationSelectedModel.OrganizationBean> mSelectedRequest;
+    private ArrayList<String> childIds;
 
     public static void startActivity(Context context, boolean isFirst) {
         context.startActivity(new Intent(context, SelectOrganizationActivity.class)
@@ -84,11 +88,6 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
         });
 
 
-        List<OrganizationModel.OrganizationBean> list = CommonParameter.getOrganizationSelected();
-        if (list != null) {
-            mSelecteds.addAll(list);
-        }
-
         mLlWelcome = (LinearLayout) findViewById(R.id.ll_welcome);
         mTvNickname = (TextView) findViewById(R.id.tv_nickname);
         mTvChooseOrganization = (TextView) findViewById(R.id.tv_choose_organization);
@@ -97,12 +96,65 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
     @Override
     public void initData() {
         mIsFirst = getIntent().getBooleanExtra(KEY_DATA, false);
-        mPresenter.onGetOrganizationList();
+
         if (mIsFirst) {
             mTitleRobotView.getLlBack().setVisibility(View.GONE);
         }
         if (UserManager.getInstance().isLogin()) {
             mTvNickname.setText(UserManager.getInstance().getUser().getVisibleName());
+        }
+
+        initDataList();
+    }
+
+    private void initDataList() {
+        new OrganizationPresenter(new OrganizationPresenter.OrganizationUi<OrganizationSelectedModel>() {
+
+
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return SelectOrganizationActivity.this;
+            }
+
+            @Override
+            public void onSuccess(OrganizationSelectedModel data) {
+                if (data != null) {
+                    mSelectedRequest = new ArrayList<>();
+                    initSelectedList(mSelectedRequest, data.getOrganization());
+                }
+                mPresenter.onGetOrganizationList();
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                mLoadingView.showFail(v -> {
+                    initDataList();
+                });
+            }
+        }).onGetJoinedList();
+    }
+
+    private void initSelectedList(List<OrganizationSelectedModel.OrganizationBean> list, OrganizationSelectedModel.OrganizationBean bean) {
+        if (bean != null) {
+            list.add(bean);
+            if (bean.getChildren() != null) {
+                initSelectedList(list, bean.getChildren());
+            }
+        }
+    }
+
+    private void initSelectedList2(List<OrganizationModel.OrganizationBean> list, OrganizationModel.OrganizationBean bean) {
+        if (bean != null) {
+            list.add(bean);
+            if (bean.getChildren() != null) {
+                for (OrganizationModel.OrganizationBean b : bean.getChildren()) {
+                    if (childIds.contains(String.valueOf(b.getId()))) {
+                        initSelectedList2(list, b);
+                        break;
+                    }
+                }
+
+            }
         }
     }
 
@@ -119,9 +171,18 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
                 mLoadingView.showEmpty();
                 return;
             }
-            if (mSelecteds.isEmpty()) {
+            if (mSelectedRequest != null) {
+                childIds = new ArrayList<>();
+                for (OrganizationSelectedModel.OrganizationBean bean : mSelectedRequest) {
+                    childIds.add(String.valueOf(bean.getId()));
+                }
+                initSelectedList2(mSelecteds, mOrganizationModel.getOrganization());
+                CommonParameter.setOrganizationSelected(mSelecteds);
+                UserManager.getInstance().getUser().setOrganList(mSelecteds);
+            } else {
                 mSelecteds.add(mOrganizationModel.getOrganization());
             }
+            // 已选择信息
             mOranSelectedAdapter = new OrganSelectedAdapter(mSelecteds);
             mOranSelectedAdapter.setOnRvItemListener(new OnRvItemListener<OrganizationModel.OrganizationBean>() {
                 @Override
@@ -168,6 +229,10 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
             LoadingDialog.hide();
             ToastUtil.show("选择成功");
             mIsFirst = false;
+            if (isNoSetUserInfo) {
+                isNoSetUserInfo = false;
+                InfoActivity.startActivityFirst(mContext);
+            }
             finish();
         }
     }

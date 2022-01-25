@@ -23,6 +23,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.activitys.login.SetPasswordActivity;
+import com.thfw.robotheart.activitys.me.InfoActivity;
 import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.ui.base.BaseFragment;
@@ -108,7 +109,7 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
 
     }
 
-    private void initAgreeClick(){
+    private void initAgreeClick() {
         mTvProductAgree.setOnClickListener(v -> {
             WebActivity.startActivity(mContext, AgreeOn.AGREE_AGREE);
         });
@@ -177,7 +178,10 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
             UserManager.getInstance().login(user);
             LogUtil.d(TAG, "UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
             if (data.isNoOrganization()) {
+                SelectOrganizationActivity.isNoSetUserInfo = data.isNoSetUserInfo();
                 SelectOrganizationActivity.startActivity(mContext, true);
+            } else if (data.isNoSetUserInfo()) {
+                InfoActivity.startActivityFirst(mContext);
             }
             getActivity().finish();
         } else {

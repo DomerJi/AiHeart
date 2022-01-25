@@ -41,7 +41,7 @@ import org.jetbrains.annotations.NotNull;
 public class TitleBarView extends LinearLayout implements TimingHelper.WorkListener {
 
     private static final String TAG = TitleBarView.class.getSimpleName();
-
+    private static volatile int level;
     private ImageView mIvTitleBarWifi;
     private TextView mTvTitleBarTime;
     private RelativeLayout mFlBattery;
@@ -51,7 +51,6 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
     private BroadcastReceiver mBatInfoReceiver;
     private BroadcastReceiver mWifiStateReceiver;
     private BroadcastReceiver broadcastReceiver;
-    private static volatile int level;
     private boolean colorFg = false;
     private View mVBatteryHead;
     private boolean colorFgWhite;

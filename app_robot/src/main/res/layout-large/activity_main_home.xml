@@ -62,8 +62,7 @@
             android:maxLength="15"
             android:text="@string/test_nickname"
             android:textColor="@color/colorRobotFore"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tv_institution"
@@ -71,10 +70,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:maxLength="30"
-            android:text="七连五班"
             android:textColor="@color/colorRobotFore"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="@dimen/textSize_small_2"
+            tools:text="七连五班" />
 
     </LinearLayout>
 

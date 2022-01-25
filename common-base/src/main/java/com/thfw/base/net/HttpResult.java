@@ -1,5 +1,6 @@
 package com.thfw.base.net;
 
+import com.google.gson.annotations.SerializedName;
 import com.thfw.base.base.IModel;
 import com.thfw.base.base.IResult;
 
@@ -44,4 +45,24 @@ public class HttpResult<T> implements IResult, IModel {
     public boolean isSuccessful() {
         return code == CODE_SUCCESS;
     }
+
+    @SerializedName("ext")
+    private Ext ext;
+
+    public Ext getExt() {
+        return ext;
+    }
+
+    public boolean isAchieve() {
+        return ext != null && ext.achieve;
+    }
+
+    public class Ext {
+        private boolean achieve;
+
+        public boolean isAchieve() {
+            return achieve;
+        }
+    }
+
 }

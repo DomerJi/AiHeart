@@ -81,15 +81,14 @@
                     android:textSize="@dimen/textSize_large" />
 
 
-                <EditText
-                    android:id="@+id/et_user_nickname"
+                <TextView
+                    android:id="@+id/tv_user_nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="16dp"
                     android:gravity="right"
-                    android:hint="点击编辑"
                     android:textColor="@color/colorRobotFore"
                     android:textColorHint="@color/white"
                     android:textSize="@dimen/textSize"
@@ -119,15 +118,14 @@
                     android:textSize="@dimen/textSize_large" />
 
 
-                <EditText
-                    android:id="@+id/et_user_name"
+                <TextView
+                    android:id="@+id/tv_user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="16dp"
                     android:gravity="right"
-                    android:hint="点击编辑"
                     android:textColor="@color/colorRobotFore"
                     android:textColorHint="@color/white"
                     android:textSize="@dimen/textSize"

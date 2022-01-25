@@ -36,8 +36,9 @@ public interface LoginApi {
 
     /**
      * [发送验证码]
+     *
      * @param phoneNumber 手机号
-     * @param type 1 登录 2 找回密码 3 绑定手机号
+     * @param type        1 登录 2 找回密码 3 绑定手机号
      * @return
      */
     @FormUrlEncoded
@@ -52,11 +53,22 @@ public interface LoginApi {
      * type 1 验证码 2 新旧密码
      * password 新密码 旧密码
      * old_password
+     *
      * @return
      */
     @FormUrlEncoded
     @POST("reset_password")
     Observable<HttpResult<CommonModel>> onSetPassword(@FieldMap Map<String, Object> params);
+
+    /**
+     * [验证码-手机验证码验证]
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("mobile_code_check")
+    Observable<HttpResult<CommonModel>> onCheckMobileCode(@Field("mobile") String mobile,
+                                                      @Field("code") String code);
 
 
 }

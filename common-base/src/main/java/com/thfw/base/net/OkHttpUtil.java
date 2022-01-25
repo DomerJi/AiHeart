@@ -18,7 +18,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.Nullable;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Callback;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -149,6 +152,31 @@ public class OkHttpUtil {
                     } else {
                         resultUI.onFail(new ResponeThrowable(httpResult.getCode(), httpResult.getMsg()));
                     }
+                }, exception -> {
+                    resultUI.onFail(ExceptionHandle.handleException(exception));
+                });
+    }
+
+    public static void request(String url, MultipartBody multipartBody, Callback callback) {
+        OkHttpClient httpClient = new OkHttpClient();
+        Request.Builder requestBuilder = new Request.Builder()
+                .addHeader("Token", CommonInterceptor.getToken())
+                .url(url)
+                .post(multipartBody);
+        Request request = requestBuilder.build();
+        httpClient.newCall(request).enqueue(callback);
+        LogUtil.d("MultipartBody -> request ");
+    }
+
+
+    @SuppressLint("CheckResult")
+    public static <T extends Object, U extends UI> void requestByHttpResult(Observable<HttpResult<T>> observable, U resultUI) {
+        if (resultUI.getLifecycleProvider() != null) {
+            observable = observable.compose(resultUI.getLifecycleProvider().bindToLifecycle());
+        }
+        observable.compose(OkHttpUtil.transformerScheduler())
+                .subscribe(httpResult -> {
+                    resultUI.onSuccess(httpResult);
                 }, exception -> {
                     resultUI.onFail(ExceptionHandle.handleException(exception));
                 });

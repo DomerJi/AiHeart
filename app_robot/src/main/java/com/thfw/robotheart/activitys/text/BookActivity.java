@@ -25,12 +25,12 @@ import java.util.List;
 
 public class BookActivity extends RobotBaseActivity<BookPresenter> implements BookPresenter.BookUi<BookTypeModel> {
 
+    public static final String KEY_TYPE_LIST = "key.book.type.list";
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.recyclerview.widget.RecyclerView mRvType;
     private android.widget.FrameLayout mFlContent;
     private BookTypeAdapter mBookTypeAdapter;
     private com.thfw.ui.widget.LoadingView mLoadingView;
-    public static final String KEY_TYPE_LIST = "key.book.type.list";
 
     @Override
     public int getContentView() {

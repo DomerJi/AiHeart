@@ -92,6 +92,11 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         implements TimingHelper.WorkListener, VideoGestureHelper.VideoGestureListener, VideoPresenter.VideoUi<VideoModel> {
 
 
+    public static final String KEY_PLAY_POSITION = "key.position";
+    public static final String KEY_PLAY_ROOTTYPE = "key.roottype";
+    private static final String CURRENT_POSITION = "current_position";
+    private static final String PLAY_STATE = "play_state";
+    private static List<VideoEtcModel> mStaticVideoList;
     private ImageView mIvBg;
     private PlayerView mMPlayerView;
     private ProgressBar mPbBottom;
@@ -99,9 +104,6 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     private SimpleExoPlayer mExoPlayer;
     private VideoModel mVideoModel;
     private PlayerListener mPlayerListener;
-
-    private static final String CURRENT_POSITION = "current_position";
-    private static final String PLAY_STATE = "play_state";
     private long playPosition;
     private ConstraintLayout mVideoLayout;
     private boolean playState;
@@ -115,10 +117,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     private LinearLayout mLlTopControl;
     private ImageView mIvBack;
     private float speed;
-    private static List<VideoEtcModel> mStaticVideoList;
     private List<VideoEtcModel> mVideoList;
-    public static final String KEY_PLAY_POSITION = "key.position";
-    public static final String KEY_PLAY_ROOTTYPE = "key.roottype";
     private int mPlayPosition;
     private ShowChangeLayout mScl;
     private boolean flDurationEnd;
@@ -141,6 +140,30 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     private int rootType;
     private boolean autoFinished;
     private VideoItemAdapter videoItemAdapter;
+    private VideoGestureHelper ly_VG;
+    private ShowChangeLayout scl;
+    private AudioManager mAudioManager;
+    private int maxVolume = 0;
+    private int oldVolume = 0;
+    private int newProgress = 0, oldProgress = 0;
+    private BrightnessHelper mBrightnessHelper;
+    private float brightness = 1;
+    private Window mWindow;
+    private WindowManager.LayoutParams mLayoutParams;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Runnable speechRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mLLShowForWard == null) {
+                mLLShowForWard = findViewById(R.id.ll_show_forward);
+            }
+            mLLShowForWard.setVisibility(speed > 1 ? VISIBLE : View.GONE);
+            if (mExoPlayer != null) {
+                PlaybackParameters playbackParameters = new PlaybackParameters(speed, 1.0F);
+                mExoPlayer.setPlaybackParameters(playbackParameters);
+            }
+        }
+    };
 
     public static void startActivity(Context context, VideoModel videoModel) {
         context.startActivity(new Intent(context, VideoPlayerActivity.class).putExtra(KEY_DATA, videoModel));
@@ -332,7 +355,6 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         }
     }
 
-
     @Override
     public LifecycleProvider getLifecycleProvider() {
         return this;
@@ -429,82 +451,8 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         });
     }
 
-    /**
-     * 视频事件监听
-     */
-    public class PlayerListener implements Player.Listener {
 
-        @Override
-        public void onPlaybackStateChanged(int state) {
-            if (state == Player.STATE_READY || state == Player.STATE_ENDED) {
-                mLoadingView.hide();
-                // 视频播放完成
-                if (state == Player.STATE_ENDED) {
-                    if (autoFinished) {
-                        finish();
-                        return;
-                    }
-                    if (mPlayPosition < mVideoList.size() - 1) {
-                        videoChanged(mPlayPosition + 1);
-                    }
-                }
-            } else {
-                if (mExoPlayer.getPlayerError() == null) {
-                    mLoadingView.showLoadingNoText();
-                } else {
-                    videoError();
-                }
-            }
-        }
-
-        @Override
-        public void onMediaItemTransition(@Nullable @org.jetbrains.annotations.Nullable MediaItem mediaItem, int reason) {
-            if (autoFinished && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
-                finish();
-                return;
-            }
-            if (videoItemAdapter != null && mExoPlayer != null && mRvList != null) {
-                mRvList.scrollToPosition(mExoPlayer.getCurrentWindowIndex());
-            }
-        }
-
-        @Override
-        public void onPlayerError(ExoPlaybackException error) {
-            String errorHint = null;
-            if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                IOException cause = error.getSourceException();
-                if (cause instanceof HttpDataSource.HttpDataSourceException) {
-                    // An HTTP error occurred.
-                    HttpDataSource.HttpDataSourceException httpError = (HttpDataSource.HttpDataSourceException) cause;
-                    // This is the request for which the error occurred.
-                    DataSpec requestDataSpec = httpError.dataSpec;
-                    // It's possible to find out more about the error both by casting and by
-                    // querying the cause.
-                    if (httpError instanceof HttpDataSource.InvalidResponseCodeException) {
-                        // Cast to InvalidResponseCodeException and retrieve the response code,
-                        // message and headers.
-                        errorHint = "视频资源错误";
-                    } else {
-                        // Try calling httpError.getCause() to retrieve the underlying cause,
-                        // although note that it may be null.
-
-                        if (httpError.getCause() instanceof UnknownHostException) {
-                            errorHint = "网络异常，请检查网络";
-                        } else {
-                            errorHint = "未知错误" + httpError.getCause();
-                        }
-                    }
-                }
-            } else if (error.type == ExoPlaybackException.TYPE_RENDERER) {
-                errorHint = "渲染错误 - UNEXPECTED";
-            } else if (error.type == ExoPlaybackException.TYPE_UNEXPECTED) {
-                errorHint = "未知错误 - UNEXPECTED";
-            } else if (error.type == ExoPlaybackException.TYPE_REMOTE) {
-                errorHint = "网络错误 - REMOTE";
-            }
-            videoError();
-        }
-    }
+    //=============== 开始 视频手势 =======================//
 
     /**
      * 视频播放错误处理
@@ -602,7 +550,6 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         }
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -686,20 +633,6 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         }).addCollect(HistoryApi.TYPE_COLLECT_VIDEO, mVideoModel.getId());
     }
 
-
-    //=============== 开始 视频手势 =======================//
-
-    private VideoGestureHelper ly_VG;
-    private ShowChangeLayout scl;
-    private AudioManager mAudioManager;
-    private int maxVolume = 0;
-    private int oldVolume = 0;
-    private int newProgress = 0, oldProgress = 0;
-    private BrightnessHelper mBrightnessHelper;
-    private float brightness = 1;
-    private Window mWindow;
-    private WindowManager.LayoutParams mLayoutParams;
-
     private void initGesture() {
         ly_VG = new VideoGestureHelper(mContext, mMPlayerView);
         ly_VG.setVideoGestureListener(this);
@@ -719,7 +652,6 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         brightness = mLayoutParams.screenBrightness;
 
     }
-
 
     @Override
     public void onDown(MotionEvent e) {
@@ -846,21 +778,6 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         }
     }
 
-    private Handler mHandler = new Handler(Looper.getMainLooper());
-    private Runnable speechRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mLLShowForWard == null) {
-                mLLShowForWard = findViewById(R.id.ll_show_forward);
-            }
-            mLLShowForWard.setVisibility(speed > 1 ? VISIBLE : View.GONE);
-            if (mExoPlayer != null) {
-                PlaybackParameters playbackParameters = new PlaybackParameters(speed, 1.0F);
-                mExoPlayer.setPlaybackParameters(playbackParameters);
-            }
-        }
-    };
-
     private void setSpeed(float s) {
         speed = s;
         if (speed > 1f) {
@@ -869,6 +786,83 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         } else {
             mHandler.removeCallbacks(speechRunnable);
             mHandler.post(speechRunnable);
+        }
+    }
+
+    /**
+     * 视频事件监听
+     */
+    public class PlayerListener implements Player.Listener {
+
+        @Override
+        public void onPlaybackStateChanged(int state) {
+            if (state == Player.STATE_READY || state == Player.STATE_ENDED) {
+                mLoadingView.hide();
+                // 视频播放完成
+                if (state == Player.STATE_ENDED) {
+                    if (autoFinished) {
+                        finish();
+                        return;
+                    }
+                    if (mPlayPosition < mVideoList.size() - 1) {
+                        videoChanged(mPlayPosition + 1);
+                    }
+                }
+            } else {
+                if (mExoPlayer.getPlayerError() == null) {
+                    mLoadingView.showLoadingNoText();
+                } else {
+                    videoError();
+                }
+            }
+        }
+
+        @Override
+        public void onMediaItemTransition(@Nullable @org.jetbrains.annotations.Nullable MediaItem mediaItem, int reason) {
+            if (autoFinished && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
+                finish();
+                return;
+            }
+            if (videoItemAdapter != null && mExoPlayer != null && mRvList != null) {
+                mRvList.scrollToPosition(mExoPlayer.getCurrentWindowIndex());
+            }
+        }
+
+        @Override
+        public void onPlayerError(ExoPlaybackException error) {
+            String errorHint = null;
+            if (error.type == ExoPlaybackException.TYPE_SOURCE) {
+                IOException cause = error.getSourceException();
+                if (cause instanceof HttpDataSource.HttpDataSourceException) {
+                    // An HTTP error occurred.
+                    HttpDataSource.HttpDataSourceException httpError = (HttpDataSource.HttpDataSourceException) cause;
+                    // This is the request for which the error occurred.
+                    DataSpec requestDataSpec = httpError.dataSpec;
+                    // It's possible to find out more about the error both by casting and by
+                    // querying the cause.
+                    if (httpError instanceof HttpDataSource.InvalidResponseCodeException) {
+                        // Cast to InvalidResponseCodeException and retrieve the response code,
+                        // message and headers.
+                        errorHint = "视频资源错误";
+                    } else {
+                        // Try calling httpError.getCause() to retrieve the underlying cause,
+                        // although note that it may be null.
+
+                        if (httpError.getCause() instanceof UnknownHostException) {
+                            errorHint = "网络异常，请检查网络";
+                        } else {
+                            errorHint = "未知错误" + httpError.getCause();
+                        }
+                    }
+                }
+            } else if (error.type == ExoPlaybackException.TYPE_RENDERER) {
+                errorHint = "渲染错误 - UNEXPECTED";
+            } else if (error.type == ExoPlaybackException.TYPE_UNEXPECTED) {
+                errorHint = "未知错误 - UNEXPECTED";
+            } else if (error.type == ExoPlaybackException.TYPE_REMOTE) {
+                errorHint = "网络错误 - REMOTE";
+            }
+            videoError();
         }
     }
 

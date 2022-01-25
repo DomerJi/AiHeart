@@ -15,11 +15,10 @@ import com.thfw.user.login.UserManager;
 
 public class SetPasswordActivity extends RobotBaseActivity {
 
-    private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
-    private android.widget.FrameLayout mFlContent;
-
     public static final int SET_CODE = 0;
     public static final int SET_ORIGIN = 1;
+    private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
+    private android.widget.FrameLayout mFlContent;
     private FragmentLoader mFragmentLoader;
 
     public static void startActivity(Context context, int type) {

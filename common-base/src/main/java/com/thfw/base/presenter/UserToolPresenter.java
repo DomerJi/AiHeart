@@ -4,7 +4,6 @@ import com.thfw.base.api.TalkApi;
 import com.thfw.base.api.UserToolApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
-import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.models.ExerciseModel;
 import com.thfw.base.net.HttpResult;
@@ -41,9 +40,9 @@ public class UserToolPresenter extends IPresenter<UserToolPresenter.UserToolUi> 
 
 
     public void onDialogTool(NetParams params) {
-        Observable<HttpResult<List<CommonModel>>> observable = OkHttpUtil.createService(UserToolApi.class)
+        Observable<HttpResult<List<DialogTalkModel>>> observable = OkHttpUtil.createService(UserToolApi.class)
                 .onDialogTool(params);
-        OkHttpUtil.request(observable, getUI());
+        OkHttpUtil.requestByHttpResult(observable, getUI());
     }
 
     public void onJoinDialog(int enter_type, int id) {

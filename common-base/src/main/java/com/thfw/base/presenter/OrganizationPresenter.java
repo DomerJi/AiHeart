@@ -5,6 +5,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.OrganizationModel;
+import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.OkHttpUtil;
@@ -26,6 +27,15 @@ public class OrganizationPresenter extends IPresenter<OrganizationPresenter.Orga
     public void onGetOrganizationList() {
         String organizationId = CommonParameter.getOrganizationId();
         Observable<HttpResult<OrganizationModel>> observable = OkHttpUtil.createService(OrganizationApi.class).onGetOrganizationList(organizationId);
+        OkHttpUtil.request(observable, getUI());
+
+    }
+
+
+    public void onGetJoinedList() {
+        String organizationId = CommonParameter.getOrganizationId();
+        Observable<HttpResult<OrganizationSelectedModel>> observable = OkHttpUtil.createService(OrganizationApi.class)
+                .onGetJoinedList(organizationId);
         OkHttpUtil.request(observable, getUI());
 
     }

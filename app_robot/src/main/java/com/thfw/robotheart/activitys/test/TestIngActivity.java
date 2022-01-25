@@ -30,10 +30,9 @@ import java.util.List;
 public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements TestPresenter.TestUi<TestResultModel> {
 
 
+    private static TestDetailModel testDetailModel;
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.viewpager2.widget.ViewPager2 mVpList;
-
-    private static TestDetailModel testDetailModel;
     private TestDetailModel mModel;
 
     private long beginTime;

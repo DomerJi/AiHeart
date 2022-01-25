@@ -27,6 +27,7 @@ import com.thfw.ui.base.RobotBaseFragment;
 public class WifiInputFragment extends RobotBaseFragment {
 
 
+    OnCompleteInputListener completeInputListener;
     private ScanResult scanResult;
     private String passType;
     private int position;
@@ -118,7 +119,6 @@ public class WifiInputFragment extends RobotBaseFragment {
 
     }
 
-
     /**
      * 连接wifi
      */
@@ -164,8 +164,6 @@ public class WifiInputFragment extends RobotBaseFragment {
         mTvConnect.setText(show ? "" : "连接");
         mPbLoading.setVisibility(show ? View.VISIBLE : View.GONE);
     }
-
-    OnCompleteInputListener completeInputListener;
 
     public void setCompleteInputListener(OnCompleteInputListener completeInputListener) {
         this.completeInputListener = completeInputListener;

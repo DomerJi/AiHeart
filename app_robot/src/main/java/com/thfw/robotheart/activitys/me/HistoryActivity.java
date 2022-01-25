@@ -38,14 +38,13 @@ import java.util.List;
 
 public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> implements HistoryPresenter.HistoryUi<List<HistoryModel>> {
 
+    private static final String KEY_TYPE = "key.type";
+    private static final String KEY_TITLE = "key.title";
+    private static final String KEY_RID = "key.rid";
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private SmartRefreshLayout mRefreshLayout;
     private androidx.recyclerview.widget.RecyclerView mRvList;
     private com.thfw.ui.widget.LoadingView mLoadingView;
-
-    private static final String KEY_TYPE = "key.type";
-    private static final String KEY_TITLE = "key.title";
-    private static final String KEY_RID = "key.rid";
     private int type;
     private int rid;
     private HistoryAdapter historyAdapter;
@@ -135,7 +134,7 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
                 HistoryModel historyModel = list.get(position);
                 if (historyModel instanceof HistoryModel.HistoryTestModel) { // 测评
                     HistoryModel.HistoryTestModel testModel = (HistoryModel.HistoryTestModel) historyModel;
-                    TestDetailActivity.startActivity(mContext,testModel.getId());
+                    TestDetailActivity.startActivity(mContext, testModel.getId());
 //                    TestResultWebActivity.startActivity(mContext, new TestResultModel().setResultId(testModel.getId()));
                 } else if (historyModel instanceof HistoryModel.HistoryVideoModel) { // 视频
                     HistoryModel.HistoryVideoModel videoModel = (HistoryModel.HistoryVideoModel) historyModel;

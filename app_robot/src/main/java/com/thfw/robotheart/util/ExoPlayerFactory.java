@@ -11,12 +11,32 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.thfw.robotheart.constants.UIConfig;
 
 public class ExoPlayerFactory {
-    private static SimpleExoPlayer exoPlayer;
     public static final int EXO_AUDIO = 0;
     public static final int EXO_VIDEO = 1;
+    private static SimpleExoPlayer exoPlayer;
     private static int type;
 
     private ExoPlayerFactory() {
+    }
+
+    public static Builder with(Context context) {
+        return new Builder(context);
+    }
+
+    public static void release() {
+        type = -1;
+        if (exoPlayer != null) {
+            synchronized (ExoPlayerFactory.class) {
+                if (exoPlayer != null) {
+                    exoPlayer.release();
+                    exoPlayer = null;
+                }
+            }
+        }
+    }
+
+    public static SimpleExoPlayer getExoPlayer() {
+        return exoPlayer;
     }
 
     public static class Builder {
@@ -55,26 +75,5 @@ public class ExoPlayerFactory {
                     break;
             }
         }
-    }
-
-
-    public static Builder with(Context context) {
-        return new Builder(context);
-    }
-
-    public static void release() {
-        type = -1;
-        if (exoPlayer != null) {
-            synchronized (ExoPlayerFactory.class) {
-                if (exoPlayer != null) {
-                    exoPlayer.release();
-                    exoPlayer = null;
-                }
-            }
-        }
-    }
-
-    public static SimpleExoPlayer getExoPlayer() {
-        return exoPlayer;
     }
 }

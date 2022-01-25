@@ -24,6 +24,8 @@ import java.util.List;
  */
 public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, TestngAdapter.TestngHolder> {
 
+    OnBtnListener btnListener;
+
     public TestngAdapter(List<TestDetailModel.SubjectListBean> dataList) {
         super(dataList);
     }
@@ -55,6 +57,14 @@ public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, 
         });
         holder.mBtConfirm.setEnabled(position != 0);
 
+    }
+
+    public void setBtnListener(OnBtnListener btnListener) {
+        this.btnListener = btnListener;
+    }
+
+    public interface OnBtnListener {
+        void onBtnClick(int type);
     }
 
     public class TestngHolder extends RecyclerView.ViewHolder {
@@ -101,15 +111,5 @@ public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, 
                 }
             });
         }
-    }
-
-    OnBtnListener btnListener;
-
-    public void setBtnListener(OnBtnListener btnListener) {
-        this.btnListener = btnListener;
-    }
-
-    public interface OnBtnListener {
-        void onBtnClick(int type);
     }
 }

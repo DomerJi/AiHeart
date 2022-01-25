@@ -51,6 +51,7 @@ public class MeActivity extends RobotBaseActivity {
     private android.widget.Button mBtLogout;
     private RelativeLayout mRlFace;
     private TextView mTvInputState;
+    private TextView mTvTeam;
 
     @Override
     public int getContentView() {
@@ -84,6 +85,7 @@ public class MeActivity extends RobotBaseActivity {
         mBtLogout = (Button) findViewById(R.id.bt_logout);
         mRlFace = (RelativeLayout) findViewById(R.id.rl_face);
         mTvInputState = (TextView) findViewById(R.id.tv_input_state);
+        mTvTeam = (TextView) findViewById(R.id.tv_team);
     }
 
     @Override
@@ -209,7 +211,7 @@ public class MeActivity extends RobotBaseActivity {
     }
 
     private void setUserMessage(User user) {
-//        mTvInstitution.setText(user.getOrganListStr());
+        mTvTeam.setText(user.getOrganListStr());
         mTvNickname.setText(user.getVisibleName());
         GlideUtil.load(mContext, user.getVisibleAvatar(), mRivAvatar);
     }

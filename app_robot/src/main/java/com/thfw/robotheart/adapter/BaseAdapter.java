@@ -24,12 +24,12 @@ public abstract class BaseAdapter<T, V extends RecyclerView.ViewHolder> extends 
         this.mDataList = dataList;
     }
 
-    public void setDataList(List<T> mDataList) {
-        this.mDataList = mDataList;
-    }
-
     public List<T> getDataList() {
         return mDataList;
+    }
+
+    public void setDataList(List<T> mDataList) {
+        this.mDataList = mDataList;
     }
 
     public void setDataListNotify(List<T> mDataList) {

@@ -112,6 +112,11 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
         OkHttpUtil.request(observable, getUI());
     }
 
+    public void onBindPhone(String phone, String code){
+        Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(LoginApi.class).onCheckMobileCode(phone, code);
+        OkHttpUtil.request(observable, getUI());
+    }
+
     public void loginByThirdParty(Map<String, String> map) {
 
     }

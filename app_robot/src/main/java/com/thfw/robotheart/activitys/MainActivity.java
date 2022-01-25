@@ -13,10 +13,19 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
+import com.thfw.base.models.OrganizationModel;
+import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.models.TalkModel;
+import com.thfw.base.net.CommonParameter;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.OrganizationPresenter;
+import com.thfw.base.presenter.UserInfoPresenter;
+import com.thfw.base.timing.TimingHelper;
+import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
 import com.thfw.robotheart.activitys.exercise.ExerciseActivity;
@@ -39,6 +48,10 @@ import com.thfw.ui.widget.WeekView;
 import com.thfw.user.login.User;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
+import com.trello.rxlifecycle2.LifecycleProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends RobotBaseActivity implements View.OnClickListener {
 
@@ -67,6 +80,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private LinearLayout mLlRiv;
     private ConstraintLayout mClMe;
     private ConstraintLayout mClSetting;
+    private boolean initUserInfo;
+    private boolean initOrganization;
 
     @Override
     public int getContentView() {
@@ -155,6 +170,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             mLlRiv.setOnClickListener(v -> {
                 startActivity(new Intent(mContext, MeActivity.class));
             });
+            initUserInfo();
+            initOrganization();
         }
         // 检查版本更新
         new Handler().postDelayed(new Runnable() {
@@ -229,6 +246,108 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mTvInstitution.setText(user.getOrganListStr());
         mTvNickname.setText(user.getVisibleName());
         GlideUtil.load(mContext, user.getVisibleAvatar(), mRivAvatar);
+    }
+
+    /**
+     * 查询组织信息
+     */
+    private void initOrganization() {
+        if (initOrganization) {
+            return;
+        }
+
+        new OrganizationPresenter(new OrganizationPresenter.OrganizationUi<OrganizationSelectedModel>() {
+
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return MainActivity.this;
+            }
+
+            @Override
+            public void onSuccess(OrganizationSelectedModel data) {
+                if (data != null) {
+                    LogUtil.d(TAG, "initOrganization onSuccess ++++++++++++++++++++++ ");
+                    ArrayList<OrganizationModel.OrganizationBean> mSelecteds = new ArrayList<>();
+                    initSelectedList(mSelecteds, data.getOrganization());
+                    CommonParameter.setOrganizationSelected(mSelecteds);
+                    UserManager.getInstance().getUser().setOrganList(mSelecteds);
+                    UserManager.getInstance().notifyUserInfo();
+                }
+                initOrganization = true;
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                LogUtil.d(TAG, "initOrganization onFail ++++++++++++++++++++++ ");
+                TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
+                    @Override
+                    public void onArrive() {
+                        initOrganization();
+                        LogUtil.d(TAG, "initOrganization onFail retry ++++++++++++++++++++++ ");
+                    }
+
+                    @Override
+                    public WorkInt workInt() {
+                        return WorkInt.SECOND5_1;
+                    }
+                });
+            }
+        }).onGetJoinedList();
+    }
+
+    private void initSelectedList(List<OrganizationModel.OrganizationBean> list, OrganizationSelectedModel.OrganizationBean bean) {
+        if (bean != null) {
+            OrganizationModel.OrganizationBean oBean = new OrganizationModel.OrganizationBean();
+            oBean.setId(bean.getId());
+            oBean.setName(bean.getName());
+            list.add(oBean);
+            if (bean.getChildren() != null) {
+                initSelectedList(list, bean.getChildren());
+            }
+        }
+    }
+
+
+    /**
+     * 查询用户信息
+     */
+    private void initUserInfo() {
+        if (initUserInfo) {
+            return;
+        }
+        new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<User.UserInfo>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return MainActivity.this;
+            }
+
+            @Override
+            public void onSuccess(User.UserInfo data) {
+                if (data != null) {
+                    initUserInfo = true;
+                    LogUtil.d(TAG, "initUserInfo onSuccess ++++++++++++++++++++++ ");
+                    UserManager.getInstance().getUser().setUserInfo(data);
+                    UserManager.getInstance().notifyUserInfo();
+                }
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                LogUtil.d(TAG, "initUserInfo onFail ++++++++++++++++++++++ ");
+                TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
+                    @Override
+                    public void onArrive() {
+                        initUserInfo();
+                        LogUtil.d(TAG, "initUserInfo onFail retry ++++++++++++++++++++++ ");
+                    }
+
+                    @Override
+                    public WorkInt workInt() {
+                        return WorkInt.SECOND5;
+                    }
+                });
+            }
+        }).onGetUserInfo();
     }
 
 }

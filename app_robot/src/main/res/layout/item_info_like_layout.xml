@@ -8,13 +8,16 @@
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/item_likename_bg"
         android:gravity="center"
         android:paddingLeft="12dp"
+        android:paddingTop="6dp"
         android:paddingRight="12dp"
+        android:paddingBottom="6dp"
         android:text="足球"
         android:textColor="@color/white"
-        android:textSize="10sp" />
+        android:textSize="16sp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

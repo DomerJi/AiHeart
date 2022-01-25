@@ -55,6 +55,65 @@ public class SetBlueFragment extends RobotBaseFragment {
     private RelativeLayout mRlMeDevice;
     private TextView mTvMeBleName;
     private LoadingView mLoadingView;
+    public BleScanCallback mBleScanCallback = new BleScanCallback() {
+        @Override
+        public void onScanFinished(List<BleDevice> scanResultList) {
+            mLoadingView.hide();
+            if (!mSwitchBlue.isChecked()) {
+                return;
+            }
+            List<BleDevice> bleDevices = new ArrayList<>();
+            for (BleDevice bleDevice : scanResultList) {
+                bleDevices.add(bleDevice);
+            }
+            mBleAdapter.setDataListNotify(bleDevices);
+            mCustomRefreshLayout.finishRefresh();
+        }
+
+        @Override
+        public void onScanStarted(boolean success) {
+            if (!mSwitchBlue.isChecked()) {
+                return;
+            }
+            if (success) {
+                mLoadingView.showLoadingNoText();
+            } else {
+                mLoadingView.hide();
+                mCustomRefreshLayout.finishRefresh();
+            }
+        }
+
+        @Override
+        public void onScanning(BleDevice bleDevice) {
+            if (!mSwitchBlue.isChecked()) {
+                return;
+            }
+            if (mBleAdapter.getDataList() != null) {
+                for (BleDevice device : mBleAdapter.getDataList()) {
+                    if (device.getMac().equals(bleDevice.getMac())) {
+                        return;
+                    }
+                }
+            }
+            mBleAdapter.addDataNotify(bleDevice);
+        }
+
+        @Override
+        public void onLeScan(BleDevice bleDevice) {
+            super.onLeScan(bleDevice);
+            if (!mSwitchBlue.isChecked()) {
+                return;
+            }
+            if (mBleAdapter.getDataList() != null) {
+                for (BleDevice device : mBleAdapter.getDataList()) {
+                    if (device.getMac().equals(bleDevice.getMac())) {
+                        return;
+                    }
+                }
+            }
+            mBleAdapter.addDataNotify(bleDevice);
+        }
+    };
 
     @Override
     public void onActivityCreated(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -210,66 +269,6 @@ public class SetBlueFragment extends RobotBaseFragment {
             }, 500);
         }
     }
-
-    public BleScanCallback mBleScanCallback = new BleScanCallback() {
-        @Override
-        public void onScanFinished(List<BleDevice> scanResultList) {
-            mLoadingView.hide();
-            if (!mSwitchBlue.isChecked()) {
-                return;
-            }
-            List<BleDevice> bleDevices = new ArrayList<>();
-            for (BleDevice bleDevice : scanResultList) {
-                bleDevices.add(bleDevice);
-            }
-            mBleAdapter.setDataListNotify(bleDevices);
-            mCustomRefreshLayout.finishRefresh();
-        }
-
-        @Override
-        public void onScanStarted(boolean success) {
-            if (!mSwitchBlue.isChecked()) {
-                return;
-            }
-            if (success) {
-                mLoadingView.showLoadingNoText();
-            } else {
-                mLoadingView.hide();
-                mCustomRefreshLayout.finishRefresh();
-            }
-        }
-
-        @Override
-        public void onScanning(BleDevice bleDevice) {
-            if (!mSwitchBlue.isChecked()) {
-                return;
-            }
-            if (mBleAdapter.getDataList() != null) {
-                for (BleDevice device : mBleAdapter.getDataList()) {
-                    if (device.getMac().equals(bleDevice.getMac())) {
-                        return;
-                    }
-                }
-            }
-            mBleAdapter.addDataNotify(bleDevice);
-        }
-
-        @Override
-        public void onLeScan(BleDevice bleDevice) {
-            super.onLeScan(bleDevice);
-            if (!mSwitchBlue.isChecked()) {
-                return;
-            }
-            if (mBleAdapter.getDataList() != null) {
-                for (BleDevice device : mBleAdapter.getDataList()) {
-                    if (device.getMac().equals(bleDevice.getMac())) {
-                        return;
-                    }
-                }
-            }
-            mBleAdapter.addDataNotify(bleDevice);
-        }
-    };
 
     private void initBlue() {
         if (initScanRule) {

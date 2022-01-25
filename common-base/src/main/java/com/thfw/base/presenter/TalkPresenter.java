@@ -44,7 +44,7 @@ public class TalkPresenter<T> extends IPresenter<TalkPresenter.TalkUi> {
 
     public void onJoinDialog(int enter_type, int id) {
         NetParams netParams = NetParams.crete().add("enter_type", enter_type);
-        if (enter_type == TalkApi.JOIN_TYPE_SPEECH_CRAFT) {
+        if (enter_type == TalkApi.JOIN_TYPE_SPEECH_CRAFT || enter_type == TalkApi.JOIN_TYPE_TOOL) {
             netParams.add("id", id);
         }
 

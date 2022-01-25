@@ -1,6 +1,7 @@
 package com.thfw.robotheart.fragments.login;
 
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -15,8 +16,12 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.login.SetPasswordActivity;
 import com.thfw.robotheart.util.FragmentLoader;
+import com.thfw.robotheart.view.DialogRobotFactory;
 import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 /**
@@ -61,10 +66,14 @@ public class SetPasswordOriginFragment extends BaseFragment<LoginPresenter> impl
     public void initData() {
         mBtSubmit.setEnabled(true);
         mTvForgetPassword.setOnClickListener(v -> {
-            FragmentLoader fragmentLoader = ((SetPasswordActivity) getActivity()).getFragmentLoader();
-            fragmentLoader.load(SetPasswordActivity.SET_CODE);
-
-
+            if (UserManager.getInstance().isLogin()) {
+                String mobile = UserManager.getInstance().getUser().getMobile();
+                if (!TextUtils.isEmpty(mobile)) {
+                    forgetPasswordByCode(mobile);
+                } else {
+                    ToastUtil.show("您未绑定手机号,无法通过此方式设置/找回密码");
+                }
+            }
         });
 
         MyTextWatcher myTextWatcher = new MyTextWatcher() {
@@ -95,6 +104,32 @@ public class SetPasswordOriginFragment extends BaseFragment<LoginPresenter> impl
             mPresenter.setPasswordByOrigin(origin, password);
         });
 
+    }
+
+    /**
+     * 弹框提醒发送验证码找回密码
+     *
+     * @param mobile
+     */
+    private void forgetPasswordByCode(String mobile) {
+        DialogRobotFactory.createCustomDialog(getActivity(), new DialogRobotFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvHint.setText("您的账号当前已绑定手机号，可通过短信验证码重置密码。即将发送验证码到" + mobile);
+                mTvTitle.setVisibility(View.GONE);
+                mTvLeft.setText("取消");
+                mTvRight.setText("确定");
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+                if (view.getId() == R.id.tv_right) {
+                    FragmentLoader fragmentLoader = ((SetPasswordActivity) getActivity()).getFragmentLoader();
+                    fragmentLoader.load(SetPasswordActivity.SET_CODE);
+                }
+            }
+        });
     }
 
     @Override
