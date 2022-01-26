@@ -12,6 +12,11 @@
     <dimen name="home_tab_bg_padding">4dp</dimen>
     <dimen name="home_navigation_margin">4dp</dimen>
 
+    <!-- 比重 -->
+    <integer name="horizontal_weight">4</integer>
+    <integer name="left_weight">1</integer>
+    <integer name="right_weight">3</integer>
+
     <dimen name="home_tab_height">50dp</dimen>
     <dimen name="home_tab_icon_height">75dp</dimen>
     <dimen name="home_tab_icon_chat_height">40dp</dimen>
