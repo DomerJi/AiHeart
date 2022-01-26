@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
@@ -116,7 +115,6 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
     private LinearLayout mLlName;
     private InfoLikeAdapter hobbyAdapter;
     private InfoLikeAdapter infoLikeAdapter;
-    private androidx.constraintlayout.widget.ConstraintLayout mClRoot;
     private LinearLayout mLlNickname;
     private TextView mTvNickname;
     private LinearLayout mLlClass;
@@ -185,7 +183,6 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
         mLlJoinJTime = (LinearLayout) findViewById(R.id.ll_join_j_time);
         mTvJoinJTime = (TextView) findViewById(R.id.tv_join_j_time);
         mLlName = (LinearLayout) findViewById(R.id.ll_name);
-        mClRoot = (ConstraintLayout) findViewById(R.id.cl_root);
         mLlNickname = (LinearLayout) findViewById(R.id.ll_nickname);
         mTvNickname = (TextView) findViewById(R.id.tv_nickname);
         mLlClass = (LinearLayout) findViewById(R.id.ll_class);

@@ -24,6 +24,17 @@
         android:textColor="@color/titleBar_tint"
         android:textSize="16sp" />
 
+    <ImageView
+        android:id="@+id/iv_titleBar_blue"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/ic_baseline_bluetooth_24"
+        android:visibility="gone"
+        app:tint="@color/titleBar_tint"
+        tools:visibility="visible" />
+
 
     <ImageView
         android:id="@+id/iv_titleBar_wifi"
@@ -33,7 +44,8 @@
         android:layout_marginRight="8dp"
         android:src="@drawable/ic_baseline_wifi"
         android:visibility="gone"
-        app:tint="@color/titleBar_tint" />
+        app:tint="@color/titleBar_tint"
+        tools:visibility="visible" />
 
 
     <RelativeLayout
@@ -56,10 +68,10 @@
         <View
             android:id="@+id/v_battery_head"
             android:layout_width="2dp"
-            android:layout_centerVertical="true"
+            android:layout_height="6dp"
             android:layout_alignParentRight="true"
-            android:background="@color/colorRobotFore"
-            android:layout_height="6dp"/>
+            android:layout_centerVertical="true"
+            android:background="@color/colorRobotFore" />
 
         <TextView
             android:id="@+id/tv_progress"

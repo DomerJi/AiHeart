@@ -10,6 +10,7 @@
         android:id="@+id/titleRobotView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
         app:trv_centerText="@string/sort_type_hot_call"
         tools:ignore="MissingConstraints" />
 
@@ -30,9 +31,34 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingRight="30dp"
         android:paddingBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rsv_search" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_ac_quick"
+        android:layout_width="26dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+
+    <TextView
+        android:id="@+id/tv_center_az"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/radius_robot_8dp_bg"
+        android:gravity="center"
+        android:textColor="@color/text_common"
+        android:textSize="32sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView"
+        tools:text="A" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
