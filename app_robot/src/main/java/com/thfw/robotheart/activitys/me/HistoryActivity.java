@@ -46,18 +46,13 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
     private androidx.recyclerview.widget.RecyclerView mRvList;
     private com.thfw.ui.widget.LoadingView mLoadingView;
     private int type;
-    private int rid;
     private HistoryAdapter historyAdapter;
     private PageHelper<HistoryModel> pageHelper;
 
-    public static void startActivity(Context context, int type) {
-        startActivity(context, type, -1);
-    }
 
-    public static void startActivity(Context context, int type, int rid) {
+    public static void startActivity(Context context, int type) {
         Intent intent = new Intent(context, HistoryActivity.class)
-                .putExtra(KEY_TYPE, type)
-                .putExtra(KEY_RID, rid);
+                .putExtra(KEY_TYPE, type);
 
 
         switch (type) {
@@ -106,7 +101,7 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
         mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull @NotNull RefreshLayout refreshLayout) {
-                mPresenter.getUserHistoryList(type, rid, pageHelper.getPage());
+                mPresenter.getUserHistoryList(type, pageHelper.getPage());
             }
         });
     }
@@ -116,7 +111,6 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
 
 
         type = getIntent().getIntExtra(KEY_TYPE, -1);
-        rid = getIntent().getIntExtra(KEY_RID, -1);
         String title = getIntent().getStringExtra(KEY_TITLE);
         if (!TextUtils.isEmpty(title)) {
             mTitleRobotView.setCenterText(title);
@@ -161,7 +155,7 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
         mRvList.setAdapter(historyAdapter);
         pageHelper = new PageHelper<>(mLoadingView, mRefreshLayout, historyAdapter);
         pageHelper.setRefreshEnable(false);
-        mPresenter.getUserHistoryList(type, rid, pageHelper.getPage());
+        mPresenter.getUserHistoryList(type, pageHelper.getPage());
     }
 
 
@@ -178,7 +172,7 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
     @Override
     public void onFail(ResponeThrowable throwable) {
         pageHelper.onFail(v -> {
-            mPresenter.getUserHistoryList(type, rid, pageHelper.getPage());
+            mPresenter.getUserHistoryList(type, pageHelper.getPage());
         });
     }
 }

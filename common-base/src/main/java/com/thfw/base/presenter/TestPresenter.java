@@ -3,10 +3,12 @@ package com.thfw.base.presenter;
 import com.thfw.base.api.TestApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
+import com.thfw.base.models.ReportTestModel;
 import com.thfw.base.models.TestDetailModel;
 import com.thfw.base.models.TestModel;
 import com.thfw.base.models.TestResultModel;
 import com.thfw.base.net.HttpResult;
+import com.thfw.base.net.NetParams;
 import com.thfw.base.net.OkHttpUtil;
 
 import java.util.List;
@@ -42,6 +44,15 @@ public class TestPresenter extends IPresenter<TestPresenter.TestUi> {
 
     public void onGetResult(int id) {
         Observable<HttpResult<TestResultModel>> observable = OkHttpUtil.createService(TestApi.class).onGetResult(id);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    public void onResultHistory(int id, int page) {
+        NetParams netParams = NetParams.crete().add("page", page);
+        if (id != -1) {
+            netParams.add("rid", id);
+        }
+        Observable<HttpResult<List<ReportTestModel>>> observable = OkHttpUtil.createService(TestApi.class).onResultHistory(netParams);
         OkHttpUtil.request(observable, getUI());
     }
 

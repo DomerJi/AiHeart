@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:id="@+id/tv_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_tab_radius_bg_selector"
+        android:text="未完成"
+        android:textColor="@drawable/common_textcolor_white_black_selector" />
+
+
+    <TextView
+        android:id="@+id/tv_dot_count"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:background="@drawable/message_count_dot_red"
+        android:gravity="center"
+        android:minWidth="20dp"
+        android:padding="2dp"
+        android:text="1"
+        android:textColor="@color/white"
+        android:textSize="10sp" />
+
+</RelativeLayout>

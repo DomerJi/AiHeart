@@ -13,7 +13,7 @@ import retrofit2.http.POST;
 /**
  * Author:pengs
  * Date: 2021/12/7 13:17
- * Describe:Todo
+ * Describe:组织
  */
 public interface OrganizationApi {
 

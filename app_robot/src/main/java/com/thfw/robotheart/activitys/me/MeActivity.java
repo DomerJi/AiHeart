@@ -18,6 +18,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.login.LoginActivity;
+import com.thfw.robotheart.activitys.test.TestReportActivity;
 import com.thfw.robotheart.view.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
@@ -52,6 +53,7 @@ public class MeActivity extends RobotBaseActivity {
     private RelativeLayout mRlFace;
     private TextView mTvInputState;
     private TextView mTvTeam;
+    private RelativeLayout mRlReport;
 
     @Override
     public int getContentView() {
@@ -86,6 +88,7 @@ public class MeActivity extends RobotBaseActivity {
         mRlFace = (RelativeLayout) findViewById(R.id.rl_face);
         mTvInputState = (TextView) findViewById(R.id.tv_input_state);
         mTvTeam = (TextView) findViewById(R.id.tv_team);
+        mRlReport = (RelativeLayout) findViewById(R.id.rl_report);
     }
 
     @Override
@@ -175,6 +178,9 @@ public class MeActivity extends RobotBaseActivity {
             LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
         });
 
+        mRlReport.setOnClickListener(v -> {
+            TestReportActivity.startActivity(mContext);
+        });
 
     }
 

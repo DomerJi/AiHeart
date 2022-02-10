@@ -1,0 +1,26 @@
+package com.thfw.base.api;
+
+import com.thfw.base.models.TaskItemModel;
+import com.thfw.base.net.HttpResult;
+
+import java.util.List;
+
+import io.reactivex.Observable;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.POST;
+
+/**
+ * Author:pengs
+ * Date: 2022/2/10 14:25
+ * Describe:任务
+ */
+public interface TaskApi {
+
+    /**
+     * 任务-用户任务列表
+     */
+    @FormUrlEncoded
+    @POST("task/list")
+    Observable<HttpResult<List<TaskItemModel>>> onGetList(@Field("status") int status, @Field("page") int page);
+}

@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.thfw.base.models.CollectModel;
+import com.thfw.base.models.TaskItemModel;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.robotheart.R;
 
@@ -21,10 +21,10 @@ import java.util.List;
  * Date: 2021/12/9 16:13
  * Describe:Todo
  */
-public class TaskAdapter extends BaseAdapter<CollectModel, TaskAdapter.TaskHolder> {
+public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHolder> {
 
 
-    public TaskAdapter(List<CollectModel> dataList) {
+    public TaskAdapter(List<TaskItemModel> dataList) {
         super(dataList);
     }
 

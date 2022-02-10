@@ -21,7 +21,6 @@ import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.presenter.TestPresenter;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
-import com.thfw.robotheart.activitys.me.HistoryActivity;
 import com.thfw.robotheart.adapter.TestHintAdapter;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.view.TitleRobotView;
@@ -121,7 +120,7 @@ public class TestDetailActivity extends RobotBaseActivity<TestPresenter> impleme
         mTvHint.setText("简介: " + mInfoBean.getIntr());
         mTvTestTitle.setText(mInfoBean.getTitle());
         mLlSeePort.setOnClickListener(v -> {
-            HistoryActivity.startActivity(mContext, HistoryApi.TYPE_TEST, mInfoBean.getId());
+            TestReportActivity.startActivity(mContext, mInfoBean.getId());
         });
 
         mBtBeginTest.setOnClickListener(v -> {

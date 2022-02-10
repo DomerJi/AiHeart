@@ -65,10 +65,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activitys.test.TestReportActivity"></activity>
         <activity
             android:name=".activitys.me.EditInfoActivity"
             android:screenOrientation="landscape" />
-
         <activity
             android:name=".activitys.login.BindPhoneActivity"
             android:screenOrientation="landscape" />

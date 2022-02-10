@@ -394,6 +394,38 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/rl_report"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:padding="8dp"
+                    android:text="我的健康报告"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize_large" />
+
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16dp"
+                    android:rotationY="180"
+                    android:src="@drawable/ic_back_white" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_1px"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/colorRobotFore" />
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/rl_collection"

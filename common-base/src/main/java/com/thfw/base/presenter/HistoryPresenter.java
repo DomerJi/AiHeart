@@ -30,16 +30,13 @@ public class HistoryPresenter extends IPresenter<HistoryPresenter.HistoryUi> {
      *
      * @param type
      */
-    public void getUserHistoryList(int type, int rid, int page) {
+    public void getUserHistoryList(int type, int page) {
         NetParams netParams = NetParams.crete().add("type", type);
         netParams.add("page", page);
         switch (type) {
             case HistoryApi.TYPE_TEST:
                 Observable<HttpResult<List<HistoryModel.HistoryTestModel>>> observableTest = OkHttpUtil.createService(HistoryApi.class)
                         .getHistoryTest(netParams);
-                if (rid != -1) {
-                    netParams.add("rid", rid);
-                }
                 OkHttpUtil.request(observableTest, getUI());
                 break;
             case HistoryApi.TYPE_BOOK:

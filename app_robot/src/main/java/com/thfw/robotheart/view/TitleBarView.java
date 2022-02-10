@@ -80,6 +80,7 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
             colorFgWhite = ta.getBoolean(com.thfw.ui.R.styleable.TitleBarView_tbv_white, false);
             if (colorFg) {
                 mIvTitleBarWifi.setColorFilter(Color.BLACK);
+                mIvTitleBarBlue.setColorFilter(Color.BLACK);
                 mTvTitleBarTime.setTextColor(Color.BLACK);
                 mPbBatteryProgress.setProgressTintList(ColorStateList.valueOf(Color.BLACK));
                 mPbBatteryProgress.setProgressBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
@@ -87,6 +88,7 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
                 mTvProgress.setTextColor(Color.WHITE);
             } else if (colorFgWhite) {
                 mIvTitleBarWifi.setColorFilter(Color.WHITE);
+                mIvTitleBarBlue.setColorFilter(Color.WHITE);
                 mTvTitleBarTime.setTextColor(Color.WHITE);
                 mPbBatteryProgress.setProgressTintList(ColorStateList.valueOf(Color.WHITE));
                 mPbBatteryProgress.setProgressBackgroundTintList(ColorStateList.valueOf(Color.WHITE));

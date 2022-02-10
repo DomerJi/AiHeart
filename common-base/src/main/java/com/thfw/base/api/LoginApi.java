@@ -15,7 +15,7 @@ import retrofit2.http.POST;
 /**
  * Author:pengs
  * Date: 2021/11/29 18:00
- * Describe:Todo
+ * Describe:登录相关
  */
 public interface LoginApi {
 
