@@ -67,6 +67,8 @@ public class CollectActivity extends RobotBaseActivity {
         collectMap.put(1, new CollectFragment(1));
         collectMap.put(2, new CollectFragment(2));
         collectMap.put(3, new CollectFragment(3));
+        collectMap.put(4, new CollectFragment(4));
+        collectMap.put(5, new CollectFragment(5));
         mViewPager.setAdapter(new FragmentStateAdapter(this) {
             @NonNull
             @NotNull

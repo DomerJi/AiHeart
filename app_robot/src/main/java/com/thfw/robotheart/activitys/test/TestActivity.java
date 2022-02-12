@@ -18,6 +18,9 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.List;
 
+/**
+ * 测评问卷
+ */
 public class TestActivity extends RobotBaseActivity<TestPresenter> implements TestPresenter.TestUi<List<TestModel>> {
 
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;

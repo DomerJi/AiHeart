@@ -1,4 +1,4 @@
-package com.thfw.robotheart.activitys.me;
+package com.thfw.robotheart.activitys.set;
 
 import android.content.Intent;
 import android.net.Uri;

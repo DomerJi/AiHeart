@@ -91,6 +91,7 @@ public class EditInfoActivity extends RobotBaseActivity {
         private int textSizeMin;
         private int textSizeMax;
         private String title;
+
         private EditType(int type, String title, int min, int max) {
             this.type = type;
             this.title = title;

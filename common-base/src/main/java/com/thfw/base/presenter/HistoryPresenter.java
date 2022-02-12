@@ -26,7 +26,7 @@ public class HistoryPresenter extends IPresenter<HistoryPresenter.HistoryUi> {
     }
 
     /**
-     * type 1-测评 2-音频  3-视频  4-文章
+     * type 1-测评 2-文章 3-音频  4-视频 6-思政文章 7-工具包
      *
      * @param type
      */

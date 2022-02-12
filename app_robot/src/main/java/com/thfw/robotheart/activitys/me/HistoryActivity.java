@@ -19,8 +19,10 @@ import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
+import com.thfw.robotheart.activitys.exercise.ExerciseIngActivity;
 import com.thfw.robotheart.activitys.test.TestDetailActivity;
 import com.thfw.robotheart.activitys.text.BookDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
@@ -57,22 +59,22 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
 
         switch (type) {
             case HistoryApi.TYPE_TEST:
-                intent.putExtra(KEY_TITLE, "我测的");
+                intent.putExtra(KEY_TITLE, MyApplication.getApp().getResources().getString(R.string.me_test));
                 break;
             case HistoryApi.TYPE_BOOK:
-                intent.putExtra(KEY_TITLE, "我读的");
+                intent.putExtra(KEY_TITLE, MyApplication.getApp().getResources().getString(R.string.me_read));
                 break;
             case HistoryApi.TYPE_AUDIO:
-                intent.putExtra(KEY_TITLE, "我听的");
+                intent.putExtra(KEY_TITLE, MyApplication.getApp().getResources().getString(R.string.me_listening));
                 break;
             case HistoryApi.TYPE_VIDEO:
-                intent.putExtra(KEY_TITLE, "我看的");
+                intent.putExtra(KEY_TITLE, MyApplication.getApp().getResources().getString(R.string.me_see));
                 break;
             case HistoryApi.TYPE_STUDY:
-                intent.putExtra(KEY_TITLE, "我学的");
+                intent.putExtra(KEY_TITLE, MyApplication.getApp().getResources().getString(R.string.me_study));
                 break;
             case HistoryApi.TYPE_EXERCISE:
-                intent.putExtra(KEY_TITLE, "我练的");
+                intent.putExtra(KEY_TITLE, MyApplication.getApp().getResources().getString(R.string.me_exercise));
                 break;
         }
 
@@ -117,6 +119,7 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
         }
         if (type == -1) {
             ToastUtil.show("参数错误");
+            finish();
             return;
         }
 
@@ -148,6 +151,9 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
                 } else if (historyModel instanceof HistoryModel.HistoryBookModel) { // 科普文章
                     HistoryModel.HistoryBookModel bookModel = (HistoryModel.HistoryBookModel) historyModel;
                     BookDetailActivity.startActivity(mContext, bookModel.getId());
+                } else if (historyModel instanceof HistoryModel.HistoryExerciseModel) { // 工具包
+                    HistoryModel.HistoryExerciseModel exerciseModel = (HistoryModel.HistoryExerciseModel) historyModel;
+                    ExerciseIngActivity.startActivity(mContext, exerciseModel.getId());
                 }
             }
         });

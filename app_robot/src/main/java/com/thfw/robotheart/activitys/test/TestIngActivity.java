@@ -34,7 +34,7 @@ public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.viewpager2.widget.ViewPager2 mVpList;
     private TestDetailModel mModel;
-
+    // 测评开始时间
     private long beginTime;
     private TestngAdapter mTestIngAdapter;
 
@@ -120,6 +120,7 @@ public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements
                 sbOpt.append(",");
             }
         }
+        // 测评用时（秒）
         int spendTime = (int) ((System.currentTimeMillis() - beginTime) / 1000);
         mPresenter.onSubmit(mModel.getPsychtestInfo().getId(), sbOpt.toString(), spendTime);
     }

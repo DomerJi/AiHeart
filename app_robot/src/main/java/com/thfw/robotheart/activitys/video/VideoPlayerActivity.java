@@ -88,6 +88,9 @@ import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_BUFFER_FO
 import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_MAX_BUFFER_MS;
 import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_MIN_BUFFER_MS;
 
+/**
+ * 视频播放
+ */
 public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         implements TimingHelper.WorkListener, VideoGestureHelper.VideoGestureListener, VideoPresenter.VideoUi<VideoModel> {
 
@@ -104,9 +107,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     private SimpleExoPlayer mExoPlayer;
     private VideoModel mVideoModel;
     private PlayerListener mPlayerListener;
-    private long playPosition;
     private ConstraintLayout mVideoLayout;
-    private boolean playState;
     private boolean isPlaying = false;
     private boolean windowPlay = false;
     private ConstraintLayout mVideoPlayConstranint;
@@ -306,6 +307,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         mIvCollect.setSelected(mVideoModel.getCollected() == 1);
         mExoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(mVideoModel.getUrl())));
         mExoPlayer.prepare();
+        // 先获取本地播放断电记录
         positionMs = VideoHistoryHelper.getPosition(mVideoModel.getId());
         if (positionMs <= 0) {
             positionMs = mVideoModel.getHistoryTime();
@@ -316,6 +318,11 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         mExoPlayer.setPlayWhenReady(true);
     }
 
+    /**
+     * 续播UI提醒
+     *
+     * @param positionMs
+     */
     private void continuePlay(long positionMs) {
         mExoPlayer.seekTo(positionMs);
         TextView mTvContinuePlay = findViewById(R.id.tv_continue_play);
@@ -566,6 +573,12 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         SharePreferenceUtil.setLong(CURRENT_POSITION, 0);
     }
 
+    /**
+     * 底部贴边进度条显示逻辑
+     *
+     * @param mPbBar
+     * @param hide
+     */
     private void onBottomProgressBar(ProgressBar mPbBar, boolean hide) {
         mPbBar.setVisibility(hide ? View.GONE : VISIBLE);
         if (!hide) {
@@ -606,6 +619,9 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         super.finish();
     }
 
+    /**
+     * 添加收藏取消收藏
+     */
     public void addCollect() {
         if (requestIng) {
             return;

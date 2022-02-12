@@ -67,6 +67,7 @@ public class SearchResultFragment extends RobotBaseFragment {
 
     public void setResultBeans(List<SearchResultModel.ResultBean> resultBeans) {
         this.resultBeans = resultBeans;
+        searchAdapter.setDataList(resultBeans);
     }
 
     @Override

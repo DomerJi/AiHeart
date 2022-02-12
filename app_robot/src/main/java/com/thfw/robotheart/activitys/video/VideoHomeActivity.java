@@ -168,6 +168,11 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
         }).getVideoLastHistory();
     }
 
+    /**
+     * 最后一次播放记录信息展示
+     *
+     * @param data
+     */
     private void notifyLastData(VideoLastEtcModel data) {
         if (data != null) {
             SharePreferenceUtil.setBoolean(KEY_HAS_VIDEO, true);

@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 加载网页 如：协议
- * Created By jishuaipeng on 2021/4/29
+ * 测评结果
+ * Created By jishuaipeng on 2021/12/29
  */
 public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> implements TestPresenter.TestUi<TestResultModel> {
 

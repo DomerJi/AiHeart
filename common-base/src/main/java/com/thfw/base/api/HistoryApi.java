@@ -20,11 +20,12 @@ import retrofit2.http.POST;
  */
 public interface HistoryApi {
 
+    // 1-测评 2-文章 3-音频  4-视频 6-思政文章 7-工具包
     int TYPE_TEST = 1;
     int TYPE_AUDIO = 3;
     int TYPE_VIDEO = 4;
     int TYPE_BOOK = 2;
-    int TYPE_EXERCISE = 5;
+    int TYPE_EXERCISE = 7;
     int TYPE_STUDY = 6;
     // 1-测评  2-文章 3-音频 4-视频 5-话术 6-思政文章 7-思政视频
     int TYPE_COLLECT_TEST = 1;
@@ -38,7 +39,7 @@ public interface HistoryApi {
     /**
      * [获取历史记录]
      * rid 测评ID 如果传入测评ID则仅获取该测评的历史记录
-     * type 1-测评 2-音频  3-视频  4-文章
+     * type 1-测评 2-文章 3-音频  4-视频 6-思政文章 7-工具包
      *
      * @return
      */

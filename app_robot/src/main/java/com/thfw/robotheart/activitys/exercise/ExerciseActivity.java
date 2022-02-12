@@ -17,6 +17,9 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.List;
 
+/**
+ * 工具包/成长训练
+ */
 public class ExerciseActivity extends RobotBaseActivity<UserToolPresenter> implements UserToolPresenter.UserToolUi<List<ExerciseModel>> {
 
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;

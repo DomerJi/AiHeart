@@ -1,4 +1,4 @@
-package com.thfw.robotheart.activitys.me;
+package com.thfw.robotheart.activitys.task;
 
 import android.view.View;
 import android.widget.LinearLayout;
@@ -11,7 +11,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
-import com.thfw.robotheart.fragments.me.TaskFragment;
+import com.thfw.robotheart.fragments.me.MsgFragment;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
 
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-public class TaskActivity extends RobotBaseActivity {
+public class MsgActivity extends RobotBaseActivity {
 
 
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
@@ -32,7 +32,7 @@ public class TaskActivity extends RobotBaseActivity {
 
     @Override
     public int getContentView() {
-        return R.layout.activity_task;
+        return R.layout.activity_msg;
     }
 
     @Override
@@ -58,8 +58,8 @@ public class TaskActivity extends RobotBaseActivity {
 
 
         HashMap<Integer, Fragment> collectMap = new HashMap<>();
-        collectMap.put(0, new TaskFragment(0));
-        collectMap.put(1, new TaskFragment(1));
+        collectMap.put(0, new MsgFragment(0));
+        collectMap.put(1, new MsgFragment(1));
         mViewPager.setAdapter(new FragmentStateAdapter(this) {
             @NonNull
             @NotNull
@@ -96,7 +96,9 @@ public class TaskActivity extends RobotBaseActivity {
             selectTab(1);
         });
         selectTab(0);
-        setMsg(100);
+
+        setTaskMsg(100);
+        setSystemMsg(100);
 
     }
 
@@ -105,12 +107,21 @@ public class TaskActivity extends RobotBaseActivity {
         mTvTab02.setSelected(position == 1);
     }
 
-    private void setMsg(int count) {
+    private void setTaskMsg(int count) {
         if (count > 0) {
             mTvDotCount01.setVisibility(View.VISIBLE);
             mTvDotCount01.setText(count > 99 ? "99+" : String.valueOf(count));
         } else {
             mTvDotCount01.setVisibility(View.GONE);
+        }
+    }
+
+    private void setSystemMsg(int count) {
+        if (count > 0) {
+            mTvDotCount02.setVisibility(View.VISIBLE);
+            mTvDotCount02.setText(count > 99 ? "99+" : String.valueOf(count));
+        } else {
+            mTvDotCount02.setVisibility(View.GONE);
         }
     }
 

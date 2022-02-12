@@ -9,7 +9,6 @@ import com.thfw.base.models.TaskItemModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TaskPresenter;
 import com.thfw.robotheart.R;
-import com.thfw.robotheart.activitys.task.TaskDetailsActivity;
 import com.thfw.robotheart.adapter.TaskAdapter;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.ui.base.RobotBaseFragment;
@@ -19,7 +18,7 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 import java.util.List;
 
 
-public class TaskFragment extends RobotBaseFragment<TaskPresenter> implements TaskPresenter.TaskUi<List<TaskItemModel>> {
+public class MsgFragment extends RobotBaseFragment<TaskPresenter> implements TaskPresenter.TaskUi<List<TaskItemModel>> {
 
     private int type;
     private SmartRefreshLayout mRefreshLayout;
@@ -28,14 +27,14 @@ public class TaskFragment extends RobotBaseFragment<TaskPresenter> implements Ta
     private TaskAdapter mTaskAdapter;
     private PageHelper<TaskItemModel> mPageHelper;
 
-    public TaskFragment(int type) {
+    public MsgFragment(int type) {
         super();
         this.type = type;
     }
 
     @Override
     public int getContentView() {
-        return R.layout.fragment_task;
+        return R.layout.fragment_msg;
     }
 
     @Override
@@ -60,7 +59,7 @@ public class TaskFragment extends RobotBaseFragment<TaskPresenter> implements Ta
         mTaskAdapter.setOnRvItemListener(new OnRvItemListener<TaskItemModel>() {
             @Override
             public void onItemClick(List<TaskItemModel> list, int position) {
-                TaskDetailsActivity.startActivity(mContext, list.get(position).getId());
+
             }
         });
         mPageHelper = new PageHelper<>(mLoadingView, mRefreshLayout, mTaskAdapter);
@@ -70,7 +69,7 @@ public class TaskFragment extends RobotBaseFragment<TaskPresenter> implements Ta
 
     @Override
     public LifecycleProvider getLifecycleProvider() {
-        return TaskFragment.this;
+        return MsgFragment.this;
     }
 
     @Override

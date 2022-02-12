@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.thfw.base.models.TaskItemModel;
+import com.thfw.base.models.TaskDetailModel;
 import com.thfw.robotheart.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,10 +20,10 @@ import java.util.List;
  * Date: 2021/12/9 16:13
  * Describe:Todo
  */
-public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHolder> {
+public class TaskChildLineAdapter extends BaseAdapter<TaskDetailModel.ContentListBean, TaskChildLineAdapter.TaskHolder> {
 
 
-    public TaskAdapter(List<TaskItemModel> dataList) {
+    public TaskChildLineAdapter(List<TaskDetailModel.ContentListBean> dataList) {
         super(dataList);
     }
 
@@ -31,20 +31,21 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
     @NotNull
     @Override
     public TaskHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        return new TaskHolder(inflate(R.layout.item_task, parent));
+        return new TaskHolder(inflate(R.layout.item_task_child, parent));
     }
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull TaskHolder holder, int position) {
-        TaskItemModel itemModel = mDataList.get(position);
-        holder.mTvTime.setText(itemModel.getDeadline());
-        holder.mTvStatus.setText(itemModel.getFinishCount() + "/" + itemModel.getCount());
+        TaskDetailModel.ContentListBean itemModel = mDataList.get(position);
         holder.mTvTitle.setText(itemModel.getTitle());
-        holder.mTvType.setText(itemModel.getTaskTypeStr());
         if (itemModel.getStatus() == 2) {
             holder.mTvFlag.setVisibility(View.VISIBLE);
             holder.mTvFlag.setText("已过期");
             holder.mTvFlag.setBackgroundResource(R.drawable.yellow_radius_bg);
+        } else if (itemModel.getStatus() == 1) {
+            holder.mTvFlag.setVisibility(View.VISIBLE);
+            holder.mTvFlag.setText("已完成");
+            holder.mTvFlag.setBackgroundResource(R.drawable.green_radius_bg);
         } else {
             holder.mTvFlag.setVisibility(View.GONE);
         }
@@ -55,11 +56,8 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
 
         private RoundedImageView mRivDot;
         private TextView mTvTitle;
-        private TextView mTvTime;
         private View mVLine;
         private TextView mTvFlag;
-        private TextView mTvType;
-        private TextView mTvStatus;
 
         public TaskHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -74,11 +72,8 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
         private void initView(View itemView) {
             mRivDot = (RoundedImageView) itemView.findViewById(R.id.riv_dot);
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
-            mTvTime = (TextView) itemView.findViewById(R.id.tv_time);
             mVLine = (View) itemView.findViewById(R.id.v_line);
             mTvFlag = (TextView) itemView.findViewById(R.id.tv_flag);
-            mTvType = (TextView) itemView.findViewById(R.id.tv_type);
-            mTvStatus = (TextView) itemView.findViewById(R.id.tv_status);
         }
     }
 }

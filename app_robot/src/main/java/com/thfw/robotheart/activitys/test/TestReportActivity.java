@@ -27,6 +27,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * 测评报告列表页
+ */
 public class TestReportActivity extends RobotBaseActivity<TestPresenter> implements TestPresenter.TestUi<List<ReportTestModel>> {
 
     private static final String KEY_RID = "key.rid";

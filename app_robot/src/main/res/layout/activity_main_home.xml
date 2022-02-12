@@ -45,12 +45,33 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints">
 
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/riv_avatar"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:src="@mipmap/ic_launcher"
-            app:riv_oval="true" />
+        <RelativeLayout
+            android:layout_width="45dp"
+            android:layout_height="wrap_content">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/riv_avatar"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@mipmap/ic_launcher"
+                app:riv_oval="true" />
+
+            <TextView
+                android:id="@+id/tv_dot_count"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_margin="2dp"
+                android:background="@drawable/message_count_dot_red"
+                android:gravity="center"
+                android:minWidth="20dp"
+                android:padding="2dp"
+                android:text="1"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:visibility="visible" />
+
+        </RelativeLayout>
 
 
         <TextView

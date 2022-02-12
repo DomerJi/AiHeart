@@ -299,5 +299,53 @@ public class HistoryModel implements IModel {
 
     public static class HistoryExerciseModel extends HistoryModel {
 
+
+        /**
+         * add_time : 2022-02-12 11:21:12
+         * id : 27
+         * title : 课程5
+         * tool_package_title : 新建工具包
+         */
+
+        @SerializedName("add_time")
+        private String addTime;
+        @SerializedName("id")
+        private int id;
+        @SerializedName("title")
+        private String title;
+        @SerializedName("tool_package_title")
+        private String toolPackageTitle;
+
+        public String getAddTime() {
+            return addTime;
+        }
+
+        public void setAddTime(String addTime) {
+            this.addTime = addTime;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getToolPackageTitle() {
+            return toolPackageTitle;
+        }
+
+        public void setToolPackageTitle(String toolPackageTitle) {
+            this.toolPackageTitle = toolPackageTitle;
+        }
     }
 }

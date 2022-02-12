@@ -38,13 +38,13 @@
     <string name="me_time_day">累积天数</string>
     <string name="me_time_continuation_day">连续天数</string>
 
-    <string name="me_test">我测的</string>
+    <string name="me_test">测评问卷</string>
     <string name="me_test_history">我的测试</string>
-    <string name="me_exercise">我练的</string>
-    <string name="me_listening">我听的</string>
-    <string name="me_see">我看的</string>
-    <string name="me_read">我读的</string>
-    <string name="me_study">我学的</string>
+    <string name="me_exercise">成长训练</string>
+    <string name="me_listening">正念冥想</string>
+    <string name="me_see">视频集锦</string>
+    <string name="me_read">心理文库</string>
+    <string name="me_study">思政文库</string>
 
     <string name="me_heart_box">心灵筒</string>
     <string name="me_heart_test_report">心理测评报告</string>

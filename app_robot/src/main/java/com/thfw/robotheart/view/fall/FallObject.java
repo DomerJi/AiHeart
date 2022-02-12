@@ -37,6 +37,7 @@ public class FallObject {
     private boolean isSizeRandom;//物体初始大小比例是否随机
     private boolean isWindRandom;//物体初始风向和风力大小比例是否随机
     private boolean isWindChange;//物体下落过程中风向和风力是否产生随机变化
+
     public FallObject(Builder builder, int parentWidth, int parentHeight) {
         random = new Random();
         this.parentWidth = parentWidth;

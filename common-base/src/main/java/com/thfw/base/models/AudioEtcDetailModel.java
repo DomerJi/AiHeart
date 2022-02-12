@@ -317,6 +317,16 @@ public class AudioEtcDetailModel implements IModel {
         // 自定义 字段
         // 自动返回;
         private boolean autoFinished;
+        // 任务回执
+        private boolean taskCallBack;
+
+        public void setTaskCallBack(boolean taskCallBack) {
+            this.taskCallBack = taskCallBack;
+        }
+
+        public boolean isTaskCallBack() {
+            return taskCallBack;
+        }
 
         public void setAutoFinished(boolean autoFinished) {
             this.autoFinished = autoFinished;

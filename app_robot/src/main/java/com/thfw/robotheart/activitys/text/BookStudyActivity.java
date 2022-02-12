@@ -25,6 +25,9 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 import java.lang.reflect.Type;
 import java.util.List;
 
+/**
+ * 思政文库
+ */
 public class BookStudyActivity extends RobotBaseActivity<BookPresenter> implements BookPresenter.BookUi<List<BookStudyTypeModel>> {
 
 

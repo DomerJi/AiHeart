@@ -13,6 +13,9 @@ import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.user.login.UserManager;
 
+/**
+ * 设置密码
+ */
 public class SetPasswordActivity extends RobotBaseActivity {
 
     public static final int SET_CODE = 0;

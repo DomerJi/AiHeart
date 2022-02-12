@@ -31,6 +31,9 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.List;
 
+/**
+ * 工具包/成长训练 详情
+ */
 public class ExerciseDetailsActivity extends RobotBaseActivity<UserToolPresenter> implements UserToolPresenter.UserToolUi<ExerciseModel> {
 
     public static final String KEY_ID = "key.id";

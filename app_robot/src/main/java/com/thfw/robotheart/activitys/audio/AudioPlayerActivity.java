@@ -49,6 +49,7 @@ import com.thfw.base.models.CommonModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.AudioPresenter;
 import com.thfw.base.presenter.HistoryPresenter;
+import com.thfw.base.presenter.TaskPresenter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HourChangeHelper;
 import com.thfw.base.utils.LogUtil;
@@ -72,6 +73,9 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 正念冥想播放音频
+ */
 public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> implements
         VideoGestureHelper.VideoGestureListener, AudioPresenter.AudioUi<AudioEtcDetailModel> {
 
@@ -126,6 +130,8 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private int newProgress = 0, oldProgress = 0;
     private Window mWindow;
     private WindowManager.LayoutParams mLayoutParams;
+    private boolean isTaskCallBack;
+    private int mMusicId;
 
     public static void startActivity(Context context, AudioEtcModel audioEtcModel) {
         ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
@@ -272,6 +278,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             setAudioData();
             mPbBar.hide();
             autoFinished = mItemModel.isAutoFinished();
+            isTaskCallBack = mItemModel.isTaskCallBack();
         } else {
             autoFinished = mModel.isAutoFinished();
             GlideUtil.load(mContext, mModel.getImg(), mRivEtc);
@@ -332,6 +339,8 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             mTvAudioTitle.setText(mAudios.get(0).getTitle());
             player.seekTo(0, 0);
         }
+
+        mMusicId = mAudios.get(player.getCurrentWindowIndex()).getId();
 
         player.prepare();
         // Start the playback.
@@ -455,6 +464,29 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         super.finish();
     }
 
+    private void onFinishMusic(int id) {
+        if (mDetailModel == null) {
+            return;
+        }
+        new TaskPresenter(new TaskPresenter.TaskUi<CommonModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return AudioPlayerActivity.this;
+            }
+
+            @Override
+            public void onSuccess(CommonModel data) {
+                LogUtil.d(TAG, "onFinishMusic - onSuccess");
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                LogUtil.d(TAG, "onFinishMusic - onFail");
+            }
+        }).onFinishMusic(id, mDetailModel.getCollectionInfo().getId());
+        LogUtil.d(TAG, "onFinishMusic - begin");
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -569,7 +601,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
         @Override
         public void onPlaybackStateChanged(int state) {
-
+            if (isTaskCallBack && state == Player.STATE_ENDED) {
+                onFinishMusic(mMusicId);
+            }
             if (state == Player.STATE_READY || state == Player.STATE_ENDED) {
                 uiPlayOrPause(true);
                 if (autoFinished && state == Player.STATE_ENDED) {
@@ -605,6 +639,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         @Override
         public void onMediaItemTransition(@Nullable @org.jetbrains.annotations.Nullable MediaItem mediaItem, int reason) {
             LogUtil.d(TAG, "onMediaItemTransition reason = " + reason);
+            if (isTaskCallBack && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
+                onFinishMusic(mMusicId);
+            }
             if (autoFinished && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
                 finish();
                 return;
@@ -619,6 +656,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             mTvEtcTitle.setText("所属章节：" + mDetailModel.getCollectionInfo().getTitle()
                     + "  " + (player.getCurrentWindowIndex() + 1) + "/" + mAudios.size());
             int musicId = mAudios.get(player.getCurrentWindowIndex()).getId();
+            mMusicId = musicId;
             mPresenter.addAudioHistory(musicId, mDetailModel.getCollectionInfo().getId());
             // 列表页更新
             HourChangeHelper.getInstance().notify(mDetailModel.getCollectionInfo().getId(), player.getCurrentWindowIndex() + 1, musicId);

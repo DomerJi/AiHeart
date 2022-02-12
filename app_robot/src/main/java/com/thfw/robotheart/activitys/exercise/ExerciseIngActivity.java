@@ -68,9 +68,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * 工具包/成长训练对话
+ */
 public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> implements UserToolPresenter.UserToolUi<HttpResult<List<DialogTalkModel>>> {
 
 
+    public static final int REQUEST_CODE = 1;
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.recyclerview.widget.RecyclerView mRvList;
     private android.widget.RelativeLayout mRlSend;
@@ -81,18 +85,14 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
     private androidx.recyclerview.widget.RecyclerView mRvSelect;
     private ChatAdapter mChatAdapter;
     private int mToolPackageId;
-
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private Helper mHelper = new Helper();
     private int mCurrentChatType;
     private ChatSelectAdapter mSelectAdapter;
-
     private boolean softKeyBoardShow;
     private androidx.constraintlayout.widget.ConstraintLayout mClLizi;
     private android.widget.ImageView mIvLiziText;
     private boolean mIsAchieve;
-
-    public static final int REQUEST_CODE = 1;
     private int countDownFinish;
 
     public static void startActivity(Context context, int id) {
@@ -646,6 +646,12 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMainHandler.removeCallbacksAndMessages(null);
+    }
+
     public class Helper {
 
         private List<DialogTalkModel> mTalks;
@@ -678,11 +684,5 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
         public void setTalkModel(DialogTalkModel talkModel) {
             this.talkModel = talkModel;
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mMainHandler.removeCallbacksAndMessages(null);
     }
 }

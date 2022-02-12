@@ -1,6 +1,4 @@
-plugins {
-    id 'com.android.application'
-}
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 30
@@ -17,7 +15,7 @@ android {
 
         ndk {
 //            moduleName "detection_based_tracker"
-            abiFilters 'armeabi-v7a'  // 输出指定三种abi体系结构下的so库。
+            abiFilters 'armeabi-v7a' // 输出指定三种abi体系结构下的so库。
 //            abiFilters 'armeabi' , 'armeabi-v7a',  'arm64-v8a'  // 输出指定三种abi体系结构下的so库。
         }
     }

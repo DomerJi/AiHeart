@@ -152,4 +152,11 @@ public class HotPhoneActivity extends RobotBaseActivity {
             }
         }, 350);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMainHandler.removeCallbacksAndMessages(null);
+        mMainHandler = null;
+    }
 }

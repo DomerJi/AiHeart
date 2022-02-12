@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.MainActivity;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.fragments.login.LoginByFaceFragment;
 import com.thfw.robotheart.fragments.login.LoginMobileCodeFragment;
@@ -158,6 +159,7 @@ public class LoginActivity extends BaseActivity {
     public void onResume() {
         super.onResume();
         Static2Helper.initOpenCV(true);
+        MainActivity.resetInit();
     }
 
     @Override

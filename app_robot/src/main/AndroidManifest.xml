@@ -65,7 +65,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activitys.test.TestReportActivity"></activity>
+        <activity
+            android:name=".activitys.task.MsgActivity"
+            android:screenOrientation="landscape"></activity>
+        <activity
+            android:name=".activitys.task.TaskDetailsActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activitys.test.TestReportActivity"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.me.EditInfoActivity"
             android:screenOrientation="landscape" />
@@ -86,7 +94,7 @@
         </provider>
 
         <activity
-            android:name=".activitys.me.SystemAppActivity"
+            android:name=".activitys.set.SystemAppActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.SearchActivity"
@@ -107,7 +115,7 @@
             android:name=".activitys.me.HelpBackActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".activitys.me.TaskActivity"
+            android:name=".activitys.task.TaskActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.me.CollectActivity"
@@ -177,7 +185,7 @@
             android:screenOrientation="landscape"
             android:theme="@style/LoginTheme" />
         <activity
-            android:name=".activitys.me.SettingActivity"
+            android:name=".activitys.set.SettingActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.me.MeActivity"

@@ -42,6 +42,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * 历史对话
+ */
 public class TalkHistoryActivity extends RobotBaseActivity<TalkPresenter> implements TalkPresenter.TalkUi<List<DialogTalkModel>> {
 
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
@@ -207,9 +210,15 @@ public class TalkHistoryActivity extends RobotBaseActivity<TalkPresenter> implem
 
     }
 
+    /**
+     * 根据月份获取，该月份下的有数据的天
+     *
+     * @param month
+     */
     private void onMonthHasDay(String month) {
         mCurrentMonth = month;
         mCalendarView.clearSchemeDate();
+        // 有月份下数据
         if (mAllHasDayMap.containsKey(month)) {
             List<Calendar> calendars = mCalendarView.getCurrentMonthCalendars();
             for (Calendar calendar : calendars) {
@@ -220,6 +229,7 @@ public class TalkHistoryActivity extends RobotBaseActivity<TalkPresenter> implem
             }
             return;
         }
+        // 没有去请求数据
         new TalkPresenter<>(new TalkPresenter.TalkUi<List<String>>() {
             @Override
             public LifecycleProvider getLifecycleProvider() {

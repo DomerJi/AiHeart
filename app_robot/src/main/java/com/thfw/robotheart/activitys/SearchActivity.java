@@ -49,6 +49,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * 搜索页面
+ * Created By jishuaipeng on 2021/12/29
+ */
 public class SearchActivity extends RobotBaseActivity<SearchPresenter> implements SearchPresenter.SearchUi<SearchResultModel> {
 
     private static String KEY_HISTORY = "search.history";
@@ -156,16 +160,25 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
         });
     }
 
+    /**
+     * 开始搜索
+     *
+     * @param key
+     */
     private void onGoSearch(String key) {
+        // 搜索关键词列表去重
         if (mKeyHistoryList.contains(key)) {
             mKeyHistoryList.remove(key);
         }
+        // 更新历史搜索关键词列表
         mKeyHistoryList.add(0, key);
         SharePreferenceUtil.setString(KEY_HISTORY, GsonUtil.toJson(mKeyHistoryList));
         searchHistoryAdapter.notifyDataSetChanged();
+        // 隐藏历史搜索页面
         mClHistory.setVisibility(View.GONE);
         mClResult.setVisibility(View.GONE);
         mLoadingView.showLoading();
+        // 开始搜索
         mPresenter.onSearch(key);
         hideInput();
     }
@@ -185,6 +198,7 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
             mLoadingView.showLoading();
         }
 
+        // 历史搜索数据加载
         new SearchPresenter(new SearchPresenter.SearchUi<List<String>>() {
             @Override
             public LifecycleProvider getLifecycleProvider() {
@@ -210,6 +224,7 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
 
     }
 
+    // 重置历史搜索列表数据，并更新列表
     private void setHistoryList(List<String> list) {
         mKeyHistoryList.clear();
         mKeyHistoryList.addAll(list);
@@ -221,6 +236,9 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
         return this;
     }
 
+    /**
+     * 清除历史搜索记录
+     */
     private void onDeleteHistory() {
         LoadingDialog.show(this, "清除中...");
         new SearchPresenter(new SearchPresenter.SearchUi<CommonModel>() {
@@ -279,7 +297,7 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
         } else {
             fragments.clear();
         }
-
+        // 正念冥想
         if (!EmptyUtil.isEmpty(data.getCollection())) {
             if (fragmentMaps.containsKey(SearchResultModel.TYPE_AUDIO)) {
                 fragmentMaps.get(SearchResultModel.TYPE_AUDIO).setResultBeans(data.getCollection());
@@ -290,7 +308,7 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
             }
             fragments.add(SearchResultModel.TYPE_AUDIO);
         }
-
+        // 主题对话
         if (!EmptyUtil.isEmpty(data.getDialogList())) {
             if (fragmentMaps.containsKey(SearchResultModel.TYPE_DIALOG)) {
                 fragmentMaps.get(SearchResultModel.TYPE_DIALOG).setResultBeans(data.getDialogList());
@@ -301,7 +319,7 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
             fragments.add(SearchResultModel.TYPE_DIALOG);
 
         }
-
+        // 测评问卷
         if (!EmptyUtil.isEmpty(data.getPsychTest())) {
             if (fragmentMaps.containsKey(SearchResultModel.TYPE_TEST)) {
                 fragmentMaps.get(SearchResultModel.TYPE_TEST).setResultBeans(data.getPsychTest());
@@ -312,7 +330,7 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
             fragments.add(SearchResultModel.TYPE_TEST);
 
         }
-
+        // 视频集锦
         if (!EmptyUtil.isEmpty(data.getVideoList())) {
             if (fragmentMaps.containsKey(SearchResultModel.TYPE_VIDEO)) {
                 fragmentMaps.get(SearchResultModel.TYPE_VIDEO).setResultBeans(data.getVideoList());
@@ -323,30 +341,30 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
             fragments.add(SearchResultModel.TYPE_VIDEO);
 
         }
-
+        // 思政文章
         if (!EmptyUtil.isEmpty(data.getIdeologyList())) {
             if (fragmentMaps.containsKey(SearchResultModel.TYPE_IDEO_TEXT)) {
                 fragmentMaps.get(SearchResultModel.TYPE_IDEO_TEXT).setResultBeans(data.getIdeologyList());
             } else {
                 fragmentMaps.put(SearchResultModel.TYPE_IDEO_TEXT,
-                        new SearchResultFragment(SearchResultModel.TYPE_IDEO_TEXT, "思政文章", data.getVideoList()));
+                        new SearchResultFragment(SearchResultModel.TYPE_IDEO_TEXT, "思政文章", data.getIdeologyList()));
             }
             fragments.add(SearchResultModel.TYPE_IDEO_TEXT);
 
         }
-
+        // 心理文章
         if (!EmptyUtil.isEmpty(data.getArticleList())) {
             if (fragmentMaps.containsKey(SearchResultModel.TYPE_TEXT)) {
-                fragmentMaps.get(SearchResultModel.TYPE_TEXT).setResultBeans(data.getVideoList());
+                fragmentMaps.get(SearchResultModel.TYPE_TEXT).setResultBeans(data.getArticleList());
             } else {
                 fragmentMaps.put(SearchResultModel.TYPE_TEXT,
-                        new SearchResultFragment(SearchResultModel.TYPE_TEXT, "心理文章", data.getVideoList()));
+                        new SearchResultFragment(SearchResultModel.TYPE_TEXT, "心理文章", data.getArticleList()));
             }
             fragments.add(SearchResultModel.TYPE_TEXT);
 
         }
 
-
+        // 成长训练
         if (!EmptyUtil.isEmpty(data.getToolPackageList())) {
             if (fragmentMaps.containsKey(SearchResultModel.TYPE_TOOL)) {
                 fragmentMaps.get(SearchResultModel.TYPE_TOOL).setResultBeans(data.getToolPackageList());
@@ -361,6 +379,7 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
 
         /**
          * setMaxLifecycle fragment 可见监听
+         * fragment 刷新
          */
         if (myResultAdapter == null) {
             mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -418,6 +437,9 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
         });
     }
 
+    /**
+     * 切换到下一个页面
+     */
     public void onViewPagerNext() {
         if (mViewPager != null && myResultAdapter != null && myResultAdapter.getCount() > 1) {
             mViewPager.setCurrentItem((mViewPager.getCurrentItem() + 1) % myResultAdapter.getCount(), false);

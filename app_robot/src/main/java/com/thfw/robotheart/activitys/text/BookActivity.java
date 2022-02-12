@@ -23,6 +23,9 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.List;
 
+/**
+ * 心理文库
+ */
 public class BookActivity extends RobotBaseActivity<BookPresenter> implements BookPresenter.BookUi<BookTypeModel> {
 
     public static final String KEY_TYPE_LIST = "key.book.type.list";

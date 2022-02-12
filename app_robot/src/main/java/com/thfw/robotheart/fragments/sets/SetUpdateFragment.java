@@ -14,7 +14,7 @@ import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
-import com.thfw.robotheart.activitys.me.SystemAppActivity;
+import com.thfw.robotheart.activitys.set.SystemAppActivity;
 import com.thfw.ui.base.RobotBaseFragment;
 
 /**

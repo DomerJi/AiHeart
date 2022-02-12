@@ -2,6 +2,7 @@ package com.thfw.robotheart.activitys;
 
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -33,7 +34,7 @@ import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.activitys.me.HotPhoneActivity;
 import com.thfw.robotheart.activitys.me.MeActivity;
 import com.thfw.robotheart.activitys.me.PrivateSetActivity;
-import com.thfw.robotheart.activitys.me.SettingActivity;
+import com.thfw.robotheart.activitys.set.SettingActivity;
 import com.thfw.robotheart.activitys.talk.AiTalkActivity;
 import com.thfw.robotheart.activitys.talk.ThemeTalkActivity;
 import com.thfw.robotheart.activitys.test.TestActivity;
@@ -55,6 +56,11 @@ import java.util.List;
 
 public class MainActivity extends RobotBaseActivity implements View.OnClickListener {
 
+    /**
+     * 机构信息和用户信息初始化标识
+     */
+    private static boolean initUserInfo;
+    private static boolean initOrganization;
     private com.thfw.robotheart.view.TitleBarView mTitleBarView;
     private com.thfw.ui.widget.WeekView mWeekView;
     private com.makeramen.roundedimageview.RoundedImageView mRivAvatar;
@@ -80,8 +86,16 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private LinearLayout mLlRiv;
     private ConstraintLayout mClMe;
     private ConstraintLayout mClSetting;
-    private boolean initUserInfo;
-    private boolean initOrganization;
+    private TextView mTvDotCount;
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+
+    /**
+     * 重新登录后重新获取用户相关信息
+     */
+    public static void resetInit() {
+        initUserInfo = false;
+        initOrganization = false;
+    }
 
     @Override
     public int getContentView() {
@@ -119,7 +133,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mLlMe = (LinearLayout) findViewById(R.id.ll_me);
         mClSetting = (ConstraintLayout) findViewById(R.id.cl_setting);
         mClMe = (ConstraintLayout) findViewById(R.id.cl_me);
-
+        mTvDotCount = findViewById(R.id.tv_dot_count);
         mLlTest.setOnClickListener(this);
         mLlTalk.setOnClickListener(this);
         mLlMusic.setOnClickListener(this);
@@ -132,7 +146,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mClMe.setOnClickListener(this);
         mRlSpecialityTalk.setOnClickListener(this);
         mMySearch = (MyRobotSearchView) findViewById(R.id.my_search);
-
+        // 搜索控件进入搜索页面
         mMySearch.setOnSearchListener(new MyRobotSearchView.OnSearchListener() {
             @Override
             public void onSearch(String key, boolean clickSearch) {
@@ -146,45 +160,66 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         });
 
         mLlRiv = (LinearLayout) findViewById(R.id.ll_riv);
+
+        setMsg(100);
     }
 
 
     @Override
     public void initData() {
+        // 日期、星期连续点击10次进入配置页面（机构id设置）
         mWeekView.setOnClickListener(v -> {
             if (ClickCountUtils.click(10)) {
                 startActivity(new Intent(mContext, PrivateSetActivity.class));
             }
         });
+        // 登录的情况下进行用户信息配置
         if (UserManager.getInstance().isLogin()) {
             setUserMessage(UserManager.getInstance().getUser());
         }
+        // 头像点击进入【我的页面】
+        mLlRiv.setOnClickListener(v -> {
+            if (UserManager.getInstance().isLogin()) {
+                startActivity(new Intent(mContext, MeActivity.class));
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         if (!UserManager.getInstance().isLogin()) {
+            // 未登录进入登录页面
             LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
         } else {
-            mLlRiv.setOnClickListener(v -> {
-                startActivity(new Intent(mContext, MeActivity.class));
-            });
+            // 已登录 初始化用户信息和机构信息
             initUserInfo();
             initOrganization();
         }
         // 检查版本更新
-        new Handler().postDelayed(new Runnable() {
+        mMainHandler.removeCallbacksAndMessages(null);
+        mMainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (EmptyUtil.isEmpty(MainActivity.this)) {
                     return;
                 }
-                checkVersion();
+                if (isMeResumed()) {
+                    checkVersion();
+                }
             }
         }, isMeResumed2() ? 1000 : 2500);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mMainHandler.removeCallbacksAndMessages(null);
+    }
+
+    /**
+     * 检查版本更新
+     */
     private void checkVersion() {
         BuglyUtil.requestNewVersion(new SimpleUpgradeStateListener() {
             @Override
@@ -194,12 +229,14 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 if (EmptyUtil.isEmpty(MainActivity.this)) {
                     return;
                 }
-                TextView view = findViewById(R.id.tv_set_dot_hint);
-                if (view == null) {
-                    return;
+                if (isMeResumed()) {
+                    TextView view = findViewById(R.id.tv_set_dot_hint);
+                    if (view == null) {
+                        return;
+                    }
+                    view.setText("新版本");
+                    view.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
                 }
-                view.setText("新版本");
-                view.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
             }
         });
     }
@@ -232,6 +269,11 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * 用户信息更新观察者
+     *
+     * @return
+     */
     @Override
     public UserObserver addObserver() {
         return new UserObserver() {
@@ -242,6 +284,11 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         };
     }
 
+    /**
+     * 设置用户信息
+     *
+     * @param user
+     */
     private void setUserMessage(User user) {
         mTvInstitution.setText(user.getOrganListStr());
         mTvNickname.setText(user.getVisibleName());
@@ -328,6 +375,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                     LogUtil.d(TAG, "initUserInfo onSuccess ++++++++++++++++++++++ ");
                     UserManager.getInstance().getUser().setUserInfo(data);
                     UserManager.getInstance().notifyUserInfo();
+                } else {
+                    onFail(new ResponeThrowable(0, "data is null"));
                 }
             }
 
@@ -348,6 +397,20 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 });
             }
         }).onGetUserInfo();
+    }
+
+    /**
+     * 设置未读消息数量
+     *
+     * @param count
+     */
+    private void setMsg(int count) {
+        if (count > 0) {
+            mTvDotCount.setVisibility(View.VISIBLE);
+            mTvDotCount.setText(count > 99 ? "99+" : String.valueOf(count));
+        } else {
+            mTvDotCount.setVisibility(View.GONE);
+        }
     }
 
 }

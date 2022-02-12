@@ -55,7 +55,7 @@ public class ThemeTalkActivity extends RobotBaseActivity<TalkPresenter> implemen
             @Override
             public void onItemClick(List<ThemeTalkModel> list, int position) {
                 AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
-                        .setId(false ? 1757 : list.get(position).getId())
+                        .setId(list.get(position).getId())
                         .setCollected(list.get(position).getCollected() == 1)
                         .setTitle(list.get(position).getTitle()));
             }

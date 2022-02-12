@@ -1,5 +1,7 @@
 package com.thfw.base.api;
 
+import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.TaskDetailModel;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.base.net.HttpResult;
 
@@ -23,4 +25,20 @@ public interface TaskApi {
     @FormUrlEncoded
     @POST("task/list")
     Observable<HttpResult<List<TaskItemModel>>> onGetList(@Field("status") int status, @Field("page") int page);
+
+    /**
+     * 任务-用户任务详情
+     */
+    @FormUrlEncoded
+    @POST("task/info")
+    Observable<HttpResult<TaskDetailModel>> onGetInfo(@Field("id") int id);
+
+
+    /**
+     * 任务-完成音频收听
+     */
+    @FormUrlEncoded
+    @POST("music/finish")
+    Observable<HttpResult<CommonModel>> onFinishMusic(@Field("music_id") int musicId, @Field("collection_id") int collectionId);
+
 }

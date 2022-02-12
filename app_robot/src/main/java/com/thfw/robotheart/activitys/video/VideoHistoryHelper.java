@@ -13,7 +13,7 @@ import java.util.HashMap;
 /**
  * Author:pengs
  * Date: 2021/12/17 15:30
- * Describe:Todo
+ * Describe:视频历史记录管理
  */
 public class VideoHistoryHelper {
     // 视频开始，结尾小于2500毫秒，记录为从0开始

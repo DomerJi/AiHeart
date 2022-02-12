@@ -1,5 +1,6 @@
 package com.thfw.base.models;
 
+import com.google.gson.annotations.SerializedName;
 import com.thfw.base.base.IModel;
 
 /**
@@ -9,4 +10,110 @@ import com.thfw.base.base.IModel;
  */
 public class TaskItemModel implements IModel {
 
+
+    /**
+     * id : 4
+     * user_id : 100010
+     * status : 0
+     * deadline : 2022-05-24 10:40
+     * title : 测评任务
+     * count : 3
+     * finish_count : 0
+     */
+
+    @SerializedName("id")
+    private int id;
+    @SerializedName("user_id")
+    private int userId;
+    @SerializedName("status")
+    private int status;
+    @SerializedName("task_type")
+    private int taskType;
+    @SerializedName("deadline")
+    private String deadline;
+    @SerializedName("title")
+    private String title;
+    @SerializedName("count")
+    private int count;
+    @SerializedName("finish_count")
+    private int finishCount;
+
+    public String getTaskTypeStr() {
+        /**
+         * 1-测评 2-音频 3-话术
+         */
+        switch (taskType) {
+            case 1:
+                return "测评问卷";
+            case 2:
+                return "正念冥想";
+            case 3:
+                return "主题对话";
+        }
+        return "未知";
+    }
+
+    public int getTaskType() {
+        return taskType;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    /**
+     * 0-未完成 1-已完成 2-过期
+     * @return
+     */
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(String deadline) {
+        this.deadline = deadline;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getFinishCount() {
+        return finishCount;
+    }
+
+    public void setFinishCount(int finishCount) {
+        this.finishCount = finishCount;
+    }
 }

@@ -18,6 +18,8 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.login.LoginActivity;
+import com.thfw.robotheart.activitys.task.MsgActivity;
+import com.thfw.robotheart.activitys.task.TaskActivity;
 import com.thfw.robotheart.activitys.test.TestReportActivity;
 import com.thfw.robotheart.view.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
@@ -180,6 +182,10 @@ public class MeActivity extends RobotBaseActivity {
 
         mRlReport.setOnClickListener(v -> {
             TestReportActivity.startActivity(mContext);
+        });
+
+        mRlMeMsg.setOnClickListener(v -> {
+            startActivity(new Intent(mContext, MsgActivity.class));
         });
 
     }

@@ -392,6 +392,12 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     }
 
+    /**
+     * 语音匹配自用输入和单选题
+     *
+     * @param result
+     * @param end
+     */
     private void chooseOption(String result, boolean end) {
         LogUtil.d(TAG, "chooseOption(result)" + result + "; end = " + end);
         LogUtil.d(TAG, "chooseOption(result) mCurrentChatType = " + mCurrentChatType);
@@ -559,6 +565,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             mChatAdapter.addData(ChatEntity.createTime());
         }
         mChatAdapter.addData(chatEntity);
+        // 插入一条
         mChatAdapter.notifyItemInserted(mChatAdapter.getItemCount() - 1);
         if (!addTime && lastChatEntity != null && lastChatEntity.type == ChatEntity.TYPE_TO
                 && mChatAdapter.getItemCount() > 2) {

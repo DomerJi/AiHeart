@@ -30,6 +30,9 @@ import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
+/**
+ * 账号管理
+ */
 public class AccountManagerActivity extends RobotBaseActivity {
 
 
