@@ -39,25 +39,29 @@ public class HistoryAdapter extends BaseAdapter<HistoryModel, HistoryAdapter.His
         if (historyModel instanceof HistoryModel.HistoryTestModel) {
             HistoryModel.HistoryTestModel testModel = (HistoryModel.HistoryTestModel) historyModel;
             holder.mTvTitle.setText(testModel.getTitle());
-            holder.mTvTime.setText("测试时间：" + testModel.getAddTime());
+            holder.mTvTime.setText("时间:" + testModel.getAddTime());
         } else if (historyModel instanceof HistoryModel.HistoryVideoModel) {
             HistoryModel.HistoryVideoModel videoModel = (HistoryModel.HistoryVideoModel) historyModel;
             holder.mTvTitle.setText(videoModel.getTitle());
-            holder.mTvTime.setText("时间：" + videoModel.getAddTime());
+            holder.mTvSubTitle.setText("分类:" + videoModel.getOfType());
+            holder.mTvSubTitle.setVisibility(View.VISIBLE);
+            holder.mTvTime.setText("时间:" + videoModel.getAddTime());
         } else if (historyModel instanceof HistoryModel.HistoryAudioModel) {
             HistoryModel.HistoryAudioModel audioModel = (HistoryModel.HistoryAudioModel) historyModel;
             holder.mTvTitle.setText(audioModel.getTitle());
-            holder.mTvSubTitle.setText("合集：" + audioModel.getTitle());
+            holder.mTvSubTitle.setText("合集:" + audioModel.getCollectionTitle());
             holder.mTvSubTitle.setVisibility(View.VISIBLE);
-            holder.mTvTime.setText("时间：" + audioModel.getAddTime());
+            holder.mTvTime.setText("时间:" + audioModel.getAddTime());
         } else if (historyModel instanceof HistoryModel.HistoryBookModel) {
             HistoryModel.HistoryBookModel bookModel = (HistoryModel.HistoryBookModel) historyModel;
             holder.mTvTitle.setText(bookModel.getTitle());
-            holder.mTvTime.setText("时间：" + bookModel.getAddTime());
+            holder.mTvSubTitle.setText("分类:" + bookModel.getOfType());
+            holder.mTvSubTitle.setVisibility(View.VISIBLE);
+            holder.mTvTime.setText("时间:" + bookModel.getAddTime());
         } else if (historyModel instanceof HistoryModel.HistoryExerciseModel) {
             HistoryModel.HistoryExerciseModel bookModel = (HistoryModel.HistoryExerciseModel) historyModel;
             holder.mTvTitle.setText(bookModel.getTitle() + " - " + bookModel.getToolPackageTitle());
-            holder.mTvTime.setText("时间：" + bookModel.getAddTime());
+            holder.mTvTime.setText("时间:" + bookModel.getAddTime());
         }
     }
 

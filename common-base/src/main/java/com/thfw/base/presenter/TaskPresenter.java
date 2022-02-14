@@ -6,6 +6,7 @@ import com.thfw.base.base.UI;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.TaskDetailModel;
 import com.thfw.base.models.TaskItemModel;
+import com.thfw.base.models.TaskMusicEtcModel;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.OkHttpUtil;
 
@@ -55,6 +56,18 @@ public class TaskPresenter<T> extends IPresenter<TaskPresenter.TaskUi> {
     public void onFinishMusic(int id, int collectionId) {
         Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(TaskApi.class)
                 .onFinishMusic(id, collectionId);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+
+    /**
+     * 任务音频详情
+     *
+     * @param id
+     */
+    public void onMusicInfo(int id) {
+        Observable<HttpResult<TaskMusicEtcModel>> observable = OkHttpUtil.createService(TaskApi.class)
+                .onMusicEtcInfo(id);
         OkHttpUtil.request(observable, getUI());
     }
 

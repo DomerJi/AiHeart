@@ -1,9 +1,12 @@
 package com.thfw.robotheart.fragments.me;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.base.net.ResponeThrowable;
@@ -15,6 +18,8 @@ import com.thfw.robotheart.util.PageHelper;
 import com.thfw.ui.base.RobotBaseFragment;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -63,9 +68,28 @@ public class TaskFragment extends RobotBaseFragment<TaskPresenter> implements Ta
                 TaskDetailsActivity.startActivity(mContext, list.get(position).getId());
             }
         });
-        mPageHelper = new PageHelper<>(mLoadingView, mRefreshLayout, mTaskAdapter);
-        mPresenter.onGetList(type, mPageHelper.getPage());
 
+        mRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull @NotNull RefreshLayout refreshLayout) {
+                mPresenter.onGetList(type, mPageHelper.getPage());
+            }
+
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                mPageHelper.onRefresh();
+                mPresenter.onGetList(type, mPageHelper.getPage());
+            }
+        });
+    }
+
+    @Override
+    public void onVisible(boolean isVisible) {
+        super.onVisible(isVisible);
+        if (isVisible) {
+            mPageHelper = new PageHelper<>(mLoadingView, mRefreshLayout, mTaskAdapter);
+            mPresenter.onGetList(type, mPageHelper.getPage());
+        }
     }
 
     @Override

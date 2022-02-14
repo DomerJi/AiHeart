@@ -12,6 +12,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -46,6 +47,7 @@ import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.TaskMusicEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.AudioPresenter;
 import com.thfw.base.presenter.HistoryPresenter;
@@ -130,10 +132,18 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private int newProgress = 0, oldProgress = 0;
     private Window mWindow;
     private WindowManager.LayoutParams mLayoutParams;
-    private boolean isTaskCallBack;
+    private boolean isTask;
     private int mMusicId;
+    private static TaskMusicEtcModel mStaticTaskEtcModel;
+    private ArrayList<TaskMusicEtcModel.MusicListBean> mTaskEtcModel;
 
     public static void startActivity(Context context, AudioEtcModel audioEtcModel) {
+        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
+                .putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
+    }
+
+    public static void startActivity(Context context, AudioEtcModel audioEtcModel, TaskMusicEtcModel taskMusicEtcModel) {
+        mStaticTaskEtcModel = taskMusicEtcModel;
         ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
                 .putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
     }
@@ -278,9 +288,20 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             setAudioData();
             mPbBar.hide();
             autoFinished = mItemModel.isAutoFinished();
-            isTaskCallBack = mItemModel.isTaskCallBack();
         } else {
             autoFinished = mModel.isAutoFinished();
+
+            // 正念冥想任务
+            if (mStaticTaskEtcModel != null) {
+                if (mStaticTaskEtcModel.getMusicList() != null) {
+                    mTaskEtcModel = new ArrayList<>();
+                    mTaskEtcModel.addAll(mStaticTaskEtcModel.getMusicList());
+                    isTask = !EmptyUtil.isEmpty(mTaskEtcModel);
+                }
+                mStaticTaskEtcModel = null;
+            }
+
+
             GlideUtil.load(mContext, mModel.getImg(), mRivEtc);
             mPresenter.getAudioEtcInfo(mModel.getId());
             mPbBar.showLoadingNoText();
@@ -313,6 +334,18 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         playerListener.setPbBar(mPbBar);
         player.addListener(playerListener);
         mAudioView.setPlayer(player);
+
+        // 任务完成状态初始化
+        if (mTaskEtcModel != null) {
+            SparseIntArray statusMap = new SparseIntArray();
+            for (TaskMusicEtcModel.MusicListBean bean : mTaskEtcModel) {
+                statusMap.put(bean.getId(), bean.getStatus());
+            }
+            for (AudioEtcDetailModel.AudioItemModel mediaItem : mAudios) {
+                mediaItem.status = statusMap.get(mediaItem.getId());
+            }
+        }
+
         for (AudioEtcDetailModel.AudioItemModel mediaItem : mAudios) {
             LogUtil.d(TAG, "url = " + mediaItem.getSfile());
             player.addMediaItem(MediaItem.fromUri(mediaItem.getSfile()));
@@ -464,10 +497,26 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         super.finish();
     }
 
+    /**
+     * 完成正念冥想任务
+     *
+     * @param id
+     */
     private void onFinishMusic(int id) {
         if (mDetailModel == null) {
+            LogUtil.d(TAG, "onFinishMusic - begin return");
             return;
         }
+        for (AudioEtcDetailModel.AudioItemModel itemModel : mAudios) {
+            if (mMusicId == itemModel.getId()) {
+                itemModel.status = 1;
+                if (mFlContent.getVisibility() == View.VISIBLE) {
+                    mRvList.getAdapter().notifyDataSetChanged();
+                }
+                break;
+            }
+        }
+
         new TaskPresenter(new TaskPresenter.TaskUi<CommonModel>() {
             @Override
             public LifecycleProvider getLifecycleProvider() {
@@ -494,7 +543,6 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         try {
             mContext.unbindService(connection);
         } catch (Exception e) {
-
         }
     }
 
@@ -601,7 +649,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
         @Override
         public void onPlaybackStateChanged(int state) {
-            if (isTaskCallBack && state == Player.STATE_ENDED) {
+            if (isTask && state == Player.STATE_ENDED) {
                 onFinishMusic(mMusicId);
             }
             if (state == Player.STATE_READY || state == Player.STATE_ENDED) {
@@ -639,7 +687,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         @Override
         public void onMediaItemTransition(@Nullable @org.jetbrains.annotations.Nullable MediaItem mediaItem, int reason) {
             LogUtil.d(TAG, "onMediaItemTransition reason = " + reason);
-            if (isTaskCallBack && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
+            if (isTask && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
                 onFinishMusic(mMusicId);
             }
             if (autoFinished && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {

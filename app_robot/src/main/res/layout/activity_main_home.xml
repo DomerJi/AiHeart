@@ -101,10 +101,13 @@
 
     <RelativeLayout
         android:id="@+id/rl_speciality_talk"
-        android:layout_width="160dp"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/white_10"
         app:layout_constraintBottom_toBottomOf="@id/ll_navigation"
+        app:layout_constraintHorizontal_weight="@integer/left_weight"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/ll_navigation"
         app:layout_constraintTop_toTopOf="@id/ll_navigation"
         tools:ignore="MissingConstraints">
 
@@ -129,6 +132,7 @@
         android:weightSum="4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="2:0.8"
+        app:layout_constraintHorizontal_weight="@integer/right_weight"
         app:layout_constraintLeft_toRightOf="@id/rl_speciality_talk"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">

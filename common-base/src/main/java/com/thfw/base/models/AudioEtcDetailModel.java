@@ -311,6 +311,9 @@ public class AudioEtcDetailModel implements IModel {
         @SerializedName("num")
         private int num;
 
+        public int status = -1;
+
+
         @SerializedName("img")
         private String img;
 

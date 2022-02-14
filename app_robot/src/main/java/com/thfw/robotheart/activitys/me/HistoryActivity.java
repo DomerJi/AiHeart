@@ -144,7 +144,7 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
                 } else if (historyModel instanceof HistoryModel.HistoryAudioModel) { // 音频
                     HistoryModel.HistoryAudioModel audioModel = (HistoryModel.HistoryAudioModel) historyModel;
                     AudioEtcModel audioEtcModel = new AudioEtcModel();
-                    audioEtcModel.setTitle(audioModel.getTitle());
+                    audioEtcModel.setTitle(audioModel.getCollectionTitle());
                     audioEtcModel.setId(audioModel.getCollectionId());
                     audioEtcModel.setLastMusicId(audioModel.getId());
                     AudioPlayerActivity.startActivity(mContext, audioEtcModel);

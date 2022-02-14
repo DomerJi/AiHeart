@@ -14,7 +14,15 @@ import com.thfw.base.utils.RegularUtil;
  */
 public class HistoryModel implements IModel {
 
+    @SerializedName("flag_type")
     private int type = -1;
+
+    @SerializedName("type")
+    private String ofType;
+
+    public String getOfType() {
+        return ofType;
+    }
 
     public int getType() {
         if (type != -1) {
@@ -215,6 +223,12 @@ public class HistoryModel implements IModel {
         private String title;
         @SerializedName("collection_id")
         private String collectionId;
+        @SerializedName("collection_title")
+        private String collectionTitle;
+
+        public String getCollectionTitle() {
+            return collectionTitle;
+        }
 
         public String getAddTime() {
             return addTime;

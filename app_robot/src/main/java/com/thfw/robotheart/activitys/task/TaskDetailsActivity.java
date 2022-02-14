@@ -2,7 +2,6 @@ package com.thfw.robotheart.activitys.task;
 
 import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -10,10 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.face.OnRvItemListener;
-import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.TaskDetailModel;
+import com.thfw.base.models.TaskMusicEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TaskPresenter;
 import com.thfw.base.utils.ToastUtil;
@@ -24,6 +23,7 @@ import com.thfw.robotheart.activitys.test.TestDetailActivity;
 import com.thfw.robotheart.adapter.TaskChildLineAdapter;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -111,23 +111,7 @@ public class TaskDetailsActivity extends RobotBaseActivity<TaskPresenter> implem
                         TestDetailActivity.startActivity(mContext, id);
                         break;
                     case 2:
-                        String urlMp3 = list.get(position).getSfile();
-                        if (TextUtils.isEmpty(urlMp3)) {
-                            AudioEtcModel audioEtcModel = new AudioEtcModel();
-                            audioEtcModel.setTitle(title);
-                            audioEtcModel.setId(id);
-                            audioEtcModel.setAutoFinished(true);
-                            AudioPlayerActivity.startActivity(mContext, audioEtcModel);
-                        } else {
-                            AudioEtcDetailModel.AudioItemModel audioItemModel = new AudioEtcDetailModel.AudioItemModel();
-                            audioItemModel.setId(id);
-                            audioItemModel.setMusicId(id);
-                            audioItemModel.setSfile(urlMp3);
-                            audioItemModel.setTitle(title);
-                            audioItemModel.setAutoFinished(true);
-                            audioItemModel.setTaskCallBack(true);
-                            AudioPlayerActivity.startActivity(mContext, audioItemModel);
-                        }
+                        musicEtcInfo(list.get(position).getId());
                         break;
                     case 3:
                         AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
@@ -139,6 +123,31 @@ public class TaskDetailsActivity extends RobotBaseActivity<TaskPresenter> implem
         });
         mRvList.setAdapter(adapter);
         mLoadingView.hide();
+    }
+
+
+    private void musicEtcInfo(int id) {
+        LoadingDialog.show(this, "加载中");
+        new TaskPresenter<>(new TaskPresenter.TaskUi<TaskMusicEtcModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return TaskDetailsActivity.this;
+            }
+
+            @Override
+            public void onSuccess(TaskMusicEtcModel data) {
+                LoadingDialog.hide();
+                AudioEtcModel audioEtcModel = new AudioEtcModel();
+                audioEtcModel.setId(data.getCollectionId());
+                AudioPlayerActivity.startActivity(mContext, audioEtcModel, data);
+
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                LoadingDialog.hide();
+            }
+        }).onMusicInfo(id);
     }
 
     @Override

@@ -46,6 +46,12 @@ public class AudioItemAdapter extends BaseAdapter<AudioEtcDetailModel.AudioItemM
         holder.mTvTitle.setSelected(mCurrentIndex == position);
         holder.mTvCurrentPlay.setVisibility(mCurrentIndex == position ? View.VISIBLE : View.GONE);
         holder.mTvOrder.setText((position + 1) + ".");
+        holder.mTvOrder.setSelected(mCurrentIndex == position);
+        if (mDataList.get(position).status == 1) {
+            holder.mTvFlag.setVisibility(View.VISIBLE);
+        } else {
+            holder.mTvFlag.setVisibility(View.GONE);
+        }
     }
 
     public class AudioItemHolder extends RecyclerView.ViewHolder {
@@ -55,6 +61,7 @@ public class AudioItemAdapter extends BaseAdapter<AudioEtcDetailModel.AudioItemM
         private TextView mTvCurrentPlay;
         private TextView mTvCollectState;
         private TextView mTvOrder;
+        private TextView mTvFlag;
 
         public AudioItemHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -74,6 +81,7 @@ public class AudioItemAdapter extends BaseAdapter<AudioEtcDetailModel.AudioItemM
             mTvOrder = (TextView) itemView.findViewById(R.id.tv_order);
             mTvCurrentPlay = (TextView) itemView.findViewById(R.id.tv_current_play);
             mTvCollectState = (TextView) itemView.findViewById(R.id.tv_collect_state);
+            mTvFlag = itemView.findViewById(R.id.tv_flag);
         }
     }
 }

@@ -3,6 +3,7 @@ package com.thfw.base.api;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.TaskDetailModel;
 import com.thfw.base.models.TaskItemModel;
+import com.thfw.base.models.TaskMusicEtcModel;
 import com.thfw.base.net.HttpResult;
 
 import java.util.List;
@@ -40,5 +41,13 @@ public interface TaskApi {
     @FormUrlEncoded
     @POST("music/finish")
     Observable<HttpResult<CommonModel>> onFinishMusic(@Field("music_id") int musicId, @Field("collection_id") int collectionId);
+
+
+    /**
+     * 任务-返回合集任务内所有音频完成情况
+     */
+    @FormUrlEncoded
+    @POST("task/collection_info")
+    Observable<HttpResult<TaskMusicEtcModel>> onMusicEtcInfo(@Field("id") int id);
 
 }

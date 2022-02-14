@@ -111,8 +111,6 @@ public class TaskDetailModel implements IModel {
         private int id;
         @SerializedName("title")
         private String title;
-        @SerializedName("sfile")
-        private String sfile;
         @SerializedName("type")
         private int type;
         @SerializedName("status")
@@ -124,14 +122,6 @@ public class TaskDetailModel implements IModel {
 
         public void setId(int id) {
             this.id = id;
-        }
-
-        public void setSfile(String sfile) {
-            this.sfile = sfile;
-        }
-
-        public String getSfile() {
-            return sfile;
         }
 
         public String getTitle() {
