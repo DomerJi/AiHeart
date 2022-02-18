@@ -268,6 +268,43 @@ public class HistoryModel implements IModel {
 
     public static class HistoryStudyModel extends HistoryModel {
 
+
+        /**
+         * id : 15
+         * add_time : 2022-02-13 00:27:22
+         * title : 龚全珍：只要还能动，就要为社会干点事
+         */
+
+        @SerializedName("id")
+        private int id;
+        @SerializedName("add_time")
+        private String addTime;
+        @SerializedName("title")
+        private String title;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getAddTime() {
+            return addTime;
+        }
+
+        public void setAddTime(String addTime) {
+            this.addTime = addTime;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
     }
 
     public static class HistoryBookModel extends HistoryModel {
@@ -329,6 +366,13 @@ public class HistoryModel implements IModel {
         private String title;
         @SerializedName("tool_package_title")
         private String toolPackageTitle;
+        // used=true 弹框询问用户是否继续上一次训练
+        @SerializedName("used")
+        private boolean used;
+
+        public boolean isUsed() {
+            return used;
+        }
 
         public String getAddTime() {
             return addTime;

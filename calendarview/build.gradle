@@ -30,6 +30,10 @@ android {
         include('classes.jar')
         rename ('classes.jar', 'CalendarView.jar')
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     intoJar.dependsOn(build)
 }
 

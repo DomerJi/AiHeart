@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.reflect.TypeToken;
+import com.google.common.reflect.TypeToken;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.VideoLastEtcModel;
 import com.thfw.base.models.VideoTypeModel;
@@ -83,15 +83,16 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
             @Override
             public void onItemClick(List<VideoTypeModel> list, int position) {
                 // todo type
-                int type = list.get(position).id;
                 int rootType = list.get(position).rootType;
-                int id = rootType <= 0 ? type : -rootType;
-                LogUtil.d("onItemClick id = " + id);
-                Fragment fragment = mLoader.load(id);
+                LogUtil.d("onItemClick rootType = " + rootType);
+                int id = list.get(position).id;
+                int type = id > 0 ? id : rootType;
+                LogUtil.d("onItemClick id = " + type);
+                Fragment fragment = mLoader.load(type);
                 if (fragment == null) {
-                    mLoader.add(id, new VideoEtcListFragment(type, rootType));
+                    mLoader.add(type, new VideoEtcListFragment(type));
                 }
-                mVideoEtcListFragment = (VideoEtcListFragment) mLoader.load(id);
+                mVideoEtcListFragment = (VideoEtcListFragment) mLoader.load(type);
             }
         });
 

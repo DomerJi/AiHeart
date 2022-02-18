@@ -99,11 +99,16 @@ public class ExerciseDetailsActivity extends RobotBaseActivity<UserToolPresenter
             finish();
             return;
         }
-        mPresenter.onGetInfo(mId);
         mLlCollect = (LinearLayout) findViewById(R.id.ll_collect);
         mIvCollect = (ImageView) findViewById(R.id.iv_collect);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPresenter.onGetInfo(mId);
     }
 
     @Override
@@ -117,7 +122,8 @@ public class ExerciseDetailsActivity extends RobotBaseActivity<UserToolPresenter
                     ToastUtil.show("需要按顺序完成后，方可解锁");
                     return;
                 }
-                ExerciseIngActivity.startActivity(mContext, list.get(position).getDialogId());
+                ExerciseIngActivity.startActivity(mContext, list.get(position).getDialogId(),
+                        list.get(position).isUsed());
             }
         });
         mRvLike.setAdapter(mLogcateAdapter);

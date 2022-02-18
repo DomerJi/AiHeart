@@ -41,6 +41,8 @@ import com.thfw.robotheart.activitys.test.TestActivity;
 import com.thfw.robotheart.activitys.text.BookActivity;
 import com.thfw.robotheart.activitys.text.BookStudyActivity;
 import com.thfw.robotheart.activitys.video.VideoHomeActivity;
+import com.thfw.robotheart.push.MyPreferences;
+import com.thfw.robotheart.push.helper.PushHelper;
 import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.ui.utils.GlideUtil;
@@ -50,6 +52,8 @@ import com.thfw.user.login.User;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
 import com.trello.rxlifecycle2.LifecycleProvider;
+import com.umeng.message.PushAgent;
+import com.umeng.message.api.UPushRegisterCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,6 +199,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             // 已登录 初始化用户信息和机构信息
             initUserInfo();
             initOrganization();
+            initUmeng();
         }
         // 检查版本更新
         mMainHandler.removeCallbacksAndMessages(null);
@@ -411,6 +416,39 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         } else {
             mTvDotCount.setVisibility(View.GONE);
         }
+    }
+
+    private void initUmeng() {
+        if (hasAgreedAgreement()) {
+            PushAgent.getInstance(this).onAppStart();
+            String deviceToken = PushAgent.getInstance(this).getRegistrationId();
+            LogUtil.d(TAG, "deviceToken = " + deviceToken);
+        } else {
+            agreementAfterInitUmeng();
+        }
+    }
+
+    private boolean hasAgreedAgreement() {
+        return MyPreferences.getInstance(this).hasAgreePrivacyAgreement();
+    }
+
+    /**
+     * 登录状态下，即点击隐私协议同意按钮后，初始化PushSDK
+     */
+    private void agreementAfterInitUmeng() {
+        MyPreferences.getInstance(getApplicationContext()).setAgreePrivacyAgreement(true);
+        PushHelper.init(getApplicationContext());
+        PushAgent.getInstance(getApplicationContext()).register(new UPushRegisterCallback() {
+            @Override
+            public void onSuccess(final String deviceToken) {
+                LogUtil.d(TAG, "deviceToken = " + deviceToken);
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                Log.d("MainActivity", "code:" + code + " msg:" + msg);
+            }
+        });
     }
 
 }

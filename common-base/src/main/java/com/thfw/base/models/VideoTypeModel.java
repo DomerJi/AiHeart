@@ -16,7 +16,7 @@ public class VideoTypeModel implements IModel {
     public int id = 0;
 
     @SerializedName("root_type")
-    public int rootType = -1;
+    public int rootType = 0;
 
     public VideoTypeModel(String name, int id) {
         this.name = name;

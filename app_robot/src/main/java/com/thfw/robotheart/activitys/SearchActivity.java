@@ -20,7 +20,7 @@ import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.reflect.TypeToken;
+import com.google.common.reflect.TypeToken;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.SearchResultModel;

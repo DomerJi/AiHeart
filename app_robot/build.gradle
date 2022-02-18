@@ -18,6 +18,10 @@ android {
             abiFilters 'armeabi-v7a' // 输出指定三种abi体系结构下的so库。
 //            abiFilters 'armeabi' , 'armeabi-v7a',  'arm64-v8a'  // 输出指定三种abi体系结构下的so库。
         }
+
+//        ndk {
+//            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86'
+//        }
     }
 
     buildTypes {
@@ -81,16 +85,28 @@ android {
         pickFirst 'META-INF/native-image/android-arm64/jnijavacpp/jni-config.json'
         pickFirst 'META-INF/native-image/android-arm/jnijavacpp/reflect-config.json'
         pickFirst 'META-INF/native-image/android-arm64/jnijavacpp/reflect-config.json'
+//        exclude 'META-INF/rxjava.properties'
+//        exclude 'META-INF/maven/com.squareup.okhttp3/okhttp/pom.xml'
+//        exclude 'META-INF/maven/com.squareup.okhttp3/okhttp/pom.properties'
+//        exclude 'META-INF/maven/com.squareup.okio/okio/pom.xml'
+//        exclude 'META-INF/maven/com.squareup.okio/okio/pom.properties'
+//        exclude 'META-INF/maven/com.google.code.gson/gson/pom.xml'
+//        exclude 'META-INF/maven/com.google.code.gson/gson/pom.properties'
     }
+
+//    configurations {
+//        all*.exclude group: 'com.google.code.gson'
+//    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation project(':common-base')
     implementation project(':common-ui')
     implementation project(':picture_library')
     implementation project(':calendarview')
-//    implementation project(':openCVLibrary343')
+    implementation project(':push')
 
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
@@ -101,7 +117,6 @@ dependencies {
     api 'com.thanosfisherman.wifiutils:wifiutils:1.6.5'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
-
 
     api 'me.samlss:bloom:1.0.0'
 

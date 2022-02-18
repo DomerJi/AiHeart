@@ -37,12 +37,10 @@ public class VideoEtcListFragment extends RobotBaseFragment<VideoPresenter> impl
     private VideoEtcListAdapter mVideoEtcListAdapter;
 
     private int page = 1;
-    private int rootType = 1;
 
-    public VideoEtcListFragment(int type, int rootType) {
+    public VideoEtcListFragment(int type) {
         super();
         this.type = type;
-        this.rootType = rootType;
     }
 
     @Override
@@ -75,7 +73,7 @@ public class VideoEtcListFragment extends RobotBaseFragment<VideoPresenter> impl
 
     @Override
     public void initData() {
-        mPresenter.getVideoList(type, page, rootType);
+        mPresenter.getVideoList(type, page);
     }
 
     @Override

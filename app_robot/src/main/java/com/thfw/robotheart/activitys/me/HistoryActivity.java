@@ -153,7 +153,7 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
                     BookDetailActivity.startActivity(mContext, bookModel.getId());
                 } else if (historyModel instanceof HistoryModel.HistoryExerciseModel) { // 工具包
                     HistoryModel.HistoryExerciseModel exerciseModel = (HistoryModel.HistoryExerciseModel) historyModel;
-                    ExerciseIngActivity.startActivity(mContext, exerciseModel.getId());
+                    ExerciseIngActivity.startActivity(mContext, exerciseModel.getId(), exerciseModel.isUsed());
                 }
             }
         });

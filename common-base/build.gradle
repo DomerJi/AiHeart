@@ -32,6 +32,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+
 }
 
 dependencies {
@@ -48,6 +49,7 @@ dependencies {
 
     api 'androidx.palette:palette:' + rootProject.ext.palette
     api 'com.google.code.gson:gson:' + rootProject.ext.gson
+
 
     /**
      * ======================= 开始 OkHttp Rxjava2 retrofit2 =====================

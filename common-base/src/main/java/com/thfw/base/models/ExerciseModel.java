@@ -64,6 +64,17 @@ public class ExerciseModel implements IModel {
         private String title;
         @SerializedName("status")
         private int status;
+        // used=true 弹框询问用户是否继续上一次训练
+        @SerializedName("used")
+        private boolean used;
+
+        public boolean isUsed() {
+            return used;
+        }
+
+        public void setUsed(boolean used) {
+            this.used = used;
+        }
 
         public int getDialogId() {
             return dialogId;

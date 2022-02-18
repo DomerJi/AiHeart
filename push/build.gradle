@@ -1,0 +1,77 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 30
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+//友盟推送SDK依赖
+dependencies {
+    //离线模式
+//    api fileTree(dir: 'libs', include: ['*.jar'])
+//    api fileTree(dir: 'libs', include: ['*.aar'])
+
+    //友盟基础库（必须）
+    api('com.umeng.umsdk:common:9.4.4')
+    api('com.umeng.umsdk:asms:1.5.0')
+
+    //友盟推送库
+    api('com.umeng.umsdk:push:6.5.0')
+
+    //如果和支付宝sdk utdid冲突，可以集成支付宝无utdid版本，或者通过以下方式解决
+//    api('com.umeng.umsdk:push:6.5.0') {
+//        exclude group: 'com.umeng.umsdk', module: 'utdid'
+//    }
+}
+
+apply plugin: 'com.huawei.agconnect'
+//华为厂商通道
+dependencies {
+//    api 'com.umeng.umsdk:huawei-umengaccs:1.3.6'
+//    api 'com.huawei.hms:push:6.1.0.300'
+}
+
+//魅族厂商通道
+dependencies {
+    api 'com.umeng.umsdk:meizu-umengaccs:1.1.5'
+    api 'com.umeng.umsdk:meizu-push:4.1.4'
+}
+
+//OPPO厂商通道（gradle.properties中添加android.useAndroidX=true）
+dependencies {
+    api 'com.umeng.umsdk:oppo-umengaccs:1.0.8-fix'
+    api 'com.umeng.umsdk:oppo-push:3.0.0'
+}
+
+//vivo厂商通道
+dependencies {
+    api 'com.umeng.umsdk:vivo-umengaccs:1.1.6'
+    api 'com.umeng.umsdk:vivo-push:3.0.0.4'
+}
+
+//小米厂商通道
+dependencies {
+//    api 'com.umeng.umsdk:xiaomi-umengaccs:1.2.7'
+//    api 'com.umeng.umsdk:xiaomi-push:4.9.0'
+}

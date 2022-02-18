@@ -65,12 +65,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility rootProject.ext.source_java_version
-        targetCompatibility rootProject.ext.target_java_version
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     buildFeatures {
         viewBinding true
     }
+    ndkVersion '23.1.7779620'
 }
 
 dependencies {

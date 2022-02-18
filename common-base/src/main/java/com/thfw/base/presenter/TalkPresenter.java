@@ -53,6 +53,18 @@ public class TalkPresenter<T> extends IPresenter<TalkPresenter.TalkUi> {
         OkHttpUtil.request(observable, getUI());
     }
 
+    public void onJoinDialog(int enter_type, int id, boolean continueValue) {
+        NetParams netParams = NetParams.crete().add("enter_type", enter_type);
+        if (enter_type == TalkApi.JOIN_TYPE_SPEECH_CRAFT || enter_type == TalkApi.JOIN_TYPE_TOOL) {
+            netParams.add("id", id);
+            netParams.add("continue", continueValue);
+        }
+
+        Observable<HttpResult<List<DialogTalkModel>>> observable = OkHttpUtil.createService(TalkApi.class)
+                .onJoinDialog(netParams);
+        OkHttpUtil.request(observable, getUI());
+    }
+
     public void onChooseOption(String inputText, HashMap<String, String> radio) {
         Observable<HttpResult<ChosenModel>> observable = OkHttpUtil.createService(TalkApi.class)
                 .onChooseOption(inputText, GsonUtil.toJson(radio));

@@ -85,6 +85,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
     private androidx.recyclerview.widget.RecyclerView mRvSelect;
     private ChatAdapter mChatAdapter;
     private int mToolPackageId;
+    private boolean mUsed;
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private Helper mHelper = new Helper();
     private int mCurrentChatType;
@@ -94,10 +95,11 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
     private android.widget.ImageView mIvLiziText;
     private boolean mIsAchieve;
     private int countDownFinish;
+    private static final String KEY_USED = "key.used";
 
-    public static void startActivity(Context context, int id) {
+    public static void startActivity(Context context, int id, boolean used) {
         ((Activity) context).startActivityForResult(new Intent(context, ExerciseIngActivity.class)
-                .putExtra(KEY_DATA, id), REQUEST_CODE);
+                .putExtra(KEY_DATA, id).putExtra(KEY_USED, used), REQUEST_CODE);
     }
 
     @Override
@@ -450,12 +452,45 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
     @Override
     public void initData() {
         mToolPackageId = getIntent().getIntExtra(KEY_DATA, -1);
+        mUsed = getIntent().getBooleanExtra(KEY_USED, false);
+
         if (mToolPackageId == -1) {
             ToastUtil.show("参数错误");
             finish();
             return;
         }
 
+        // 存在断点，询问是否继续训练
+        if (mUsed) {
+            DialogRobotFactory.createCustomDialog(ExerciseIngActivity.this, new DialogRobotFactory.OnViewCallBack() {
+                @Override
+                public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                    mTvHint.setText("该课程是否继续训练");
+                    mTvTitle.setVisibility(View.GONE);
+                    mTvLeft.setText("重新开始");
+                    mTvRight.setText("继续训练");
+                }
+
+                @Override
+                public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                    tDialog.dismiss();
+                    // 重新开始
+                    if (view.getId() == R.id.tv_left) {
+                        joinDialog(false);
+                    } else {
+                        joinDialog(true);
+                    }
+
+                }
+            });
+        } else {
+            joinDialog(false);
+        }
+
+
+    }
+
+    private void joinDialog(boolean continueValue) {
         new TalkPresenter(new TalkPresenter.TalkUi<List<DialogTalkModel>>() {
             @Override
             public LifecycleProvider getLifecycleProvider() {
@@ -471,7 +506,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
             public void onFail(ResponeThrowable throwable) {
                 ExerciseIngActivity.this.onFail(throwable);
             }
-        }).onJoinDialog(TalkApi.JOIN_TYPE_TOOL, mToolPackageId);
+        }).onJoinDialog(TalkApi.JOIN_TYPE_TOOL, mToolPackageId, continueValue);
     }
 
     @Override

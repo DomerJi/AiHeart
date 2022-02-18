@@ -58,6 +58,12 @@ public class HistoryAdapter extends BaseAdapter<HistoryModel, HistoryAdapter.His
             holder.mTvSubTitle.setText("分类:" + bookModel.getOfType());
             holder.mTvSubTitle.setVisibility(View.VISIBLE);
             holder.mTvTime.setText("时间:" + bookModel.getAddTime());
+        } else if (historyModel instanceof HistoryModel.HistoryStudyModel) {
+            HistoryModel.HistoryStudyModel bookModel = (HistoryModel.HistoryStudyModel) historyModel;
+            holder.mTvTitle.setText(bookModel.getTitle());
+            holder.mTvSubTitle.setText("分类:" + bookModel.getOfType());
+            holder.mTvSubTitle.setVisibility(View.VISIBLE);
+            holder.mTvTime.setText("时间:" + bookModel.getAddTime());
         } else if (historyModel instanceof HistoryModel.HistoryExerciseModel) {
             HistoryModel.HistoryExerciseModel bookModel = (HistoryModel.HistoryExerciseModel) historyModel;
             holder.mTvTitle.setText(bookModel.getTitle() + " - " + bookModel.getToolPackageTitle());
