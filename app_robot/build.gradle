@@ -117,7 +117,7 @@ dependencies {
     api 'com.thanosfisherman.wifiutils:wifiutils:1.6.5'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
-
+    implementation 'com.github.yyued:SVGAPlayer-Android:2.6.1'
     api 'me.samlss:bloom:1.0.0'
 
     api 'org.bytedeco:openblas:0.3.17-1.5.6'

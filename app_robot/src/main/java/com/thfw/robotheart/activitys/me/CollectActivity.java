@@ -9,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.thfw.base.api.HistoryApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.fragments.me.CollectFragment;
@@ -63,12 +64,15 @@ public class CollectActivity extends RobotBaseActivity {
             tabView.setLayoutParams(p);
         }
         HashMap<Integer, Fragment> collectMap = new HashMap<>();
-        collectMap.put(0, new CollectFragment(0));
-        collectMap.put(1, new CollectFragment(1));
-        collectMap.put(2, new CollectFragment(2));
-        collectMap.put(3, new CollectFragment(3));
-        collectMap.put(4, new CollectFragment(4));
-        collectMap.put(5, new CollectFragment(5));
+        // 1-测评  2-文章 3-音频 4-视频 5-话术 6-思政文章 7-工具包
+        collectMap.put(0, new CollectFragment(HistoryApi.TYPE_COLLECT_TEST));
+        collectMap.put(1, new CollectFragment(HistoryApi.TYPE_COLLECT_TOOL));
+        collectMap.put(2, new CollectFragment(HistoryApi.TYPE_COLLECT_AUDIO));
+        collectMap.put(3, new CollectFragment(HistoryApi.TYPE_COLLECT_VIDEO));
+//        collectMap.put(5, new CollectFragment(HistoryApi.TYPE_COLLECT_DIALOG));
+        collectMap.put(4, new CollectFragment(HistoryApi.TYPE_COLLECT_BOOK));
+        collectMap.put(5, new CollectFragment(HistoryApi.TYPE_COLLECT_IDEO_BOOK));
+
         mViewPager.setAdapter(new FragmentStateAdapter(this) {
             @NonNull
             @NotNull

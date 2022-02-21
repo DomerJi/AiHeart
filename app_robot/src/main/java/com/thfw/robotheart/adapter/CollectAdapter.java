@@ -41,11 +41,6 @@ public class CollectAdapter extends BaseAdapter<CollectModel, CollectAdapter.Col
         holder.mTvTitle.setText("Title_" + position);
     }
 
-    @Override
-    public int getItemCount() {
-        return 30;
-    }
-
     public class CollectHolder extends RecyclerView.ViewHolder {
 
         private RoundedImageView mRivDot;

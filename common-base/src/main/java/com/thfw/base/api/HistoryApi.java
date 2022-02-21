@@ -1,5 +1,6 @@
 package com.thfw.base.api;
 
+import com.thfw.base.models.CollectModel;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.HistoryModel;
 import com.thfw.base.net.HttpResult;
@@ -126,6 +127,17 @@ public interface HistoryApi {
     @FormUrlEncoded
     @POST("content_collect")
     Observable<HttpResult<CommonModel>> addCollect(@Field("type") int type, @Field("id") int id);
+
+    /**
+     * [收藏]
+     * rid 测评ID 如果传入测评ID则仅获取该测评的历史记录
+     * type 1-测评 2-音频  3-视频  4-文章
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("content_collect/list")
+    Observable<HttpResult<List<CollectModel>>> getCollectList(@Field("type") int type, @Field("page") int page);
 
 
 }

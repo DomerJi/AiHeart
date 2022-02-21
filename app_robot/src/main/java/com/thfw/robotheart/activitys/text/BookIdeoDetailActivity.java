@@ -101,22 +101,22 @@ public class BookIdeoDetailActivity extends RobotBaseActivity<BookPresenter> imp
          */
 
         fontSize = "font-size:20px";
-        titleHtml = "<h2 align=\"center\">" + title + "</h2>"
-                + "<p style=\"text-align:center; color:#666;\">作者:强军密友</p>";
-
+//        titleHtml = "<h2 align=\"center\">" + title + "</h2>"
+//                + "<p style=\"text-align:center; color:#666;\">作者:强军密友</p>";
+        titleHtml = "<h2 align=\"center\">" + title + "</h2>";
         if (TextUtils.isEmpty(contentHtml)) {
             return;
         }
 
         if (!contentHtml.startsWith("<html>")) {
-            contentHtml = newHtml();
+//            contentHtml = newHtml();
             contentHtml = "<html><head>" + "<style>img {\n" +
                     "  display: block;\n" +
                     "  margin-left: auto;\n" +
                     "  margin-right: auto;\n" +
-                    "}" + "body{padding-top:20px; padding-bottom:20px; padding-left:20px;padding-right:20px;}" +
-                    "span{" + fontSize + "}"
-                    + "p{" + fontSize + "}"
+                    "}" + "body{padding-top:20px; padding-bottom:20px; padding-left:20px;padding-right:20px;}"
+//                    + "span{" + fontSize + "}"
+//                    + "p{" + fontSize + "}"
                     + "</style>" + "<title>"
                     + title + "</title></head><body>" + titleHtml
                     + contentHtml + "</body></html>";

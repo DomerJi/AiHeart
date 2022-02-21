@@ -20,6 +20,11 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
+import com.opensource.svgaplayer.SVGACallback;
+import com.opensource.svgaplayer.SVGADrawable;
+import com.opensource.svgaplayer.SVGAImageView;
+import com.opensource.svgaplayer.SVGAParser;
+import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.thfw.base.models.AreaModel;
 import com.thfw.base.models.PickerData;
 import com.thfw.base.utils.EmptyUtil;
@@ -34,6 +39,9 @@ import com.thfw.ui.dialog.listener.OnBindViewListener;
 import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.widget.InputBoxView;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 import java.util.List;
 
 /**
@@ -62,6 +70,49 @@ public class DialogRobotFactory {
                     TextView mTvRight = viewHolder.getView(R.id.tv_right);
                     View mVLineVertical = viewHolder.getView(R.id.vline_vertical);
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
+                })
+                .setOnViewClickListener(onViewCallBack).create().show();
+    }
+
+    /**
+     * 通用弹框
+     *
+     * @param activity
+     * @param onViewCallBack
+     * @return
+     */
+    public static TDialog createSvgaDialog(FragmentActivity activity, String svgaAssets, OnSVGACallBack onViewCallBack) {
+        return new TDialog.Builder(activity.getSupportFragmentManager())
+                .setLayoutRes(com.thfw.robotheart.R.layout.dialog_svga_layout)
+                .setDialogAnimationRes(R.style.animate_dialog_fade)
+                .setScreenWidthAspect(activity, 1.0f)
+                .setScreenHeightAspect(activity, 1.0f)
+                // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
+                .setOnBindViewListener(viewHolder -> {
+                    SVGAImageView svgaImageView = viewHolder.getView(com.thfw.robotheart.R.id.svga_dialog);
+                    SVGAParser parser = new SVGAParser(svgaImageView.getContext());
+
+                    onViewCallBack.callBack(svgaImageView);
+                    // The third parameter is a default parameter, which is null by default. If this method is set, the audio parsing and playback will not be processed internally. The audio File instance will be sent back to the developer through PlayCallback, and the developer will control the audio playback and playback. stop
+                    parser.decodeFromAssets(svgaAssets, new SVGAParser.ParseCompletion() {
+                        @Override
+                        public void onComplete(@NotNull SVGAVideoEntity svgaVideoEntity) {
+                            SVGADrawable drawable = new SVGADrawable(svgaVideoEntity);
+                            svgaImageView.setImageDrawable(drawable);
+                            svgaImageView.startAnimation();
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    }, new SVGAParser.PlayCallback() {
+
+                        @Override
+                        public void onPlay(@NotNull List<? extends File> list) {
+
+                        }
+                    });
                 })
                 .setOnViewClickListener(onViewCallBack).create().show();
     }
@@ -370,9 +421,30 @@ public class DialogRobotFactory {
         void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical);
     }
 
+    public interface OnSVGACallBack extends OnViewClickListener {
+        void callBack(SVGAImageView svgaImageView);
+    }
+
     public interface OnViewThreeCallBack extends OnViewClickListener {
         void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvOne, TextView mTvTwo, TextView mTvThree);
     }
 
+
+    public abstract static class SimpleSVGACallBack implements SVGACallback {
+        @Override
+        public void onPause() {
+
+        }
+
+        @Override
+        public void onRepeat() {
+
+        }
+
+        @Override
+        public void onStep(int i, double v) {
+
+        }
+    }
 
 }

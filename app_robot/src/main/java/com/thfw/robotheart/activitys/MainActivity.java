@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.OrganizationModel;
@@ -43,8 +44,11 @@ import com.thfw.robotheart.activitys.text.BookStudyActivity;
 import com.thfw.robotheart.activitys.video.VideoHomeActivity;
 import com.thfw.robotheart.push.MyPreferences;
 import com.thfw.robotheart.push.helper.PushHelper;
+import com.thfw.robotheart.view.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.MyRobotSearchView;
 import com.thfw.ui.widget.WeekView;
@@ -57,6 +61,7 @@ import com.umeng.message.api.UPushRegisterCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends RobotBaseActivity implements View.OnClickListener {
 
@@ -92,6 +97,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private ConstraintLayout mClSetting;
     private TextView mTvDotCount;
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    private TDialog mSvgaDialog;
 
     /**
      * 重新登录后重新获取用户相关信息
@@ -252,7 +258,31 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         if (vId == R.id.cl_me) {
             startActivity(new Intent(mContext, MeActivity.class));
         } else if (vId == R.id.cl_setting) {
-            startActivity(new Intent(mContext, SettingActivity.class));
+            boolean flag = new Random().nextBoolean();
+            mSvgaDialog = DialogRobotFactory.createSvgaDialog(MainActivity.this,
+                    flag ? "rose.svga" : "angel.svga",
+                    new DialogRobotFactory.OnSVGACallBack() {
+                        @Override
+                        public void callBack(SVGAImageView svgaImageView) {
+                            svgaImageView.setCallback(new DialogRobotFactory.SimpleSVGACallBack() {
+
+                                @Override
+                                public void onFinished() {
+                                    LogUtil.d(TAG, "onFinished +++++++++++++++ ");
+                                    if (mSvgaDialog != null) {
+                                        mSvgaDialog.dismiss();
+                                    }
+                                    startActivity(new Intent(mContext, SettingActivity.class));
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+
+                        }
+                    });
+
         } else if (vId == R.id.ll_music) {
             startActivity(new Intent(mContext, AudioHomeActivity.class));
         } else if (vId == R.id.ll_test) {
@@ -451,4 +481,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         });
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        resetInit();
+    }
 }

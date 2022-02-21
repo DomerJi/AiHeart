@@ -3,6 +3,7 @@ package com.thfw.base.presenter;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
+import com.thfw.base.models.CollectModel;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.HistoryModel;
 import com.thfw.base.net.HttpResult;
@@ -73,7 +74,7 @@ public class HistoryPresenter extends IPresenter<HistoryPresenter.HistoryUi> {
     }
 
     /**
-     * 1测试 2文章
+     * // 1-测评  2-文章 3-音频 4-视频 5-话术 6-思政文章 7-思政视频
      *
      * @param type
      * @param id
@@ -83,6 +84,19 @@ public class HistoryPresenter extends IPresenter<HistoryPresenter.HistoryUi> {
                 .addCollect(type, id);
         OkHttpUtil.request(observable, getUI());
     }
+
+
+    /**
+     * // 1-测评  2-文章 3-音频 4-视频 5-话术 6-思政文章 7-思政视频
+     *
+     * @param type
+     */
+    public void getCollectList(int type, int page) {
+        Observable<HttpResult<List<CollectModel>>> observable = OkHttpUtil.createService(HistoryApi.class)
+                .getCollectList(type, page);
+        OkHttpUtil.request(observable, getUI());
+    }
+
 
     public interface HistoryUi<T> extends UI<T> {
 
