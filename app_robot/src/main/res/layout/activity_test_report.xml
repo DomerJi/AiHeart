@@ -10,7 +10,7 @@
         android:id="@+id/titleRobotView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:trv_centerText="我的测评报告"
+        app:trv_centerText="心理健康档案"
         tools:ignore="MissingConstraints" />
 
 

@@ -23,9 +23,10 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.OrganSelectChildrenAdapter;
 import com.thfw.robotheart.adapter.OrganSelectedAdapter;
+import com.thfw.robotheart.push.tester.UPushAlias;
 import com.thfw.robotheart.view.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
@@ -227,6 +228,7 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
                 initSelectedList2(mSelecteds, mOrganizationModel.getOrganization());
                 CommonParameter.setOrganizationSelected(mSelecteds);
                 UserManager.getInstance().getUser().setOrganList(mSelecteds);
+                UPushAlias.setTag(mSelecteds.get(mSelecteds.size() - 1).getId());
             } else {
                 mSelecteds.add(mOrganizationModel.getOrganization());
             }

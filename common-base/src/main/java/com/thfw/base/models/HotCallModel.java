@@ -1,5 +1,6 @@
 package com.thfw.base.models;
 
+import com.google.gson.annotations.SerializedName;
 import com.thfw.base.base.IModel;
 import com.thfw.base.utils.LogUtil;
 
@@ -17,14 +18,39 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
  */
 public class HotCallModel implements IModel {
 
-    private String name;
+
+    /**
+     * id : 1
+     * letter : A
+     * province : 安徽省心理援助热线
+     * area : 安徽
+     * title : 安徽省
+     * phone : 0551-63666903
+     * time : 周一到周日，24小时
+     */
+
+    @SerializedName("id")
+    public int id;
+    @SerializedName("letter")
+    public String letter;
+    @SerializedName("province")
+    public String province;
+    @SerializedName("area")
+    public String area;
+    @SerializedName("title")
+    public String title;
+    @SerializedName("phone")
+    public String phone;
+    @SerializedName("time")
+    public String time;
+
+
     private int azCode;
     private String azStr;
     private String azQpin;
 
-    public HotCallModel(String name) {
-        this.name = name;
-        String firstChar = name.substring(0, 1);
+    public void initAz() {
+        String firstChar = province.substring(0, 1);
         HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
         format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
         format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
@@ -50,11 +76,12 @@ public class HotCallModel implements IModel {
         this.azQpin = pinyin;
         LogUtil.d("HotCallModel", "output -> " + pinyin);
         this.azStr = pinyin.substring(0, 1).toUpperCase();
-        this.azCode = azStr.getBytes()[0];
-    }
+        if (azStr != null && azStr.matches("^[a-zA-Z]*")) {
+            this.azCode = azStr.getBytes()[0];
+        } else {
+            this.azCode = 100;
+        }
 
-    public String getName() {
-        return name;
     }
 
     public String getAzStr() {

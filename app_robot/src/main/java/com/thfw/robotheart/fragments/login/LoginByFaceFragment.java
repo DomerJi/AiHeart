@@ -33,7 +33,7 @@ import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.robotheart.constants.UIConfig;
-import com.thfw.ui.base.RobotBaseFragment;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.User;
 import com.thfw.user.login.UserManager;

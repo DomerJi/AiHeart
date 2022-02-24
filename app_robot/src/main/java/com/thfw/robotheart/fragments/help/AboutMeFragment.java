@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
-import com.thfw.ui.base.RobotBaseFragment;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 
 public class AboutMeFragment extends RobotBaseFragment {
 

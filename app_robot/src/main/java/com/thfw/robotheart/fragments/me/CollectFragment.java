@@ -7,19 +7,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
+import com.thfw.base.api.HistoryApi;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.CollectModel;
+import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
+import com.thfw.robotheart.activitys.exercise.ExerciseDetailsActivity;
+import com.thfw.robotheart.activitys.test.TestDetailActivity;
+import com.thfw.robotheart.activitys.text.BookDetailActivity;
+import com.thfw.robotheart.activitys.text.BookIdeoDetailActivity;
+import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.CollectAdapter;
 import com.thfw.robotheart.util.PageHelper;
-import com.thfw.ui.base.RobotBaseFragment;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -65,7 +75,35 @@ public class CollectFragment extends RobotBaseFragment<HistoryPresenter>
         mCollectAdapter.setOnRvItemListener(new OnRvItemListener<CollectModel>() {
             @Override
             public void onItemClick(List<CollectModel> list, int position) {
-
+                CollectModel collectModel = list.get(position);
+                switch (type) {
+                    case HistoryApi.TYPE_COLLECT_TEST:
+                        TestDetailActivity.startActivity(mContext, collectModel.id);
+                        break;
+                    case HistoryApi.TYPE_COLLECT_AUDIO:
+                        AudioEtcModel audioEtcModel = new AudioEtcModel();
+                        audioEtcModel.setTitle(collectModel.title);
+                        audioEtcModel.setId(collectModel.id);
+                        AudioPlayerActivity.startActivity(mContext, audioEtcModel);
+                        break;
+                    case HistoryApi.TYPE_COLLECT_BOOK:
+                        BookDetailActivity.startActivity(mContext, collectModel.id);
+                        break;
+                    case HistoryApi.TYPE_COLLECT_IDEO_BOOK:
+                        BookIdeoDetailActivity.startActivity(mContext, collectModel.id);
+                        break;
+                    case HistoryApi.TYPE_COLLECT_TOOL:
+                        ExerciseDetailsActivity.startActivity(mContext, collectModel.id);
+                        break;
+                    case HistoryApi.TYPE_COLLECT_VIDEO:
+                        ArrayList<VideoEtcModel> videoList = new ArrayList<>();
+                        VideoEtcModel videoEtcModel = new VideoEtcModel();
+                        videoEtcModel.setId(collectModel.id);
+                        videoEtcModel.setTitle(collectModel.title);
+                        videoList.add(videoEtcModel);
+                        VideoPlayerActivity.startActivity(mContext, videoList, 0);
+                        break;
+                }
             }
         });
 

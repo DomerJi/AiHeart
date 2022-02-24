@@ -8,24 +8,26 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.base.base.IPresenter;
-import com.thfw.base.models.AreaModel;
 import com.thfw.base.models.HotCallModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.OtherPresenter;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.AzQuickAdapter;
 import com.thfw.robotheart.adapter.HotPhoneAdapter;
-import com.thfw.robotheart.util.AreaUtil;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
+import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.MyRobotSearchView;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class HotPhoneActivity extends RobotBaseActivity {
+public class HotPhoneActivity extends RobotBaseActivity<OtherPresenter> implements OtherPresenter.OtherUi<List<HotCallModel>> {
 
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.recyclerview.widget.RecyclerView mRvList;
@@ -36,6 +38,7 @@ public class HotPhoneActivity extends RobotBaseActivity {
     private List<HotCallModel> hotCallModels;
 
     private Handler mMainHandler = new Handler();
+    private com.thfw.ui.widget.LoadingView mLoadingView;
 
     @Override
     public int getContentView() {
@@ -43,8 +46,8 @@ public class HotPhoneActivity extends RobotBaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public OtherPresenter onCreatePresenter() {
+        return new OtherPresenter(this);
     }
 
     @Override
@@ -58,43 +61,12 @@ public class HotPhoneActivity extends RobotBaseActivity {
 
         mRvAcQuick.setLayoutManager(new LinearLayoutManager(mContext));
         mTvCenterAz = (TextView) findViewById(R.id.tv_center_az);
+        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
     }
 
     @Override
     public void initData() {
-
-        List<AreaModel> areaModels = AreaUtil.getOp1();
-        hotCallModels = new ArrayList<>();
-
-
-        for (AreaModel model : areaModels) {
-            hotCallModels.add(new HotCallModel(model.getName()));
-        }
-
-        Collections.sort(hotCallModels, new Comparator<HotCallModel>() {
-            @Override
-            public int compare(HotCallModel o1, HotCallModel o2) {
-                if (o1.getAzCode() > o2.getAzCode()) {
-                    return 1;
-                } else if (o1.getAzCode() < o2.getAzCode()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            }
-        });
-
-        mAzList = new ArrayList<>();
-
-        for (HotCallModel model : hotCallModels) {
-            if (!mAzList.contains(model.getAzStr())) {
-                mAzList.add(model.getAzStr());
-            }
-        }
-
-        mRvAcQuick.setAdapter(new AzQuickAdapter(mAzList));
-        mRvList.setAdapter(new HotPhoneAdapter(hotCallModels));
-
+        mPresenter.onGetHotPhoneList();
         mRvAcQuick.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -111,6 +83,7 @@ public class HotPhoneActivity extends RobotBaseActivity {
                 return true;
             }
         });
+
     }
 
     private void showCenterAz(MotionEvent event) {
@@ -158,5 +131,61 @@ public class HotPhoneActivity extends RobotBaseActivity {
         super.onDestroy();
         mMainHandler.removeCallbacksAndMessages(null);
         mMainHandler = null;
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(List<HotCallModel> data) {
+        if (EmptyUtil.isEmpty(data)) {
+            mLoadingView.showEmpty();
+            return;
+        }
+
+        mLoadingView.hide();
+
+        hotCallModels = new ArrayList<>();
+
+
+        for (HotCallModel model : data) {
+            model.initAz();
+            hotCallModels.add(model);
+        }
+
+        Collections.sort(hotCallModels, new Comparator<HotCallModel>() {
+            @Override
+            public int compare(HotCallModel o1, HotCallModel o2) {
+                if (o1.getAzCode() > o2.getAzCode()) {
+                    return 1;
+                } else if (o1.getAzCode() < o2.getAzCode()) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+
+        mAzList = new ArrayList<>();
+
+        for (HotCallModel model : hotCallModels) {
+            if (!mAzList.contains(model.getAzStr())) {
+                mAzList.add(model.getAzStr());
+            }
+        }
+
+        mRvAcQuick.setAdapter(new AzQuickAdapter(mAzList));
+        mRvList.setAdapter(new HotPhoneAdapter(hotCallModels));
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        if (mRvList == null || mRvList.getAdapter() == null) {
+            mLoadingView.showFail(v -> {
+                mPresenter.onGetHotPhoneList();
+            });
+        }
     }
 }

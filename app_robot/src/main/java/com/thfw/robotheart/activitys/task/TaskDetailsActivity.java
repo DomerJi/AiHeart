@@ -22,7 +22,7 @@ import com.thfw.robotheart.activitys.talk.AiTalkActivity;
 import com.thfw.robotheart.activitys.test.TestDetailActivity;
 import com.thfw.robotheart.adapter.TaskChildLineAdapter;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;

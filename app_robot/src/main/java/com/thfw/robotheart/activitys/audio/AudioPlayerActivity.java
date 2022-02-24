@@ -63,7 +63,7 @@ import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.util.AudioModel;
 import com.thfw.robotheart.util.ExoPlayerFactory;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;

@@ -19,7 +19,7 @@ import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
-import com.thfw.ui.base.RobotBaseFragment;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 
 /**
  * wifi 输入密码

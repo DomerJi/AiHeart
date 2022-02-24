@@ -14,9 +14,11 @@ import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.download.DownloadListener;
 import com.tencent.bugly.beta.download.DownloadTask;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.service.AutoUpdateService;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 
 import java.math.BigDecimal;
 
@@ -205,9 +207,13 @@ public class SystemAppActivity extends RobotBaseActivity {
     private void install() {
         DownloadTask task = Beta.startDownload();
         if (task != null && task.getStatus() == DownloadTask.COMPLETE) {
+            SharePreferenceUtil.setLong(AutoUpdateService.AFTER_TIME, 0);
             Beta.installApk(task.getSaveFile());
             Log.e(TAG, "Beta.installApk ============================== ");
         } else {
+            if (task != null) {
+                task.delete(true);
+            }
             Log.e(TAG, "Beta.installApk ============================== fail");
         }
     }

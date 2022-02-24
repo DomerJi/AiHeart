@@ -2,7 +2,7 @@ package com.thfw.robotheart.fragments.help;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
-import com.thfw.ui.base.RobotBaseFragment;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 
 public class AudioInstructFragment extends RobotBaseFragment {
 

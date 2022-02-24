@@ -404,7 +404,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:padding="8dp"
-                    android:text="我的健康报告"
+                    android:text="心理健康档案"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textSize_large" />
 
@@ -503,7 +503,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:padding="8dp"
-                    android:text="帮助与反馈"
+                    android:text="帮助中心"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textSize_large" />
 

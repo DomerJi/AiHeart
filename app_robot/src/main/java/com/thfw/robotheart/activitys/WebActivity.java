@@ -15,8 +15,8 @@ import com.just.agentweb.DefaultWebClient;
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.constants.AgreeOn;
+import com.thfw.robotheart.util.WebSizeUtil;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
 
 /**
  * 加载网页 如：协议
@@ -117,6 +117,9 @@ public class WebActivity extends RobotBaseActivity {
         mAgentWeb.getWebCreator().getWebView().getSettings().setAllowFileAccess(true);
         mAgentWeb.getWebCreator().getWebView().getSettings().setAllowFileAccessFromFileURLs(true);
         mAgentWeb.getWebCreator().getWebView().getSettings().setAllowUniversalAccessFromFileURLs(true);
+
+        WebSizeUtil.setSize(mContext, mAgentWeb.getWebCreator().getWebView().getSettings());
+
         mAgentWeb.getWebCreator().getWebView().setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {

@@ -29,7 +29,7 @@ import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.HistoryAdapter;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -150,6 +150,9 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
                     AudioPlayerActivity.startActivity(mContext, audioEtcModel);
                 } else if (historyModel instanceof HistoryModel.HistoryBookModel) { // 科普文章
                     HistoryModel.HistoryBookModel bookModel = (HistoryModel.HistoryBookModel) historyModel;
+                    BookDetailActivity.startActivity(mContext, bookModel.getId());
+                } else if (historyModel instanceof HistoryModel.HistoryStudyModel) { // 思政文章
+                    HistoryModel.HistoryStudyModel bookModel = (HistoryModel.HistoryStudyModel) historyModel;
                     BookDetailActivity.startActivity(mContext, bookModel.getId());
                 } else if (historyModel instanceof HistoryModel.HistoryExerciseModel) { // 工具包
                     HistoryModel.HistoryExerciseModel exerciseModel = (HistoryModel.HistoryExerciseModel) historyModel;

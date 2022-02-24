@@ -15,7 +15,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.ShutDownAdapter;
-import com.thfw.ui.base.RobotBaseFragment;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

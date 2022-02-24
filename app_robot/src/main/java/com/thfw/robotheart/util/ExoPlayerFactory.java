@@ -2,6 +2,8 @@ package com.thfw.robotheart.util;
 
 import android.content.Context;
 
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
@@ -9,6 +11,11 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.thfw.robotheart.constants.UIConfig;
+
+import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS;
+import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS;
+import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_MAX_BUFFER_MS;
+import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_MIN_BUFFER_MS;
 
 public class ExoPlayerFactory {
     public static final int EXO_AUDIO = 0;
@@ -37,6 +44,10 @@ public class ExoPlayerFactory {
 
     public static SimpleExoPlayer getExoPlayer() {
         return exoPlayer;
+    }
+
+    public static boolean isPlaying() {
+        return exoPlayer != null && exoPlayer.isPlaying();
     }
 
     public static class Builder {
@@ -69,9 +80,17 @@ public class ExoPlayerFactory {
                             .build();
                     break;
                 case EXO_VIDEO:
+
+                    LoadControl loadControl = new DefaultLoadControl.Builder()
+                            .setBufferDurationsMs(DEFAULT_MIN_BUFFER_MS * 2,
+                                    DEFAULT_MAX_BUFFER_MS * 10,
+                                    DEFAULT_BUFFER_FOR_PLAYBACK_MS * 2,
+                                    DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS * 3).build();
+
                     exoPlayer = new SimpleExoPlayer.Builder(mContext)
                             .setMediaSourceFactory(new ProgressiveMediaSource.Factory(upstreamFactory))
-                            .build();
+                            .setBandwidthMeter(mDefaultBandwidthMeter)
+                            .setLoadControl(loadControl).build();
                     break;
             }
         }

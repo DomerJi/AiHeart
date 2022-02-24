@@ -1,5 +1,6 @@
 package com.thfw.base.models;
 
+import com.google.gson.annotations.SerializedName;
 import com.thfw.base.base.IModel;
 
 /**
@@ -8,4 +9,20 @@ import com.thfw.base.base.IModel;
  * Describe:Todo
  */
 public class CollectModel implements IModel {
+
+
+    /**
+     * id : 380
+     * title : 军人心理应激自评问卷
+     * collected : 1
+     */
+
+    @SerializedName("id")
+    public int id;
+    @SerializedName("title")
+    public String title;
+    @SerializedName("collected")
+    public int collected;
+
+
 }

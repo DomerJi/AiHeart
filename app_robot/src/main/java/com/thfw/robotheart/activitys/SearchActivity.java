@@ -35,7 +35,6 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.SearchHistoryAdapter;
 import com.thfw.robotheart.fragments.SearchResultFragment;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.MyRobotSearchView;

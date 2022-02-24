@@ -28,6 +28,8 @@ import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
+import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
 import com.thfw.robotheart.activitys.exercise.ExerciseActivity;
@@ -42,13 +44,13 @@ import com.thfw.robotheart.activitys.test.TestActivity;
 import com.thfw.robotheart.activitys.text.BookActivity;
 import com.thfw.robotheart.activitys.text.BookStudyActivity;
 import com.thfw.robotheart.activitys.video.VideoHomeActivity;
+import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.push.MyPreferences;
 import com.thfw.robotheart.push.helper.PushHelper;
+import com.thfw.robotheart.push.tester.UPushAlias;
+import com.thfw.robotheart.service.AutoUpdateService;
 import com.thfw.robotheart.view.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleBarView;
-import com.thfw.ui.base.RobotBaseActivity;
-import com.thfw.ui.dialog.TDialog;
-import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.MyRobotSearchView;
 import com.thfw.ui.widget.WeekView;
@@ -61,7 +63,6 @@ import com.umeng.message.api.UPushRegisterCallback;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends RobotBaseActivity implements View.OnClickListener {
 
@@ -97,7 +98,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private ConstraintLayout mClSetting;
     private TextView mTvDotCount;
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
-    private TDialog mSvgaDialog;
 
     /**
      * 重新登录后重新获取用户相关信息
@@ -206,6 +206,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             initUserInfo();
             initOrganization();
             initUmeng();
+            showSVGALogin();
         }
         // 检查版本更新
         mMainHandler.removeCallbacksAndMessages(null);
@@ -221,6 +222,21 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             }
         }, isMeResumed2() ? 1000 : 2500);
     }
+
+    private void showSVGALogin() {
+        if (!SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN, true)) {
+            return;
+        }
+        LogUtil.d(TAG, "showSVGALogin start");
+        DialogRobotFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_WELCOM, new DialogRobotFactory.OnSVGACallBack() {
+            @Override
+            public void callBack(SVGAImageView svgaImageView) {
+                LogUtil.d(TAG, "showSVGALogin end");
+                SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN, false);
+            }
+        });
+    }
+
 
     @Override
     protected void onPause() {
@@ -247,6 +263,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                     }
                     view.setText("新版本");
                     view.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
+                    if (hasNewVersion) {
+                        AutoUpdateService.startUpdate(mContext);
+                    }
                 }
             }
         });
@@ -258,49 +277,74 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         if (vId == R.id.cl_me) {
             startActivity(new Intent(mContext, MeActivity.class));
         } else if (vId == R.id.cl_setting) {
-            boolean flag = new Random().nextBoolean();
-            mSvgaDialog = DialogRobotFactory.createSvgaDialog(MainActivity.this,
-                    flag ? "rose.svga" : "angel.svga",
+            startActivity(new Intent(mContext, SettingActivity.class));
+        } else if (vId == R.id.ll_music) {
+            DialogRobotFactory.createSvgaDialog(MainActivity.this,
+                    AnimFileName.TRANSITION_AUDIO,
                     new DialogRobotFactory.OnSVGACallBack() {
-                        @Override
+
                         public void callBack(SVGAImageView svgaImageView) {
-                            svgaImageView.setCallback(new DialogRobotFactory.SimpleSVGACallBack() {
-
-                                @Override
-                                public void onFinished() {
-                                    LogUtil.d(TAG, "onFinished +++++++++++++++ ");
-                                    if (mSvgaDialog != null) {
-                                        mSvgaDialog.dismiss();
-                                    }
-                                    startActivity(new Intent(mContext, SettingActivity.class));
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-
+                            startActivity(new Intent(mContext, AudioHomeActivity.class));
                         }
                     });
-
-        } else if (vId == R.id.ll_music) {
-            startActivity(new Intent(mContext, AudioHomeActivity.class));
         } else if (vId == R.id.ll_test) {
-            startActivity(new Intent(mContext, TestActivity.class));
+            DialogRobotFactory.createSvgaDialog(MainActivity.this,
+                    AnimFileName.TRANSITION_TEST,
+                    new DialogRobotFactory.OnSVGACallBack() {
+                        public void callBack(SVGAImageView svgaImageView) {
+                            startActivity(new Intent(mContext, TestActivity.class));
+                        }
+                    });
         } else if (vId == R.id.ll_video) {
-            startActivity(new Intent(mContext, VideoHomeActivity.class));
+            DialogRobotFactory.createSvgaDialog(MainActivity.this,
+                    AnimFileName.TRANSITION_VIDEO,
+                    new DialogRobotFactory.OnSVGACallBack() {
+                        public void callBack(SVGAImageView svgaImageView) {
+                            startActivity(new Intent(mContext, VideoHomeActivity.class));
+                        }
+                    });
         } else if (vId == R.id.ll_exercise) {
-            startActivity(new Intent(mContext, ExerciseActivity.class));
+            DialogRobotFactory.createSvgaDialog(MainActivity.this,
+                    AnimFileName.TRANSITION_TOOL,
+                    new DialogRobotFactory.OnSVGACallBack() {
+                        public void callBack(SVGAImageView svgaImageView) {
+                            startActivity(new Intent(mContext, ExerciseActivity.class));
+                        }
+                    });
         } else if (vId == R.id.rl_speciality_talk) {
-            startActivity(new Intent(mContext, ThemeTalkActivity.class));
+            DialogRobotFactory.createSvgaDialog(MainActivity.this,
+                    AnimFileName.TRANSITION_THEME,
+                    new DialogRobotFactory.OnSVGACallBack() {
+                        public void callBack(SVGAImageView svgaImageView) {
+                            startActivity(new Intent(mContext, ThemeTalkActivity.class));
+                        }
+                    });
         } else if (vId == R.id.ll_talk) {
-            AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
+            DialogRobotFactory.createSvgaDialog(MainActivity.this,
+                    AnimFileName.TRANSITION_TALK,
+                    new DialogRobotFactory.OnSVGACallBack() {
+                        public void callBack(SVGAImageView svgaImageView) {
+                            AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
+                        }
+                    });
         } else if (vId == R.id.ll_hot_call) {
             startActivity(new Intent(mContext, HotPhoneActivity.class));
         } else if (vId == R.id.ll_study) {
-            startActivity(new Intent(mContext, BookStudyActivity.class));
+            DialogRobotFactory.createSvgaDialog(MainActivity.this,
+                    AnimFileName.TRANSITION_IDEO,
+                    new DialogRobotFactory.OnSVGACallBack() {
+                        public void callBack(SVGAImageView svgaImageView) {
+                            startActivity(new Intent(mContext, BookStudyActivity.class));
+                        }
+                    });
         } else if (vId == R.id.ll_book) {
-            startActivity(new Intent(mContext, BookActivity.class));
+            DialogRobotFactory.createSvgaDialog(MainActivity.this,
+                    AnimFileName.TRANSITION_BOOK,
+                    new DialogRobotFactory.OnSVGACallBack() {
+                        public void callBack(SVGAImageView svgaImageView) {
+                            startActivity(new Intent(mContext, BookActivity.class));
+                        }
+                    });
         }
     }
 
@@ -354,6 +398,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                     CommonParameter.setOrganizationSelected(mSelecteds);
                     UserManager.getInstance().getUser().setOrganList(mSelecteds);
                     UserManager.getInstance().notifyUserInfo();
+                    UPushAlias.setTag(mSelecteds.get(mSelecteds.size() - 1).getId());
                 }
                 initOrganization = true;
             }
@@ -410,6 +455,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                     LogUtil.d(TAG, "initUserInfo onSuccess ++++++++++++++++++++++ ");
                     UserManager.getInstance().getUser().setUserInfo(data);
                     UserManager.getInstance().notifyUserInfo();
+                    UPushAlias.set(MyApplication.getApp(), "user_" + data.id, "user");
                 } else {
                     onFail(new ResponeThrowable(0, "data is null"));
                 }
@@ -458,8 +504,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         }
     }
 
-    private boolean hasAgreedAgreement() {
-        return MyPreferences.getInstance(this).hasAgreePrivacyAgreement();
+    private static boolean hasAgreedAgreement() {
+        return MyPreferences.getInstance(MyApplication.getApp()).hasAgreePrivacyAgreement();
     }
 
     /**

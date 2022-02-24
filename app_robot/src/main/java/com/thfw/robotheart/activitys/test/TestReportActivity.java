@@ -19,7 +19,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.ReportTestAdapter;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

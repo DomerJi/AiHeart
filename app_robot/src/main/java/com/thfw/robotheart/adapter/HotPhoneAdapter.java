@@ -35,18 +35,22 @@ public class HotPhoneAdapter extends BaseAdapter<HotCallModel, HotPhoneAdapter.B
     @Override
     public void onBindViewHolder(@NonNull @NotNull BookStudyHolder holder, int position) {
         HotCallModel callModel = mDataList.get(position);
-        holder.mTvTitle.setText(callModel.getName() + "_"
-                + callModel.getAzStr() + "_"
-                + callModel.getAzCode());
+        holder.mTvTitle.setText(callModel.title);
+        holder.mTvTime.setText(callModel.time.trim());
+        holder.mTvPhone.setText(callModel.phone.trim());
     }
 
     public class BookStudyHolder extends RecyclerView.ViewHolder {
 
         private final TextView mTvTitle;
+        private final TextView mTvTime;
+        private final TextView mTvPhone;
 
         public BookStudyHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvTitle = itemView.findViewById(R.id.tv_title);
+            mTvTime = itemView.findViewById(R.id.tv_time);
+            mTvPhone = itemView.findViewById(R.id.tv_phone);
         }
     }
 }

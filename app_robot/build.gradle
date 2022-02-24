@@ -128,5 +128,6 @@ dependencies {
 
     api group: 'org.bytedeco', name: 'javacpp', version: '1.5.6'
     api group: 'org.bytedeco', name: 'javacpp', version: '1.5.6', classifier: 'android-arm64'
+    implementation 'androidx.preference:preference:1.1.1'
 
 }

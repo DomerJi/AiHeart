@@ -24,7 +24,7 @@ import com.thfw.robotheart.fragments.sets.SetVolumeFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 
 public class SettingActivity extends RobotBaseActivity {
 

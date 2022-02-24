@@ -16,7 +16,7 @@ import com.thfw.robotheart.fragments.help.AudioInstructFragment;
 import com.thfw.robotheart.fragments.help.CommonProblemFragment;
 import com.thfw.robotheart.fragments.help.IdeaBackFragment;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 
 import org.jetbrains.annotations.NotNull;
 

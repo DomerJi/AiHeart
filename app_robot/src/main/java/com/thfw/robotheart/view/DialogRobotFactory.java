@@ -1,12 +1,15 @@
 package com.thfw.robotheart.view;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +19,12 @@ import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.bigkoo.pickerview.view.TimePickerView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
@@ -28,9 +37,11 @@ import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.thfw.base.models.AreaModel;
 import com.thfw.base.models.PickerData;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.adapter.BaseAdapter;
 import com.thfw.robotheart.adapter.DialogLikeAdapter;
+import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.util.AreaUtil;
 import com.thfw.ui.R;
 import com.thfw.ui.dialog.TDialog;
@@ -41,13 +52,18 @@ import com.thfw.ui.widget.InputBoxView;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.List;
 
 /**
  * 弹框工厂
  */
 public class DialogRobotFactory {
+
+    private static final String TAG = DialogRobotFactory.class.getSimpleName();
+    private static TDialog mSvgaTDialog;
+    private static TextView mTvTime;
+    private static int minute;
+    private static Runnable mMinuteRunnable;
 
     /**
      * 通用弹框
@@ -81,43 +97,170 @@ public class DialogRobotFactory {
      * @param onViewCallBack
      * @return
      */
-    public static TDialog createSvgaDialog(FragmentActivity activity, String svgaAssets, OnSVGACallBack onViewCallBack) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
+    public static void createSvgaDialog(FragmentActivity activity, String svgaAssets, OnSVGACallBack onViewCallBack) {
+
+        mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(com.thfw.robotheart.R.layout.dialog_svga_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
                 .setScreenWidthAspect(activity, 1.0f)
                 .setScreenHeightAspect(activity, 1.0f)
+                .setDimAmount(0.5f)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
+                    SVGAParser parser = new SVGAParser(activity);
                     SVGAImageView svgaImageView = viewHolder.getView(com.thfw.robotheart.R.id.svga_dialog);
-                    SVGAParser parser = new SVGAParser(svgaImageView.getContext());
+                    String hint = AnimFileName.getHint(svgaAssets);
 
-                    onViewCallBack.callBack(svgaImageView);
+                    if (!TextUtils.isEmpty(hint)) {
+                        mTvTime = viewHolder.getView(com.thfw.robotheart.R.id.tv_time);
+                        mMinuteRunnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mTvTime != null) {
+                                    mTvTime.setText(minute + "S");
+                                    minute--;
+                                    if (minute > 0) {
+                                        mTvTime.postDelayed(this, 1000);
+                                    }
+                                }
+                            }
+                        };
+                        TextView mTvJump = viewHolder.getView(com.thfw.robotheart.R.id.tv_jump);
+                        TextView mTvHint = viewHolder.getView(com.thfw.robotheart.R.id.tv_hint);
+                        mTvJump.setOnClickListener(v -> {
+                            LogUtil.d(TAG, "onFinished click");
+                            svgaImageView.getCallback().onFinished();
+                        });
+                        mTvHint.setText(hint);
+                    } else {
+                        viewHolder.getView(com.thfw.robotheart.R.id.tv_time).setVisibility(View.INVISIBLE);
+                        viewHolder.getView(com.thfw.robotheart.R.id.tv_jump).setVisibility(View.INVISIBLE);
+                        viewHolder.getView(com.thfw.robotheart.R.id.tv_hint).setVisibility(View.INVISIBLE);
+                    }
+                    long time = System.currentTimeMillis();
+                    LogUtil.d(TAG, "Time start = " + time);
                     // The third parameter is a default parameter, which is null by default. If this method is set, the audio parsing and playback will not be processed internally. The audio File instance will be sent back to the developer through PlayCallback, and the developer will control the audio playback and playback. stop
                     parser.decodeFromAssets(svgaAssets, new SVGAParser.ParseCompletion() {
                         @Override
                         public void onComplete(@NotNull SVGAVideoEntity svgaVideoEntity) {
                             SVGADrawable drawable = new SVGADrawable(svgaVideoEntity);
+
+                            if (mTvTime != null) {
+                                int fps = svgaVideoEntity.getFPS();
+                                int frames = svgaVideoEntity.getFrames();
+                                LogUtil.d(TAG, "onComplete = frames" + frames + ", fps = " + fps);
+                                minute = (int) (frames * 1.0f / fps + 0.3);
+                                mTvTime.postDelayed(mMinuteRunnable, 0);
+                            }
+
                             svgaImageView.setImageDrawable(drawable);
                             svgaImageView.startAnimation();
+                            LogUtil.d(TAG, "Time end limt = " + (System.currentTimeMillis() - time));
                         }
 
                         @Override
                         public void onError() {
-
                         }
-                    }, new SVGAParser.PlayCallback() {
+                    }, null);
+                    svgaImageView.setCallback(new SimpleSVGACallBack() {
 
                         @Override
-                        public void onPlay(@NotNull List<? extends File> list) {
+                        public void onFinished() {
+                            LogUtil.d(TAG, "onFinished");
+                            onViewCallBack.callBack(svgaImageView);
+                            if (mSvgaTDialog != null) {
+                                mSvgaTDialog.dismiss();
+                                mSvgaTDialog = null;
 
+                            }
+                            if (mTvTime != null && mMinuteRunnable != null) {
+                                mTvTime.removeCallbacks(mMinuteRunnable);
+                                mTvTime = null;
+                                mMinuteRunnable = null;
+                            }
                         }
                     });
                 })
                 .setOnViewClickListener(onViewCallBack).create().show();
     }
 
-    public static void createAddressBirthDay(Context mContext, ViewGroup decorView, OnTimeSelectListener optionsSelectListener) {
+    /**
+     * 通用弹框
+     *
+     * @param activity
+     * @param onViewCallBack
+     * @return
+     */
+    public static TDialog createGifDialog(FragmentActivity activity, int gifRaw, OnGIFCallBack
+            onViewCallBack) {
+        return new TDialog.Builder(activity.getSupportFragmentManager())
+                .setLayoutRes(com.thfw.robotheart.R.layout.dialog_gif_layout)
+                .setDialogAnimationRes(R.style.animate_dialog_fade)
+                .setScreenWidthAspect(activity, 1.0f)
+//                .setDimAmount(0.8f)
+                .setScreenHeightAspect(activity, 1.0f)
+                // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
+                .setOnBindViewListener(viewHolder -> {
+                    ImageView imageView = viewHolder.getView(com.thfw.robotheart.R.id.iv_gif_dialog);
+                    Glide.with(activity).asGif().load(gifRaw).listener(new RequestListener<GifDrawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
+//                            try {
+//                                Field gifStateField = GifDrawable.class.getDeclaredField("state");
+//                                gifStateField.setAccessible(true);
+//                                Class gifStateClass = Class.forName("com.bumptech.glide.load.resource.gif.GifDrawable$GifState");
+//                                Field gifFrameLoaderField = gifStateClass.getDeclaredField("frameLoader");
+//                                gifFrameLoaderField.setAccessible(true);
+//                                Class gifFrameLoaderClass = Class.forName("com.bumptech.glide.load.resource.gif.GifFrameLoader");
+//                                Field gifDecoderField = gifFrameLoaderClass.getDeclaredField("gifDecoder");
+//                                gifDecoderField.setAccessible(true);
+//                                Class gifDecoderClass = Class.forName("com.bumptech.glide.gifdecoder.GifDecoder");
+//                                Object gifDecoder = gifDecoderField.get(gifFrameLoaderField.get(gifStateField.get(resource)));
+//                                Method getDelayMethod = gifDecoderClass.getDeclaredMethod("getDelay", int.class);
+//                                getDelayMethod.setAccessible(true);
+//                                //设置只播放一次
+//                                resource.setLoopCount(1);
+//                                //获得总帧数
+//                                int count = resource.getFrameCount();
+//                                int delay = 0;
+//                                for (int i = 0; i < count; i++) {
+//                                    //计算每一帧所需要的时间进行累加
+//                                    delay += (int) getDelayMethod.invoke(gifDecoder, i);
+//                                }
+//                                imageView.postDelayed(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        if (onViewCallBack != null) {
+//                                            imageView.clearAnimation();
+//                                            onViewCallBack.callBack(imageView);
+//                                        }
+//                                    }
+//                                }, delay);
+//                            } catch (NoSuchFieldException e) {
+//                                e.printStackTrace();
+//                            } catch (ClassNotFoundException e) {
+//                                e.printStackTrace();
+//                            } catch (IllegalAccessException e) {
+//                                e.printStackTrace();
+//                            } catch (NoSuchMethodException e) {
+//                                e.printStackTrace();
+//                            } catch (InvocationTargetException e) {
+//                                e.printStackTrace();
+//                            }
+                            return false;
+                        }
+                    }).into(imageView);
+                }).setOnViewClickListener(onViewCallBack).create().show();
+    }
+
+
+    public static void createAddressBirthDay(Context mContext, ViewGroup
+            decorView, OnTimeSelectListener optionsSelectListener) {
         TimePickerBuilder builder = new TimePickerBuilder(mContext, optionsSelectListener).setDecorView(decorView)
                 .setTitleText("选择年月日")//标题文字
                 .setTitleSize(17)//标题文字大小
@@ -145,7 +288,8 @@ public class DialogRobotFactory {
      * @param onViewCallBack
      * @return
      */
-    public static TDialog createSelectCustomText(FragmentActivity activity, String title, List<PickerData> likeModels, OnViewSelectCallBack onViewCallBack) {
+    public static TDialog createSelectCustomText(FragmentActivity activity, String
+            title, List<PickerData> likeModels, OnViewSelectCallBack onViewCallBack) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(com.thfw.robotheart.R.layout.dialog_select_custom_layout)
                 .setGravity(Gravity.BOTTOM)
@@ -181,7 +325,8 @@ public class DialogRobotFactory {
     /**
      * 创建地区选择弹框
      */
-    public static void createAddressDialog(Context mContext, ViewGroup decorView, OnOptionsSelectListener optionsSelectListener, int... opsitions) {
+    public static void createAddressDialog(Context mContext, ViewGroup
+            decorView, OnOptionsSelectListener optionsSelectListener, int... opsitions) {
         OptionsPickerBuilder optionsPickerBuilder = new OptionsPickerBuilder(mContext, optionsSelectListener).setDecorView(decorView)//必须是RelativeLayout，不设置setDecorView的话，底部虚拟导航栏会显示在弹出的选择器区域
                 .setTitleText("选择地区")//标题文字
                 .setTitleSize(17)//标题文字大小
@@ -238,7 +383,8 @@ public class DialogRobotFactory {
         optionsPickerView.show();
     }
 
-    private static void setOptionPickerView(OptionsPickerView optionsPickerView, Context mContext) {
+    private static void setOptionPickerView(OptionsPickerView optionsPickerView, Context
+            mContext) {
         LinearLayout picker = (LinearLayout) optionsPickerView.findViewById(R.id.optionspicker);
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) picker.getLayoutParams();
         layoutParams.height = Util.dipToPx(260, mContext);
@@ -264,7 +410,8 @@ public class DialogRobotFactory {
      * @param onViewCallBack
      * @return
      */
-    public static TDialog createCustomThreeDialog(FragmentActivity activity, OnViewThreeCallBack onViewCallBack) {
+    public static TDialog createCustomThreeDialog(FragmentActivity
+                                                          activity, OnViewThreeCallBack onViewCallBack) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_custom_three_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
@@ -288,7 +435,8 @@ public class DialogRobotFactory {
      * @param onInputCompleteListener
      * @return
      */
-    public static TDialog createTransactionPasswordDialog(FragmentActivity activity, InputBoxView.OnInputCompleteListener onInputCompleteListener) {
+    public static TDialog createTransactionPasswordDialog(FragmentActivity
+                                                                  activity, InputBoxView.OnInputCompleteListener onInputCompleteListener) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_transaction_password_layout)
                 .setGravity(Gravity.BOTTOM)
@@ -317,7 +465,8 @@ public class DialogRobotFactory {
      * @param onInputCompleteListener
      * @return
      */
-    public static TDialog createVerificationCodeDialog(FragmentActivity activity, InputBoxView.OnInputCompleteListener onInputCompleteListener) {
+    public static TDialog createVerificationCodeDialog(FragmentActivity
+                                                               activity, InputBoxView.OnInputCompleteListener onInputCompleteListener) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_verification_code_layout)
                 .setGravity(Gravity.BOTTOM)
@@ -373,7 +522,8 @@ public class DialogRobotFactory {
     /**
      * 【问一问】 更多弹框
      */
-    public static TDialog createAskMore(FragmentActivity activity, OnViewClickListener onViewClickListener) {
+    public static TDialog createAskMore(FragmentActivity activity, OnViewClickListener
+            onViewClickListener) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_ask_more_layout)
                 .setGravity(Gravity.BOTTOM)
@@ -390,7 +540,8 @@ public class DialogRobotFactory {
     /**
      * 【分享】第三方
      */
-    public static TDialog createShare(FragmentActivity activity, OnBindViewListener onBindViewListener, OnViewClickListener onViewClickListener) {
+    public static TDialog createShare(FragmentActivity activity, OnBindViewListener
+            onBindViewListener, OnViewClickListener onViewClickListener) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_share_layout)
                 .setGravity(Gravity.BOTTOM)
@@ -403,7 +554,8 @@ public class DialogRobotFactory {
     /**
      * 【状态】自定义
      */
-    public static TDialog createCustomStatus(FragmentActivity activity, OnBindViewListener onBindViewListener, OnViewClickListener onViewClickListener) {
+    public static TDialog createCustomStatus(FragmentActivity activity, OnBindViewListener
+            onBindViewListener, OnViewClickListener onViewClickListener) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_custom_status_layout)
                 .setGravity(Gravity.BOTTOM)
@@ -421,14 +573,22 @@ public class DialogRobotFactory {
         void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical);
     }
 
-    public interface OnSVGACallBack extends OnViewClickListener {
-        void callBack(SVGAImageView svgaImageView);
+    public interface OnGIFCallBack extends OnViewClickListener {
+        void callBack(ImageView imageView);
     }
 
     public interface OnViewThreeCallBack extends OnViewClickListener {
         void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvOne, TextView mTvTwo, TextView mTvThree);
     }
 
+    public static abstract class OnSVGACallBack implements OnViewClickListener {
+        public abstract void callBack(SVGAImageView svgaImageView);
+
+        @Override
+        public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+
+        }
+    }
 
     public abstract static class SimpleSVGACallBack implements SVGACallback {
         @Override

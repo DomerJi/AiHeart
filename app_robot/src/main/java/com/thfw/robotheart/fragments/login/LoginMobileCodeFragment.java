@@ -22,7 +22,7 @@ import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.activitys.me.InfoActivity;
 import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
 import com.thfw.robotheart.constants.AgreeOn;
-import com.thfw.ui.base.RobotBaseFragment;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.InputBoxSquareView;
 import com.thfw.user.login.LoginStatus;

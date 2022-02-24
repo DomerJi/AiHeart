@@ -20,7 +20,7 @@ import com.thfw.robotheart.activitys.login.BindPhoneActivity;
 import com.thfw.robotheart.activitys.login.SetPasswordActivity;
 import com.thfw.robotheart.view.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;

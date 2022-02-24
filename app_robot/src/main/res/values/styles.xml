@@ -13,6 +13,19 @@
         <item name="android:activityCloseExitAnimation">@anim/exit</item>
     </style>
 
+    <!--activity 淡入淡出-->
+    <style name="AppThemeAnimFade" parent="AppTheme">
+        <item name="android:windowAnimationStyle">@style/activityAnimFace</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="activityAnimFace">
+        <item name="android:activityOpenEnterAnimation">@anim/enter_fade</item>
+        <item name="android:activityOpenExitAnimation">@anim/exit_fade</item>
+        <item name="android:activityCloseEnterAnimation">@anim/enter_fade</item>
+        <item name="android:activityCloseExitAnimation">@anim/exit_fade</item>
+    </style>
+
     <!--             android:showText="false"
             android:switchMinWidth="@dimen/switch_min_width"
             android:textColor="@color/black"

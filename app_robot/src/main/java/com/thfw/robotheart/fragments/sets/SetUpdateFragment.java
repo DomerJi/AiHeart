@@ -3,6 +3,7 @@ package com.thfw.robotheart.fragments.sets;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -12,10 +13,11 @@ import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.set.SystemAppActivity;
-import com.thfw.ui.base.RobotBaseFragment;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 
 /**
  * Author:pengs
@@ -33,6 +35,8 @@ public class SetUpdateFragment extends RobotBaseFragment {
     private TextView mTvCurrentVersion;
     private RelativeLayout mRlOriginCode;
     private TextView mTvOriginCode;
+
+    public static final String SET_AUTO_UPDATE_BOOLEAN = "set.auto_update";
 
     @Override
     public int getContentView() {
@@ -65,6 +69,13 @@ public class SetUpdateFragment extends RobotBaseFragment {
         });
         mTvCurrentVersion.setText("v_" + Util.getAppVersion(mContext));
         mTvOriginCode.setText(CommonParameter.getOrganizationId());
+        mSwitchWifiUpdate.setChecked(SharePreferenceUtil.getBoolean(SET_AUTO_UPDATE_BOOLEAN, true));
+        mSwitchWifiUpdate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharePreferenceUtil.setBoolean(SET_AUTO_UPDATE_BOOLEAN, isChecked);
+            }
+        });
     }
 
     @Override

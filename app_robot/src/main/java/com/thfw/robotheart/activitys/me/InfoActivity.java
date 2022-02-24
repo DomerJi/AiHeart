@@ -2,10 +2,14 @@ package com.thfw.robotheart.activitys.me;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -54,7 +58,7 @@ import com.thfw.robotheart.util.AreaUtil;
 import com.thfw.robotheart.util.GlideImageEngine;
 import com.thfw.robotheart.view.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
@@ -123,6 +127,7 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
     private TextView mTvWelNickname;
     private boolean mFirstInputMsg;
     private android.widget.Button mBtConfirm;
+    private PopupWindow mPopWindow;
 
     public static void startActivityFirst(Context context) {
         context.startActivity(new Intent(context, InfoActivity.class).putExtra(KEY_DATA, true));
@@ -360,7 +365,7 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
         });
         // 头像
         mLlAvatar.setOnClickListener(v -> {
-            showAlbum();
+            showAlbumSelect();
         });
         // 姓名
         mLlName.setOnClickListener(v -> {
@@ -685,8 +690,44 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
             @Override
             public void onChanged(UserManager accountManager, User user) {
                 mTvTeam.setText(user.getOrganListStr());
+                GlideUtil.load(mContext, UserManager.getInstance().getUser().getVisibleAvatar(), mRivAvatar);
             }
         };
+    }
+
+    /**
+     * 选择图片
+     */
+    private void showAlbumSelect() {
+        if (mPopWindow != null) {
+            mPopWindow.dismiss();
+            mPopWindow = null;
+            return;
+        }
+        View contentView = LayoutInflater.from(InfoActivity.this).inflate(R.layout.popwindow_select_avatar, null);
+        mPopWindow = new PopupWindow(contentView);
+        mPopWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        // 点击外部取消显示
+        mPopWindow.setOutsideTouchable(true);
+        //  mPopWindow.setBackgroundDrawable(new BitmapDrawable()); // 括号内过时
+        mPopWindow.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        TextView mTvAlbum = contentView.findViewById(R.id.tv_album);
+        TextView mTvPreset = contentView.findViewById(R.id.tv_preset);
+        // 相册拍摄
+        mTvAlbum.setOnClickListener(v -> {
+            mPopWindow.dismiss();
+            mPopWindow = null;
+            showAlbum();
+        });
+        // 预置头像库
+        mTvPreset.setOnClickListener(v -> {
+            mPopWindow.dismiss();
+            mPopWindow = null;
+            startActivity(new Intent(mContext, PresetAvatarActivity.class));
+        });
+        mPopWindow.showAsDropDown(mRivAvatar, -mRivAvatar.getWidth() / 2, 26);
     }
 
     /**

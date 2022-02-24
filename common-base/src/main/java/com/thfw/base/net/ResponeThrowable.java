@@ -4,7 +4,7 @@ import androidx.annotation.Nullable;
 
 import com.thfw.base.base.IResult;
 
-public class ResponeThrowable extends Exception implements IResult {
+public class ResponeThrowable extends Throwable implements IResult {
     public int code;
     public String message;
 

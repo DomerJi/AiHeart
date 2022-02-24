@@ -12,12 +12,62 @@
         android:layout_height="0dp"
         app:clearsAfterStop="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.6"
+        app:layout_constraintHeight_percent="0.75"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.6"
+        app:layout_constraintWidth_percent="0.75"
         app:loopCount="1"
         tools:background="@color/white_20" />
+
+    <TextView
+        android:id="@+id/tv_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/transition_hint_text_bg"
+        android:gravity="center"
+        android:letterSpacing="0.1"
+        android:lineSpacingExtra="2dp"
+        android:paddingLeft="12dp"
+        android:paddingTop="8dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="8dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_small"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="倾听你的心事" />
+
+    <TextView
+        android:id="@+id/tv_jump"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoLink="web"
+        android:letterSpacing="0.1"
+        android:padding="8dp"
+        android:text="跳过动画"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_large"
+        app:layout_constraintBottom_toBottomOf="@id/tv_time"
+        app:layout_constraintRight_toLeftOf="@id/tv_time"
+        app:layout_constraintTop_toTopOf="@id/tv_time" />
+
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:layout_marginRight="36dp"
+        android:autoLink="web"
+        android:letterSpacing="0.1"
+        android:minWidth="30dp"
+        android:textColor="@color/text_yellow"
+        android:textSize="@dimen/textSize_large"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="3S" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

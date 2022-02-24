@@ -32,6 +32,7 @@ import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NetworkUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.util.Dormant;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,6 +42,7 @@ import org.jetbrains.annotations.NotNull;
  * Describe:Todo
  */
 public class TitleBarView extends LinearLayout implements TimingHelper.WorkListener {
+
 
     private static final String TAG = TitleBarView.class.getSimpleName();
     private static volatile int level;
@@ -59,7 +61,6 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
     private boolean colorFgWhite;
     private ImageView mIvTitleBarBlue;
     private RelativeLayout mRlBattery;
-
 
     public TitleBarView(@NonNull @NotNull Context context) {
         this(context, null);
@@ -249,6 +250,7 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
                 public void onReceive(Context context, Intent intent) {
                     if (intent.ACTION_TIME_TICK.equals(intent.getAction())) {
                         mTvTitleBarTime.setText(HourUtil.getHHMM(System.currentTimeMillis()));
+                        Dormant.addMinute(mContext);
                     } else if (intent.ACTION_TIME_CHANGED.equals(intent.getAction())) {
                         mTvTitleBarTime.setText(HourUtil.getHHMM(System.currentTimeMillis()));
                     }

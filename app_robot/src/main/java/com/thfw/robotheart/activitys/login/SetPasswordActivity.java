@@ -10,7 +10,7 @@ import com.thfw.robotheart.fragments.login.SetPasswordCodeFragment;
 import com.thfw.robotheart.fragments.login.SetPasswordOriginFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.user.login.UserManager;
 
 /**

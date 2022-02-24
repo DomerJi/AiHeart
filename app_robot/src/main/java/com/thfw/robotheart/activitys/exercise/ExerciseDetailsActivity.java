@@ -24,7 +24,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.ExerciseLogcateAdapter;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;

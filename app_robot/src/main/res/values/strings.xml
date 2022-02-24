@@ -52,6 +52,7 @@
     <string name="me_help_back">帮助与反馈</string>
     <string name="me_setting">设置</string>
     <string name="me_info">个人信息</string>
+    <string name="me_select_avatar">选择头像</string>
 
     <string name="set_account_safe">账户安全</string>
     <string name="set_info">个人资料</string>
@@ -59,7 +60,7 @@
     <string name="set_clear_cache">清除缓存</string>
     <string name="set_privacy_policy">隐私政策</string>
     <string name="set_about_ai">关于我们</string>
-    <string name="help_back">意见反馈</string>
+    <string name="help_back">帮助中心</string>
     <string name="audio_instruct">语音指令</string>
     <string name="common_problem">常见问题</string>
 
@@ -93,6 +94,8 @@
     <string name="share">分享</string>
     <!-- 聊天 -->
     <string name="finishServiceTitle">确认退出当前对话吗？</string>
+    <string name="finishDownlaodApk">已在Wifi连接下，为您下载好新版本，是否现在安装？</string>
+    <string name="finishToolTitle">确认退出当前训练吗？</string>
     <string name="finishServiceHint">感谢您的咨询，希望下次还可以为您服务</string>
 
     <!--订单-->
@@ -420,5 +423,21 @@
     <string name="agreement_ok">同意</string>
     <string name="agreement_cancel">拒绝</string>
     <string name="device_token">DeviceToken:</string>
+    <string name="title_activity_preset_avatar">PresetAvatarActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
 </resources>

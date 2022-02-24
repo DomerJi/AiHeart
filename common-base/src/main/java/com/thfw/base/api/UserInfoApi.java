@@ -1,9 +1,11 @@
 package com.thfw.base.api;
 
 import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.PresetAvatarModel;
 import com.thfw.base.net.HttpResult;
 import com.thfw.user.login.User;
 
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
@@ -36,6 +38,15 @@ public interface UserInfoApi {
     @FormUrlEncoded
     @POST("user/update")
     Observable<HttpResult<CommonModel>> onUserUpdate(@FieldMap Map<String, Object> params);
+
+    /**
+     * [预置头像库]
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("user/pic/list")
+    Observable<HttpResult<List<PresetAvatarModel>>> onPresetAvatarList(@FieldMap Map<String, Object> params);
 
     /**
      * 【个人信息字段罗列】

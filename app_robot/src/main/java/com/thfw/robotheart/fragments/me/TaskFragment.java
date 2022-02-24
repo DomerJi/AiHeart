@@ -15,7 +15,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.task.TaskDetailsActivity;
 import com.thfw.robotheart.adapter.TaskAdapter;
 import com.thfw.robotheart.util.PageHelper;
-import com.thfw.ui.base.RobotBaseFragment;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

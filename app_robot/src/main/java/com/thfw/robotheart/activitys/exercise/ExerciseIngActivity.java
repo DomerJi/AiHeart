@@ -58,7 +58,7 @@ import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.robotheart.view.boom.ExplosionField;
 import com.thfw.robotheart.view.fall.FallObject;
 import com.thfw.robotheart.view.fall.FallingView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -424,7 +424,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
         DialogRobotFactory.createCustomDialog(this, new DialogRobotFactory.OnViewCallBack() {
             @Override
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-                mTvHint.setText(R.string.finishServiceTitle);
+                mTvHint.setText(R.string.finishToolTitle);
                 mTvTitle.setVisibility(View.GONE);
             }
 

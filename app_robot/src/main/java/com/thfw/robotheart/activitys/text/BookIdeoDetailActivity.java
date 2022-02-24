@@ -28,8 +28,9 @@ import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.util.WebSizeUtil;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -63,7 +64,7 @@ public class BookIdeoDetailActivity extends RobotBaseActivity<BookPresenter> imp
 
     @Override
     public int getContentView() {
-        return R.layout.activity_book_detail;
+        return R.layout.activity_book_study_detail;
     }
 
     @Override
@@ -189,6 +190,7 @@ public class BookIdeoDetailActivity extends RobotBaseActivity<BookPresenter> imp
             frameLayout.setBackgroundColor(Color.WHITE);
             webView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
             webView.getSettings().setDefaultTextEncodingName("UTF-8");//设置默认为utf-8
+            WebSizeUtil.setSize(mContext, webView.getSettings());
             webView.loadDataWithBaseURL(null, contentHtml, "text/html", "UTF-8", null);//中文解码  
         } else {
             mAgentWeb = preAgentWeb.go(url); // WebView载入该url地址的页面并显示。

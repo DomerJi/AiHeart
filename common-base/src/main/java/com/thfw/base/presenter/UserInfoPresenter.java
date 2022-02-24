@@ -4,10 +4,13 @@ import com.thfw.base.api.UserInfoApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
 import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.PresetAvatarModel;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.OkHttpUtil;
 import com.thfw.user.login.User;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 
@@ -32,6 +35,12 @@ public class UserInfoPresenter extends IPresenter<UserInfoPresenter.UserInfoUi> 
     public void onUpdate(NetParams netParams) {
         Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(UserInfoApi.class)
                 .onUserUpdate(netParams);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    public void onPresetAvatarList() {
+        Observable<HttpResult<List<PresetAvatarModel>>> observable = OkHttpUtil.createService(UserInfoApi.class)
+                .onPresetAvatarList(NetParams.crete());
         OkHttpUtil.request(observable, getUI());
     }
 

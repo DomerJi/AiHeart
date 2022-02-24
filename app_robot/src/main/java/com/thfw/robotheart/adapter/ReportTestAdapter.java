@@ -38,7 +38,7 @@ public class ReportTestAdapter extends BaseAdapter<ReportTestModel, ReportTestAd
     @Override
     public void onBindViewHolder(@NonNull @NotNull ReportTestAdapter.ReportHolder holder, int position) {
         holder.mTvTitle.setText(mDataList.get(position).getTitle());
-        holder.mTvTime.setText("时间：" + mDataList.get(position).getAddTime());
+        holder.mTvTime.setText(mDataList.get(position).getAddTime());
     }
 
     public class ReportHolder extends RecyclerView.ViewHolder {

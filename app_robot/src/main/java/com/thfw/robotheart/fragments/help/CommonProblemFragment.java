@@ -10,7 +10,7 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.TaskAdapter;
-import com.thfw.ui.base.RobotBaseFragment;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.ui.widget.LoadingView;
 
 public class CommonProblemFragment extends RobotBaseFragment {

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.base.models.HotLineModel;
+import com.thfw.base.models.HotCallModel;
 import com.thfw.mobileheart.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -19,9 +19,9 @@ import java.util.List;
  * Date: 2021/10/18 11:38
  * Describe:Todo
  */
-public class ServiceHotLineAdapter extends BaseAdapter<HotLineModel, ServiceHotLineAdapter.ServiceHolder> {
+public class ServiceHotLineAdapter extends BaseAdapter<HotCallModel, ServiceHotLineAdapter.ServiceHolder> {
 
-    public ServiceHotLineAdapter(List<HotLineModel> dataList) {
+    public ServiceHotLineAdapter(List<HotCallModel> dataList) {
         super(dataList);
     }
 

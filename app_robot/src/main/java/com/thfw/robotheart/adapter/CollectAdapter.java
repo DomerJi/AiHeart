@@ -37,8 +37,9 @@ public class CollectAdapter extends BaseAdapter<CollectModel, CollectAdapter.Col
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull CollectAdapter.CollectHolder holder, int position) {
-        holder.mTvTime.setText(HourUtil.getYYMMDD_HHMM(System.currentTimeMillis()));
-        holder.mTvTitle.setText("Title_" + position);
+        CollectModel collectModel = mDataList.get(position);
+        holder.mTvTime.setText("收藏时间:" + HourUtil.getYYMMDD_HHMM(System.currentTimeMillis()));
+        holder.mTvTitle.setText(collectModel.title);
     }
 
     public class CollectHolder extends RecyclerView.ViewHolder {
@@ -52,6 +53,11 @@ public class CollectAdapter extends BaseAdapter<CollectModel, CollectAdapter.Col
         public CollectHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             initView(itemView);
+            itemView.setOnClickListener(v -> {
+                if (mOnRvItemListener != null) {
+                    mOnRvItemListener.onItemClick(mDataList, getBindingAdapterPosition());
+                }
+            });
         }
 
         private void initView(View itemView) {

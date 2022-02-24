@@ -1,6 +1,7 @@
-package com.thfw.ui.base;
+package com.thfw.robotheart.activitys;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.ui.base.IBaseFragment;
 
 /**
  * Author:pengs

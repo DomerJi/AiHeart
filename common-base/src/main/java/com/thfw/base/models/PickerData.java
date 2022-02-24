@@ -53,6 +53,18 @@ public class PickerData implements IPickerViewData {
          *
          * @return
          */
+        public static List<PickerData> getAlbumSelect() {
+            List<PickerData> list = new ArrayList<>();
+            list.add(new PickerData("相册/拍摄", 1));
+            list.add(new PickerData("预置头像库", 2));
+            return list;
+        }
+
+        /**
+         * 性别
+         *
+         * @return
+         */
         public static List<PickerData> getSex() {
             List<PickerData> list = new ArrayList<>();
             list.add(new PickerData("男", 1));

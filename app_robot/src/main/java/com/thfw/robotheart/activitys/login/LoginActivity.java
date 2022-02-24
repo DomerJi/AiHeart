@@ -13,6 +13,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.MainActivity;
 import com.thfw.robotheart.constants.UIConfig;
@@ -39,6 +40,8 @@ public class LoginActivity extends BaseActivity {
     private FragmentLoader fragmentLoader;
     private AlertDialog mDialog;
     private boolean mOpenCvInited = false;
+    // 登录后播放唤醒动画
+    public static final String KEY_LOGIN_BEGIN = "login.begin";
 
 
     public static void startActivity(Context context, int type) {
@@ -68,6 +71,7 @@ public class LoginActivity extends BaseActivity {
         fragmentLoader.load(type);
         // 检查权限
         checkPermissions();
+        SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN, true);
     }
 
     @Override

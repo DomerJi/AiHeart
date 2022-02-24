@@ -19,75 +19,17 @@ public class SearchResultModel implements IModel {
     public static final int TYPE_TEXT = 5;
     public static final int TYPE_IDEO_TEXT = 6;
     public static final int TYPE_TOOL = 7;
-
-    public static class TypeTitleBean {
-        public int type;
-        public String title;
-        public List<ResultBean> list;
-
-        public TypeTitleBean(int type, String title, List<ResultBean> list) {
-            this.type = type;
-            this.title = title;
-            this.list = list;
-        }
-    }
-
     private List<ResultBean> allList;
-
-    public List<ResultBean> getAllList() {
-        if (allList == null) {
-            allList = new ArrayList<>();
-            for (ResultBean bean : psychTest) {
-                bean.setType(TYPE_TEST);
-            }
-
-            for (ResultBean bean : collection) {
-                bean.setType(TYPE_AUDIO);
-            }
-
-            for (ResultBean bean : videoList) {
-                bean.setType(TYPE_VIDEO);
-            }
-
-            for (ResultBean bean : dialogList) {
-                bean.setType(TYPE_DIALOG);
-            }
-
-            for (ResultBean bean : articleList) {
-                bean.setType(TYPE_TEXT);
-            }
-
-            for (ResultBean bean : ideologyList) {
-                bean.setType(TYPE_IDEO_TEXT);
-            }
-
-            for (ResultBean bean : toolPackageList) {
-                bean.setType(TYPE_TOOL);
-            }
-
-            allList.addAll(psychTest);
-            allList.addAll(collection);
-            allList.addAll(videoList);
-            allList.addAll(dialogList);
-            allList.addAll(articleList);
-            allList.addAll(ideologyList);
-            allList.addAll(toolPackageList);
-        }
-        return allList;
-    }
-
     /**
      * 心理测评
      */
     @SerializedName("psych_test")
     private List<ResultBean> psychTest;
-
     /**
      * 科普文章
      */
     @SerializedName("article_list")
     private List<ResultBean> articleList;
-
     /**
      * 主题对话
      */
@@ -103,13 +45,11 @@ public class SearchResultModel implements IModel {
      */
     @SerializedName("video_list")
     private List<ResultBean> videoList;
-
     /**
      * 成长练习
      */
     @SerializedName("tool_package_list")
     private List<ResultBean> toolPackageList;
-
     /**
      * 思政文章
      *
@@ -117,6 +57,56 @@ public class SearchResultModel implements IModel {
      */
     @SerializedName("ideology_article")
     private List<ResultBean> ideologyList;
+
+    public List<ResultBean> getAllList() {
+        if (allList == null) {
+            allList = new ArrayList<>();
+
+            if (psychTest != null) {
+                for (ResultBean bean : psychTest) {
+                    bean.setType(TYPE_TEST);
+                }
+                allList.addAll(psychTest);
+            }
+            if (collection != null) {
+                for (ResultBean bean : collection) {
+                    bean.setType(TYPE_AUDIO);
+                }
+                allList.addAll(collection);
+            }
+            if (videoList != null) {
+                for (ResultBean bean : videoList) {
+                    bean.setType(TYPE_VIDEO);
+                }
+                allList.addAll(videoList);
+            }
+            if (dialogList != null) {
+                for (ResultBean bean : dialogList) {
+                    bean.setType(TYPE_DIALOG);
+                }
+                allList.addAll(dialogList);
+            }
+            if (articleList != null) {
+                for (ResultBean bean : articleList) {
+                    bean.setType(TYPE_TEXT);
+                }
+                allList.addAll(articleList);
+            }
+            if (ideologyList != null) {
+                for (ResultBean bean : ideologyList) {
+                    bean.setType(TYPE_IDEO_TEXT);
+                }
+                allList.addAll(ideologyList);
+            }
+            if (toolPackageList != null) {
+                for (ResultBean bean : toolPackageList) {
+                    bean.setType(TYPE_TOOL);
+                }
+                allList.addAll(toolPackageList);
+            }
+        }
+        return allList;
+    }
 
     public List<ResultBean> getIdeologyList() {
         return ideologyList;
@@ -146,14 +136,25 @@ public class SearchResultModel implements IModel {
         return articleList;
     }
 
+    public static class TypeTitleBean {
+        public int type;
+        public String title;
+        public List<ResultBean> list;
+
+        public TypeTitleBean(int type, String title, List<ResultBean> list) {
+            this.type = type;
+            this.title = title;
+            this.list = list;
+        }
+    }
 
     public static class ResultBean {
 
+        public int contentType;
         @SerializedName("id")
         private int id;
         @SerializedName("title")
         private String title;
-
         @SerializedName("type")
         private int type;
 
@@ -161,14 +162,12 @@ public class SearchResultModel implements IModel {
             return type;
         }
 
-        public int contentType;
+        public int getType() {
+            return contentType;
+        }
 
         public void setType(int type) {
             this.contentType = type;
-        }
-
-        public int getType() {
-            return contentType;
         }
 
         public int getId() {

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.thfw.robotheart.R;
@@ -19,6 +20,7 @@ import com.umeng.message.common.UPushNotificationChannel;
 import com.umeng.message.entity.UMessage;
 
 import org.android.agoo.common.AgooConstants;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -32,6 +34,7 @@ public class MyCustomMessageService extends UmengMessageService {
         Log.i(TAG, "onMessage");
         try {
             String body = intent.getStringExtra(AgooConstants.MESSAGE_BODY);
+            Log.i(TAG, "onMessage: body =  " + body);
             UMessage message = new UMessage(new JSONObject(body));
             if (UMessage.DISPLAY_TYPE_NOTIFICATION.equals(message.display_type)) {
                 //处理通知消息
@@ -45,8 +48,33 @@ public class MyCustomMessageService extends UmengMessageService {
         }
     }
 
+    /**
+     * 自定义消息
+     * TODO 解析验证
+     *
+     * @param message
+     */
     private void handleCustomMessage(UMessage message) {
-        Log.i(TAG, "handleCustomMessage: " + message.getRaw().toString());
+        String json = message.getRaw().toString();
+        Log.i(TAG, "handleCustomMessage: " + json);
+        try {
+            JSONObject mMsg = new JSONObject(json);
+            if (mMsg != null) {
+                String msg_id = mMsg.optString("msg_id");
+                String display_type = mMsg.optString("display_type");
+                JSONObject mBody = mMsg.optJSONObject("body");
+                if (mBody != null) {
+                    String mCustomJson = mBody.optString("custom");
+                    Log.i(TAG, "handleCustomMessage: mCustomJson = " + mCustomJson);
+                    if (!TextUtils.isEmpty(mCustomJson)) {
+
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void handleNotificationMessage(UMessage msg) {

@@ -27,10 +27,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
@@ -66,8 +64,9 @@ import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.VideoItemAdapter;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.util.ExoPlayerFactory;
 import com.thfw.robotheart.view.TitleBarView;
-import com.thfw.ui.base.RobotBaseActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.widget.BrightnessHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
@@ -83,10 +82,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
-import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS;
-import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS;
-import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_MAX_BUFFER_MS;
-import static com.google.android.exoplayer2.DefaultLoadControl.DEFAULT_MIN_BUFFER_MS;
 
 /**
  * 视频播放
@@ -279,23 +274,9 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         // 初始化ExoPlayer
         if (mExoPlayer == null) {
 
-            DefaultBandwidthMeter mDefaultBandwidthMeter = new DefaultBandwidthMeter
-                    .Builder(mContext)
-                    .build();
 
-            LoadControl loadControl = new DefaultLoadControl.Builder()
-                    .setBufferDurationsMs(DEFAULT_MIN_BUFFER_MS * 2,
-                            DEFAULT_MAX_BUFFER_MS * 10,
-                            DEFAULT_BUFFER_FOR_PLAYBACK_MS * 2,
-                            DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS * 3).build();
-
-
-            DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(mContext, mDefaultBandwidthMeter, new DefaultHttpDataSourceFactory(UIConfig.getUserAgent(), null, 15000, 15000, true));
-            mExoPlayer = new SimpleExoPlayer.Builder(this)
-                    .setMediaSourceFactory(new ProgressiveMediaSource.Factory(upstreamFactory))
-                    .setBandwidthMeter(mDefaultBandwidthMeter)
-                    .setLoadControl(loadControl).build();
-
+            ExoPlayerFactory.with(mContext).builder(ExoPlayerFactory.EXO_VIDEO);
+            mExoPlayer = ExoPlayerFactory.getExoPlayer();
             if (mPlayerListener != null) {
                 mExoPlayer.removeListener(mPlayerListener);
             }
@@ -570,6 +551,9 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
             mExoPlayer.release();
             mExoPlayer = null;
         }
+
+        ExoPlayerFactory.release();
+
         SharePreferenceUtil.setLong(CURRENT_POSITION, 0);
     }
 
