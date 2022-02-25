@@ -82,7 +82,7 @@
     <LinearLayout
         android:id="@+id/ll_history"
         android:layout_width="0dp"
-        android:layout_height="120dp"
+        android:layout_height="110dp"
         android:layout_marginLeft="16dp"
         android:orientation="horizontal"
         android:weightSum="6"
@@ -107,10 +107,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/me_test"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textSize_large" />
+                android:textSize="@dimen/textSize" />
 
         </LinearLayout>
 
@@ -136,10 +136,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/me_exercise"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textSize_large" />
+                android:textSize="@dimen/textSize" />
 
         </LinearLayout>
 
@@ -165,10 +165,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/me_see"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textSize_large" />
+                android:textSize="@dimen/textSize" />
 
         </LinearLayout>
 
@@ -195,10 +195,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/me_listening"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textSize_large" />
+                android:textSize="@dimen/textSize" />
 
         </LinearLayout>
 
@@ -224,10 +224,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/me_read"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textSize_large" />
+                android:textSize="@dimen/textSize" />
 
         </LinearLayout>
 
@@ -254,10 +254,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/me_study"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textSize_large" />
+                android:textSize="@dimen/textSize" />
 
         </LinearLayout>
 
@@ -285,7 +285,7 @@
             <RelativeLayout
                 android:id="@+id/rl_msg"
                 android:layout_width="match_parent"
-                android:layout_height="60dp">
+                android:layout_height="56dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -318,7 +318,7 @@
             <RelativeLayout
                 android:id="@+id/rl_face"
                 android:layout_width="match_parent"
-                android:layout_height="60dp">
+                android:layout_height="56dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -364,7 +364,7 @@
             <RelativeLayout
                 android:id="@+id/rl_me_msg"
                 android:layout_width="match_parent"
-                android:layout_height="60dp">
+                android:layout_height="56dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -397,7 +397,7 @@
             <RelativeLayout
                 android:id="@+id/rl_report"
                 android:layout_width="match_parent"
-                android:layout_height="60dp">
+                android:layout_height="56dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -430,7 +430,7 @@
             <RelativeLayout
                 android:id="@+id/rl_collection"
                 android:layout_width="match_parent"
-                android:layout_height="60dp">
+                android:layout_height="56dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -463,7 +463,7 @@
             <RelativeLayout
                 android:id="@+id/rl_work"
                 android:layout_width="match_parent"
-                android:layout_height="60dp">
+                android:layout_height="56dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -496,7 +496,7 @@
             <RelativeLayout
                 android:id="@+id/rl_back_help"
                 android:layout_width="match_parent"
-                android:layout_height="60dp">
+                android:layout_height="56dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -529,7 +529,7 @@
             <RelativeLayout
                 android:id="@+id/rl_account_manager"
                 android:layout_width="match_parent"
-                android:layout_height="60dp">
+                android:layout_height="56dp">
 
                 <TextView
                     android:layout_width="wrap_content"

@@ -48,6 +48,8 @@ import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnBindViewListener;
 import com.thfw.ui.dialog.listener.OnViewClickListener;
+import com.thfw.ui.voice.tts.TtsHelper;
+import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.InputBoxView;
 
 import org.jetbrains.annotations.NotNull;
@@ -117,6 +119,8 @@ public class DialogRobotFactory {
                     String hint = AnimFileName.getHint(svgaAssets);
 
                     if (!TextUtils.isEmpty(hint)) {
+                        // 语音播放
+                        TtsHelper.getInstance().start(new TtsModel(hint), null);
                         mTvTime = viewHolder.getView(com.thfw.robotheart.R.id.tv_time);
                         mMinuteRunnable = new Runnable() {
                             @Override

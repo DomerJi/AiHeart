@@ -17,6 +17,7 @@
     <style name="AppThemeAnimFade" parent="AppTheme">
         <item name="android:windowAnimationStyle">@style/activityAnimFace</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/black</item>
     </style>
 
     <style name="activityAnimFace">

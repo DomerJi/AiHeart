@@ -6,7 +6,6 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -71,12 +70,13 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
      */
     private static boolean initUserInfo;
     private static boolean initOrganization;
+    private static boolean initUmeng;
     private com.thfw.robotheart.view.TitleBarView mTitleBarView;
     private com.thfw.ui.widget.WeekView mWeekView;
     private com.makeramen.roundedimageview.RoundedImageView mRivAvatar;
     private android.widget.TextView mTvNickname;
     private android.widget.TextView mTvInstitution;
-    private android.widget.RelativeLayout mRlSpecialityTalk;
+    private ConstraintLayout mClSpecialityTalk;
     private android.widget.LinearLayout mLlNavigation;
     private android.widget.LinearLayout mRlRow01;
     private android.widget.LinearLayout mLlTest;
@@ -105,6 +105,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     public static void resetInit() {
         initUserInfo = false;
         initOrganization = false;
+        initUmeng = false;
     }
 
     private static boolean hasAgreedAgreement() {
@@ -129,7 +130,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mRivAvatar = (RoundedImageView) findViewById(R.id.riv_avatar);
         mTvNickname = (TextView) findViewById(R.id.tv_nickname);
         mTvInstitution = (TextView) findViewById(R.id.tv_institution);
-        mRlSpecialityTalk = (RelativeLayout) findViewById(R.id.rl_speciality_talk);
+        mClSpecialityTalk = findViewById(R.id.cl_speciality_talk);
         mLlNavigation = (LinearLayout) findViewById(R.id.ll_navigation);
         mRlRow01 = (LinearLayout) findViewById(R.id.rl_row_01);
         mLlTest = (LinearLayout) findViewById(R.id.ll_test);
@@ -158,7 +159,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mLlHotCall.setOnClickListener(this);
         mClSetting.setOnClickListener(this);
         mClMe.setOnClickListener(this);
-        mRlSpecialityTalk.setOnClickListener(this);
+        mClSpecialityTalk.setOnClickListener(this);
         mMySearch = (MyRobotSearchView) findViewById(R.id.my_search);
         // 搜索控件进入搜索页面
         mMySearch.setOnSearchListener(new MyRobotSearchView.OnSearchListener() {
@@ -206,9 +207,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
         } else {
             // 已登录 初始化用户信息和机构信息
+            initUmeng();
             initUserInfo();
             initOrganization();
-            initUmeng();
             showSVGALogin();
         }
         // 检查版本更新
@@ -313,7 +314,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                             startActivity(new Intent(mContext, ExerciseActivity.class));
                         }
                     });
-        } else if (vId == R.id.rl_speciality_talk) {
+        } else if (vId == R.id.cl_speciality_talk) {
             DialogRobotFactory.createSvgaDialog(MainActivity.this,
                     AnimFileName.TRANSITION_THEME,
                     new DialogRobotFactory.OnSVGACallBack() {
@@ -496,10 +497,14 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     }
 
     private void initUmeng() {
+        if (initUmeng) {
+            return;
+        }
         if (hasAgreedAgreement()) {
             PushAgent.getInstance(this).onAppStart();
             String deviceToken = PushAgent.getInstance(this).getRegistrationId();
             LogUtil.d(TAG, "deviceToken = " + deviceToken);
+            initUmeng = true;
         } else {
             agreementAfterInitUmeng();
         }
@@ -515,6 +520,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             @Override
             public void onSuccess(final String deviceToken) {
                 LogUtil.d(TAG, "deviceToken = " + deviceToken);
+                initUmeng = true;
             }
 
             @Override

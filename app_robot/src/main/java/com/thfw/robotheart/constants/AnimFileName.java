@@ -18,6 +18,30 @@ public class AnimFileName {
     public static final String TRANSITION_THEME = "transition_theme.svga";
     public static final String TRANSITION_TOOL = "transition_tool.svga";
     public static final String TRANSITION_VIDEO = "transition_video.svga";
+
+    /**
+     * 失望表情	登录失败
+     * 休眠表情	长时间无操作
+     * 触摸表情	用户触摸机器人
+     * 倾听表情	用户语音讲话
+     * 打招呼表情	开机（你好，我是小密，给你最贴心的心理服务
+     * 眩晕表情	离开充电底座或桌面
+     * 关机表情	关机
+     * 讲话表情	主题对话、吐槽等模块应用
+     * 唤醒表情	待机状态下，用户点击屏幕
+     * 欢迎表情	登录成功
+     */
+    public static final String EMOJI_CHUMO = "emoji_chumo.svga";
+    public static final String EMOJI_HUANXING = "emoji_huanxing.svga";
+    public static final String EMOJI_KAIJI = "emoji_kaiji.svga";
+    public static final String EMOJI_QINGTING = "emoji_qingting.svga";
+    public static final String EMOJI_SHIWANG = "emoji_shiwang.svga";
+    public static final String EMOJI_SPEECH = "emoji_speech.svga";
+    public static final String EMOJI_WELCOM = "emoji_welcom.svga";
+    public static final String EMOJI_XIUMIAN = "emoji_xiumian.svga";
+    public static final String EMOJI_XUANYUN = "emoji_xuanyun.svga";
+
+
     // 测试 svga
     public static final String TEST_ANGEL = "angel.svga";
     public static final String TEST_ROSE = "rose.svga";
