@@ -111,7 +111,7 @@ public class DialogRobotFactory {
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
                 .setScreenWidthAspect(activity, 1.0f)
                 .setScreenHeightAspect(activity, 1.0f)
-                .setDimAmount(0.5f)
+                .setDimAmount(0.6f)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     SVGAParser parser = new SVGAParser(activity);
