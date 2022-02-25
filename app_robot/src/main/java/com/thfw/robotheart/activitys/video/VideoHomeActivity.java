@@ -19,11 +19,11 @@ import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.VideoEtcTypeAdapter;
 import com.thfw.robotheart.fragments.media.VideoEtcListFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

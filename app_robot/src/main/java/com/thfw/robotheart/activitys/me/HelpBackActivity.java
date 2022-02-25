@@ -11,12 +11,11 @@ import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.help.AboutMeFragment;
 import com.thfw.robotheart.fragments.help.AudioInstructFragment;
 import com.thfw.robotheart.fragments.help.CommonProblemFragment;
-import com.thfw.robotheart.fragments.help.IdeaBackFragment;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.robotheart.activitys.RobotBaseActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +48,6 @@ public class HelpBackActivity extends RobotBaseActivity {
         mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
         mTiProblem = (TabItem) findViewById(R.id.ti_problem);
         mTiInstruct = (TabItem) findViewById(R.id.ti_instruct);
-        mTiBack = (TabItem) findViewById(R.id.ti_back);
         mTiAbout = (TabItem) findViewById(R.id.ti_about);
         mViewPager = (ViewPager2) findViewById(R.id.viewPager);
     }
@@ -67,8 +65,7 @@ public class HelpBackActivity extends RobotBaseActivity {
         HashMap<Integer, Fragment> collectMap = new HashMap<>();
         collectMap.put(0, new CommonProblemFragment());
         collectMap.put(1, new AudioInstructFragment());
-        collectMap.put(2, new IdeaBackFragment());
-        collectMap.put(3, new AboutMeFragment());
+        collectMap.put(2, new AboutMeFragment());
         mViewPager.setAdapter(new FragmentStateAdapter(this) {
             @NonNull
             @NotNull

@@ -28,10 +28,10 @@ import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.ChatAdapter;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

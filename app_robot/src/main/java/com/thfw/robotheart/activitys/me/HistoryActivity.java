@@ -21,6 +21,7 @@ import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.activitys.exercise.ExerciseIngActivity;
 import com.thfw.robotheart.activitys.test.TestDetailActivity;
@@ -29,7 +30,6 @@ import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.HistoryAdapter;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

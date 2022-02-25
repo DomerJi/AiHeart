@@ -6,13 +6,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 abstract class BaseNotification {
-    // This JSONObject is used for constructing the whole request string.
-    protected final JSONObject rootJson = new JSONObject();
-
-
-    // The app master secret
-    protected String appMasterSecret;
-
     // Keys can be set in the root level
     protected static final HashSet<String> ROOT_KEYS = new HashSet<>(Arrays.asList(
             "appkey", "timestamp", "type", "device_tokens",
@@ -20,19 +13,18 @@ abstract class BaseNotification {
             "filter", "production_mode", "feedback",
             "description", "thirdparty_id"
     ));
-
     // Keys can be set in the policy level
     protected static final HashSet<String> POLICY_KEYS = new HashSet<>(Arrays.asList(
             "start_time", "expire_time", "max_send_num"
     ));
+    // This JSONObject is used for constructing the whole request string.
+    protected final JSONObject rootJson = new JSONObject();
+    // The app master secret
+    protected String appMasterSecret;
 
     // Set predefined keys in the rootJson, for extra keys(Android) or customized keys(IOS) please
     // refer to corresponding methods in the subclass.
     public abstract boolean setPredefinedKeyValue(String key, Object value) throws Exception;
-
-    public void setAppMasterSecret(String secret) {
-        appMasterSecret = secret;
-    }
 
     public String getPostBody() {
         return rootJson.toString();
@@ -40,6 +32,10 @@ abstract class BaseNotification {
 
     public final String getAppMasterSecret() {
         return appMasterSecret;
+    }
+
+    public void setAppMasterSecret(String secret) {
+        appMasterSecret = secret;
     }
 
     protected void setProductionMode(Boolean prod) throws Exception {

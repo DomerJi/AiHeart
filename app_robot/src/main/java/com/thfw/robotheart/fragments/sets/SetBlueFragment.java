@@ -28,9 +28,9 @@ import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.adapter.BleAdapter;
 import com.thfw.robotheart.view.CustomRefreshLayout;
-import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.ui.widget.LoadingView;
 
 import org.jetbrains.annotations.NotNull;

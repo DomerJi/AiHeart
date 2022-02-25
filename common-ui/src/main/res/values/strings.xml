@@ -72,6 +72,10 @@
     <string name="set_light">亮度设置</string>
     <string name="set_blue">蓝牙设置</string>
     <string name="set_shutdown">定时关机</string>
+    <string name="set_dormant">休眠设置</string>
+    <string name="set_dormant_switch">自动休眠</string>
+    <string name="set_speech">语音设置</string>
+    <string name="set_speech_switch">语音包随心换</string>
     <string name="set_update">系统更新</string>
 
     <string name="set_volume_system">系统声音</string>

@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.thfw.base.models.CommonProblemModel;
+import com.thfw.base.models.VoiceInstructionModel;
 import com.thfw.robotheart.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,10 +20,10 @@ import java.util.List;
  * Date: 2021/12/9 16:13
  * Describe:Todo
  */
-public class CommonProblemAdapter extends BaseAdapter<CommonProblemModel, CommonProblemAdapter.ProblemHolder> {
+public class VoiceInstructionAdapter extends BaseAdapter<VoiceInstructionModel, VoiceInstructionAdapter.ProblemHolder> {
 
 
-    public CommonProblemAdapter(List<CommonProblemModel> dataList) {
+    public VoiceInstructionAdapter(List<VoiceInstructionModel> dataList) {
         super(dataList);
     }
 
@@ -31,13 +31,13 @@ public class CommonProblemAdapter extends BaseAdapter<CommonProblemModel, Common
     @NotNull
     @Override
     public ProblemHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        return new ProblemHolder(inflate(R.layout.item_common_problem, parent));
+        return new ProblemHolder(inflate(R.layout.item_voice_instruction, parent));
     }
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull ProblemHolder holder, int position) {
-        String question = mDataList.get(position).getQuestion();
-        holder.mTvTitle.setText(question);
+        VoiceInstructionModel model = mDataList.get(position);
+        holder.mTvTitle.setText("指令：" + model.getRemark() + "\n功能：" + model.getContent());
     }
 
     public class ProblemHolder extends RecyclerView.ViewHolder {

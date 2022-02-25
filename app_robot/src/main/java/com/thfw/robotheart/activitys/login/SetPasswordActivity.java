@@ -6,11 +6,11 @@ import android.widget.FrameLayout;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.login.SetPasswordCodeFragment;
 import com.thfw.robotheart.fragments.login.SetPasswordOriginFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.user.login.UserManager;
 
 /**

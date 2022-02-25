@@ -16,10 +16,10 @@ import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.constants.AgreeOn;
-import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

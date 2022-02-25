@@ -12,9 +12,9 @@ import com.google.android.material.tabs.TabLayout;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.me.CollectFragment;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.robotheart.activitys.RobotBaseActivity;
 
 import org.jetbrains.annotations.NotNull;
 

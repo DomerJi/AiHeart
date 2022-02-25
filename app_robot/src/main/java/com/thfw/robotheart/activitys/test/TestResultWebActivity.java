@@ -26,13 +26,13 @@ import com.thfw.base.presenter.TestPresenter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.activitys.talk.AiTalkActivity;
 import com.thfw.robotheart.activitys.text.BookDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.TestRecommendAdapter;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.ArrayList;

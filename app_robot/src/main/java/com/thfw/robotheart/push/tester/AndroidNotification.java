@@ -18,28 +18,6 @@ abstract class AndroidNotification extends BaseNotification {
             "sound", "after_open", "url", "activity", "custom"
     ));
 
-    public enum DisplayType {
-        NOTIFICATION {
-            public String getValue() {
-                return "notification";
-            }
-        },//通知:消息送达到用户设备后，由友盟SDK接管处理并在通知栏上显示通知内容。
-        MESSAGE {
-            public String getValue() {
-                return "message";
-            }
-        };//消息:消息送达到用户设备后，消息内容透传给应用自身进行解析处理。
-
-        public abstract String getValue();
-    }
-
-    public enum AfterOpenAction {
-        go_app,//打开应用
-        go_url,//跳转到URL
-        go_activity,//打开特定的activity
-        go_custom//用户自定义内容。
-    }
-
     // Set key/value in the rootJson, for the keys can be set please see ROOT_KEYS, PAYLOAD_KEYS,
     // BODY_KEYS and POLICY_KEYS.
     @Override
@@ -227,6 +205,28 @@ abstract class AndroidNotification extends BaseNotification {
 
     public void setCustomField(JSONObject custom) throws Exception {
         setPredefinedKeyValue("custom", custom);
+    }
+
+    public enum DisplayType {
+        NOTIFICATION {
+            public String getValue() {
+                return "notification";
+            }
+        },//通知:消息送达到用户设备后，由友盟SDK接管处理并在通知栏上显示通知内容。
+        MESSAGE {
+            public String getValue() {
+                return "message";
+            }
+        };//消息:消息送达到用户设备后，消息内容透传给应用自身进行解析处理。
+
+        public abstract String getValue();
+    }
+
+    public enum AfterOpenAction {
+        go_app,//打开应用
+        go_url,//跳转到URL
+        go_activity,//打开特定的activity
+        go_custom//用户自定义内容。
     }
 
 }

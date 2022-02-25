@@ -6,8 +6,8 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.robotheart.R;
-import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
+import com.thfw.robotheart.view.TitleRobotView;
 
 public class PrivateSetActivity extends RobotBaseActivity {
 

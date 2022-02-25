@@ -45,6 +45,7 @@ import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
 import com.thfw.robotheart.activitys.talk.AndroidBug5497Workaround;
 import com.thfw.robotheart.activitys.talk.SoftKeyBoardListener;
@@ -58,7 +59,6 @@ import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.robotheart.view.boom.ExplosionField;
 import com.thfw.robotheart.view.fall.FallObject;
 import com.thfw.robotheart.view.fall.FallingView;
-import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -75,6 +75,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
 
 
     public static final int REQUEST_CODE = 1;
+    private static final String KEY_USED = "key.used";
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.recyclerview.widget.RecyclerView mRvList;
     private android.widget.RelativeLayout mRlSend;
@@ -95,7 +96,6 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
     private android.widget.ImageView mIvLiziText;
     private boolean mIsAchieve;
     private int countDownFinish;
-    private static final String KEY_USED = "key.used";
 
     public static void startActivity(Context context, int id, boolean used) {
         ((Activity) context).startActivityForResult(new Intent(context, ExerciseIngActivity.class)

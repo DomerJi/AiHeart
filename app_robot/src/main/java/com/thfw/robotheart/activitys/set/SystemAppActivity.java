@@ -17,8 +17,8 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
-import com.thfw.robotheart.service.AutoUpdateService;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
+import com.thfw.robotheart.service.AutoUpdateService;
 
 import java.math.BigDecimal;
 

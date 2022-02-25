@@ -15,16 +15,17 @@ import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.sets.SetBlueFragment;
+import com.thfw.robotheart.fragments.sets.SetDormantFragment;
 import com.thfw.robotheart.fragments.sets.SetLightFragment;
 import com.thfw.robotheart.fragments.sets.SetNetFragment;
-import com.thfw.robotheart.fragments.sets.SetShutdownFragment;
+import com.thfw.robotheart.fragments.sets.SetSpeechFragment;
 import com.thfw.robotheart.fragments.sets.SetUpdateFragment;
 import com.thfw.robotheart.fragments.sets.SetVolumeFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.robotheart.activitys.RobotBaseActivity;
 
 public class SettingActivity extends RobotBaseActivity {
 
@@ -37,8 +38,9 @@ public class SettingActivity extends RobotBaseActivity {
     private android.widget.TextView mTvSetVolume;
     private android.widget.TextView mTvSetLight;
     private android.widget.TextView mTvSetBlue;
-    private android.widget.TextView mTvSetShutdown;
     private android.widget.TextView mTvSetUpdate;
+    private android.widget.TextView mTvSetSpeech;
+    private android.widget.TextView mTvSetDormant;
     private View[] mTabs;
 
     private Fragment mFragment;
@@ -63,12 +65,13 @@ public class SettingActivity extends RobotBaseActivity {
         mLlNavigation = (LinearLayout) findViewById(R.id.ll_navigation);
         mTvSetNet = (TextView) findViewById(R.id.tv_set_net);
         mTvSetVolume = (TextView) findViewById(R.id.tv_set_volume);
+        mTvSetSpeech = (TextView) findViewById(R.id.tv_set_speech);
         mTvSetLight = (TextView) findViewById(R.id.tv_set_light);
         mTvSetBlue = (TextView) findViewById(R.id.tv_set_blue);
-        mTvSetShutdown = (TextView) findViewById(R.id.tv_set_shutdown);
+        mTvSetDormant = (TextView) findViewById(R.id.tv_set_dormant);
         mTvSetUpdate = (TextView) findViewById(R.id.tv_set_update);
         mRlSetUpdate = (RelativeLayout) findViewById(R.id.rl_set_update);
-        mTabs = new View[]{mTvSetNet, mTvSetVolume, mTvSetLight, mTvSetBlue, mTvSetShutdown, mRlSetUpdate};
+        mTabs = new View[]{mTvSetNet, mTvSetVolume, mTvSetSpeech, mTvSetLight, mTvSetBlue, mTvSetDormant, mRlSetUpdate};
     }
 
     @Override
@@ -77,9 +80,11 @@ public class SettingActivity extends RobotBaseActivity {
         FragmentLoader mLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
         mLoader.add(R.id.tv_set_net, new SetNetFragment());
         mLoader.add(R.id.tv_set_volume, new SetVolumeFragment());
+        mLoader.add(R.id.tv_set_speech, new SetSpeechFragment());
         mLoader.add(R.id.tv_set_light, new SetLightFragment());
         mLoader.add(R.id.tv_set_blue, new SetBlueFragment());
-        mLoader.add(R.id.tv_set_shutdown, new SetShutdownFragment());
+        mLoader.add(R.id.tv_set_dormant, new SetDormantFragment());
+//        mLoader.add(R.id.tv_set_shutdown, new SetShutdownFragment());
         mLoader.add(R.id.rl_set_update, new SetUpdateFragment());
 
         View.OnClickListener onClickListener = new View.OnClickListener() {

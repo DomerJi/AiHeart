@@ -11,9 +11,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.me.TaskFragment;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.robotheart.activitys.RobotBaseActivity;
 
 import org.jetbrains.annotations.NotNull;
 

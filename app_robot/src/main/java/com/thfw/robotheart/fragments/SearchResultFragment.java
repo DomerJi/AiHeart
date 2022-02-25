@@ -15,6 +15,7 @@ import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.SearchActivity;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.activitys.exercise.ExerciseDetailsActivity;
@@ -24,7 +25,6 @@ import com.thfw.robotheart.activitys.text.BookDetailActivity;
 import com.thfw.robotheart.activitys.text.BookIdeoDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.SearchAdapter;
-import com.thfw.robotheart.activitys.RobotBaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;

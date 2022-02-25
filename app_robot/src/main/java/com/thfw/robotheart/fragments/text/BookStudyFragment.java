@@ -12,10 +12,10 @@ import com.thfw.base.models.BookStudyItemModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.BookPresenter;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.text.BookIdeoDetailActivity;
 import com.thfw.robotheart.adapter.BookStudyListAdapter;
 import com.thfw.robotheart.util.PageHelper;
-import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

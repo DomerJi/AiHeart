@@ -16,8 +16,8 @@ import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
-import com.thfw.robotheart.activitys.set.SystemAppActivity;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
+import com.thfw.robotheart.activitys.set.SystemAppActivity;
 
 /**
  * Author:pengs
@@ -26,6 +26,7 @@ import com.thfw.robotheart.activitys.RobotBaseFragment;
  */
 public class SetUpdateFragment extends RobotBaseFragment {
 
+    public static final String SET_AUTO_UPDATE_BOOLEAN = "set.auto_update";
     private RelativeLayout mRlClickUpdate;
     private TextView mTvCheckTime;
     private TextView mTvNewVersionHint;
@@ -35,8 +36,6 @@ public class SetUpdateFragment extends RobotBaseFragment {
     private TextView mTvCurrentVersion;
     private RelativeLayout mRlOriginCode;
     private TextView mTvOriginCode;
-
-    public static final String SET_AUTO_UPDATE_BOOLEAN = "set.auto_update";
 
     @Override
     public int getContentView() {

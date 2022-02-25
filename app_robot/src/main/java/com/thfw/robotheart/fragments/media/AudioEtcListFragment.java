@@ -14,9 +14,9 @@ import com.thfw.base.presenter.AudioPresenter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HourChangeHelper;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.adapter.AudioEtcListAdapter;
-import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

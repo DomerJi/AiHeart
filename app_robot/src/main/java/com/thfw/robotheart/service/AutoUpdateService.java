@@ -23,17 +23,14 @@ import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 
 public class AutoUpdateService extends IntentService {
-    private static final String ACTION_UPLOAD_IMG = "com.thfw.robotheart.service.action.AUTO_LOAD_APK";
     public static final String ACTION_CONTROL = "com.thfw.robotheart.service.action.CMD_CONTROL";
-
-    private static final String TAG = AutoUpdateService.class.getSimpleName();
     public static final String AFTER_TIME = "after.install";
-
+    private static final String ACTION_UPLOAD_IMG = "com.thfw.robotheart.service.action.AUTO_LOAD_APK";
+    private static final String TAG = AutoUpdateService.class.getSimpleName();
     private static Context mContext;
 
-    public static class CmdControl {
-        public static final int PLAY = 1;
-        public static final int PAUSE = 0;
+    public AutoUpdateService() {
+        super("AutoUpdateService");
     }
 
     public static void startUpdate(Context context) {
@@ -103,7 +100,7 @@ public class AutoUpdateService extends IntentService {
                     }
                 }
             }
-        });
+        }, false);
     }
 
     /**
@@ -113,11 +110,6 @@ public class AutoUpdateService extends IntentService {
      */
     public static boolean isLimitTimeInstall() {
         return (System.currentTimeMillis() - SharePreferenceUtil.getLong(AFTER_TIME, 0)) > 2 * 60 * 60 * 1000;
-    }
-
-
-    public AutoUpdateService() {
-        super("AutoUpdateService");
     }
 
     @Override
@@ -228,5 +220,10 @@ public class AutoUpdateService extends IntentService {
     public void onDestroy() {
         super.onDestroy();
         Log.e(TAG, "onDestroy");
+    }
+
+    public static class CmdControl {
+        public static final int PLAY = 1;
+        public static final int PAUSE = 0;
     }
 }

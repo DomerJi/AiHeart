@@ -9,9 +9,9 @@ import com.thfw.base.models.ExerciseModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.UserToolPresenter;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.ExerciseAdapter;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

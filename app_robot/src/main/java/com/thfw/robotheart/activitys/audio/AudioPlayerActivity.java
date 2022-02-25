@@ -58,12 +58,12 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.AudioService;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.AudioItemAdapter;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.util.AudioModel;
 import com.thfw.robotheart.util.ExoPlayerFactory;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
@@ -83,6 +83,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
 
     private static final String KEY_RECOMMEND = "key.recommend";
+    private static TaskMusicEtcModel mStaticTaskEtcModel;
     boolean flDurationEnd = true;
     private StyledPlayerView mAudioView;
     private ImageView mIvBlurBg;
@@ -134,7 +135,6 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private WindowManager.LayoutParams mLayoutParams;
     private boolean isTask;
     private int mMusicId;
-    private static TaskMusicEtcModel mStaticTaskEtcModel;
     private ArrayList<TaskMusicEtcModel.MusicListBean> mTaskEtcModel;
 
     public static void startActivity(Context context, AudioEtcModel audioEtcModel) {

@@ -35,14 +35,13 @@ public class LoginActivity extends BaseActivity {
     public static final int BY_FACE = 5;
 
     public static final String KEY_PHONE_NUMBER = "phone_number";
+    // 登录后播放唤醒动画
+    public static final String KEY_LOGIN_BEGIN = "login.begin";
     public static String INPUT_PHONE = "";
     private int type;
     private FragmentLoader fragmentLoader;
     private AlertDialog mDialog;
     private boolean mOpenCvInited = false;
-    // 登录后播放唤醒动画
-    public static final String KEY_LOGIN_BEGIN = "login.begin";
-
 
     public static void startActivity(Context context, int type) {
         context.startActivity(new Intent(context, LoginActivity.class).putExtra(KEY_DATA, type));

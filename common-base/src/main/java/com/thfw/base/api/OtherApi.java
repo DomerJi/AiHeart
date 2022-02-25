@@ -1,6 +1,9 @@
 package com.thfw.base.api;
 
+import com.thfw.base.models.AboutUsModel;
+import com.thfw.base.models.CommonProblemModel;
 import com.thfw.base.models.HotCallModel;
+import com.thfw.base.models.VoiceInstructionModel;
 import com.thfw.base.net.HttpResult;
 
 import java.util.List;
@@ -17,9 +20,9 @@ import retrofit2.http.POST;
  * Describe:热线电话/常见问题
  */
 public interface OtherApi {
+
     /**
      * 【热线电话】
-     * type 1-获取心理文章分类     2-获取思政文章分类
      *
      * @param params
      * @return
@@ -28,5 +31,37 @@ public interface OtherApi {
     @POST("commonweal")
     Observable<HttpResult<List<HotCallModel>>> getHotPhoneList(@FieldMap Map<String, Object> params);
 
+
+    /**
+     * 【常见问题】
+     *
+     * @param params
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("question_answer")
+    Observable<HttpResult<List<CommonProblemModel>>> getQuestionAnswer(@FieldMap Map<String, Object> params);
+
+
+    /**
+     * 【语音指令】
+     *
+     * @param params
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("voice_instruction")
+    Observable<HttpResult<List<VoiceInstructionModel>>> getVoiceInstruction(@FieldMap Map<String, Object> params);
+
+
+    /**
+     * 【关于我们】
+     *
+     * @param params
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("about_us")
+    Observable<HttpResult<AboutUsModel>> getAboutUs(@FieldMap Map<String, Object> params);
 
 }

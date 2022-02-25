@@ -107,6 +107,10 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         initOrganization = false;
     }
 
+    private static boolean hasAgreedAgreement() {
+        return MyPreferences.getInstance(MyApplication.getApp()).hasAgreePrivacyAgreement();
+    }
+
     @Override
     public int getContentView() {
         return R.layout.activity_main_home;
@@ -174,7 +178,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         setMsg(100);
     }
 
-
     @Override
     public void initData() {
         // 日期、星期连续点击10次进入配置页面（机构id设置）
@@ -236,7 +239,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             }
         });
     }
-
 
     @Override
     protected void onPause() {
@@ -434,7 +436,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         }
     }
 
-
     /**
      * 查询用户信息
      */
@@ -502,10 +503,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         } else {
             agreementAfterInitUmeng();
         }
-    }
-
-    private static boolean hasAgreedAgreement() {
-        return MyPreferences.getInstance(MyApplication.getApp()).hasAgreePrivacyAgreement();
     }
 
     /**

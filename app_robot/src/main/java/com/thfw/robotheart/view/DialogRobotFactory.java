@@ -65,6 +65,10 @@ public class DialogRobotFactory {
     private static int minute;
     private static Runnable mMinuteRunnable;
 
+    public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack) {
+        return createCustomDialog(activity, onViewCallBack, true);
+    }
+
     /**
      * 通用弹框
      *
@@ -72,12 +76,13 @@ public class DialogRobotFactory {
      * @param onViewCallBack
      * @return
      */
-    public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack) {
+    public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack, boolean cancleOutside) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_custom_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
                 .addOnClickListener(R.id.tv_left, R.id.tv_right)
                 .setScreenWidthAspect(activity, 0.4f)
+                .setCancelableOutside(cancleOutside)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     TextView mTvTitle = viewHolder.getView(R.id.tv_title);
@@ -168,16 +173,17 @@ public class DialogRobotFactory {
                         public void onFinished() {
                             LogUtil.d(TAG, "onFinished");
                             onViewCallBack.callBack(svgaImageView);
-                            if (mSvgaTDialog != null) {
-                                mSvgaTDialog.dismiss();
-                                mSvgaTDialog = null;
-
-                            }
                             if (mTvTime != null && mMinuteRunnable != null) {
+                                mTvTime.setText("0S");
                                 mTvTime.removeCallbacks(mMinuteRunnable);
                                 mTvTime = null;
                                 mMinuteRunnable = null;
                             }
+                            if (mSvgaTDialog != null) {
+                                mSvgaTDialog.dismiss();
+                                mSvgaTDialog = null;
+                            }
+
                         }
                     });
                 })
