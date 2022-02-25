@@ -121,11 +121,11 @@ public class AutoUpdateService extends IntentService {
                 final int cmd = intent.getIntExtra(ACTION_CONTROL, -1);
                 DownloadTask task = Beta.getStrategyTask();
                 LogUtil.d(TAG, "onHandleIntent cmd = " + cmd);
-                LogUtil.d(TAG, "onHandleIntent task.status = " + task.getStatus());
                 if (task == null) {
                     Log.e(TAG, "task == null");
                     return;
                 }
+                LogUtil.d(TAG, "onHandleIntent task.status = " + task.getStatus());
                 switch (cmd) {
                     case CmdControl.PLAY:
                         if (task.getStatus() == DownloadTask.COMPLETE) {

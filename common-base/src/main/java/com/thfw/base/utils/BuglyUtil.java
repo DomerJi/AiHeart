@@ -100,9 +100,10 @@ public class BuglyUtil {
                 int versionCode = Util.getAppVersionCode(ContextApp.get());
                 if (Beta.getUpgradeInfo().versionCode <= versionCode) {
                     BuglyUtil.requestUpgradeStateListener.onUpgradeNoVersion(false);
-                    onBetaCheckUpgrade();
+                    BuglyUtil.requestUpgradeStateListener = null;
                 } else {
                     BuglyUtil.requestUpgradeStateListener.onVersion(true);
+                    BuglyUtil.requestUpgradeStateListener = null;
                 }
             } else {
                 onBetaCheckUpgrade();
@@ -116,8 +117,10 @@ public class BuglyUtil {
             Beta.checkUpgrade(true, true);
         } catch (Exception e) {
             LogUtil.d(TAG, "checkUpgrade e = " + e.getMessage());
-            BuglyUtil.requestUpgradeStateListener.onVersion(false);
-            BuglyUtil.requestUpgradeStateListener = null;
+            if (BuglyUtil.requestUpgradeStateListener != null) {
+                BuglyUtil.requestUpgradeStateListener.onVersion(false);
+                BuglyUtil.requestUpgradeStateListener = null;
+            }
         }
     }
 }
