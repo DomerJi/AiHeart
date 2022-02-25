@@ -1,6 +1,5 @@
 package com.thfw.base.utils;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.tencent.bugly.Bugly;
@@ -24,10 +23,12 @@ public class BuglyUtil {
     public static void init(String appKey) {
         Beta.autoCheckUpgrade = false;//自动检查更新开关 true表示初始化时自动检查升级; false表示不会自动检查升级,需要手动调用Beta.checkUpgrade()方法;
         Beta.autoInit = true;//自动初始化开关
+        // 设置升级检查周期为60s(默认检查周期为0s)，60s内SDK不重复向后台请求策略);
+        Beta.upgradeCheckPeriod = 60 * 1000;
         Beta.upgradeListener = new UpgradeListener() {
             @Override
             public void onUpgrade(int ret, UpgradeInfo strategy, boolean isManual, boolean isSilence) {
-                Log.e("upgradeListener", "jsp UpgradeInfo == " + strategy);
+                Log.e(TAG, "jsp UpgradeInfo == " + strategy);
 
                 if (strategy != null) {
                     if (BuglyUtil.requestUpgradeStateListener != null) {
@@ -94,31 +95,29 @@ public class BuglyUtil {
 
     public static void requestNewVersion(SimpleUpgradeStateListener simpleUpgradeStateListener) {
         BuglyUtil.requestUpgradeStateListener = simpleUpgradeStateListener;
-        if (BuglyUtil.requestUpgradeStateListener == null) {
-            return;
-        }
-
-        if (Beta.getUpgradeInfo() != null) {
-            String version = Util.getAppVersion(ContextApp.get());
-            LogUtil.d("requestNewVersion = ");
-            if (!TextUtils.isEmpty(version) && version.equals(Beta.getUpgradeInfo().versionName)) {
-                BuglyUtil.requestUpgradeStateListener.onUpgradeNoVersion(false);
-                BuglyUtil.requestUpgradeStateListener = null;
-            } else {
-                BuglyUtil.requestUpgradeStateListener.onVersion(true);
-                BuglyUtil.requestUpgradeStateListener = null;
-            }
-            return;
-        }
-
         if (BuglyUtil.requestUpgradeStateListener != null) {
-            try {
-                Beta.checkUpgrade(true, true);
-            } catch (Exception e) {
-                LogUtil.d("checkUpgrade", e.getMessage());
-                BuglyUtil.requestUpgradeStateListener.onVersion(false);
-                BuglyUtil.requestUpgradeStateListener = null;
+            if (Beta.getUpgradeInfo() != null) {
+                int versionCode = Util.getAppVersionCode(ContextApp.get());
+                if (Beta.getUpgradeInfo().versionCode <= versionCode) {
+                    BuglyUtil.requestUpgradeStateListener.onUpgradeNoVersion(false);
+                    onBetaCheckUpgrade();
+                } else {
+                    BuglyUtil.requestUpgradeStateListener.onVersion(true);
+                }
+            } else {
+                onBetaCheckUpgrade();
             }
+        }
+    }
+
+    private static void onBetaCheckUpgrade() {
+        try {
+            LogUtil.d(TAG, "onBetaCheckUpgrade ++++++++++++++++++++");
+            Beta.checkUpgrade(true, true);
+        } catch (Exception e) {
+            LogUtil.d(TAG, "checkUpgrade e = " + e.getMessage());
+            BuglyUtil.requestUpgradeStateListener.onVersion(false);
+            BuglyUtil.requestUpgradeStateListener = null;
         }
     }
 }

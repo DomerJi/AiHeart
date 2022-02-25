@@ -98,6 +98,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private ConstraintLayout mClSetting;
     private TextView mTvDotCount;
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    private TextView mTvDotHint;
 
     /**
      * 重新登录后重新获取用户相关信息
@@ -139,6 +140,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mLlTalk = (LinearLayout) findViewById(R.id.ll_talk);
         mLlVideo = (LinearLayout) findViewById(R.id.ll_video);
         mRlRow03 = (LinearLayout) findViewById(R.id.rl_row_03);
+        mTvDotHint = findViewById(R.id.tv_set_dot_hint);
         mLlExercise = (LinearLayout) findViewById(R.id.ll_exercise);
         mLlBook = (LinearLayout) findViewById(R.id.ll_book);
         mLlStudy = (LinearLayout) findViewById(R.id.ll_study);
@@ -259,13 +261,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 if (EmptyUtil.isEmpty(MainActivity.this)) {
                     return;
                 }
-                if (isMeResumed()) {
-                    TextView view = findViewById(R.id.tv_set_dot_hint);
-                    if (view == null) {
-                        return;
-                    }
-                    view.setText("新版本");
-                    view.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
+                if (isMeResumed() && mTvDotHint != null) {
+                    mTvDotHint.setText("新版本");
+                    mTvDotHint.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
                     if (hasNewVersion) {
                         AutoUpdateService.startUpdate(mContext);
                     }

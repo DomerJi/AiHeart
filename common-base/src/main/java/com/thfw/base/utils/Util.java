@@ -243,6 +243,17 @@ public class Util {
 
     }
 
+    public static int getAppVersionCode(Context context) {
+        try {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo p1 = pm.getPackageInfo(context.getPackageName(), 0);
+            return p1.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 1;
+    }
+
     /**
      * 是否系统app
      *

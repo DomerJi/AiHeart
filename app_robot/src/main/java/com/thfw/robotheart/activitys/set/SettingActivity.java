@@ -141,4 +141,10 @@ public class SettingActivity extends RobotBaseActivity {
             }
         });
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        BuglyUtil.requestNewVersion(null);
+    }
 }

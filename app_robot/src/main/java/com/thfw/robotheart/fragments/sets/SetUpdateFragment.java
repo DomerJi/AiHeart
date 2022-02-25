@@ -82,6 +82,7 @@ public class SetUpdateFragment extends RobotBaseFragment {
         super.onVisible(isVisible);
 
         if (!isVisible) {
+            BuglyUtil.requestNewVersion(null);
             return;
         }
 
@@ -90,10 +91,7 @@ public class SetUpdateFragment extends RobotBaseFragment {
             public void onVersion(boolean hasNewVersion) {
                 super.onVersion(hasNewVersion);
                 Log.d("requestNewVersion", "hasNewVersion = " + hasNewVersion);
-                if (EmptyUtil.isEmpty(getActivity())) {
-                    return;
-                }
-                if (mTvNewVersionHint == null) {
+                if (EmptyUtil.isEmpty(getActivity()) || mTvNewVersionHint == null) {
                     return;
                 }
                 mTvNewVersionHint.setText("新");
@@ -108,5 +106,11 @@ public class SetUpdateFragment extends RobotBaseFragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        BuglyUtil.requestNewVersion(null);
     }
 }

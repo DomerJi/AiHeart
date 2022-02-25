@@ -77,11 +77,11 @@ public class AboutMeFragment extends RobotBaseFragment<OtherPresenter> implement
             @Override
             public void onVersion(boolean hasNewVersion) {
                 super.onVersion(hasNewVersion);
+                LoadingDialog.hide();
                 Log.d("requestNewVersion", "hasNewVersion = " + hasNewVersion);
                 if (EmptyUtil.isEmpty(AboutMeFragment.this)) {
                     return;
                 }
-                LoadingDialog.hide();
                 if (hasNewVersion) {
                     startActivity(new Intent(mContext, SystemAppActivity.class));
                 } else {
@@ -99,6 +99,7 @@ public class AboutMeFragment extends RobotBaseFragment<OtherPresenter> implement
     @Override
     public void onDestroy() {
         super.onDestroy();
+        BuglyUtil.requestNewVersion(null);
         LoadingDialog.hide();
     }
 }
