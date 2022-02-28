@@ -1,6 +1,5 @@
 package com.thfw.robotheart.fragments.sets;
 
-import android.animation.ArgbEvaluator;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -11,6 +10,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
+import com.thfw.ui.widget.BrightnessHelper;
 
 /**
  * Author:pengs
@@ -19,8 +19,6 @@ import com.thfw.robotheart.activitys.RobotBaseFragment;
  */
 public class SetLightFragment extends RobotBaseFragment {
 
-    // 渐变色计算类
-    final ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private RelativeLayout mRlTop;
     private Switch mSwitchAllLight;
     private RoundedImageView mRivLight;
@@ -52,11 +50,16 @@ public class SetLightFragment extends RobotBaseFragment {
     @Override
     public void initData() {
 
+        BrightnessHelper mBrightnessHelper = new BrightnessHelper(mContext);
         // 亮度
         mSbHintLight.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 textProgressChanged(progress, mTvHintLightProgress, mSbHintLight);
+                if (fromUser) {
+                    mBrightnessHelper.setBrightness(progress / 100f, getActivity());
+                }
+
             }
 
             @Override
@@ -71,6 +74,9 @@ public class SetLightFragment extends RobotBaseFragment {
         });
 
 
+        mSbHintLight.setProgress((int) (mBrightnessHelper.getBrightness() * 100));
+
+
     }
 
     protected void textProgressChanged(int progress, TextView textProgress, SeekBar seekBar) {
@@ -83,10 +89,6 @@ public class SetLightFragment extends RobotBaseFragment {
             }
             lp.leftMargin = leftMargin;
             textProgress.setLayoutParams(lp);
-            float f = (progress * 1f / 100);
-            mRivLight.setColorFilter((int) argbEvaluator.evaluate(f,
-                    getResources().getColor(R.color.black_65), getResources().getColor(R.color.colorRobotFore)));
-//            mRivLight.setAlpha(progress * 1f / 100);
         });
     }
 
@@ -94,6 +96,5 @@ public class SetLightFragment extends RobotBaseFragment {
     public void onResume() {
         super.onResume();
         textProgressChanged(mSbHintLight.getProgress(), mTvHintLightProgress, mSbHintLight);
-
     }
 }

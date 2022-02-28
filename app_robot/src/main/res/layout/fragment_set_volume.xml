@@ -146,7 +146,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="8dp"
-            android:text="@string/set_volume_hint"
+            android:text="@string/set_volume_music"
             android:textColor="@color/white"
             android:textSize="@dimen/textSize_large" />
 

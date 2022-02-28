@@ -661,7 +661,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         brightness = mLayoutParams.screenBrightness;
         if (brightness == -1) {
             //一开始是默认亮度的时候，获取系统亮度，计算比例值
-            brightness = mBrightnessHelper.getBrightness() / 255f;
+            brightness = mBrightnessHelper.getBrightness();
         }
     }
 

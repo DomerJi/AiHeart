@@ -91,6 +91,7 @@ public class SearchResultFragment extends RobotBaseFragment {
                 switch (type) {
                     case SearchResultModel.TYPE_TEXT:
                         BookDetailActivity.startActivity(mContext, resultBean.getId());
+                        break;
                     case SearchResultModel.TYPE_IDEO_TEXT:
                         BookIdeoDetailActivity.startActivity(mContext, resultBean.getId());
                         break;

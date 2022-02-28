@@ -169,6 +169,14 @@ public class VideoGestureHelper {
             }
         }
 
+        @Override
+        public void onLongPress(MotionEvent e) {
+            Log.d(TAG, "onShowPress: ");
+            super.onLongPress(e);
+            if (mVideoGestureListener != null) {
+                mVideoGestureListener.onLongPress(e);
+            }
+        }
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {

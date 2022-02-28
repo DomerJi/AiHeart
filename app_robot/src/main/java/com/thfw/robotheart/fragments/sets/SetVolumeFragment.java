@@ -1,5 +1,12 @@
 package com.thfw.robotheart.fragments.sets;
 
+import android.app.NotificationManager;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.media.AudioManager;
+import android.os.Build;
+import android.provider.Settings;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -33,6 +40,10 @@ public class SetVolumeFragment extends RobotBaseFragment {
     private LinearLayout mLlSeekbarBtnVolume;
     private TextView mTvBtnVolumeProgress;
     private Runnable mUiRunnable;
+    private int maxMusicVolume;
+    private int maxSystemVolume;
+    private int maxNotificationVolume;
+    private AudioManager mAudioManager;
 
     @Override
     public int getContentView() {
@@ -47,28 +58,18 @@ public class SetVolumeFragment extends RobotBaseFragment {
     @Override
     public void initView() {
 
+        //初始化获取音量属性
+        mAudioManager = (AudioManager) getActivity().getSystemService(Service.AUDIO_SERVICE);
+        maxMusicVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);// 媒体
+        maxSystemVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);// 系统
+        maxNotificationVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION);// 通知
+
+
         mSwitchAllVolume = (Switch) findViewById(R.id.switch_all_volume);
         mLlSeekbarSystemVolume = (LinearLayout) findViewById(R.id.ll_seekbar_system_volume);
         mTvSystemVolumeProgress = (TextView) findViewById(R.id.tv_system_volume_progress);
         mSbSystemVolume = (SeekBar) findViewById(R.id.sb_system_volume);
         mSwitchSysetmVolume = (Switch) findViewById(R.id.switch_sysetm_volume);
-        // 系统音量
-        mSbSystemVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textProgressChanged(progress, mTvSystemVolumeProgress, mSbSystemVolume);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
 
 
         mLlSeekbarHintVolume = (LinearLayout) findViewById(R.id.ll_seekbar_hint_volume);
@@ -76,47 +77,11 @@ public class SetVolumeFragment extends RobotBaseFragment {
         mSbHintVolume = (SeekBar) findViewById(R.id.sb_hint_volume);
         mSwitchHintVolume = (Switch) findViewById(R.id.switch_hint_volume);
 
-        // 提示音量
-        mSbHintVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textProgressChanged(progress, mTvHintVolumeProgress, mSbHintVolume);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-
         mSbBtnVolume = (SeekBar) findViewById(R.id.sb_btn_volume);
         mSwitchBtnVolume = (Switch) findViewById(R.id.switch_btn_volume);
         mLlSeekbarBtnVolume = (LinearLayout) findViewById(R.id.ll_seekbar_btn_volume);
         mTvBtnVolumeProgress = (TextView) findViewById(R.id.tv_btn_volume_progress);
 
-        // 提示音量
-        mSbBtnVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                textProgressChanged(progress, mTvBtnVolumeProgress, mSbBtnVolume);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
 
     }
 
@@ -139,6 +104,82 @@ public class SetVolumeFragment extends RobotBaseFragment {
         textProgressChanged(mSbSystemVolume.getProgress(), mTvSystemVolumeProgress, mSbSystemVolume);
         textProgressChanged(mSbHintVolume.getProgress(), mTvHintVolumeProgress, mSbHintVolume);
         textProgressChanged(mSbBtnVolume.getProgress(), mTvBtnVolumeProgress, mSbBtnVolume);
+
+
+        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !notificationManager.isNotificationPolicyAccessGranted()) {
+            startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
+            return;
+        }
+
+        // 系统音量
+        mSbSystemVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                textProgressChanged(progress, mTvSystemVolumeProgress, mSbSystemVolume);
+                if (fromUser) {
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, maxSystemVolume * progress / 100, AudioManager.FLAG_PLAY_SOUND);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+        // 媒体音量
+        mSbHintVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                textProgressChanged(progress, mTvHintVolumeProgress, mSbHintVolume);
+                if (fromUser) {
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxMusicVolume * progress / 100, AudioManager.FLAG_PLAY_SOUND);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+        // 按键音量
+        mSbBtnVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                textProgressChanged(progress, mTvBtnVolumeProgress, mSbBtnVolume);
+                if (fromUser) {
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, maxNotificationVolume * progress / 100, AudioManager.FLAG_PLAY_SOUND);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        mSbSystemVolume.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) * 100 / maxSystemVolume);
+        mSbHintVolume.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC) * 100 / maxMusicVolume);
+        mSbBtnVolume.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION) * 100 / maxNotificationVolume);
     }
 
     @Override
