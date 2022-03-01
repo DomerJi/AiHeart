@@ -616,6 +616,11 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     }
 
     @Override
+    public void onDoubleTapUp(MotionEvent e) {
+
+    }
+
+    @Override
     public void onLongPress(MotionEvent e) {
         Log.d(TAG, "onLongPress: ");
     }

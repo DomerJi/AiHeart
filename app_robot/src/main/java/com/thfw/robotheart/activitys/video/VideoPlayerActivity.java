@@ -761,6 +761,19 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     public void onDoubleTapGesture(MotionEvent e) {
         Log.d(TAG, "onDoubleTapGesture: ");
         setSpeed(1);
+        if (mExoPlayer != null) {
+            if (mExoPlayer.isPlaying()) {
+                mExoPlayer.pause();
+            } else {
+                mExoPlayer.play();
+            }
+        }
+    }
+
+    @Override
+    public void onDoubleTapUp(MotionEvent e) {
+        Log.d(TAG, "onDoubleTapUp: ");
+        setSpeed(1);
     }
 
     @Override

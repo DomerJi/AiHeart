@@ -105,7 +105,10 @@ public class DialogRobotFactory {
      * @return
      */
     public static void createSvgaDialog(FragmentActivity activity, String svgaAssets, OnSVGACallBack onViewCallBack) {
-
+        if (true) {
+            onViewCallBack.callBack(null);
+            return;
+        }
         mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(com.thfw.robotheart.R.layout.dialog_svga_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)

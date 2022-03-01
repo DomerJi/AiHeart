@@ -95,6 +95,7 @@ public class PolicyHelper {
     public void startSpeech() {
         if (wakeType != WakeType.SPEECH) {
             wakeType = WakeType.SPEECH;
+            press = false;
             sendCheckMsg();
         }
     }

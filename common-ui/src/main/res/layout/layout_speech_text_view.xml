@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/tv_speech_text"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:hint="倾听中···"
         android:textColor="@color/white"

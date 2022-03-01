@@ -191,7 +191,7 @@ public class SpeechHelper implements ISpeechFace {
             }
 
             if (isLast) {
-                if (text.endsWith("。")) {
+                if (text.endsWith("。") && PolicyHelper.getInstance().isSpeechMode()) {
                     text = text.substring(0, text.length() - 1);
                 }
                 mSpeechResult.append(text);

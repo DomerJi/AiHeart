@@ -54,6 +54,12 @@ public class SpeechTextView extends ConstraintLayout {
         }
     }
 
+    public void append(String text) {
+        if (mTvSpeechText != null) {
+            mTvSpeechText.append(text);
+        }
+    }
+
     public String getText() {
         if (mTvSpeechText != null) {
             return mTvSpeechText.getText().toString();

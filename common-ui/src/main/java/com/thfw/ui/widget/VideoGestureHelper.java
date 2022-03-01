@@ -144,6 +144,9 @@ public class VideoGestureHelper {
         @Override
         public boolean onDoubleTapEvent(MotionEvent e) {
             Log.d(TAG, "onDoubleTapEvent: ");
+            if (mVideoGestureListener != null) {
+                mVideoGestureListener.onDoubleTapUp(e);
+            }
             return super.onDoubleTapEvent(e);
         }
 
@@ -171,11 +174,8 @@ public class VideoGestureHelper {
 
         @Override
         public void onLongPress(MotionEvent e) {
-            Log.d(TAG, "onShowPress: ");
+            Log.d(TAG, "onLongPress: ");
             super.onLongPress(e);
-            if (mVideoGestureListener != null) {
-                mVideoGestureListener.onLongPress(e);
-            }
         }
 
         @Override
@@ -211,6 +211,9 @@ public class VideoGestureHelper {
 
         //双击手势，确认是双击的时候调用
         public void onDoubleTapGesture(MotionEvent e);
+
+        // 双击离开
+        public void onDoubleTapUp(MotionEvent e);
 
         public void onLongPress(MotionEvent e);
 

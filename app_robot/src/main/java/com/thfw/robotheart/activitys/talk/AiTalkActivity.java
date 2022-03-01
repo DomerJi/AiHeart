@@ -322,9 +322,14 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 if (!mStvText.isShow()) {
                     return;
                 }
-
-                mStvText.setSpeechText(result);
-                if (end) {
+                if (PolicyHelper.getInstance().isPressed()) {
+                    if (end) {
+                        mStvText.append(result);
+                    }
+                } else {
+                    mStvText.setSpeechText(result);
+                }
+                if (end && !PolicyHelper.getInstance().isPressed()) {
                     chooseOption(mStvText.getText(), end);
                 }
             }
@@ -374,6 +379,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                             PolicyHelper.getInstance().startSpeech();
                         } else {
                             PolicyHelper.getInstance().end();
+                            LogUtil.d(TAG, "chooseOption ACTION_UP Pressed End ++++++++++++++++");
+                            chooseOption(mStvText.getText(), true);
+                            mStvText.setSpeechText("");
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
@@ -399,11 +407,12 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
      * @param end
      */
     private void chooseOption(String result, boolean end) {
-        LogUtil.d(TAG, "chooseOption(result)" + result + "; end = " + end);
-        LogUtil.d(TAG, "chooseOption(result) mCurrentChatType = " + mCurrentChatType);
+        LogUtil.d(TAG, "chooseOption begin");
         if (StringUtil.isEmpty(result)) {
             return;
         }
+        LogUtil.d(TAG, "chooseOption(result)" + result + "; end = " + end);
+        LogUtil.d(TAG, "chooseOption(result) mCurrentChatType = " + mCurrentChatType);
         if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
             if (end) {
                 sendInputText(result);
