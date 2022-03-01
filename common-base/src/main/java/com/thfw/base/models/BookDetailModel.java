@@ -37,11 +37,13 @@ public class BookDetailModel implements IModel {
     private String content;
     @SerializedName("pic")
     private String pic;
+    @SerializedName("collected")
+    private int collected;
     @SerializedName("psychtest_info")
     private PsychtestInfoBean psychtestInfo;
 
     public boolean isCollected() {
-        return psychtestInfo != null && psychtestInfo.collected == 1;
+        return collected == 1 || (psychtestInfo != null && psychtestInfo.collected == 1);
     }
 
     public int getId() {
