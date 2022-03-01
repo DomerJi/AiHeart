@@ -58,8 +58,8 @@ public class MsgActivity extends RobotBaseActivity {
 
 
         HashMap<Integer, Fragment> collectMap = new HashMap<>();
-        collectMap.put(0, new MsgFragment(0));
-        collectMap.put(1, new MsgFragment(1));
+        collectMap.put(0, new MsgFragment(1));
+        collectMap.put(1, new MsgFragment(2));
         mViewPager.setAdapter(new FragmentStateAdapter(this) {
             @NonNull
             @NotNull

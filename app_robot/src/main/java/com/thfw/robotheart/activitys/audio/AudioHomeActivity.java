@@ -172,4 +172,10 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
         }
     }
 
+    @Override
+    public void finish() {
+        setResult(RESULT_OK);
+        super.finish();
+    }
+
 }

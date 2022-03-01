@@ -47,7 +47,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
-import com.thfw.robotheart.activitys.text.BookActivity;
+import com.thfw.robotheart.activitys.test.TestActivity;
 import com.thfw.robotheart.adapter.ChatAdapter;
 import com.thfw.robotheart.adapter.ChatSelectAdapter;
 import com.thfw.robotheart.util.PageJumpUtils;
@@ -659,7 +659,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         // 树洞 自由输入逻辑判断
         if (mScene == 1) {
             if (chatEntity.type == ChatEntity.TYPE_FROM_SELECT
-                    && EmptyUtil.isEmpty(chatEntity.getTalkModel().getCheckRadio())) {
+                    && !EmptyUtil.isEmpty(chatEntity.getTalkModel().getCheckRadio())) {
                 mCurrentChatType = chatEntity.type;
             } else {
                 mCurrentChatType = ChatEntity.TYPE_INPUT;
@@ -714,12 +714,13 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                         public void onJump(int type, Object obj) {
                             switch (type) {
                                 case PageJumpUtils.JUMP_TEXT:
-                                    startActivity(new Intent(mContext, BookActivity.class));
+                                    startActivityForResult(new Intent(mContext, TestActivity.class), type);
                                     break;
                                 case PageJumpUtils.JUMP_MUSIC:
-                                    startActivity(new Intent(mContext, AudioHomeActivity.class));
+                                    startActivityForResult(new Intent(mContext, AudioHomeActivity.class), type);
                                     break;
                                 case PageJumpUtils.JUMP_AI_HOME:
+                                    startActivityForResult(new Intent(mContext, ThemeTalkActivity.class), type);
                                     break;
                             }
                         }
@@ -732,6 +733,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     @Override
     public void onFail(ResponeThrowable throwable) {
         LogUtil.d(TAG, "onFail = " + throwable.getMessage());
+        ToastUtil.show("onFail = " + throwable.getMessage());
     }
 
     @Override
@@ -741,6 +743,11 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             return;
         }
         if (mScene == 1) {
+            // 树洞/倾诉吐槽 返回继续聊
+            DialogTalkModel talkModel = new DialogTalkModel();
+            talkModel.setType(ChatEntity.TYPE_INPUT);
+            talkModel.setQuestion("继续聊");
+            onTalkData(talkModel);
             return;
         }
         switch (requestCode) {

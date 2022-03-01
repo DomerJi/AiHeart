@@ -4,6 +4,7 @@ import com.thfw.base.api.TaskApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
 import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.PushModel;
 import com.thfw.base.models.TaskDetailModel;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.base.models.TaskMusicEtcModel;
@@ -34,6 +35,17 @@ public class TaskPresenter<T> extends IPresenter<TaskPresenter.TaskUi> {
     public void onGetList(int status, int page) {
         Observable<HttpResult<List<TaskItemModel>>> observable = OkHttpUtil.createService(TaskApi.class)
                 .onGetList(status, page);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    /**
+     * 1-任务消息  2-系统消息
+     *
+     * @param msgType
+     */
+    public void onGetMsgList(int msgType, int page) {
+        Observable<HttpResult<List<PushModel>>> observable = OkHttpUtil.createService(TaskApi.class)
+                .onGetPushMsgList(msgType, page);
         OkHttpUtil.request(observable, getUI());
     }
 

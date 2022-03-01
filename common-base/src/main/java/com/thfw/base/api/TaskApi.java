@@ -1,6 +1,7 @@
 package com.thfw.base.api;
 
 import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.PushModel;
 import com.thfw.base.models.TaskDetailModel;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.base.models.TaskMusicEtcModel;
@@ -16,7 +17,7 @@ import retrofit2.http.POST;
 /**
  * Author:pengs
  * Date: 2022/2/10 14:25
- * Describe:任务
+ * Describe:任务/消息/系统消息
  */
 public interface TaskApi {
 
@@ -49,5 +50,9 @@ public interface TaskApi {
     @FormUrlEncoded
     @POST("task/collection_info")
     Observable<HttpResult<TaskMusicEtcModel>> onMusicEtcInfo(@Field("id") int id);
+
+    @FormUrlEncoded
+    @POST("push_msg_list")
+    Observable<HttpResult<List<PushModel>>> onGetPushMsgList(@Field("msg_type") int msgType, @Field("page") int page);
 
 }

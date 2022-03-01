@@ -84,4 +84,10 @@ public class TestActivity extends RobotBaseActivity<TestPresenter> implements Te
             mPresenter.onGetList();
         });
     }
+
+    @Override
+    public void finish() {
+        setResult(RESULT_OK);
+        super.finish();
+    }
 }

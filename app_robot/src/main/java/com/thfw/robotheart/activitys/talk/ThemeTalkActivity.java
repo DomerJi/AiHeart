@@ -86,4 +86,10 @@ public class ThemeTalkActivity extends RobotBaseActivity<TalkPresenter> implemen
             mPresenter.getDialogList();
         });
     }
+
+    @Override
+    public void finish() {
+        setResult(RESULT_OK);
+        super.finish();
+    }
 }

@@ -5,12 +5,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.face.OnRvItemListener;
-import com.thfw.base.models.TaskItemModel;
+import com.thfw.base.models.PushModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TaskPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
-import com.thfw.robotheart.adapter.TaskAdapter;
+import com.thfw.robotheart.adapter.MsgAdapter;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -18,14 +18,14 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 import java.util.List;
 
 
-public class MsgFragment extends RobotBaseFragment<TaskPresenter> implements TaskPresenter.TaskUi<List<TaskItemModel>> {
+public class MsgFragment extends RobotBaseFragment<TaskPresenter> implements TaskPresenter.TaskUi<List<PushModel>> {
 
     private int type;
     private SmartRefreshLayout mRefreshLayout;
     private RecyclerView mRvList;
     private LoadingView mLoadingView;
-    private TaskAdapter mTaskAdapter;
-    private PageHelper<TaskItemModel> mPageHelper;
+    private MsgAdapter mMsgAdapter;
+    private PageHelper<PushModel> mPageHelper;
 
     public MsgFragment(int type) {
         super();
@@ -54,16 +54,16 @@ public class MsgFragment extends RobotBaseFragment<TaskPresenter> implements Tas
     @Override
     public void initData() {
 
-        mTaskAdapter = new TaskAdapter(null);
-        mRvList.setAdapter(mTaskAdapter);
-        mTaskAdapter.setOnRvItemListener(new OnRvItemListener<TaskItemModel>() {
+        mMsgAdapter = new MsgAdapter(null);
+        mRvList.setAdapter(mMsgAdapter);
+        mMsgAdapter.setOnRvItemListener(new OnRvItemListener<PushModel>() {
             @Override
-            public void onItemClick(List<TaskItemModel> list, int position) {
+            public void onItemClick(List<PushModel> list, int position) {
 
             }
         });
-        mPageHelper = new PageHelper<>(mLoadingView, mRefreshLayout, mTaskAdapter);
-        mPresenter.onGetList(type, mPageHelper.getPage());
+        mPageHelper = new PageHelper<>(mLoadingView, mRefreshLayout, mMsgAdapter);
+        mPresenter.onGetMsgList(type, mPageHelper.getPage());
 
     }
 
@@ -73,7 +73,7 @@ public class MsgFragment extends RobotBaseFragment<TaskPresenter> implements Tas
     }
 
     @Override
-    public void onSuccess(List<TaskItemModel> data) {
+    public void onSuccess(List<PushModel> data) {
         mPageHelper.onSuccess(data);
     }
 
