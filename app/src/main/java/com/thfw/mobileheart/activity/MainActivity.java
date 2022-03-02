@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,15 +15,12 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.thfw.base.base.IPresenter;
-import com.thfw.base.timing.TimingHelper;
-import com.thfw.base.timing.WorkInt;
-import com.thfw.base.utils.ToastUtil;
+import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.robot.RobotActivity;
 import com.thfw.mobileheart.fragment.HomeFragment;
 import com.thfw.mobileheart.fragment.MeFragment;
 import com.thfw.mobileheart.fragment.MessageFragment;
 import com.thfw.mobileheart.util.FragmentLoader;
-import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 
 
@@ -32,7 +28,7 @@ import com.thfw.ui.base.BaseActivity;
  * 首页
  * Created By jishuaipeng on 2021/7/02
  */
-public class MainActivity extends BaseActivity implements Animator.AnimatorListener, TimingHelper.WorkListener {
+public class MainActivity extends BaseActivity implements Animator.AnimatorListener {
 
     private Handler handler;
     private androidx.constraintlayout.widget.ConstraintLayout mMainRoot;
@@ -192,63 +188,6 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                 return;
             }
         }
-    }
-
-    @Override
-    public void onArrive() {
-        ToastUtil.show("WorkInt.SLEEP");
-        TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
-            @Override
-            public void onArrive() {
-                ToastUtil.show("WorkInt.LOGOUT");
-            }
-
-            @Override
-            public WorkInt workInt() {
-                return WorkInt.LOGOUT;
-            }
-        });
-        TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
-            @Override
-            public void onArrive() {
-                ToastUtil.show("WorkInt.HINT");
-            }
-
-            @Override
-            public WorkInt workInt() {
-                return WorkInt.HINT;
-            }
-        });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        TimingHelper.getInstance().addWorkArriveListener(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        TimingHelper.getInstance().removeWorkArriveListener(this);
-    }
-
-    @Override
-    public WorkInt workInt() {
-        return WorkInt.SLEEP;
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                WorkInt.SLEEP.resetCount();
-                break;
-
-            default:
-                break;
-        }
-        return super.dispatchTouchEvent(ev);
     }
 
 }

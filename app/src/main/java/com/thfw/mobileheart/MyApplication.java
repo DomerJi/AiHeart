@@ -3,6 +3,7 @@ package com.thfw.mobileheart;
 import android.content.Context;
 
 import androidx.multidex.MultiDexApplication;
+import androidx.room.Room;
 
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
@@ -15,6 +16,7 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.DefaultRefreshFooterCreator;
 import com.scwang.smart.refresh.layout.listener.DefaultRefreshHeaderCreator;
 import com.thfw.base.ContextApp;
+import com.thfw.base.room.AppDatabase;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
@@ -76,5 +78,12 @@ public class MyApplication extends MultiDexApplication {
         // 请勿在“=”与appid之间添加任何空字符或者转义符
         SpeechUtility.createUtility(this, SpeechConstant.APPID + "=" + Constant.VALUE_APPID);
     }
+
+
+
+    public static AppDatabase getDatabase() {
+        return Room.databaseBuilder(app, AppDatabase.class, "database-name").build();
+    }
+
 
 }

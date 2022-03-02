@@ -43,12 +43,12 @@ public class InfoLikeAdapter extends BaseAdapter<InfoLikeModel, InfoLikeAdapter.
         if (EmptyUtil.isEmpty(mDataList)) {
             holder.mTvName.setText("+自定义");
         } else if (mDataList.size() == maxCount) {
-            holder.mTvName.setText(mDataList.get(position).name);
+            holder.mTvName.setText(mDataList.get(position).getPickerViewText());
         } else {
             if (mDataList.size() == position) {
                 holder.mTvName.setText("+自定义");
             } else {
-                holder.mTvName.setText(mDataList.get(position).name);
+                holder.mTvName.setText(mDataList.get(position).getPickerViewText());
             }
         }
 

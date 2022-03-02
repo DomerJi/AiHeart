@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <include layout="@layout/layout_login_top" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="请选择您的登录方式"
+            android:textColor="@color/text_common"
+            android:textSize="@dimen/textSize_large" />
+
+
+        <TextView
+            android:id="@+id/tv_mobile_login"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="26dp"
+            android:background="@drawable/common_green_gray_border_selector"
+            android:gravity="center"
+            android:text="免密登录"
+            android:textColor="@color/text_green"
+            android:textSize="@dimen/textSize_large" />
+
+
+        <TextView
+            android:id="@+id/tv_account_login"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="26dp"
+            android:background="@drawable/common_green_gray_border_selector"
+            android:gravity="center"
+            android:text="账号登录"
+            android:textColor="@color/text_green"
+            android:textSize="@dimen/textSize_large" />
+
+
+        <TextView
+            android:id="@+id/tv_face_login"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="26dp"
+            android:background="@drawable/common_green_gray_border_selector"
+            android:gravity="center"
+            android:text="刷脸登录"
+            android:textColor="@color/text_green"
+            android:textSize="@dimen/textSize_large" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

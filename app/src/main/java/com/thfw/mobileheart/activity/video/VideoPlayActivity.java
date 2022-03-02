@@ -766,6 +766,11 @@ public class VideoPlayActivity extends BaseActivity implements VideoGestureHelpe
     }
 
     @Override
+    public void onDoubleTapUp(MotionEvent e) {
+
+    }
+
+    @Override
     public void onLongPress(MotionEvent e) {
 
     }

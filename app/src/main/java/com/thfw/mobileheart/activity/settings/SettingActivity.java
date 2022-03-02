@@ -7,6 +7,8 @@ import android.widget.LinearLayout;
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.user.login.LoginStatus;
+import com.thfw.user.login.UserManager;
 
 public class SettingActivity extends BaseActivity {
 
@@ -43,6 +45,10 @@ public class SettingActivity extends BaseActivity {
         });
         mLlAccountSafe.setOnClickListener(v -> {
             startActivity(new Intent(mContext, AccountSafeActivity.class));
+        });
+        mBtLogout.setOnClickListener(v -> {
+            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+            finish();
         });
     }
 

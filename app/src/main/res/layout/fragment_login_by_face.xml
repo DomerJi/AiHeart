@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.login.LoginActivity">
+
+    <include layout="@layout/layout_login_top" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="30dp"
+        app:layout_constraintTop_toBottomOf="@id/cl_top">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="人脸识别登录"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/ll_face_end"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="46dp"
+                    android:layout_marginBottom="36dp"
+                    android:text="刷脸失败，请重新刷脸尝试，你也可以选择其他登录方式！"
+                    android:textSize="12sp" />
+
+
+                <Button
+                    android:id="@+id/bt_retry_face"
+                    android:layout_width="200dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/common_yellow_btn_selector"
+                    android:text="重新刷脸"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_face_ing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="275dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="12dp">
+
+
+                    <org.opencv.android.JavaCamera2CircleView
+                        android:id="@+id/javaCamera2CircleView"
+                        android:layout_width="240dp"
+                        android:layout_height="240dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/transparent"
+                        app:camera_id="front"
+                        tools:ignore="MissingConstraints" />
+
+                    <ImageView
+                        android:id="@+id/iv_border"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:adjustViewBounds="true"
+                        android:src="@mipmap/ic_face_border" />
+
+                    <ImageView
+                        android:id="@+id/iv_line"
+                        android:layout_width="wrap_content"
+                        android:layout_height="8dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_margin="10dp"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/iv_face_scan_line" />
+
+                </RelativeLayout>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:text="请正对屏幕，保持脸在取景框内"
+                    android:textColor="#666"
+                    android:textSize="@dimen/textSize" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_face_begin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:adjustViewBounds="false"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="12dp"
+                    android:text="请正对屏幕，保持脸在取景框内"
+                    android:textColor="#666"
+                    android:textSize="@dimen/textSize" />
+
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="12dp"
+                    android:adjustViewBounds="false"
+                    android:src="@mipmap/ic_launcher" />
+
+
+                <Button
+                    android:id="@+id/bt_begin"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:background="@drawable/common_guadual_btn_selector"
+                    android:text="开始识别"
+                    android:textColor="@drawable/textcolor_white_green_selector"
+                    android:textSize="@dimen/textSize" />
+
+            </LinearLayout>
+
+
+        </FrameLayout>
+
+
+        <TextView
+            android:id="@+id/tv_other_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:text="其他方式登录"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textSize" />
+
+    </LinearLayout>
+
+    <include layout="@layout/layout_login_bottom" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
