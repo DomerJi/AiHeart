@@ -1,6 +1,5 @@
 package com.thfw.robotheart.activitys.task;
 
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -13,13 +12,14 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.me.MsgFragment;
+import com.thfw.robotheart.util.MsgCountManager;
 import com.thfw.robotheart.view.TitleRobotView;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-public class MsgActivity extends RobotBaseActivity {
+public class MsgActivity extends RobotBaseActivity implements MsgCountManager.OnCountChangeListener {
 
 
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
@@ -97,8 +97,7 @@ public class MsgActivity extends RobotBaseActivity {
         });
         selectTab(0);
 
-        setTaskMsg(100);
-        setSystemMsg(100);
+        MsgCountManager.getInstance().addOnCountChangeListener(this);
 
     }
 
@@ -107,22 +106,20 @@ public class MsgActivity extends RobotBaseActivity {
         mTvTab02.setSelected(position == 1);
     }
 
-    private void setTaskMsg(int count) {
-        if (count > 0) {
-            mTvDotCount01.setVisibility(View.VISIBLE);
-            mTvDotCount01.setText(count > 99 ? "99+" : String.valueOf(count));
-        } else {
-            mTvDotCount01.setVisibility(View.GONE);
-        }
+    @Override
+    public void onCount(int numTask, int numSystem) {
+        MsgCountManager.setTextView(mTvDotCount01, numTask);
+        MsgCountManager.setTextView(mTvDotCount02, numSystem);
     }
 
-    private void setSystemMsg(int count) {
-        if (count > 0) {
-            mTvDotCount02.setVisibility(View.VISIBLE);
-            mTvDotCount02.setText(count > 99 ? "99+" : String.valueOf(count));
-        } else {
-            mTvDotCount02.setVisibility(View.GONE);
-        }
+    @Override
+    public void onItemState(int id, boolean read) {
+
     }
 
+    @Override
+    public void onDestroy() {
+        MsgCountManager.getInstance().removeOnCountChangeListener(this);
+        super.onDestroy();
+    }
 }

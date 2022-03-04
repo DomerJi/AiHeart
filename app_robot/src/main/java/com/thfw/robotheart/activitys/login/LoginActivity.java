@@ -13,7 +13,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.net.CommonParameter;
 import com.thfw.base.utils.SharePreferenceUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.MainActivity;
 import com.thfw.robotheart.constants.UIConfig;
@@ -85,6 +87,9 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void initData() {
+        if (!CommonParameter.isValid()) {
+            ToastUtil.show(R.string.valid_fail_organ_id);
+        }
     }
 
 

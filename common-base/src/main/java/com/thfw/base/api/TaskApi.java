@@ -1,6 +1,7 @@
 package com.thfw.base.api;
 
 import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.MsgCountModel;
 import com.thfw.base.models.PushModel;
 import com.thfw.base.models.TaskDetailModel;
 import com.thfw.base.models.TaskItemModel;
@@ -8,9 +9,11 @@ import com.thfw.base.models.TaskMusicEtcModel;
 import com.thfw.base.net.HttpResult;
 
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
@@ -51,8 +54,37 @@ public interface TaskApi {
     @POST("task/collection_info")
     Observable<HttpResult<TaskMusicEtcModel>> onMusicEtcInfo(@Field("id") int id);
 
+    /**
+     * 推送消息列表
+     *
+     * @param msgType
+     * @param page
+     * @return
+     */
     @FormUrlEncoded
     @POST("push_msg_list")
     Observable<HttpResult<List<PushModel>>> onGetPushMsgList(@Field("msg_type") int msgType, @Field("page") int page);
+
+    /**
+     * 已读状态修改
+     *
+     * @param id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("read_push_msg")
+    Observable<HttpResult<CommonModel>> onReadStated(@Field("id") int id);
+
+    /**
+     * 新消息数量查询接口
+     * <p>
+     * type 1-任务消息 2-系统消息 0或不传为所有类型
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("new_msg_count")
+    Observable<HttpResult<MsgCountModel>> onNewMsgCount(@FieldMap Map<String, Object> params);
+
 
 }

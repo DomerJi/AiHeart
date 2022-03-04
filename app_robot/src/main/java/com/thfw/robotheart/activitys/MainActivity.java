@@ -48,7 +48,9 @@ import com.thfw.robotheart.push.MyPreferences;
 import com.thfw.robotheart.push.helper.PushHelper;
 import com.thfw.robotheart.push.tester.UPushAlias;
 import com.thfw.robotheart.service.AutoUpdateService;
+import com.thfw.robotheart.util.MsgCountManager;
 import com.thfw.robotheart.view.DialogRobotFactory;
+import com.thfw.robotheart.view.SVGAHelper;
 import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.MyRobotSearchView;
@@ -62,8 +64,11 @@ import com.umeng.message.api.UPushRegisterCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class MainActivity extends RobotBaseActivity implements View.OnClickListener {
+import static com.thfw.robotheart.constants.AnimFileName.HOME_IP_ANIM_TIME;
+
+public class MainActivity extends RobotBaseActivity implements View.OnClickListener, MsgCountManager.OnCountChangeListener {
 
     /**
      * 机构信息和用户信息初始化标识
@@ -99,6 +104,12 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private TextView mTvDotCount;
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private TextView mTvDotHint;
+    private SVGAImageView mSvgaBody;
+    private SVGAImageView mSvgaFace;
+    private TextView mTvSetDotHint;
+    private TextView mTvMeDotHint;
+
+    private Random random = new Random();
 
     /**
      * 重新登录后重新获取用户相关信息
@@ -178,8 +189,34 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
         mLlRiv = (LinearLayout) findViewById(R.id.ll_riv);
 
-        setMsg(100);
+        mSvgaBody = (SVGAImageView) findViewById(R.id.svga_body);
+        mSvgaFace = (SVGAImageView) findViewById(R.id.svga_face);
+        mTvSetDotHint = (TextView) findViewById(R.id.tv_set_dot_hint);
+        mTvMeDotHint = (TextView) findViewById(R.id.tv_me_dot_hint);
+
+        startFaceAnim();
     }
+
+
+    private void startFaceAnim() {
+        SVGAHelper.playSVGA(mSvgaFace, SVGAHelper.SVGAModel.create(AnimFileName.FACE_FACE).setLoopCount(1), new DialogRobotFactory.SimpleSVGACallBack() {
+            @Override
+            public void onFinished() {
+                if (!isMeResumed()) {
+                    return;
+                }
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isMeResumed()) {
+                            startFaceAnim();
+                        }
+                    }
+                }, random.nextInt(HOME_IP_ANIM_TIME));
+            }
+        });
+    }
+
 
     @Override
     public void initData() {
@@ -199,6 +236,14 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 startActivity(new Intent(mContext, MeActivity.class));
             }
         });
+
+        if (UserManager.getInstance().isLogin()) {
+            // 已登录 初始化用户信息和机构信息
+            initUmeng();
+            initUserInfo();
+            initOrganization();
+        }
+        MsgCountManager.getInstance().addOnCountChangeListener(this);
     }
 
     @Override
@@ -208,12 +253,12 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             // 未登录进入登录页面
             LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
         } else {
-            // 已登录 初始化用户信息和机构信息
-            initUmeng();
-            initUserInfo();
-            initOrganization();
             showSVGALogin();
         }
+
+        MsgCountManager.getInstance().addNumSystem();
+        MsgCountManager.getInstance().addNumTask();
+
         // 检查版本更新
         mMainHandler.removeCallbacksAndMessages(null);
         mMainHandler.postDelayed(new Runnable() {
@@ -227,7 +272,10 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 }
             }
         }, isMeResumed2() ? 1000 : 2500);
+
+        animResume(true);
     }
+
 
     private void showSVGALogin() {
         if (!SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN, true)) {
@@ -246,7 +294,34 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
+        animResume(false);
         mMainHandler.removeCallbacksAndMessages(null);
+    }
+
+    /**
+     * 人物动画暂停/开始
+     *
+     * @param resume
+     */
+    private void animResume(boolean resume) {
+        if (resume) {
+            if (!mSvgaFace.isAnimating()) {
+                mSvgaFace.startAnimation();
+                if (!mSvgaFace.isAnimating()) {
+                    startFaceAnim();
+                }
+            }
+            if (!mSvgaBody.isAnimating()) {
+                mSvgaBody.startAnimation();
+            }
+        } else {
+            if (mSvgaFace.isAnimating()) {
+                mSvgaFace.startAnimation();
+            }
+            if (mSvgaBody.isAnimating()) {
+                mSvgaBody.stopAnimation();
+            }
+        }
     }
 
     /**
@@ -276,6 +351,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     public void onClick(View v) {
         int vId = v.getId();
         if (vId == R.id.cl_me) {
+//            DormantActivity.startActivity(mContext);
             startActivity(new Intent(mContext, MeActivity.class));
         } else if (vId == R.id.cl_setting) {
             startActivity(new Intent(mContext, SettingActivity.class));
@@ -359,6 +435,12 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         return new UserObserver() {
             @Override
             public void onChanged(UserManager accountManager, User user) {
+                if (accountManager.isLogin()) {
+                    // 已登录 初始化用户信息和机构信息
+                    initUmeng();
+                    initUserInfo();
+                    initOrganization();
+                }
                 setUserMessage(user);
             }
         };
@@ -480,20 +562,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         }).onGetUserInfo();
     }
 
-    /**
-     * 设置未读消息数量
-     *
-     * @param count
-     */
-    private void setMsg(int count) {
-        if (count > 0) {
-            mTvDotCount.setVisibility(View.VISIBLE);
-            mTvDotCount.setText(count > 99 ? "99+" : String.valueOf(count));
-        } else {
-            mTvDotCount.setVisibility(View.GONE);
-        }
-    }
-
     private void initUmeng() {
         if (initUmeng) {
             return;
@@ -530,7 +598,18 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
     @Override
     public void onDestroy() {
+        MsgCountManager.getInstance().removeOnCountChangeListener(this);
         super.onDestroy();
         resetInit();
+    }
+
+    @Override
+    public void onCount(int numTask, int numSystem) {
+        MsgCountManager.setTextView(mTvDotCount, numTask + numSystem);
+    }
+
+    @Override
+    public void onItemState(int id, boolean read) {
+
     }
 }

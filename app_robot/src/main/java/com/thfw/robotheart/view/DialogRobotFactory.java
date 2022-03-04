@@ -104,11 +104,16 @@ public class DialogRobotFactory {
      * @param onViewCallBack
      * @return
      */
-    public static void createSvgaDialog(FragmentActivity activity, String svgaAssets, OnSVGACallBack onViewCallBack) {
-        if (true) {
+    public static void createSvgaDialog(FragmentActivity activity, String svgaAssets, final OnSVGACallBack onViewCallBack) {
+
+        if (false) {
             onViewCallBack.callBack(null);
             return;
         }
+        String hint = AnimFileName.getHint(svgaAssets);
+        // 语音播放
+        TtsHelper.getInstance().start(new TtsModel(hint), null);
+
         mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(com.thfw.robotheart.R.layout.dialog_svga_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
@@ -119,11 +124,7 @@ public class DialogRobotFactory {
                 .setOnBindViewListener(viewHolder -> {
                     SVGAParser parser = new SVGAParser(activity);
                     SVGAImageView svgaImageView = viewHolder.getView(com.thfw.robotheart.R.id.svga_dialog);
-                    String hint = AnimFileName.getHint(svgaAssets);
-
                     if (!TextUtils.isEmpty(hint)) {
-                        // 语音播放
-                        TtsHelper.getInstance().start(new TtsModel(hint), null);
                         mTvTime = viewHolder.getView(com.thfw.robotheart.R.id.tv_time);
                         mMinuteRunnable = new Runnable() {
                             @Override
@@ -174,14 +175,19 @@ public class DialogRobotFactory {
                         public void onError() {
                         }
                     }, null);
+
                     svgaImageView.setCallback(new SimpleSVGACallBack() {
 
                         @Override
                         public void onFinished() {
                             LogUtil.d(TAG, "onFinished");
+                            if (svgaImageView.getCallback() == null) {
+                                return;
+                            }
+                            svgaImageView.setCallback(null);
                             onViewCallBack.callBack(svgaImageView);
+                            svgaImageView.clear();
                             if (mTvTime != null && mMinuteRunnable != null) {
-                                mTvTime.setText("0S");
                                 mTvTime.removeCallbacks(mMinuteRunnable);
                                 mTvTime = null;
                                 mMinuteRunnable = null;
@@ -190,7 +196,6 @@ public class DialogRobotFactory {
                                 mSvgaTDialog.dismiss();
                                 mSvgaTDialog = null;
                             }
-
                         }
                     });
                 })

@@ -93,6 +93,7 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
             if (getActivity() instanceof LoginActivity) {
                 LoginActivity activity = (LoginActivity) getActivity();
                 activity.getFragmentLoader().load(LoginActivity.BY_OTHER);
+                hideInput();
             }
         });
 

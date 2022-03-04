@@ -80,7 +80,6 @@ public class MyApplication extends MultiDexApplication {
     }
 
 
-
     public static AppDatabase getDatabase() {
         return Room.databaseBuilder(app, AppDatabase.class, "database-name").build();
     }

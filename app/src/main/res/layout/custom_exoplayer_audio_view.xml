@@ -66,7 +66,6 @@
                     android:src="@mipmap/ic_pause_white"
                     android:visibility="gone" />
 
-
                 <View
                     android:id="@+id/v_border_01"
                     android:layout_width="80dp"
@@ -129,12 +128,23 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tv_audio_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="第一节 人际交往心理学概述"
             android:textColor="@color/white"
-            android:textSize="@dimen/textSize_small" />
+            android:textSize="@dimen/textSize_small"
+            tools:text="正在播放： 人际交往心理学概述" />
+
+        <TextView
+            android:id="@+id/tv_etc_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_small"
+            tools:text="所属章节： 人际交往心理学 1/20" />
 
         <LinearLayout
             android:layout_width="match_parent"

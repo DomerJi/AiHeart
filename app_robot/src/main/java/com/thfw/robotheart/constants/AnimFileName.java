@@ -1,6 +1,7 @@
 package com.thfw.robotheart.constants;
 
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Author:pengs
@@ -41,13 +42,38 @@ public class AnimFileName {
     public static final String EMOJI_XIUMIAN = "emoji_xiumian.svga";
     public static final String EMOJI_XUANYUN = "emoji_xuanyun.svga";
 
+    /**
+     * 人物形象
+     */
+    public static final String FACE_BG = "home_ip_bg.svga";
+    public static final String FACE_FACE = "home_ip_face.svga";
 
-    // 测试 svga
-    public static final String TEST_ANGEL = "angel.svga";
-    public static final String TEST_ROSE = "rose.svga";
+
+    /**
+     * 倾诉表情
+     */
+    public static final String TALK_BALING = "talk_baling.svga";
+    public static final String TALK_FANZAO = "talk_fanzao.svga";
+    public static final String TALK_JINZHANG = "talk_jinzhang.svga";
+    public static final String TALK_MANZU = "talk_manzu.svga";
+    public static final String TALK_MIMANG = "talk_mimang.svga";
+    public static final String TALK_NANGUO = "talk_nanguo.svga";
+    public static final String TALK_PINGJING = "talk_pingjing.svga";
+    public static final String TALK_QINGSONG = "talk_qingsong.svga";
+    public static final String TALK_SHENGQI = "talk_shengqi.svga";
+    public static final String TALK_SHILIAN = "talk_shilian.svga";
+    public static final String TALK_SHIMIAN = "talk_shimian.svga";
+    public static final String TALK_WANGYIN = "talk_wangyin.svga";
+    public static final String TALK_XINGFENG = "talk_xingfen.svga";
+    public static final String TALK_YAOJINYAGUAN = "talk_yaojinyaguan.svga";
+    public static final String TALK_YIYU = "talk_yiyu.svga";
+    public static final String TALK_ZENGHENG = "talk_zengheng.svga";
+
     // 出场动画
     public static String TRANSITION_WELCOM = "transition_welcom.svga";
     private static HashMap<String, String> mNameHintMap;
+    // 首页随机
+    public static final int HOME_IP_ANIM_TIME = 3000;
 
     static {
         mNameHintMap = new HashMap<>();
@@ -63,5 +89,13 @@ public class AnimFileName {
 
     public static String getHint(String fileName) {
         return mNameHintMap.get(fileName);
+    }
+
+    public static String getTalkEmojiByRandom() {
+        int randomIndex = new Random().nextInt(16);
+        String[] talkEmojis = new String[]{TALK_BALING, TALK_FANZAO, TALK_JINZHANG, TALK_MANZU, TALK_MIMANG,
+                TALK_NANGUO, TALK_PINGJING, TALK_QINGSONG, TALK_SHENGQI, TALK_SHILIAN, TALK_SHIMIAN,
+                TALK_XINGFENG, TALK_YAOJINYAGUAN, TALK_YIYU, TALK_ZENGHENG, TALK_WANGYIN,};
+        return talkEmojis[randomIndex % talkEmojis.length];
     }
 }

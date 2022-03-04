@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="26dp">
+    android:layout_height="56dp">
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/riv_dot"
@@ -12,10 +11,24 @@
         android:layout_height="5dp"
         android:layout_marginLeft="8dp"
         android:src="@color/text_green"
-        app:layout_constraintBottom_toBottomOf="@id/tv_title"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_title"
+        app:layout_constraintTop_toTopOf="parent"
         app:riv_oval="true"
+        tools:ignore="MissingConstraints" />
+
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/riv_type"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginLeft="12dp"
+        android:src="@color/text_green"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/riv_dot"
+        app:layout_constraintTop_toTopOf="parent"
+        app:riv_corner_radius="4dp"
+        app:riv_oval="false"
         tools:ignore="MissingConstraints" />
 
 
@@ -29,8 +42,19 @@
         android:maxLines="1"
         android:textColor="@color/white"
         android:textSize="@dimen/textSize_large"
-        app:layout_constraintLeft_toRightOf="@id/riv_dot"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/riv_type"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="Title" />
+
+    <View
+        android:id="@+id/v_dot_state"
+        android:layout_width="4dp"
+        android:layout_height="4dp"
+        android:background="@drawable/message_count_dot_red"
+        app:layout_constraintLeft_toRightOf="@id/tv_title"
+        app:layout_constraintTop_toTopOf="@id/tv_title" />
+
 
     <TextView
         android:id="@+id/tv_flag"
@@ -38,46 +62,25 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:background="@drawable/yellow_radius_bg"
+        android:paddingLeft="6dp"
+        android:paddingTop="2dp"
+        android:paddingRight="6dp"
+        android:paddingBottom="2dp"
         android:text="已过期"
         android:textColor="@color/white"
         android:textSize="10sp"
-        android:paddingLeft="6dp"
-        android:paddingRight="6dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/tv_title"
         app:layout_constraintLeft_toRightOf="@id/tv_title"
         app:layout_constraintTop_toTopOf="@id/tv_title" />
 
-    <TextView
-        android:id="@+id/tv_type"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="@dimen/textSize"
-        app:layout_constraintBottom_toBottomOf="@id/tv_title"
-        app:layout_constraintRight_toLeftOf="@id/tv_status"
-        app:layout_constraintTop_toTopOf="@id/tv_title"
-        tools:text="正念冥想" />
-
-
-    <TextView
-        android:id="@+id/tv_status"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="@dimen/textSize"
-        app:layout_constraintBottom_toBottomOf="@id/tv_title"
-        app:layout_constraintRight_toLeftOf="@id/tv_time"
-        app:layout_constraintTop_toTopOf="@id/tv_title"
-        tools:text="0/5" />
 
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="6dp"
-        android:textColor="@color/white"
+        android:textColor="@color/colorRobotFore"
         app:layout_constraintBottom_toBottomOf="@id/tv_title"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_title"
@@ -88,9 +91,7 @@
         android:id="@+id/v_line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_1px"
-        android:layout_marginTop="12dp"
         android:background="@color/divider"
-        app:layout_constraintTop_toBottomOf="@id/tv_title" />
-
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

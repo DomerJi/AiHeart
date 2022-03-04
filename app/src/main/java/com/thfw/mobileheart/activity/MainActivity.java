@@ -16,12 +16,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.robot.RobotActivity;
 import com.thfw.mobileheart.fragment.HomeFragment;
 import com.thfw.mobileheart.fragment.MeFragment;
 import com.thfw.mobileheart.fragment.MessageFragment;
 import com.thfw.mobileheart.util.FragmentLoader;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.user.login.UserManager;
 
 
 /**
@@ -190,4 +192,13 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!UserManager.getInstance().isLogin()) {
+            LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+        } else {
+
+        }
+    }
 }

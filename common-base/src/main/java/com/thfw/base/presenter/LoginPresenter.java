@@ -32,6 +32,7 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
                 .add("device_id", CommonParameter.getDeviceId())
                 .add("verification_code", code)
                 .add("identification", phone)
+                .add("organization", CommonParameter.getOrganizationId())
                 .add("time_stamp", System.currentTimeMillis());
         Observable<HttpResult<TokenModel>> observable = OkHttpUtil.createService(LoginApi.class).onLogin(netParams);
         OkHttpUtil.request(observable, getUI());
@@ -47,6 +48,7 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
         NetParams netParams = NetParams.crete().add("device_type", CommonParameter.getDeviceType())
                 .add("device_id", CommonParameter.getDeviceId())
                 .add("password", password)
+                .add("organization", CommonParameter.getOrganizationId())
                 .add("identification", identification)
                 .add("time_stamp", System.currentTimeMillis());
         Observable<HttpResult<TokenModel>> observable = OkHttpUtil.createService(LoginApi.class).onLogin(netParams);
@@ -112,7 +114,7 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
         OkHttpUtil.request(observable, getUI());
     }
 
-    public void onBindPhone(String phone, String code){
+    public void onBindPhone(String phone, String code) {
         Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(LoginApi.class).onCheckMobileCode(phone, code);
         OkHttpUtil.request(observable, getUI());
     }

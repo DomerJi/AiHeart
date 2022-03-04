@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.MyAnimationListener;
+import com.thfw.base.net.CommonParameter;
 import com.thfw.base.room.face.Face;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
@@ -523,6 +524,10 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     }
 
     private void loginByFace(Face loginFace) {
+        if (!CommonParameter.isValid()) {
+            ToastUtil.show(R.string.valid_fail_organ_id);
+            return;
+        }
         User user = new User();
         user.setToken(loginFace.getToken());
         user.setMobile(loginFace.getUid());

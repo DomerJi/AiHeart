@@ -4,11 +4,13 @@ import com.thfw.base.api.TaskApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
 import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.MsgCountModel;
 import com.thfw.base.models.PushModel;
 import com.thfw.base.models.TaskDetailModel;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.base.models.TaskMusicEtcModel;
 import com.thfw.base.net.HttpResult;
+import com.thfw.base.net.NetParams;
 import com.thfw.base.net.OkHttpUtil;
 
 import java.util.List;
@@ -50,6 +52,17 @@ public class TaskPresenter<T> extends IPresenter<TaskPresenter.TaskUi> {
     }
 
     /**
+     * 1-任务消息  2-系统消息
+     *
+     * @param id 消息id
+     */
+    public void onReadStated(int id) {
+        Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(TaskApi.class)
+                .onReadStated(id);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    /**
      * 获取任务详情
      *
      * @param id 任务id
@@ -80,6 +93,17 @@ public class TaskPresenter<T> extends IPresenter<TaskPresenter.TaskUi> {
     public void onMusicInfo(int id) {
         Observable<HttpResult<TaskMusicEtcModel>> observable = OkHttpUtil.createService(TaskApi.class)
                 .onMusicEtcInfo(id);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    /**
+     * 任务音频详情
+     *
+     * @param type 1-任务消息 2-系统消息 0或不传为所有类型
+     */
+    public void onNewMsgCount(int type) {
+        Observable<HttpResult<MsgCountModel>> observable = OkHttpUtil.createService(TaskApi.class)
+                .onNewMsgCount(NetParams.crete().add("type", type));
         OkHttpUtil.request(observable, getUI());
     }
 

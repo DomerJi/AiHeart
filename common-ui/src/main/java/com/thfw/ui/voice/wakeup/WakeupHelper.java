@@ -15,6 +15,7 @@ import com.thfw.base.ContextApp;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.ui.voice.VoiceType;
 import com.thfw.ui.voice.VoiceTypeManager;
+import com.thfw.ui.voice.tts.TtsHelper;
 
 /**
  * Author:pengs
@@ -34,12 +35,26 @@ public class WakeupHelper implements IWakeUpFace {
     private static final String IVW_SST_WAKEUP = "wakeup";
     private static final String IVW_SST_ONESHOT = "oneshot";
     private VoiceWakeuper mIvw;
+    private static WakeupHelper wakeupHelper;
+
+    public static WakeupHelper getInstance() {
+        if (wakeupHelper == null) {
+            synchronized (TtsHelper.class) {
+                if (wakeupHelper == null) {
+                    wakeupHelper = new WakeupHelper();
+                    wakeupHelper.init();
+                }
+            }
+        }
+        return wakeupHelper;
+    }
 
     private CustomWakeuperListener wakeuperListener;
 
     private WakeupHelper() {
         wakeuperListener = new CustomWakeuperListener();
     }
+
 
     @Override
     public boolean initialized() {
@@ -128,6 +143,18 @@ public class WakeupHelper implements IWakeUpFace {
         VoiceTypeManager.getManager().setVoiceType(VoiceType.WAKE_UP_STOP);
     }
 
+    OnWakeUpListener wakeUpListener;
+
+    public interface OnWakeUpListener {
+        void onWakeup();
+
+        void onError();
+    }
+
+    public void setWakeUpListener(OnWakeUpListener onWakeUpListener) {
+        this.wakeUpListener = onWakeUpListener;
+    }
+
     public class CustomWakeuperListener implements WakeuperListener {
         @Override
         public void onBeginOfSpeech() {
@@ -137,11 +164,17 @@ public class WakeupHelper implements IWakeUpFace {
         @Override
         public void onResult(WakeuperResult wakeuperResult) {
             VoiceTypeManager.getManager().setVoiceType(VoiceType.WAKE_UP_SUCCESS);
+            if (wakeUpListener != null) {
+                wakeUpListener.onWakeup();
+            }
         }
 
         @Override
         public void onError(SpeechError speechError) {
             VoiceTypeManager.getManager().setVoiceType(VoiceType.WAKE_UP_STOP);
+            if (wakeUpListener != null) {
+                wakeUpListener.onError();
+            }
         }
 
         @Override

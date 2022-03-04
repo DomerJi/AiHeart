@@ -149,7 +149,7 @@
     <string name="title_face_idf">人脸1:N检索示例</string>
     <string name="title_vocal_idf">声纹1:N检索示例</string>
 
-
+    <string name="valid_fail_organ_id">无效的机构编码</string>
     <!-- 合成 -->
     <string-array name="engine_entries">
         <item>本地合成</item>

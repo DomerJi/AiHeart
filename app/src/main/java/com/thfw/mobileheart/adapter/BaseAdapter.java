@@ -1,6 +1,9 @@
 package com.thfw.mobileheart.adapter;
 
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,12 +24,12 @@ public abstract class BaseAdapter<T, V extends RecyclerView.ViewHolder> extends 
         this.mDataList = dataList;
     }
 
-    public void setDataList(List<T> mDataList) {
-        this.mDataList = mDataList;
-    }
-
     public List<T> getDataList() {
         return mDataList;
+    }
+
+    public void setDataList(List<T> mDataList) {
+        this.mDataList = mDataList;
     }
 
     public void setDataListNotify(List<T> mDataList) {
@@ -53,6 +56,28 @@ public abstract class BaseAdapter<T, V extends RecyclerView.ViewHolder> extends 
         this.mDataList.addAll(mDataList);
     }
 
+    public void addDataList(List<T> mDataList, boolean addHead) {
+        if (this.mDataList == null) {
+            this.mDataList = new ArrayList<>();
+        }
+        if (addHead) {
+            this.mDataList.addAll(0, mDataList);
+        } else {
+            this.mDataList.addAll(mDataList);
+        }
+    }
+
+    public void addDataListNotify(List<T> mDataList, boolean addHead) {
+        addDataList(mDataList, addHead);
+        if (addHead) {
+            int addHeadCount = mDataList != null ? mDataList.size() : 0;
+            notifyItemRangeInserted(0, addHeadCount);
+        } else {
+            notifyDataSetChanged();
+        }
+
+    }
+
     public void addDataListNotify(List<T> mDataList) {
         addDataList(mDataList);
         notifyDataSetChanged();
@@ -70,6 +95,10 @@ public abstract class BaseAdapter<T, V extends RecyclerView.ViewHolder> extends 
         super.onDetachedFromRecyclerView(recyclerView);
         this.mRecyclerView = null;
         this.mContext = null;
+    }
+
+    protected View inflate(int layoutId, ViewGroup parent) {
+        return LayoutInflater.from(mContext).inflate(layoutId, parent, false);
     }
 
     @Override

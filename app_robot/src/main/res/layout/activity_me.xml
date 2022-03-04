@@ -268,8 +268,8 @@
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="26dp"
+        android:layout_marginRight="26dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/riv_avatar"
@@ -367,6 +367,7 @@
                 android:layout_height="56dp">
 
                 <TextView
+                    android:id="@+id/tv_me_msg_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -376,38 +377,20 @@
                     android:textSize="@dimen/textSize_large" />
 
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="16dp"
-                    android:rotationY="180"
-                    android:src="@drawable/ic_back_white" />
-
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/divider_1px"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/colorRobotFore" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_report"
-                android:layout_width="match_parent"
-                android:layout_height="56dp">
-
                 <TextView
+                    android:id="@+id/tv_dot_count"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:padding="8dp"
-                    android:text="心理健康档案"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@id/tv_me_msg_title"
+                    android:background="@drawable/message_count_dot_red"
+                    android:gravity="center"
+                    android:minWidth="20dp"
+                    android:padding="2dp"
+                    android:text="1"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/textSize_large" />
-
+                    android:textSize="10sp"
+                    android:visibility="visible" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -471,6 +454,39 @@
                     android:layout_centerVertical="true"
                     android:padding="8dp"
                     android:text="我的任务"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize_large" />
+
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16dp"
+                    android:rotationY="180"
+                    android:src="@drawable/ic_back_white" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_1px"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/colorRobotFore" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_report"
+                android:layout_width="match_parent"
+                android:layout_height="56dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:padding="8dp"
+                    android:text="心理健康档案"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textSize_large" />
 

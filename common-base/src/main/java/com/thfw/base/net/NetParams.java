@@ -12,7 +12,7 @@ import java.util.TreeMap;
  */
 public class NetParams extends TreeMap<String, Object> {
 
-    public static NetParams crete() {
+    public static final NetParams crete() {
         return new NetParams();
     }
 

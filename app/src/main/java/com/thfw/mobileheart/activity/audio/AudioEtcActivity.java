@@ -27,6 +27,10 @@ import com.thfw.ui.widget.TitleView;
 
 import java.util.List;
 
+/**
+ * 废弃 无详情页，直接播放
+ */
+@Deprecated
 public class AudioEtcActivity extends BaseActivity {
 
     private com.thfw.ui.widget.TitleView mTitleView;

@@ -10,23 +10,33 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.thfw.base.base.IPresenter;
-import com.thfw.mobileheart.fragment.list.AudioListFragment;
+import com.google.common.reflect.TypeToken;
+import com.thfw.base.models.AudioTypeModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.AudioPresenter;
+import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.fragment.list.AudioListFragment;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AudioHomeActivity extends BaseActivity {
+public class AudioHomeActivity extends BaseActivity<AudioPresenter> implements AudioPresenter.AudioUi<List<AudioTypeModel>> {
 
+    private static final String KEY_TYPE_LIST = "audio.type.list";
     private com.thfw.ui.widget.TitleView mTitleView;
     private com.google.android.material.tabs.TabLayout mTabLayout;
     private androidx.viewpager.widget.ViewPager mViewPager;
 
     private List<Fragment> tabFragmentList = new ArrayList<>();
-    private String[] tabs = new String[]{"全部", "入门", "睡眠", "减压", "成长", "情绪", "焦虑"};
+    private com.thfw.ui.widget.LoadingView mLoadingView;
 
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, AudioHomeActivity.class));
@@ -38,8 +48,8 @@ public class AudioHomeActivity extends BaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public AudioPresenter onCreatePresenter() {
+        return new AudioPresenter(this);
     }
 
     @Override
@@ -48,15 +58,46 @@ public class AudioHomeActivity extends BaseActivity {
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
     }
 
 
     @Override
     public void initData() {
-        //添加tab
-        for (int i = 0; i < tabs.length; i++) {
-            mTabLayout.addTab(mTabLayout.newTab().setText(tabs[i]));
-            tabFragmentList.add(new AudioListFragment(tabs[i]));
+        Type type = new TypeToken<List<AudioTypeModel>>() {
+        }.getType();
+        List<AudioTypeModel> cacheModel = SharePreferenceUtil.getObject(KEY_TYPE_LIST, type);
+        if (!EmptyUtil.isEmpty(cacheModel)) {
+            mLoadingView.hide();
+            setViewPager(cacheModel);
+        } else {
+            mPresenter.getAudioType();
+        }
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(List<AudioTypeModel> data) {
+        mLoadingView.hide();
+        if (data != null) {
+            data.add(0, new AudioTypeModel("全部", 0));
+            SharePreferenceUtil.setString(KEY_TYPE_LIST, GsonUtil.toJson(data));
+            if (mViewPager.getAdapter() == null) {
+                setViewPager(data);
+            }
+        }
+    }
+
+    private void setViewPager(List<AudioTypeModel> audioTypeModels) {
+        int size = audioTypeModels.size();
+        // 添加tab
+        for (int i = 0; i < size; i++) {
+            mTabLayout.addTab(mTabLayout.newTab().setText(audioTypeModels.get(i).getName()));
+            tabFragmentList.add(new AudioListFragment(audioTypeModels.get(i).getKey()));
         }
 
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -74,11 +115,27 @@ public class AudioHomeActivity extends BaseActivity {
             @Nullable
             @Override
             public CharSequence getPageTitle(int position) {
-                return tabs[position];
+                return audioTypeModels.get(position).getName();
             }
         });
 
-        //设置TabLayout和ViewPager联动
+        // 设置TabLayout和ViewPager联动
         mTabLayout.setupWithViewPager(mViewPager, false);
+    }
+
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        if (mViewPager.getAdapter() == null) {
+            mLoadingView.showFail(v -> {
+                mPresenter.getAudioType();
+            });
+        }
+    }
+
+    @Override
+    public void finish() {
+        setResult(RESULT_OK);
+        super.finish();
     }
 }

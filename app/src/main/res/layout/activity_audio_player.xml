@@ -21,7 +21,7 @@
         app:shutter_background_color="@color/transparent"
         app:surface_type="none" />
 
-    <ProgressBar
+    <com.thfw.ui.widget.LoadingView
         android:id="@+id/pb_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,6 +30,17 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!--  声音 亮度改变 -->
+    <com.thfw.ui.widget.ShowChangeLayout
+        android:id="@+id/scl"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <com.thfw.ui.widget.LinearTopLayout
         android:layout_width="match_parent"
@@ -56,12 +67,49 @@
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 android:src="@mipmap/ic_share_white"
+                android:visibility="gone"
                 app:layout_constraintRight_toRightOf="parent" />
 
         </RelativeLayout>
 
     </com.thfw.ui.widget.LinearTopLayout>
 
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:visibility="gone">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_top_radius_white"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_percent="0.67">
+
+            <TextView
+                android:id="@+id/tv_etc_title_logcate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingTop="16dp"
+                android:textColor="@color/text_common"
+                android:textSize="@dimen/textSize_large"
+                tools:text="@string/title" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

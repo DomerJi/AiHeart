@@ -20,12 +20,12 @@
         android:id="@+id/cl_anim"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/white_10"
         app:layout_constraintBottom_toTopOf="@id/rl_send"
         app:layout_constraintHorizontal_weight="@integer/left_weight"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/rv_list"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView"
+        tools:background="@color/white_10"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
@@ -76,6 +76,35 @@
                 android:textSize="@dimen/textSize_small" />
 
         </LinearLayout>
+
+
+        <com.opensource.svgaplayer.SVGAImageView
+            android:id="@+id/svga_body"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:autoPlay="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="W,240:179"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.65"
+            app:source="home_ip_bg.svga"
+            tools:background="@mipmap/ic_home_ip" />
+
+        <com.opensource.svgaplayer.SVGAImageView
+            android:id="@+id/svga_face"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toBottomOf="@id/svga_body"
+            app:layout_constraintDimensionRatio="W,1:1.8"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/svga_body"
+            app:layout_constraintVertical_bias="0.23"
+            app:layout_constraintWidth_percent="0.50"
+            tools:background="@mipmap/ic_face_anim2" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

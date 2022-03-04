@@ -23,6 +23,7 @@ public class CommonParameter {
 
     private static final String KEY_ORGANIZATION_ID = "key_organization_id";
     private static final String KEY_ORGANIZATION_SELECT = "key_organization_select";
+    private static final String TEST_ID = "1";
 
     public interface DeviceType {
         String PAD = "pad";
@@ -54,12 +55,19 @@ public class CommonParameter {
 
     public static String getOrganizationId() {
         String id = SharePreferenceUtil.getString(KEY_ORGANIZATION_ID, null);
-        return TextUtils.isEmpty(id) ? "1" : id;
+        return TextUtils.isEmpty(id) ? TEST_ID : id;
     }
 
     public static void setOrganizationId(String organizationId) {
         SharePreferenceUtil.setString(KEY_ORGANIZATION_ID, organizationId);
     }
+
+    public static boolean isValid() {
+        return true;
+        // todo 真实环境必须校验
+//        return !TextUtils.isEmpty(getOrganizationId()) && !TEST_ID.equals(getOrganizationId());
+    }
+
 
     public static void setOrganizationSelected(ArrayList<OrganizationModel.OrganizationBean> organizationBeans) {
         SharePreferenceUtil.setString(KEY_ORGANIZATION_SELECT + CommonParameter.getOrganizationId(), GsonUtil.toJson(organizationBeans));

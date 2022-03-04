@@ -50,7 +50,7 @@ public class HotCallModel implements IModel {
     private String azQpin;
 
     public void initAz() {
-        String firstChar = province.substring(0, 1);
+        String firstChar = letter.substring(0, 1);
         HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
         format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
         format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);

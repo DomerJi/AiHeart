@@ -13,8 +13,10 @@ public enum WorkInt {
     HINT(3, 20, true),
     SECOND(4, 1, true),
     SECOND5(5, 5, false),
-    SECOND5_1(5, 5, false),
-    SECOND2(6, 2, true);
+    SECOND5_1(6, 5, false),
+    SECOND3(7, 3, false),
+    SECOND2(8, 2, true),
+    SECOND5_MSG_COUNT(9, 5, true);
 
     /**
      * 标识

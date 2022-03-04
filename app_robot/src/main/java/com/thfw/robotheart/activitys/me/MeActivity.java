@@ -22,6 +22,7 @@ import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.activitys.task.MsgActivity;
 import com.thfw.robotheart.activitys.task.TaskActivity;
 import com.thfw.robotheart.activitys.test.TestReportActivity;
+import com.thfw.robotheart.util.MsgCountManager;
 import com.thfw.robotheart.view.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.TDialog;
@@ -33,7 +34,7 @@ import com.thfw.user.login.UserManager;
 
 import java.util.List;
 
-public class MeActivity extends RobotBaseActivity {
+public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnCountChangeListener {
 
     private TitleRobotView mTitleRobotView;
     private com.makeramen.roundedimageview.RoundedImageView mRivAvatar;
@@ -56,6 +57,8 @@ public class MeActivity extends RobotBaseActivity {
     private TextView mTvInputState;
     private TextView mTvTeam;
     private RelativeLayout mRlReport;
+    private TextView mTvMeMsgTitle;
+    private TextView mTvDotCount;
 
     @Override
     public int getContentView() {
@@ -91,6 +94,8 @@ public class MeActivity extends RobotBaseActivity {
         mTvInputState = (TextView) findViewById(R.id.tv_input_state);
         mTvTeam = (TextView) findViewById(R.id.tv_team);
         mRlReport = (RelativeLayout) findViewById(R.id.rl_report);
+        mTvMeMsgTitle = (TextView) findViewById(R.id.tv_me_msg_title);
+        mTvDotCount = (TextView) findViewById(R.id.tv_dot_count);
     }
 
     @Override
@@ -187,7 +192,7 @@ public class MeActivity extends RobotBaseActivity {
         mRlMeMsg.setOnClickListener(v -> {
             startActivity(new Intent(mContext, MsgActivity.class));
         });
-
+        MsgCountManager.getInstance().addOnCountChangeListener(this);
     }
 
     @Override
@@ -228,4 +233,19 @@ public class MeActivity extends RobotBaseActivity {
         GlideUtil.load(mContext, user.getVisibleAvatar(), mRivAvatar);
     }
 
+    @Override
+    public void onCount(int numTask, int numSystem) {
+        MsgCountManager.setTextView(mTvDotCount, numTask + numSystem);
+    }
+
+    @Override
+    public void onDestroy() {
+        MsgCountManager.getInstance().removeOnCountChangeListener(this);
+        super.onDestroy();
+    }
+
+    @Override
+    public void onItemState(int id, boolean read) {
+
+    }
 }

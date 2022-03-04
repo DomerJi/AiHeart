@@ -85,6 +85,7 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
             if (getActivity() instanceof LoginActivity) {
                 LoginActivity activity = (LoginActivity) getActivity();
                 activity.getFragmentLoader().load(LoginActivity.BY_OTHER);
+                hideInput();
             }
         });
         mVfcode.setVerificationListener(new VerificationCodeView.VerificationListener() {

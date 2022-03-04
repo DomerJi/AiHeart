@@ -22,6 +22,8 @@ public class ChatEntity implements IModel {
     public static final int TYPE_TIME = 16;
     public static final int TYPE_HINT = 17;
 
+    public static final int TYPE_EMOJI = 18;
+
     public int type;
     public String talk;
     public long time = System.currentTimeMillis();

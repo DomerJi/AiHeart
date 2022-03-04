@@ -6,4 +6,9 @@
 
     <include layout="@layout/custom_refresh_recyclerview_layout" />
 
+    <com.thfw.ui.widget.LoadingView
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </FrameLayout>

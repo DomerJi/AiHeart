@@ -11,10 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.view.SVGAHelper;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.user.login.UserManager;
 
@@ -42,6 +45,8 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             case ChatEntity.TYPE_FROM_NORMAL:// 【对方】 对话 - 普通
             case ChatEntity.TYPE_INPUT:// 【对方】 对话 - 自由输入
                 return new ChatFromHolder(inflate(R.layout.chat_from_to_layout, parent));
+            case ChatEntity.TYPE_EMOJI:
+                return new ChatFromEmojiHolder(inflate(R.layout.chat_from_to_emoji_layout, parent));
             case ChatEntity.TYPE_TO: // 【我】对话
                 return new ChatToHolder(inflate(R.layout.chat_to_from_layout, parent));
             case ChatEntity.TYPE_RECOMMEND_TEST: // 测评
@@ -74,6 +79,14 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
                 if (holder instanceof ChatFromHolder) {
                     ChatFromHolder chatFromHolder = (ChatFromHolder) holder;
                     chatFromHolder.mTvTalk.setText(Html.fromHtml(chatEntity.getTalk()));
+                }
+                break;
+            case ChatEntity.TYPE_EMOJI:
+                if (holder instanceof ChatFromEmojiHolder) {
+                    ChatFromEmojiHolder chatFromEmojiHolder = (ChatFromEmojiHolder) holder;
+                    String fileName = AnimFileName.getTalkEmojiByRandom();
+                    SVGAHelper.playSVGA(chatFromEmojiHolder.svgaImageView, SVGAHelper.SVGAModel
+                            .create(fileName), null);
                 }
                 break;
             case ChatEntity.TYPE_TO:
@@ -142,6 +155,16 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
         public ChatFromHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvTalk = itemView.findViewById(R.id.tv_talk);
+        }
+    }
+
+    public class ChatFromEmojiHolder extends ChatHolder {
+
+        private final SVGAImageView svgaImageView;
+
+        public ChatFromEmojiHolder(@NonNull @NotNull View itemView) {
+            super(itemView);
+            svgaImageView = itemView.findViewById(R.id.mSVGAImageView);
         }
     }
 

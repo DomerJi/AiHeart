@@ -18,6 +18,7 @@ public class PageHelper<T> {
 
     private int firstPage = 1;
     private int currentPage = 1;
+    private boolean refreshEnable = true;
 
     private BaseAdapter adapter;
     private ILoading iLoading;
@@ -32,13 +33,8 @@ public class PageHelper<T> {
         this.refreshLayout.setEnableRefresh(false);
     }
 
-    /**
-     * 重置第一页页码 页码不为1的情况
-     *
-     * @param firstPage
-     */
-    public void setFirstPage(int firstPage) {
-        this.firstPage = firstPage;
+    public void setRefreshEnable(boolean enable) {
+        this.refreshEnable = enable;
     }
 
     /**
@@ -46,6 +42,15 @@ public class PageHelper<T> {
      */
     public boolean isFirstPage() {
         return currentPage == firstPage;
+    }
+
+    /**
+     * 重置第一页页码 页码不为1的情况
+     *
+     * @param firstPage
+     */
+    public void setFirstPage(int firstPage) {
+        this.firstPage = firstPage;
     }
 
     /**
@@ -62,19 +67,29 @@ public class PageHelper<T> {
         return currentPage;
     }
 
+
+    public void onSuccess(List<T> list) {
+        onSuccess(list, false);
+    }
+
+
     /**
      * 加载数据-成功
      *
      * @param list
      */
-    public void onSuccess(List<T> list) {
+    public void onSuccess(List<T> list, boolean isTop) {
         if (adapter == null) {
             return;
         }
         if (firstPage == currentPage) {
             adapter.setDataListNotify(list);
         } else {
-            adapter.addDataListNotify(list);
+            if (isTop) {
+                adapter.addDataListNotify(list, isTop);
+            } else {
+                adapter.addDataListNotify(list);
+            }
         }
 
         boolean emptyDatas = EmptyUtil.isEmpty(adapter.getDataList());
@@ -87,9 +102,9 @@ public class PageHelper<T> {
         }
 
         if (refreshLayout != null) {
-            refreshLayout.setEnableRefresh(!emptyDatas);
+            refreshLayout.setEnableRefresh(refreshEnable && !emptyDatas);
             refreshLayout.setEnableLoadMore(!emptyDatas);
-            refreshLayout.setNoMoreData(emptyDatas);
+            refreshLayout.setNoMoreData(EmptyUtil.isEmpty(list));
 
             if (refreshLayout.isRefreshing()) {
                 refreshLayout.finishRefresh();

@@ -156,6 +156,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         mTvOtherLogin.setOnClickListener(v -> {
             LoginActivity loginActivity = (LoginActivity) getActivity();
             loginActivity.getFragmentLoader().load(LoginActivity.BY_OTHER);
+            hideInput();
         });
     }
 

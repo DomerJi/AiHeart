@@ -1,11 +1,11 @@
 package com.thfw.robotheart.adapter;
 
-import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -48,7 +48,7 @@ public class AudioEtcListAdapter extends BaseAdapter<AudioEtcModel, AudioEtcList
         } else {
             mHour = "已练习至  <font color='" + UIConfig.COLOR_HOUR + "'>" + bean.getListenHistorySize()
                     + "</font>/" + bean.getMusicSize() + "  课时";
-            holder.mTvHour.setText(Html.fromHtml(mHour));
+            holder.mTvHour.setText(HtmlCompat.fromHtml(mHour,HtmlCompat.FROM_HTML_MODE_LEGACY));
         }
 
         holder.mTvTitle.setText(bean.getTitle());

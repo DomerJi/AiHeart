@@ -115,6 +115,10 @@ public class TtsHelper implements ITtsFace {
         return start();
     }
 
+    public void setCurrentSynthesizerListener(SimpleSynthesizerListener currentSynthesizerListener) {
+        this.currentSynthesizerListener = currentSynthesizerListener;
+    }
+
     @Override
     public boolean start() {
         if (ttsModel == null) {
@@ -163,36 +167,40 @@ public class TtsHelper implements ITtsFace {
 
         @Override
         public void onSpeakBegin() {
-
+            onIng(ttsHelper.isIng());
         }
 
         @Override
         public void onBufferProgress(int i, int i1, int i2, String s) {
-
+            onIng(ttsHelper.isIng());
         }
 
         @Override
         public void onSpeakPaused() {
-
+            onIng(ttsHelper.isIng());
         }
 
         @Override
         public void onSpeakResumed() {
-
+            onIng(ttsHelper.isIng());
         }
 
         @Override
         public void onSpeakProgress(int i, int i1, int i2) {
-
+            onIng(ttsHelper.isIng());
         }
 
         @Override
         public void onCompleted(SpeechError speechError) {
-
+            onIng(ttsHelper.isIng());
         }
 
         @Override
         public void onEvent(int i, int i1, int i2, Bundle bundle) {
+            onIng(ttsHelper.isIng());
+        }
+
+        public void onIng(boolean ing) {
 
         }
     }
