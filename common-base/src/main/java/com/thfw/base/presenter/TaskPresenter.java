@@ -46,9 +46,17 @@ public class TaskPresenter<T> extends IPresenter<TaskPresenter.TaskUi> {
      * @param msgType
      */
     public void onGetMsgList(int msgType, int page) {
-        Observable<HttpResult<List<PushModel>>> observable = OkHttpUtil.createService(TaskApi.class)
-                .onGetPushMsgList(msgType, page);
-        OkHttpUtil.request(observable, getUI());
+        if (msgType == 1) {
+            Observable<HttpResult<List<TaskItemModel>>> observable = OkHttpUtil.createService(TaskApi.class)
+                    .onGetPushMsgList(msgType, page);
+            OkHttpUtil.request(observable, getUI());
+        } else {
+            Observable<HttpResult<List<PushModel>>> observable = OkHttpUtil.createService(TaskApi.class)
+                    .onGetPushMsgList2(msgType, page);
+            OkHttpUtil.request(observable, getUI());
+        }
+
+
     }
 
     /**
@@ -59,6 +67,29 @@ public class TaskPresenter<T> extends IPresenter<TaskPresenter.TaskUi> {
     public void onReadStated(int id) {
         Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(TaskApi.class)
                 .onReadStated(id);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+
+    /**
+     * 一键已读
+     *
+     * @param type 0 全部 1-任务消息  2-系统消息
+     */
+    public void onReadStatedAll(int type) {
+        Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(TaskApi.class)
+                .onReadStatedAll(type);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    /**
+     * 1-任务消息  2-系统消息
+     *
+     * @param msgId 友盟消息id
+     */
+    public void onReadStated(String msgId) {
+        Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(TaskApi.class)
+                .onReadStated(msgId);
         OkHttpUtil.request(observable, getUI());
     }
 
@@ -104,6 +135,17 @@ public class TaskPresenter<T> extends IPresenter<TaskPresenter.TaskUi> {
     public void onNewMsgCount(int type) {
         Observable<HttpResult<MsgCountModel>> observable = OkHttpUtil.createService(TaskApi.class)
                 .onNewMsgCount(NetParams.crete().add("type", type));
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    /**
+     * 推送消息详情详情
+     *
+     * @param id 推送友盟返回的msg_id字段
+     */
+    public void getPushModel(int id) {
+        Observable<HttpResult<PushModel>> observable = OkHttpUtil.createService(TaskApi.class)
+                .getPushModel(NetParams.crete().add("id", id));
         OkHttpUtil.request(observable, getUI());
     }
 

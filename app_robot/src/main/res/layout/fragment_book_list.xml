@@ -8,8 +8,8 @@
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:srlEnableFooterFollowWhenNoMoreData="true"
-        app:srlEnableFooterFollowWhenLoadFinished="true">
+        app:srlEnableFooterFollowWhenLoadFinished="true"
+        app:srlEnableFooterFollowWhenNoMoreData="true">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvList"

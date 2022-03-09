@@ -24,9 +24,24 @@ public class ChatEntity implements IModel {
 
     public static final int TYPE_EMOJI = 18;
 
+
+    public static final int TYPE_JOIN_PAGE = 99;
+
     public int type;
     public String talk;
     public long time = System.currentTimeMillis();
+    /**
+     * 0 加载 -1 失败 1成功
+     */
+    public int loading = 0;
+
+    public void onError() {
+        this.loading = -1;
+    }
+
+    public void onLoading() {
+        this.loading = 0;
+    }
 
     public void setTime(long time) {
         this.time = time;
@@ -88,6 +103,14 @@ public class ChatEntity implements IModel {
     public static ChatEntity createHint(String hint) {
         ChatEntity chatEntity = new ChatEntity();
         chatEntity.type = ChatEntity.TYPE_HINT;
+        chatEntity.time = System.currentTimeMillis();
+        chatEntity.talk = hint;
+        return chatEntity;
+    }
+
+    public static ChatEntity createJoinPage(String hint) {
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_JOIN_PAGE;
         chatEntity.time = System.currentTimeMillis();
         chatEntity.talk = hint;
         return chatEntity;

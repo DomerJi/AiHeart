@@ -17,15 +17,17 @@
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/riv_avatar"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginLeft="36dp"
         android:layout_marginRight="36dp"
         android:src="@mipmap/ic_launcher"
         app:layout_constraintBottom_toTopOf="@id/tv_nickname"
+        app:layout_constraintDimensionRatio="W,1:1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView"
         app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintWidth_percent="0.18"
         app:riv_border_color="@color/colorRobotFore"
         app:riv_border_width="2dp"
         app:riv_oval="true" />
@@ -66,7 +68,7 @@
 
     <Button
         android:id="@+id/bt_logout"
-        android:layout_width="150dp"
+        android:layout_width="0dp"
         android:layout_height="@dimen/button_height"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
@@ -77,7 +79,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/riv_avatar"
         app:layout_constraintRight_toRightOf="@id/riv_avatar"
-        app:layout_constraintTop_toBottomOf="@id/tv_team" />
+        app:layout_constraintTop_toBottomOf="@id/tv_team"
+        app:layout_constraintWidth_percent="0.15" />
 
     <LinearLayout
         android:id="@+id/ll_history"

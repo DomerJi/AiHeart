@@ -1,9 +1,14 @@
 package com.thfw.robotheart.activitys;
 
+import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.Build;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.util.Dormant;
 import com.thfw.ui.base.IBaseActivity;
 
@@ -13,6 +18,21 @@ import com.thfw.ui.base.IBaseActivity;
  * Describe:Todo
  */
 public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActivity<T> {
+
+    //重写字体缩放比例  api>25
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+            final Resources res = newBase.getResources();
+            final Configuration config = res.getConfiguration();
+            // 1 设置正常字体大小的倍数
+            config.fontScale = MyApplication.getApp().getFontScale();
+            final Context newContext = newBase.createConfigurationContext(config);
+            super.attachBaseContext(newContext);
+        } else {
+            super.attachBaseContext(newBase);
+        }
+    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {

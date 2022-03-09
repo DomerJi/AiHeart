@@ -55,7 +55,7 @@ public class SearchResultModel implements IModel {
      *
      * @return
      */
-    @SerializedName("ideology_article")
+    @SerializedName("ideology_article_list")
     private List<ResultBean> ideologyList;
 
     public List<ResultBean> getAllList() {

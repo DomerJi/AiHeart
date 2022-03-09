@@ -1,6 +1,7 @@
 package com.thfw.robotheart.fragments.login;
 
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -25,6 +26,8 @@ import com.thfw.robotheart.activitys.me.InfoActivity;
 import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.voice.tts.TtsHelper;
+import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.InputBoxSquareView;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.User;
@@ -49,9 +52,9 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
     private String phone;
 
     private int secondCount = 60;
-    private LinearLayout mLlLoginCenter;
     private TextView mTvLoginByPassword;
     private TextView mTvLoginByFace;
+    private TextView mTvLoginByMobile;
 
     public LoginMobileCodeFragment() {
         // Required empty public constructor
@@ -79,9 +82,10 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
         mTvProductUser = (TextView) findViewById(R.id.tv_product_user);
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
-        mLlLoginCenter = (LinearLayout) findViewById(R.id.ll_login_center);
         mTvLoginByPassword = (TextView) findViewById(R.id.tv_login_by_password);
         mTvLoginByFace = (TextView) findViewById(R.id.tv_login_by_face);
+        mTvLoginByMobile = (TextView) findViewById(R.id.tv_login_by_mobile);
+        mTvLoginByMobile.setVisibility(View.GONE);
         Util.addUnderLine(mTvProductUser, mTvProductMsg, mTvProductAgree);
         initAgreeClick();
     }
@@ -177,7 +181,6 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
     public void onSuccess(TokenModel data) {
         LoadingDialog.hide();
         if (data != null && !TextUtils.isEmpty(data.token)) {
-            ToastUtil.show("登录成功");
             User user = new User();
             user.setToken(data.token);
             user.setMobile(phone);
@@ -200,6 +203,7 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
     public void onFail(ResponeThrowable throwable) {
         LoadingDialog.hide();
         ToastUtil.show(throwable.getMessage());
+        TtsHelper.getInstance().start(new TtsModel("请重新登录哦"), null);
     }
 
     @Override

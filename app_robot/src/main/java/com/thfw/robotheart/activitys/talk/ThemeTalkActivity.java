@@ -19,6 +19,7 @@ import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.ThemeTalkAdapter;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.view.DialogRobotFactory;
+import com.thfw.robotheart.view.HomeIpTextView;
 import com.thfw.robotheart.view.SVGAHelper;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.widget.LoadingView;
@@ -38,6 +39,7 @@ public class ThemeTalkActivity extends RobotBaseActivity<TalkPresenter> implemen
     private com.opensource.svgaplayer.SVGAImageView mSvgaFace;
 
     private Random random = new Random();
+    private com.thfw.robotheart.view.HomeIpTextView mHitAnim;
 
     @Override
     public int getContentView() {
@@ -61,6 +63,7 @@ public class ThemeTalkActivity extends RobotBaseActivity<TalkPresenter> implemen
         mSvgaFace = (SVGAImageView) findViewById(R.id.svga_face);
 
         startFaceAnim();
+        mHitAnim = (HomeIpTextView) findViewById(R.id.hit_anim);
     }
 
     private void startFaceAnim() {
@@ -134,6 +137,7 @@ public class ThemeTalkActivity extends RobotBaseActivity<TalkPresenter> implemen
      */
     private void animResume(boolean resume) {
         if (resume) {
+            mHitAnim.resume();
             if (!mSvgaFace.isAnimating()) {
                 mSvgaFace.startAnimation();
                 if (!mSvgaFace.isAnimating()) {
@@ -144,6 +148,7 @@ public class ThemeTalkActivity extends RobotBaseActivity<TalkPresenter> implemen
                 mSvgaBody.startAnimation();
             }
         } else {
+            mHitAnim.pause();
             if (mSvgaFace.isAnimating()) {
                 mSvgaFace.startAnimation();
             }

@@ -13,7 +13,28 @@ import android.util.AttributeSet;
  * Date: 2022/1/4 11:39
  * Describe:Todo
  */
-public class JavaCamera2CircleView extends JavaCamera2View{
+public class JavaCamera2CircleView extends JavaCamera2View {
+
+    /**
+     * 半径
+     */
+    private int radius;
+    /**
+     * 中心点坐标
+     */
+    private Point centerPoint;
+    /**
+     * 剪切路径
+     */
+    private Path clipPath;
+    /**
+     * 是否在预览
+     */
+    private boolean isPreviewing;
+    /**
+     * 是否已经设置过窗口尺寸
+     */
+    private boolean isSizeFitted = false;
 
     public JavaCamera2CircleView(Context context, int cameraId) {
         super(context, cameraId);
@@ -24,33 +45,6 @@ public class JavaCamera2CircleView extends JavaCamera2View{
         super(context, attrs);
         init();
     }
-
-
-
-    /**
-     * 半径
-     */
-    private int radius;
-
-    /**
-     * 中心点坐标
-     */
-    private Point centerPoint;
-
-    /**
-     * 剪切路径
-     */
-    private Path clipPath;
-
-    /**
-     * 是否在预览
-     */
-    private boolean isPreviewing;
-
-    /**
-     * 是否已经设置过窗口尺寸
-     */
-    private boolean isSizeFitted = false;
 
     /**
      * 初始化
@@ -84,7 +78,7 @@ public class JavaCamera2CircleView extends JavaCamera2View{
         return radius;
     }
 
-//    /**
+    //    /**
 //     * 绘制
 //     *
 //     * @param canvas 画布

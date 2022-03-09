@@ -23,9 +23,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin"
         android:text="@string/load_fail"
+        android:textColor="@color/white"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/iv_load_fail"
         tools:ignore="MissingConstraints" />
 

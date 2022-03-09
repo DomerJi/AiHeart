@@ -18,6 +18,38 @@ public class SVGAHelper {
 
     private static final String TAG = SVGAHelper.class.getSimpleName();
 
+    public static void playSVGA(SVGAImageView svgaImageView, SVGAModel svgaModel, DialogRobotFactory.SimpleSVGACallBack simpleSVGACallBack) {
+        SVGAParser parser = new SVGAParser(svgaImageView.getContext());
+        if (svgaImageView.isAnimating()) {
+            svgaImageView.setCallback(null);
+            svgaImageView.stopAnimation(true);
+        }
+        parser.decodeFromAssets(svgaModel.fileName, new SVGAParser.ParseCompletion() {
+            @Override
+            public void onComplete(@NotNull SVGAVideoEntity svgaVideoEntity) {
+                SVGADrawable drawable = new SVGADrawable(svgaVideoEntity);
+                svgaImageView.setImageDrawable(drawable);
+                svgaImageView.setLoops(svgaModel.loopCount);
+                if (svgaModel.location > 0) {
+                    int length = svgaModel.length > svgaModel.location && svgaModel.length <= svgaVideoEntity.getFrames()
+                            ? svgaModel.location : svgaVideoEntity.getFrames();
+                    svgaImageView.startAnimation(new SVGARange(30, length), false);
+                    LogUtil.d(TAG, "startAnimation(SVGARange)");
+                } else {
+                    svgaImageView.startAnimation();
+
+                    LogUtil.d(TAG, "startAnimation");
+                }
+
+            }
+
+            @Override
+            public void onError() {
+            }
+        }, null);
+        svgaImageView.setCallback(simpleSVGACallBack);
+    }
+
     public static class SVGAModel {
         String fileName;
         // 0一直循环
@@ -50,37 +82,5 @@ public class SVGAHelper {
             this.length = length;
             return this;
         }
-    }
-
-    public static void playSVGA(SVGAImageView svgaImageView, SVGAModel svgaModel, DialogRobotFactory.SimpleSVGACallBack simpleSVGACallBack) {
-        SVGAParser parser = new SVGAParser(svgaImageView.getContext());
-        if (svgaImageView.isAnimating()) {
-            svgaImageView.setCallback(null);
-            svgaImageView.stopAnimation(true);
-        }
-        parser.decodeFromAssets(svgaModel.fileName, new SVGAParser.ParseCompletion() {
-            @Override
-            public void onComplete(@NotNull SVGAVideoEntity svgaVideoEntity) {
-                SVGADrawable drawable = new SVGADrawable(svgaVideoEntity);
-                svgaImageView.setImageDrawable(drawable);
-                svgaImageView.setLoops(svgaModel.loopCount);
-                if (svgaModel.location > 0) {
-                    int length = svgaModel.length > svgaModel.location && svgaModel.length <= svgaVideoEntity.getFrames()
-                            ? svgaModel.location : svgaVideoEntity.getFrames();
-                    svgaImageView.startAnimation(new SVGARange(30, length), false);
-                    LogUtil.d(TAG, "startAnimation(SVGARange)");
-                } else {
-                    svgaImageView.startAnimation();
-
-                    LogUtil.d(TAG, "startAnimation");
-                }
-
-            }
-
-            @Override
-            public void onError() {
-            }
-        }, null);
-        svgaImageView.setCallback(simpleSVGACallBack);
     }
 }

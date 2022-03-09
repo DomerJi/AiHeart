@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Build;
 import android.provider.Settings;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -16,6 +17,9 @@ import android.widget.TextView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
+import com.thfw.robotheart.view.DialogRobotFactory;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
 
 /**
  * Author:pengs
@@ -108,7 +112,7 @@ public class SetVolumeFragment extends RobotBaseFragment {
 
         NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !notificationManager.isNotificationPolicyAccessGranted()) {
-            startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
+            showPermission();
             return;
         }
 
@@ -180,6 +184,30 @@ public class SetVolumeFragment extends RobotBaseFragment {
         mSbSystemVolume.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) * 100 / maxSystemVolume);
         mSbHintVolume.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC) * 100 / maxMusicVolume);
         mSbBtnVolume.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION) * 100 / maxNotificationVolume);
+    }
+
+    /**
+     * 静音权限开启提醒弹框
+     */
+    private void showPermission() {
+        DialogRobotFactory.createCustomDialog(getActivity(), new DialogRobotFactory.OnViewCallBack() {
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                if (view.getId() == R.id.tv_right) {
+                    startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
+                }
+                tDialog.dismiss();
+            }
+
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvHint.setText("需要为 " + getResources().getString(R.string.app_name) + " 开启静音权限?");
+                mTvTitle.setVisibility(View.GONE);
+                mTvLeft.setText("以后");
+                mTvRight.setText("现在");
+            }
+        });
     }
 
     @Override

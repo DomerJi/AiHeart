@@ -48,7 +48,7 @@ public class AudioEtcListAdapter extends BaseAdapter<AudioEtcModel, AudioEtcList
         } else {
             mHour = "已练习至  <font color='" + UIConfig.COLOR_HOUR + "'>" + bean.getListenHistorySize()
                     + "</font>/" + bean.getMusicSize() + "  课时";
-            holder.mTvHour.setText(HtmlCompat.fromHtml(mHour,HtmlCompat.FROM_HTML_MODE_LEGACY));
+            holder.mTvHour.setText(HtmlCompat.fromHtml(mHour, HtmlCompat.FROM_HTML_MODE_LEGACY));
         }
 
         holder.mTvTitle.setText(bean.getTitle());

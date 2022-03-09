@@ -27,11 +27,11 @@
         android:layout_marginRight="16dp"
         android:ellipsize="end"
         android:maxLines="1"
-        tools:text="Title"
         android:textColor="@color/white"
         android:textSize="@dimen/textSize_large"
         app:layout_constraintLeft_toRightOf="@id/riv_dot"
-        app:layout_constraintRight_toLeftOf="@id/tv_time_time" />
+        app:layout_constraintRight_toLeftOf="@id/tv_time_time"
+        tools:text="Title" />
 
 
     <TextView

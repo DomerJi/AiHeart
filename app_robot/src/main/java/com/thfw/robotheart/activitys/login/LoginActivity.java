@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
@@ -25,6 +26,7 @@ import com.thfw.robotheart.fragments.login.LoginMobileFragment;
 import com.thfw.robotheart.fragments.login.LoginPasswordFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.user.login.UserManager;
 
 import org.opencv.android.Static2Helper;
 
@@ -39,6 +41,7 @@ public class LoginActivity extends BaseActivity {
     public static final String KEY_PHONE_NUMBER = "phone_number";
     // 登录后播放唤醒动画
     public static final String KEY_LOGIN_BEGIN = "login.begin";
+    public static final String KEY_LOGIN_BEGIN_TTS = "login.begin.tts";
     public static String INPUT_PHONE = "";
     private int type;
     private FragmentLoader fragmentLoader;
@@ -72,7 +75,16 @@ public class LoginActivity extends BaseActivity {
         fragmentLoader.load(type);
         // 检查权限
         checkPermissions();
-        SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN, true);
+        if (!UserManager.getInstance().isLogin()) {
+            SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN, true);
+            SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN_TTS, true);
+        } else {
+            View view = findViewById(R.id.ll_back);
+            view.setVisibility(View.VISIBLE);
+            view.setOnClickListener(v -> {
+                onBackPressed();
+            });
+        }
     }
 
     @Override

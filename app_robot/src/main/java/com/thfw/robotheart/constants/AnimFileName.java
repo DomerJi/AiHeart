@@ -68,12 +68,11 @@ public class AnimFileName {
     public static final String TALK_YAOJINYAGUAN = "talk_yaojinyaguan.svga";
     public static final String TALK_YIYU = "talk_yiyu.svga";
     public static final String TALK_ZENGHENG = "talk_zengheng.svga";
-
-    // 出场动画
-    public static String TRANSITION_WELCOM = "transition_welcom.svga";
-    private static HashMap<String, String> mNameHintMap;
     // 首页随机
     public static final int HOME_IP_ANIM_TIME = 3000;
+    // 出场动画
+    public static String TRANSITION_WELCOM = "login_welcom.svga";
+    private static HashMap<String, String> mNameHintMap;
 
     static {
         mNameHintMap = new HashMap<>();
@@ -97,5 +96,12 @@ public class AnimFileName {
                 TALK_NANGUO, TALK_PINGJING, TALK_QINGSONG, TALK_SHENGQI, TALK_SHILIAN, TALK_SHIMIAN,
                 TALK_XINGFENG, TALK_YAOJINYAGUAN, TALK_YIYU, TALK_ZENGHENG, TALK_WANGYIN,};
         return talkEmojis[randomIndex % talkEmojis.length];
+    }
+
+    public static class Frequency {
+        public static final String KEY_FREQUENCY = "key.frequency";
+        public static final int EVERY_TIME = 0;
+        public static final int TWO_HOUR_TIME = 1;
+        public static final int DAY_TIME = 2;
     }
 }

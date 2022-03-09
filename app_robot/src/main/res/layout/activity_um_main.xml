@@ -13,9 +13,9 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
@@ -38,10 +38,10 @@
         </LinearLayout>
 
         <Button
-            android:layout_marginTop="16dp"
             android:id="@+id/btn_msg_push"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:onClick="sendMsg"
             android:text="推送一条通知消息"
             tools:ignore="HardcodedText" />

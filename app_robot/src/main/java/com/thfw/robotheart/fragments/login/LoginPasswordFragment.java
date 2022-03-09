@@ -3,6 +3,7 @@ package com.thfw.robotheart.fragments.login;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -29,6 +30,8 @@ import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.voice.tts.TtsHelper;
+import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.User;
 import com.thfw.user.login.UserManager;
@@ -49,8 +52,8 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
     private TextView mTvProductUser;
     private TextView mTvProductMsg;
     private TextView mTvProductAgree;
-    private LinearLayout mLlLoginCenter;
     private TextView mTvLoginByFace;
+    private TextView mTvLoginByPassword;
 
     public LoginPasswordFragment() {
         // Required empty public constructor
@@ -83,9 +86,9 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
 
-        mLlLoginCenter = (LinearLayout) findViewById(R.id.ll_login_center);
         mTvLoginByFace = (TextView) findViewById(R.id.tv_login_by_face);
-
+        mTvLoginByPassword = (TextView) findViewById(R.id.tv_login_by_password);
+        mTvLoginByPassword.setVisibility(View.GONE);
         Util.addUnderLine(mTvProductUser, mTvProductMsg, mTvProductAgree);
 
         mIvSeePassword.setOnClickListener(v -> {
@@ -175,7 +178,6 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
     public void onSuccess(TokenModel data) {
         LoadingDialog.hide();
         if (data != null && !TextUtils.isEmpty(data.token)) {
-            ToastUtil.show("登录成功");
             User user = new User();
             user.setToken(data.token);
             user.setMobile(mEtMobile.getText().toString());
@@ -198,5 +200,6 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
     public void onFail(ResponeThrowable throwable) {
         LoadingDialog.hide();
         ToastUtil.show(throwable.getMessage());
+        TtsHelper.getInstance().start(new TtsModel("请重新登录哦"), null);
     }
 }

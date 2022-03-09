@@ -22,6 +22,16 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/tv_talk" />
 
+        <ImageView
+            android:id="@+id/iv_send_error"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/tv_talk"
+            android:src="@drawable/ic_load_error"
+            android:visibility="gone"
+            app:tint="#F00" />
+
         <TextView
             android:id="@+id/tv_talk"
             android:layout_width="wrap_content"

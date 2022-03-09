@@ -17,6 +17,7 @@
     <color name="colorRobotAccent">#00FF88</color>
     <color name="colorRobotFore">#91dff3</color>
     <color name="colorRobotForeDark">#74b5c6</color>
+    <color name="colorRobotTextDark">#0f5b93</color>
     <color name="colorRobotFore88">#8891dff3</color>
 
     <!--页面通用背景-->
@@ -28,6 +29,7 @@
     <color name="green_selected_text">#00CC99</color>
     <color name="btn_green">#00CC99</color>
     <color name="btn_green_50">#8800CC99</color>
+    <color name="btn_green_30">#4C00CC99</color>
 
     <color name="colorButtonLeft">#ff934d</color>
     <color name="colorButtonRight">#fc686f</color>

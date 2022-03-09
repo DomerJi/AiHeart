@@ -20,6 +20,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView"
+        app:srlEnableFooterFollowWhenNoMoreData="true"
         app:srlEnableLoadMore="false"
         app:srlEnableRefresh="false">
 

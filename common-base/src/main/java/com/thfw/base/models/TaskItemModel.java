@@ -38,6 +38,29 @@ public class TaskItemModel implements IModel {
     @SerializedName("finish_count")
     private int finishCount;
 
+    // start ================== 任务消息参数
+    @SerializedName("task_id")
+    private int taskId;
+
+    @SerializedName("read_status")
+    private int readStatus;
+
+    @SerializedName("turn_page")
+    private String turnPage;
+    // end ================== 任务消息参数
+
+    public int getTaskId() {
+        return taskId;
+    }
+
+    public int getReadStatus() {
+        return readStatus;
+    }
+
+    public String getTurnPage() {
+        return turnPage;
+    }
+
     public String getTaskTypeStr() {
         /**
          * 1-测评 2-音频 3-话术
@@ -75,6 +98,7 @@ public class TaskItemModel implements IModel {
 
     /**
      * 0-未完成 1-已完成 2-过期
+     *
      * @return
      */
     public int getStatus() {

@@ -14,7 +14,6 @@ import com.thfw.base.api.HistoryApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.room.face.Face;
 import com.thfw.base.utils.StringUtil;
-import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
@@ -115,7 +114,6 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
                     public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
                         if (view.getId() == R.id.tv_right) {
                             UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
-                            ToastUtil.show("成功退出");
                             finish();
                         }
                         tDialog.dismiss();
@@ -246,6 +244,11 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
 
     @Override
     public void onItemState(int id, boolean read) {
+
+    }
+
+    @Override
+    public void onReadAll(int type) {
 
     }
 }

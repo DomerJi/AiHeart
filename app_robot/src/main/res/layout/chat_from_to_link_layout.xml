@@ -45,12 +45,12 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:background="@drawable/chat_type_bottom_bg"
             android:padding="8dp"
             android:textColor="@color/white"
             android:textSize="@dimen/textSize_small"
-            tools:text="顺应变化"
-            android:layout_alignParentBottom="true"/>
+            tools:text="顺应变化" />
 
     </RelativeLayout>
 

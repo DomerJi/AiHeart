@@ -1,6 +1,7 @@
 package com.thfw.robotheart;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 
 import androidx.multidex.MultiDexApplication;
 import androidx.room.Room;
@@ -19,6 +20,7 @@ import com.scwang.smart.refresh.layout.listener.DefaultRefreshHeaderCreator;
 import com.thfw.base.ContextApp;
 import com.thfw.base.room.AppDatabase;
 import com.thfw.base.utils.BuglyUtil;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.push.MyPreferences;
@@ -57,6 +59,8 @@ public class MyApplication extends MultiDexApplication {
             }
         });
     }
+
+    private static float lv;
 
     public static MyApplication getApp() {
         return app;
@@ -122,6 +126,27 @@ public class MyApplication extends MultiDexApplication {
             //若不是主进程（":channel"结尾的进程），直接初始化sdk，不可在子线程中执行
             PushHelper.init(getApplicationContext());
         }
+    }
+
+    public static float getFontScale() {
+        if (lv > 0) {
+            return lv;
+        }
+        int screenDensity = app.getResources().getDisplayMetrics().densityDpi;
+        if (DisplayMetrics.DENSITY_XHIGH == screenDensity) {
+            lv = 1f;
+            LogUtil.d("getFontScale", "lv = " + lv);
+            return lv;
+        }
+        lv = 1.0f * DisplayMetrics.DENSITY_XHIGH / screenDensity;
+        if (lv > 1.15f) {
+            lv = lv * 0.87f;
+        } else if (lv < 0.87f) {
+            lv = lv * 1.15f;
+        }
+
+        LogUtil.d("getFontScale", "lv = " + lv);
+        return lv;
     }
 
 }

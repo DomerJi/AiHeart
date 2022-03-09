@@ -1,6 +1,5 @@
 package com.thfw.robotheart.activitys.task;
 
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -96,22 +95,11 @@ public class TaskActivity extends RobotBaseActivity {
             selectTab(1);
         });
         selectTab(0);
-        setMsg(100);
-
     }
 
     private void selectTab(int position) {
         mTvTab01.setSelected(position == 0);
         mTvTab02.setSelected(position == 1);
-    }
-
-    private void setMsg(int count) {
-        if (count > 0) {
-            mTvDotCount01.setVisibility(View.VISIBLE);
-            mTvDotCount01.setText(count > 99 ? "99+" : String.valueOf(count));
-        } else {
-            mTvDotCount01.setVisibility(View.GONE);
-        }
     }
 
 }

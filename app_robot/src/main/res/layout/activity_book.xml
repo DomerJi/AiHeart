@@ -15,11 +15,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_type"
-        android:layout_width="@dimen/navigation_left_width"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/white_10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleRobotView">
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView"
+        app:layout_constraintWidth_percent="0.165">
 
     </androidx.recyclerview.widget.RecyclerView>
 

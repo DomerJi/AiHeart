@@ -16,6 +16,7 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.UserInfoPresenter;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.MainActivity;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.login.BindPhoneActivity;
 import com.thfw.robotheart.activitys.login.SetPasswordActivity;
@@ -29,6 +30,8 @@ import com.thfw.user.login.User;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
 import com.trello.rxlifecycle2.LifecycleProvider;
+
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 
 /**
  * 账号管理
@@ -98,7 +101,9 @@ public class AccountManagerActivity extends RobotBaseActivity {
                     public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
                         if (view.getId() == R.id.tv_right) {
                             UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
-                            ToastUtil.show("成功退出");
+                            Intent intent = new Intent(mContext, MainActivity.class);
+                            intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
                             finish();
                         }
                         tDialog.dismiss();

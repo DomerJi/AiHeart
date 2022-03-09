@@ -10,9 +10,9 @@
         android:id="@+id/riv_pic"
         android:layout_width="120dp"
         android:layout_height="70dp"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="12dp"
         android:scaleType="centerCrop"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:riv_corner_radius="4dp"
         app:riv_oval="false" />
 

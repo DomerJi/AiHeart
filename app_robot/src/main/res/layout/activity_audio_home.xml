@@ -15,11 +15,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvList"
-        android:layout_width="@dimen/navigation_left_width"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/navigation_tab_bg_normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView"
+        app:layout_constraintWidth_percent="0.165"
         tools:ignore="MissingConstraints" />
 
     <LinearLayout

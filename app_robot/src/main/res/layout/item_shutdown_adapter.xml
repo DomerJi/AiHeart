@@ -4,7 +4,7 @@
     android:id="@+id/tv_time"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:textColor="@color/colorRobotFore"
     android:textSize="32sp"
-    android:gravity="center"
     tools:text="08" />

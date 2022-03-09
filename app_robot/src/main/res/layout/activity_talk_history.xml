@@ -18,14 +18,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleRobotView">
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView"
+        app:srlEnableFooterFollowWhenNoMoreData="true">
 
         <com.scwang.smart.refresh.header.ClassicsHeader
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:srlEnableLastTime="false"
             app:srlTextFailed="加载成功"
             app:srlTextFinish="加载完成"
-            app:srlEnableLastTime="false"
             app:srlTextLoading="正在加载..."
             app:srlTextPulling="下拉可以加载"
             app:srlTextRefreshing="正在加载..."
@@ -38,7 +39,7 @@
 
         <com.scwang.smart.refresh.footer.ClassicsFooter
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 

@@ -6,7 +6,7 @@
     <!--导航栏高度-->
     <dimen name="navigation_height">50dp</dimen>
 
-    <dimen name="home_textSize">19sp</dimen>
+    <dimen name="home_textSize">18sp</dimen>
     <dimen name="home_textSize_phone">16sp</dimen>
     <dimen name="home_bg_icon_padding">8dp</dimen>
     <dimen name="home_tab_bg_padding">4dp</dimen>
@@ -16,7 +16,6 @@
     <integer name="horizontal_weight">4</integer>
     <integer name="left_weight">1</integer>
     <integer name="right_weight">3</integer>
-
     <dimen name="home_tab_height">50dp</dimen>
     <dimen name="home_tab_icon_height">75dp</dimen>
     <dimen name="home_tab_icon_chat_height">40dp</dimen>
@@ -36,7 +35,7 @@
     <dimen name="home_sort_text_icon_margin_phone">-3dp</dimen>
 
     <dimen name="textSize_robot_title">20sp</dimen>
-    <dimen name="textSize_login_title">30sp</dimen>
+    <dimen name="textSize_login_title">26sp</dimen>
     <dimen name="textSize_login_title_phone">25sp</dimen>
 
     <dimen name="home_hint_dot">6dp</dimen>
@@ -46,7 +45,6 @@
     <dimen name="button_height">50dp</dimen>
     <dimen name="button_height_phone">40dp</dimen>
     <dimen name="button_width">260dp</dimen>
-    <dimen name="login_button_height">60dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
@@ -73,7 +71,8 @@
     <dimen name="switch_min_width">85dp</dimen>
     <dimen name="robot_video_small_width">650dp</dimen>
 
-    <dimen name="login_edit_height">60dp</dimen>
+    <dimen name="login_edit_height">54dp</dimen>
+    <dimen name="login_button_height">54dp</dimen>
     <dimen name="login_edit_height_phone">45dp</dimen>
 
     <dimen name="card_image_radius">10dp</dimen>

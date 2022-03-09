@@ -1,5 +1,7 @@
 package com.thfw.robotheart.activitys.me;
 
+import android.content.Context;
+import android.content.Intent;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -30,6 +32,10 @@ public class HelpBackActivity extends RobotBaseActivity {
     private com.google.android.material.tabs.TabItem mTiBack;
     private com.google.android.material.tabs.TabItem mTiAbout;
     private androidx.viewpager2.widget.ViewPager2 mViewPager;
+
+    public static void startActivity(Context context, int pageIndex) {
+        context.startActivity(new Intent(context, HelpBackActivity.class).putExtra(KEY_DATA, pageIndex));
+    }
 
     @Override
     public int getContentView() {
@@ -79,6 +85,10 @@ public class HelpBackActivity extends RobotBaseActivity {
                 return collectMap.size();
             }
         });
+        if (getIntent().hasExtra(KEY_DATA)) {
+            int pageIndex = getIntent().getIntExtra(KEY_DATA, 0) % 3;
+            mViewPager.setCurrentItem(pageIndex, false);
+        }
 
         mViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override

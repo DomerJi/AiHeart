@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv_login_by_face"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="8dp"
+        android:drawableLeft="@mipmap/ic_login_by_face"
+        android:drawablePadding="4dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:paddingTop="8dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp"
+        android:text="刷脸登录"
+        android:textColor="@color/colorRobotFore"
+        android:textSize="@dimen/textSize_robot_title" />
+
+
+    <TextView
+        android:id="@+id/tv_login_by_mobile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="8dp"
+        android:drawableLeft="@mipmap/ic_login_password"
+        android:drawablePadding="4dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:paddingTop="8dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp"
+        android:text="免密登录"
+        android:textColor="@color/colorRobotFore"
+        android:textSize="@dimen/textSize_robot_title" />
+
+    <TextView
+        android:id="@+id/tv_login_by_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:drawableLeft="@mipmap/ic_login_password"
+        android:drawablePadding="4dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:paddingTop="8dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp"
+        android:text="账号登录"
+        android:textColor="@color/colorRobotFore"
+        android:textSize="@dimen/textSize_robot_title" />
+
+
+</LinearLayout>

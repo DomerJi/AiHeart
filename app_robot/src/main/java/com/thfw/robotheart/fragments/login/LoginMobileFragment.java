@@ -1,5 +1,6 @@
 package com.thfw.robotheart.fragments.login;
 
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -25,7 +26,6 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> implements LoginPresenter.LoginUi<CommonModel> {
 
-    private TextView mTvLoginByPassword;
     private TextView mTvCountry;
     private EditText mEtMobile;
     private Button mBtGetCode;
@@ -38,7 +38,8 @@ public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> imple
     private TextView mTvProductMsg;
     private TextView mTvProductAgree;
     private TextView mTvLoginByFace;
-    private LinearLayout mLlLoginCenter;
+    private TextView mTvLoginByPassword;
+    private TextView mTvLoginByMobile;
 
     public LoginMobileFragment() {
         // Required empty public constructor
@@ -71,8 +72,8 @@ public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> imple
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
         Util.addUnderLine(mTvProductUser, mTvProductMsg, mTvProductAgree);
         mTvLoginByFace = (TextView) findViewById(R.id.tv_login_by_face);
-        mLlLoginCenter = (LinearLayout) findViewById(R.id.ll_login_center);
-
+        mTvLoginByMobile = (TextView) findViewById(R.id.tv_login_by_mobile);
+        mTvLoginByMobile.setVisibility(View.GONE);
         initAgreeClick();
     }
 

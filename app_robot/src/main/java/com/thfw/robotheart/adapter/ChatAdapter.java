@@ -59,6 +59,8 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
                 return new TimeHolder(inflate(R.layout.chat_time_layout, parent));
             case ChatEntity.TYPE_HINT: // 提醒已到最前时间 或 *******
                 return new HintHolder(inflate(R.layout.chat_hint_layout, parent));
+            case ChatEntity.TYPE_JOIN_PAGE: // 提醒加入某个页面
+                return new JoinPageHolder(inflate(R.layout.chat_change_page_layout, parent));
             case ChatEntity.TYPE_END_SERVICE: // 您已结束本次服务
                 return new ChatHolder(inflate(R.layout.chat_end_service_layout, parent));
             case ChatEntity.TYPE_FEEDBACK: // 您对本次回答满意吗？
@@ -94,9 +96,16 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
                     ChatToHolder chatToHolder = (ChatToHolder) holder;
                     chatToHolder.mTvTalk.setText(Html.fromHtml(chatEntity.getTalk()));
                     if (position == getItemCount() - 1) {
-                        chatToHolder.mPbToTalk.setVisibility(View.VISIBLE);
+                        if (chatEntity.loading == -1) {
+                            chatToHolder.mPbToTalk.setVisibility(View.GONE);
+                            chatToHolder.mIvSendError.setVisibility(View.VISIBLE);
+                        } else {
+                            chatToHolder.mPbToTalk.setVisibility(View.VISIBLE);
+                            chatToHolder.mIvSendError.setVisibility(View.GONE);
+                        }
                     } else {
                         chatToHolder.mPbToTalk.setVisibility(View.GONE);
+                        chatToHolder.mIvSendError.setVisibility(View.GONE);
                     }
                     GlideUtil.load(mContext, visibleAvatar, chatToHolder.mRivToAvatar);
                 }
@@ -123,6 +132,12 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             case ChatEntity.TYPE_HINT:
                 if (holder instanceof HintHolder) {
                     HintHolder hintHolder = (HintHolder) holder;
+                    hintHolder.mTvHint.setText(chatEntity.getTalk());
+                }
+                break;
+            case ChatEntity.TYPE_JOIN_PAGE:
+                if (holder instanceof JoinPageHolder) {
+                    JoinPageHolder hintHolder = (JoinPageHolder) holder;
                     hintHolder.mTvHint.setText(chatEntity.getTalk());
                 }
                 break;
@@ -173,13 +188,30 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
         private final TextView mTvTalk;
         private final ProgressBar mPbToTalk;
         private final ImageView mRivToAvatar;
+        private final ImageView mIvSendError;
 
         public ChatToHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mRivToAvatar = itemView.findViewById(R.id.riv_to_avatar);
             mTvTalk = itemView.findViewById(R.id.tv_talk);
             mPbToTalk = itemView.findViewById(R.id.pb_to_talk);
+            mIvSendError = itemView.findViewById(R.id.iv_send_error);
+            mIvSendError.setOnClickListener(v -> {
+                if (mOnSendStateChangeListener != null) {
+                    mOnSendStateChangeListener.onErrorResend();
+                }
+            });
         }
+    }
+
+    onSendStateChangeListener mOnSendStateChangeListener;
+
+    public void setOnSendStateChangeListener(ChatAdapter.onSendStateChangeListener onSendStateChangeListener) {
+        this.mOnSendStateChangeListener = onSendStateChangeListener;
+    }
+
+    public interface onSendStateChangeListener {
+        void onErrorResend();
     }
 
     public class RecommendHolder extends ChatHolder {
@@ -218,6 +250,16 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
         private TextView mTvHint;
 
         public HintHolder(@NonNull @NotNull View itemView) {
+            super(itemView);
+            mTvHint = itemView.findViewById(R.id.tv_hint);
+        }
+
+    }
+
+    public class JoinPageHolder extends ChatHolder {
+        private TextView mTvHint;
+
+        public JoinPageHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvHint = itemView.findViewById(R.id.tv_hint);
         }

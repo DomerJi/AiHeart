@@ -50,9 +50,12 @@ import com.thfw.robotheart.push.tester.UPushAlias;
 import com.thfw.robotheart.service.AutoUpdateService;
 import com.thfw.robotheart.util.MsgCountManager;
 import com.thfw.robotheart.view.DialogRobotFactory;
+import com.thfw.robotheart.view.HomeIpTextView;
 import com.thfw.robotheart.view.SVGAHelper;
 import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.utils.GlideUtil;
+import com.thfw.ui.voice.tts.TtsHelper;
+import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.MyRobotSearchView;
 import com.thfw.ui.widget.WeekView;
 import com.thfw.user.login.User;
@@ -84,17 +87,17 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private ConstraintLayout mClSpecialityTalk;
     private android.widget.LinearLayout mLlNavigation;
     private android.widget.LinearLayout mRlRow01;
-    private android.widget.LinearLayout mLlTest;
-    private android.widget.LinearLayout mLlMusic;
+    private ConstraintLayout mLlTest;
+    private ConstraintLayout mLlMusic;
     private android.widget.LinearLayout mRlRow02;
-    private android.widget.LinearLayout mLlTalk;
-    private android.widget.LinearLayout mLlVideo;
+    private ConstraintLayout mLlTalk;
+    private ConstraintLayout mLlVideo;
     private android.widget.LinearLayout mRlRow03;
-    private android.widget.LinearLayout mLlExercise;
-    private android.widget.LinearLayout mLlBook;
-    private android.widget.LinearLayout mLlStudy;
+    private ConstraintLayout mLlExercise;
+    private ConstraintLayout mLlBook;
+    private ConstraintLayout mLlStudy;
     private android.widget.LinearLayout mRlRow04;
-    private android.widget.LinearLayout mLlHotCall;
+    private ConstraintLayout mLlHotCall;
     private android.widget.LinearLayout mLlSetting;
     private android.widget.LinearLayout mLlMe;
     private MyRobotSearchView mMySearch;
@@ -110,6 +113,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private TextView mTvMeDotHint;
 
     private Random random = new Random();
+    private com.thfw.robotheart.view.HomeIpTextView mHitAnim;
 
     /**
      * 重新登录后重新获取用户相关信息
@@ -145,18 +149,18 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mClSpecialityTalk = findViewById(R.id.cl_speciality_talk);
         mLlNavigation = (LinearLayout) findViewById(R.id.ll_navigation);
         mRlRow01 = (LinearLayout) findViewById(R.id.rl_row_01);
-        mLlTest = (LinearLayout) findViewById(R.id.ll_test);
-        mLlMusic = (LinearLayout) findViewById(R.id.ll_music);
+        mLlTest = findViewById(R.id.cl_test);
+        mLlMusic = findViewById(R.id.cl_music);
         mRlRow02 = (LinearLayout) findViewById(R.id.rl_row_02);
-        mLlTalk = (LinearLayout) findViewById(R.id.ll_talk);
-        mLlVideo = (LinearLayout) findViewById(R.id.ll_video);
+        mLlTalk = findViewById(R.id.cl_talk);
+        mLlVideo = findViewById(R.id.cl_video);
         mRlRow03 = (LinearLayout) findViewById(R.id.rl_row_03);
         mTvDotHint = findViewById(R.id.tv_set_dot_hint);
-        mLlExercise = (LinearLayout) findViewById(R.id.ll_exercise);
-        mLlBook = (LinearLayout) findViewById(R.id.ll_book);
-        mLlStudy = (LinearLayout) findViewById(R.id.ll_study);
+        mLlExercise =  findViewById(R.id.cl_exercise);
+        mLlBook = findViewById(R.id.cl_book);
+        mLlStudy = findViewById(R.id.cl_study);
         mRlRow04 = (LinearLayout) findViewById(R.id.rl_row_04);
-        mLlHotCall = (LinearLayout) findViewById(R.id.ll_hot_call);
+        mLlHotCall = findViewById(R.id.cl_hot_call);
         mLlSetting = (LinearLayout) findViewById(R.id.ll_setting);
         mLlMe = (LinearLayout) findViewById(R.id.ll_me);
         mClSetting = (ConstraintLayout) findViewById(R.id.cl_setting);
@@ -193,6 +197,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mSvgaFace = (SVGAImageView) findViewById(R.id.svga_face);
         mTvSetDotHint = (TextView) findViewById(R.id.tv_set_dot_hint);
         mTvMeDotHint = (TextView) findViewById(R.id.tv_me_dot_hint);
+
+        mHitAnim = (HomeIpTextView) findViewById(R.id.hit_anim);
 
         startFaceAnim();
     }
@@ -255,10 +261,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         } else {
             showSVGALogin();
         }
-
-        MsgCountManager.getInstance().addNumSystem();
-        MsgCountManager.getInstance().addNumTask();
-
         // 检查版本更新
         mMainHandler.removeCallbacksAndMessages(null);
         mMainHandler.postDelayed(new Runnable() {
@@ -305,6 +307,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
      */
     private void animResume(boolean resume) {
         if (resume) {
+            mHitAnim.resume();
             if (!mSvgaFace.isAnimating()) {
                 mSvgaFace.startAnimation();
                 if (!mSvgaFace.isAnimating()) {
@@ -315,6 +318,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 mSvgaBody.startAnimation();
             }
         } else {
+            mHitAnim.pause();
             if (mSvgaFace.isAnimating()) {
                 mSvgaFace.startAnimation();
             }
@@ -355,7 +359,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             startActivity(new Intent(mContext, MeActivity.class));
         } else if (vId == R.id.cl_setting) {
             startActivity(new Intent(mContext, SettingActivity.class));
-        } else if (vId == R.id.ll_music) {
+        } else if (vId == R.id.cl_music) {
             DialogRobotFactory.createSvgaDialog(MainActivity.this,
                     AnimFileName.TRANSITION_AUDIO,
                     new DialogRobotFactory.OnSVGACallBack() {
@@ -364,7 +368,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                             startActivity(new Intent(mContext, AudioHomeActivity.class));
                         }
                     });
-        } else if (vId == R.id.ll_test) {
+        } else if (vId == R.id.cl_test) {
             DialogRobotFactory.createSvgaDialog(MainActivity.this,
                     AnimFileName.TRANSITION_TEST,
                     new DialogRobotFactory.OnSVGACallBack() {
@@ -372,7 +376,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                             startActivity(new Intent(mContext, TestActivity.class));
                         }
                     });
-        } else if (vId == R.id.ll_video) {
+        } else if (vId == R.id.cl_video) {
             DialogRobotFactory.createSvgaDialog(MainActivity.this,
                     AnimFileName.TRANSITION_VIDEO,
                     new DialogRobotFactory.OnSVGACallBack() {
@@ -380,7 +384,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                             startActivity(new Intent(mContext, VideoHomeActivity.class));
                         }
                     });
-        } else if (vId == R.id.ll_exercise) {
+        } else if (vId == R.id.cl_exercise) {
             DialogRobotFactory.createSvgaDialog(MainActivity.this,
                     AnimFileName.TRANSITION_TOOL,
                     new DialogRobotFactory.OnSVGACallBack() {
@@ -396,7 +400,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                             startActivity(new Intent(mContext, ThemeTalkActivity.class));
                         }
                     });
-        } else if (vId == R.id.ll_talk) {
+        } else if (vId == R.id.cl_talk) {
             DialogRobotFactory.createSvgaDialog(MainActivity.this,
                     AnimFileName.TRANSITION_TALK,
                     new DialogRobotFactory.OnSVGACallBack() {
@@ -404,9 +408,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                             AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
                         }
                     });
-        } else if (vId == R.id.ll_hot_call) {
+        } else if (vId == R.id.cl_hot_call) {
             startActivity(new Intent(mContext, HotPhoneActivity.class));
-        } else if (vId == R.id.ll_study) {
+        } else if (vId == R.id.cl_study) {
             DialogRobotFactory.createSvgaDialog(MainActivity.this,
                     AnimFileName.TRANSITION_IDEO,
                     new DialogRobotFactory.OnSVGACallBack() {
@@ -414,7 +418,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                             startActivity(new Intent(mContext, BookStudyActivity.class));
                         }
                     });
-        } else if (vId == R.id.ll_book) {
+        } else if (vId == R.id.cl_book) {
             DialogRobotFactory.createSvgaDialog(MainActivity.this,
                     AnimFileName.TRANSITION_BOOK,
                     new DialogRobotFactory.OnSVGACallBack() {
@@ -538,6 +542,10 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                     UserManager.getInstance().getUser().setUserInfo(data);
                     UserManager.getInstance().notifyUserInfo();
                     UPushAlias.set(MyApplication.getApp(), "user_" + data.id, "user");
+                    if (SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, true)) {
+                        SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false);
+                        TtsHelper.getInstance().start(new TtsModel("你好" + UserManager.getInstance().getUser().getVisibleName() + ",很高兴见到你"), null);
+                    }
                 } else {
                     onFail(new ResponeThrowable(0, "data is null"));
                 }
@@ -559,7 +567,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                     }
                 });
             }
-        }).onGetUserInfo();
+        }).
+
+                onGetUserInfo();
     }
 
     private void initUmeng() {
@@ -610,6 +620,11 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
     @Override
     public void onItemState(int id, boolean read) {
+
+    }
+
+    @Override
+    public void onReadAll(int type) {
 
     }
 }

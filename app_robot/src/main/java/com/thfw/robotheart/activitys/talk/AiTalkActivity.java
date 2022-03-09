@@ -55,6 +55,7 @@ import com.thfw.robotheart.adapter.ChatSelectAdapter;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.util.PageJumpUtils;
 import com.thfw.robotheart.view.DialogRobotFactory;
+import com.thfw.robotheart.view.HomeIpTextView;
 import com.thfw.robotheart.view.SVGAHelper;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.TDialog;
@@ -76,6 +77,11 @@ import java.util.List;
 public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements TalkPresenter.TalkUi<List<DialogTalkModel>> {
 
 
+    private static final int FACE_TYPE_FREE = 0; // 空闲
+    private static final int FACE_TYPE_SPEECH = 1; // 说话
+    private static final int FACE_TYPE_LISTEN = 2; // 倾听
+    private static final int FACE_TYPE_TOUCH = 3; // 触摸
+    private static String KEY_ROBOT_SPEECH;
     long downTime;
     boolean currentSelect = false;
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
@@ -95,6 +101,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     private Helper mHelper = new Helper();
     private LinkedList<TtsModel> mTtsQueue = new LinkedList<>();
     private boolean mTtsFinished = false;
+    private boolean mTtsStarted = false;
     // 1、树洞聊天 2、咨询助理
     private int mScene;
     private android.widget.LinearLayout mLlTalkHistory;
@@ -110,14 +117,11 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     private boolean ttsPauseIng;
     private com.opensource.svgaplayer.SVGAImageView mSvgaBody;
     private com.opensource.svgaplayer.SVGAImageView mSvgaFace;
-
-    private static final int FACE_TYPE_FREE = 0; // 空闲
-    private static final int FACE_TYPE_SPEECH = 1; // 说话
-    private static final int FACE_TYPE_LISTEN = 2; // 倾听
-    private static final int FACE_TYPE_TOUCH = 3; // 触摸
     private int mFaceType = -1; // 当前面部表情状态
-
-    private static String KEY_ROBOT_SPEECH;
+    private com.thfw.robotheart.view.HomeIpTextView mHitAnim;
+    // 失败参数暂存;
+    private int mSceneError;
+    private NetParams mNetParamsError;
 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, AiTalkActivity.class).putExtra(KEY_DATA, talkModel));
@@ -175,42 +179,8 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mIvTalkSwitch = (ImageView) findViewById(R.id.iv_talk_switch);
         mLlVolumeSwitch = (LinearLayout) findViewById(R.id.ll_volume_switch);
         mIvVolumeSwitch = (ImageView) findViewById(R.id.iv_volume_switch);
-
         mLlVolumeSwitch.setOnClickListener(v -> {
-            if (!mIvVolumeSwitch.isSelected() && PolicyHelper.getInstance().isSpeechMode()) {
-                ToastUtil.show("正在倾听，无法打开");
-                return;
-            }
-            mIvVolumeSwitch.setSelected(!mIvVolumeSwitch.isSelected());
-            if (mIvVolumeSwitch.isSelected()) {
-                if (mTtsFinished) {
-                    startAnimFaceType(FACE_TYPE_FREE);
-                    return;
-                }
-                if (EmptyUtil.isEmpty(mChatAdapter.getDataList())) {
-                    startAnimFaceType(FACE_TYPE_FREE);
-                    return;
-                }
-                List<ChatEntity> chatEntities = mChatAdapter.getDataList();
-                List<ChatEntity> ttsEntitys = new ArrayList<>();
-                for (int i = chatEntities.size() - 1; i >= 0; i--) {
-                    ChatEntity chatEntity = chatEntities.get(i);
-                    if (chatEntity.isFrom()) {
-                        ttsEntitys.add(chatEntity);
-                    } else {
-                        break;
-                    }
-                }
-                Collections.reverse(ttsEntitys);
-                LogUtil.d(TAG, "ttsEntitys.size = " + ttsEntitys.size());
-                for (ChatEntity chatEntity : ttsEntitys) {
-                    ttsHandle(chatEntity);
-                }
-            } else {
-                startAnimFaceType(FACE_TYPE_FREE);
-                TtsHelper.getInstance().stop();
-                mTtsQueue.clear();
-            }
+            volumeSwitch(true);
         });
 
 
@@ -235,6 +205,47 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         });
 
 
+        mHitAnim = (HomeIpTextView) findViewById(R.id.hit_anim);
+    }
+
+    private void volumeSwitch(boolean fromUser) {
+        if (fromUser) {
+            SharePreferenceUtil.setBoolean(KEY_ROBOT_SPEECH, !mIvVolumeSwitch.isSelected());
+        }
+        if (!mIvVolumeSwitch.isSelected() && PolicyHelper.getInstance().isSpeechMode()) {
+            ToastUtil.show("正在倾听，无法打开");
+            return;
+        }
+        mIvVolumeSwitch.setSelected(!mIvVolumeSwitch.isSelected());
+        if (mIvVolumeSwitch.isSelected()) {
+            if (mTtsFinished) {
+                startAnimFaceType(FACE_TYPE_FREE);
+                return;
+            }
+            if (EmptyUtil.isEmpty(mChatAdapter.getDataList())) {
+                startAnimFaceType(FACE_TYPE_FREE);
+                return;
+            }
+            List<ChatEntity> chatEntities = mChatAdapter.getDataList();
+            List<ChatEntity> ttsEntitys = new ArrayList<>();
+            for (int i = chatEntities.size() - 1; i >= 0; i--) {
+                ChatEntity chatEntity = chatEntities.get(i);
+                if (chatEntity.isFrom()) {
+                    ttsEntitys.add(chatEntity);
+                } else {
+                    break;
+                }
+            }
+            Collections.reverse(ttsEntitys);
+            LogUtil.d(TAG, "ttsEntitys.size = " + ttsEntitys.size());
+            for (ChatEntity chatEntity : ttsEntitys) {
+                ttsHandle(chatEntity);
+            }
+        } else {
+            startAnimFaceType(FACE_TYPE_FREE);
+            TtsHelper.getInstance().stop();
+            mTtsQueue.clear();
+        }
     }
 
     private void startAnimFaceType(int type) {
@@ -286,10 +297,12 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         chatEntity.type = ChatEntity.TYPE_TO;
         chatEntity.talk = inputText;
 
-        NetParams netParams = NetParams.crete().add("id", mHelper.getTalkModel().getId())
-                .add("question", chatEntity.talk);
-        mPresenter.onDialog(mScene, netParams);
-
+        NetParams netParams = NetParams.crete().add("question", chatEntity.talk);
+        LogUtil.d(TAG, "inputText = " + chatEntity.talk);
+        if (mScene != 1) {
+            netParams.add("id", mHelper.getTalkModel().getId());
+        }
+        onDialog(mScene, netParams);
         sendData(chatEntity);
         mEtContent.setText("");
     }
@@ -419,7 +432,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 if (ing) {
                     showOriginVolume = mIvVolumeSwitch.isSelected();
                     if (mIvVolumeSwitch.isSelected()) {
-                        mLlVolumeSwitch.performClick();
+                        volumeSwitch(false);
                     }
                     startAnimFaceType(FACE_TYPE_LISTEN);
                     mStvText.show();
@@ -427,8 +440,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                     mStvText.hide();
                     if (showOriginVolume) {
                         if (!mIvVolumeSwitch.isSelected()) {
-                            mLlVolumeSwitch.performClick();
+                            volumeSwitch(false);
                         }
+                    } else {
+                        startAnimFaceType(FACE_TYPE_FREE);
                     }
                 }
             }
@@ -670,6 +685,8 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     @Override
     public void onSuccess(List<DialogTalkModel> data) {
+        mSceneError = -1;
+        mNetParamsError = null;
         LogUtil.d(TAG, "onSuccess = " + data.size());
         mHelper.setTalks(data);
         mTtsQueue.clear();
@@ -708,30 +725,37 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             LogUtil.d(TAG, "ttsHandle.start chatEntity.isFrom()");
             TtsModel ttsModel = new TtsModel(chatEntity.getTalk());
             mTtsQueue.add(ttsModel);
-            LogUtil.d(TAG, " ttsHandle mTtsQueue.add(ttsModel); text =  " + ttsModel.text);
+            LogUtil.d(TAG, " ttsHandle mTtsQueue.add(ttsModel); text =  " + ttsModel.text + " ; = " + mTtsQueue.size());
             mTtsFinished = false;
-            if (TtsHelper.getInstance().isIng()) {
+            boolean ttsIng = TtsHelper.getInstance().isIng();
+            if (ttsIng) {
+                if (mTtsStarted) {
+                    return;
+                }
                 TtsHelper.getInstance().setCurrentSynthesizerListener(new TtsHelper.SimpleSynthesizerListener() {
                     @Override
                     public void onIng(boolean ing) {
                         super.onIng(ing);
+                        if (!isMeResumed() || EmptyUtil.isEmpty(AiTalkActivity.this)) {
+                            return;
+                        }
                         LogUtil.d(TAG, "ttsHandle  ing=  " + ing);
                         if (!ing) {
                             ttsHandle();
                         }
                     }
                 });
-                return;
+
             } else {
                 ttsHandle();
             }
-
         }
 
 
     }
 
     private void ttsHandle() {
+        mTtsStarted = true;
         if (mTtsQueue.isEmpty()) {
             return;
         }
@@ -747,6 +771,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             @Override
             public void onCompleted(SpeechError speechError) {
                 super.onCompleted(speechError);
+                if (!isMeResumed() || EmptyUtil.isEmpty(AiTalkActivity.this)) {
+                    return;
+                }
                 LogUtil.d(TAG, "TtsHelper.getInstance().start onCompleted");
                 if (!mTtsQueue.isEmpty()) {
                     LogUtil.d(TAG, "TtsHelper.getInstance().start continue");
@@ -782,7 +809,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         } else {
             mCurrentChatType = chatEntity.type;
         }
-        mScene = talkModel.getScene(mScene);
+        onSceneHandle(talkModel);
         sendData(chatEntity);
         ttsHandle(chatEntity);
         if (mCurrentChatType == ChatEntity.TYPE_FROM_SELECT) {
@@ -808,6 +835,24 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         }
     }
 
+    /**
+     * 倾诉吐槽和主题对话跳转处理
+     *
+     * @param talkModel
+     */
+    private void onSceneHandle(DialogTalkModel talkModel) {
+        if (talkModel.getScene(mScene) != mScene) {
+            mScene = talkModel.getScene(mScene);
+            if (mScene == 1) {
+                mTitleRobotView.setCenterText("倾诉吐槽");
+                sendData(ChatEntity.createJoinPage("欢迎进入倾诉吐槽"));
+            } else {
+                mTitleRobotView.setCenterText("主题对话");
+                sendData(ChatEntity.createJoinPage("欢迎进入专业心理咨询"));
+            }
+        }
+    }
+
     private void setSelectItemListener(ChatEntity chatEntity) {
         mSelectAdapter.setOnRvItemListener(new OnRvItemListener<DialogTalkModel.CheckRadioBean>() {
             @Override
@@ -822,7 +867,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 if (radioBean.getKey() > 0) {
                     NetParams netParams = NetParams.crete().add("id", chatEntity.getTalkModel().getId())
                             .add("value", radioBean.getKey());
-                    mPresenter.onDialog(mScene, netParams);
+                    onDialog(mScene, netParams);
                 } else {
                     PageJumpUtils.jump(radioBean.getHref(), new PageJumpUtils.OnJumpListener() {
                         @Override
@@ -849,6 +894,24 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     public void onFail(ResponeThrowable throwable) {
         LogUtil.d(TAG, "onFail = " + throwable.getMessage());
         ToastUtil.show("onFail = " + throwable.getMessage());
+
+        // 消息重发
+        if (mSceneError != -1 && mNetParamsError != null && mChatAdapter != null) {
+            ChatEntity lastChatEntity = mChatAdapter.getDataList().get(mChatAdapter.getItemCount() - 1);
+            if (lastChatEntity != null) {
+                lastChatEntity.onError();
+                mChatAdapter.notifyItemChanged(mChatAdapter.getItemCount() - 1);
+                mChatAdapter.setOnSendStateChangeListener(new ChatAdapter.onSendStateChangeListener() {
+                    @Override
+                    public void onErrorResend() {
+                        lastChatEntity.onLoading();
+                        mChatAdapter.notifyItemChanged(mChatAdapter.getItemCount() - 1);
+                        onDialog(mSceneError, mNetParamsError);
+                    }
+                });
+            }
+
+        }
     }
 
     @Override
@@ -881,6 +944,13 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         }
     }
 
+    private void onDialog(int mScene, NetParams netParams) {
+        mSceneError = mScene;
+        mNetParamsError = netParams;
+        mPresenter.onDialog(mScene, netParams);
+    }
+
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -894,6 +964,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         if (ttsPauseIng) {
             TtsHelper.getInstance().pause();
         }
+        mHitAnim.pause();
     }
 
     @Override
@@ -912,7 +983,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         if (ttsPauseIng) {
             TtsHelper.getInstance().resume();
         }
+        mHitAnim.resume();
     }
+
 
     @Override
     public void onDestroy() {
@@ -953,4 +1026,5 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             return talkModel;
         }
     }
+
 }

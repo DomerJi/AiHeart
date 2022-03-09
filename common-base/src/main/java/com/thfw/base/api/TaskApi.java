@@ -63,7 +63,11 @@ public interface TaskApi {
      */
     @FormUrlEncoded
     @POST("push_msg_list")
-    Observable<HttpResult<List<PushModel>>> onGetPushMsgList(@Field("msg_type") int msgType, @Field("page") int page);
+    Observable<HttpResult<List<TaskItemModel>>> onGetPushMsgList(@Field("msg_type") int msgType, @Field("page") int page);
+
+    @FormUrlEncoded
+    @POST("push_msg_list")
+    Observable<HttpResult<List<PushModel>>> onGetPushMsgList2(@Field("msg_type") int msgType, @Field("page") int page);
 
     /**
      * 已读状态修改
@@ -75,6 +79,14 @@ public interface TaskApi {
     @POST("read_push_msg")
     Observable<HttpResult<CommonModel>> onReadStated(@Field("id") int id);
 
+    @FormUrlEncoded
+    @POST("read_push_msg")
+    Observable<HttpResult<CommonModel>> onReadStated(@Field("msg_id") String msgId);
+
+    @FormUrlEncoded
+    @POST("read_all_msg")
+    Observable<HttpResult<CommonModel>> onReadStatedAll(@Field("type") int type);
+
     /**
      * 新消息数量查询接口
      * <p>
@@ -85,6 +97,18 @@ public interface TaskApi {
     @FormUrlEncoded
     @POST("new_msg_count")
     Observable<HttpResult<MsgCountModel>> onNewMsgCount(@FieldMap Map<String, Object> params);
+
+
+    /**
+     * 新消息数量查询接口
+     * <p>
+     * type 1-任务消息 2-系统消息 0或不传为所有类型
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("get_push_msg_by_msg_id")
+    Observable<HttpResult<PushModel>> getPushModel(@FieldMap Map<String, Object> params);
 
 
 }

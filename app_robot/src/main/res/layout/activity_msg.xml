@@ -87,6 +87,24 @@
 
         </RelativeLayout>
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/bt_read_msg_all"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/common_white50_greeen_selector"
+            android:enabled="false"
+            android:text="一键已读"
+            android:textColor="@drawable/textcolor_white_green_selector"
+            android:textSize="@dimen/textSize_small_2" />
+
     </LinearLayout>
 
     <View

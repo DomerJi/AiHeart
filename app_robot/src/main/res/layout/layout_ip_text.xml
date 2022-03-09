@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:layout_width="300dp"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <ImageView
+        android:id="@+id/iv_text_box_bg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        android:src="@mipmap/ic_home_ip_text_box"
+        app:layout_constraintDimensionRatio="W,166:179"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_ip_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:lineSpacingExtra="2dp"
+        android:maxLines="3"
+        android:text="Hi,点击我进入\n专业心理咨询"
+        android:textColor="@color/colorRobotTextDark"
+        android:textSize="10sp"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="@id/iv_text_box_bg"
+        app:layout_constraintDimensionRatio="W,1:0.6"
+        app:layout_constraintLeft_toLeftOf="@id/iv_text_box_bg"
+        app:layout_constraintRight_toRightOf="@id/iv_text_box_bg"
+        app:layout_constraintTop_toTopOf="@id/iv_text_box_bg"
+        app:layout_constraintVertical_bias="0.22" />
+
+</merge>

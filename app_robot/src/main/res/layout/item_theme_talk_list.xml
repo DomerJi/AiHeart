@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="8dp"
-    android:layout_marginBottom="12dp"
     android:layout_marginRight="8dp"
+    android:layout_marginBottom="12dp"
     tools:layout_width="300dp">
 
 
@@ -29,9 +29,9 @@
         android:gravity="right|center_vertical"
         android:paddingRight="@dimen/card_image_bottom_padding"
         android:text="@string/title"
-        android:visibility="gone"
         android:textColor="@drawable/common_left_tab_textcolor_selector"
         android:textSize="@dimen/card_image_bottom_textSize"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/riv_etc_bg" />
 
     <TextView

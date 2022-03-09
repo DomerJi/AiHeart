@@ -48,6 +48,16 @@
         tools:background="@color/white_10"
         tools:ignore="MissingConstraints">
 
+        <com.thfw.robotheart.view.HomeIpTextView
+            android:id="@+id/hit_anim"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:hip_text="Hi,我是\n专业的咨询助理\n快来试试看"
+            app:layout_constraintBottom_toTopOf="@id/svga_body"
+            app:layout_constraintRight_toRightOf="@id/svga_body"
+            app:layout_constraintWidth_percent="0.40" />
+
+
         <com.opensource.svgaplayer.SVGAImageView
             android:id="@+id/svga_body"
             android:layout_width="0dp"

@@ -1,4 +1,4 @@
-package com.thfw.robotheart.push.helper;
+package com.thfw.base.base;
 
 /**
  * Author:pengs
@@ -20,6 +20,8 @@ public class MsgType {
     public static final int MOOD = 10;
     public static final int VOICE_COMMAND = 11;
     public static final int SYSTEM = 12;
+    public static final int BOOK = 13;
+    public static final int IDEO_BOOK = 14;
 
 
     /**
@@ -49,7 +51,7 @@ public class MsgType {
      * <p>
      * 11=>"voice_command"
      * <p>
-     * 12=>sysetm
+     * 12=>system
      */
 
 }

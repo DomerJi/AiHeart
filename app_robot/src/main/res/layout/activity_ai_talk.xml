@@ -77,6 +77,15 @@
 
         </LinearLayout>
 
+        <com.thfw.robotheart.view.HomeIpTextView
+            android:id="@+id/hit_anim"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:hip_text="Hi,我是小密 Hi,我在呢"
+            app:layout_constraintBottom_toTopOf="@id/svga_body"
+            app:layout_constraintRight_toRightOf="@id/svga_body"
+            app:layout_constraintWidth_percent="0.3" />
+
 
         <com.opensource.svgaplayer.SVGAImageView
             android:id="@+id/svga_body"
@@ -105,6 +114,15 @@
             app:layout_constraintVertical_bias="0.23"
             app:layout_constraintWidth_percent="0.50"
             tools:background="@mipmap/ic_face_anim2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="‿"
+            android:textColor="@color/colorRobotTextDark"
+            app:layout_constraintBottom_toBottomOf="@id/svga_face"
+            app:layout_constraintLeft_toLeftOf="@id/svga_face"
+            app:layout_constraintRight_toRightOf="@id/svga_face" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

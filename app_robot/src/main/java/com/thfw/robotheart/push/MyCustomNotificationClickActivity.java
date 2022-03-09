@@ -4,6 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.thfw.base.models.PushMsgModel;
+import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.ToastUtil;
+import com.thfw.robotheart.push.helper.PushHandle;
 import com.umeng.message.UTrack;
 import com.umeng.message.UmengNotificationClickHandler;
 import com.umeng.message.entity.UMessage;
@@ -16,6 +21,9 @@ import org.json.JSONObject;
 public class MyCustomNotificationClickActivity extends Activity {
 
     public static final String EXTRA_BODY = "body";
+    public static final String EXTRA_BODY_TYPE = "body.type";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +31,14 @@ public class MyCustomNotificationClickActivity extends Activity {
         Intent intent = getIntent();
         if (intent != null) {
             String body = intent.getStringExtra(EXTRA_BODY);
-            if (body != null) {
+            LogUtil.d("MyCustomNotificationClickActivity body : " + body);
+            int bodyType = intent.getIntExtra(EXTRA_BODY_TYPE, 0);
+            if (body == null) {
+                LogUtil.d("MyCustomNotificationClickActivity body == null");
+                finish();
+                return;
+            }
+            if (bodyType == 0) {
                 try {
                     UMessage message = new UMessage(new JSONObject(body));
                     UTrack.getInstance().trackMsgClick(message);
@@ -33,10 +48,24 @@ public class MyCustomNotificationClickActivity extends Activity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+            } else {
+                try {
+                    PushMsgModel pushMsgModel = GsonUtil.fromJson(body, PushMsgModel.class);
+                    if (pushMsgModel != null) {
+                        PushHandle.handleMessage(MyCustomNotificationClickActivity.this, pushMsgModel.toPushModel());
+                    }
+                } catch (Exception e) {
+                    ToastUtil.show("notification error : " + e.getMessage());
+                }
+
             }
         }
+
         finish();
     }
+
+
 
 
 }

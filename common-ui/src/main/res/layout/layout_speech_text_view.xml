@@ -6,13 +6,14 @@
     android:layout_height="wrap_content"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-
     <TextView
         android:id="@+id/tv_speech_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:hint="倾听中···"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
         android:textColor="@color/white"
         android:textColorHint="@color/white_60"
         android:textSize="@dimen/textSize"
@@ -23,19 +24,19 @@
     <com.scwang.wave.MultiWaveHeader
         android:id="@+id/waveHeader"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="6dp"
         android:scaleY="-1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:mwhCloseColor="@color/text_yellow"
-        app:mwhColorAlpha="0.45"
+        app:mwhCloseColor="#008cc2"
+        app:mwhColorAlpha="0.6"
         app:mwhGradientAngle="45"
         app:mwhIsRunning="false"
         app:mwhProgress="1"
-        app:mwhStartColor="@color/colorRobotPrimary"
-        app:mwhVelocity="50"
-        app:mwhWaveHeight="20dp"
+        app:mwhStartColor="#58c2e4"
+        app:mwhVelocity="55"
+        app:mwhWaveHeight="10dp"
         app:mwhWaves="MultiWave" />
 
 

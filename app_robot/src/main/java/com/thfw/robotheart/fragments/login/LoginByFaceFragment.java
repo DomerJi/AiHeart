@@ -12,9 +12,9 @@ import android.view.animation.LinearInterpolator;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -69,9 +69,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     public static final int NATIVE_DETECTOR = 1;
     private static final int FAIL_COUNT_MAX = 200;
     private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
-    private LinearLayout mLlLoginCenter;
     private TextView mTvLoginByPassword;
-    private TextView mTvLoginByCode;
     private LinearLayout mClBottom;
     private RoundedImageView mRivWechat;
     private RoundedImageView mRivQq;
@@ -103,6 +101,8 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     private String[] mDetectorName;
     private float mRelativeFaceSize = 0.2f;
     private int mAbsoluteFaceSize = 0;
+    private TextView mTvLoginByFace;
+    private TextView mTvLoginByMobile;
 
     @Override
     public int getContentView() {
@@ -117,9 +117,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     @Override
     public void initView() {
 
-        mLlLoginCenter = (LinearLayout) findViewById(R.id.ll_login_center);
-        mTvLoginByPassword = (TextView) findViewById(R.id.tv_login_by_password);
-        mTvLoginByCode = (TextView) findViewById(R.id.tv_login_by_code);
+
         mClBottom = (LinearLayout) findViewById(R.id.cl_bottom);
         mRivWechat = (RoundedImageView) findViewById(R.id.riv_wechat);
         mRivQq = (RoundedImageView) findViewById(R.id.riv_qq);
@@ -127,18 +125,24 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         mTvProductUser = (TextView) findViewById(R.id.tv_product_user);
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
+
+        mJavaCamera2CircleView = (JavaCamera2CircleView) findViewById(R.id.javaCamera2CircleView);
+        mIvBorder = (ImageView) findViewById(R.id.iv_border);
+        mIvLine = (ImageView) findViewById(R.id.iv_line);
+
+        mTvLoginByPassword = (TextView) findViewById(R.id.tv_login_by_password);
+        mTvLoginByFace = (TextView) findViewById(R.id.tv_login_by_face);
+        mTvLoginByMobile = (TextView) findViewById(R.id.tv_login_by_mobile);
+        mTvLoginByFace.setVisibility(View.GONE);
         mTvLoginByPassword.setOnClickListener(v -> {
             LoginActivity loginActivity = (LoginActivity) getActivity();
             loginActivity.getFragmentLoader().load(LoginActivity.BY_PASSWORD);
         });
 
-        mTvLoginByCode.setOnClickListener(v -> {
+        mTvLoginByMobile.setOnClickListener(v -> {
             LoginActivity loginActivity = (LoginActivity) getActivity();
             loginActivity.getFragmentLoader().load(LoginActivity.BY_MOBILE);
         });
-        mJavaCamera2CircleView = (JavaCamera2CircleView) findViewById(R.id.javaCamera2CircleView);
-        mIvBorder = (ImageView) findViewById(R.id.iv_border);
-        mIvLine = (ImageView) findViewById(R.id.iv_line);
         Util.addUnderLine(mTvProductUser, mTvProductMsg, mTvProductAgree);
         initAgreeClick();
     }
@@ -153,6 +157,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         mTvProductMsg.setOnClickListener(v -> {
             WebActivity.startActivity(mContext, AgreeOn.AGREE_MSG);
         });
+
     }
 
     @Override
@@ -188,10 +193,10 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         super.onResume();
         inputFace = UserManager.getInstance().isLogin();
         if (inputFace) {
-            mTvLoginByCode.setVisibility(View.INVISIBLE);
+            mTvLoginByMobile.setVisibility(View.INVISIBLE);
             mTvLoginByPassword.setVisibility(View.INVISIBLE);
             mTvLoginByPassword.setEnabled(false);
-            mTvLoginByCode.setEnabled(false);
+            mTvLoginByMobile.setEnabled(false);
             TextView mTvPageTitle = (TextView) findViewById(R.id.tv_page_title);
             mTvPageTitle.setText("人脸录入");
             mClBottom.setVisibility(View.GONE);
@@ -227,10 +232,8 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 
     public void startLineAnim() {
         mIvLine.clearAnimation();
-
-        int margin = Util.dipToPx(12, mContext);
-        int height = mIvBorder.getHeight() - 2 * margin - mIvLine.getHeight();
-        int mRCircle = height / 2;
+        int height = mJavaCamera2CircleView.getHeight() - mIvLine.getHeight();
+        int mRCircle = mJavaCamera2CircleView.getHeight() / 2;
 
         ObjectAnimator lineAnimation = ObjectAnimator.ofFloat(mIvLine, "translationY",
                 mLineUpAnim ? 0 : height, mLineUpAnim ? height : 0);
@@ -249,6 +252,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
+                value = value + mIvLine.getHeight() / 2f;
                 // 知道半径是R，圆心到直线的距离是d，
                 // 那么这条直线的长度计算可以利用勾股定理
                 // L=2√(R²-d²)
@@ -256,12 +260,8 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                 int d = (int) Math.abs(value - mRCircle);
                 int l = (int) (2 * Math.sqrt(r * r - d * d));
                 LogUtil.d("onAnimationUpdate", "d = " + d + " ; r = " + r + " ; l = " + l);
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mIvLine.getLayoutParams();
+                ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) mIvLine.getLayoutParams();
                 lp.width = l;
-                lp.topMargin = margin;
-                lp.rightMargin = margin;
-                lp.leftMargin = margin;
-                lp.bottomMargin = margin;
                 mIvLine.setLayoutParams(lp);
             }
         });
@@ -616,6 +616,14 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         for (Rect rect : rects) {
             Imgproc.rectangle(mRgba, new Point(rect.x, rect.y), new Point(rect.x
                     + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mJavaCamera2CircleView != null) {
+            mJavaCamera2CircleView.surfaceDestroyed(null);
         }
     }
 }

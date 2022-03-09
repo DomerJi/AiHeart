@@ -188,6 +188,11 @@ public class DormantActivity extends RobotBaseActivity implements Dormant.Minute
         mTvTime.setText(mOriginalText + "（已休眠" + Dormant.getSleepTime() + "分钟）");
     }
 
+    @Override
+    public void onBackPressed() {
+        onWakeUp(WakeUpType.CLICK);
+    }
+
     public static class WakeUpType {
         // 点击屏幕 【唤醒】
         public static final int CLICK = 0;
@@ -197,10 +202,5 @@ public class DormantActivity extends RobotBaseActivity implements Dormant.Minute
         public static final int VOICE = 2;
         // 离开充电座 眩晕后继续休眠 【不唤醒】
         public static final int SWIM = 3;
-    }
-
-    @Override
-    public void onBackPressed() {
-        onWakeUp(WakeUpType.CLICK);
     }
 }
