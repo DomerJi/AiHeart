@@ -173,6 +173,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
 
     @Override
     public int getContentView() {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         return R.layout.activity_video_play;
     }
 
@@ -183,7 +184,6 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
 
     @Override
     public void initView() {
-
         rootType = getIntent().getIntExtra(KEY_PLAY_ROOTTYPE, 1);
         mIvBg = (ImageView) findViewById(R.id.iv_bg);
         mMPlayerView = (PlayerView) findViewById(R.id.mPlayerView);

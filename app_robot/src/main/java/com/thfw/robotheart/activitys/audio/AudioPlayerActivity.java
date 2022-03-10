@@ -86,7 +86,6 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private static TaskMusicEtcModel mStaticTaskEtcModel;
     boolean flDurationEnd = true;
     private StyledPlayerView mAudioView;
-    private ImageView mIvBlurBg;
     private LoadingView mPbBar;
     private View btPlay;
     private View btPause;
@@ -155,6 +154,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
     @Override
     public int getContentView() {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         return R.layout.activity_audio_player;
     }
 
@@ -176,7 +176,6 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
 
         mAudioView = (StyledPlayerView) findViewById(R.id.audio_view);
-        mIvBlurBg = (ImageView) findViewById(R.id.iv_blur_bg);
         mIvCollect = (ImageView) findViewById(R.id.iv_collect);
 
         mRivEtc = (RoundedImageView) findViewById(R.id.riv_etc);
