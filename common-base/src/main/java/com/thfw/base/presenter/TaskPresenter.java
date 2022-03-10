@@ -6,6 +6,7 @@ import com.thfw.base.base.UI;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.MsgCountModel;
 import com.thfw.base.models.PushModel;
+import com.thfw.base.models.SystemDetailModel;
 import com.thfw.base.models.TaskDetailModel;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.base.models.TaskMusicEtcModel;
@@ -141,11 +142,11 @@ public class TaskPresenter<T> extends IPresenter<TaskPresenter.TaskUi> {
     /**
      * 推送消息详情详情
      *
-     * @param id 推送友盟返回的msg_id字段
+     * @param netParams 推送友盟返回的msg_id字段 id
      */
-    public void getPushModel(int id) {
-        Observable<HttpResult<PushModel>> observable = OkHttpUtil.createService(TaskApi.class)
-                .getPushModel(NetParams.crete().add("id", id));
+    public void getPushModel(NetParams netParams) {
+        Observable<HttpResult<SystemDetailModel>> observable = OkHttpUtil.createService(TaskApi.class)
+                .getPushModel(netParams);
         OkHttpUtil.request(observable, getUI());
     }
 

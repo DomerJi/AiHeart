@@ -106,20 +106,24 @@
         android:id="@+id/cl_speciality_talk"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/ll_navigation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.7"
         app:layout_constraintHorizontal_weight="@integer/left_weight"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/ll_navigation"
-        app:layout_constraintTop_toTopOf="@id/ll_navigation"
+        app:layout_constraintTop_toTopOf="parent"
         tools:background="@color/white_10"
         tools:ignore="MissingConstraints">
 
         <com.thfw.robotheart.view.HomeIpTextView
             android:id="@+id/hit_anim"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintRight_toRightOf="@id/svga_body"
-            app:layout_constraintWidth_percent="0.35" />
+            android:layout_height="0dp"
+            app:hip_text="Hi,点击我进入\n专业心理咨询"
+            app:layout_constraintBottom_toTopOf="@id/svga_body"
+            app:layout_constraintDimensionRatio="H,166:179"
+            app:layout_constraintHeight_percent="0.2"
+            app:layout_constraintRight_toRightOf="@id/svga_body" />
 
         <com.opensource.svgaplayer.SVGAImageView
             android:id="@+id/svga_body"
@@ -127,11 +131,11 @@
             android:layout_height="0dp"
             app:autoPlay="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="W,240:179"
+            app:layout_constraintDimensionRatio="W,179:240"
+            app:layout_constraintHeight_percent="0.52"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.65"
             app:source="home_ip_bg.svga"
             tools:background="@mipmap/ic_home_ip" />
 
@@ -141,12 +145,12 @@
             android:layout_height="0dp"
             app:layout_constrainedHeight="true"
             app:layout_constraintBottom_toBottomOf="@id/svga_body"
-            app:layout_constraintDimensionRatio="W,1:2"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintDimensionRatio="H,1:2"
+            app:layout_constraintHeight_percent="0.11"
+            app:layout_constraintLeft_toLeftOf="@id/svga_body"
+            app:layout_constraintRight_toRightOf="@id/svga_body"
             app:layout_constraintTop_toTopOf="@id/svga_body"
             app:layout_constraintVertical_bias="0.28"
-            app:layout_constraintWidth_percent="0.35"
             tools:background="@mipmap/ic_home_ip_face" />
 
 

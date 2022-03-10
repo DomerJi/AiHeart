@@ -80,11 +80,12 @@
         <com.thfw.robotheart.view.HomeIpTextView
             android:id="@+id/hit_anim"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:hip_text="Hi,我是小密 Hi,我在呢"
             app:layout_constraintBottom_toTopOf="@id/svga_body"
-            app:layout_constraintRight_toRightOf="@id/svga_body"
-            app:layout_constraintWidth_percent="0.3" />
+            app:layout_constraintDimensionRatio="H,166:179"
+            app:layout_constraintHeight_percent="0.15"
+            app:layout_constraintRight_toRightOf="@id/svga_body" />
 
 
         <com.opensource.svgaplayer.SVGAImageView
@@ -93,11 +94,11 @@
             android:layout_height="0dp"
             app:autoPlay="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="W,240:179"
+            app:layout_constraintDimensionRatio="W,179:240"
+            app:layout_constraintHeight_percent="0.46"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.65"
+            app:layout_constraintTop_toBottomOf="@id/ll_volume_switch"
             app:source="home_ip_bg.svga"
             tools:background="@mipmap/ic_home_ip" />
 
@@ -107,12 +108,12 @@
             android:layout_height="0dp"
             app:layout_constrainedHeight="true"
             app:layout_constraintBottom_toBottomOf="@id/svga_body"
-            app:layout_constraintDimensionRatio="W,1:1.8"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintDimensionRatio="H,1:1.8"
+            app:layout_constraintHeight_percent="0.15"
+            app:layout_constraintLeft_toLeftOf="@id/svga_body"
+            app:layout_constraintRight_toRightOf="@id/svga_body"
             app:layout_constraintTop_toTopOf="@id/svga_body"
-            app:layout_constraintVertical_bias="0.23"
-            app:layout_constraintWidth_percent="0.50"
+            app:layout_constraintVertical_bias="0.2"
             tools:background="@mipmap/ic_face_anim2" />
 
         <TextView

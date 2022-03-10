@@ -30,6 +30,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
 
     private final Object visibleAvatar;
     OnRecommendListener mRecommendListener;
+    onSendStateChangeListener mOnSendStateChangeListener;
 
     public ChatAdapter(List<ChatEntity> dataList) {
         super(dataList);
@@ -153,8 +154,16 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
         this.mRecommendListener = recommendListener;
     }
 
+    public void setOnSendStateChangeListener(ChatAdapter.onSendStateChangeListener onSendStateChangeListener) {
+        this.mOnSendStateChangeListener = onSendStateChangeListener;
+    }
+
     public interface OnRecommendListener {
         void onRecommend(int type, DialogTalkModel.RecommendInfoBean recommendInfoBean);
+    }
+
+    public interface onSendStateChangeListener {
+        void onErrorResend();
     }
 
     public class ChatHolder extends RecyclerView.ViewHolder {
@@ -202,16 +211,6 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
                 }
             });
         }
-    }
-
-    onSendStateChangeListener mOnSendStateChangeListener;
-
-    public void setOnSendStateChangeListener(ChatAdapter.onSendStateChangeListener onSendStateChangeListener) {
-        this.mOnSendStateChangeListener = onSendStateChangeListener;
-    }
-
-    public interface onSendStateChangeListener {
-        void onErrorResend();
     }
 
     public class RecommendHolder extends ChatHolder {

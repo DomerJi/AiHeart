@@ -24,7 +24,6 @@ public class MyCustomNotificationClickActivity extends Activity {
     public static final String EXTRA_BODY_TYPE = "body.type";
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,8 +63,6 @@ public class MyCustomNotificationClickActivity extends Activity {
 
         finish();
     }
-
-
 
 
 }

@@ -17,6 +17,7 @@ import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.DefaultWebClient;
 import com.thfw.base.models.SystemDetailModel;
+import com.thfw.base.net.NetParams;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TaskPresenter;
 import com.thfw.base.utils.ToastUtil;
@@ -47,10 +48,16 @@ public class SystemDetailActivity extends RobotBaseActivity<TaskPresenter> imple
     private LoadingView mLoadingView;
     private boolean requestIng = false;
     private int bookId;
+    private static final String KEY_DATA_STR = "key.data.str";
 
     public static void startActivity(Context context, int id) {
         ((Activity) context).startActivity(new Intent(context, SystemDetailActivity.class)
                 .putExtra(KEY_DATA, id));
+    }
+
+    public static void startActivity(Context context, String msgId) {
+        ((Activity) context).startActivity(new Intent(context, SystemDetailActivity.class)
+                .putExtra(KEY_DATA_STR, msgId));
     }
 
     @Override
@@ -74,14 +81,19 @@ public class SystemDetailActivity extends RobotBaseActivity<TaskPresenter> imple
 
     @Override
     public void initData() {
-        int mBookId = getIntent().getIntExtra(KEY_DATA, -1);
-        if (mBookId == -1) {
+        int mBookId = getIntent().getIntExtra(KEY_DATA, 0);
+        String mBookMsgId = getIntent().getStringExtra(KEY_DATA_STR);
+        if (mBookId <= 0 && TextUtils.isEmpty(mBookMsgId)) {
             ToastUtil.show("参数错误");
             finish();
             return;
         }
+        if (mBookId > 0) {
+            mPresenter.getPushModel(NetParams.crete().add("id", mBookId));
+        } else {
+            mPresenter.getPushModel(NetParams.crete().add("msg_id", mBookMsgId));
+        }
 
-        mPresenter.getPushModel(mBookId);
     }
 
 
@@ -278,7 +290,8 @@ public class SystemDetailActivity extends RobotBaseActivity<TaskPresenter> imple
     public void onSuccess(SystemDetailModel data) {
         if (data != null) {
             mLoadingView.hide();
-            contentHtml = "dddddddddddddddddddddddddddddd";
+            contentHtml = data.getLongContent();
+            title = data.getTitle();
             initHtmlData();
         } else {
             mLoadingView.showFail(v -> {

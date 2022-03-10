@@ -51,11 +51,12 @@
         <com.thfw.robotheart.view.HomeIpTextView
             android:id="@+id/hit_anim"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:hip_text="Hi,我是\n专业的咨询助理\n快来试试看"
             app:layout_constraintBottom_toTopOf="@id/svga_body"
-            app:layout_constraintRight_toRightOf="@id/svga_body"
-            app:layout_constraintWidth_percent="0.40" />
+            app:layout_constraintDimensionRatio="H,166:179"
+            app:layout_constraintHeight_percent="0.16"
+            app:layout_constraintRight_toRightOf="@id/svga_body" />
 
 
         <com.opensource.svgaplayer.SVGAImageView
@@ -64,11 +65,11 @@
             android:layout_height="0dp"
             app:autoPlay="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="W,240:179"
+            app:layout_constraintDimensionRatio="W,179:240"
+            app:layout_constraintHeight_percent="0.42"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.65"
             app:source="home_ip_bg.svga"
             tools:background="@mipmap/ic_home_ip" />
 
@@ -78,12 +79,12 @@
             android:layout_height="0dp"
             app:layout_constrainedHeight="true"
             app:layout_constraintBottom_toBottomOf="@id/svga_body"
-            app:layout_constraintDimensionRatio="W,1:2"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintDimensionRatio="H,1:2"
+            app:layout_constraintHeight_percent="0.085"
+            app:layout_constraintLeft_toLeftOf="@id/svga_body"
+            app:layout_constraintRight_toRightOf="@id/svga_body"
             app:layout_constraintTop_toTopOf="@id/svga_body"
             app:layout_constraintVertical_bias="0.28"
-            app:layout_constraintWidth_percent="0.35"
             tools:background="@mipmap/ic_home_ip_face" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

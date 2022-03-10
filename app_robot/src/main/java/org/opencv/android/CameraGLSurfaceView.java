@@ -16,6 +16,7 @@ public class CameraGLSurfaceView extends GLSurfaceView {
 
     ;
     private CameraGLRendererBase mRenderer;
+
     public CameraGLSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
 

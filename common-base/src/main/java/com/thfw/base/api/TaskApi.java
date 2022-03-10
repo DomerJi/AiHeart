@@ -3,6 +3,7 @@ package com.thfw.base.api;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.MsgCountModel;
 import com.thfw.base.models.PushModel;
+import com.thfw.base.models.SystemDetailModel;
 import com.thfw.base.models.TaskDetailModel;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.base.models.TaskMusicEtcModel;
@@ -108,7 +109,7 @@ public interface TaskApi {
      */
     @FormUrlEncoded
     @POST("get_push_msg_by_msg_id")
-    Observable<HttpResult<PushModel>> getPushModel(@FieldMap Map<String, Object> params);
+    Observable<HttpResult<SystemDetailModel>> getPushModel(@FieldMap Map<String, Object> params);
 
 
 }

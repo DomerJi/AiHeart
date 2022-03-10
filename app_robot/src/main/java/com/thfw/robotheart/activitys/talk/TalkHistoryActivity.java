@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,7 +56,7 @@ public class TalkHistoryActivity extends RobotBaseActivity<TalkPresenter> implem
     private PageHelper<ChatEntity> pageHelper;
     private com.thfw.ui.widget.LoadingView mLoadingView;
     private com.haibin.calendarview.CalendarView mCalendarView;
-    private android.widget.LinearLayout mLlCalendar;
+    private ConstraintLayout mLlCalendar;
     private android.widget.LinearLayout mLlYearMonth;
     private android.widget.ImageView mIvLeftMonth;
     private android.widget.TextView mTvYearMonth;
@@ -110,7 +111,7 @@ public class TalkHistoryActivity extends RobotBaseActivity<TalkPresenter> implem
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
         mLoadingView.hide();
         mCalendarView = (CalendarView) findViewById(R.id.calendarView);
-        mLlCalendar = (LinearLayout) findViewById(R.id.ll_calendar);
+        mLlCalendar = findViewById(R.id.cl_calendar_parent);
         mLlYearMonth = (LinearLayout) findViewById(R.id.ll_year_month);
         mIvLeftMonth = (ImageView) findViewById(R.id.iv_left_month);
         mTvYearMonth = (TextView) findViewById(R.id.tv_year_month);
@@ -175,7 +176,6 @@ public class TalkHistoryActivity extends RobotBaseActivity<TalkPresenter> implem
                 mLoadingView.showLoading();
                 data = HourUtil.getYYMMDD(calendar.getTimeInMillis());
                 mPresenter.onDialogHistory(scene, data, 0, "");
-                mBtConfirm.setVisibility(View.GONE);
                 mLlCalendar.setVisibility(View.GONE);
             }
 

@@ -39,6 +39,7 @@ import java.util.Locale;
 public class MyApplication extends MultiDexApplication {
 
     private static MyApplication app;
+    private static float lv;
 
     // static 代码段可以防止内存泄露
     static {
@@ -60,14 +61,27 @@ public class MyApplication extends MultiDexApplication {
         });
     }
 
-    private static float lv;
-
     public static MyApplication getApp() {
         return app;
     }
 
     public static AppDatabase getDatabase() {
         return Room.databaseBuilder(app, AppDatabase.class, "database-name").build();
+    }
+
+    public static float getFontScale() {
+        if (lv > 0) {
+            return lv;
+        }
+        int screenDensity = app.getResources().getDisplayMetrics().densityDpi;
+        if (DisplayMetrics.DENSITY_XHIGH == screenDensity) {
+            lv = 1f;
+            LogUtil.d("getFontScale", "lv = " + lv);
+            return lv;
+        }
+        lv = 1.0f * DisplayMetrics.DENSITY_XHIGH / screenDensity;
+        LogUtil.d("getFontScale", "lv = " + lv);
+        return lv;
     }
 
     @Override
@@ -99,7 +113,6 @@ public class MyApplication extends MultiDexApplication {
         Setting.setShowLog(false);
     }
 
-
     /**
      * 初始化友盟SDK
      */
@@ -126,27 +139,6 @@ public class MyApplication extends MultiDexApplication {
             //若不是主进程（":channel"结尾的进程），直接初始化sdk，不可在子线程中执行
             PushHelper.init(getApplicationContext());
         }
-    }
-
-    public static float getFontScale() {
-        if (lv > 0) {
-            return lv;
-        }
-        int screenDensity = app.getResources().getDisplayMetrics().densityDpi;
-        if (DisplayMetrics.DENSITY_XHIGH == screenDensity) {
-            lv = 1f;
-            LogUtil.d("getFontScale", "lv = " + lv);
-            return lv;
-        }
-        lv = 1.0f * DisplayMetrics.DENSITY_XHIGH / screenDensity;
-        if (lv > 1.15f) {
-            lv = lv * 0.87f;
-        } else if (lv < 0.87f) {
-            lv = lv * 1.15f;
-        }
-
-        LogUtil.d("getFontScale", "lv = " + lv);
-        return lv;
     }
 
 }

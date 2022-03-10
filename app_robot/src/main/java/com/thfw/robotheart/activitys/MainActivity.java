@@ -156,7 +156,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mLlVideo = findViewById(R.id.cl_video);
         mRlRow03 = (LinearLayout) findViewById(R.id.rl_row_03);
         mTvDotHint = findViewById(R.id.tv_set_dot_hint);
-        mLlExercise =  findViewById(R.id.cl_exercise);
+        mLlExercise = findViewById(R.id.cl_exercise);
         mLlBook = findViewById(R.id.cl_book);
         mLlStudy = findViewById(R.id.cl_study);
         mRlRow04 = (LinearLayout) findViewById(R.id.rl_row_04);

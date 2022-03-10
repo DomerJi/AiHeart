@@ -34,9 +34,11 @@ public class PushHandle {
     public static final void handleMessage(Context mContext, PushModel pushModel) {
         int msgType = pushModel.getMsgType();
         int contentId = pushModel.getContentId();
+        String longTextId = null;
         if (pushModel.getId() > 0) {
             MsgCountManager.getInstance().readMsg(msgType, pushModel.getId());
         } else {
+            longTextId = String.valueOf(pushModel.getMsgId());
             MsgCountManager.getInstance().readMsg(msgType, pushModel.getMsgId());
         }
         switch (msgType) {
@@ -69,7 +71,12 @@ public class PushHandle {
                 WebActivity.startActivity(mContext, pushModel.getTurnPage(), pushModel.getTitle());
                 break;
             case MsgType.SYSTEM:
-                SystemDetailActivity.startActivity(mContext, contentId);
+
+                if (pushModel.getId() > 0) {
+                    SystemDetailActivity.startActivity(mContext, pushModel.getId());
+                }else {
+
+                }
                 break;
             case MsgType.COMMON_PROBLEM:
                 HelpBackActivity.startActivity(mContext, 0);

@@ -397,6 +397,7 @@ public class JavaCamera2View extends CameraBridgeViewBase {
             mUVFrameData = null;
             mRgba = new Mat();
         }
+
         public JavaCamera2Frame(Mat Y, Mat UV, int width, int height) {
             super();
             mWidth = width;
