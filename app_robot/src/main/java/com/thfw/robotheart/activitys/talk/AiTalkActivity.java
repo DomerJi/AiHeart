@@ -929,6 +929,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             return;
         }
         switch (requestCode) {
+            case PageJumpUtils.JUMP_TEXT:
+            case PageJumpUtils.JUMP_MUSIC:
+            case PageJumpUtils.JUMP_AI_HOME:
             case ChatEntity.TYPE_RECOMMEND_TEXT:
             case ChatEntity.TYPE_RECOMMEND_VIDEO:
             case ChatEntity.TYPE_RECOMMEND_AUDIO:
