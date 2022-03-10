@@ -8,8 +8,8 @@
 
     <View
         android:id="@+id/v_left_tab"
-        android:layout_width="5dp"
-        android:layout_height="20dp"
+        android:layout_width="5sp"
+        android:layout_height="20sp"
         android:layout_marginLeft="12dp"
         android:background="@color/text_green"
         app:layout_constraintBottom_toBottomOf="@id/tv_title"
