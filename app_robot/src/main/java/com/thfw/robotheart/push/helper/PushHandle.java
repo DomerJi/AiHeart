@@ -35,11 +35,13 @@ public class PushHandle {
         int msgType = pushModel.getMsgType();
         int contentId = pushModel.getContentId();
         String longTextId = null;
-        if (pushModel.getId() > 0) {
-            MsgCountManager.getInstance().readMsg(msgType, pushModel.getId());
-        } else {
-            longTextId = String.valueOf(pushModel.getMsgId());
-            MsgCountManager.getInstance().readMsg(msgType, pushModel.getMsgId());
+        if (pushModel.getReadStatus() == 0) {
+            if (pushModel.getId() > 0) {
+                MsgCountManager.getInstance().readMsg(msgType, pushModel.getId());
+            } else {
+                longTextId = String.valueOf(pushModel.getMsgId());
+                MsgCountManager.getInstance().readMsg(msgType, pushModel.getMsgId());
+            }
         }
         switch (msgType) {
             case MsgType.TASK:
@@ -74,8 +76,8 @@ public class PushHandle {
 
                 if (pushModel.getId() > 0) {
                     SystemDetailActivity.startActivity(mContext, pushModel.getId());
-                }else {
-
+                } else {
+                    SystemDetailActivity.startActivity(mContext, pushModel.getMsgId());
                 }
                 break;
             case MsgType.COMMON_PROBLEM:

@@ -85,10 +85,6 @@ public class HelpBackActivity extends RobotBaseActivity {
                 return collectMap.size();
             }
         });
-        if (getIntent().hasExtra(KEY_DATA)) {
-            int pageIndex = getIntent().getIntExtra(KEY_DATA, 0) % 3;
-            mViewPager.setCurrentItem(pageIndex, false);
-        }
 
         mViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -116,5 +112,11 @@ public class HelpBackActivity extends RobotBaseActivity {
 
             }
         });
+
+        if (getIntent().hasExtra(KEY_DATA)) {
+            int pageIndex = getIntent().getIntExtra(KEY_DATA, 0) % 3;
+            mViewPager.setCurrentItem(pageIndex, false);
+            mTabLayout.selectTab(mTabLayout.getTabAt(mViewPager.getCurrentItem()));
+        }
     }
 }

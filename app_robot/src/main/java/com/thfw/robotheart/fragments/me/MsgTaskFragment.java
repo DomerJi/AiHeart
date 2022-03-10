@@ -64,7 +64,9 @@ public class MsgTaskFragment extends RobotBaseFragment<TaskPresenter> implements
         mMsgAdapter.setOnRvItemListener(new OnRvItemListener<TaskItemModel>() {
             @Override
             public void onItemClick(List<TaskItemModel> list, int position) {
-                MsgCountManager.getInstance().readMsg(MsgType.TASK, list.get(position).getId());
+                if (list.get(position).getStatus() == 0) {
+                    MsgCountManager.getInstance().readMsg(MsgType.TASK, list.get(position).getId());
+                }
                 startActivity(new Intent(mContext, TaskActivity.class));
             }
         });
