@@ -21,8 +21,8 @@
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/riv_type"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginLeft="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/riv_dot"
