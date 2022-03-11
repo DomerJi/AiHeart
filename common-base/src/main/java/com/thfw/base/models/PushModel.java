@@ -34,6 +34,10 @@ public class PushModel implements IModel {
     private int msgType;
     @SerializedName("content")
     private String content;
+
+    @SerializedName("task_type")
+    private int taskType;
+
     @SerializedName("read_status")
     private int readStatus;
     @SerializedName("long_content")
@@ -49,6 +53,10 @@ public class PushModel implements IModel {
     // 友盟msgId
     @SerializedName("msg_id")
     private String msgId;
+
+    public int getTaskType() {
+        return taskType;
+    }
 
     public void setMsgId(String msgId) {
         this.msgId = msgId;

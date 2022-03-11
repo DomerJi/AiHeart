@@ -63,6 +63,7 @@ import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
+import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.User;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
@@ -143,6 +144,13 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
         return new UserInfoPresenter(this);
     }
 
+    @Override
+    public void onDestroy() {
+        if (mFirstInputMsg) {
+            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+        }
+        super.onDestroy();
+    }
 
     @Override
     public void finish() {
@@ -200,6 +208,12 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
     }
 
     private boolean inputFinish() {
+
+        if (isTextEmpty(mTvNickname)) {
+            ToastUtil.show("未填写昵称");
+            return false;
+        }
+
         if (isTextEmpty(mTvName)) {
             ToastUtil.show("未填写真实姓名");
             return false;
@@ -294,7 +308,7 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
                     finish();
                 }
             });
-            int[] ids = new int[]{R.id.tv_star_01, R.id.tv_star_02, R.id.tv_star_03,
+            int[] ids = new int[]{R.id.tv_star_00, R.id.tv_star_01, R.id.tv_star_02, R.id.tv_star_03,
                     R.id.tv_star_04, R.id.tv_star_05, R.id.tv_star_06, R.id.tv_star_07,
                     R.id.tv_star_08, R.id.tv_star_09, R.id.tv_star_10, R.id.tv_star_11,
                     R.id.tv_star_12, R.id.tv_star_13, R.id.tv_star_14, R.id.tv_star_15,

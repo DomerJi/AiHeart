@@ -81,6 +81,7 @@
     <string name="set_volume_system">系统声音</string>
     <string name="set_volume_hint">提示声音</string>
     <string name="set_volume_music">媒体声音</string>
+    <string name="join_collect">加入收藏</string>
     <string name="set_volume_btn">按键声音</string>
 
 </resources>

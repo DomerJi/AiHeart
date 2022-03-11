@@ -99,50 +99,65 @@ public class PushHandle {
 
     }
 
+    public static final Object getTaskIcon(int taskType) {
+        /**
+         * 1-测评 2-音频 3-话术
+         */
+        switch (taskType) {
+            case 1:
+                return R.mipmap.ic_msg_type_test;
+            case 2:
+                return R.mipmap.ic_msg_type_audio;
+            default:
+                return R.mipmap.ic_msg_type_talk;
+        }
+    }
 
     public static final Object getIcon(int type) {
         Object icon = null;
         switch (type) {
             case MsgType.TASK:
                 icon = R.mipmap.ic_launcher;
+                break;
             case MsgType.TESTING:
-                icon = R.mipmap.ic_launcher;
+                icon = R.mipmap.ic_msg_type_test;
                 break;
             case MsgType.TOOL_PACKAGE:
-                icon = R.mipmap.ic_launcher;
+                icon = R.mipmap.ic_msg_type_tool;
                 break;
             case MsgType.TOPIC_DIALOG:
-                icon = R.mipmap.ic_launcher;
+                icon = R.mipmap.ic_msg_type_talk;
                 break;
             case MsgType.MUSIC:
-                icon = R.mipmap.ic_launcher;
+                icon = R.mipmap.ic_msg_type_audio;
                 break;
             case MsgType.VIDEO:
-                icon = R.mipmap.ic_launcher;
+                icon = R.mipmap.ic_msg_type_video;
                 break;
             case MsgType.H5:
-                icon = R.mipmap.ic_launcher;
+                icon = R.drawable.ic_msg_type_link;
                 break;
             case MsgType.SYSTEM:
-                icon = R.mipmap.ic_launcher;
+                icon = R.mipmap.ic_msg_type_system;
                 break;
             case MsgType.COMMON_PROBLEM:
-                icon = R.mipmap.ic_launcher;
+                icon = R.mipmap.ic_msg_type_problem;
                 break;
             case MsgType.VOICE_COMMAND:
-                icon = R.mipmap.ic_launcher;
+                icon = R.mipmap.ic_msg_type_voice;
                 break;
             case MsgType.ABOUT_US:
-                icon = R.mipmap.ic_launcher;
+                icon = R.mipmap.ic_msg_type_abut;
                 break;
             case MsgType.BOOK:
-                icon = R.mipmap.ic_launcher;
+                icon = R.mipmap.ic_msg_type_book;
                 break;
             case MsgType.IDEO_BOOK:
-                icon = R.mipmap.ic_launcher;
+                icon = R.mipmap.ic_msg_type_ideo;
                 break;
             default:
-                icon = R.mipmap.ic_launcher;
+                icon = R.mipmap.ic_msg_type_ideo;
+                break;
         }
         return icon;
     }

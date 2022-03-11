@@ -200,6 +200,38 @@ public class TestDetailModel implements IModel {
             return hintBeans;
         }
 
+        public boolean isHas3Body() {
+            if (TextUtils.isEmpty(testingDes)) {
+                return false;
+            }
+            return true;
+        }
+
+        public boolean isHas2Body() {
+            if (TextUtils.isEmpty(willGet)) {
+                return false;
+            }
+            return true;
+        }
+
+        public boolean isHas1Body() {
+            if (TextUtils.isEmpty(forPeople)) {
+                return false;
+            }
+            return true;
+        }
+
+        public HintBean getBody1() {
+            return new HintBean("适合准则", forPeople);
+        }
+
+        public HintBean getBody2() {
+            return new HintBean("你将获得", willGet);
+        }
+
+        public HintBean getBody3() {
+            return new HintBean("温馨提示", testingDes);
+        }
 
         public int getId() {
             return id;

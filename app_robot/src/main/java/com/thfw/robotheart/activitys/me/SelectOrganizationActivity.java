@@ -31,6 +31,7 @@ import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.widget.LoadingView;
+import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -299,6 +300,14 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
         mLoadingView.showFail(v -> {
             initData();
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mIsFirst) {
+            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+        }
+        super.onDestroy();
     }
 
     @Override

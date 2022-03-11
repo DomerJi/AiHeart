@@ -35,6 +35,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".activity.test.TestResultWebActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
             android:name="com.thfw.mobileheart.activity.robot.RobotDetailsActivity"
             android:screenOrientation="portrait"></activity>
         <activity

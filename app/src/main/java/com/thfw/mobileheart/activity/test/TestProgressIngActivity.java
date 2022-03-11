@@ -1,51 +1,49 @@
 package com.thfw.mobileheart.activity.test;
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.SparseIntArray;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.flexbox.FlexDirection;
-import com.google.android.flexbox.FlexWrap;
-import com.google.android.flexbox.FlexboxLayoutManager;
-import com.google.android.flexbox.JustifyContent;
-import com.thfw.base.base.IPresenter;
+import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.TestDetailModel;
+import com.thfw.base.models.TestResultModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.TestPresenter;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
-import com.thfw.mobileheart.adapter.AnsewerSelectAdapter;
-import com.thfw.mobileheart.util.AnsewerModel;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.adapter.TestngAdapter;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.DialogFactory;
+import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
-import com.thfw.ui.widget.MyScrollView;
 import com.thfw.ui.widget.TitleView;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
-public class TestProgressIngActivity extends BaseActivity {
+public class TestProgressIngActivity extends BaseActivity<TestPresenter> implements TestPresenter.TestUi<TestResultModel> {
 
-    private TitleView mTitleView;
-    private ImageView mIvShare;
-    private LinearLayout mLlTitle;
-    private TextView mTvCurrent;
-    private TextView mTvCount;
-    private LinearLayout mLlPageFooter;
-    private TextView mTvFooterCurrent;
-    private TextView mTvFooterCount;
-    private RelativeLayout mRlLast;
-    private TextView mTvLast;
-    private RelativeLayout mRlNext;
-    private TextView mTvNext;
-    private MyScrollView mMsvContent;
-    private TextView mTvTitle;
-    private RecyclerView mRvSelects;
+
+    private static TestDetailModel testDetailModel;
+    private androidx.viewpager2.widget.ViewPager2 mVpList;
+    private TestDetailModel mModel;
+    // 测评开始时间
+    private long beginTime;
+    private TestngAdapter mTestIngAdapter;
+    private TitleView titleView;
+    SparseIntArray vpFlagArray = new SparseIntArray();
+
+    public static void startActivity(Context context, TestDetailModel testDetailModel) {
+        TestProgressIngActivity.testDetailModel = testDetailModel;
+        context.startActivity(new Intent(context, TestProgressIngActivity.class));
+    }
 
     @Override
     public int getContentView() {
@@ -53,130 +51,129 @@ public class TestProgressIngActivity extends BaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public TestPresenter onCreatePresenter() {
+        return new TestPresenter(this);
     }
 
     @Override
     public void initView() {
 
-        mTitleView = (TitleView) findViewById(R.id.titleView);
-        mIvShare = (ImageView) findViewById(R.id.iv_share);
-        mLlTitle = (LinearLayout) findViewById(R.id.ll_title);
-        mTvCurrent = (TextView) findViewById(R.id.tv_current);
-        mTvCount = (TextView) findViewById(R.id.tv_count);
-        mLlPageFooter = (LinearLayout) findViewById(R.id.ll_page_footer);
-        mTvFooterCurrent = (TextView) findViewById(R.id.tv_footer_current);
-        mTvFooterCount = (TextView) findViewById(R.id.tv_footer_count);
-        mRlLast = (RelativeLayout) findViewById(R.id.rl_last);
-        mTvLast = (TextView) findViewById(R.id.tv_last);
-        mRlNext = (RelativeLayout) findViewById(R.id.rl_next);
-        mTvNext = (TextView) findViewById(R.id.tv_next);
-        mMsvContent = (MyScrollView) findViewById(R.id.msv_content);
-        mTvTitle = (TextView) findViewById(R.id.tv_title);
-        mRvSelects = (RecyclerView) findViewById(R.id.rv_selects);
-
-        mTitleView.getIvBack().setOnClickListener(v -> {
-            showFinishDialog(new Random().nextBoolean());
-
-        });
+        titleView = (TitleView) findViewById(R.id.titleView);
+        mVpList = (ViewPager2) findViewById(R.id.vp_list);
     }
 
     @Override
     public void initData() {
-        mTvLast.setOnClickListener(v -> {
-        });
-        mRlLast.setOnClickListener(v -> {
-            mTvLast.performClick();
-            ToastUtil.show("last");
-        });
+        mModel = testDetailModel;
+        testDetailModel = null;
+        beginTime = System.currentTimeMillis();
+        mTestIngAdapter = new TestngAdapter(mModel.getSubjectArray());
+        mVpList.setAdapter(mTestIngAdapter);
+        mTestIngAdapter.setOnRvItemListener(new OnRvItemListener<TestDetailModel.SubjectListBean>() {
+            Runnable runnable;
 
-
-        mTvNext.setOnClickListener(v -> {
-        });
-        mRlNext.setOnClickListener(v -> {
-            mTvNext.performClick();
-            ToastUtil.show("next");
-        });
-
-        List<AnsewerModel> list = getDataList();
-        if (list.size() > 4) {
-            // 设置布局管理器
-            FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(mContext);
-            // flexDirection 属性决定主轴的方向（即项目的排列方向）。类似 LinearLayout 的 vertical 和 horizontal。
-            flexboxLayoutManager.setFlexDirection(FlexDirection.ROW);
-            // 主轴为水平方向，起点在左端。
-            // flexWrap 默认情况下 Flex 跟 LinearLayout 一样，都是不带换行排列的，但是flexWrap属性可以支持换行排列。
-            flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP);
-            // 按正常方向换行
-            // justifyContent 属性定义了项目在主轴上的对齐方式。
-            flexboxLayoutManager.setJustifyContent(JustifyContent.FLEX_START);//交叉轴的起点对齐。
-            mRvSelects.setLayoutManager(flexboxLayoutManager);
-        } else {
-            mRvSelects.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        }
-        mRvSelects.setAdapter(new AnsewerSelectAdapter(list));
-    }
-
-    private List<AnsewerModel> getDataList() {
-        List<AnsewerModel> ansewerModels = new ArrayList<>();
-        Random random = new Random();
-        int size = 1 + random.nextInt(8);
-        String[] abc = getResources().getStringArray(R.array.ABC);
-        String select = "但是看了介绍可是角度骄傲的就";
-        for (int i = 0; i < size; i++) {
-            int len = random.nextInt(10) + 1;
-            ansewerModels.add(new AnsewerModel(abc[i], select.substring(0, len)));
-        }
-        return ansewerModels;
-    }
-
-    private void showFinishDialog(boolean finish) {
-
-        if (!finish) {
-            DialogFactory.createCustomThreeDialog(this, new DialogFactory.OnViewThreeCallBack() {
-                @Override
-                public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                    if (view.getId() == R.id.tv_one) {
-                        ToastUtil.show("保存进度并退出");
-                        finish();
-                    } else if (view.getId() == R.id.tv_two) {
-                        ToastUtil.show("直接退出");
-                        finish();
-                    } else if (view.getId() == R.id.tv_three) {
-                        ToastUtil.show("继续练习");
+            @Override
+            public void onItemClick(List<TestDetailModel.SubjectListBean> list, int position) {
+                mVpList.removeCallbacks(runnable);
+                // 结果
+                if (mVpList.getCurrentItem() == mTestIngAdapter.getItemCount() - 1) {
+                    submit();
+                } else {
+                    if (runnable == null) {
+                        runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                mVpList.setCurrentItem(mVpList.getCurrentItem() + 1, false);
+                            }
+                        };
                     }
-                    tDialog.dismiss();
+                    mVpList.postDelayed(runnable, 300);
+                }
+            }
+        });
+        mTestIngAdapter.setOnLastNextListener(new TestngAdapter.OnLastNextListener() {
+            @Override
+            public void onClick(int lastOrNext) {
+                if (lastOrNext == -1) {
+                    mVpList.setCurrentItem(mVpList.getCurrentItem() - 1);
+                } else {
+                    mVpList.setCurrentItem(mVpList.getCurrentItem() + 1);
+                }
+            }
+        });
+
+        mVpList.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                if (vpFlagArray.get(position, 0) == 0) {
+                    vpFlagArray.put(position, 1);
+                } else {
+                    mVpList.getAdapter().notifyItemChanged(position);
                 }
 
-                @Override
-                public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvOne, TextView mTvTwo, TextView mTvThree) {
-                    mTvTitle.setText("温馨提示");
-                    mTvHint.setText("您尚未完成练习并提交答案，确认退出？");
-                    mTvOne.setText("保存进度并退出");
-                    mTvTwo.setText("直接退出");
-                    mTvThree.setText("继续练习");
-                }
-            });
-            return;
+                boolean mUserInputEnabled = mTestIngAdapter.getDataList().get(position).getSelectedIndex() != -1;
+                LogUtil.d(TAG, "mUserInputEnabled = " + mUserInputEnabled);
+                mVpList.setUserInputEnabled(false);
+            }
+        });
+
+    }
+
+    private void submit() {
+        LoadingDialog.show(this, "提交中");
+        StringBuilder sbOpt = new StringBuilder();
+        List<TestDetailModel.SubjectListBean> listBeans = mTestIngAdapter.getDataList();
+        Iterator<TestDetailModel.SubjectListBean> iterator = listBeans.iterator();
+        while (iterator.hasNext()) {
+            sbOpt.append(iterator.next().getSelected().getId());
+            if (iterator.hasNext()) {
+                sbOpt.append(",");
+            }
         }
+        // 测评用时（秒）
+        int spendTime = (int) ((System.currentTimeMillis() - beginTime) / 1000);
+        LogUtil.d(TAG, "opts = " + sbOpt.toString());
+        mPresenter.onSubmit(mModel.getPsychtestInfo().getId(), sbOpt.toString(), spendTime);
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(TestResultModel data) {
+        LoadingDialog.hide();
+        TestResultWebActivity.startActivity(mContext, data);
+        finish();
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        LoadingDialog.hide();
+        ToastUtil.show("提交失败");
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
         DialogFactory.createCustomDialog(this, new DialogFactory.OnViewCallBack() {
             @Override
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-                mTvTitle.setText("完成练习");
-                mTvHint.setText("恭喜您完成所有的练习，是否提交或重新练习");
-                mTvLeft.setText("重新练习");
-                mTvRight.setText("确认提交");
+                mTvHint.setText("确认结束测评吗");
+                mTvTitle.setVisibility(View.GONE);
             }
 
             @Override
             public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
                 if (view.getId() == R.id.tv_left) {
-                    ToastUtil.show("重新练习");
-                } else if (view.getId() == R.id.tv_right) {
-                    ToastUtil.show("确认提交");
+                    tDialog.dismiss();
+                } else {
+                    tDialog.dismiss();
+                    finish();
                 }
-                tDialog.dismiss();
             }
         });
     }

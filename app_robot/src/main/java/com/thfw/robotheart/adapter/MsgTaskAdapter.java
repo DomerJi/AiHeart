@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.thfw.base.base.MsgType;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.push.helper.PushHandle;
@@ -41,7 +40,7 @@ public class MsgTaskAdapter extends BaseAdapter<TaskItemModel, MsgTaskAdapter.Ta
     @Override
     public void onBindViewHolder(@NonNull @NotNull TaskHolder holder, int position) {
         TaskItemModel itemModel = mDataList.get(position);
-        GlideUtil.load(mContext, PushHandle.getIcon(MsgType.TASK), holder.mRivType);
+        GlideUtil.load(mContext, PushHandle.getTaskIcon(itemModel.getTaskType()), holder.mRivType);
         holder.mTvTitle.setText(itemModel.getTitle());
         if (MsgCountManager.getInstance().getNumTask() > 0) {
             holder.mVDotState.setVisibility(itemModel.getReadStatus() == 0 ? View.VISIBLE : View.INVISIBLE);

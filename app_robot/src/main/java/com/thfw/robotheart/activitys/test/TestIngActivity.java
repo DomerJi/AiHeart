@@ -122,6 +122,7 @@ public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements
         }
         // 测评用时（秒）
         int spendTime = (int) ((System.currentTimeMillis() - beginTime) / 1000);
+        LogUtil.d(TAG, "opts = " + sbOpt.toString());
         mPresenter.onSubmit(mModel.getPsychtestInfo().getId(), sbOpt.toString(), spendTime);
     }
 

@@ -7,21 +7,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
-import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
-import com.thfw.mobileheart.adapter.TestOneAdapter;
 import com.thfw.base.models.TestModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.TestPresenter;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.adapter.TestOneAdapter;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.List;
 
-public class TestingActivity extends BaseActivity {
+public class TestingActivity extends BaseActivity<TestPresenter> implements TestPresenter.TestUi<List<TestModel>> {
 
     private com.thfw.ui.widget.TitleView mTitleView;
     private com.scwang.smart.refresh.layout.SmartRefreshLayout mRefreshLayout;
     private androidx.recyclerview.widget.RecyclerView mRvTest;
+    private com.thfw.ui.widget.LoadingView mLoadingView;
 
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, TestingActivity.class));
@@ -33,8 +38,8 @@ public class TestingActivity extends BaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public TestPresenter onCreatePresenter() {
+        return new TestPresenter(this);
     }
 
     @Override
@@ -42,19 +47,44 @@ public class TestingActivity extends BaseActivity {
 
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
+        mRefreshLayout.setEnableRefresh(false);
+        mRefreshLayout.setEnableLoadMore(false);
         mRvTest = (RecyclerView) findViewById(R.id.rv_test);
+        mRvTest.setLayoutManager(new LinearLayoutManager(mContext));
+        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
     }
 
     @Override
     public void initData() {
-        mRvTest.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        TestOneAdapter testOneAdapter = new TestOneAdapter(null);
+        mPresenter.onGetList();
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(List<TestModel> data) {
+        if (EmptyUtil.isEmpty(data)) {
+            mLoadingView.showEmpty();
+            return;
+        }
+        mLoadingView.hide();
+        TestOneAdapter testOneAdapter = new TestOneAdapter(data);
         testOneAdapter.setOnRvItemListener(new OnRvItemListener<TestModel>() {
             @Override
             public void onItemClick(List<TestModel> list, int position) {
-                startActivity(new Intent(mContext, TestBeginActivity.class));
+                TestBeginActivity.startActivity(mContext, list.get(position).getId());
             }
         });
         mRvTest.setAdapter(testOneAdapter);
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        mLoadingView.showFail(v -> {
+            initData();
+        });
     }
 }
