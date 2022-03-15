@@ -3,11 +3,13 @@ package com.thfw.mobileheart.activity.video;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -22,6 +24,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.fragment.list.VideoListFragment;
+import com.thfw.mobileheart.view.LastTextView;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
@@ -40,6 +43,7 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
     private com.google.android.material.tabs.TabLayout mTabLayout;
     private androidx.viewpager.widget.ViewPager mViewPager;
     private com.thfw.ui.widget.LoadingView mLoadingView;
+    private com.thfw.mobileheart.view.LastTextView mTvLastAudio;
 
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, VideoHomeActivity.class));
@@ -62,6 +66,7 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
+        mTvLastAudio = (LastTextView) findViewById(R.id.tv_last_audio);
     }
 
     @Override
@@ -197,11 +202,18 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
     private void notifyLastData(VideoLastEtcModel data) {
         if (data != null) {
             SharePreferenceUtil.setBoolean(KEY_HAS_VIDEO, true);
-//            mLlTop.setVisibility(View.VISIBLE);
-//            mTvLastAudio.setText("上次播放：" + data.getTitle() + "  播放至" + data.getPercentTime() + "%  " + data.getAddTime());
-//            mTvLastAudio.setOnClickListener(v -> {
-//                VideoPlayerActivity.startActivity(mContext, data.toVideoModel(), 0);
-//            });
+
+            mTvLastAudio.setVisibility(View.VISIBLE);
+            mTvLastAudio.setText("上次播放：" + data.getTitle() + "  播放至" + data.getPercentTime() + "%  " + data.getAddTime());
+            mTvLastAudio.setOnClickListener(v -> {
+                VideoPlayActivity.startActivity(mContext, data.toVideoModel(), 0);
+            });
+        }
+    }
+
+    public void setRecyclerView(RecyclerView recyclerView) {
+        if (mTvLastAudio != null) {
+            mTvLastAudio.onAttached(recyclerView);
         }
     }
 }

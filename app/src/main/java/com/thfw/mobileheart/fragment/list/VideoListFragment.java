@@ -15,6 +15,7 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.VideoPresenter;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.video.VideoHomeActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.HomeVideoListAdapter;
 import com.thfw.mobileheart.adapter.VideoChildTypeAdapter;
@@ -67,6 +68,10 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
 
         mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
+        if (getActivity() instanceof VideoHomeActivity) {
+            VideoHomeActivity videoHomeActivity = (VideoHomeActivity) getActivity();
+            videoHomeActivity.setRecyclerView(mRvList);
+        }
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 

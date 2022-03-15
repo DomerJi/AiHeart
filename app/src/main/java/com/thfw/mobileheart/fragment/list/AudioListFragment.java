@@ -14,6 +14,7 @@ import com.thfw.base.presenter.AudioPresenter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HourChangeHelper;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 import com.thfw.mobileheart.adapter.AudioListAdapter;
 import com.thfw.mobileheart.util.PageHelper;
@@ -57,6 +58,10 @@ public class AudioListFragment extends BaseFragment<AudioPresenter>
         mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext));
+        if (getActivity() instanceof AudioHomeActivity) {
+            AudioHomeActivity activity = (AudioHomeActivity) getActivity();
+            activity.setRecyclerView(mRvList);
+        }
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
         HourChangeHelper.getInstance().add(this);
     }

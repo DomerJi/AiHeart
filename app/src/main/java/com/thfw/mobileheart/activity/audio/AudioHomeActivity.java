@@ -2,15 +2,18 @@ package com.thfw.mobileheart.activity.audio;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.common.reflect.TypeToken;
+import com.thfw.base.models.AudioLastEtcModel;
 import com.thfw.base.models.AudioTypeModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.AudioPresenter;
@@ -19,6 +22,7 @@ import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.fragment.list.AudioListFragment;
+import com.thfw.mobileheart.view.LastTextView;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
@@ -37,6 +41,7 @@ public class AudioHomeActivity extends BaseActivity<AudioPresenter> implements A
 
     private List<Fragment> tabFragmentList = new ArrayList<>();
     private com.thfw.ui.widget.LoadingView mLoadingView;
+    private com.thfw.mobileheart.view.LastTextView mTvLastAudio;
 
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, AudioHomeActivity.class));
@@ -59,6 +64,7 @@ public class AudioHomeActivity extends BaseActivity<AudioPresenter> implements A
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
+        mTvLastAudio = (LastTextView) findViewById(R.id.tv_last_audio);
     }
 
 
@@ -138,4 +144,51 @@ public class AudioHomeActivity extends BaseActivity<AudioPresenter> implements A
         setResult(RESULT_OK);
         super.finish();
     }
+
+    /**
+     * 获得最后一次播放记录
+     */
+    private void getLastAudio() {
+        new AudioPresenter(new AudioPresenter.AudioUi<AudioLastEtcModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return AudioHomeActivity.this;
+            }
+
+            @Override
+            public void onSuccess(AudioLastEtcModel data) {
+                notifyLastAudioData(data);
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+
+            }
+        }).getAudioLastHistory();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getLastAudio();
+    }
+
+    private void notifyLastAudioData(AudioLastEtcModel data) {
+        if (data != null) {
+            mTvLastAudio.setVisibility(View.VISIBLE);
+            mTvLastAudio.setText("上次播放：" + data.getTitle() + "     " + data.getAddTime());
+            mTvLastAudio.setOnClickListener(v -> {
+                AudioPlayerActivity.startActivity(mContext, data.toAudioEtcModel());
+            });
+        }
+    }
+
+
+    public void setRecyclerView(RecyclerView recyclerView) {
+        if (mTvLastAudio != null) {
+            mTvLastAudio.onAttached(recyclerView);
+        }
+    }
+
+
 }

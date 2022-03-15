@@ -123,6 +123,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     // 失败参数暂存;
     private int mSceneError;
     private NetParams mNetParamsError;
+    private long lastTime;
 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, AiTalkActivity.class).putExtra(KEY_DATA, talkModel));
@@ -656,7 +657,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             if (lastChatEntity != null) {
                 long limitTime = chatEntity.time - lastChatEntity.time;
                 LogUtil.d(TAG, "sendData -> limitTime = " + limitTime);
-                if (limitTime > HourUtil.LEN_MINUTE) {
+                if (limitTime > HourUtil.LEN_MINUTE ||
+                        System.currentTimeMillis() - lastTime > HourUtil.LEN_5_MINUTE) {
+                    lastTime = System.currentTimeMillis();
                     mChatAdapter.addData(ChatEntity.createTime());
                     mChatAdapter.notifyItemInserted(mChatAdapter.getItemCount() - 1);
                     addTime = true;

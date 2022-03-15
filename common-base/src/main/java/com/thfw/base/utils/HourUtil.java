@@ -11,6 +11,7 @@ import java.util.Date;
 public class HourUtil {
     public static final long LEN_SECOND = 1000;
     public static final long LEN_MINUTE = 60000;
+    public static final long LEN_5_MINUTE = 5 * 60000;
     public static final long LEN_HOUR = LEN_MINUTE * 1000;
     public static final long LEN_DAY = LEN_HOUR * 24;
     private static final SimpleDateFormat formatyyMMdd = new SimpleDateFormat("yyyy-MM-dd");

@@ -30,6 +30,7 @@
         android:textSize="@dimen/textSize_large"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/riv_dot"
+        app:layout_constraintRight_toLeftOf="@id/tv_time"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Title" />
 
