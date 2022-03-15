@@ -50,7 +50,7 @@ public class TalkPresenter<T> extends IPresenter<TalkPresenter.TalkUi> {
 
         Observable<HttpResult<List<DialogTalkModel>>> observable = OkHttpUtil.createService(TalkApi.class)
                 .onJoinDialog(netParams);
-        OkHttpUtil.request(observable, getUI());
+        OkHttpUtil.requestByHttpResult(observable, getUI());
     }
 
     public void onJoinDialog(int enter_type, int id, boolean continueValue) {
@@ -92,13 +92,13 @@ public class TalkPresenter<T> extends IPresenter<TalkPresenter.TalkUi> {
     public void onThemeDialog(NetParams netParams) {
         Observable<HttpResult<List<DialogTalkModel>>> observable = OkHttpUtil.createService(TalkApi.class)
                 .onThemeDialog(netParams);
-        OkHttpUtil.request(observable, getUI());
+        OkHttpUtil.requestByHttpResult(observable, getUI());
     }
 
     public void onAIDialog(NetParams netParams) {
         Observable<HttpResult<List<DialogTalkModel>>> observable = OkHttpUtil.createService(TalkApi.class)
                 .onAIDialog(netParams);
-        OkHttpUtil.request(observable, getUI());
+        OkHttpUtil.requestByHttpResult(observable, getUI());
     }
 
     public void onMonthHasDay(int scene, String month) {

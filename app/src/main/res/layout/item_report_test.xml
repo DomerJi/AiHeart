@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="26dp">
+    android:layout_height="56dp">
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/riv_dot"
@@ -26,49 +25,41 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="16dp"
         android:ellipsize="end"
-        android:maxLength="20"
         android:maxLines="1"
-        android:textColor="@color/white"
+        android:textColor="@color/text_common"
         android:textSize="@dimen/textSize_large"
-        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/riv_dot"
-        app:layout_constraintRight_toLeftOf="@id/tv_type"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="Title" />
 
-
-    <TextView
-        android:id="@+id/tv_type"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="16dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/colorRobotFore"
-        android:textSize="@dimen/textSize_small"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toRightOf="@id/tv_title"
-        app:layout_constraintRight_toLeftOf="@id/tv_time_time"
-        tools:text="分类：" />
-
-
-    <TextView
-        android:id="@+id/tv_time_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="收藏时间："
-        android:textColor="@color/colorRobotFore"
-        app:layout_constraintBottom_toBottomOf="@id/tv_title"
-        app:layout_constraintRight_toLeftOf="@id/tv_time"
-        app:layout_constraintTop_toTopOf="@id/tv_title" />
 
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="6dp"
+        android:layout_marginRight="46dp"
         android:text="010 12345678"
-        android:textColor="@color/colorRobotFore"
+        android:textColor="@color/text_time"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title"
+        app:layout_constraintRight_toLeftOf="@id/tv_see_port"
+        app:layout_constraintTop_toTopOf="@id/tv_title" />
+
+
+    <TextView
+        android:id="@+id/tv_see_port"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="6dp"
+        android:background="@drawable/common_guadual_btn_selector"
+        android:paddingLeft="16dp"
+        android:paddingTop="6dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="6dp"
+        android:text="查看"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_small"
         app:layout_constraintBottom_toBottomOf="@id/tv_title"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_title" />
@@ -78,9 +69,8 @@
         android:id="@+id/v_line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_1px"
-        android:layout_marginTop="12dp"
         android:background="@color/divider"
-        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

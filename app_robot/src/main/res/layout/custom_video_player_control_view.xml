@@ -32,7 +32,8 @@
         android:paddingTop="18dp"
         android:text="续播：从上次播放位置为您续播"
         android:textColor="@color/text_yellow"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <LinearLayout
         android:layout_width="match_parent"

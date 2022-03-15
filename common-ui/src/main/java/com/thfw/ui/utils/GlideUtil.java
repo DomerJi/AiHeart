@@ -14,6 +14,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.request.RequestOptions;
+import com.thfw.base.ContextApp;
 import com.thfw.ui.R;
 
 import java.security.MessageDigest;
@@ -29,7 +30,8 @@ public class GlideUtil {
 
 
     private static final RequestOptions requestOptions = RequestOptions
-            .placeholderOf(R.drawable.glide_placeholder)
+            .placeholderOf(ContextApp.getDeviceType() == ContextApp.DeviceType.ROBOT
+                    ? R.drawable.glide_placeholder : R.drawable.glide_placeholder_phone)
             .error(R.drawable.glide_error)
             .fallback(R.drawable.glide_fallback);
 
@@ -55,7 +57,7 @@ public class GlideUtil {
                 .into(imageView);
     }
 
-    public static void load(Context mContext, int  resId, ImageView imageView) {
+    public static void load(Context mContext, int resId, ImageView imageView) {
         Glide.with(mContext)
                 .load(resId)
                 .apply(getRequestOptions())

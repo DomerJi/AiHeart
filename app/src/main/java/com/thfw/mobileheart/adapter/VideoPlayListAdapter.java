@@ -3,19 +3,28 @@ package com.thfw.mobileheart.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.base.models.VideoEtcOrderModel;
+import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.base.api.HistoryApi;
+import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.VideoPlayListModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.HistoryPresenter;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.video.VideoPlayActivity;
+import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.ui.utils.GlideUtil;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +34,15 @@ import java.util.List;
  */
 public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, RecyclerView.ViewHolder> {
 
+
+    private boolean requestIng;
+    private int mVideoId;
+
+    private int playPosition;
+
+    public void setPlayPosition(int playPosition) {
+        this.playPosition = playPosition;
+    }
 
     public VideoPlayListAdapter(List<VideoPlayListModel> dataList) {
         super(dataList);
@@ -37,8 +55,6 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
         switch (viewType) {
             case VideoPlayListModel.TYPE_TOP:
                 return new VideoTopHolder(LayoutInflater.from(mContext).inflate(R.layout.item_video_details_head_layout, parent, false));
-            case VideoPlayListModel.TYPE_ECT:
-                return new VideoEtcHolder(LayoutInflater.from(mContext).inflate(R.layout.item_video_details_etc_layout, parent, false));
             case VideoPlayListModel.TYPE_GROUP:
                 return new VideoGroupHolder(LayoutInflater.from(mContext).inflate(R.layout.item_video_details_tabtitle_layout, parent, false));
             default:
@@ -48,21 +64,20 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof VideoGroupHolder) {
-            VideoGroupHolder groupHolder = (VideoGroupHolder) holder;
-            groupHolder.mTvTab.setText(mDataList.get(position).headName);
-        } else if (holder instanceof VideoEtcHolder) {
-            VideoEtcHolder etcHolder = (VideoEtcHolder) holder;
-            if (etcHolder.mRvList.getAdapter() == null) {
-                etcHolder.mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
-                List<VideoEtcOrderModel> orders = new ArrayList<>();
-                for (int i = 0; i < 20; i++) {
-                    VideoEtcOrderModel model = new VideoEtcOrderModel();
-                    model.order = String.valueOf((i + 1));
-                    orders.add(model);
-                }
-                etcHolder.mRvList.setAdapter(new VideoEtcOrderAdapter(orders));
-            }
+        VideoPlayListModel model = mDataList.get(position);
+        if (holder instanceof VideoTopHolder) {
+            mVideoId = model.videoModel.getId();
+            VideoTopHolder topHolder = (VideoTopHolder) holder;
+            topHolder.mTvVideoName.setText(model.videoModel.getTitle());
+            topHolder.mTvHint.setText(model.videoModel.getDes());
+        } else if (holder instanceof VideoGroupHolder) {
+            VideoGroupHolder etcHolder = (VideoGroupHolder) holder;
+        } else if (holder instanceof VideoDetailsHolder) {
+            VideoDetailsHolder itemHolder = (VideoDetailsHolder) holder;
+            itemHolder.mIvPlay.setVisibility((playPosition + 2) == position ? View.VISIBLE : View.GONE);
+            itemHolder.mTvTitle.setText(model.videoEtcModel.getTitle());
+            GlideUtil.load(mContext, model.videoEtcModel.getPic(), itemHolder.mRivBg);
+
         }
 
     }
@@ -74,20 +89,36 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
 
     public class VideoDetailsHolder extends RecyclerView.ViewHolder {
 
+        private RoundedImageView mRivBg;
+        private TextView mTvTitle;
+        private ImageView mIvPlay;
+
         public VideoDetailsHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            initView(itemView);
+        }
+
+        private void initView(View itemView) {
+            mRivBg = (RoundedImageView) itemView.findViewById(R.id.riv_bg);
+            mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
+            mIvPlay = (ImageView) itemView.findViewById(R.id.iv_play);
+            itemView.setOnClickListener(v -> {
+                if (mOnRvItemListener != null) {
+                    playPosition = getBindingAdapterPosition() - 2;
+                    notifyDataSetChanged();
+                    mOnRvItemListener.onItemClick(mDataList, playPosition);
+                }
+            });
         }
     }
 
     public class VideoGroupHolder extends RecyclerView.ViewHolder {
 
         private final TextView mTvTab;
-        private final TextView mTvMore;
 
         public VideoGroupHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvTab = itemView.findViewById(R.id.tv_tab);
-            mTvMore = itemView.findViewById(R.id.tv_more);
         }
     }
 
@@ -103,8 +134,64 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
 
     public class VideoTopHolder extends RecyclerView.ViewHolder {
 
+        private TextView mTvVideoName;
+        private LinearLayout mLlHintExpand;
+        private ImageView mIvExpandArrow;
+        private TextView mTvHint;
+        private ImageView mIvCollect;
+
         public VideoTopHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            initView(itemView);
+        }
+
+        private void initView(View itemView) {
+            mTvVideoName = (TextView) itemView.findViewById(R.id.tv_video_name);
+            mLlHintExpand = (LinearLayout) itemView.findViewById(R.id.ll_hint_expand);
+            mIvExpandArrow = (ImageView) itemView.findViewById(R.id.iv_expand_arrow);
+            mTvHint = (TextView) itemView.findViewById(R.id.tv_hint);
+            mIvCollect = (ImageView) itemView.findViewById(R.id.iv_collect);
+            mIvCollect.setOnClickListener(v -> {
+                addCollect();
+            });
+        }
+
+        /**
+         * 添加收藏取消收藏
+         */
+        public void addCollect() {
+            if (requestIng) {
+                return;
+            }
+            requestIng = true;
+            mIvCollect.setSelected(!mIvCollect.isSelected());
+            new HistoryPresenter(new HistoryPresenter.HistoryUi<CommonModel>() {
+                @Override
+                public LifecycleProvider getLifecycleProvider() {
+                    if (mContext instanceof VideoPlayActivity) {
+                        return (VideoPlayActivity) mContext;
+                    } else {
+                        return null;
+                    }
+                }
+
+                @Override
+                public void onSuccess(CommonModel data) {
+                    if (mIvCollect != null) {
+                        requestIng = false;
+                        ToastUtil.show(mIvCollect.isSelected() ? UIConfig.COLLECTED : UIConfig.COLLECTED_UN);
+                    }
+                }
+
+                @Override
+                public void onFail(ResponeThrowable throwable) {
+                    if (mIvCollect != null) {
+                        requestIng = false;
+                        ToastUtil.show(mIvCollect.isSelected() ? "收藏失败" : "取消收藏失败");
+                        mIvCollect.setSelected(!mIvCollect.isSelected());
+                    }
+                }
+            }).addCollect(HistoryApi.TYPE_COLLECT_VIDEO, mVideoId);
         }
     }
 }

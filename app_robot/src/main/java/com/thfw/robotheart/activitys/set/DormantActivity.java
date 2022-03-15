@@ -3,6 +3,7 @@ package com.thfw.robotheart.activitys.set;
 import android.content.Context;
 import android.content.Intent;
 import android.view.MotionEvent;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.opensource.svgaplayer.SVGAImageView;
@@ -48,6 +49,7 @@ public class DormantActivity extends RobotBaseActivity implements Dormant.Minute
 
     @Override
     public int getContentView() {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         return R.layout.activity_dormant;
     }
 

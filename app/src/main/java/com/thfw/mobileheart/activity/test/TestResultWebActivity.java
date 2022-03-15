@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +41,13 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
     private TitleView tvTitleView;
     private RecyclerView mRvCommend;
     private TestResultModel testResultModel;
+    private TitleView mTitleView;
+    private FrameLayout mFlWebContent;
+    private android.widget.TextView mTvRecommendTitle;
+    private RecyclerView mRvRecommend;
+    private android.widget.Button mBtTryOne;
+    private android.widget.Button mBtHistory;
+    private int mTestId;
 
 
     public static void startActivity(Context context, TestResultModel testResultModel) {
@@ -64,6 +73,12 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
         mRvCommend = findViewById(R.id.rv_recommend);
         mRvCommend.setLayoutManager(new GridLayoutManager(mContext, 4));
 
+        mTitleView = (TitleView) findViewById(R.id.titleView);
+        mFlWebContent = (FrameLayout) findViewById(R.id.fl_web_content);
+        mTvRecommendTitle = (TextView) findViewById(R.id.tv_recommend_title);
+        mRvRecommend = (RecyclerView) findViewById(R.id.rv_recommend);
+        mBtTryOne = (Button) findViewById(R.id.bt_try_one);
+        mBtHistory = (Button) findViewById(R.id.bt_history);
     }
 
     @Override
@@ -71,6 +86,13 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
         url = getIntent().getStringExtra(KEY_URL);
         title = getIntent().getStringExtra(KEY_TITLE);
         testResultModel = (TestResultModel) getIntent().getSerializableExtra(KEY_DATA);
+        mTestId = testResultModel.getTestId();
+        mBtTryOne.setOnClickListener(v -> {
+            TestBeginActivity.startActivity(mContext, mTestId);
+        });
+        mBtHistory.setOnClickListener(v -> {
+            TestReportActivity.startActivity(mContext, mTestId);
+        });
         initAgentWeb(findViewById(R.id.fl_web_content));
         tvTitleView.setCenterText(title);
 

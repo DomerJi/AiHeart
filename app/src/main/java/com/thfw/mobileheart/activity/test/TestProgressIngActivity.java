@@ -146,6 +146,7 @@ public class TestProgressIngActivity extends BaseActivity<TestPresenter> impleme
     @Override
     public void onSuccess(TestResultModel data) {
         LoadingDialog.hide();
+        data.setTestId(mModel.getPsychtestInfo().getId());
         TestResultWebActivity.startActivity(mContext, data);
         finish();
     }

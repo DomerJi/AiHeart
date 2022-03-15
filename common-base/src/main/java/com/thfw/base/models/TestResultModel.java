@@ -18,6 +18,18 @@ public class TestResultModel implements IModel {
     @SerializedName("result_id")
     private int resultId;
 
+    @SerializedName("test_id")
+    private int testId;
+
+    public TestResultModel setTestId(int testId) {
+        this.testId = testId;
+        return this;
+    }
+
+    public int getTestId() {
+        return testId;
+    }
+
     @SerializedName("recommend_info")
     private List<RecommendInfoBean> recommendInfo;
 

@@ -64,6 +64,7 @@ public class MyApplication extends MultiDexApplication {
         app = this;
         SharePreferenceUtil.init(this);
         ContextApp.init(app);
+//        ContextApp.setDeviceType(ContextApp.DeviceType.ROBOT);
         if (Util.isPad(app)) {
             ContextApp.setDeviceType(ContextApp.DeviceType.PAD);
         } else {

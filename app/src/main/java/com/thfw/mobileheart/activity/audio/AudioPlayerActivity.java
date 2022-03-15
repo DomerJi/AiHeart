@@ -78,7 +78,6 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
     private View btPause;
     private com.thfw.ui.widget.TitleView mTitleView;
     private ImageView mIvShare;
-    private View[] views;
     private TextView mTvAudioTitle;
     private TextView mTvEtcTitle;
     private TextView mTvEtcTitleLogcate;
@@ -113,10 +112,15 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
     private boolean isTask;
     private int mMusicId;
     private ArrayList<TaskMusicEtcModel.MusicListBean> mTaskEtcModel;
+    private View mVborder03;
+    private View mVborder02;
+    private View mVborder01;
+    private boolean animatIng;
 
 
     @Override
     public int getContentView() {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         return R.layout.activity_audio_player;
     }
 
@@ -145,17 +149,14 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
         mTitleView.getIvBack().setPadding(4, 4, 4, 4);
 
         mIvShare = (ImageView) findViewById(R.id.iv_share);
-        View mVborder01 = findViewById(R.id.v_border_01);
-        View mVborder02 = findViewById(R.id.v_border_02);
-        View mVborder03 = findViewById(R.id.v_border_03);
-        views = new View[]{mVborder01, mVborder02, mVborder03};
-        startAnimateBorder(mVborder03, 100);
-        startAnimateBorder(mVborder02, 900);
+        mVborder01 = findViewById(R.id.v_border_01);
+        mVborder02 = findViewById(R.id.v_border_02);
+        mVborder03 = findViewById(R.id.v_border_03);
+//        startAnimateBorder(mVborder03, 100);
+//        startAnimateBorder(mVborder02, 900);
 
 
         mIvCollect = (ImageView) findViewById(R.id.iv_collect);
-
-
         mIvPlayCateLogue = (ImageView) findViewById(R.id.iv_play_catelogue);
         btPlay = findViewById(R.id.exo_play);
         btPause = findViewById(R.id.exo_pause);
@@ -176,7 +177,9 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
 
 
     private void startAnimateBorder(View view, long delay) {
-
+        if (!animatIng) {
+            return;
+        }
         view.animate().scaleY(2).scaleX(2).alpha(0).setDuration(1600)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .setStartDelay(delay)
@@ -657,6 +660,20 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
         public void onPlayWhenReadyChanged(boolean playWhenReady, int reason) {
             btPause.setVisibility(!playWhenReady ? View.GONE : View.VISIBLE);
             btPlay.setVisibility(playWhenReady ? View.GONE : View.VISIBLE);
+            if (playWhenReady) {
+                if (mVborder02 != null && mVborder03 != null) {
+                    animatIng = true;
+                    startAnimateBorder(mVborder03, 100);
+                    startAnimateBorder(mVborder02, 900);
+                }
+            } else {
+                if (mVborder02 != null && mVborder03 != null) {
+                    animatIng = false;
+                    mVborder02.animate().cancel();
+                    mVborder02.clearAnimation();
+                    mVborder03.clearAnimation();
+                }
+            }
         }
 
         /**

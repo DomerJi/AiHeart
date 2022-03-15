@@ -9,20 +9,20 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
+import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.StatusActivity;
 import com.thfw.mobileheart.activity.heartbox.HeartBoxActivity;
 import com.thfw.mobileheart.activity.integral.ClockInActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.me.AssessReportActivity;
 import com.thfw.mobileheart.activity.me.CollectActivity;
-import com.thfw.mobileheart.activity.me.HealthReportActivity;
 import com.thfw.mobileheart.activity.me.MeHistoryActivity;
 import com.thfw.mobileheart.activity.me.MeTestHistoryActivity;
 import com.thfw.mobileheart.activity.settings.HelpBackActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
 import com.thfw.mobileheart.activity.settings.MeAskListActivity;
 import com.thfw.mobileheart.activity.settings.SettingActivity;
-import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.test.TestReportActivity;
 import com.thfw.ui.base.BaseFragment;
 import com.thfw.user.login.UserManager;
 
@@ -134,7 +134,7 @@ public class MeFragment extends BaseFragment {
             startActivity(new Intent(mContext, AssessReportActivity.class));
         });
         mLlSafeReport.setOnClickListener(v -> {
-            startActivity(new Intent(mContext, HealthReportActivity.class));
+            startActivity(new Intent(mContext, TestReportActivity.class));
         });
 
         // 历史

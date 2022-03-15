@@ -1,9 +1,38 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.thfw.mobileheart.fragment.list.AudioListFragment">
 
-    <include layout="@layout/custom_refresh_recyclerview_layout" />
+    <com.thfw.mobileheart.view.VideoRecyclerView
+        android:id="@+id/rv_children"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/page_background_gray" />
 
-</FrameLayout>
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rv_children"
+        android:background="@color/white">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+    <com.thfw.ui.widget.LoadingView
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rv_children" />
+
+    <FrameLayout
+        android:id="@+id/fl_content01"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rv_children" />
+</RelativeLayout>

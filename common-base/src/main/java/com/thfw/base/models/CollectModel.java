@@ -23,6 +23,10 @@ public class CollectModel implements IModel {
     public String title;
     @SerializedName("collected")
     public int collected;
+    @SerializedName("add_time")
+    public String duration;
+    @SerializedName("type")
+    public String type;
 
 
 }

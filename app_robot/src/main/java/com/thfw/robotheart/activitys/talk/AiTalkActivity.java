@@ -36,6 +36,7 @@ import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.ChosenModel;
 import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.models.TalkModel;
+import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TalkPresenter;
@@ -74,7 +75,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements TalkPresenter.TalkUi<List<DialogTalkModel>> {
+public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements TalkPresenter.TalkUi<HttpResult<List<DialogTalkModel>>> {
 
 
     private static final int FACE_TYPE_FREE = 0; // 空闲
@@ -684,13 +685,22 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
 
     @Override
-    public void onSuccess(List<DialogTalkModel> data) {
-        mSceneError = -1;
-        mNetParamsError = null;
-        LogUtil.d(TAG, "onSuccess = " + data.size());
-        mHelper.setTalks(data);
-        mTtsQueue.clear();
-        onTalkEngine();
+    public void onSuccess(HttpResult<List<DialogTalkModel>> model) {
+        if (model != null) {
+            List<DialogTalkModel> data = model.getData();
+            if (model.getExt() != null && model.getExt().isEnterDeepDialog()) {
+                sendData(ChatEntity.createJoinPage("欢迎进入深度疏导主题对话"));
+            }
+            if (data != null) {
+                mSceneError = -1;
+                mNetParamsError = null;
+                LogUtil.d(TAG, "onSuccess = " + data.size());
+                mHelper.setTalks(data);
+                mTtsQueue.clear();
+                onTalkEngine();
+            }
+        }
+
     }
 
     @Override

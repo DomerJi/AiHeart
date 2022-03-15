@@ -83,6 +83,23 @@ public class HttpResult<T> implements IResult, IModel {
     }
 
     public class Ext {
+        @SerializedName("turnPage")
+        private String turnPage;
+        @SerializedName("enter_deep_dialog")
+        private boolean enterDeepDialog;
+
+        public boolean isEnterDeepDialog() {
+            return enterDeepDialog;
+        }
+
+        public boolean isJumpTree() {
+            return "treeHolePage".equals(turnPage);
+        }
+
+        public boolean isJumpTheme() {
+            return "proPage".equals(turnPage);
+        }
+
         private boolean achieve;
 
         public boolean isAchieve() {

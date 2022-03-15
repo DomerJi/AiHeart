@@ -16,10 +16,19 @@ public class VideoPlayListModel {
 
     public String headName;
 
+    public String title;
+
+    public String des;
+
+    public VideoEtcModel videoEtcModel;
+    public VideoModel videoModel;
+
     public VideoPlayListModel setHeadName(String headName) {
         this.headName = headName;
         return this;
     }
+
+
 
     public VideoPlayListModel(int type) {
         this.type = type;

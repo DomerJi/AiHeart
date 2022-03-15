@@ -42,6 +42,13 @@ public class FragmentLoader {
         return this;
     }
 
+    public void hide() {
+        if (mCurrentFragment != null) {
+            FragmentTransaction transaction = mFragmentManager.beginTransaction();
+            transaction.hide(mCurrentFragment).commit();
+        }
+    }
+
     public Fragment load(int id) {
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         FragmentItem item = mFragments.get(id);

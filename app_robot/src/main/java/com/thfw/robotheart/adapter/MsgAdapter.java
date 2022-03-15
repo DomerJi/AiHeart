@@ -41,7 +41,7 @@ public class MsgAdapter extends BaseAdapter<PushModel, MsgAdapter.TaskHolder> {
     public void onBindViewHolder(@NonNull @NotNull TaskHolder holder, int position) {
         PushModel itemModel = mDataList.get(position);
         GlideUtil.load(mContext, PushHandle.getIcon(itemModel.getMsgType()), holder.mRivType);
-        holder.mTvTitle.setText(itemModel.getTitle() + "_" + itemModel.getTurnPage());
+        holder.mTvTitle.setText(itemModel.getTitle());
         if (MsgCountManager.getInstance().getNumSystem() > 0) {
             holder.mVDotState.setVisibility(itemModel.getReadStatus() == 0 ? View.VISIBLE : View.INVISIBLE);
         } else {

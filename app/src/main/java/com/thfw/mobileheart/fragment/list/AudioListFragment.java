@@ -11,6 +11,8 @@ import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.AudioPresenter;
+import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HourChangeHelper;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 import com.thfw.mobileheart.adapter.AudioListAdapter;
@@ -24,7 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 
-public class AudioListFragment extends BaseFragment<AudioPresenter> implements AudioPresenter.AudioUi<List<AudioEtcModel>> {
+public class AudioListFragment extends BaseFragment<AudioPresenter>
+        implements AudioPresenter.AudioUi<List<AudioEtcModel>>, HourChangeHelper.HourChangeListener {
 
     private SmartRefreshLayout mRefreshLayout;
     private RecyclerView mRvList;
@@ -55,6 +58,7 @@ public class AudioListFragment extends BaseFragment<AudioPresenter> implements A
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext));
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
+        HourChangeHelper.getInstance().add(this);
     }
 
     @Override
@@ -89,10 +93,35 @@ public class AudioListFragment extends BaseFragment<AudioPresenter> implements A
         pageHelper.onSuccess(data);
     }
 
+
     @Override
     public void onFail(ResponeThrowable throwable) {
         pageHelper.onFail(v -> {
             mPresenter.getAudioEtcList(key, pageHelper.getPage());
         });
+    }
+
+    @Override
+    public void hourChanged(int collectionId, int hour, int musicId) {
+        if (audioListAdapter != null) {
+            List<AudioEtcModel> dataList = audioListAdapter.getDataList();
+            if (EmptyUtil.isEmpty(dataList)) {
+                return;
+            }
+            for (AudioEtcModel bean : dataList) {
+                if (bean.getId() == collectionId) {
+                    bean.setLastMusicId(musicId);
+                    bean.setListenHistorySize(hour);
+                    audioListAdapter.notifyDataSetChanged();
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        HourChangeHelper.getInstance().remove(this);
     }
 }

@@ -34,6 +34,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".activity.test.TestReportActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activity.test.TestResultWebActivity"
             android:screenOrientation="portrait"></activity>
@@ -60,9 +64,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thfw.mobileheart.activity.me.ServiceHotLineActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.thfw.mobileheart.activity.me.HealthReportActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thfw.mobileheart.activity.me.AssessReportActivity"

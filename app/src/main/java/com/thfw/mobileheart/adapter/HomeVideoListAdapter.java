@@ -1,14 +1,16 @@
 package com.thfw.mobileheart.adapter;
 
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.base.models.VideoEtcModel;
 import com.thfw.mobileheart.R;
-import com.thfw.mobileheart.util.AudioModel;
+import com.thfw.ui.utils.GlideUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,10 +21,10 @@ import java.util.List;
  * Date: 2021/10/9 9:34
  * Describe:Todo
  */
-public class HomeVideoListAdapter extends BaseAdapter<AudioModel, HomeVideoListAdapter.VideoHolder> {
+public class HomeVideoListAdapter extends BaseAdapter<VideoEtcModel, HomeVideoListAdapter.VideoHolder> {
 
 
-    public HomeVideoListAdapter(List dataList) {
+    public HomeVideoListAdapter(List<VideoEtcModel> dataList) {
         super(dataList);
     }
 
@@ -30,28 +32,34 @@ public class HomeVideoListAdapter extends BaseAdapter<AudioModel, HomeVideoListA
     @NotNull
     @Override
     public VideoHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        return new VideoHolder(LayoutInflater.from(mContext).inflate(R.layout.item_video_list_layout, parent, false));
+        return new VideoHolder(inflate(R.layout.item_video_list_layout, parent));
     }
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull VideoHolder holder, int position) {
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return 20;
+        VideoEtcModel etcModel = mDataList.get(position);
+        GlideUtil.load(mContext, etcModel.getPic(), holder.mRivBg);
+        holder.mTvTitle.setText(etcModel.getTitle());
     }
 
     public class VideoHolder extends RecyclerView.ViewHolder {
 
+        private RoundedImageView mRivBg;
+        private TextView mTvTitle;
+
         public VideoHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            initView(itemView);
             itemView.setOnClickListener(v -> {
                 if (mOnRvItemListener != null) {
                     mOnRvItemListener.onItemClick(getDataList(), getBindingAdapterPosition());
                 }
             });
+        }
+
+        private void initView(View itemView) {
+            mRivBg = (RoundedImageView) itemView.findViewById(R.id.riv_bg);
+            mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
         }
     }
 }

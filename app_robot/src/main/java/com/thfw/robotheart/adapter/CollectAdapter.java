@@ -1,5 +1,6 @@
 package com.thfw.robotheart.adapter;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -9,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.CollectModel;
-import com.thfw.base.utils.HourUtil;
 import com.thfw.robotheart.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -38,8 +38,15 @@ public class CollectAdapter extends BaseAdapter<CollectModel, CollectAdapter.Col
     @Override
     public void onBindViewHolder(@NonNull @NotNull CollectAdapter.CollectHolder holder, int position) {
         CollectModel collectModel = mDataList.get(position);
-        holder.mTvTime.setText("收藏时间:" + HourUtil.getYYMMDD_HHMM(System.currentTimeMillis()));
+        holder.mTvTime.setText(collectModel.duration);
         holder.mTvTitle.setText(collectModel.title);
+        if (TextUtils.isEmpty(collectModel.type)) {
+            holder.mTvType.setVisibility(View.INVISIBLE);
+        } else {
+            holder.mTvType.setVisibility(View.VISIBLE);
+            holder.mTvType.setText("分类：" + collectModel.type);
+        }
+
     }
 
     public class CollectHolder extends RecyclerView.ViewHolder {
@@ -47,6 +54,7 @@ public class CollectAdapter extends BaseAdapter<CollectModel, CollectAdapter.Col
         private RoundedImageView mRivDot;
         private TextView mTvTitle;
         private TextView mTvTimeTime;
+        private TextView mTvType;
         private TextView mTvTime;
         private View mVLine;
 
@@ -64,6 +72,7 @@ public class CollectAdapter extends BaseAdapter<CollectModel, CollectAdapter.Col
             mRivDot = (RoundedImageView) itemView.findViewById(R.id.riv_dot);
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             mTvTimeTime = (TextView) itemView.findViewById(R.id.tv_time_time);
+            mTvType = (TextView) itemView.findViewById(R.id.tv_type);
             mTvTime = (TextView) itemView.findViewById(R.id.tv_time);
             mVLine = (View) itemView.findViewById(R.id.v_line);
         }

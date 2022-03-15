@@ -13,6 +13,7 @@ import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.models.PickerData;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.StringUtil;
+import com.thfw.robotheart.R;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -52,13 +53,16 @@ public class DialogLikeAdapter extends BaseAdapter<PickerData, DialogLikeAdapter
             holder.mEtName.setVisibility(View.GONE);
             holder.mTvName.setText("+自定义");
             holder.mTvName.setSelected(true);
+            holder.mTvName.setBackgroundResource(R.drawable.yellow_radius_bg);
         } else {
             if (mDataList.size() == position) {
                 holder.mTvName.setVisibility(View.VISIBLE);
                 holder.mEtName.setVisibility(View.GONE);
                 holder.mTvName.setText("+自定义");
                 holder.mTvName.setSelected(true);
+                holder.mTvName.setBackgroundResource(R.drawable.yellow_radius_bg);
             } else {
+                holder.mTvName.setBackgroundResource(R.drawable.common_dialog_item_selector);
                 PickerData pickerData = mDataList.get(position);
                 if (pickerData.getType() == -1) {
                     holder.mTvName.setVisibility(View.GONE);
@@ -91,7 +95,6 @@ public class DialogLikeAdapter extends BaseAdapter<PickerData, DialogLikeAdapter
                     holder.mTvName.setVisibility(View.VISIBLE);
                     holder.mEtName.setVisibility(View.GONE);
                     holder.mTvName.setText(pickerData.getPickerViewText());
-
                 }
                 checkPosition = -1;
                 if (singleCheck && pickerData.isCheck()) {

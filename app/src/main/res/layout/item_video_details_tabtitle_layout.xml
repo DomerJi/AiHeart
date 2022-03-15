@@ -8,30 +8,14 @@
         android:id="@+id/tv_tab"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
-        android:layout_marginTop="10dp"
-        android:drawableLeft="@mipmap/ic_home_box"
+        android:drawableLeft="@drawable/text_left_tab_indactor"
         android:drawablePadding="8dp"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
+        android:text="相关视频"
         android:textColor="@color/text_common"
         android:textSize="@dimen/textSize_large"
-        tools:ignore="MissingConstraints"
-        tools:text="最近浏览" />
-
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
-
-    <TextView
-        android:id="@+id/tv_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingRight="16dp"
-        android:textColor="@color/text_content"
-        android:textSize="@dimen/textSize_small"
-        tools:text="123" />
-
+        tools:ignore="MissingConstraints" />
 
 </LinearLayout>
 

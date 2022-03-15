@@ -37,12 +37,15 @@ public class InfoLikeAdapter extends BaseAdapter<PickerData, InfoLikeAdapter.Inf
     @Override
     public void onBindViewHolder(@NonNull @NotNull InfoLikeHolder holder, int position) {
         if (EmptyUtil.isEmpty(mDataList)) {
-            holder.mTvName.setText("+自定义");
+            holder.mTvName.setText("+增加");
+            holder.mTvName.setBackgroundResource(R.drawable.yellow_radius_bg);
         } else {
             if (mDataList.size() == position) {
-                holder.mTvName.setText("+自定义");
+                holder.mTvName.setText("+增加");
+                holder.mTvName.setBackgroundResource(R.drawable.yellow_radius_bg);
             } else {
                 holder.mTvName.setText(mDataList.get(position).getPickerViewText());
+                holder.mTvName.setBackgroundResource(R.drawable.item_likename_bg);
             }
         }
 
