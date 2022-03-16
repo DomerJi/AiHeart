@@ -59,10 +59,15 @@ public abstract class IBaseFragment<T extends IPresenter> extends RxFragment imp
             if (null != parent) {
                 parent.removeView(rootView);
             }
+            onReCreateView();
         } else {
             rootView = inflater.inflate(getContentView(), container, false);
         }
         return rootView;
+
+    }
+
+    protected void onReCreateView() {
 
     }
 

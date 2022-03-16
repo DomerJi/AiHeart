@@ -7,7 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.base.models.VideoTypeModel;
+import com.thfw.base.models.BookStudyTypeModel;
 import com.thfw.mobileheart.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -19,9 +19,9 @@ import java.util.List;
  * Date: 2022/3/14 12:13
  * Describe:Todo
  */
-public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChildTypeAdapter.VideoChildHolder> {
+public class StudyChildTypeAdapter extends BaseAdapter<BookStudyTypeModel, StudyChildTypeAdapter.VideoChildHolder> {
 
-    public VideoChildTypeAdapter(List<VideoTypeModel> dataList) {
+    public StudyChildTypeAdapter(List<BookStudyTypeModel> dataList) {
         super(dataList);
     }
 
@@ -29,10 +29,6 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
 
     public int getmSelectedIndex() {
         return mSelectedIndex;
-    }
-
-    public void setSelectedIndex(int mSelectedIndex) {
-        this.mSelectedIndex = mSelectedIndex;
     }
 
     @NonNull
@@ -69,6 +65,10 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
                 }
             });
         }
+    }
+
+    public void setSelectedIndex(int mSelectedIndex) {
+        this.mSelectedIndex = mSelectedIndex;
     }
 
     public void resetSelectedIndex() {

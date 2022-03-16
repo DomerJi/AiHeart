@@ -18,23 +18,33 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/page_background_gray"
+        android:background="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleView"
-        app:tabIndicatorFullWidth="false"
-        app:tabMode="scrollable"
-        app:tabMinWidth="60dp"
         app:tabIndicatorAnimationDuration="300"
+        app:tabIndicatorFullWidth="false"
+        app:tabMinWidth="60dp"
+        app:tabMode="scrollable"
         app:tabRippleColor="@color/transparent"
         app:tabSelectedTextColor="@color/text_green"
         app:tabTextColor="@color/text_common"
         app:tabUnboundedRipple="false" />
 
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:background="@color/white"
         android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout" />
+
+
+    <com.thfw.ui.widget.LoadingView
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tab_layout" />
 

@@ -18,7 +18,7 @@ import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 import com.thfw.mobileheart.activity.exercise.ExerciseActivity;
 import com.thfw.mobileheart.activity.me.ServiceHotLineActivity;
 import com.thfw.mobileheart.activity.read.ReadHomeActivity;
-import com.thfw.mobileheart.activity.study.StudyHomeActivity;
+import com.thfw.mobileheart.activity.read.StudyHomeActivity;
 import com.thfw.mobileheart.activity.talk.AskActivity;
 import com.thfw.mobileheart.activity.talk.ChatActivity;
 import com.thfw.mobileheart.activity.test.TestingActivity;

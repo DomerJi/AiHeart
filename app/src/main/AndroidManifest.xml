@@ -37,13 +37,23 @@
 
         <activity
             android:name=".activity.test.TestReportActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.read.BookDetailActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.read.BookIdeoDetailActivity"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activity.test.TestResultWebActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+
         <activity
             android:name="com.thfw.mobileheart.activity.robot.RobotDetailsActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.thfw.mobileheart.activity.robot.RobotActivity"
             android:screenOrientation="portrait" />
@@ -119,7 +129,7 @@
             android:name="com.thfw.mobileheart.activity.settings.SettingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.study.StudyHomeActivity"
+            android:name="com.thfw.mobileheart.activity.read.StudyHomeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thfw.mobileheart.activity.read.ReadHomeActivity"

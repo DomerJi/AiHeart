@@ -10,22 +10,35 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.thfw.base.base.IPresenter;
-import com.thfw.mobileheart.fragment.list.ReadListFragment;
+import com.google.common.reflect.TypeToken;
+import com.thfw.base.models.BookTypeModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.BookPresenter;
+import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.fragment.list.ReadListFragment;
+import com.thfw.mobileheart.view.LastTextView;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReadHomeActivity extends BaseActivity {
+public class ReadHomeActivity extends BaseActivity<BookPresenter> implements BookPresenter.BookUi<BookTypeModel> {
 
-    private List<Fragment> tabFragmentList = new ArrayList<>();
-    private String[] tabs = new String[]{"全部", "主席正能量", "睡眠", "减压", "成长", "情绪", "焦虑"};
+    private static final String KEY_TYPE_LIST = "book.type.list";
     private com.thfw.ui.widget.TitleView mTitleView;
     private com.google.android.material.tabs.TabLayout mTabLayout;
     private androidx.viewpager.widget.ViewPager mViewPager;
+
+    private List<Fragment> tabFragmentList = new ArrayList<>();
+    private com.thfw.ui.widget.LoadingView mLoadingView;
+    private com.thfw.mobileheart.view.LastTextView mTvLastAudio;
 
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, ReadHomeActivity.class));
@@ -37,8 +50,8 @@ public class ReadHomeActivity extends BaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public BookPresenter onCreatePresenter() {
+        return new BookPresenter(this);
     }
 
     @Override
@@ -47,14 +60,50 @@ public class ReadHomeActivity extends BaseActivity {
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
+        mTvLastAudio = (LastTextView) findViewById(R.id.tv_last_audio);
     }
+
 
     @Override
     public void initData() {
-        //添加tab
-        for (int i = 0; i < tabs.length; i++) {
-            mTabLayout.addTab(mTabLayout.newTab().setText(tabs[i]));
-            tabFragmentList.add(new ReadListFragment(tabs[i]));
+        Type type = new TypeToken<BookTypeModel>() {
+        }.getType();
+        BookTypeModel cacheModel = SharePreferenceUtil.getObject(KEY_TYPE_LIST, type);
+        if (cacheModel != null && !EmptyUtil.isEmpty(cacheModel.getList())) {
+            mLoadingView.hide();
+            setViewPager(cacheModel.getList());
+        } else {
+            mPresenter.getArticleType();
+        }
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(BookTypeModel data) {
+        mLoadingView.hide();
+
+
+        mLoadingView.hide();
+        if (data != null) {
+            SharePreferenceUtil.setString(KEY_TYPE_LIST, GsonUtil.toJson(data));
+            if (mViewPager.getAdapter() == null) {
+                setViewPager(data.getList());
+            }
+        }
+    }
+
+
+    private void setViewPager(List<BookTypeModel.BookTypeImpModel> bookTypeImpModels) {
+        int size = bookTypeImpModels.size();
+        // 添加tab
+        for (int i = 0; i < size; i++) {
+            mTabLayout.addTab(mTabLayout.newTab().setText(bookTypeImpModels.get(i).value));
+            tabFragmentList.add(new ReadListFragment(bookTypeImpModels.get(i).id));
         }
 
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -72,11 +121,27 @@ public class ReadHomeActivity extends BaseActivity {
             @Nullable
             @Override
             public CharSequence getPageTitle(int position) {
-                return tabs[position];
+                return bookTypeImpModels.get(position).value;
             }
         });
 
-        //设置TabLayout和ViewPager联动
+        // 设置TabLayout和ViewPager联动
         mTabLayout.setupWithViewPager(mViewPager, false);
+    }
+
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        if (mViewPager.getAdapter() == null) {
+            mLoadingView.showFail(v -> {
+                mPresenter.getArticleType();
+            });
+        }
+    }
+
+    @Override
+    public void finish() {
+        setResult(RESULT_OK);
+        super.finish();
     }
 }

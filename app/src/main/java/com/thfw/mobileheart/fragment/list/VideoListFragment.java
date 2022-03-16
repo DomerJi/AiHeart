@@ -1,5 +1,7 @@
 package com.thfw.mobileheart.fragment.list;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,6 +16,7 @@ import com.thfw.base.models.VideoTypeModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.VideoPresenter;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.video.VideoHomeActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
@@ -41,15 +44,30 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
     private PageHelper<VideoEtcModel> mPageHelper;
     private RecyclerView mRvChildren;
     private VideoChildTypeAdapter videoChildTypeAdapter;
+    private static final String KEY_INDEX = "key.video.index";
 
     public VideoListFragment(int type) {
         super();
         this.type = type;
     }
 
+    @Override
+    public void onAttach(@NonNull @NotNull Context context) {
+        super.onAttach(context);
+        SharePreferenceUtil.setInt(KEY_INDEX + type, -1);
+    }
+
     public void onReSelected() {
         if (videoChildTypeAdapter != null) {
             videoChildTypeAdapter.resetSelectedIndex();
+        }
+    }
+
+    @Override
+    protected void onReCreateView() {
+        super.onReCreateView();
+        if (mLoadingView != null) {
+            mLoadingView.showLoading();
         }
     }
 
@@ -106,6 +124,26 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
     }
 
     @Override
+    public void onVisible(boolean isVisible) {
+        super.onVisible(isVisible);
+        if (!isVisible) {
+            if (videoChildTypeAdapter != null) {
+                int index = videoChildTypeAdapter.getmSelectedIndex();
+                SharePreferenceUtil.setInt(KEY_INDEX + type, index);
+                LogUtil.d("JSP_" + type, "index = " + index);
+            }
+
+        } else {
+            if (videoChildTypeAdapter != null) {
+                int cacheIndex = SharePreferenceUtil.getInt(KEY_INDEX + type, -1);
+                videoChildTypeAdapter.setSelectedIndex(cacheIndex);
+                videoChildTypeAdapter.notifyDataSetChanged();
+                LogUtil.d("JSP_" + type, "index cache = " + cacheIndex);
+            }
+        }
+    }
+
+    @Override
     public void initData() {
 
         HomeVideoListAdapter homeVideoListAdapter = new HomeVideoListAdapter(null);
@@ -150,5 +188,11 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
         mPageHelper.onFail(v -> {
             mPresenter.getVideoList(type, mPageHelper.getPage());
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        SharePreferenceUtil.setInt(KEY_INDEX + type, -1);
     }
 }

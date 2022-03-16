@@ -27,6 +27,7 @@ import com.thfw.ui.widget.TitleView;
 
 import java.util.List;
 
+@Deprecated
 public class ReadEtcActivity extends BaseActivity {
 
     private TitleView mTitleView;
