@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,12 +18,6 @@ import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.bigkoo.pickerview.view.TimePickerView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
@@ -56,6 +49,7 @@ import com.thfw.ui.widget.InputBoxView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -218,83 +212,14 @@ public class DialogRobotFactory {
                 .setOnViewClickListener(onViewCallBack).create().show();
     }
 
-    /**
-     * 通用弹框
-     *
-     * @param activity
-     * @param onViewCallBack
-     * @return
-     */
-    public static TDialog createGifDialog(FragmentActivity activity, int gifRaw, OnGIFCallBack
-            onViewCallBack) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(com.thfw.robotheart.R.layout.dialog_gif_layout)
-                .setDialogAnimationRes(R.style.animate_dialog_fade)
-                .setScreenWidthAspect(activity, 1.0f)
-//                .setDimAmount(0.8f)
-                .setScreenHeightAspect(activity, 1.0f)
-                // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
-                .setOnBindViewListener(viewHolder -> {
-                    ImageView imageView = viewHolder.getView(com.thfw.robotheart.R.id.iv_gif_dialog);
-                    Glide.with(activity).asGif().load(gifRaw).listener(new RequestListener<GifDrawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
-//                            try {
-//                                Field gifStateField = GifDrawable.class.getDeclaredField("state");
-//                                gifStateField.setAccessible(true);
-//                                Class gifStateClass = Class.forName("com.bumptech.glide.load.resource.gif.GifDrawable$GifState");
-//                                Field gifFrameLoaderField = gifStateClass.getDeclaredField("frameLoader");
-//                                gifFrameLoaderField.setAccessible(true);
-//                                Class gifFrameLoaderClass = Class.forName("com.bumptech.glide.load.resource.gif.GifFrameLoader");
-//                                Field gifDecoderField = gifFrameLoaderClass.getDeclaredField("gifDecoder");
-//                                gifDecoderField.setAccessible(true);
-//                                Class gifDecoderClass = Class.forName("com.bumptech.glide.gifdecoder.GifDecoder");
-//                                Object gifDecoder = gifDecoderField.get(gifFrameLoaderField.get(gifStateField.get(resource)));
-//                                Method getDelayMethod = gifDecoderClass.getDeclaredMethod("getDelay", int.class);
-//                                getDelayMethod.setAccessible(true);
-//                                //设置只播放一次
-//                                resource.setLoopCount(1);
-//                                //获得总帧数
-//                                int count = resource.getFrameCount();
-//                                int delay = 0;
-//                                for (int i = 0; i < count; i++) {
-//                                    //计算每一帧所需要的时间进行累加
-//                                    delay += (int) getDelayMethod.invoke(gifDecoder, i);
-//                                }
-//                                imageView.postDelayed(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        if (onViewCallBack != null) {
-//                                            imageView.clearAnimation();
-//                                            onViewCallBack.callBack(imageView);
-//                                        }
-//                                    }
-//                                }, delay);
-//                            } catch (NoSuchFieldException e) {
-//                                e.printStackTrace();
-//                            } catch (ClassNotFoundException e) {
-//                                e.printStackTrace();
-//                            } catch (IllegalAccessException e) {
-//                                e.printStackTrace();
-//                            } catch (NoSuchMethodException e) {
-//                                e.printStackTrace();
-//                            } catch (InvocationTargetException e) {
-//                                e.printStackTrace();
-//                            }
-                            return false;
-                        }
-                    }).into(imageView);
-                }).setOnViewClickListener(onViewCallBack).create().show();
-    }
-
-
     public static void createAddressBirthDay(Context mContext, ViewGroup
             decorView, OnTimeSelectListener optionsSelectListener) {
+
+        Calendar selectedDate = Calendar.getInstance();//系统当前时间
+        Calendar startDate = Calendar.getInstance();
+        startDate.set(selectedDate.get(Calendar.YEAR) - 120, 0, 1);
+        Calendar endDate = Calendar.getInstance();
+        endDate.set(selectedDate.get(Calendar.YEAR), selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DAY_OF_MONTH));
         TimePickerBuilder builder = new TimePickerBuilder(mContext, optionsSelectListener).setDecorView(decorView)
                 .setTitleText("选择年月日")//标题文字
                 .setTitleSize(17)//标题文字大小
@@ -307,6 +232,8 @@ public class DialogRobotFactory {
                 .setTextColorOut(mContext.getResources().getColor(R.color.text_content))
                 .setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
                 .setSubCalSize(14)
+                .setDate(endDate)
+                .setRangDate(startDate, endDate)
                 .setBgColor(mContext.getResources().getColor(R.color.colorRobotDialogBg))
                 .setLineSpacingMultiplier(2.2f)//行间距
                 .setDividerColor(mContext.getResources().getColor(R.color.black_10));//设置分割线的颜色

@@ -25,16 +25,11 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.activitys.login.SetPasswordActivity;
-import com.thfw.robotheart.activitys.me.InfoActivity;
-import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
-import com.thfw.user.login.LoginStatus;
-import com.thfw.user.login.User;
-import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implements LoginPresenter.LoginUi<TokenModel> {
@@ -177,23 +172,7 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
     @Override
     public void onSuccess(TokenModel data) {
         LoadingDialog.hide();
-        if (data != null && !TextUtils.isEmpty(data.token)) {
-            User user = new User();
-            user.setToken(data.token);
-            user.setMobile(mEtMobile.getText().toString());
-            user.setLoginStatus(LoginStatus.LOGINED);
-            UserManager.getInstance().login(user);
-            LogUtil.d(TAG, "UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
-            if (data.isNoOrganization()) {
-                SelectOrganizationActivity.isNoSetUserInfo = data.isNoSetUserInfo();
-                SelectOrganizationActivity.startActivity(mContext, true);
-            } else if (data.isNoSetUserInfo()) {
-                InfoActivity.startActivityFirst(mContext);
-            }
-            getActivity().finish();
-        } else {
-            ToastUtil.show("token 参数错误");
-        }
+        LoginActivity.login(getActivity(), data, mEtMobile.getText().toString());
     }
 
     @Override

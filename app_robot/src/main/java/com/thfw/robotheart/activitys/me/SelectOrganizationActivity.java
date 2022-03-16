@@ -117,6 +117,8 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
                 if (isNoSetUserInfo) {
                     isNoSetUserInfo = false;
                     InfoActivity.startActivityFirst(mContext);
+                } else {
+                    UserManager.getInstance().login();
                 }
                 finish();
             }

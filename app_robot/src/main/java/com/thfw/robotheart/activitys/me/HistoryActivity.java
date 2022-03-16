@@ -26,6 +26,7 @@ import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.activitys.exercise.ExerciseIngActivity;
 import com.thfw.robotheart.activitys.test.TestDetailActivity;
 import com.thfw.robotheart.activitys.text.BookDetailActivity;
+import com.thfw.robotheart.activitys.text.BookIdeoDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.HistoryAdapter;
 import com.thfw.robotheart.util.PageHelper;
@@ -153,7 +154,7 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
                     BookDetailActivity.startActivity(mContext, bookModel.getId());
                 } else if (historyModel instanceof HistoryModel.HistoryStudyModel) { // 思政文章
                     HistoryModel.HistoryStudyModel bookModel = (HistoryModel.HistoryStudyModel) historyModel;
-                    BookDetailActivity.startActivity(mContext, bookModel.getId());
+                    BookIdeoDetailActivity.startActivity(mContext, bookModel.getId());
                 } else if (historyModel instanceof HistoryModel.HistoryExerciseModel) { // 工具包
                     HistoryModel.HistoryExerciseModel exerciseModel = (HistoryModel.HistoryExerciseModel) historyModel;
                     ExerciseIngActivity.startActivity(mContext, exerciseModel.getId(), exerciseModel.isUsed());

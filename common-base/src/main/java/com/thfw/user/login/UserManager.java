@@ -72,6 +72,11 @@ public class UserManager extends Observable {
      * @return 是否登录
      */
     public boolean isLogin() {
+        return user.getLoginStatus() == LoginStatus.LOGINED || user.getLoginStatus() == LoginStatus.LOGOUT_HIDE;
+    }
+
+
+    public boolean isToLogin() {
         return user.getLoginStatus() == LoginStatus.LOGINED;
     }
 
@@ -83,10 +88,18 @@ public class UserManager extends Observable {
      *             {@link LoginStatus#LOGOUT_DELETE}
      */
     public void logout(int flag) {
+        LogUtil.d("logout flag = " + flag);
         user.logout(flag);
         setChanged();
         notifyObservers(user);
         SharePreferenceUtil.setString(KEY_USER, "");
+    }
+
+    public void login() {
+        if (user != null && user.getLoginStatus() != LoginStatus.LOGOUT_EXIT) {
+            user.setLoginStatus(LoginStatus.LOGINED);
+            notifyUserInfo();
+        }
     }
 
     public void notifyUserInfo() {
@@ -94,7 +107,9 @@ public class UserManager extends Observable {
         String userJson = GsonUtil.toJson(user);
         notifyObservers(user);
         LogUtil.e("login -> userJson" + userJson);
-        SharePreferenceUtil.setString(KEY_USER, userJson);
+        if (user.getLoginStatus() == LoginStatus.LOGINED) {
+            SharePreferenceUtil.setString(KEY_USER, userJson);
+        }
     }
 
 }

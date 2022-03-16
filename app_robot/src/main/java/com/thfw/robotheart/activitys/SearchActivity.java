@@ -346,7 +346,7 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
                 fragmentMaps.get(SearchResultModel.TYPE_IDEO_TEXT).setResultBeans(data.getIdeologyList());
             } else {
                 fragmentMaps.put(SearchResultModel.TYPE_IDEO_TEXT,
-                        new SearchResultFragment(SearchResultModel.TYPE_IDEO_TEXT, "思政文章", data.getIdeologyList()));
+                        new SearchResultFragment(SearchResultModel.TYPE_IDEO_TEXT, "思政文库", data.getIdeologyList()));
             }
             fragments.add(SearchResultModel.TYPE_IDEO_TEXT);
 
@@ -357,7 +357,7 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
                 fragmentMaps.get(SearchResultModel.TYPE_TEXT).setResultBeans(data.getArticleList());
             } else {
                 fragmentMaps.put(SearchResultModel.TYPE_TEXT,
-                        new SearchResultFragment(SearchResultModel.TYPE_TEXT, "心理文章", data.getArticleList()));
+                        new SearchResultFragment(SearchResultModel.TYPE_TEXT, "心理文库", data.getArticleList()));
             }
             fragments.add(SearchResultModel.TYPE_TEXT);
 

@@ -1,6 +1,5 @@
 package com.thfw.robotheart.fragments.login;
 
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -15,23 +14,17 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
-import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
-import com.thfw.robotheart.activitys.me.InfoActivity;
-import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.InputBoxSquareView;
-import com.thfw.user.login.LoginStatus;
-import com.thfw.user.login.User;
-import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
@@ -180,23 +173,7 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
     @Override
     public void onSuccess(TokenModel data) {
         LoadingDialog.hide();
-        if (data != null && !TextUtils.isEmpty(data.token)) {
-            User user = new User();
-            user.setToken(data.token);
-            user.setMobile(phone);
-            user.setLoginStatus(LoginStatus.LOGINED);
-            UserManager.getInstance().login(user);
-            LogUtil.d(TAG, "UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
-            if (data.isNoOrganization()) {
-                SelectOrganizationActivity.isNoSetUserInfo = data.isNoSetUserInfo();
-                SelectOrganizationActivity.startActivity(mContext, true);
-            } else if (data.isNoSetUserInfo()) {
-                InfoActivity.startActivityFirst(mContext);
-            }
-            getActivity().finish();
-        } else {
-            ToastUtil.show("token 参数错误");
-        }
+        LoginActivity.login(getActivity(), data, phone);
     }
 
     @Override

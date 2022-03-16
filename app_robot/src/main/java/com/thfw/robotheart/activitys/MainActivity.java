@@ -232,10 +232,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 startActivity(new Intent(mContext, PrivateSetActivity.class));
             }
         });
-        // 登录的情况下进行用户信息配置
-        if (UserManager.getInstance().isLogin()) {
-            setUserMessage(UserManager.getInstance().getUser());
-        }
         // 头像点击进入【我的页面】
         mLlRiv.setOnClickListener(v -> {
             if (UserManager.getInstance().isLogin()) {
@@ -243,7 +239,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             }
         });
 
-        if (UserManager.getInstance().isLogin()) {
+        if (UserManager.getInstance().isToLogin()) {
+            setUserMessage(UserManager.getInstance().getUser());
             // 已登录 初始化用户信息和机构信息
             initUmeng();
             initUserInfo();
@@ -255,7 +252,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        if (!UserManager.getInstance().isLogin()) {
+        if (!UserManager.getInstance().isToLogin()) {
             // 未登录进入登录页面
             LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
         } else {

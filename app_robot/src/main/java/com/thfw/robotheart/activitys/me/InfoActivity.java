@@ -305,6 +305,7 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
             mBtConfirm.setOnClickListener(v -> {
                 if (inputFinish()) {
                     mFirstInputMsg = false;
+                    UserManager.getInstance().login();
                     finish();
                 }
             });
@@ -317,6 +318,7 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
                 findViewById(id).setVisibility(View.VISIBLE);
             }
             initOrganization();
+
         }
 
 

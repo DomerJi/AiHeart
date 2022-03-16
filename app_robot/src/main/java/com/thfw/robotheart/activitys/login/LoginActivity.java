@@ -1,5 +1,6 @@
 package com.thfw.robotheart.activitys.login;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
@@ -14,11 +16,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.CommonParameter;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.MainActivity;
+import com.thfw.robotheart.activitys.me.InfoActivity;
+import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.fragments.login.LoginByFaceFragment;
 import com.thfw.robotheart.fragments.login.LoginMobileCodeFragment;
@@ -26,6 +32,8 @@ import com.thfw.robotheart.fragments.login.LoginMobileFragment;
 import com.thfw.robotheart.fragments.login.LoginPasswordFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.user.login.LoginStatus;
+import com.thfw.user.login.User;
 import com.thfw.user.login.UserManager;
 
 import org.opencv.android.Static2Helper;
@@ -75,7 +83,7 @@ public class LoginActivity extends BaseActivity {
         fragmentLoader.load(type);
         // 检查权限
         checkPermissions();
-        if (!UserManager.getInstance().isLogin()) {
+        if (!UserManager.getInstance().isToLogin()) {
             SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN, true);
             SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN_TTS, true);
         } else {
@@ -186,5 +194,31 @@ public class LoginActivity extends BaseActivity {
     public void onDestroy() {
         INPUT_PHONE = "";
         super.onDestroy();
+    }
+
+
+    public static void login(Activity activity, TokenModel data, String mobile) {
+        if (data != null && !TextUtils.isEmpty(data.token)) {
+            User user = new User();
+            user.setToken(data.token);
+            user.setMobile(mobile);
+            LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
+            if (data.isNoOrganization()) {
+                user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
+                UserManager.getInstance().login(user);
+                SelectOrganizationActivity.isNoSetUserInfo = data.isNoSetUserInfo();
+                SelectOrganizationActivity.startActivity(activity, true);
+            } else if (data.isNoSetUserInfo()) {
+                user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
+                UserManager.getInstance().login(user);
+                InfoActivity.startActivityFirst(activity);
+            } else {
+                user.setLoginStatus(LoginStatus.LOGINED);
+                UserManager.getInstance().login(user);
+            }
+            activity.finish();
+        } else {
+            ToastUtil.show("token 参数错误");
+        }
     }
 }
