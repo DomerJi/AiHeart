@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.robot.RobotActivity;
@@ -22,6 +23,7 @@ import com.thfw.mobileheart.fragment.HomeFragment;
 import com.thfw.mobileheart.fragment.MeFragment;
 import com.thfw.mobileheart.fragment.MessageFragment;
 import com.thfw.mobileheart.util.FragmentLoader;
+import com.thfw.mobileheart.view.SimpleAnimatorListener;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.user.login.UserManager;
 
@@ -34,6 +36,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
 
     private Handler handler;
     private androidx.constraintlayout.widget.ConstraintLayout mMainRoot;
+    private androidx.constraintlayout.widget.ConstraintLayout mMainRoot2;
 
     private android.widget.LinearLayout mLlHome;
     private android.widget.ImageView mIvHome;
@@ -68,6 +71,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     public void initView() {
 
         mMainRoot = (ConstraintLayout) findViewById(R.id.main_root);
+        mMainRoot2 = (ConstraintLayout) findViewById(R.id.main_root2);
 
         mLlHome = (LinearLayout) findViewById(R.id.ll_home);
         mIvHome = (ImageView) findViewById(R.id.iv_home);
@@ -140,8 +144,29 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             // 淡入
             mMainRoot.setAlpha(0f);
             mMainRoot.setVisibility(View.VISIBLE);
-            mMainRoot.animate().alpha(1f).setDuration(400).start();
-            setStatusBarBackGround(STATUSBAR_WHITE);
+            mMainRoot.animate().alpha(1f).setDuration(400).setListener(new SimpleAnimatorListener() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (EmptyUtil.isEmpty(MainActivity.this)) {
+                        return;
+                    }
+
+                    mMainRoot2.setAlpha(0f);
+                    mMainRoot2.setVisibility(View.VISIBLE);
+                    mMainRoot2.animate().alpha(1f).setDuration(400).setListener(new SimpleAnimatorListener() {
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            if (EmptyUtil.isEmpty(MainActivity.this)) {
+                                return;
+                            }
+                            mMainRoot.setBackgroundColor(getResources().getColor(R.color.page_background_gray));
+                        }
+                    }).setStartDelay(1200);
+                }
+
+            }).setStartDelay(700);
+
         }
     }
 

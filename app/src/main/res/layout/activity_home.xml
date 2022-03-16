@@ -1,128 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/page_background_gray"
-    android:visibility="invisible"
-    tools:context="com.thfw.mobileheart.activity.MainActivity">
+    android:background="@mipmap/splash2"
+    android:visibility="invisible">
 
-    <FrameLayout
-        android:id="@+id/fl_content"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_root2"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/ll_home"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:visibility="invisible">
 
-    <!--    底部Tab键-->
-    <LinearLayout
-        android:id="@+id/ll_ai_chat"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/home_tab_height"
-        android:background="@color/white"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/ll_home">
+        <FrameLayout
+            android:id="@+id/fl_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/ll_home"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/iv_chat"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/home_tab_icon_chat_height"
-            android:src="@mipmap/ic_home_ai" />
+        <!--    底部Tab键-->
+        <LinearLayout
+            android:id="@+id/ll_ai_chat"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/home_tab_height"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/ll_home">
 
-
-    </LinearLayout>
-
-    <!--    底部Tab键-->
-    <LinearLayout
-        android:id="@+id/ll_home"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/home_tab_height"
-        android:background="@color/white"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toRightOf="@id/ll_ai_chat"
-        app:layout_constraintRight_toLeftOf="@id/ll_message">
-
-        <ImageView
-            android:id="@+id/iv_home"
-            android:layout_width="@dimen/home_tab_icon_height"
-            android:layout_height="@dimen/home_tab_icon_height"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/hometab_home_selector" />
-
-        <TextView
-            android:id="@+id/tv_home"
-            style="@style/HomeTabText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/home" />
-
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/iv_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/home_tab_icon_chat_height"
+                android:src="@mipmap/ic_home_ai" />
 
 
-    <LinearLayout
-        android:id="@+id/ll_message"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/home_tab_height"
-        android:background="@color/white"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toRightOf="@id/ll_home"
-        app:layout_constraintRight_toLeftOf="@id/ll_me">
+        </LinearLayout>
 
-        <ImageView
-            android:id="@+id/iv_message"
-            android:layout_width="@dimen/home_tab_icon_height"
-            android:layout_height="@dimen/home_tab_icon_height"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/hometab_sort_selector" />
+        <!--    底部Tab键-->
+        <LinearLayout
+            android:id="@+id/ll_home"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/home_tab_height"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@id/ll_ai_chat"
+            app:layout_constraintRight_toLeftOf="@id/ll_message">
 
-        <TextView
-            android:id="@+id/tv_message"
-            style="@style/HomeTabText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/message" />
+            <ImageView
+                android:id="@+id/iv_home"
+                android:layout_width="@dimen/home_tab_icon_height"
+                android:layout_height="@dimen/home_tab_icon_height"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/hometab_home_selector" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_home"
+                style="@style/HomeTabText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/home" />
 
-    <LinearLayout
-        android:id="@+id/ll_me"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/home_tab_height"
-        android:background="@color/white"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toRightOf="@id/ll_message"
-        app:layout_constraintRight_toRightOf="parent">
+        </LinearLayout>
 
-        <ImageView
-            android:id="@+id/iv_me"
-            android:layout_width="@dimen/home_tab_icon_height"
-            android:layout_height="@dimen/home_tab_icon_height"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/hometab_me_selector" />
 
-        <TextView
-            android:id="@+id/tv_me"
-            style="@style/HomeTabText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/me" />
+        <LinearLayout
+            android:id="@+id/ll_message"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/home_tab_height"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@id/ll_home"
+            app:layout_constraintRight_toLeftOf="@id/ll_me">
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/iv_message"
+                android:layout_width="@dimen/home_tab_icon_height"
+                android:layout_height="@dimen/home_tab_icon_height"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/hometab_sort_selector" />
+
+            <TextView
+                android:id="@+id/tv_message"
+                style="@style/HomeTabText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/message" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_me"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/home_tab_height"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@id/ll_message"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_me"
+                android:layout_width="@dimen/home_tab_icon_height"
+                android:layout_height="@dimen/home_tab_icon_height"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/hometab_me_selector" />
+
+            <TextView
+                android:id="@+id/tv_me"
+                style="@style/HomeTabText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/me" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

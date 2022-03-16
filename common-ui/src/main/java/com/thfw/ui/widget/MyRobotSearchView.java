@@ -163,6 +163,10 @@ public class MyRobotSearchView extends FrameLayout {
         }
     }
 
+    public boolean isKeyEmpty() {
+        return TextUtils.isEmpty(mEtSearch.getText().toString());
+    }
+
     public interface OnSearchListener {
 
         /**
