@@ -43,7 +43,7 @@
         android:gravity="right"
         android:minWidth="150dp"
         android:text="010 12345678"
-        android:textColor="@color/text_content"
+        android:textColor="@color/colorPrimary"
         android:textSize="@dimen/textSize"
         app:layout_constraintBottom_toBottomOf="@id/iv_call"
         app:layout_constraintRight_toLeftOf="@id/iv_call"
@@ -68,7 +68,7 @@
         android:gravity="right"
         android:minWidth="160dp"
         android:textColor="@color/text_content"
-        android:textSize="@dimen/textSize"
+        android:textSize="@dimen/textSize_small"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_call"
         tools:text="周一到周日，24小时" />

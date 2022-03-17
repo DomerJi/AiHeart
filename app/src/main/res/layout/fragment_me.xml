@@ -22,8 +22,9 @@
 
             <ImageView
                 android:layout_width="40dp"
+                android:padding="8dp"
                 android:layout_height="40dp"
-                android:src="@mipmap/icon_liked_up"
+                android:src="@drawable/exo_ic_settings"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -34,6 +35,7 @@
                 layout="@layout/custom_message_number_red_dot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:layout_constraintRight_toRightOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -82,7 +84,7 @@
                     android:text="啦啦啦"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textSize_large"
-                    app:layout_constraintBottom_toTopOf="@id/tv_accompany_day"
+                    app:layout_constraintBottom_toTopOf="@id/ll_status"
                     app:layout_constraintLeft_toRightOf="@id/riv_avatar"
                     app:layout_constraintTop_toTopOf="@id/riv_avatar" />
 
@@ -91,14 +93,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_marginLeft="12dp"
-                    android:background="@drawable/me_status_bg"
+                    android:background="@drawable/radius_black50_bg"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingLeft="6dp"
                     android:paddingRight="6dp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_name"
-                    app:layout_constraintLeft_toRightOf="@id/tv_name"
-                    app:layout_constraintTop_toTopOf="@id/tv_name">
+                    app:layout_constraintBottom_toBottomOf="@id/riv_avatar"
+                    app:layout_constraintLeft_toRightOf="@id/riv_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/tv_name">
 
                     <ImageView
                         android:layout_width="13dp"
@@ -111,6 +113,7 @@
                         android:id="@+id/tv_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginLeft="8dp"
                         android:text="status"
                         android:textColor="@color/white"
@@ -120,29 +123,29 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tv_accompany_day"
+                    android:id="@+id/tv_me_level"
                     android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_marginLeft="12dp"
-                    android:background="@drawable/radius_black50_bg"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="你我已相遇0天"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="3连2班"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textSize_product"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_name"
+                    app:layout_constraintLeft_toRightOf="@id/tv_name"
+                    app:layout_constraintTop_toTopOf="@id/tv_name" />
+
+
+                <TextView
+                    android:id="@+id/tv_history_happy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="历史心情"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textSize_small"
-                    app:layout_constraintBottom_toBottomOf="@id/riv_avatar"
-                    app:layout_constraintLeft_toRightOf="@id/riv_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/tv_name" />
-
-
-                <ImageView
-                    android:id="@+id/iv_call"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@mipmap/icon_liked_up"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
+                    app:layout_constraintBottom_toBottomOf="@id/ll_status"
+                    app:layout_constraintLeft_toRightOf="@id/ll_status"
+                    app:layout_constraintTop_toTopOf="@id/ll_status" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

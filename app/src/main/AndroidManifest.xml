@@ -58,7 +58,7 @@
             android:name="com.thfw.mobileheart.activity.robot.RobotActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.me.MeTestHistoryActivity"
+            android:name="com.thfw.mobileheart.activity.me.MeTaskActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thfw.mobileheart.activity.me.MeHistoryActivity"

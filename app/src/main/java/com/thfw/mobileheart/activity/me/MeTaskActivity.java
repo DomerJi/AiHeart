@@ -11,15 +11,15 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.thfw.base.base.IPresenter;
-import com.thfw.mobileheart.fragment.list.TestHistoryListFragment;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.fragment.list.TestHistoryListFragment;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MeTestHistoryActivity extends BaseActivity {
+public class MeTaskActivity extends BaseActivity {
 
     private com.thfw.ui.widget.TitleView mTitleView;
     private com.google.android.material.tabs.TabLayout mTabLayout;
@@ -30,12 +30,12 @@ public class MeTestHistoryActivity extends BaseActivity {
 
 
     public static void startActivity(Context context) {
-        context.startActivity(new Intent(context, MeTestHistoryActivity.class));
+        context.startActivity(new Intent(context, MeTaskActivity.class));
     }
 
     @Override
     public int getContentView() {
-        return R.layout.activity_me_test_history;
+        return R.layout.activity_me_task;
     }
 
     @Override

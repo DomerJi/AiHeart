@@ -10,7 +10,7 @@
         android:id="@+id/titleView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tv_centerText="@string/me_test_history"
+        app:tv_centerText="@string/me_task"
         tools:ignore="MissingConstraints" />
 
     <com.google.android.material.tabs.TabLayout
@@ -20,11 +20,11 @@
         android:background="@color/page_background_gray"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleView"
-        app:tabIndicatorFullWidth="false"
-        app:tabMode="scrollable"
-        app:tabMinWidth="60dp"
-        app:tabMaxWidth="80dp"
         app:tabIndicatorAnimationDuration="300"
+        app:tabIndicatorFullWidth="false"
+        app:tabMaxWidth="80dp"
+        app:tabMinWidth="60dp"
+        app:tabMode="scrollable"
         app:tabRippleColor="@color/transparent"
         app:tabSelectedTextColor="@color/text_green"
         app:tabTextColor="@color/text_common"
@@ -33,8 +33,8 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:background="@color/white"
         android:layout_height="0dp"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tab_layout" />
 

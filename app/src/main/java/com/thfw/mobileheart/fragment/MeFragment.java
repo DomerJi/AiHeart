@@ -17,7 +17,7 @@ import com.thfw.mobileheart.activity.integral.ClockInActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.me.CollectActivity;
 import com.thfw.mobileheart.activity.me.MeHistoryActivity;
-import com.thfw.mobileheart.activity.me.MeTestHistoryActivity;
+import com.thfw.mobileheart.activity.me.MeTaskActivity;
 import com.thfw.mobileheart.activity.settings.HelpBackActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
 import com.thfw.mobileheart.activity.settings.SettingActivity;
@@ -38,7 +38,6 @@ public class MeFragment extends BaseFragment {
     private TextView mTvStatus;
     private ConstraintLayout mMeMessage;
     private LinearLayout mLlStatus;
-    private TextView mTvAccompanyDay;
     private ImageView mIvCall;
     private LinearLayout mLlTimeMinute;
     private TextView mTvTimeMinute;
@@ -86,7 +85,6 @@ public class MeFragment extends BaseFragment {
 
         mMeMessage = (ConstraintLayout) findViewById(R.id.me_message);
         mLlStatus = (LinearLayout) findViewById(R.id.ll_status);
-        mTvAccompanyDay = (TextView) findViewById(R.id.tv_accompany_day);
         mIvCall = (ImageView) findViewById(R.id.iv_call);
         mLlTimeMinute = (LinearLayout) findViewById(R.id.ll_time_minute);
         mTvTimeMinute = (TextView) findViewById(R.id.tv_time_minute);
@@ -110,7 +108,10 @@ public class MeFragment extends BaseFragment {
         mBtLogout = (Button) findViewById(R.id.bt_logout);
         // todo 我的任务
         mLlMeTask.setOnClickListener(v -> {
-
+            startActivity(new Intent(mContext, MeTaskActivity.class));
+        });
+        mMeMessage.setOnClickListener(v -> {
+            startActivity(new Intent(mContext, SettingActivity.class));
         });
         mLlMeInfo.setOnClickListener(v -> {
             if (UserManager.getInstance().isToLogin()) {
@@ -142,12 +143,12 @@ public class MeFragment extends BaseFragment {
         });
 
         // 历史
-        mLlHistoryTest.setOnClickListener(v -> MeTestHistoryActivity.startActivity(mContext));
-        mLlHistoryExercise.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 0));
-        mLlHistoryListening.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 1));
-        mLlHistorySee.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 2));
-        mLlHistoryRead.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 3));
-        mLlHistoryStudy.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 4));
+        mLlHistoryTest.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 0));
+        mLlHistoryExercise.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 1));
+        mLlHistoryListening.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 2));
+        mLlHistorySee.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 3));
+        mLlHistoryRead.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 4));
+        mLlHistoryStudy.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 5));
 
     }
 
