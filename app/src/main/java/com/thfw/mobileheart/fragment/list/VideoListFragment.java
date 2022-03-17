@@ -150,7 +150,7 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
         homeVideoListAdapter.setOnRvItemListener(new OnRvItemListener<VideoEtcModel>() {
             @Override
             public void onItemClick(List<VideoEtcModel> list, int position) {
-                VideoPlayActivity.startActivity(mContext, list, position);
+                VideoPlayActivity.startActivity(mContext, list.get(position).getId(), false);
             }
         });
         mRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {

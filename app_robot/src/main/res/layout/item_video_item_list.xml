@@ -9,11 +9,12 @@
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/riv_pic"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="0dp"
         android:layout_marginLeft="12dp"
         android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="H,16:9"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintWidth_percent="0.42"
         app:riv_corner_radius="4dp"
         app:riv_oval="false" />
 
@@ -23,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="16dp"
+        android:ellipsize="end"
         android:maxLength="25"
         android:maxLines="3"
         android:text="@string/title"

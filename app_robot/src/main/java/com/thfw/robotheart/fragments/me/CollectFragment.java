@@ -11,7 +11,6 @@ import com.thfw.base.api.HistoryApi;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.CollectModel;
-import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.robotheart.R;
@@ -29,7 +28,6 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -96,12 +94,7 @@ public class CollectFragment extends RobotBaseFragment<HistoryPresenter>
                         ExerciseDetailsActivity.startActivity(mContext, collectModel.id);
                         break;
                     case HistoryApi.TYPE_COLLECT_VIDEO:
-                        ArrayList<VideoEtcModel> videoList = new ArrayList<>();
-                        VideoEtcModel videoEtcModel = new VideoEtcModel();
-                        videoEtcModel.setId(collectModel.id);
-                        videoEtcModel.setTitle(collectModel.title);
-                        videoList.add(videoEtcModel);
-                        VideoPlayerActivity.startActivity(mContext, videoList, 0);
+                        VideoPlayerActivity.startActivity(mContext, collectModel.id, false);
                         break;
                 }
             }

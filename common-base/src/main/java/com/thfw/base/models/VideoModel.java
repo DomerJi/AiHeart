@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.annotations.SerializedName;
 import com.thfw.base.base.IModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,56 @@ public class VideoModel implements IModel {
     private int collected;
     @SerializedName("history_time")
     private String historyTime;
+
+    @SerializedName("recommend_list")
+    private List<RecommendModel> recommendModels;
+
+    public List<RecommendModel> getRecommendModels() {
+        return recommendModels;
+    }
+
+    public static class RecommendModel implements Serializable {
+
+        /**
+         * id : 872
+         * title : 看看你在亲密关系里的依恋类型？
+         * img : http://resource.soulbuddy.cn/public/uploads/videoPic/qmgxyllx.jpg
+         * pic : http://resource.soulbuddy.cn/public/uploads/videoPic/qmgxyllx.jpg
+         */
+
+        @SerializedName("id")
+        private int id;
+        @SerializedName("title")
+        private String title;
+        @SerializedName("img")
+        private String img;
+        @SerializedName("pic")
+        private String pic;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getImg() {
+            return TextUtils.isEmpty(img) ? pic : img;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public void setImg(String img) {
+            this.img = img;
+        }
+    }
 
 
     public int getId() {

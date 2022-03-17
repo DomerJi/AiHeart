@@ -20,7 +20,6 @@ import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.TestResultModel;
-import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TestPresenter;
 import com.thfw.base.utils.EmptyUtil;
@@ -35,7 +34,6 @@ import com.thfw.robotheart.adapter.TestRecommendAdapter;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -236,12 +234,7 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
                         AudioPlayerActivity.startActivity(mContext, audioEtcModel);
                         break;
                     case 4: // 视频
-                        ArrayList<VideoEtcModel> videoList = new ArrayList<>();
-                        VideoEtcModel videoEtcModel = new VideoEtcModel();
-                        videoEtcModel.setId(infoBean.getInfo().getId());
-                        videoEtcModel.setTitle(infoBean.getInfo().getTitle());
-                        videoList.add(videoEtcModel);
-                        VideoPlayerActivity.startActivity(mContext, videoList, 0);
+                        VideoPlayerActivity.startActivity(mContext, infoBean.getInfo().getId(), false);
                         break;
                     case 5: // 科普文章
                         BookDetailActivity.startActivity(mContext, infoBean.getInfo().getId());

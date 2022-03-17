@@ -45,10 +45,11 @@
 
     <string name="me_heart_box">心灵筒</string>
     <string name="me_heart_test_report">心理测评报告</string>
-    <string name="me_heart_safe_report">心理健康报告</string>
+    <string name="me_heart_safe_report">心理健康档案</string>
     <string name="me_help_back">帮助与反馈</string>
     <string name="me_setting">设置</string>
     <string name="me_info">个人信息</string>
+    <string name="me_task">我的任务</string>
 
     <string name="set_account_safe">账户安全</string>
     <string name="set_info">个人资料</string>

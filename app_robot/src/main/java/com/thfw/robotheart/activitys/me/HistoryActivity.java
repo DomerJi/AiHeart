@@ -15,7 +15,6 @@ import com.thfw.base.api.HistoryApi;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.HistoryModel;
-import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.utils.ToastUtil;
@@ -36,7 +35,6 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> implements HistoryPresenter.HistoryUi<List<HistoryModel>> {
@@ -136,12 +134,7 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
 //                    TestResultWebActivity.startActivity(mContext, new TestResultModel().setResultId(testModel.getId()));
                 } else if (historyModel instanceof HistoryModel.HistoryVideoModel) { // 视频
                     HistoryModel.HistoryVideoModel videoModel = (HistoryModel.HistoryVideoModel) historyModel;
-                    ArrayList<VideoEtcModel> videoList = new ArrayList<>();
-                    VideoEtcModel videoEtcModel = new VideoEtcModel();
-                    videoEtcModel.setId(videoModel.getId());
-                    videoEtcModel.setTitle(videoModel.getTitle());
-                    videoList.add(videoEtcModel);
-                    VideoPlayerActivity.startActivity(mContext, videoList, 0);
+                    VideoPlayerActivity.startActivity(mContext, videoModel.getId(),false);
                 } else if (historyModel instanceof HistoryModel.HistoryAudioModel) { // 音频
                     HistoryModel.HistoryAudioModel audioModel = (HistoryModel.HistoryAudioModel) historyModel;
                     AudioEtcModel audioEtcModel = new AudioEtcModel();

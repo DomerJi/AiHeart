@@ -180,7 +180,7 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
             mLlTop.setVisibility(View.VISIBLE);
             mTvLastAudio.setText("上次播放：" + data.getTitle() + "  播放至" + data.getPercentTime() + "%  " + data.getAddTime());
             mTvLastAudio.setOnClickListener(v -> {
-                VideoPlayerActivity.startActivity(mContext, data.toVideoModel(), 0);
+                VideoPlayerActivity.startActivity(mContext, data.getId(), false);
             });
         }
     }

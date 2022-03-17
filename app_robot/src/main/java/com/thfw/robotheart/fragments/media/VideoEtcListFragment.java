@@ -93,7 +93,7 @@ public class VideoEtcListFragment extends RobotBaseFragment<VideoPresenter> impl
             mVideoEtcListAdapter.setOnRvItemListener(new OnRvItemListener<VideoEtcModel>() {
                 @Override
                 public void onItemClick(List<VideoEtcModel> list, int position) {
-                    VideoPlayerActivity.startActivity(mContext, list, position);
+                    VideoPlayerActivity.startActivity(mContext, list.get(position).getId(), false);
                 }
             });
             mRefreshLayout.setEnableLoadMore(true);

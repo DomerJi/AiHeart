@@ -7,7 +7,6 @@ import com.thfw.base.base.MsgType;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.PushModel;
 import com.thfw.base.models.TalkModel;
-import com.thfw.base.models.VideoEtcModel;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
@@ -21,8 +20,6 @@ import com.thfw.robotheart.activitys.text.BookDetailActivity;
 import com.thfw.robotheart.activitys.text.BookIdeoDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.util.MsgCountManager;
-
-import java.util.ArrayList;
 
 /**
  * Author:pengs
@@ -63,11 +60,7 @@ public class PushHandle {
                 AudioPlayerActivity.startActivity(mContext, audioEtcModel);
                 break;
             case MsgType.VIDEO:
-                ArrayList<VideoEtcModel> videoList = new ArrayList<>();
-                VideoEtcModel videoEtcModel = new VideoEtcModel();
-                videoEtcModel.setId(contentId);
-                videoList.add(videoEtcModel);
-                VideoPlayerActivity.startActivity(mContext, videoList, 0);
+                VideoPlayerActivity.startActivity(mContext, contentId, false);
                 break;
             case MsgType.H5:
                 WebActivity.startActivity(mContext, pushModel.getTurnPage(), pushModel.getTitle());

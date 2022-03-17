@@ -8,7 +8,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -42,7 +41,6 @@ import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.ChatEntity;
-import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.models.VideoModel;
 import com.thfw.base.models.VideoPlayListModel;
 import com.thfw.base.net.ResponeThrowable;
@@ -52,7 +50,6 @@ import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NetworkUtil;
-import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.adapter.VideoPlayListAdapter;
@@ -70,6 +67,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
@@ -88,11 +86,8 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     private SimpleExoPlayer mExoPlayer;
     private VideoModel mVideoModel;
     private PlayerListener mPlayerListener;
-
     public static final String KEY_PLAY_POSITION = "key.position";
-    private static final String CURRENT_POSITION = "current_position";
-    private static final String PLAY_STATE = "play_state";
-    private static List<VideoEtcModel> mStaticVideoList;
+    public static final String KEY_AUTO_FINISH = "key.position";
 
     private ConstraintLayout mVideoLayout;
     private RecyclerView mRvVideoDetail;
@@ -107,20 +102,21 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     private Handler handler;
     private ImageView mExoPlay;
     private ImageView mExoNext;
-    private ArrayList<VideoEtcModel> mVideoList;
+    private ArrayList<VideoModel.RecommendModel> mVideoList;
     private boolean autoFinished;
     private int mPlayPosition;
     private LoadingView mLoadingView;
     private VideoPlayListAdapter mVideoPlayListAdapter;
+    private int mVideoId;
 
     public static void startActivity(Context context, VideoModel videoModel) {
         context.startActivity(new Intent(context, VideoPlayActivity.class).putExtra(KEY_DATA, videoModel));
     }
 
-    public static void startActivity(Context context, List<VideoEtcModel> list, int playPosition) {
-        mStaticVideoList = list;
+    public static void startActivity(Context context, int videoId, boolean autoFinished) {
         ((Activity) context).startActivityForResult(new Intent(context, VideoPlayActivity.class)
-                .putExtra(KEY_PLAY_POSITION, playPosition), ChatEntity.TYPE_RECOMMEND_VIDEO);
+                .putExtra(KEY_DATA, videoId)
+                .putExtra(KEY_AUTO_FINISH, autoFinished), ChatEntity.TYPE_RECOMMEND_VIDEO);
     }
 
     @Override
@@ -154,19 +150,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
          * 全屏按钮
          */
         mIvScreenAll.setOnClickListener(v -> {
-            if (EmptyUtil.isEmpty(VideoPlayActivity.this)) {
-                ToastUtil.show("VideoPlay null");
-                if (FloatWindow.get() != null) {
-                    FloatWindow.destroy();
-                    if (mExoPlayer != null) {
-                        SharePreferenceUtil.setLong(CURRENT_POSITION, mExoPlayer.getCurrentPosition());
-                        mExoPlayer.release();
-                        mExoPlayer = null;
-                    }
-                    VideoPlayActivity.startActivity(mContext, (VideoModel) mIvScreenAll.getTag());
-                    return;
-                }
-            }
             /**
              * 设置为横屏
              */
@@ -203,16 +186,48 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
 
     @Override
     public void initData() {
-        if (mVideoList == null && mStaticVideoList != null) {
-            if (mStaticVideoList.size() == 1) {
-                autoFinished = mStaticVideoList.get(0).isAutoFinished();
-            }
-            mVideoList = new ArrayList<>();
-            mVideoList.addAll(mStaticVideoList);
-            mStaticVideoList = null;
-            int mPlayPosition = getIntent().getIntExtra(KEY_PLAY_POSITION, 0);
-            videoChanged(mPlayPosition);
+        autoFinished = getIntent().getBooleanExtra(KEY_AUTO_FINISH, false);
+        mVideoId = getIntent().getIntExtra(KEY_DATA, -1);
+        if (mVideoId <= 0) {
+            ToastUtil.show("参数错误");
+            finish();
+            return;
         }
+
+        videoChanged(0);
+    }
+
+
+    private void setVideoList() {
+        if (mVideoList == null) {
+            mVideoList = new ArrayList<>();
+            VideoModel.RecommendModel recommendModel = new VideoModel.RecommendModel();
+            recommendModel.setId(mVideoId);
+            recommendModel.setTitle(mVideoModel.title);
+            recommendModel.setImg(mVideoModel.getImg());
+            mVideoList.add(recommendModel);
+            List<VideoModel.RecommendModel> recommendModels = mVideoModel.getRecommendModels();
+            if (recommendModels != null) {
+                Iterator<VideoModel.RecommendModel> iterator = recommendModels.iterator();
+                while (iterator.hasNext()) {
+                    VideoModel.RecommendModel model = iterator.next();
+                    if (model.getId() == mVideoId) {
+                        iterator.remove();
+                    }
+                }
+                mVideoList.addAll(recommendModels);
+            }
+
+            if (mPlayPosition >= mVideoList.size() - 1) {
+                mPlayPosition = mVideoList.size() - 1;
+                mExoNext.setAlpha(0.4f);
+                mExoNext.setEnabled(false);
+            } else {
+                mExoNext.setAlpha(1f);
+                mExoNext.setEnabled(true);
+            }
+        }
+
     }
 
 
@@ -304,6 +319,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
      */
     private void videoChanged(int playPosition) {
         this.mPlayPosition = playPosition;
+
         if (mExoPlayer != null) {
             addHistory();
             mMPlayerView.hideController();
@@ -311,17 +327,23 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
             mExoPlayer.setPlayWhenReady(false);
         }
 
-        if (mPlayPosition >= mVideoList.size() - 1) {
-            mPlayPosition = mVideoList.size() - 1;
+        if (mVideoList == null) {
+            mPresenter.getVideoInfo(mVideoId);
+            mLoadingView.showLoadingNoText();
             mExoNext.setAlpha(0.4f);
             mExoNext.setEnabled(false);
         } else {
-            mExoNext.setAlpha(1f);
-            mExoNext.setEnabled(true);
+            if (mPlayPosition >= mVideoList.size() - 1) {
+                mPlayPosition = mVideoList.size() - 1;
+                mExoNext.setAlpha(0.4f);
+                mExoNext.setEnabled(false);
+            } else {
+                mExoNext.setAlpha(1f);
+                mExoNext.setEnabled(true);
+            }
+            mPresenter.getVideoInfo(mVideoList.get(playPosition).getId());
+            mLoadingView.showLoadingNoText();
         }
-        mTvTitle.setText(mVideoList.get(mPlayPosition).getTitle());
-        mPresenter.getVideoInfo(mVideoList.get(playPosition).getId());
-        mLoadingView.showLoadingNoText();
     }
 
     /**
@@ -376,6 +398,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
             mExoPlayer.addListener(mPlayerListener);
             mMPlayerView.setPlayer(mExoPlayer);
         }
+        setVideoList();
         setListAdapter();
         mExoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(mVideoModel.getUrl())));
         mExoPlayer.prepare();
@@ -479,16 +502,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mExoPlayer != null) {
-            LogUtil.d(TAG, "put playPosition = " + mExoPlayer.getCurrentPosition());
-            outState.putLong(CURRENT_POSITION, mExoPlayer.getCurrentPosition());
-            outState.putBoolean(PLAY_STATE, mExoPlayer.getPlayWhenReady());
-        }
-    }
-
-    @Override
     protected void onPause() {
         addHistory();
         super.onPause();
@@ -541,7 +554,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
 
         ExoPlayerFactory.release();
 
-        SharePreferenceUtil.setLong(CURRENT_POSITION, 0);
     }
 
     /**

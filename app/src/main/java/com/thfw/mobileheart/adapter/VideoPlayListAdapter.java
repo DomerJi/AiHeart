@@ -70,13 +70,14 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
             VideoTopHolder topHolder = (VideoTopHolder) holder;
             topHolder.mTvVideoName.setText(model.videoModel.getTitle());
             topHolder.mTvHint.setText(model.videoModel.getDes());
+            topHolder.mIvCollect.setSelected(model.videoModel.getCollected() == 1);
         } else if (holder instanceof VideoGroupHolder) {
             VideoGroupHolder etcHolder = (VideoGroupHolder) holder;
         } else if (holder instanceof VideoDetailsHolder) {
             VideoDetailsHolder itemHolder = (VideoDetailsHolder) holder;
             itemHolder.mIvPlay.setVisibility((playPosition + 2) == position ? View.VISIBLE : View.GONE);
             itemHolder.mTvTitle.setText(model.videoEtcModel.getTitle());
-            GlideUtil.load(mContext, model.videoEtcModel.getPic(), itemHolder.mRivBg);
+            GlideUtil.load(mContext, model.videoEtcModel.getImg(), itemHolder.mRivBg);
 
         }
 

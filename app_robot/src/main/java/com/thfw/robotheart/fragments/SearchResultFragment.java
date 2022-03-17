@@ -12,7 +12,6 @@ import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.SearchResultModel;
 import com.thfw.base.models.TalkModel;
-import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
@@ -26,7 +25,6 @@ import com.thfw.robotheart.activitys.text.BookIdeoDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.SearchAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,12 +94,7 @@ public class SearchResultFragment extends RobotBaseFragment {
                         BookIdeoDetailActivity.startActivity(mContext, resultBean.getId());
                         break;
                     case SearchResultModel.TYPE_VIDEO:
-                        ArrayList<VideoEtcModel> videoList = new ArrayList<>();
-                        VideoEtcModel videoEtcModel = new VideoEtcModel();
-                        videoEtcModel.setId(resultBean.getId());
-                        videoEtcModel.setTitle(resultBean.getTitle());
-                        videoList.add(videoEtcModel);
-                        VideoPlayerActivity.startActivity(mContext, videoList, 0);
+                        VideoPlayerActivity.startActivity(mContext, resultBean.getId(), false);
                         break;
                     case SearchResultModel.TYPE_AUDIO:
                         AudioEtcModel audioEtcModel = new AudioEtcModel();

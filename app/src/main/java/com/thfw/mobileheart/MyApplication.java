@@ -19,7 +19,6 @@ import com.thfw.base.ContextApp;
 import com.thfw.base.room.AppDatabase;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
-import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.aiui.Constant;
 import com.thfw.ui.dialog.TDialog;
 
@@ -64,12 +63,12 @@ public class MyApplication extends MultiDexApplication {
         app = this;
         SharePreferenceUtil.init(this);
         ContextApp.init(app);
-//        ContextApp.setDeviceType(ContextApp.DeviceType.ROBOT);
-        if (Util.isPad(app)) {
-            ContextApp.setDeviceType(ContextApp.DeviceType.PAD);
-        } else {
-            ContextApp.setDeviceType(ContextApp.DeviceType.MOBILE);
-        }
+        ContextApp.setDeviceType(ContextApp.DeviceType.ROBOT);
+//        if (Util.isPad(app)) {
+//            ContextApp.setDeviceType(ContextApp.DeviceType.PAD);
+//        } else {
+//            ContextApp.setDeviceType(ContextApp.DeviceType.MOBILE);
+//        }
 
 
         ToastUtil.init(this);

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -33,22 +32,15 @@ import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSpec;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
-import com.thfw.base.ContextApp;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.face.MyAnimationListener;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
-import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.models.VideoModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
@@ -58,9 +50,7 @@ import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NetworkUtil;
-import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
-import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.VideoItemAdapter;
@@ -74,11 +64,10 @@ import com.thfw.ui.widget.VideoGestureHelper;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.yhao.floatwindow.FloatWindow;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
@@ -91,10 +80,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
 
 
     public static final String KEY_PLAY_POSITION = "key.position";
-    public static final String KEY_PLAY_ROOTTYPE = "key.roottype";
-    private static final String CURRENT_POSITION = "current_position";
-    private static final String PLAY_STATE = "play_state";
-    private static List<VideoEtcModel> mStaticVideoList;
+    public static final String KEY_AUTO_FINISH = "key.position";
     private ImageView mIvBg;
     private PlayerView mMPlayerView;
     private ProgressBar mPbBottom;
@@ -113,7 +99,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     private LinearLayout mLlTopControl;
     private ImageView mIvBack;
     private float speed;
-    private List<VideoEtcModel> mVideoList;
+    private List<VideoModel.RecommendModel> mVideoList;
     private int mPlayPosition;
     private ShowChangeLayout mScl;
     private boolean flDurationEnd;
@@ -133,7 +119,6 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
 
     private ImageView mIvCollect;
     private ConstraintLayout mClHint;
-    private int rootType;
     private boolean autoFinished;
     private VideoItemAdapter videoItemAdapter;
     private VideoGestureHelper ly_VG;
@@ -160,15 +145,12 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
             }
         }
     };
+    private int mVideoId;
 
-    public static void startActivity(Context context, VideoModel videoModel) {
-        context.startActivity(new Intent(context, VideoPlayerActivity.class).putExtra(KEY_DATA, videoModel));
-    }
-
-    public static void startActivity(Context context, List<VideoEtcModel> list, int playPosition) {
-        mStaticVideoList = list;
+    public static void startActivity(Context context, int videoId, boolean autoFinished) {
         ((Activity) context).startActivityForResult(new Intent(context, VideoPlayerActivity.class)
-                .putExtra(KEY_PLAY_POSITION, playPosition), ChatEntity.TYPE_RECOMMEND_VIDEO);
+                .putExtra(KEY_DATA, videoId)
+                .putExtra(KEY_AUTO_FINISH, autoFinished), ChatEntity.TYPE_RECOMMEND_VIDEO);
     }
 
     @Override
@@ -184,7 +166,6 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
 
     @Override
     public void initView() {
-        rootType = getIntent().getIntExtra(KEY_PLAY_ROOTTYPE, 1);
         mIvBg = (ImageView) findViewById(R.id.iv_bg);
         mMPlayerView = (PlayerView) findViewById(R.id.mPlayerView);
         mPbBottom = (ProgressBar) findViewById(R.id.pb_bottom);
@@ -250,31 +231,10 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
 
     }
 
-    private void screenFull() {
-        // 视频【横屏】设置
-        if (screenFull) {
-            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mMPlayerView.getLayoutParams();
-            layoutParams.dimensionRatio = "H,16:9";
-            layoutParams.height = 0;
-            layoutParams.width = Util.dipToPx(700, ContextApp.get());
-            mVideoLayout.setLayoutParams(layoutParams);
-            screenFull = false;
-        } else {
-            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mMPlayerView.getLayoutParams();
-            layoutParams.height = ConstraintLayout.LayoutParams.MATCH_PARENT;
-            layoutParams.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
-            layoutParams.dimensionRatio = null;
-            mVideoLayout.setLayoutParams(layoutParams);
-            screenFull = true;
-        }
-    }
-
     private void initExoPlayer() {
         long positionMs = -1;
         // 初始化ExoPlayer
         if (mExoPlayer == null) {
-
-
             ExoPlayerFactory.with(mContext).builder(ExoPlayerFactory.EXO_VIDEO);
             mExoPlayer = ExoPlayerFactory.getExoPlayer();
             if (mPlayerListener != null) {
@@ -284,6 +244,8 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
             mExoPlayer.addListener(mPlayerListener);
             mMPlayerView.setPlayer(mExoPlayer);
         }
+        setVideoList();
+        mTvTitle.setText(mVideoModel.getTitle());
         mTvVideoContent.setText("简介：" + mVideoModel.getDes());
         mIvCollect.setSelected(mVideoModel.getCollected() == 1);
         mExoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(mVideoModel.getUrl())));
@@ -297,6 +259,38 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
             continuePlay(positionMs);
         }
         mExoPlayer.setPlayWhenReady(true);
+    }
+
+    private void setVideoList() {
+        if (mVideoList == null) {
+            mVideoList = new ArrayList<>();
+            VideoModel.RecommendModel recommendModel = new VideoModel.RecommendModel();
+            recommendModel.setId(mVideoId);
+            recommendModel.setTitle(mVideoModel.title);
+            recommendModel.setImg(mVideoModel.getImg());
+            mVideoList.add(recommendModel);
+            List<VideoModel.RecommendModel> recommendModels = mVideoModel.getRecommendModels();
+            if (recommendModels != null) {
+                Iterator<VideoModel.RecommendModel> iterator = recommendModels.iterator();
+                while (iterator.hasNext()) {
+                    VideoModel.RecommendModel model = iterator.next();
+                    if (model.getId() == mVideoId) {
+                        iterator.remove();
+                    }
+                }
+                mVideoList.addAll(recommendModels);
+            }
+
+            if (mPlayPosition >= mVideoList.size() - 1) {
+                mPlayPosition = mVideoList.size() - 1;
+                mExoNext.setAlpha(0.4f);
+                mExoNext.setEnabled(false);
+            } else {
+                mExoNext.setAlpha(1f);
+                mExoNext.setEnabled(true);
+            }
+        }
+
     }
 
     /**
@@ -319,28 +313,17 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         }, 3500);
     }
 
-    private MediaSource buildMediaSource(Uri uri) {
-        DefaultBandwidthMeter mDefaultBandwidthMeter = new DefaultBandwidthMeter();
-        // 重定向 301 302 http 2 https
-        DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(this, mDefaultBandwidthMeter, new DefaultHttpDataSourceFactory(UIConfig.getUserAgent(), null, 15000, 15000, true));
-
-        return new ProgressiveMediaSource.Factory(upstreamFactory).createMediaSource(uri);
-        // 已弃用，无相关类
-//        return new ExtractorMediaSource.Factory(upstreamFactory). createMediaSource(uri); }
-    }
-
     @Override
     public void initData() {
-        if (mVideoList == null && mStaticVideoList != null) {
-            if (mStaticVideoList.size() == 1) {
-                autoFinished = mStaticVideoList.get(0).isAutoFinished();
-            }
-            mVideoList = new ArrayList<>();
-            mVideoList.addAll(mStaticVideoList);
-            mStaticVideoList = null;
-            int mPlayPosition = getIntent().getIntExtra(KEY_PLAY_POSITION, 0);
-            videoChanged(mPlayPosition);
+        autoFinished = getIntent().getBooleanExtra(KEY_AUTO_FINISH, false);
+        mVideoId = getIntent().getIntExtra(KEY_DATA, -1);
+        if (mVideoId <= 0) {
+            ToastUtil.show("参数错误");
+            finish();
+            return;
         }
+
+        videoChanged(0);
     }
 
     @Override
@@ -352,6 +335,9 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
      * 目录显示隐藏
      */
     private void videoLogcatue() {
+        if (mVideoList == null) {
+            return;
+        }
         if (mClContent.getVisibility() == VISIBLE) {
 
             mClContent.animate().alpha(0f).setListener(new MyAnimationListener() {
@@ -366,9 +352,9 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
                 mTvEtcTitleLogcate.setText("相关推荐");
                 videoItemAdapter = new VideoItemAdapter(mVideoList);
                 videoItemAdapter.setCurrentIndex(mPlayPosition);
-                videoItemAdapter.setOnRvItemListener(new OnRvItemListener<VideoEtcModel>() {
+                videoItemAdapter.setOnRvItemListener(new OnRvItemListener<VideoModel.RecommendModel>() {
                     @Override
-                    public void onItemClick(List<VideoEtcModel> list, int position) {
+                    public void onItemClick(List<VideoModel.RecommendModel> list, int position) {
                         videoChanged(position);
                         videoLogcatue();
                     }
@@ -399,6 +385,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
      */
     private void videoChanged(int playPosition) {
         this.mPlayPosition = playPosition;
+
         if (mExoPlayer != null) {
             addHistory();
             mMPlayerView.hideController();
@@ -406,23 +393,29 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
             mExoPlayer.setPlayWhenReady(false);
         }
 
-        if (mPlayPosition >= mVideoList.size() - 1) {
-            mPlayPosition = mVideoList.size() - 1;
-            mExoNext.setAlpha(0.4f);
-            mExoNext.setEnabled(false);
-        } else {
-            mExoNext.setAlpha(1f);
-            mExoNext.setEnabled(true);
-        }
-
         if (mClContent.getVisibility() == VISIBLE && mRvList.getAdapter() != null) {
             if (mExoPlayer != null) {
                 ((VideoItemAdapter) mRvList.getAdapter()).setCurrentIndex(mPlayPosition);
             }
         }
-        mTvTitle.setText(mVideoList.get(mPlayPosition).getTitle());
-        mPresenter.getVideoInfo(mVideoList.get(playPosition).getId());
-        mLoadingView.showLoadingNoText();
+
+        if (mVideoList == null) {
+            mPresenter.getVideoInfo(mVideoId);
+            mLoadingView.showLoadingNoText();
+            mExoNext.setAlpha(0.4f);
+            mExoNext.setEnabled(false);
+        } else {
+            if (mPlayPosition >= mVideoList.size() - 1) {
+                mPlayPosition = mVideoList.size() - 1;
+                mExoNext.setAlpha(0.4f);
+                mExoNext.setEnabled(false);
+            } else {
+                mExoNext.setAlpha(1f);
+                mExoNext.setEnabled(true);
+            }
+            mPresenter.getVideoInfo(mVideoList.get(playPosition).getId());
+            mLoadingView.showLoadingNoText();
+        }
     }
 
     @Override
@@ -472,16 +465,6 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     @Override
     public WorkInt workInt() {
         return WorkInt.SECOND2;
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mExoPlayer != null) {
-            LogUtil.d(TAG, "put playPosition = " + mExoPlayer.getCurrentPosition());
-            outState.putLong(CURRENT_POSITION, mExoPlayer.getCurrentPosition());
-            outState.putBoolean(PLAY_STATE, mExoPlayer.getPlayWhenReady());
-        }
     }
 
     @Override
@@ -553,8 +536,6 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         }
 
         ExoPlayerFactory.release();
-
-        SharePreferenceUtil.setLong(CURRENT_POSITION, 0);
     }
 
     /**

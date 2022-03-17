@@ -6,14 +6,11 @@ import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.DialogTalkModel;
-import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.activitys.test.TestDetailActivity;
 import com.thfw.robotheart.activitys.text.BookDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
-
-import java.util.ArrayList;
 
 /**
  * Author:pengs
@@ -28,13 +25,7 @@ public class TalkItemJumpHelper {
                 BookDetailActivity.startActivity(mContext, recommendInfoBean.getId());
                 break;
             case ChatEntity.TYPE_RECOMMEND_VIDEO:
-                ArrayList<VideoEtcModel> videoList = new ArrayList<>();
-                VideoEtcModel videoEtcModel = new VideoEtcModel();
-                videoEtcModel.setId(recommendInfoBean.getId());
-                videoEtcModel.setTitle(recommendInfoBean.getTitle());
-                videoEtcModel.setAutoFinished(true);
-                videoList.add(videoEtcModel);
-                VideoPlayerActivity.startActivity(mContext, videoList, 0);
+                VideoPlayerActivity.startActivity(mContext, recommendInfoBean.getId(), true);
                 break;
             case ChatEntity.TYPE_RECOMMEND_AUDIO:
                 AudioEtcDetailModel.AudioItemModel audioItemModel = new AudioEtcDetailModel.AudioItemModel();

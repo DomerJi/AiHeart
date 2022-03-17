@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.thfw.base.models.VideoEtcModel;
+import com.thfw.base.models.VideoModel;
 import com.thfw.robotheart.R;
 import com.thfw.ui.utils.GlideUtil;
 
@@ -21,11 +21,11 @@ import java.util.List;
  * Date: 2021/12/3 14:36
  * Describe:Todo
  */
-public class VideoItemAdapter extends BaseAdapter<VideoEtcModel, VideoItemAdapter.VideoItemHolder> {
+public class VideoItemAdapter extends BaseAdapter<VideoModel.RecommendModel, VideoItemAdapter.VideoItemHolder> {
 
     private int mCurrentIndex = 0;
 
-    public VideoItemAdapter(List<VideoEtcModel> dataList) {
+    public VideoItemAdapter(List<VideoModel.RecommendModel> dataList) {
         super(dataList);
     }
 
@@ -45,7 +45,7 @@ public class VideoItemAdapter extends BaseAdapter<VideoEtcModel, VideoItemAdapte
     public void onBindViewHolder(@NonNull @NotNull VideoItemAdapter.VideoItemHolder holder, int position) {
         holder.mTvTitle.setText(mDataList.get(position).getTitle());
         holder.mTvTitle.setSelected(mCurrentIndex == position);
-        GlideUtil.load(mContext, mDataList.get(position).getPic(), holder.mRivDot);
+        GlideUtil.load(mContext, mDataList.get(position).getImg(), holder.mRivDot);
     }
 
     public class VideoItemHolder extends RecyclerView.ViewHolder {

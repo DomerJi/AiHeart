@@ -226,7 +226,7 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
             mTvLastAudio.setVisibility(View.VISIBLE);
             mTvLastAudio.setText("上次播放：" + data.getTitle() + "  播放至" + data.getPercentTime() + "%  " + data.getAddTime());
             mTvLastAudio.setOnClickListener(v -> {
-                VideoPlayActivity.startActivity(mContext, data.toVideoModel(), 0);
+                VideoPlayActivity.startActivity(mContext, data.getId(), false);
             });
         }
     }

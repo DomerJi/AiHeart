@@ -20,7 +20,7 @@ public class VideoPlayListModel {
 
     public String des;
 
-    public VideoEtcModel videoEtcModel;
+    public VideoModel.RecommendModel videoEtcModel;
     public VideoModel videoModel;
 
     public VideoPlayListModel setHeadName(String headName) {
