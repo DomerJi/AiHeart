@@ -2,6 +2,7 @@ package com.thfw.base.models;
 
 import com.google.gson.annotations.SerializedName;
 import com.thfw.base.base.IModel;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HourUtil;
 
 import java.io.Serializable;
@@ -54,6 +55,28 @@ public class DialogTalkModel implements IModel {
     private Object updatedTime;
     @SerializedName("check_radio")
     private List<CheckRadioBean> checkRadio;
+
+    private ChatEntity checkEntity;
+
+    public boolean hasCheckRadio() {
+        return checkValue > 0 && !EmptyUtil.isEmpty(checkRadio) && getCheckRadio() != null;
+    }
+
+    public ChatEntity getMeCheckRadio() {
+        if (checkEntity != null) {
+            return checkEntity;
+        }
+        for (CheckRadioBean bean : checkRadio) {
+            if (checkValue == bean.getKey()) {
+                checkEntity = new ChatEntity();
+                checkEntity.type = ChatEntity.TYPE_TO;
+                checkEntity.talk = bean.getValue();
+                checkEntity.time = getTimeMills();
+                break;
+            }
+        }
+        return checkEntity;
+    }
 
     private long timeMills;
 

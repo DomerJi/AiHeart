@@ -11,21 +11,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.base.models.HomeEntity;
+import com.thfw.base.models.HomeHistoryEntity;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.Util;
+import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 import com.thfw.mobileheart.activity.exercise.ExerciseActivity;
-import com.thfw.mobileheart.activity.me.ServiceHotLineActivity;
+import com.thfw.mobileheart.activity.me.HotPhoneActivity;
 import com.thfw.mobileheart.activity.read.ReadHomeActivity;
 import com.thfw.mobileheart.activity.read.StudyHomeActivity;
 import com.thfw.mobileheart.activity.talk.AskActivity;
 import com.thfw.mobileheart.activity.talk.ChatActivity;
 import com.thfw.mobileheart.activity.test.TestingActivity;
 import com.thfw.mobileheart.activity.video.VideoHomeActivity;
-import com.thfw.base.models.HomeEntity;
-import com.thfw.base.models.HomeHistoryEntity;
-import com.thfw.mobileheart.R;
 import com.thfw.ui.utils.GlideUtil;
 import com.youth.banner.Banner;
 import com.youth.banner.indicator.CircleIndicator;
@@ -256,7 +256,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         public MadeHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             itemView.findViewById(R.id.root_hotline).setOnClickListener(v -> {
-                mContext.startActivity(new Intent(mContext, ServiceHotLineActivity.class));
+                mContext.startActivity(new Intent(mContext, HotPhoneActivity.class));
             });
         }
     }

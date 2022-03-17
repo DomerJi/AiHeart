@@ -73,7 +73,7 @@
             android:name="com.thfw.mobileheart.activity.read.ReadDetailsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.me.ServiceHotLineActivity"
+            android:name="com.thfw.mobileheart.activity.me.HotPhoneActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thfw.mobileheart.activity.me.AssessReportActivity"

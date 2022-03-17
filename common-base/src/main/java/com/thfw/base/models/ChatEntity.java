@@ -30,6 +30,11 @@ public class ChatEntity implements IModel {
     public int type;
     public String talk;
     public long time = System.currentTimeMillis();
+
+    public boolean isTalkType() {
+        return type <= TYPE_RECOMMEND_AUDIO_ETC;
+    }
+
     /**
      * 0 加载 -1 失败 1成功
      */

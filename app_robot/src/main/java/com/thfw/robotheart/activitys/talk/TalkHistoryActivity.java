@@ -290,6 +290,10 @@ public class TalkHistoryActivity extends RobotBaseActivity<TalkPresenter> implem
                     }
                 }
                 list.add(chatEntity);
+                // 个人选项
+                if (model.hasCheckRadio()) {
+                    list.add(model.getMeCheckRadio());
+                }
                 lastChatEntity = chatEntity;
             }
             // 根据加载还是刷新，重新赋值 最小upId 和最大downId

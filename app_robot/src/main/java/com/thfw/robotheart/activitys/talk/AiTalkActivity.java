@@ -654,11 +654,11 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         // 添加时间
         if (mChatAdapter.getItemCount() > 0) {
             lastChatEntity = mChatAdapter.getDataList().get(mChatAdapter.getItemCount() - 1);
-            if (lastChatEntity != null) {
+            if (lastChatEntity != null && lastChatEntity.isTalkType()) {
                 long limitTime = chatEntity.time - lastChatEntity.time;
                 LogUtil.d(TAG, "sendData -> limitTime = " + limitTime);
                 if (limitTime > HourUtil.LEN_MINUTE ||
-                        System.currentTimeMillis() - lastTime > HourUtil.LEN_5_MINUTE) {
+                        System.currentTimeMillis() - lastTime > HourUtil.LEN_10_MINUTE) {
                     lastTime = System.currentTimeMillis();
                     mChatAdapter.addData(ChatEntity.createTime());
                     mChatAdapter.notifyItemInserted(mChatAdapter.getItemCount() - 1);
@@ -669,6 +669,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 }
             }
         } else {
+            lastTime = System.currentTimeMillis();
             mChatAdapter.addData(ChatEntity.createTime());
         }
         mChatAdapter.addData(chatEntity);
