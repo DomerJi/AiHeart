@@ -110,7 +110,7 @@ public class MyApplication extends MultiDexApplication {
         // 设置使用v5+
         param.append(SpeechConstant.ENGINE_MODE + "=" + SpeechConstant.MODE_MSC);
         SpeechUtility.createUtility(app, param.toString());
-        Setting.setShowLog(false);
+        Setting.setShowLog(true);
     }
 
     /**

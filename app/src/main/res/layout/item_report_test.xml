@@ -11,9 +11,9 @@
         android:layout_height="5dp"
         android:layout_marginLeft="8dp"
         android:src="@color/text_green"
-        app:layout_constraintBottom_toBottomOf="@id/tv_title"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_title"
+        app:layout_constraintTop_toTopOf="parent"
         app:riv_oval="true"
         tools:ignore="MissingConstraints" />
 
@@ -27,8 +27,8 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/text_common"
-        android:textSize="@dimen/textSize_large"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintBottom_toTopOf="@id/tv_time"
         app:layout_constraintLeft_toRightOf="@id/riv_dot"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Title" />
@@ -38,13 +38,12 @@
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="46dp"
         android:text="010 12345678"
         android:textColor="@color/text_time"
-        android:textSize="@dimen/textSize"
-        app:layout_constraintBottom_toBottomOf="@id/tv_title"
-        app:layout_constraintRight_toLeftOf="@id/tv_see_port"
-        app:layout_constraintTop_toTopOf="@id/tv_title" />
+        android:textSize="@dimen/textSize_small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
 
     <TextView
@@ -53,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="6dp"
         android:background="@drawable/common_guadual_btn_selector"
+        android:gravity="center"
         android:paddingLeft="16dp"
         android:paddingTop="6dp"
         android:paddingRight="16dp"
@@ -60,9 +60,9 @@
         android:text="查看"
         android:textColor="@color/white"
         android:textSize="@dimen/textSize_small"
-        app:layout_constraintBottom_toBottomOf="@id/tv_title"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_title" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <View

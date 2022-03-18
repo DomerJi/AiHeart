@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,17 +16,41 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.models.OrganizationModel;
+import com.thfw.base.models.OrganizationSelectedModel;
+import com.thfw.base.net.CommonParameter;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.OrganizationPresenter;
+import com.thfw.base.presenter.UserInfoPresenter;
+import com.thfw.base.timing.TimingHelper;
+import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
+import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.robot.RobotActivity;
 import com.thfw.mobileheart.fragment.HomeFragment;
 import com.thfw.mobileheart.fragment.MeFragment;
 import com.thfw.mobileheart.fragment.MessageFragment;
+import com.thfw.mobileheart.push.MyPreferences;
+import com.thfw.mobileheart.push.helper.PushHelper;
+import com.thfw.mobileheart.push.tester.UPushAlias;
 import com.thfw.mobileheart.util.FragmentLoader;
 import com.thfw.mobileheart.view.SimpleAnimatorListener;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.voice.tts.TtsHelper;
+import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.user.login.User;
 import com.thfw.user.login.UserManager;
+import com.thfw.user.login.UserObserver;
+import com.trello.rxlifecycle2.LifecycleProvider;
+import com.umeng.message.PushAgent;
+import com.umeng.message.api.UPushRegisterCallback;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -52,6 +77,27 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private FragmentLoader mFragmentLoader;
     private View mCurrent;
     private LinearLayout mLlAiChat;
+
+    /**
+     * 机构信息和用户信息初始化标识
+     */
+    private static boolean initUserInfo;
+    private static boolean initOrganization;
+    private static boolean initUmeng;
+
+    /**
+     * 重新登录后重新获取用户相关信息
+     */
+    public static void resetInit() {
+        initUserInfo = false;
+        initOrganization = false;
+        initUmeng = false;
+    }
+
+    private static boolean hasAgreedAgreement() {
+        return MyPreferences.getInstance(MyApplication.getApp()).hasAgreePrivacyAgreement();
+    }
+
 
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, MainActivity.class));
@@ -94,6 +140,13 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
 //            startActivity(new Intent(mContext, ExoPlayerActivity.class));
 //            startActivity(new Intent(mContext, TestActivity.class));
 //            startActivity(new Intent(mContext, ChatActivity.class));
+
+        if (UserManager.getInstance().isTrueLogin()) {
+            // 已登录 初始化用户信息和机构信息
+            initUmeng();
+            initUserInfo();
+            initOrganization();
+        }
     }
 
     @Override
@@ -225,5 +278,177 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         } else {
 
         }
+    }
+
+
+    /**
+     * 用户信息更新观察者
+     *
+     * @return
+     */
+    @Override
+    public UserObserver addObserver() {
+        return new UserObserver() {
+            @Override
+            public void onChanged(UserManager accountManager, User user) {
+                if (accountManager.isLogin()) {
+                    // 已登录 初始化用户信息和机构信息
+                    initUmeng();
+                    initUserInfo();
+                    initOrganization();
+                }
+            }
+        };
+    }
+
+    /**
+     * 查询组织信息
+     */
+    private void initOrganization() {
+        if (initOrganization) {
+            return;
+        }
+
+        new OrganizationPresenter(new OrganizationPresenter.OrganizationUi<OrganizationSelectedModel>() {
+
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return MainActivity.this;
+            }
+
+            @Override
+            public void onSuccess(OrganizationSelectedModel data) {
+                if (data != null) {
+                    LogUtil.d(TAG, "initOrganization onSuccess ++++++++++++++++++++++ ");
+                    ArrayList<OrganizationModel.OrganizationBean> mSelecteds = new ArrayList<>();
+                    initSelectedList(mSelecteds, data.getOrganization());
+                    CommonParameter.setOrganizationSelected(mSelecteds);
+                    UserManager.getInstance().getUser().setOrganList(mSelecteds);
+                    UserManager.getInstance().notifyUserInfo();
+                    UPushAlias.setTag(mSelecteds.get(mSelecteds.size() - 1).getId());
+                }
+                initOrganization = true;
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                LogUtil.d(TAG, "initOrganization onFail ++++++++++++++++++++++ ");
+                TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
+                    @Override
+                    public void onArrive() {
+                        initOrganization();
+                        LogUtil.d(TAG, "initOrganization onFail retry ++++++++++++++++++++++ ");
+                    }
+
+                    @Override
+                    public WorkInt workInt() {
+                        return WorkInt.SECOND5_1;
+                    }
+                });
+            }
+        }).onGetJoinedList();
+    }
+
+    private void initSelectedList(List<OrganizationModel.OrganizationBean> list, OrganizationSelectedModel.OrganizationBean bean) {
+        if (bean != null) {
+            OrganizationModel.OrganizationBean oBean = new OrganizationModel.OrganizationBean();
+            oBean.setId(bean.getId());
+            oBean.setName(bean.getName());
+            list.add(oBean);
+            if (bean.getChildren() != null) {
+                initSelectedList(list, bean.getChildren());
+            }
+        }
+    }
+
+    /**
+     * 查询用户信息
+     */
+    private void initUserInfo() {
+        if (initUserInfo) {
+            return;
+        }
+        new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<User.UserInfo>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return MainActivity.this;
+            }
+
+            @Override
+            public void onSuccess(User.UserInfo data) {
+                if (data != null) {
+                    initUserInfo = true;
+                    LogUtil.d(TAG, "initUserInfo onSuccess ++++++++++++++++++++++ ");
+                    UserManager.getInstance().getUser().setUserInfo(data);
+                    UserManager.getInstance().notifyUserInfo();
+                    UPushAlias.set(MyApplication.getApp(), "user_" + data.id, "user");
+                    if (SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, true)) {
+                        SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false);
+                        TtsHelper.getInstance().start(new TtsModel("你好" + UserManager.getInstance().getUser().getVisibleName() + ",很高兴见到你"), null);
+                    }
+                } else {
+                    onFail(new ResponeThrowable(0, "data is null"));
+                }
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                LogUtil.d(TAG, "initUserInfo onFail ++++++++++++++++++++++ ");
+                TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
+                    @Override
+                    public void onArrive() {
+                        initUserInfo();
+                        LogUtil.d(TAG, "initUserInfo onFail retry ++++++++++++++++++++++ ");
+                    }
+
+                    @Override
+                    public WorkInt workInt() {
+                        return WorkInt.SECOND5;
+                    }
+                });
+            }
+        }).
+
+                onGetUserInfo();
+    }
+
+    private void initUmeng() {
+        if (initUmeng) {
+            return;
+        }
+        if (hasAgreedAgreement()) {
+            PushAgent.getInstance(this).onAppStart();
+            String deviceToken = PushAgent.getInstance(this).getRegistrationId();
+            LogUtil.d(TAG, "deviceToken = " + deviceToken);
+            initUmeng = true;
+        } else {
+            agreementAfterInitUmeng();
+        }
+    }
+
+    /**
+     * 登录状态下，即点击隐私协议同意按钮后，初始化PushSDK
+     */
+    private void agreementAfterInitUmeng() {
+        MyPreferences.getInstance(getApplicationContext()).setAgreePrivacyAgreement(true);
+        PushHelper.init(getApplicationContext());
+        PushAgent.getInstance(getApplicationContext()).register(new UPushRegisterCallback() {
+            @Override
+            public void onSuccess(final String deviceToken) {
+                LogUtil.d(TAG, "deviceToken = " + deviceToken);
+                initUmeng = true;
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                Log.d("MainActivity", "code:" + code + " msg:" + msg);
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        resetInit();
     }
 }

@@ -18,7 +18,7 @@ import com.thfw.mobileheart.fragment.exercise.ExerciseHintFragment;
 import com.thfw.mobileheart.fragment.exercise.ExerciseLogcataFragment;
 import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
-import com.thfw.ui.dialog.DialogFactory;
+import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnBindViewListener;

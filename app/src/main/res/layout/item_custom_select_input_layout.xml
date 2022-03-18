@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingRight="12dp"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:background="@drawable/common_dialog_item_selector"
+        android:gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="足球"
+        android:textColor="@drawable/textcolor_white_theme_selector"
+        android:textSize="@dimen/textSize" />
+
+    <EditText
+        android:id="@+id/et_name"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:background="@drawable/radius_dialog_edit_bg"
+        android:gravity="center"
+        android:hint="2-4字限制"
+        android:maxLength="4"
+        android:maxLines="1"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:textColor="@color/text_common"
+        android:textColorHint="@color/text_hint"
+        android:textSize="@dimen/textSize"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

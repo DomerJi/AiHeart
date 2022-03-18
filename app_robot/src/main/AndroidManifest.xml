@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.thfw.robotheart"
-    android:sharedUserId="android.uid.system"> <!-- 友盟 -->
+    package="com.thfw.robotheart"> <!-- 友盟 -->
 
     <uses-sdk tools:overrideLibrary="com.huawei.hms.framework.common,
         com.huawei.hms.framework.network.grs,

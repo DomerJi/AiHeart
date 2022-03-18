@@ -30,6 +30,8 @@
     <color name="colorButtonLeft2">#8800BC89</color>
     <color name="colorButtonRight2">#8800D69C</color>
 
+    <color name="btn_green">#00BC89</color>
+    <color name="btn_green_50">#8800BC89</color>
     <color name="enabled_false">#F4F6F7</color>
     <color name="link">#2A5D83</color>
 

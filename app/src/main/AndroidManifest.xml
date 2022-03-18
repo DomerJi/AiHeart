@@ -1,21 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.thfw.mobileheart">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-sdk tools:overrideLibrary="com.huawei.hms.framework.common,
+        com.huawei.hms.framework.network.grs,
+        com.huawei.hmf.tasks,
+        com.huawei.agconnect.core,
+        com.huawei.hms.log,
+        com.huawei.hms.base.device,
+        com.huawei.hms.base.ui,
+        com.huawei.hms.stats,
+        com.huawei.hms.base.availableupdate,
+        com.huawei.android.hms.base,
+        com.huawei.android.hms.openid,
+        org.android.agoo.oppo,
+        com.vivo.push,
+        org.android.agoo.vivo,
+        org.android.agoo.meizu,
+        com.huawei.android.hms.push,
+        org.android.agoo.huawei,
+        com.pushsdk,
+        com.huawei.hms.hatool,
+        com.huawei.hms.framework.network.frameworkcompat" />
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 安装应用权限 -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 蓝牙连接权限 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" /> <!-- 蓝牙通讯权限 -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> <!-- 蓝牙通讯权限/wifi -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 蓝牙通讯权限 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.BIND_JOB_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
     <uses-feature android:name="android.hardware.camera2.full" />
 
@@ -202,6 +234,87 @@
             </intent-filter>
         </service>
         <service android:name="com.thfw.mobileheart.AudioService" />
+
+        <!-- 友盟 -->
+        <activity
+            android:name=".push.mfr.MfrMessageActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="${applicationId}"
+                    android:path="/thirdpush"
+                    android:scheme="agoo" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".push.MyCustomMessageService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <activity
+            android:name=".push.MyCustomNotificationClickActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="behind"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" /> <!-- 魅族 start -->
+        <!-- push应用定义消息receiver声明 -->
+        <receiver
+            android:name=".push.mfr.MfrMzMessageReceiver"
+            android:exported="true">
+            <intent-filter>
+
+                <!-- 接收push消息 -->
+                <action android:name="com.meizu.flyme.push.intent.MESSAGE" />
+                <!-- 接收register消息 -->
+                <action android:name="com.meizu.flyme.push.intent.REGISTER.FEEDBACK" />
+                <!-- 接收unregister消息 -->
+                <action android:name="com.meizu.flyme.push.intent.UNREGISTER.FEEDBACK" />
+                <!-- 兼容低版本Flyme3推送服务配置 -->
+                <action android:name="com.meizu.c2dm.intent.REGISTRATION" />
+                <action android:name="com.meizu.c2dm.intent.RECEIVE" />
+
+                <category android:name="${applicationId}" />
+            </intent-filter>
+        </receiver> <!-- 魅族 end -->
+        <!-- VIVO厂商通道 start -->
+        <meta-data
+            android:name="com.vivo.push.api_key"
+            android:value="1b5ce9f6-8304-4afc-b739-0e07fb22775e" /> <!-- android:value="此处改为VIVO后台真实参数" /> -->
+        <meta-data
+            android:name="com.vivo.push.app_id"
+            android:value="17979" /> <!-- android:value="此处改为VIVO后台真实参数" /> -->
+        <!-- VIVO厂商通道 end -->
+        <!-- HUAWEI厂商通道 start -->
+        <meta-data
+            android:name="com.huawei.hms.client.appid"
+            android:value="appid=100429257" /> <!-- android:value="appid=此处改为HUAWEI后台真实参数" /> -->
+        <!-- HUAWEI厂商通道 end -->
+        <!-- 厂商通道 Android 12 兼容 Start -->
+        <service
+            android:name="com.heytap.msp.push.service.DataMessageCallbackService"
+            android:exported="true" />
+        <service
+            android:name="com.heytap.msp.push.service.CompatibleDataMessageCallbackService"
+            android:exported="true" />
+        <service
+            android:name="com.xiaomi.mipush.sdk.MessageHandleService"
+            android:exported="false" />
+        <service
+            android:name="com.xiaomi.push.service.XMPushService"
+            android:exported="false" />
+
+        <receiver
+            android:name="org.android.agoo.vivo.PushMessageReceiverImpl"
+            android:exported="true" />
+
     </application>
 
 </manifest>

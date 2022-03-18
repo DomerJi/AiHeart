@@ -64,21 +64,27 @@
     <string name="safe_QQ">QQ</string>
     <string name="safe_password">密友密码</string>
 
+    <string name="me_select_avatar">选择头像</string>
+
     <string name="info_avatar">头像</string>
     <string name="info_nickname">昵称</string>
     <string name="info_name">真实姓名</string>
     <string name="info_team">所属组织</string>
     <string name="info_user_id">用户ID</string>
     <string name="info_birthday">出生年月</string>
+    <string name="info_address">籍贯</string>
+    <string name="info_nationality">民族</string>
     <string name="info_sex">性别</string>
     <string name="info_mobile">手机号码</string>
     <string name="info_schooling">学历</string>
     <string name="info_marriage">婚姻状况</string>
     <string name="info_children">子女状况</string>
     <string name="info_politic_countenance">政治面貌</string>
+    <string name="info_join_j">入职(伍)时间</string>
+    <string name="info_class">部门</string>
     <string name="info_level">职级</string>
     <string name="info_hobby">兴趣爱好</string>
-    <string name="info_like">偏好</string>
+    <string name="info_like">最需要的支持</string>
 
     <string name="box_title">心灵筒</string>
     <string name="share">分享</string>

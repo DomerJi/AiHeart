@@ -83,7 +83,7 @@ public class LoginActivity extends BaseActivity {
         fragmentLoader.load(type);
         // 检查权限
         checkPermissions();
-        if (!UserManager.getInstance().isToLogin()) {
+        if (!UserManager.getInstance().isTrueLogin()) {
             SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN, true);
             SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN_TTS, true);
         } else {

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/radius_8dp_gray_bg"
+    android:orientation="vertical"
+    android:paddingBottom="2dp">
+
+    <TextView
+        android:id="@+id/tv_album"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="相册/拍摄"
+        android:textColor="@color/text_common"
+        android:textSize="@dimen/textSize" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black_10" />
+
+    <TextView
+        android:id="@+id/tv_preset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="预置头像库"
+        android:textColor="@color/text_common"
+        android:textSize="@dimen/textSize" />
+
+</LinearLayout>

@@ -18,7 +18,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.adapter.TestngAdapter;
 import com.thfw.ui.base.BaseActivity;
-import com.thfw.ui.dialog.DialogFactory;
+import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;

@@ -76,7 +76,7 @@ public class UserManager extends Observable {
     }
 
 
-    public boolean isToLogin() {
+    public boolean isTrueLogin() {
         return user.getLoginStatus() == LoginStatus.LOGINED;
     }
 

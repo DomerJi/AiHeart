@@ -1,5 +1,6 @@
 package com.thfw.mobileheart.activity.login;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,12 +8,16 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.text.TextUtils;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.models.TokenModel;
+import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.fragment.login.LoginByFaceFragment;
@@ -21,6 +26,9 @@ import com.thfw.mobileheart.fragment.login.OtherLoginFragment;
 import com.thfw.mobileheart.fragment.login.PasswordFragment;
 import com.thfw.mobileheart.util.FragmentLoader;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.user.login.LoginStatus;
+import com.thfw.user.login.User;
+import com.thfw.user.login.UserManager;
 
 import org.opencv.android.Static2Helper;
 
@@ -34,7 +42,9 @@ public class LoginActivity extends BaseActivity {
     private int type;
     private FragmentLoader fragmentLoader;
     private AlertDialog mDialog;
-
+    // 登录后播放唤醒动画
+    public static final String KEY_LOGIN_BEGIN = "login.begin";
+    public static final String KEY_LOGIN_BEGIN_TTS = "login.begin.tts";
     public static String INPUT_PHONE = "";
 
     public static void startActivity(Context context, int type) {
@@ -153,5 +163,32 @@ public class LoginActivity extends BaseActivity {
     public void onDestroy() {
         INPUT_PHONE = "";
         super.onDestroy();
+    }
+
+
+    public static void login(Activity activity, TokenModel data, String mobile) {
+        if (data != null && !TextUtils.isEmpty(data.token)) {
+            User user = new User();
+            user.setToken(data.token);
+            user.setMobile(mobile);
+            LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
+            if (data.isNoOrganization()) {
+                // todo 手机加入组织机构比较复杂
+                user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
+                UserManager.getInstance().login(user);
+//                SelectOrganizationActivity.isNoSetUserInfo = data.isNoSetUserInfo();
+//                SelectOrganizationActivity.startActivity(activity, true);
+            } else if (data.isNoSetUserInfo()) {
+                user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
+                UserManager.getInstance().login(user);
+//                InfoActivity.startActivityFirst(activity);
+            } else {
+                user.setLoginStatus(LoginStatus.LOGINED);
+                UserManager.getInstance().login(user);
+            }
+            activity.finish();
+        } else {
+            ToastUtil.show("token 参数错误");
+        }
     }
 }

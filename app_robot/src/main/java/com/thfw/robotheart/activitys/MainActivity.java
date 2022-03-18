@@ -239,7 +239,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             }
         });
 
-        if (UserManager.getInstance().isToLogin()) {
+        if (UserManager.getInstance().isTrueLogin()) {
             setUserMessage(UserManager.getInstance().getUser());
             // 已登录 初始化用户信息和机构信息
             initUmeng();
@@ -252,7 +252,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        if (!UserManager.getInstance().isToLogin()) {
+        if (!UserManager.getInstance().isTrueLogin()) {
             // 未登录进入登录页面
             LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
         } else {
