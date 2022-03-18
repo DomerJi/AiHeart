@@ -1,9 +1,9 @@
 package com.thfw.ui.voice;
 
-public enum WakeType {
+public interface WakeType {
 
-    WAKEUPER,// 唤醒模式
-    PRESS,// 按压模式
-    SPEECH,// 识别模式
-    NULL // 无
+    int WAKEUPER = 3;// 唤醒模式
+    int PRESS = 2;// 按压模式
+    int SPEECH = 1;// 识别模式
+    int NULL = 0;// 无
 }

@@ -7,6 +7,7 @@ import android.os.Message;
 import androidx.annotation.NonNull;
 
 import com.thfw.ui.voice.speech.SpeechHelper;
+import com.thfw.ui.voice.tts.TtsHelper;
 
 /**
  * Author:pengs
@@ -20,8 +21,7 @@ public class PolicyHelper {
         private static PolicyHelper policyHelper = new PolicyHelper();
     }
 
-    private WakeType wakeType;
-    private boolean press;
+    private int wakeType;
 
     private Handler handler;
 
@@ -46,10 +46,6 @@ public class PolicyHelper {
         return Builder.policyHelper;
     }
 
-    public boolean isPressed() {
-        return press;
-    }
-
     public boolean isSpeechMode() {
         return this.wakeType == WakeType.SPEECH;
     }
@@ -61,21 +57,17 @@ public class PolicyHelper {
 
     public void checkState() {
         switch (this.wakeType) {
-            case SPEECH:
+            case WakeType.SPEECH:
+            case WakeType.PRESS:
                 if (!SpeechHelper.getInstance().isIng()) {
+                    if (TtsHelper.getInstance().isIng()) {
+                        TtsHelper.getInstance().stop();
+                    }
                     SpeechHelper.getInstance().start();
                 }
                 sendCheckMsg();
                 break;
-            case PRESS:
-                if (press) {
-                    if (!SpeechHelper.getInstance().isIng()) {
-                        SpeechHelper.getInstance().start();
-                    }
-                    sendCheckMsg();
-                }
-                break;
-            case WAKEUPER:
+            case WakeType.WAKEUPER:
                 sendCheckMsg();
                 break;
             default:
@@ -84,7 +76,7 @@ public class PolicyHelper {
 
     }
 
-    public WakeType getWakeType() {
+    public int getWakeType() {
         return wakeType;
     }
 
@@ -95,7 +87,6 @@ public class PolicyHelper {
     public void startSpeech() {
         if (wakeType != WakeType.SPEECH) {
             wakeType = WakeType.SPEECH;
-            press = false;
             sendCheckMsg();
         }
     }
@@ -103,7 +94,6 @@ public class PolicyHelper {
     public void startPressed() {
         if (wakeType != WakeType.PRESS) {
             wakeType = WakeType.PRESS;
-            press = true;
             sendCheckMsg();
         }
     }
@@ -111,6 +101,5 @@ public class PolicyHelper {
     public void end() {
         SpeechHelper.getInstance().stop();
         wakeType = WakeType.NULL;
-        press = false;
     }
 }

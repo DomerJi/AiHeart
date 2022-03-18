@@ -2,7 +2,6 @@ package com.thfw.ui.voice.speech;
 
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
@@ -184,15 +183,18 @@ public class SpeechHelper implements ISpeechFace {
 
             String text = JsonParser.parseIatResult(recognizerResult.getResultString());
             LogUtil.i(TAG, "onResult -> text = " + text + "; isLast = " + isLast);
-            if (!TextUtils.isEmpty(text)) {
-                if (text.contains("小蜜")) {
-                    text.replaceAll("小蜜", "小密");
-                }
+
+            if (text.contains("小蜜")) {
+                text = text.replaceAll("小蜜", "小密");
             }
 
             if (isLast) {
-                if (text.endsWith("。") && PolicyHelper.getInstance().isSpeechMode()) {
-                    text = text.substring(0, text.length() - 1);
+                if (text.endsWith("。")) {
+                    if (PolicyHelper.getInstance().isSpeechMode()) {
+                        text = text.substring(0, text.length() - 1);
+                    } else if (PolicyHelper.getInstance().isPressMode() && mSpeechResult.length() < 7) {
+                        text = text.replace("。", "，");
+                    }
                 }
                 mSpeechResult.append(text);
             } else {
@@ -203,7 +205,11 @@ public class SpeechHelper implements ISpeechFace {
                 mSpeechResult.setLength(0);
             }
             LogUtil.i(TAG, "onResult -> result = " + result);
-            SpeechHelper.this.onResult(result, true, isLast);
+            if (PolicyHelper.getInstance().isPressMode()) {
+                SpeechHelper.this.onResult(text, true, isLast);
+            } else {
+                SpeechHelper.this.onResult(result, true, isLast);
+            }
             isRestart();
             checkIngState();
         }
@@ -223,7 +229,7 @@ public class SpeechHelper implements ISpeechFace {
 
     private void isRestart() {
         if ((PolicyHelper.getInstance().isSpeechMode()
-                || (PolicyHelper.getInstance().isPressMode() && PolicyHelper.getInstance().isPressed()))
+                || PolicyHelper.getInstance().isPressMode())
                 && !isIng()) {
             start();
         }

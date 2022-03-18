@@ -415,14 +415,12 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 if (!mStvText.isShow()) {
                     return;
                 }
-                if (PolicyHelper.getInstance().isPressed()) {
-                    if (end) {
-                        mStvText.append(result);
-                    }
+                if (PolicyHelper.getInstance().isPressMode()) {
+                    mStvText.append(result);
                 } else {
                     mStvText.setSpeechText(result);
                 }
-                if (end && !PolicyHelper.getInstance().isPressed()) {
+                if (end && !PolicyHelper.getInstance().isPressMode()) {
                     chooseOption(mStvText.getText(), end);
                 }
             }
@@ -463,6 +461,13 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                     case MotionEvent.ACTION_DOWN:
                         downTime = System.currentTimeMillis();
                         mIvTalkModel.setSelected(true);
+                        if (!SpeechHelper.getInstance().isIng()) {
+                            if (!currentSelect) {
+                                PolicyHelper.getInstance().startPressed();
+                            } else {
+                                PolicyHelper.getInstance().startSpeech();
+                            }
+                        }
                         break;
                     case MotionEvent.ACTION_UP:
                         if (System.currentTimeMillis() - downTime < 300) {
@@ -507,6 +512,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         if (StringUtil.isEmpty(result)) {
             return;
         }
+        mStvText.setSpeechText("");
         LogUtil.d(TAG, "chooseOption(result)" + result + "; end = " + end);
         LogUtil.d(TAG, "chooseOption(result) mCurrentChatType = " + mCurrentChatType);
         if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
