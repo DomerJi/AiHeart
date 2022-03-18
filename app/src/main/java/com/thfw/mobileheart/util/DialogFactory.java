@@ -112,7 +112,7 @@ public class DialogFactory {
                 .setSubCalSize(14)
                 .setDate(endDate)
                 .setRangDate(startDate, endDate)
-                .setBgColor(mContext.getResources().getColor(R.color.colorRobotDialogBg))
+                .setBgColor(mContext.getResources().getColor(R.color.white))
                 .setLineSpacingMultiplier(2.2f)//行间距
                 .setDividerColor(mContext.getResources().getColor(R.color.black_10));//设置分割线的颜色
         TimePickerView timePickerView = builder.build();
@@ -178,7 +178,7 @@ public class DialogFactory {
                 .setTextColorOut(mContext.getResources().getColor(R.color.text_content))
                 .setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
                 .setSubCalSize(14)
-                .setBgColor(mContext.getResources().getColor(R.color.colorRobotDialogBg))
+                .setBgColor(mContext.getResources().getColor(R.color.white))
                 .setLineSpacingMultiplier(2.2f)//行间距
                 .setDividerColor(mContext.getResources().getColor(R.color.black_10));//设置分割线的颜色
 
@@ -211,7 +211,7 @@ public class DialogFactory {
                 .setTextColorOut(mContext.getResources().getColor(R.color.text_content))
                 .setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
                 .setSubCalSize(14)
-                .setBgColor(mContext.getResources().getColor(R.color.colorRobotDialogBg))
+                .setBgColor(mContext.getResources().getColor(R.color.white))
                 .setLineSpacingMultiplier(2.2f) // 行间距
                 .setDividerColor(mContext.getResources().getColor(R.color.black_10));// 设置分割线的颜色
 

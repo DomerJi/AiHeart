@@ -1,5 +1,7 @@
 package com.thfw.base.net;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 import com.thfw.base.base.IModel;
 import com.thfw.base.base.IResult;
@@ -85,8 +87,20 @@ public class HttpResult<T> implements IResult, IModel {
     public class Ext {
         @SerializedName("turnPage")
         private String turnPage;
+        // 进入深度对话， 咨询助理进入主题对话，进入主题对话
         @SerializedName("enter_deep_dialog")
         private boolean enterDeepDialog;
+        // 表情
+        @SerializedName("sentiment")
+        private String sentiment;
+
+        public String getSentiment() {
+            return sentiment;
+        }
+
+        public boolean isSentiment() {
+            return !TextUtils.isEmpty(sentiment);
+        }
 
         public boolean isEnterDeepDialog() {
             return enterDeepDialog;

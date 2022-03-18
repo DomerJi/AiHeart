@@ -121,6 +121,14 @@ public class ChatEntity implements IModel {
         return chatEntity;
     }
 
+    public static ChatEntity createEmoji(String sentiment) {
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_EMOJI;
+        chatEntity.time = System.currentTimeMillis();
+        chatEntity.talk = sentiment;
+        return chatEntity;
+    }
+
     public static ChatEntity createTime(long time) {
         ChatEntity chatEntity = new ChatEntity();
         chatEntity.type = ChatEntity.TYPE_TIME;

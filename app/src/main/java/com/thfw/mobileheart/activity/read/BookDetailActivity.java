@@ -115,7 +115,7 @@ public class BookDetailActivity extends BaseActivity<BookPresenter> implements B
                     "  display: block;\n" +
                     "  margin-left: auto;\n" +
                     "  margin-right: auto;\n" +
-                    "}" + "body{padding-top:20px; padding-bottom:20px; padding-left:20px;padding-right:20px;}"
+                    "}" + "body{padding-top:26px; padding-bottom:26px; padding-left:26px;padding-right:26px;}"
 //                    + "span{" + fontSize + "}"
 //                    + "p{" + fontSize + "}"
                     + "</style>" + "<title>"

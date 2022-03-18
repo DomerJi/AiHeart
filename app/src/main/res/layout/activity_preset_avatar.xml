@@ -21,11 +21,11 @@
         android:src="@mipmap/ic_launcher"
         app:layout_constrainedHeight="true"
         app:layout_constraintDimensionRatio="W,1:1"
-        app:layout_constraintHeight_percent="0.4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleView"
         app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintWidth_percent="0.5"
         app:riv_border_color="@color/colorRobotFore"
         app:riv_border_width="2dp"
         app:riv_oval="true" />
@@ -34,9 +34,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/riv_avatar" />
 

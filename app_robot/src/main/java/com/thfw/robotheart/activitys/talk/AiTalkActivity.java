@@ -692,8 +692,13 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     public void onSuccess(HttpResult<List<DialogTalkModel>> model) {
         if (model != null) {
             List<DialogTalkModel> data = model.getData();
-            if (model.getExt() != null && model.getExt().isEnterDeepDialog()) {
-                sendData(ChatEntity.createJoinPage("欢迎进入深度疏导主题对话"));
+            if (model.getExt() != null) {
+                if (model.getExt().isEnterDeepDialog()) {
+                    sendData(ChatEntity.createJoinPage("欢迎进入深度疏导主题对话"));
+                }
+                if (model.getExt().isSentiment()) {
+                    sendData(ChatEntity.createEmoji(model.getExt().getSentiment()));
+                }
             }
             if (data != null) {
                 mSceneError = -1;
@@ -1018,9 +1023,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         private DialogTalkModel talkModel;
 
         public void setTalks(List<DialogTalkModel> mTalks) {
-            DialogTalkModel talkModel = new DialogTalkModel();
-            talkModel.setType(ChatEntity.TYPE_EMOJI);
-            mTalks.add(0, talkModel);
             this.mTalks = mTalks;
             this.index = 0;
         }

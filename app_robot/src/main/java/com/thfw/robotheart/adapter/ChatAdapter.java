@@ -87,7 +87,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             case ChatEntity.TYPE_EMOJI:
                 if (holder instanceof ChatFromEmojiHolder) {
                     ChatFromEmojiHolder chatFromEmojiHolder = (ChatFromEmojiHolder) holder;
-                    String fileName = AnimFileName.getTalkEmojiByRandom();
+                    String fileName = AnimFileName.getTalkEmojiBySentiment(chatEntity.getTalk());
                     SVGAHelper.playSVGA(chatFromEmojiHolder.svgaImageView, SVGAHelper.SVGAModel
                             .create(fileName), null);
                 }

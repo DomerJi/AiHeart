@@ -47,7 +47,7 @@ public class PresetAvatarActivity extends BaseActivity<UserInfoPresenter> implem
         mRivAvatar = (RoundedImageView) findViewById(R.id.riv_avatar);
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
-        mRvList.setLayoutManager(new GridLayoutManager(mContext, 6));
+        mRvList.setLayoutManager(new GridLayoutManager(mContext, 3));
     }
 
     @Override

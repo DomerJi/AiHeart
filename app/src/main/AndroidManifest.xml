@@ -80,6 +80,15 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".activity.settings.PresetAvatarActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.settings.EditInfoActivity"
+            android:screenOrientation="portrait" />
+
+
+        <activity
             android:name=".activity.test.TestResultWebActivity"
             android:screenOrientation="portrait" />
 
