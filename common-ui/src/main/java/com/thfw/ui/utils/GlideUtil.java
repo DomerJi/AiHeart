@@ -29,13 +29,23 @@ import static com.bumptech.glide.load.resource.bitmap.VideoDecoder.FRAME_OPTION;
 public class GlideUtil {
 
 
-    private static final RequestOptions requestOptions = RequestOptions
-            .placeholderOf(ContextApp.getDeviceType() == ContextApp.DeviceType.ROBOT
-                    ? R.drawable.glide_placeholder : R.drawable.glide_placeholder_phone)
-            .error(R.drawable.glide_error)
-            .fallback(R.drawable.glide_fallback);
+    private static RequestOptions requestOptions;
 
     public static RequestOptions getRequestOptions() {
+        if (requestOptions != null) {
+            return requestOptions;
+        }
+        if (ContextApp.getDeviceType() == ContextApp.DeviceType.ROBOT) {
+            requestOptions = RequestOptions
+                    .placeholderOf(R.drawable.glide_placeholder)
+                    .error(R.drawable.glide_error)
+                    .fallback(R.drawable.glide_fallback);
+        } else {
+            requestOptions = RequestOptions
+                    .placeholderOf(R.drawable.glide_placeholder_phone)
+                    .error(R.drawable.glide_error_phone)
+                    .fallback(R.drawable.glide_fallback_phone);
+        }
         return requestOptions;
     }
 

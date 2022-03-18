@@ -701,9 +701,14 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 }
             }
             if (data != null) {
+                // 再见
+                if (data.isEmpty()) {
+                    finish();
+                    LogUtil.d(TAG, "end 结束对话 data:[] ++++++++++++++++++++++++++");
+                    return;
+                }
                 mSceneError = -1;
                 mNetParamsError = null;
-                LogUtil.d(TAG, "onSuccess = " + data.size());
                 mHelper.setTalks(data);
                 mTtsQueue.clear();
                 onTalkEngine();
@@ -878,10 +883,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             public void onItemClick(List<DialogTalkModel.CheckRadioBean> list, int position) {
 
                 DialogTalkModel.CheckRadioBean radioBean = list.get(position);
-                if (list.size() == 1 && "再见".equals(radioBean.getValue())) {
-                    finish();
-                    return;
-                }
                 sendData(new ChatEntity(ChatEntity.TYPE_TO, radioBean.getValue()));
                 if (radioBean.getKey() > 0) {
                     NetParams netParams = NetParams.crete().add("id", chatEntity.getTalkModel().getId())
@@ -951,6 +952,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             case PageJumpUtils.JUMP_TEXT:
             case PageJumpUtils.JUMP_MUSIC:
             case PageJumpUtils.JUMP_AI_HOME:
+                mPresenter.onDialog(mScene, NetParams.crete()
+                        .add("id", mHelper.getTalkModel().getId())
+                        .add("value", "list_return"));
+                break;
             case ChatEntity.TYPE_RECOMMEND_TEXT:
             case ChatEntity.TYPE_RECOMMEND_VIDEO:
             case ChatEntity.TYPE_RECOMMEND_AUDIO:
