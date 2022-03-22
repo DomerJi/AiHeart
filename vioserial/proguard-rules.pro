@@ -20,14 +20,8 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--dontwarn com.tencent.bugly.**
--keep public class com.tencent.bugly.**{*;}
--keep class android.support.**{*;}
-# SVGA
--keep class com.squareup.wire.** { *; }
--keep class com.opensource.svgaplayer.proto.** { *; }
-
 -keepclasseswithmembernames class * {
     native <methods>;
 }
 -keep class android.serialport.* {*;}
+
