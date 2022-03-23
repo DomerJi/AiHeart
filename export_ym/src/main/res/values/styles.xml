@@ -1,0 +1,22 @@
+<resources>
+
+
+    <!-- 底部弹出-->
+    <style name="animate_dialog">
+        <item name="android:windowEnterAnimation">@anim/enter_ym</item>
+        <item name="android:windowExitAnimation">@anim/exit_ym</item>
+    </style>
+
+    <!-- 右侧弹出-->
+    <style name="animate_dialog_fade">
+        <item name="android:windowEnterAnimation">@anim/enter_fade_ym</item>
+        <item name="android:windowExitAnimation">@anim/exit_fade</item>
+    </style>
+
+    <!-- 右侧弹出-->
+    <style name="animate_dialog_right">
+        <item name="android:windowEnterAnimation">@anim/enter_right_ym</item>
+        <item name="android:windowExitAnimation">@anim/exit_right</item>
+    </style>
+
+</resources>

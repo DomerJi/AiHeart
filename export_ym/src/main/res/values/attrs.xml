@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="LoadingView">
+        <attr name="iconWidth" format="dimension" />
+        <attr name="iconHeight" format="dimension" />
+    </declare-styleable>
+
+
+    <declare-styleable name="TitleView">
+        <attr name="tv_centerText" format="string" />
+        <attr name="tv_rightText" format="string" />
+        <attr name="tv_leftIcon" format="reference" />
+        <attr name="tv_showIcon" format="boolean" />
+        <attr name="tv_background" format="reference" />
+        <attr name="tv_leftIconColor" format="reference" />
+        <attr name="tv_centerTextColor" format="reference" />
+    </declare-styleable>
+
+
+    <style name="LoadingProgressBar">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">@anim/loading_anim_ym</item>
+        <item name="android:indeterminateBehavior">repeat</item>
+        <item name="android:indeterminate">true</item>
+        <item name="android:indeterminateDuration">1800</item>
+        <item name="android:minWidth">48dip</item>
+        <item name="android:maxWidth">48dip</item>
+        <item name="android:minHeight">48dip</item>
+        <item name="android:maxHeight">48dip</item>
+    </style>
+
+</resources>

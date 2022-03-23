@@ -47,7 +47,7 @@ public class TestProgressIngActivity extends BaseActivity<TestPresenter> impleme
 
     @Override
     public int getContentView() {
-        return R.layout.activity_test_progress_ing;
+        return R.layout.activity_test_progress_ing_ym;
     }
 
     @Override

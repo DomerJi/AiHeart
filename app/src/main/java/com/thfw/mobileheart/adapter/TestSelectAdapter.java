@@ -39,7 +39,7 @@ public class TestSelectAdapter extends BaseAdapter<TestDetailModel.SubjectListBe
     @NotNull
     @Override
     public TestSelectHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        return new TestSelectHolder(inflate(R.layout.item_test_select, parent));
+        return new TestSelectHolder(inflate(R.layout.item_test_select_ym, parent));
     }
 
     @Override

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <!--    心理文库、成长训练、思政文库、正念冥想、测评问卷、视频集锦、主题对话、倾诉吐槽-->
+    <string name="sort_type_talk">倾诉吐槽</string>
+    <string name="sort_type_theme_talk">主题对话</string>
+    <string name="sort_type_what">咨询助理</string>
+    <string name="sort_type_test">测评问卷</string>
+    <string name="sort_type_exercise">成长训练</string>
+    <string name="sort_type_listening">正念冥想</string>
+    <string name="sort_type_see">视频集锦</string>
+    <string name="sort_type_read">心理文库</string>
+    <string name="sort_type_study">思政文库</string>
+    <string name="sort_type_hot_call">全国心理服务热线</string>
+
+
+    <string name="ym_exp_service_hint">本服务由天和云脉心理团队提供技术支持</string>
+
+
+    <string name="me_test">测评问卷</string>
+    <string name="me_test_history">我的测试</string>
+    <string name="me_exercise">成长训练</string>
+    <string name="me_listening">正念冥想</string>
+    <string name="me_see">视频集锦</string>
+    <string name="me_read">心理文库</string>
+    <string name="me_study">思政文库</string>
+
+    <string name="me_heart_test_report">心理测评报告</string>
+    <string name="me_heart_safe_report">心理健康报告</string>
+    <string name="me_help_back">帮助与反馈</string>
+    <string name="me_setting">设置</string>
+    <string name="me_info">个人信息</string>
+    <string name="me_select_avatar">选择头像</string>
+
+
+</resources>

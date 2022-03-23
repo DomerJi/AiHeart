@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.export_ym">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true"
+        android:testOnly="true">
+        <activity android:name="com.thfw.export_ym.test.TestBeginActivity" />
+        <activity android:name="com.thfw.export_ym.test.TestProgressIngActivity" />
+        <activity android:name="com.thfw.export_ym.test.TestingActivity" />
+        <activity android:name="com.thfw.export_ym.test.TestReportActivity" />
+        <activity
+            android:name="com.thfw.export_ym.test.TestResultWebActivity"
+            android:launchMode="singleTask" />
+    </application>
+
+</manifest>

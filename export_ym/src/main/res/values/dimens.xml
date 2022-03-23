@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--导航栏高度-->
+    <dimen name="navigation_height">45dp</dimen>
+
+    <!--内边距-->
+    <dimen name="page_padding">16dp</dimen>
+    <dimen name="padding">8dp</dimen>
+    <dimen name="padding_small">6dp</dimen>
+    <dimen name="padding_large">10dp</dimen>
+    <!--外边距-->
+    <dimen name="page_margin">16dp</dimen>
+    <dimen name="margin">8dp</dimen>
+    <dimen name="margin_small">4dp</dimen>
+    <dimen name="margin_large">10dp</dimen>
+    <dimen name="textSize_message_count">9sp</dimen>
+
+    <!--文本-->
+    <dimen name="textSize">14sp</dimen>
+    <dimen name="textSize_small">12sp</dimen>
+    <dimen name="textSize_product">10sp</dimen>
+    <dimen name="textSize_large">16sp</dimen>
+    <dimen name="textSize_password">24sp</dimen>
+    <dimen name="textSize_robot_title">20sp</dimen>
+    <!--圆角-->
+    <dimen name="corner">6dp</dimen>
+    <dimen name="corner_small">3dp</dimen>
+    <dimen name="corner_large">6dp</dimen>
+    <!--分割线-->
+    <dimen name="divider_height">1px</dimen>
+    <dimen name="divider_1px">1px</dimen>
+    <dimen name="divider_2px">2px</dimen>
+    <dimen name="divider_2dp">2dp</dimen>
+
+    <dimen name="login_edit_height">50dp</dimen>
+    <dimen name="realname_edit_height">50dp</dimen>
+    <dimen name="input_et_icon_height">30dp</dimen>
+    <dimen name="dialog_input_box_height">50dp</dimen>
+
+    <dimen name="robot_search_height">42dp</dimen>
+    <dimen name="left_navigation_divder_height">1dp</dimen>
+</resources>

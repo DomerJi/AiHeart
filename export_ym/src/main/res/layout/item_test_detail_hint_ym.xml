@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/test_hint_border_bg"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tv_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="温馨提示"
+        android:textColor="@color/text_red"
+        android:textSize="@dimen/textSize_large" />
+
+
+    <TextView
+        android:id="@+id/tv_hint_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/text_content"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintTop_toBottomOf="@id/tv_hint"
+        tools:text="@string/bigText2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

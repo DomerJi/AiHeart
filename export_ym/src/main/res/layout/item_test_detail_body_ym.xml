@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="12dp">
+
+    <View
+        android:id="@+id/v_flag"
+        android:layout_width="4sp"
+        android:layout_height="12sp"
+        android:layout_marginLeft="16dp"
+        android:background="@color/text_green"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_title" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:textColor="@color/text_common"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintLeft_toRightOf="@id/v_flag"
+        tools:text="你将获得" />
+
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:lineSpacingExtra="2dp"
+        android:paddingRight="16dp"
+        android:textColor="@color/text_content"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintLeft_toRightOf="@id/v_flag"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:text="@string/bigText2" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

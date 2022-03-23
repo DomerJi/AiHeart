@@ -50,6 +50,8 @@ dependencies {
     api 'androidx.palette:palette:' + rootProject.ext.palette
     api 'com.google.code.gson:gson:' + rootProject.ext.gson
 
+    api 'com.drakeet.multitype:multitype:4.2.0'
+    api 'androidx.appcompat:appcompat:' + rootProject.ext.appcompat
 
     /**
      * ======================= 开始 OkHttp Rxjava2 retrofit2 =====================

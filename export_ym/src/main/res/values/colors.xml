@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#59C6C1</color>
+    <color name="colorPrimaryYm">#59C6C1</color>
+    <color name="colorPrimaryDark">#59C6C1</color>
+    <color name="colorPrimaryLight">#8859C6C1</color>
+    <color name="colorAccent">#29B357</color>
+    <color name="colorFore">#000000</color>
+
+    <color name="colorRobotPrimary">#008800</color>
+    <color name="colorRobotPrimaryDark">#008800</color>
+    <color name="colorRobotAccent">#00FF88</color>
+    <color name="colorRobotFore">#91dff3</color>
+    <color name="colorRobotForeDark">#74b5c6</color>
+    <color name="colorRobotDialogBg">#76bbce</color>
+
+    <!--辅助线颜色-->
+    <color name="divider_color">#E7EBF0</color>
+
+    <!--页面通用背景-->
+    <color name="page_background_gray">#F5F5F5</color>
+    <color name="page_background_white">#FFFFFF</color>
+    <color name="exercise">#29DACA</color>
+    <color name="exercise_20">#3329DACA</color>
+    <color name="exercise_text">#00CC99</color>
+
+    <color name="colorButtonLeft">#00BC89</color>
+    <color name="colorButtonRight">#00D69C</color>
+
+    <color name="colorButtonLeft2">#8800BC89</color>
+    <color name="colorButtonRight2">#8800D69C</color>
+
+    <color name="btn_green">#00BC89</color>
+    <color name="btn_green_50">#8800BC89</color>
+    <color name="enabled_false">#F4F6F7</color>
+    <color name="link">#2A5D83</color>
+
+    <!-- 通用文本颜色 -->
+    <color name="text_common">#333333</color>
+    <!-- 通用提示文本颜色 -->
+    <color name="text_content">#666666</color>
+    <color name="text_hint">#999999</color>
+    <color name="text_bg">#DFDFDF</color>
+    <!-- 通用时间文本颜色 -->
+    <color name="text_time">#999999</color>
+    <color name="robot_search_border_color">#8D99A4</color>
+    <color name="left_navigation_divder">#4d5f77</color>
+
+
+    <color name="text_green">#00A871</color>
+    <color name="green_selected_text">#00CC99</color>
+    <color name="text_yellow">#FF8600</color>
+    <color name="text_green_80">#CC00A871</color>
+    <color name="text_red">#FF5454</color>
+    <color name="btn_red">#FF5454</color>
+    <color name="gray">#888888</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- 透明 -->
+    <color name="transparent">#00000000</color>
+
+
+    <color name="white_95">#F2FFFFFF</color>
+    <color name="white_90">#E5FFFFFF</color>
+    <color name="white_85">#DBFFFFFF</color>
+    <color name="white_80">#CCFFFFFF</color>
+    <color name="white_75">#BFFFFFFF</color>
+    <color name="white_70">#B2FFFFFF</color>
+    <color name="white_65">#A5FFFFFF</color>
+    <color name="white_60">#99FFFFFF</color>
+    <color name="white_55">#8CFFFFFF</color>
+    <color name="white_50">#7FFFFFFF</color>
+    <color name="white_45">#72FFFFFF</color>
+    <color name="white_40">#66FFFFFF</color>
+    <color name="white_35">#59FFFFFF</color>
+    <color name="white_30">#4CFFFFFF</color>
+    <color name="white_25">#3FFFFFFF</color>
+    <color name="white_20">#33FFFFFF</color>
+    <color name="white_15">#21FFFFFF</color>
+    <color name="white_10">#19FFFFFF</color>
+    <color name="white_05">#0CFFFFFF</color>
+
+    <!-- 黑色 -->
+    <color name="black">#FF000000</color>
+    <color name="black_95">#F2000000</color>
+    <color name="black_90">#E5000000</color>
+    <color name="black_85">#DB000000</color>
+    <color name="black_80">#CC000000</color>
+    <color name="black_75">#B000000F</color>
+    <color name="black_70">#B2000000</color>
+    <color name="black_65">#A5000000</color>
+    <color name="black_60">#99000000</color>
+    <color name="black_55">#8C000000</color>
+    <color name="black_50">#7000000F</color>
+    <color name="black_45">#72000000</color>
+    <color name="black_40">#66000000</color>
+    <color name="black_35">#59000000</color>
+    <color name="black_30">#4C000000</color>
+    <color name="black_25">#3000000F</color>
+    <color name="black_20">#33000000</color>
+    <color name="black_15">#21000000</color>
+    <color name="black_10">#19000000</color>
+    <color name="black_05">#0C000000</color>
+
+
+
+</resources>
