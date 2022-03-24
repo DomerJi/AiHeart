@@ -245,16 +245,6 @@
 
         <service android:name=".service.AutoUpdateService" /> <!-- 友盟 -->
         <activity
-            android:name=".push.MainActivity"
-            android:exported="true"
-            android:theme="@android:style/Theme.DeviceDefault.Light">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
-        <activity
             android:name=".push.mfr.MfrMessageActivity"
             android:exported="true"
             android:launchMode="singleTask">

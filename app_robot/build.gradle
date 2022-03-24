@@ -8,8 +8,8 @@ android {
         applicationId "com.thfw.robotheart"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 15
-        versionName "1.0.7.6"
+        versionCode 16
+        versionName "1.0.7.7"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -104,10 +104,9 @@ dependencies {
 
     implementation project(':common-base')
     implementation project(':common-ui')
+    implementation project(':push')
     implementation project(':picture_library')
     implementation project(':calendarview')
-    implementation project(':push')
-
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
     implementation 'androidx.navigation:navigation-ui:2.3.0'

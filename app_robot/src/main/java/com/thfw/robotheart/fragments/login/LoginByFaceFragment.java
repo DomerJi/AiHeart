@@ -36,7 +36,7 @@ import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.user.login.LoginStatus;
-import com.thfw.user.login.User;
+import com.thfw.user.models.User;
 import com.thfw.user.login.UserManager;
 
 import org.bytedeco.opencv.opencv_face.FisherFaceRecognizer;

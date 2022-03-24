@@ -17,7 +17,7 @@ import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.constants.AnimFileName;
-import com.thfw.robotheart.view.SVGAHelper;
+import com.thfw.robotheart.util.SVGAHelper;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.user.login.UserManager;
 

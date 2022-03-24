@@ -10,7 +10,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
-import com.thfw.ui.widget.BrightnessHelper;
+import com.thfw.ui.utils.BrightnessHelper;
 
 /**
  * Author:pengs

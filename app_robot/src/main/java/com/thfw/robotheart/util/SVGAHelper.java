@@ -1,4 +1,4 @@
-package com.thfw.robotheart.view;
+package com.thfw.robotheart.util;
 
 import com.opensource.svgaplayer.SVGADrawable;
 import com.opensource.svgaplayer.SVGAImageView;

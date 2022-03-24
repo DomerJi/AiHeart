@@ -5,7 +5,7 @@ import android.view.View;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.mobileheart.adapter.BaseAdapter;
-import com.thfw.ui.widget.ILoading;
+import com.thfw.ui.base.ILoading;
 
 import java.util.List;
 

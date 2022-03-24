@@ -55,10 +55,10 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.adapter.VideoPlayListAdapter;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
 import com.thfw.ui.base.BaseActivity;
-import com.thfw.ui.widget.BrightnessHelper;
+import com.thfw.ui.utils.BrightnessHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
-import com.thfw.ui.widget.VideoGestureHelper;
+import com.thfw.ui.utils.VideoGestureHelper;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.yhao.floatwindow.FloatWindow;
 

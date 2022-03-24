@@ -25,7 +25,7 @@ import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.OrganSelectChildrenAdapter;
 import com.thfw.robotheart.adapter.OrganSelectedAdapter;
 import com.thfw.robotheart.push.tester.UPushAlias;
-import com.thfw.robotheart.view.DialogRobotFactory;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;

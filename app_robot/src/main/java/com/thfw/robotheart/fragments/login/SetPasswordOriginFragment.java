@@ -16,7 +16,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.login.SetPasswordActivity;
 import com.thfw.robotheart.util.FragmentLoader;
-import com.thfw.robotheart.view.DialogRobotFactory;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;

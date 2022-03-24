@@ -142,9 +142,17 @@ public class ChatEntity implements IModel {
             case ChatEntity.TYPE_RECOMMEND_TEST: // 测评
                 return "测评问卷";
             case ChatEntity.TYPE_RECOMMEND_VIDEO: // 视频
-                return "视频";
+                if (getTalkModel().getRecommendInfo().getId() < 100000) {
+                    return "心理视频";
+                } else {
+                    return "思政视频";
+                }
             case ChatEntity.TYPE_RECOMMEND_TEXT: // 文章
-                return "文章";
+                if (getTalkModel().getRecommendInfo().getId() < 1000000) {
+                    return "心理文库";
+                } else {
+                    return "思政文库";
+                }
             case ChatEntity.TYPE_RECOMMEND_AUDIO: // 音频
             case ChatEntity.TYPE_RECOMMEND_AUDIO_ETC:// 音频合集
                 return "正念冥想";

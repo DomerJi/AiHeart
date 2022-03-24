@@ -24,7 +24,7 @@ import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.user.login.LoginStatus;
-import com.thfw.user.login.User;
+import com.thfw.user.models.User;
 import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

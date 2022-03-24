@@ -27,7 +27,7 @@ import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
-import com.thfw.user.login.User;
+import com.thfw.user.models.User;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
 

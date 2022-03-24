@@ -42,7 +42,7 @@ import com.thfw.mobileheart.view.SimpleAnimatorListener;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
-import com.thfw.user.login.User;
+import com.thfw.user.models.User;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
 import com.trello.rxlifecycle2.LifecycleProvider;

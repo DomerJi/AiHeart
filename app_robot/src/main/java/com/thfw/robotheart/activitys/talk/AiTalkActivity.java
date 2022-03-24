@@ -55,9 +55,9 @@ import com.thfw.robotheart.adapter.ChatAdapter;
 import com.thfw.robotheart.adapter.ChatSelectAdapter;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.util.PageJumpUtils;
-import com.thfw.robotheart.view.DialogRobotFactory;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.view.HomeIpTextView;
-import com.thfw.robotheart.view.SVGAHelper;
+import com.thfw.robotheart.util.SVGAHelper;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
@@ -702,7 +702,8 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 if (model.getExt().isEnterDeepDialog()) {
                     sendData(ChatEntity.createJoinPage("欢迎进入深度疏导主题对话"));
                 }
-                if (model.getExt().isSentiment()) {
+                if (model.getExt().isSentiment()
+                        && AnimFileName.getTalkEmojiBySentiment(model.getExt().getSentiment()) != null) {
                     sendData(ChatEntity.createEmoji(model.getExt().getSentiment()));
                 }
             }

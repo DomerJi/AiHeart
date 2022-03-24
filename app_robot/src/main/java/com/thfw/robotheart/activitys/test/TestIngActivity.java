@@ -17,7 +17,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.TestngAdapter;
-import com.thfw.robotheart.view.DialogRobotFactory;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;

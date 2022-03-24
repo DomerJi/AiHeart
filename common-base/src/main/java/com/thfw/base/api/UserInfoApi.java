@@ -3,7 +3,7 @@ package com.thfw.base.api;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.PresetAvatarModel;
 import com.thfw.base.net.HttpResult;
-import com.thfw.user.login.User;
+import com.thfw.user.models.User;
 
 import java.util.List;
 import java.util.Map;

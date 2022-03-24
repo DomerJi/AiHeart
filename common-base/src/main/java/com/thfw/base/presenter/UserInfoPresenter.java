@@ -8,7 +8,7 @@ import com.thfw.base.models.PresetAvatarModel;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.OkHttpUtil;
-import com.thfw.user.login.User;
+import com.thfw.user.models.User;
 
 import java.util.List;
 

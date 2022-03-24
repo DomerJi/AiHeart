@@ -4,6 +4,7 @@ import com.thfw.base.net.CommonInterceptor;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
+import com.thfw.user.models.User;
 
 import java.util.Observable;
 

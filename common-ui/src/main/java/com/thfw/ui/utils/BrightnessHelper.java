@@ -1,4 +1,4 @@
-package com.thfw.ui.widget;
+package com.thfw.ui.utils;
 
 import android.app.Activity;
 import android.content.ContentResolver;

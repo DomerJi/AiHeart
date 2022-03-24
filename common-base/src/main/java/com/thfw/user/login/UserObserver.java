@@ -6,6 +6,8 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
+import com.thfw.user.models.User;
+
 import java.util.Observable;
 import java.util.Observer;
 

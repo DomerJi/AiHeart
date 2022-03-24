@@ -145,7 +145,7 @@ public class AnimFileName {
                 return mNameEmojiMap.get(key);
             }
         }
-        return TALK_JINZHANG;
+        return null;
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.thfw.ui.widget;
+package com.thfw.ui.utils;
 
 import android.content.Context;
 import android.util.Log;

@@ -1,4 +1,4 @@
-package com.thfw.robotheart.view;
+package com.thfw.robotheart.util;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -37,7 +37,6 @@ import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.adapter.BaseAdapter;
 import com.thfw.robotheart.adapter.DialogLikeAdapter;
 import com.thfw.robotheart.constants.AnimFileName;
-import com.thfw.robotheart.util.AreaUtil;
 import com.thfw.ui.R;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;

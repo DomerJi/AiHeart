@@ -15,7 +15,7 @@ import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
-import com.thfw.user.login.User;
+import com.thfw.user.models.User;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
 import com.trello.rxlifecycle2.LifecycleProvider;

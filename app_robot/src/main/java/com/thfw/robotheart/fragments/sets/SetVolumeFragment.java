@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
-import com.thfw.robotheart.view.DialogRobotFactory;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 

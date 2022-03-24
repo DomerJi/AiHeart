@@ -18,7 +18,7 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.set.SystemAppActivity;
 import com.thfw.robotheart.fragments.sets.SetUpdateFragment;
-import com.thfw.robotheart.view.DialogRobotFactory;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 

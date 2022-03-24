@@ -1,0 +1,3 @@
+-keep public class com.thfw.ui.widget.**{*;}
+-keep class com.iflytek.** {*;}
+-keepattributes Signature

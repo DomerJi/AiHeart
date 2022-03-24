@@ -63,7 +63,7 @@ import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.TitleView;
 import com.thfw.user.login.LoginStatus;
-import com.thfw.user.login.User;
+import com.thfw.user.models.User;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
 import com.trello.rxlifecycle2.LifecycleProvider;

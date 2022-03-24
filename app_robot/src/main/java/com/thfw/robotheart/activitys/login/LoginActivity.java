@@ -33,7 +33,7 @@ import com.thfw.robotheart.fragments.login.LoginPasswordFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.user.login.LoginStatus;
-import com.thfw.user.login.User;
+import com.thfw.user.models.User;
 import com.thfw.user.login.UserManager;
 
 import org.opencv.android.Static2Helper;

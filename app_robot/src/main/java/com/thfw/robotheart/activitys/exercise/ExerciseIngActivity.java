@@ -54,7 +54,7 @@ import com.thfw.robotheart.activitys.text.BookActivity;
 import com.thfw.robotheart.adapter.ChatAdapter;
 import com.thfw.robotheart.adapter.ChatSelectAdapter;
 import com.thfw.robotheart.util.PageJumpUtils;
-import com.thfw.robotheart.view.DialogRobotFactory;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.robotheart.view.boom.ExplosionField;
 import com.thfw.robotheart.view.fall.FallObject;
