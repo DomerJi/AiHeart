@@ -11,7 +11,7 @@ import java.util.Date;
 public class HourUtil {
     public static final long LEN_SECOND = 1000;
     public static final long LEN_MINUTE = 60000;
-    public static final long LEN_5_MINUTE = 5 * 60000;
+    public static final long LEN_5_MINUTE = 5 * 60000 - 1;
     public static final long LEN_10_MINUTE = 10 * 60000;
     public static final long LEN_HOUR = LEN_MINUTE * 60;
     public static final long LEN_DAY = LEN_HOUR * 24;

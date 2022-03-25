@@ -43,14 +43,15 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
 
     private int numTask;
     private int numSystem;
-    private boolean isLogin;
     private List<OnCountChangeListener> onCountChangeListeners;
 
     private List<String> numTaskArray;
     private List<String> numSystemArray;
+    private boolean isLogin;
 
     private MsgCountManager() {
         onCountChangeListeners = new ArrayList<>();
+        UserManager.getInstance().addObserver(this);
         init(UserManager.getInstance().isLogin());
     }
 
@@ -80,13 +81,11 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
             numSystem = SharePreferenceUtil.getInt(KEY_SYSTEM, 0);
 
             getMsgCount();
-            UserManager.getInstance().deleteObserver(this);
         } else {
             KEY_TASK = KEY_TASK_FINAL;
             KEY_SYSTEM = KEY_SYSTEM_FINAL;
             numTask = 0;
             numSystem = 0;
-            UserManager.getInstance().addObserver(this);
         }
 
         LogUtil.d(TAG, "KEY_TASK = " + KEY_TASK + " , KEY_SYSTEM = " + KEY_SYSTEM);
@@ -146,9 +145,8 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
 
     @Override
     public void onChanged(UserManager accountManager, User user) {
-        if (isLogin != accountManager.isLogin()) {
-            isLogin = accountManager.isLogin();
-            init(isLogin);
+        if (this.isLogin != UserManager.getInstance().isLogin()) {
+            init(UserManager.getInstance().isLogin());
             onCountChange();
         }
     }

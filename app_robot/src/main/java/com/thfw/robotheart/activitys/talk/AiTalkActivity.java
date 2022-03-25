@@ -668,7 +668,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 long limitTime = chatEntity.time - lastChatEntity.time;
                 LogUtil.d(TAG, "sendData -> limitTime = " + limitTime);
                 if (limitTime > HourUtil.LEN_MINUTE ||
-                        System.currentTimeMillis() - lastTime > HourUtil.LEN_10_MINUTE) {
+                        System.currentTimeMillis() - lastTime > HourUtil.LEN_5_MINUTE) {
                     lastTime = System.currentTimeMillis();
                     mChatAdapter.addData(ChatEntity.createTime());
                     mChatAdapter.notifyItemInserted(mChatAdapter.getItemCount() - 1);
