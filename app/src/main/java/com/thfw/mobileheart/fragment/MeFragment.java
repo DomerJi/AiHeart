@@ -22,14 +22,15 @@ import com.thfw.mobileheart.activity.settings.HelpBackActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
 import com.thfw.mobileheart.activity.settings.SettingActivity;
 import com.thfw.mobileheart.activity.test.TestReportActivity;
-import com.thfw.ui.base.BaseFragment;
 import com.thfw.mobileheart.util.DialogFactory;
+import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
-import com.thfw.user.models.User;
+import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
+import com.thfw.user.models.User;
 
 /**
  * 我的
@@ -177,7 +178,10 @@ public class MeFragment extends BaseFragment {
                     tDialog.dismiss();
                 } else {
                     tDialog.dismiss();
-                    getActivity().finish();
+                    UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+                    if (!UserManager.getInstance().isTrueLogin()) {
+                        LoginActivity.startActivity(mContext, LoginActivity.BY_OTHER);
+                    }
                 }
             }
         });

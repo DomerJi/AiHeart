@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.activity.settings;
 
 import android.content.Intent;
+import android.text.TextUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -8,6 +9,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;
+import com.thfw.user.login.UserManager;
 
 public class AccountSafeActivity extends BaseActivity {
 
@@ -20,6 +22,9 @@ public class AccountSafeActivity extends BaseActivity {
     private android.widget.TextView mTvBindQq;
     private android.widget.TextView mTvBindQqValue;
     private android.widget.LinearLayout mLlPassword;
+    private LinearLayout mLlUserId;
+    private TextView mTvUserIdValue;
+    private TextView mTvPhone;
 
     @Override
     public int getContentView() {
@@ -36,16 +41,38 @@ public class AccountSafeActivity extends BaseActivity {
 
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mLlMobile = (LinearLayout) findViewById(R.id.ll_mobile);
+        // start 微信QQ 暂时去除 =================================
         mLlWechat = (LinearLayout) findViewById(R.id.ll_wechat);
         mTvBind = (TextView) findViewById(R.id.tv_bind);
         mTvBindValue = (TextView) findViewById(R.id.tv_bind_value);
         mLlQq = (LinearLayout) findViewById(R.id.ll_qq);
         mTvBindQq = (TextView) findViewById(R.id.tv_bind_qq);
         mTvBindQqValue = (TextView) findViewById(R.id.tv_bind_qq_value);
+        // end 微信QQ 暂时去除 =================================
         mLlPassword = (LinearLayout) findViewById(R.id.ll_password);
+
+        mLlUserId = (LinearLayout) findViewById(R.id.ll_user_id);
+        mTvUserIdValue = (TextView) findViewById(R.id.tv_user_id_value);
+        mTvUserIdValue.setText(UserManager.getInstance().getUID());
+        mTvPhone = (TextView) findViewById(R.id.tv_phone);
+
         mLlMobile.setOnClickListener(v -> {
             startActivity(new Intent(mContext, BindMobileActivity.class));
         });
+        mLlPassword.setOnClickListener(v -> {
+            startActivity(new Intent(mContext, SetPasswordOriginActivity.class));
+        });
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String mobile = UserManager.getInstance().getUser().getMobile();
+        if (!TextUtils.isEmpty(mobile)) {
+            mTvPhone.setText(mobile);
+        }
     }
 
     @Override

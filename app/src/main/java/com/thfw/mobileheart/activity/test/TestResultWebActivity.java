@@ -59,7 +59,7 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
 
     @Override
     public int getContentView() {
-        return R.layout.activity_test_result_webview_ym;
+        return R.layout.activity_test_result_webview;
     }
 
     @Override

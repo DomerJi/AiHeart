@@ -15,9 +15,9 @@ import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
-import com.thfw.user.models.User;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
+import com.thfw.user.models.User;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.ArrayList;
@@ -80,11 +80,13 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
             numSystem = SharePreferenceUtil.getInt(KEY_SYSTEM, 0);
 
             getMsgCount();
+            UserManager.getInstance().deleteObserver(this);
         } else {
             KEY_TASK = KEY_TASK_FINAL;
             KEY_SYSTEM = KEY_SYSTEM_FINAL;
             numTask = 0;
             numSystem = 0;
+            UserManager.getInstance().addObserver(this);
         }
 
         LogUtil.d(TAG, "KEY_TASK = " + KEY_TASK + " , KEY_SYSTEM = " + KEY_SYSTEM);

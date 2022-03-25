@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.fragment.login.ForgetFragment;
 import com.thfw.mobileheart.fragment.login.SetPasswordFragment;
 import com.thfw.mobileheart.fragment.login.SetPasswordScusseFragment;
 import com.thfw.mobileheart.util.FragmentLoader;
-import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 
 public class ForgetPasswordActivity extends BaseActivity {
@@ -16,6 +16,9 @@ public class ForgetPasswordActivity extends BaseActivity {
     public static final int BY_MOBILE = 0;
     public static final int BY_SET_PASSWORD = 1;
     public static final int BY_SUSSES = 2;
+
+    public static final String KEY_PHONE = "key_phone";
+    public static final String KEY_CODE= "key_phone_code";
     private int type;
     private FragmentLoader fragmentLoader;
 

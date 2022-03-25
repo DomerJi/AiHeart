@@ -1,6 +1,8 @@
 package com.thfw.robotheart;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.DisplayMetrics;
 
 import androidx.multidex.MultiDexApplication;
@@ -23,6 +25,7 @@ import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.robotheart.activitys.MainActivity;
 import com.thfw.robotheart.push.MyPreferences;
 import com.thfw.robotheart.push.helper.PushHelper;
 import com.thfw.ui.dialog.TDialog;
@@ -31,6 +34,8 @@ import com.umeng.commonsdk.utils.UMUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 
 /**
  * 入口
@@ -139,6 +144,12 @@ public class MyApplication extends MultiDexApplication {
             //若不是主进程（":channel"结尾的进程），直接初始化sdk，不可在子线程中执行
             PushHelper.init(getApplicationContext());
         }
+    }
+
+    public static void goAppHome(Activity activity) {
+        Intent intent = new Intent(activity, MainActivity.class);
+        intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK);
+        activity.startActivity(intent);
     }
 
 }

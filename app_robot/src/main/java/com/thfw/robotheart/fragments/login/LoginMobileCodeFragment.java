@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.TokenModel;
-import com.thfw.base.net.CommonParameter;
+import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.timing.TimingHelper;
@@ -143,10 +143,6 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
 
         mBtGetCode.setEnabled(false);
         mBtGetCode.setOnClickListener(v -> {
-            if (!CommonParameter.isValid()) {
-                ToastUtil.show(R.string.valid_fail_organ_id);
-                return;
-            }
             LoginActivity loginActivity = (LoginActivity) getActivity();
             phone = loginActivity.getFragmentLoader().get(LoginActivity.KEY_PHONE_NUMBER);
             LoadingDialog.show(getActivity(), "登录中");
@@ -180,6 +176,9 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
     public void onFail(ResponeThrowable throwable) {
         LoadingDialog.hide();
         ToastUtil.show(throwable.getMessage());
+        if (HttpResult.isOrganValid(throwable.code)) {
+            LoginActivity.showOrganIdNoValid(getActivity());
+        }
         TtsHelper.getInstance().start(new TtsModel("请重新登录哦"), null);
     }
 

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.models.TokenModel;
-import com.thfw.base.net.CommonParameter;
+import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.utils.LogUtil;
@@ -146,10 +146,6 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
         mEtPassword.addTextChangedListener(myTextWatcher);
         mBtLogin.setEnabled(false);
         mBtLogin.setOnClickListener(v -> {
-            if (!CommonParameter.isValid()) {
-                ToastUtil.show(R.string.valid_fail_organ_id);
-                return;
-            }
             String phone = mEtMobile.getText().toString();
             String password = mEtPassword.getText().toString();
             LoadingDialog.show(getActivity(), "登录中");
@@ -178,7 +174,11 @@ public class LoginPasswordFragment extends BaseFragment<LoginPresenter> implemen
     @Override
     public void onFail(ResponeThrowable throwable) {
         LoadingDialog.hide();
+        LogUtil.d(throwable.toString());
         ToastUtil.show(throwable.getMessage());
+        if (HttpResult.isOrganValid(throwable.code)) {
+            LoginActivity.showOrganIdNoValid(getActivity());
+        }
         TtsHelper.getInstance().start(new TtsModel("请重新登录哦"), null);
     }
 }

@@ -7,6 +7,7 @@ import com.thfw.base.ContextApp;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.utils.DeviceIdUtil;
 import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.Util;
 
@@ -55,7 +56,8 @@ public class CommonParameter {
 
     public static String getOrganizationId() {
         String id = SharePreferenceUtil.getString(KEY_ORGANIZATION_ID, null);
-        return TextUtils.isEmpty(id) ? TEST_ID : id;
+        LogUtil.d("getOrganizationId = " + id);
+        return TextUtils.isEmpty(id) ? "" : id;
     }
 
     public static void setOrganizationId(String organizationId) {
@@ -63,11 +65,8 @@ public class CommonParameter {
     }
 
     public static boolean isValid() {
-        return true;
-        // todo 真实环境必须校验
-//        return !TextUtils.isEmpty(getOrganizationId()) && !TEST_ID.equals(getOrganizationId());
+        return !TextUtils.isEmpty(getOrganizationId());
     }
-
 
     public static void setOrganizationSelected(ArrayList<OrganizationModel.OrganizationBean> organizationBeans) {
         SharePreferenceUtil.setString(KEY_ORGANIZATION_SELECT + CommonParameter.getOrganizationId(), GsonUtil.toJson(organizationBeans));

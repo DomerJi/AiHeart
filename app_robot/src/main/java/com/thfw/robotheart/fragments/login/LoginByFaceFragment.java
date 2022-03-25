@@ -20,7 +20,6 @@ import androidx.core.content.ContextCompat;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.MyAnimationListener;
-import com.thfw.base.net.CommonParameter;
 import com.thfw.base.room.face.Face;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
@@ -36,8 +35,8 @@ import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.user.login.LoginStatus;
-import com.thfw.user.models.User;
 import com.thfw.user.login.UserManager;
+import com.thfw.user.models.User;
 
 import org.bytedeco.opencv.opencv_face.FisherFaceRecognizer;
 import org.opencv.android.CameraBridgeViewBase;
@@ -524,10 +523,6 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     }
 
     private void loginByFace(Face loginFace) {
-        if (!CommonParameter.isValid()) {
-            ToastUtil.show(R.string.valid_fail_organ_id);
-            return;
-        }
         User user = new User();
         user.setToken(loginFace.getToken());
         user.setMobile(loginFace.getUid());

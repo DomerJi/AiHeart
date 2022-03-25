@@ -33,11 +33,11 @@ public class TestDetailAdapter extends BaseAdapter<MTestDetailAdapterModel, Recy
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case MTestDetailAdapterModel.TYPE_TOP:
-                return new TestDetailTopHolder(inflate(R.layout.item_test_detail_top_layout_ym, parent));
+                return new TestDetailTopHolder(inflate(R.layout.item_test_detail_top_layout, parent));
             case MTestDetailAdapterModel.TYPE_HINT:
-                return new TestDetailHintHolder(inflate(R.layout.item_test_detail_hint_ym, parent));
+                return new TestDetailHintHolder(inflate(R.layout.item_test_detail_hint, parent));
             default:
-                return new TestDetailHolder(inflate(R.layout.item_test_detail_body_ym, parent));
+                return new TestDetailHolder(inflate(R.layout.item_test_detail_body, parent));
         }
     }
 

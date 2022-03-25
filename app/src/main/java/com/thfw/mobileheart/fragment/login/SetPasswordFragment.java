@@ -7,17 +7,24 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.thfw.base.base.IPresenter;
-import com.thfw.mobileheart.activity.login.ForgetPasswordActivity;
+import com.thfw.base.face.MyTextWatcher;
+import com.thfw.base.models.CommonModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.LoginPresenter;
+import com.thfw.base.utils.RegularUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.login.ForgetPasswordActivity;
 import com.thfw.ui.base.BaseFragment;
+import com.thfw.ui.dialog.LoadingDialog;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 /**
  * Author:pengs
  * Date: 2021/8/4 16:19
  * Describe:重置密码
  */
-public class SetPasswordFragment extends BaseFragment {
+public class SetPasswordFragment extends BaseFragment<LoginPresenter> implements LoginPresenter.LoginUi<CommonModel> {
 
     private TextView mTvProductAgree;
     private ConstraintLayout mClTop;
@@ -35,8 +42,8 @@ public class SetPasswordFragment extends BaseFragment {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public LoginPresenter onCreatePresenter() {
+        return new LoginPresenter(this);
     }
 
     @Override
@@ -50,16 +57,63 @@ public class SetPasswordFragment extends BaseFragment {
         mEtPassword = (EditText) findViewById(R.id.et_password);
         mBtConfirm = (Button) findViewById(R.id.bt_confirm);
 
+
         mBtConfirm.setOnClickListener(v -> {
             if (getActivity() instanceof ForgetPasswordActivity) {
+
                 ForgetPasswordActivity activity = (ForgetPasswordActivity) getActivity();
-                activity.getFragmentLoader().load(ForgetPasswordActivity.BY_SUSSES);
+                String phone = activity.getFragmentLoader().get(ForgetPasswordActivity.KEY_PHONE);
+                String code = activity.getFragmentLoader().get(ForgetPasswordActivity.KEY_CODE);
+                String pass01 = mEtMobile.getText().toString();
+                LoadingDialog.show(getActivity(), "重置中");
+                mPresenter.setPasswordByCode(phone, code, pass01);
             }
         });
+
+        checkPassword();
+        mEtMobile.addTextChangedListener(new MyTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                checkPassword();
+            }
+        });
+
+        mEtPassword.addTextChangedListener(new MyTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                checkPassword();
+            }
+        });
+    }
+
+    private void checkPassword() {
+        String pass01 = mEtMobile.getText().toString();
+        String pass02 = mEtPassword.getText().toString();
+        mBtConfirm.setEnabled(RegularUtil.isPassword(pass01) && pass01.equals(pass02));
     }
 
     @Override
     public void initData() {
 
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return SetPasswordFragment.this;
+    }
+
+    @Override
+    public void onSuccess(CommonModel data) {
+        LoadingDialog.hide();
+        if (getActivity() instanceof ForgetPasswordActivity) {
+            ForgetPasswordActivity activity = (ForgetPasswordActivity) getActivity();
+            activity.getFragmentLoader().load(ForgetPasswordActivity.BY_SUSSES);
+        }
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        ToastUtil.show(throwable.getMessage());
+        LoadingDialog.hide();
     }
 }

@@ -54,10 +54,10 @@ import com.thfw.robotheart.activitys.test.TestActivity;
 import com.thfw.robotheart.adapter.ChatAdapter;
 import com.thfw.robotheart.adapter.ChatSelectAdapter;
 import com.thfw.robotheart.constants.AnimFileName;
-import com.thfw.robotheart.util.PageJumpUtils;
 import com.thfw.robotheart.util.DialogRobotFactory;
-import com.thfw.robotheart.view.HomeIpTextView;
+import com.thfw.robotheart.util.PageJumpUtils;
 import com.thfw.robotheart.util.SVGAHelper;
+import com.thfw.robotheart.view.HomeIpTextView;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
@@ -413,6 +413,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             public void onResult(String result, boolean end) {
                 LogUtil.d(TAG, "result =================================== " + result + " ; end = " + end);
                 if (!mStvText.isShow()) {
+                    return;
+                }
+                // 未选中，不处理字符
+                if (!mIvVolumeSwitch.isSelected()) {
                     return;
                 }
                 if (PolicyHelper.getInstance().isPressMode()) {

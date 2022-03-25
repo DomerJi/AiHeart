@@ -32,7 +32,7 @@ public class ReportTestAdapter extends BaseAdapter<ReportTestModel, ReportTestAd
     @NotNull
     @Override
     public ReportHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        return new ReportHolder(inflate(R.layout.item_report_test_ym, parent));
+        return new ReportHolder(inflate(R.layout.item_report_test, parent));
     }
 
     @Override

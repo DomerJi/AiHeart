@@ -63,9 +63,9 @@ import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.TitleView;
 import com.thfw.user.login.LoginStatus;
-import com.thfw.user.models.User;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
+import com.thfw.user.models.User;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.io.File;
@@ -857,12 +857,11 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
         }
         switch (requestCode) {
             case 9:
-                // todo
-//                String phoneNumber = data.getStringExtra(BindPhoneActivity.KEY_RESULT);
-//                mTvMobile.setText(phoneNumber);
-//                onUpdateInfo("mobile", phoneNumber);
-//                UserManager.getInstance().getUser().getUserInfo().mobile = phoneNumber;
-//                UserManager.getInstance().notifyUserInfo();
+                String phoneNumber = data.getStringExtra(BindMobileActivity.KEY_RESULT);
+                mTvMobile.setText(phoneNumber);
+                onUpdateInfo("mobile", phoneNumber);
+                UserManager.getInstance().getUser().getUserInfo().mobile = phoneNumber;
+                UserManager.getInstance().notifyUserInfo();
                 break;
             case 2:
                 String className = data.getStringExtra(EditInfoActivity.KEY_RESULT);
@@ -1020,6 +1019,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
             }
         }).onGetJoinedList();
     }
+
 
     private void initSelectedList(List<OrganizationModel.OrganizationBean> list, OrganizationSelectedModel.OrganizationBean bean) {
         if (bean != null) {

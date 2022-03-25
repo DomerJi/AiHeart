@@ -47,7 +47,7 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
 
     @Override
     public int getContentView() {
-        return R.layout.activity_test_begin_ym;
+        return R.layout.activity_test_begin;
     }
 
     @Override

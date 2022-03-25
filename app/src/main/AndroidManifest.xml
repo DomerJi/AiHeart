@@ -3,26 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.thfw.mobileheart">
 
-    <uses-sdk tools:overrideLibrary="com.huawei.hms.framework.common,
-        com.huawei.hms.framework.network.grs,
-        com.huawei.hmf.tasks,
-        com.huawei.agconnect.core,
-        com.huawei.hms.log,
-        com.huawei.hms.base.device,
-        com.huawei.hms.base.ui,
-        com.huawei.hms.stats,
-        com.huawei.hms.base.availableupdate,
-        com.huawei.android.hms.base,
-        com.huawei.android.hms.openid,
-        org.android.agoo.oppo,
-        com.vivo.push,
-        org.android.agoo.vivo,
-        org.android.agoo.meizu,
-        com.huawei.android.hms.push,
-        org.android.agoo.huawei,
-        com.pushsdk,
-        com.huawei.hms.hatool,
-        com.huawei.hms.framework.network.frameworkcompat" />
+    <uses-sdk tools:overrideLibrary="com.huawei.hms.framework.common,         com.huawei.hms.framework.network.grs,         com.huawei.hmf.tasks,         com.huawei.agconnect.core,         com.huawei.hms.log,         com.huawei.hms.base.device,         com.huawei.hms.base.ui,         com.huawei.hms.stats,         com.huawei.hms.base.availableupdate,         com.huawei.android.hms.base,         com.huawei.android.hms.openid,         org.android.agoo.oppo,         com.vivo.push,         org.android.agoo.vivo,         org.android.agoo.meizu,         com.huawei.android.hms.push,         org.android.agoo.huawei,         com.pushsdk,         com.huawei.hms.hatool,         com.huawei.hms.framework.network.frameworkcompat" />
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -58,7 +39,7 @@
     </queries>
 
     <application
-        android:name="com.thfw.mobileheart.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -66,164 +47,157 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".activity.settings.SetPasswordOriginActivity"></activity>
         <activity
             android:name=".activity.test.TestReportActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.read.BookDetailActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.read.BookIdeoDetailActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.settings.PresetAvatarActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.settings.EditInfoActivity"
             android:screenOrientation="portrait" />
-
-
         <activity
             android:name=".activity.test.TestResultWebActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.thfw.mobileheart.activity.robot.RobotDetailsActivity"
+            android:name=".activity.robot.RobotDetailsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.robot.RobotActivity"
+            android:name=".activity.robot.RobotActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.me.MeTaskActivity"
+            android:name=".activity.me.MeTaskActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.me.MeHistoryActivity"
+            android:name=".activity.me.MeHistoryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.test.TestBeginActivity"
+            android:name=".activity.test.TestBeginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.exercise.ExerciseIngActivity"
+            android:name=".activity.exercise.ExerciseIngActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.read.ReadDetailsActivity"
+            android:name=".activity.read.ReadDetailsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.me.HotPhoneActivity"
+            android:name=".activity.me.HotPhoneActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.me.AssessReportActivity"
+            android:name=".activity.me.AssessReportActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.settings.MeAskListActivity"
+            android:name=".activity.settings.MeAskListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.settings.BindMobileActivity"
+            android:name=".activity.settings.BindMobileActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.settings.AccountSafeActivity"
+            android:name=".activity.settings.AccountSafeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.settings.MeWillHelpBackActivity"
+            android:name=".activity.settings.MeWillHelpBackActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.settings.HelpHintsActivity"
+            android:name=".activity.settings.HelpHintsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.settings.HelpBackActivity"
+            android:name=".activity.settings.HelpBackActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.audio.AudioEtcActivity"
+            android:name=".activity.audio.AudioEtcActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.exercise.ExerciseDetailActivity"
+            android:name=".activity.exercise.ExerciseDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.me.CollectActivity"
+            android:name=".activity.me.CollectActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.integral.ClockInActivity"
+            android:name=".activity.integral.ClockInActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.test.TestProgressIngActivity"
+            android:name=".activity.test.TestProgressIngActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.ScrollingActivity"
+            android:name=".activity.ScrollingActivity"
             android:label="@string/title_activity_scrolling"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.thfw.mobileheart.activity.heartbox.MeHeartBoxActivity"
+            android:name=".activity.heartbox.MeHeartBoxActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.heartbox.HeartBoxActivity"
+            android:name=".activity.heartbox.HeartBoxActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.settings.InfoActivity"
+            android:name=".activity.settings.InfoActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.settings.SettingActivity"
+            android:name=".activity.settings.SettingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.read.StudyHomeActivity"
+            android:name=".activity.read.StudyHomeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.read.ReadHomeActivity"
+            android:name=".activity.read.ReadHomeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.video.VideoHomeActivity"
+            android:name=".activity.video.VideoHomeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.audio.AudioHomeActivity"
+            android:name=".activity.audio.AudioHomeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.exercise.ExerciseActivity"
+            android:name=".activity.exercise.ExerciseActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.test.TestingActivity"
+            android:name=".activity.test.TestingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.read.ReadEtcActivity"
+            android:name=".activity.read.ReadEtcActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.audio.AudioPlayerActivity"
+            android:name=".activity.audio.AudioPlayerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AnimActivity" />
         <activity
-            android:name="com.thfw.mobileheart.activity.StatusActivity"
+            android:name=".activity.StatusActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.login.ForgetPasswordActivity"
+            android:name=".activity.login.ForgetPasswordActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.video.VideoPlayActivity"
+            android:name=".activity.video.VideoPlayActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleInstance"
             android:screenOrientation="sensorPortrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.talk.ChatActivity"
+            android:name=".activity.talk.ChatActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.thfw.mobileheart.activity.talk.AskActivity"
+            android:name=".activity.talk.AskActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.thfw.mobileheart.activity.ExoPlayerActivity"
+            android:name=".activity.ExoPlayerActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.TestActivity"
+            android:name=".activity.TestActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.WebActivity"
+            android:name=".activity.WebActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.mobileheart.activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeSplash">
             <intent-filter>
@@ -235,18 +209,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.thfw.mobileheart.activity.login.LoginActivity"
+            android:name=".activity.login.LoginActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.thfw.mobileheart.activity.AudioSuspendActivity" />
+        <activity android:name=".activity.AudioSuspendActivity" />
 
         <service android:name="com.thfw.base.net.download.DownLoadIntentService">
             <intent-filter>
                 <action android:name="com.thfw.base.net.download.DownLoadIntentService" />
             </intent-filter>
         </service>
-        <service android:name="com.thfw.mobileheart.AudioService" />
-
-        <!-- 友盟 -->
+        <service android:name=".AudioService" /> <!-- 友盟 -->
         <activity
             android:name=".push.mfr.MfrMessageActivity"
             android:exported="true"
@@ -325,7 +297,6 @@
         <receiver
             android:name="org.android.agoo.vivo.PushMessageReceiverImpl"
             android:exported="true" />
-
     </application>
 
 </manifest>

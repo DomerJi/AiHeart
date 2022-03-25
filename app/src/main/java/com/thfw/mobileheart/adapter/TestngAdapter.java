@@ -34,7 +34,7 @@ public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, 
     @NotNull
     @Override
     public TestngHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        return new TestngHolder(inflate(R.layout.item_test_ing_ym, parent));
+        return new TestngHolder(inflate(R.layout.item_test_ing, parent));
     }
 
     @Override

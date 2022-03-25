@@ -11,7 +11,39 @@ import com.thfw.base.base.IResult;
  */
 public class HttpResult<T> implements IResult, IModel {
 
+
+    /**
+     * 0 => "请求失败"
+     * 1 => "成功"
+     * 2 => "验证码错误"
+     * 3 => "密码错误"
+     * 4 => "请输入密码或验证码"
+     * 5 => "无效登录凭证"
+     * 6 => "原密码错误"
+     * 7 => "缺少关键参数"
+     * 8 => "查找不到对应内容"
+     * 9 => "对话-按钮已选择"
+     * 10 => "该手机号已存在"
+     * 11 => "用户所在机构与该设备不同"
+     * 12 => "未找到用户所在机构"
+     */
+    public static final int FAIL = 0;
     private static final int CODE_SUCCESS = 1;
+    public static final int FAIL_CODE = 2;
+    public static final int FAIL_PASSWORD = 3;
+    public static final int FAIL_PASSWORD_CODE = 4;
+    public static final int FAIL_TOKEN = 5;
+    public static final int FAIL_ORIGIN_PASSWORD = 6;
+    public static final int FAIL_PARAMETER = 7;
+    public static final int FAIL_NO_CONTENT = 8;
+    public static final int FAIL_RESELECT = 9;
+    public static final int FAIL_PHONE_EXISTS = 10;
+    public static final int FAIL_ROBOT_ID = 11;
+    public static final int FAIL_NO_ORGAN = 12;
+
+    public static boolean isOrganValid(int code) {
+        return code == FAIL_ROBOT_ID || code == FAIL_NO_ORGAN;
+    }
 
     /**
      * 返回状态值
@@ -41,29 +73,32 @@ public class HttpResult<T> implements IResult, IModel {
     @Override
     public String getMsg() {
         switch (code) {
-            case 0:
+            case FAIL:
                 return "请求失败";
-            case 1:
+            case CODE_SUCCESS:
                 return "成功";
-            case 2:
+            case FAIL_CODE:
                 return "验证码错误";
-            case 3:
+            case FAIL_PASSWORD:
                 return "密码错误";
-            case 4:
+            case FAIL_PASSWORD_CODE:
                 return "请输入密码或验证码";
-            case 5:
+            case FAIL_TOKEN:
                 return "无效登录凭证";
-            case 6:
+            case FAIL_ORIGIN_PASSWORD:
                 return "原密码错误";
-            case 7:
+            case FAIL_PARAMETER:
                 return "缺少关键参数";
-            case 8:
+            case FAIL_NO_CONTENT:
                 return "查找不到对应内容";
-            case 9:
+            case FAIL_RESELECT:
                 return "对话-按钮已选择";
-            case 10:
+            case FAIL_PHONE_EXISTS:
                 return "该手机号已存在";
-
+            case FAIL_ROBOT_ID:
+                return "用户所在机构与该设备不同";
+            case FAIL_NO_ORGAN:
+                return "未找到用户所在机构";
         }
         return msg;
     }

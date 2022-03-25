@@ -31,7 +31,7 @@ public class TestOneAdapter extends BaseAdapter<TestModel, TestOneAdapter.TestHo
     @NotNull
     @Override
     public TestHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        return new TestHolder(inflate(R.layout.item_test_list_layout_ym, parent));
+        return new TestHolder(inflate(R.layout.item_test_list_layout, parent));
     }
 
     @Override

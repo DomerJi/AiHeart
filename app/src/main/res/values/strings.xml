@@ -60,9 +60,10 @@
 
     <string name="safe_mobile">手机号码</string>
     <string name="safe_wechat">微信号</string>
+    <string name="safe_user_id">用户ID</string>
     <string name="safe_bind">去绑定</string>
     <string name="safe_QQ">QQ</string>
-    <string name="safe_password">密友密码</string>
+    <string name="safe_password">登录密码</string>
 
     <string name="me_select_avatar">选择头像</string>
 

@@ -59,10 +59,10 @@
     </style>
 
     <style name="anim_translate_bottom" parent="@android:style/Animation.Activity">
-        <item name="android:activityOpenEnterAnimation">@anim/enter_ym</item>
+        <item name="android:activityOpenEnterAnimation">@anim/enter</item>
         <item name="android:activityOpenExitAnimation">@anim/exit_fade</item>
-        <item name="android:activityCloseEnterAnimation">@anim/enter_fade_ym</item>
-        <item name="android:activityCloseExitAnimation">@anim/exit_ym</item>
+        <item name="android:activityCloseEnterAnimation">@anim/enter_fade</item>
+        <item name="android:activityCloseExitAnimation">@anim/exit</item>
     </style>
 
 </resources>

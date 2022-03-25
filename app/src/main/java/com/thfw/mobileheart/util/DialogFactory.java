@@ -50,7 +50,7 @@ public class DialogFactory {
      */
     public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_custom_layout_ym)
+                .setLayoutRes(R.layout.dialog_custom_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
                 .addOnClickListener(R.id.tv_left, R.id.tv_right)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right

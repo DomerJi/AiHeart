@@ -81,16 +81,10 @@ public class TaskFragment extends RobotBaseFragment<TaskPresenter> implements Ta
                 mPresenter.onGetList(type, mPageHelper.getPage());
             }
         });
+        mPageHelper = new PageHelper<>(mLoadingView, mRefreshLayout, mTaskAdapter);
+        mPresenter.onGetList(type, mPageHelper.getPage());
     }
 
-    @Override
-    public void onVisible(boolean isVisible) {
-        super.onVisible(isVisible);
-        if (isVisible) {
-            mPageHelper = new PageHelper<>(mLoadingView, mRefreshLayout, mTaskAdapter);
-            mPresenter.onGetList(type, mPageHelper.getPage());
-        }
-    }
 
     @Override
     public LifecycleProvider getLifecycleProvider() {

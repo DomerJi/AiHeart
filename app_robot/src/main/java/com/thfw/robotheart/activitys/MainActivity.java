@@ -1,5 +1,6 @@
 package com.thfw.robotheart.activitys;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,7 +18,9 @@ import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.models.TalkModel;
+import com.thfw.base.net.BaseCodeListener;
 import com.thfw.base.net.CommonParameter;
+import com.thfw.base.net.OkHttpUtil;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.OrganizationPresenter;
 import com.thfw.base.presenter.UserInfoPresenter;
@@ -58,6 +61,7 @@ import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.MyRobotSearchView;
 import com.thfw.ui.widget.WeekView;
+import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
 import com.thfw.user.models.User;
@@ -140,7 +144,14 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
     @Override
     public void initView() {
-
+        OkHttpUtil.setBaseCodeListener(code -> {
+            if (code == BaseCodeListener.LOGOUT) {
+                if (UserManager.getInstance().isTrueLogin()) {
+                    UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+                    MyApplication.goAppHome((Activity) mContext);
+                }
+            }
+        });
         mTitleBarView = (TitleBarView) findViewById(R.id.titleBarView);
         mWeekView = (WeekView) findViewById(R.id.weekView);
         mRivAvatar = (RoundedImageView) findViewById(R.id.riv_avatar);
@@ -227,11 +238,13 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     @Override
     public void initData() {
         // 日期、星期连续点击10次进入配置页面（机构id设置）
-        mWeekView.setOnClickListener(v -> {
+        View.OnClickListener clickListener = v -> {
             if (ClickCountUtils.click(10)) {
                 startActivity(new Intent(mContext, PrivateSetActivity.class));
             }
-        });
+        };
+        mWeekView.setOnClickListener(clickListener);
+        mTitleBarView.setOnClickListener(clickListener);
         // 头像点击进入【我的页面】
         mLlRiv.setOnClickListener(v -> {
             if (UserManager.getInstance().isLogin()) {

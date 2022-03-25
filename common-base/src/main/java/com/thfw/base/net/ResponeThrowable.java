@@ -5,8 +5,12 @@ import androidx.annotation.Nullable;
 import com.thfw.base.base.IResult;
 
 public class ResponeThrowable extends Throwable implements IResult {
+
+
     public int code;
     public String message;
+
+
 
     public ResponeThrowable(Throwable throwable, int code) {
         super(throwable);
@@ -39,5 +43,13 @@ public class ResponeThrowable extends Throwable implements IResult {
     @Override
     public String getMsg() {
         return message;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponeThrowable{" +
+                "code=" + code +
+                ", message='" + message + '\'' +
+                '}';
     }
 }

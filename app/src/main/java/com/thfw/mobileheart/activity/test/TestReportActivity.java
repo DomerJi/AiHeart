@@ -53,7 +53,7 @@ public class TestReportActivity extends BaseActivity<TestPresenter> implements T
 
     @Override
     public int getContentView() {
-        return R.layout.activity_test_report_ym;
+        return R.layout.activity_test_report;
     }
 
     @Override
