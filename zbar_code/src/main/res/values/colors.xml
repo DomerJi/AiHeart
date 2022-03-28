@@ -5,4 +5,5 @@
     <color name="navigationBarColor">#3275e1</color>
 
     <color name="colorPrimaryDarkTrans">#cc3275e1</color>
+    <color name="black_30">#4C000000</color>
 </resources>

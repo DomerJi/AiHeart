@@ -35,13 +35,26 @@
 
     <ImageView
         android:id="@+id/iv_close"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:padding="10dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="26dp"
+        android:layout_marginTop="26dp"
+        android:background="@drawable/radius_back50_bg"
+        android:padding="8dp"
         android:scaleType="fitXY"
         android:src="@drawable/ic_baseline_close_24" />
+
+    <ImageView
+        android:id="@+id/iv_select_album"
+        android:layout_width="45dp"
+        android:layout_height="60dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="26dp"
+        android:layout_marginBottom="26dp"
+        android:background="@drawable/radius8_back_bg"
+        android:padding="6dp"
+        android:src="@drawable/ic_baseline_photo_album_24" />
 
 
 </RelativeLayout>

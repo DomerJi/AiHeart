@@ -20,7 +20,8 @@
         android:id="@+id/titleBarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp"
         app:layout_constraintTop_toTopOf="parent"
         app:tbv_black="true"
         tools:ignore="MissingConstraints" />

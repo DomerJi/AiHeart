@@ -47,7 +47,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.settings.SetPasswordOriginActivity"></activity>
+        <activity
+            android:name=".activity.me.SystemDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.organ.AskForSelectActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.settings.SetPasswordOriginActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.test.TestReportActivity"
             android:screenOrientation="portrait" />

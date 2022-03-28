@@ -40,8 +40,6 @@ import java.util.List;
 
 public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPresenter> implements OrganizationPresenter.OrganizationUi<IModel> {
 
-
-    public static boolean isNoSetUserInfo = false;
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.recyclerview.widget.RecyclerView mRvSelected;
     private androidx.recyclerview.widget.RecyclerView mRvSelectChildren;
@@ -114,8 +112,7 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
                 LoadingDialog.hide();
                 ToastUtil.show("选择成功");
                 mIsFirst = false;
-                if (isNoSetUserInfo) {
-                    isNoSetUserInfo = false;
+                if (!UserManager.getInstance().getUser().isSetUserInfo()) {
                     InfoActivity.startActivityFirst(mContext);
                 } else {
                     UserManager.getInstance().login();

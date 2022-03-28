@@ -85,43 +85,6 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_2px"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/divider" />
-
-    <LinearLayout
-        android:id="@+id/ll_notice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="12dp"
-        android:paddingTop="16dp"
-        android:paddingRight="12dp"
-        android:paddingBottom="16dp">
-
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/set_notice"
-            android:textColor="@color/text_common"
-            android:textSize="@dimen/textSize" />
-
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_right" />
-
-
-    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
@@ -152,6 +115,16 @@
             android:text="@string/set_clear_cache"
             android:textColor="@color/text_common"
             android:textSize="@dimen/textSize" />
+
+        <TextView
+            android:id="@+id/tv_cache"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:textColor="@color/text_content"
+            android:textSize="@dimen/textSize"
+            tools:text="0M" />
 
 
         <ImageView
@@ -190,6 +163,56 @@
             android:text="@string/set_privacy_policy"
             android:textColor="@color/text_common"
             android:textSize="@dimen/textSize" />
+
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_right" />
+
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_2px"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/divider" />
+
+    <LinearLayout
+        android:id="@+id/ll_version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="12dp"
+        android:paddingTop="16dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="16dp">
+
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/set_version_msg"
+            android:textColor="@color/text_common"
+            android:textSize="@dimen/textSize" />
+
+
+        <TextView
+            android:id="@+id/tv_version"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:textColor="@color/text_content"
+            android:textSize="@dimen/textSize"
+            tools:text="1.0.0" />
 
 
         <ImageView

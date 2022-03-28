@@ -56,9 +56,9 @@ import com.thfw.mobileheart.adapter.VideoPlayListAdapter;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.utils.BrightnessHelper;
+import com.thfw.ui.utils.VideoGestureHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
-import com.thfw.ui.utils.VideoGestureHelper;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.yhao.floatwindow.FloatWindow;
 
@@ -67,7 +67,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
@@ -201,21 +200,28 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     private void setVideoList() {
         if (mVideoList == null) {
             mVideoList = new ArrayList<>();
-            VideoModel.RecommendModel recommendModel = new VideoModel.RecommendModel();
-            recommendModel.setId(mVideoId);
-            recommendModel.setTitle(mVideoModel.title);
-            recommendModel.setImg(mVideoModel.getImg());
-            mVideoList.add(recommendModel);
             List<VideoModel.RecommendModel> recommendModels = mVideoModel.getRecommendModels();
             if (recommendModels != null) {
-                Iterator<VideoModel.RecommendModel> iterator = recommendModels.iterator();
-                while (iterator.hasNext()) {
-                    VideoModel.RecommendModel model = iterator.next();
-                    if (model.getId() == mVideoId) {
-                        iterator.remove();
+                int listHasPosition = -1;
+                int len = recommendModels.size();
+                for (int i = 0; i < len; i++) {
+                    if (recommendModels.get(i).getId() == mVideoId) {
+                        listHasPosition = i;
+                        mPlayPosition = listHasPosition;
+                        break;
                     }
                 }
+                if (listHasPosition == -1) {
+                    listHasPosition = 0;
+                    mPlayPosition = listHasPosition;
+                    VideoModel.RecommendModel recommendModel = new VideoModel.RecommendModel();
+                    recommendModel.setId(mVideoId);
+                    recommendModel.setTitle(mVideoModel.title);
+                    recommendModel.setImg(mVideoModel.getImg());
+                    mVideoList.add(recommendModel);
+                }
                 mVideoList.addAll(recommendModels);
+
             }
 
             if (mPlayPosition >= mVideoList.size() - 1) {

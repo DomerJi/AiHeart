@@ -85,6 +85,9 @@ public class TitleView extends FrameLayout {
 
     }
 
+    public TextView getTvRight() {
+        return mTvRight;
+    }
 
     public ImageView getIvBack() {
         return mIvBack;

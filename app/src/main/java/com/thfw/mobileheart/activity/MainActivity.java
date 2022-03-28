@@ -38,13 +38,14 @@ import com.thfw.mobileheart.push.MyPreferences;
 import com.thfw.mobileheart.push.helper.PushHelper;
 import com.thfw.mobileheart.push.tester.UPushAlias;
 import com.thfw.mobileheart.util.FragmentLoader;
+import com.thfw.mobileheart.util.MsgCountManager;
 import com.thfw.mobileheart.view.SimpleAnimatorListener;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
-import com.thfw.user.models.User;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
+import com.thfw.user.models.User;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.umeng.message.PushAgent;
 import com.umeng.message.api.UPushRegisterCallback;
@@ -57,7 +58,7 @@ import java.util.List;
  * 首页
  * Created By jishuaipeng on 2021/7/02
  */
-public class MainActivity extends BaseActivity implements Animator.AnimatorListener {
+public class MainActivity extends BaseActivity implements Animator.AnimatorListener, MsgCountManager.OnCountChangeListener {
 
     private Handler handler;
     private androidx.constraintlayout.widget.ConstraintLayout mMainRoot;
@@ -84,6 +85,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private static boolean initUserInfo;
     private static boolean initOrganization;
     private static boolean initUmeng;
+    private TextView mTvMsgCount;
 
     /**
      * 重新登录后重新获取用户相关信息
@@ -123,6 +125,8 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         mIvHome = (ImageView) findViewById(R.id.iv_home);
         mTvHome = (TextView) findViewById(R.id.tv_home);
 
+        mTvMsgCount = findViewById(R.id.tv_massage_count);
+
         mLlAiChat = (LinearLayout) findViewById(R.id.ll_ai_chat);
         mLlMessage = (LinearLayout) findViewById(R.id.ll_message);
         mIvMessage = (ImageView) findViewById(R.id.iv_message);
@@ -147,6 +151,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             initUserInfo();
             initOrganization();
         }
+        MsgCountManager.getInstance().addOnCountChangeListener(this);
     }
 
     @Override
@@ -450,5 +455,20 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     public void onDestroy() {
         super.onDestroy();
         resetInit();
+    }
+
+    @Override
+    public void onCount(int numTask, int numSystem) {
+        MsgCountManager.setTextView(mTvMsgCount, 8 + numSystem + numTask);
+    }
+
+    @Override
+    public void onItemState(int id, boolean read) {
+
+    }
+
+    @Override
+    public void onReadAll(int type) {
+
     }
 }

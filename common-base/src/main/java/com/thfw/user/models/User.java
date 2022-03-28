@@ -204,6 +204,31 @@ public class User implements IUser, IUserInfo {
         return null;
     }
 
+    public int organization;
+
+    public int getOrganization() {
+        return organization;
+    }
+
+    public boolean isNoSetOrgan() {
+        return organization <= 0;
+    }
+
+    public void setOrganization(int organization) {
+        this.organization = organization;
+    }
+
+    @SerializedName("set_user_info")
+    public boolean setUserInfo;
+
+    public void setSetUserInfo(boolean setUserInfo) {
+        this.setUserInfo = setUserInfo;
+    }
+
+    public boolean isSetUserInfo() {
+        return setUserInfo;
+    }
+
     @Override
     public HashMap<String, String> getAttrs() {
         return null;

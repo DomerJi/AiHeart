@@ -16,9 +16,13 @@ import androidx.core.content.ContextCompat;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.TokenModel;
+import com.thfw.base.net.CommonParameter;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.MainActivity;
+import com.thfw.mobileheart.activity.organ.AskForSelectActivity;
+import com.thfw.mobileheart.activity.settings.InfoActivity;
 import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.fragment.login.LoginByFaceFragment;
 import com.thfw.mobileheart.fragment.login.MobileFragment;
@@ -27,8 +31,8 @@ import com.thfw.mobileheart.fragment.login.PasswordFragment;
 import com.thfw.mobileheart.util.FragmentLoader;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.user.login.LoginStatus;
-import com.thfw.user.models.User;
 import com.thfw.user.login.UserManager;
+import com.thfw.user.models.User;
 
 import org.opencv.android.Static2Helper;
 
@@ -63,6 +67,9 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void initView() {
+        // todo test
+        CommonParameter.setOrganizationId("1");
+        MainActivity.resetInit();
         type = getIntent().getIntExtra(KEY_DATA, BY_MOBILE);
         fragmentLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
 
@@ -171,17 +178,18 @@ public class LoginActivity extends BaseActivity {
             User user = new User();
             user.setToken(data.token);
             user.setMobile(mobile);
+            user.setSetUserInfo(data.isSetUserInfo());
+            user.setOrganization(data.organization);
             LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
             if (data.isNoOrganization()) {
                 // todo 手机加入组织机构比较复杂
                 user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
                 UserManager.getInstance().login(user);
-//                SelectOrganizationActivity.isNoSetUserInfo = data.isNoSetUserInfo();
-//                SelectOrganizationActivity.startActivity(activity, true);
+                AskForSelectActivity.startForResult(activity, true);
             } else if (data.isNoSetUserInfo()) {
                 user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
                 UserManager.getInstance().login(user);
-//                InfoActivity.startActivityFirst(activity);
+                InfoActivity.startActivityFirst(activity);
             } else {
                 user.setLoginStatus(LoginStatus.LOGINED);
                 UserManager.getInstance().login(user);

@@ -18,11 +18,13 @@ public class TokenModel implements IModel {
 
     public boolean isNoOrganization() {
         return organization == 0;
-//        return organization != 0;
     }
 
     public boolean isNoSetUserInfo() {
-//        return true;
         return !setUserInfo;
+    }
+
+    public boolean isSetUserInfo() {
+        return setUserInfo;
     }
 }

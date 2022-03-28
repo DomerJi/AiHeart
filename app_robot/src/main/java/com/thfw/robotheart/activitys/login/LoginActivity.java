@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.luck.picture.lib.tools.PictureFileUtils;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.CommonParameter;
@@ -88,7 +89,7 @@ public class LoginActivity extends BaseActivity {
         fragmentLoader.add(BY_PASSWORD, new LoginPasswordFragment());
         fragmentLoader.add(BY_MOBILE_CODE, new LoginMobileCodeFragment());
         fragmentLoader.add(BY_FACE, new LoginByFaceFragment());
-
+        PictureFileUtils.deleteAllCacheDirFile(mContext);
         fragmentLoader.load(type);
         // 检查权限
         checkPermissions();
@@ -205,11 +206,12 @@ public class LoginActivity extends BaseActivity {
             User user = new User();
             user.setToken(data.token);
             user.setMobile(mobile);
+            user.setSetUserInfo(data.isSetUserInfo());
+            user.setOrganization(data.organization);
             LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
             if (data.isNoOrganization()) {
                 user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
                 UserManager.getInstance().login(user);
-                SelectOrganizationActivity.isNoSetUserInfo = data.isNoSetUserInfo();
                 SelectOrganizationActivity.startActivity(activity, true);
             } else if (data.isNoSetUserInfo()) {
                 user.setLoginStatus(LoginStatus.LOGOUT_HIDE);

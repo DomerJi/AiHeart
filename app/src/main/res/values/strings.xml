@@ -54,6 +54,7 @@
     <string name="set_account_safe">账户安全</string>
     <string name="set_info">个人资料</string>
     <string name="set_notice">通知设置</string>
+    <string name="set_version_msg">版本信息</string>
     <string name="set_clear_cache">清除缓存</string>
     <string name="set_privacy_policy">隐私政策</string>
     <string name="set_about_ai">关于密友</string>

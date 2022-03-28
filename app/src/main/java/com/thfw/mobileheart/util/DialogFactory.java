@@ -53,6 +53,7 @@ public class DialogFactory {
                 .setLayoutRes(R.layout.dialog_custom_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
                 .addOnClickListener(R.id.tv_left, R.id.tv_right)
+                .setScreenWidthAspect(activity, 0.65f)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     TextView mTvTitle = viewHolder.getView(R.id.tv_title);
@@ -77,6 +78,7 @@ public class DialogFactory {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_custom_three_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
+                .setScreenWidthAspect(activity, 0.65f)
                 .addOnClickListener(R.id.tv_one, R.id.tv_two, R.id.tv_three)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {

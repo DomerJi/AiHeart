@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -85,12 +86,32 @@
             app:layout_constraintLeft_toRightOf="@id/ll_home"
             app:layout_constraintRight_toLeftOf="@id/ll_me">
 
-            <ImageView
-                android:id="@+id/iv_message"
-                android:layout_width="@dimen/home_tab_icon_height"
-                android:layout_height="@dimen/home_tab_icon_height"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/hometab_sort_selector" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp">
+
+                <include
+                    android:id="@+id/tv_massage_count"
+                    layout="@layout/custom_message_number_red_dot_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    app:layout_constraintLeft_toRightOf="@id/iv_message"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_message"
+                    android:layout_width="@dimen/home_tab_icon_height"
+                    android:layout_height="@dimen/home_tab_icon_height"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/hometab_sort_selector"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/tv_message"

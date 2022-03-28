@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
+import com.example.zbar_code.ZbarScanActivity;
+import com.example.zbar_code.ZxingScanActivity;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
@@ -50,6 +52,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.organ.AskForSelectActivity;
 import com.thfw.mobileheart.adapter.BaseAdapter;
 import com.thfw.mobileheart.adapter.DialogLikeAdapter;
 import com.thfw.mobileheart.adapter.InfoLikeAdapter;
@@ -376,7 +379,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
         }
         // 所属组织
         mLlTeam.setOnClickListener(v -> {
-            // todo
+            AskForSelectActivity.startForResult(mContext, false);
         });
         // 头像
         mLlAvatar.setOnClickListener(v -> {
@@ -392,7 +395,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
         });
         // 填写手机号
         mLlMobile.setOnClickListener(v -> {
-            // todo
+            startActivityForResult(new Intent(mContext, BindMobileActivity.class), BIND_CODE);
         });
         // 部门
         mLlClass.setOnClickListener(v -> {
@@ -755,7 +758,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
                 .imageEngine(new GlideImageEngine())
                 .maxSelectNum(1)// 最大图片选择数量
                 .minSelectNum(1) // 最小选择数量
-                .imageSpanCount(6)// 每行显示个数
+                .imageSpanCount(4)// 每行显示个数
                 .selectionMode(PictureConfig.SINGLE)// 多选 or 单选PictureConfig.MULTIPLE : PictureConfig.SINGLE
                 .isPreviewImage(true)// 是否可预览图片
                 .isCamera(true)// 是否显示拍照按钮
@@ -856,7 +859,12 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
             return;
         }
         switch (requestCode) {
-            case 9:
+            case ZbarScanActivity.REQUEST_CODE:
+                String codeData = data.getStringExtra(ZxingScanActivity.CODE_DATA);
+                ToastUtil.show("扫码结果：" + codeData);
+                LogUtil.d(TAG, "codeData = " + codeData);
+                break;
+            case BIND_CODE:
                 String phoneNumber = data.getStringExtra(BindMobileActivity.KEY_RESULT);
                 mTvMobile.setText(phoneNumber);
                 onUpdateInfo("mobile", phoneNumber);
@@ -1032,4 +1040,5 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
             }
         }
     }
+
 }
