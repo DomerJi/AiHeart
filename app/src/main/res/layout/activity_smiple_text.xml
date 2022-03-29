@@ -4,20 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.thfw.mobileheart.activity.settings.MeAskListActivity">
+    tools:context=".activity.settings.SimpleTextActivity">
 
     <com.thfw.ui.widget.TitleView
         android:id="@+id/titleView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tv_centerText="@string/me_quiz"
         tools:ignore="MissingConstraints" />
 
-    <include
-        layout="@layout/custom_refresh_recyclerview_layout"
+
+    <com.thfw.ui.widget.MyScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleView" />
+        app:layout_constraintTop_toBottomOf="@id/titleView">
+
+        <TextView
+            android:id="@+id/tv_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:letterSpacing="0.1"
+            android:lineSpacingExtra="2dp"
+            android:padding="26dp"
+            android:textColor="@color/text_common"
+            android:textSize="@dimen/textSize" />
+
+    </com.thfw.ui.widget.MyScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

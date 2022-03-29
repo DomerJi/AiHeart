@@ -47,8 +47,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activity.mood.MoodDetailActivity"></activity>
         <activity
-            android:name=".activity.me.SystemDetailActivity"
+            android:name=".activity.settings.SimpleTextActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.task.SystemDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.organ.AskForSelectActivity"
@@ -81,7 +85,7 @@
             android:name=".activity.robot.RobotActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.me.MeTaskActivity"
+            android:name=".activity.task.MeTaskActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.me.MeHistoryActivity"
@@ -100,9 +104,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.me.AssessReportActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.settings.MeAskListActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.settings.BindMobileActivity"
@@ -177,7 +178,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AnimActivity" />
         <activity
-            android:name=".activity.StatusActivity"
+            android:name=".activity.mood.StatusActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.login.ForgetPasswordActivity"

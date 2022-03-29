@@ -20,10 +20,10 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="16dp"
-        android:textColor="@color/text_red"
+        android:textColor="@color/text_yellow"
         android:textSize="@dimen/textSize"
         app:layout_constraintTop_toBottomOf="@id/titleView"
-        tools:text="hint" />
+        tools:text="当前手机号：1234567890" />
 
     <LinearLayout
         android:id="@+id/ll_bind"
@@ -85,6 +85,18 @@
         android:layout_margin="30dp"
         android:text="确定关联"
         app:layout_constraintTop_toBottomOf="@id/ll_bind" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="更换手机号后，下次登录请使用新手机号登录"
+        android:textColor="@color/text_yellow"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bt_bind" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,6 +11,9 @@ import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;
 import com.thfw.user.login.UserManager;
 
+/**
+ * 账号管理
+ */
 public class AccountSafeActivity extends BaseActivity {
 
     private com.thfw.ui.widget.TitleView mTitleView;

@@ -17,7 +17,7 @@ import com.thfw.base.presenter.TaskPresenter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.mobileheart.R;
-import com.thfw.mobileheart.activity.me.MeTaskActivity;
+import com.thfw.mobileheart.activity.task.MeTaskActivity;
 import com.thfw.mobileheart.adapter.MsgTaskAdapter;
 import com.thfw.mobileheart.util.MsgCountManager;
 import com.thfw.mobileheart.util.PageHelper;

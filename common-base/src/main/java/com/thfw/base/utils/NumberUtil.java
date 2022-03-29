@@ -10,12 +10,20 @@ import java.math.BigDecimal;
 public class NumberUtil {
 
     public static final String ZERO = "0.00";
+    public static final String ZERO_1 = "0.0";
 
     public static String getPrice(double price) {
         if (price == 0f) {
             return ZERO;
         }
         return new java.text.DecimalFormat("##0.00").format(price);
+    }
+
+    public static String getPeople(float people) {
+        if (people == 0f) {
+            return ZERO_1;
+        }
+        return new java.text.DecimalFormat("##0.0").format(people);
     }
 
     public static String getPrice(float price) {
@@ -34,6 +42,13 @@ public class NumberUtil {
             return ZERO;
         }
         return new java.text.DecimalFormat("##0.00").format(new BigDecimal(price));
+    }
+
+    public static String numberToStr(long num) {
+        if (num > 10000) {
+            return getPeople(num / 10000f) + "万";
+        }
+        return String.valueOf(num);
     }
 
     public static String getConfoundAccount(String account) {

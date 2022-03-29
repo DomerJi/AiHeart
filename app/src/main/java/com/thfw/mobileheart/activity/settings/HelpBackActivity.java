@@ -1,26 +1,44 @@
 package com.thfw.mobileheart.activity.settings;
 
+import android.content.Context;
 import android.content.Intent;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.base.base.IPresenter;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.thfw.base.face.OnRvItemListener;
-import com.thfw.mobileheart.adapter.HelpBackAdapter;
-import com.thfw.base.models.HelpBackModel;
+import com.thfw.base.models.CommonProblemModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.OtherPresenter;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.adapter.CommonProblemAdapter;
+import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
+import com.trello.rxlifecycle2.LifecycleProvider;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class HelpBackActivity extends BaseActivity {
+public class HelpBackActivity extends BaseActivity<OtherPresenter> implements OtherPresenter.OtherUi<List<CommonProblemModel>> {
 
     private com.thfw.ui.widget.TitleView mTitleView;
     private android.widget.TextView mTvMeBack;
     private androidx.recyclerview.widget.RecyclerView mRvHelpHints;
+    private SmartRefreshLayout mRefreshLayout;
+    private LoadingView mLoadingView;
+    private PageHelper<CommonProblemModel> mPageHelper;
+
+    public static void startActivity(Context context) {
+        context.startActivity(new Intent(context, HelpBackActivity.class));
+    }
 
     @Override
     public int getContentView() {
@@ -28,8 +46,8 @@ public class HelpBackActivity extends BaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public OtherPresenter onCreatePresenter() {
+        return new OtherPresenter(this);
     }
 
     @Override
@@ -38,21 +56,55 @@ public class HelpBackActivity extends BaseActivity {
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mTvMeBack = (TextView) findViewById(R.id.tv_me_back);
         mRvHelpHints = (RecyclerView) findViewById(R.id.rv_help_hints);
+        mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
+        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
+        mRvHelpHints.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+
         mTvMeBack.setOnClickListener(v -> {
             startActivity(new Intent(mContext, MeWillHelpBackActivity.class));
         });
     }
 
+
     @Override
     public void initData() {
-        mRvHelpHints.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        HelpBackAdapter helpBackAdapter = new HelpBackAdapter(null);
-        helpBackAdapter.setOnRvItemListener(new OnRvItemListener<HelpBackModel>() {
+        CommonProblemAdapter commonProblemAdapter = new CommonProblemAdapter(null);
+        commonProblemAdapter.setOnRvItemListener(new OnRvItemListener<CommonProblemModel>() {
             @Override
-            public void onItemClick(List<HelpBackModel> list, int position) {
-                startActivity(new Intent(mContext, HelpHintsActivity.class));
+            public void onItemClick(List<CommonProblemModel> list, int position) {
+                SimpleTextActivity.startActivity(mContext,
+                        list.get(position).getQuestion(),
+                        list.get(position).getAnswer());
             }
         });
-        mRvHelpHints.setAdapter(helpBackAdapter);
+        mRvHelpHints.setAdapter(commonProblemAdapter);
+        mPageHelper = new PageHelper<CommonProblemModel>(mLoadingView, mRefreshLayout, commonProblemAdapter);
+        mPageHelper.setRefreshEnable(false);
+        mPresenter.onGetCommonProblem(mPageHelper.getPage());
+        mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull @NotNull RefreshLayout refreshLayout) {
+                mPresenter.onGetCommonProblem(mPageHelper.getPage());
+            }
+        });
+
+
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(List<CommonProblemModel> data) {
+        mPageHelper.onSuccess(data, false);
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        mPageHelper.onFail(v -> {
+            mPresenter.onGetCommonProblem(mPageHelper.getPage());
+        });
     }
 }

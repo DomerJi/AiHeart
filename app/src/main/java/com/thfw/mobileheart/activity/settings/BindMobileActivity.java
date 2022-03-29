@@ -20,6 +20,9 @@ import com.thfw.ui.widget.VerificationCodeView;
 import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
+/**
+ * 绑定手机号
+ */
 public class BindMobileActivity extends BaseActivity<LoginPresenter>
         implements LoginPresenter.LoginUi<CommonModel>, TimingHelper.WorkListener {
     public static final String KEY_RESULT = "key.result";
@@ -55,7 +58,7 @@ public class BindMobileActivity extends BaseActivity<LoginPresenter>
     public void initData() {
         String oldMobile = UserManager.getInstance().getUser().getMobile();
         if (!TextUtils.isEmpty(oldMobile)) {
-            mTvHint.setText("更换手机号后，下次登录请使用新手机号登录；当前手机号：" + oldMobile);
+            mTvHint.setText("当前手机号：" + oldMobile);
         }
 
 

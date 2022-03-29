@@ -1,6 +1,7 @@
 package com.thfw.base.models;
 
 import com.thfw.base.base.IModel;
+import com.thfw.base.utils.NumberUtil;
 
 /**
  * Author:pengs
@@ -58,8 +59,8 @@ public class TestModel implements IModel {
         this.type = type;
     }
 
-    public int getNum() {
-        return num;
+    public String getNum() {
+        return NumberUtil.numberToStr(num);
     }
 
     public void setNum(int num) {

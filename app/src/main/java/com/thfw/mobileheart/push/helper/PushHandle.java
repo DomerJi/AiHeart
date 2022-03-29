@@ -9,10 +9,11 @@ import com.thfw.base.models.PushModel;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
-import com.thfw.mobileheart.activity.me.MeTaskActivity;
-import com.thfw.mobileheart.activity.me.SystemDetailActivity;
+import com.thfw.mobileheart.activity.task.MeTaskActivity;
+import com.thfw.mobileheart.activity.task.SystemDetailActivity;
 import com.thfw.mobileheart.activity.read.BookDetailActivity;
 import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
+import com.thfw.mobileheart.activity.settings.HelpBackActivity;
 import com.thfw.mobileheart.activity.test.TestBeginActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
@@ -67,6 +68,10 @@ public class PushHandle {
                 }
                 break;
             case MsgType.COMMON_PROBLEM:
+                HelpBackActivity.startActivity(mContext);
+                break;
+            case MsgType.MOOD:
+                // todo 心情签到
                 break;
             case MsgType.VOICE_COMMAND:
                 break;

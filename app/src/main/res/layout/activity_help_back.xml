@@ -32,12 +32,29 @@
         app:layout_constraintTop_toBottomOf="@id/titleView" />
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_help_hints"
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_me_back">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_help_hints"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="26dp" />
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+    <com.thfw.ui.widget.LoadingView
+        android:id="@+id/loadingView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_me_back" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
