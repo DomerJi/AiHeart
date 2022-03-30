@@ -55,10 +55,10 @@ import com.thfw.mobileheart.adapter.AudioItemAdapter;
 import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.utils.VideoGestureHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
 import com.thfw.ui.widget.TitleView;
-import com.thfw.ui.utils.VideoGestureHelper;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
@@ -136,6 +136,7 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
             return;
         }
 
+
         mAudioView = (StyledPlayerView) findViewById(R.id.audio_view);
         mIvBlurBg = (ImageView) findViewById(R.id.iv_blur_bg);
         mPbBar = findViewById(R.id.pb_loading);
@@ -147,7 +148,9 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
 
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mTitleView.getIvBack().setPadding(4, 4, 4, 4);
-
+        mTitleView.getIvBack().setOnClickListener(v -> {
+            finish();
+        });
         mIvShare = (ImageView) findViewById(R.id.iv_share);
         mVborder01 = findViewById(R.id.v_border_01);
         mVborder02 = findViewById(R.id.v_border_02);
@@ -180,7 +183,7 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
         if (!animatIng) {
             return;
         }
-        view.animate().scaleY(2).scaleX(2).alpha(0).setDuration(1600)
+        view.animate().scaleY(2).scaleX(2).alpha(0).setDuration(2200)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .setStartDelay(delay)
                 .setListener(new Animator.AnimatorListener() {
@@ -420,6 +423,15 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
         mAudioView.showController();
     }
 
+    @Override
+    public void onBackPressed() {
+        // 音频列表打开，点击返回，隐藏列表
+        if (mClContent != null && mClContent.getVisibility() == View.VISIBLE) {
+            audioLogcatue();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     //=============== 开始 视频手势 =======================//
     @Override
@@ -664,7 +676,7 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
                 if (mVborder02 != null && mVborder03 != null) {
                     animatIng = true;
                     startAnimateBorder(mVborder03, 100);
-                    startAnimateBorder(mVborder02, 900);
+                    startAnimateBorder(mVborder02, 1200);
                 }
             } else {
                 if (mVborder02 != null && mVborder03 != null) {

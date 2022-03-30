@@ -51,14 +51,13 @@
 
         <Button
             android:id="@+id/bt_scan_join"
+            style="@style/common_button"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/button_height"
             android:layout_marginLeft="26dp"
             android:layout_marginTop="36dp"
             android:layout_marginRight="26dp"
-            android:background="@drawable/common_green_selector"
             android:text="扫码申请加入"
-            android:textColor="@drawable/textcolor_white_green_selector"
             android:textSize="@dimen/textSize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_user_name"
@@ -71,6 +70,7 @@
         android:id="@+id/cl_select"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleView">
 
@@ -105,14 +105,13 @@
 
         <Button
             android:id="@+id/bt_confirm"
+            style="@style/common_button"
             android:layout_width="220dp"
-            android:layout_height="42dp"
+            android:layout_height="@dimen/button_height"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
-            android:background="@drawable/common_green_selector"
             android:text="确认"
-            android:textColor="@color/white"
             android:textSize="@dimen/textSize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

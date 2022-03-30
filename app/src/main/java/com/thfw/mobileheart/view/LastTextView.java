@@ -3,8 +3,6 @@ package com.thfw.mobileheart.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,8 +15,11 @@ import org.jetbrains.annotations.NotNull;
  * Date: 2022/3/15 10:40
  * Describe:Todo
  */
-public class LastTextView extends TextView {
+public class LastTextView extends androidx.appcompat.widget.AppCompatTextView {
 
+
+    private Runnable runnable;
+    private int lastVisible = -1;
 
     public LastTextView(Context context) {
         super(context);
@@ -49,9 +50,15 @@ public class LastTextView extends TextView {
     }
 
     private void onAnim(boolean visible) {
-        int y = visible ? 0 : getHeight();
-        animate().cancel();
-        animate().translationY(y).setInterpolator(new DecelerateInterpolator()).start();
+        int currentVisible = visible ? 1 : 0;
+
+        if (lastVisible != currentVisible) {
+            lastVisible = currentVisible;
+            clearAnimation();
+            int y = visible ? 0 : getHeight();
+            animate().translationY(y).setInterpolator(new DecelerateInterpolator());
+        }
+
     }
 
 }

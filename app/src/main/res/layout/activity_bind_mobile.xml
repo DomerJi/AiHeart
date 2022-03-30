@@ -81,7 +81,7 @@
         android:id="@+id/bt_bind"
         style="@style/common_button"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/button_height"
         android:layout_margin="30dp"
         android:text="确定关联"
         app:layout_constraintTop_toBottomOf="@id/ll_bind" />

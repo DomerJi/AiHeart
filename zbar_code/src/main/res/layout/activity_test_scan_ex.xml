@@ -56,5 +56,16 @@
         android:padding="6dp"
         android:src="@drawable/ic_baseline_photo_album_24" />
 
+    <ImageView
+        android:id="@+id/iv_flash"
+        android:layout_width="45dp"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="26dp"
+        android:layout_marginBottom="26dp"
+        android:background="@drawable/radius8_back_bg"
+        android:padding="6dp"
+        android:src="@drawable/flash_selector" />
 
 </RelativeLayout>

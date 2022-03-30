@@ -14,14 +14,15 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.api.TalkApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.MyTextWatcher;
-import com.thfw.base.utils.EmptyUtil;
-import com.thfw.mobileheart.adapter.ChatAdapter;
 import com.thfw.base.models.ChatEntity;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.mobileheart.R;
-import com.thfw.ui.base.BaseActivity;
+import com.thfw.mobileheart.adapter.ChatAdapter;
 import com.thfw.mobileheart.util.DialogFactory;
+import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.widget.TitleView;
@@ -192,6 +193,28 @@ public class ChatActivity extends BaseActivity {
     @Override
     public void initData() {
 
+    }
+
+
+    /**
+     * 获取使用时长，根据主题对话和倾诉吐槽
+     *
+     * @param type
+     * @return
+     */
+    public long getUseDuration(int type) {
+        switch (type) {
+            // 倾诉吐槽
+            case TalkApi.JOIN_TYPE_AI:
+                break;
+            // 咨询助理
+            case TalkApi.JOIN_TYPE_GUIDANCE:
+                break;
+            // 主题对话
+            case TalkApi.JOIN_TYPE_SPEECH_CRAFT:
+                break;
+        }
+        return 1000;
     }
 
 }

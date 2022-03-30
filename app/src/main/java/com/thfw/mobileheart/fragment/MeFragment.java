@@ -12,15 +12,16 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.R;
-import com.thfw.mobileheart.activity.mood.StatusActivity;
 import com.thfw.mobileheart.activity.integral.ClockInActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.me.CollectActivity;
 import com.thfw.mobileheart.activity.me.MeHistoryActivity;
-import com.thfw.mobileheart.activity.task.MeTaskActivity;
+import com.thfw.mobileheart.activity.mood.MoodDetailActivity;
+import com.thfw.mobileheart.activity.mood.StatusActivity;
 import com.thfw.mobileheart.activity.settings.HelpBackActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
 import com.thfw.mobileheart.activity.settings.SettingActivity;
+import com.thfw.mobileheart.activity.task.MeTaskActivity;
 import com.thfw.mobileheart.activity.test.TestReportActivity;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.base.BaseFragment;
@@ -63,6 +64,7 @@ public class MeFragment extends BaseFragment {
     private LinearLayout mLlMeTask;
     private Button mBtLogout;
     private TextView mTvMeLevel;
+    private TextView mTvHistoryHappy;
 
     @Override
     public int getContentView() {
@@ -111,6 +113,7 @@ public class MeFragment extends BaseFragment {
         mLlMeInfo = (LinearLayout) findViewById(R.id.ll_me_info);
         mLlMeCollect = (LinearLayout) findViewById(R.id.ll_me_collect);
         mLlMeTask = (LinearLayout) findViewById(R.id.ll_me_task);
+        mTvHistoryHappy = (TextView) findViewById(R.id.tv_history_happy);
         mBtLogout = (Button) findViewById(R.id.bt_logout);
         // todo 我的任务
         mLlMeTask.setOnClickListener(v -> {
@@ -125,6 +128,10 @@ public class MeFragment extends BaseFragment {
             } else {
                 LoginActivity.startActivity(mContext, LoginActivity.BY_MOBILE);
             }
+        });
+        // 历史心情
+        mTvHistoryHappy.setOnClickListener(v -> {
+            MoodDetailActivity.startActivity(mContext);
         });
         mBtLogout.setOnClickListener(v -> {
             logoutDialog();

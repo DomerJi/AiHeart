@@ -1,6 +1,7 @@
 package com.example.zbar_code;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.util.Log;
@@ -28,6 +29,11 @@ public class Utils {
         }
 
         return false;
+    }
+
+
+    public static boolean hasFlash(Context context) {
+        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
     }
 
 

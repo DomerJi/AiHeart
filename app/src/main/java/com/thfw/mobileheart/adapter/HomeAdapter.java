@@ -22,7 +22,6 @@ import com.thfw.mobileheart.activity.exercise.ExerciseActivity;
 import com.thfw.mobileheart.activity.me.HotPhoneActivity;
 import com.thfw.mobileheart.activity.read.ReadHomeActivity;
 import com.thfw.mobileheart.activity.read.StudyHomeActivity;
-import com.thfw.mobileheart.activity.talk.AskActivity;
 import com.thfw.mobileheart.activity.talk.ChatActivity;
 import com.thfw.mobileheart.activity.test.TestingActivity;
 import com.thfw.mobileheart.activity.video.VideoHomeActivity;
@@ -216,7 +215,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                             ChatActivity.startActivity(mContext);
                             break;
                         case R.id.rl_tab_02:
-                            AskActivity.startActivity(mContext);
+                            ChatActivity.startActivity(mContext);
                             break;
                         case R.id.rl_tab_03:
                             TestingActivity.startActivity(mContext);

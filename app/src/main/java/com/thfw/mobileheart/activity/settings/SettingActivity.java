@@ -85,7 +85,7 @@ public class SettingActivity extends BaseActivity {
 
         mLlVersion = (LinearLayout) findViewById(R.id.ll_version);
         mTvVersion = (TextView) findViewById(R.id.tv_version);
-        mTvVersion.setText("V_" + Util.getAppVersion(mContext));
+        mTvVersion.setText(Util.getAppVersion(mContext));
         mLlVersion.setOnClickListener(v -> {
             ToastUtil.show("检测更新");
         });

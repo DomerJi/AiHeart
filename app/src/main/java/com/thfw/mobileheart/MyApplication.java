@@ -25,6 +25,7 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.push.MyPreferences;
 import com.thfw.mobileheart.push.helper.PushHelper;
+import com.thfw.mobileheart.util.ActivityLifeCycle;
 import com.thfw.ui.dialog.TDialog;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.commonsdk.utils.UMUtils;
@@ -40,6 +41,7 @@ public class MyApplication extends MultiDexApplication {
 
     private static MyApplication app;
     private static float lv;
+    private static ActivityLifeCycle activityLifeCycle;
 
     public static MyApplication getApp() {
         return app;
@@ -47,6 +49,7 @@ public class MyApplication extends MultiDexApplication {
 
     // static 代码段可以防止内存泄露
     static {
+        activityLifeCycle = new ActivityLifeCycle();
         // 设置全局的Header构建器
         SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator() {
             @Override
@@ -93,7 +96,12 @@ public class MyApplication extends MultiDexApplication {
         TDialog.init(this);
         initSpeech();
         initUmengSDK();
+
+        registerActivityLifecycleCallbacks(activityLifeCycle);
+
+
     }
+
 
     private void initSpeech() {
         /*

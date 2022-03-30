@@ -78,6 +78,23 @@ public class ZxingScanActivity extends AppCompatActivity implements QRCodeView.D
                 finish();
             });
         }
+        initFlash();
+    }
+
+    private void initFlash() {
+        ImageView mIvFlash = findViewById(R.id.iv_flash);
+        if (mIvFlash == null) {
+            return;
+        }
+        mIvFlash.setVisibility(Utils.hasFlash(mIvFlash.getContext()) ? View.VISIBLE : View.GONE);
+        mIvFlash.setOnClickListener(v -> {
+            mIvFlash.setSelected(!mIvFlash.isSelected());
+            if (mIvFlash.isSelected()) {
+                mZXingView.openFlashlight();
+            } else {
+                mZXingView.closeFlashlight();
+            }
+        });
     }
 
     @Override

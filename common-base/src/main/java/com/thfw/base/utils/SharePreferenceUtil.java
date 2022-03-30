@@ -8,7 +8,7 @@ import android.text.TextUtils;
 
 public class SharePreferenceUtil {
 
-    public static final String SP_NAME = "hmhd_sp";
+    public static final String SP_NAME = "thfw_sp";
 
     private static Context sContext;
 

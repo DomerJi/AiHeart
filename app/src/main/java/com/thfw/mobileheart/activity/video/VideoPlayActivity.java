@@ -60,7 +60,6 @@ import com.thfw.ui.utils.VideoGestureHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
 import com.trello.rxlifecycle2.LifecycleProvider;
-import com.yhao.floatwindow.FloatWindow;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -91,7 +90,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     private ConstraintLayout mVideoLayout;
     private RecyclerView mRvVideoDetail;
     private boolean isPlaying = false;
-    private boolean windowPlay = false;
     private ConstraintLayout mVideoPlayConstranint;
     private FrameLayout mFlVideo;
     private LinearLayout mLlTopControl;
@@ -237,24 +235,15 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     }
 
 
-// 隐藏 activity singleInstance 有效
-//    @Override
-//    public void onBackPressed() {
-//        if (windowPlay) {
-//            moveTaskToBack(true);
-//        } else {
-//            super.onBackPressed();
-//        }
-//    }
-//
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            moveTaskToBack(true);
-//            return true;
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
+    @Override
+    public void onBackPressed() {
+        // 全屏（横屏）下点击返回，变竖屏
+        if (landscape) {
+            mIvScreenAll.performClick();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     public void onConfigurationChanged(@NonNull @NotNull Configuration newConfig) {
@@ -511,11 +500,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     protected void onPause() {
         addHistory();
         super.onPause();
-
-        if (windowPlay) {
-            return;
-        }
-
         if (mExoPlayer != null) {
             isPlaying = mExoPlayer.isPlaying();
             mExoPlayer.setPlayWhenReady(false);
@@ -527,12 +511,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     protected void onResume() {
         super.onResume();
 
-        if (windowPlay) {
-            if (FloatWindow.get() == null) {
-                windowPlay = false;
-            }
-            return;
-        }
         if (mMPlayerView != null) {
             mMPlayerView.setUseController(true);
             mMPlayerView.onResume();
@@ -547,10 +525,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (windowPlay) {
-            return;
-        }
-
         TimingHelper.getInstance().removeWorkArriveListener(this);
 
         if (mExoPlayer != null) {

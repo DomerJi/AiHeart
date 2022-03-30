@@ -80,6 +80,23 @@ public class ZbarScanActivity extends AppCompatActivity implements QRCodeView.De
                 finish();
             });
         }
+        initFlash();
+    }
+
+    private void initFlash() {
+        ImageView mIvFlash = findViewById(R.id.iv_flash);
+        if (mIvFlash == null) {
+            return;
+        }
+        mIvFlash.setVisibility(Utils.hasFlash(mIvFlash.getContext()) ? View.VISIBLE : View.GONE);
+        mIvFlash.setOnClickListener(v -> {
+            mIvFlash.setSelected(!mIvFlash.isSelected());
+            if (mIvFlash.isSelected()) {
+                mZBarView.openFlashlight();
+            } else {
+                mZBarView.closeFlashlight();
+            }
+        });
     }
 
     @Override

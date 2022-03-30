@@ -71,7 +71,7 @@ public class StatusActivity extends BaseActivity {
     public void initView() {
 
         mTitleView = (TitleView) findViewById(R.id.titleView);
-        mTitleView.setRightText("心情与活跃");
+        mTitleView.setRightText("历史心情");
         mTitleView.getTvRight().setOnClickListener(v -> {
             MoodDetailActivity.startActivity(mContext);
         });

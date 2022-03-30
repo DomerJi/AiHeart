@@ -13,23 +13,24 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLength="20"
-        android:maxLines="1"
+        android:maxLines="2"
         android:textColor="@color/text_common"
-        android:textSize="@dimen/textSize_large"
+        android:textSize="@dimen/textSize"
         app:layout_constraintHorizontal_weight="2"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         tools:text="Title" />
 
 
     <TextView
         android:id="@+id/tv_type"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/text_hint"
         android:textSize="@dimen/textSize_small"
+        android:gravity="right"
         app:layout_constraintBottom_toBottomOf="@id/tv_time"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_time"
@@ -43,6 +44,7 @@
         android:layout_marginTop="6dp"
         android:text="010 12345678"
         android:textColor="@color/text_hint"
+        android:textSize="@dimen/textSize_small"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
 

@@ -47,7 +47,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.mood.MoodDetailActivity"></activity>
+        <activity
+            android:name=".activity.mood.MoodDetailActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activity.settings.SimpleTextActivity"
             android:screenOrientation="portrait" />
@@ -95,9 +97,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.exercise.ExerciseIngActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.read.ReadDetailsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.me.HotPhoneActivity"
@@ -171,9 +170,6 @@
             android:name=".activity.test.TestingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.read.ReadEtcActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.audio.AudioPlayerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AnimActivity" />
@@ -193,10 +189,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activity.talk.AskActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".activity.ExoPlayerActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -207,6 +199,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.MainActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeSplash">
             <intent-filter>
