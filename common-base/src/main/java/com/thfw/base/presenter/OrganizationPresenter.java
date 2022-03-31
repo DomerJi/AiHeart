@@ -41,7 +41,8 @@ public class OrganizationPresenter extends IPresenter<OrganizationPresenter.Orga
     }
 
     public void onSelectOrganization(String organizationId) {
-        Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(OrganizationApi.class).onSelectOrganization(organizationId);
+        Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(OrganizationApi.class)
+                .onSelectOrganization(organizationId, CommonParameter.getDeviceType());
         OkHttpUtil.request(observable, getUI());
     }
 

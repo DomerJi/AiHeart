@@ -21,6 +21,12 @@ public class User implements IUser, IUserInfo {
     private int loginStatus;
     private String token;
     private String mobile;
+    // 用户所拥有的机构权限
+    private List<String> authTypeList;
+
+    public void setAuthTypeList(List<String> authTypeList) {
+        this.authTypeList = authTypeList;
+    }
 
     private UserInfo userInfo = new UserInfo();
 

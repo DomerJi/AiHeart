@@ -6,21 +6,18 @@
     android:layout_height="wrap_content"
     android:paddingLeft="16dp"
     android:paddingTop="10dp"
-    android:paddingRight="16dp"
-    android:paddingBottom="10dp"
-    tools:background="@color/white">
+    android:paddingRight="16dp">
 
 
     <RelativeLayout
+        android:id="@+id/rl_top"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@drawable/exercise_listitem_border"
-        android:paddingRight="16dp">
+        android:layout_height="80dp">
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/riv_bg"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_marginLeft="@dimen/divider_2px"
             android:layout_marginTop="@dimen/divider_2px"
             android:layout_marginBottom="@dimen/divider_2px"
@@ -35,50 +32,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="14dp"
             android:layout_toRightOf="@id/riv_bg"
-            android:text="@string/title"
             android:textColor="@color/text_common"
-            android:textSize="@dimen/textSize" />
+            android:textSize="@dimen/textSize"
+            tools:text="@string/title" />
 
         <TextView
-            android:id="@+id/tv_number"
+            android:id="@+id/tv_hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_title"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="6dp"
             android:layout_toRightOf="@id/riv_bg"
-            android:text="@string/title"
-            android:textColor="@color/text_green"
-            android:textSize="@dimen/textSize_product" />
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/text_content"
+            android:textSize="@dimen/textSize_product"
+            tools:text="@string/bigText2" />
 
         <TextView
-            android:id="@+id/tv_aready_number"
+            android:id="@+id/tv_hour"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginBottom="16dp"
-            android:layout_toRightOf="@id/riv_bg"
-            android:text="@string/title"
-            android:textColor="@color/text_content"
-            android:textSize="@dimen/textSize_product" />
-
-        <Button
-            android:id="@+id/bt_begin"
-            style="@style/common_button"
-            android:layout_width="80dp"
-            android:layout_height="23dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="9dp"
-            android:text="开始练习"
-            android:textColor="@color/white"
-            android:textSize="@dimen/textSize_product" />
-
+            android:text="@string/title"
+            android:textColor="@color/text_green"
+            android:textSize="@dimen/textSize_small" />
 
     </RelativeLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_1px"
+        android:layout_marginTop="10dp"
+        android:background="@color/divider_color"
+        app:layout_constraintTop_toBottomOf="@id/rl_top" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

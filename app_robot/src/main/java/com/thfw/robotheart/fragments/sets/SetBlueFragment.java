@@ -64,8 +64,11 @@ public class SetBlueFragment extends RobotBaseFragment {
             }
             List<BleDevice> bleDevices = new ArrayList<>();
             for (BleDevice bleDevice : scanResultList) {
-                bleDevices.add(bleDevice);
+                if (bleDevice.getName() != null) {
+                    bleDevices.add(bleDevice);
+                }
             }
+            LogUtil.d(TAG, "bleDevices.size() -> " + bleDevices.size());
             mBleAdapter.setDataListNotify(bleDevices);
             mCustomRefreshLayout.finishRefresh();
         }

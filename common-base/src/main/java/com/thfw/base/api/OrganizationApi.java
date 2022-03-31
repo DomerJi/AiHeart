@@ -43,6 +43,6 @@ public interface OrganizationApi {
      */
     @FormUrlEncoded
     @POST("select_organization")
-    Observable<HttpResult<CommonModel>> onSelectOrganization(@Field("id") String organizationId);
+    Observable<HttpResult<CommonModel>> onSelectOrganization(@Field("id") String organizationId, @Field("device_type") String deviceType);
 
 }

@@ -2,13 +2,13 @@ package com.thfw.robotheart.activitys.exercise;
 
 import android.content.Context;
 import android.content.Intent;
-import android.text.Html;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -166,7 +166,7 @@ public class ExerciseDetailsActivity extends RobotBaseActivity<UserToolPresenter
         GlideUtil.load(mContext, data.getPic(), mIvBg);
         mTvVideoTitle.setText(data.getTitle());
         String hint = "<font color='" + UIConfig.COLOR_GRREN + "'>" + "简介：" + "</font>" + data.getDesc();
-        mTvVideoContent.setText(Html.fromHtml(hint));
+        mTvVideoContent.setText(HtmlCompat.fromHtml(hint, HtmlCompat.FROM_HTML_MODE_LEGACY));
         mTvLikeTitle.setText(data.getTitle() + data.getLinkList().size() + "课时");
         mLogcateAdapter.setDataListNotify(data.getLinkList());
         mIvCollect.setSelected(data.getCollected() == 1);

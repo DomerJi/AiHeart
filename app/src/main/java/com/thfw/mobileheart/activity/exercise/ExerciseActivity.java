@@ -7,21 +7,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
-import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
-import com.thfw.mobileheart.adapter.ExerciseAdapter;
 import com.thfw.base.models.ExerciseModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.UserToolPresenter;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.adapter.ExerciseAdapter;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.List;
 
-public class ExerciseActivity extends BaseActivity {
+public class ExerciseActivity extends BaseActivity<UserToolPresenter> implements UserToolPresenter.UserToolUi<List<ExerciseModel>> {
 
-    private com.thfw.ui.widget.TitleView mTitleView;
+    private TitleView mTitleView;
     private com.scwang.smart.refresh.layout.SmartRefreshLayout mRefreshLayout;
-    private androidx.recyclerview.widget.RecyclerView mRvExercise;
+    private androidx.recyclerview.widget.RecyclerView mRvList;
+    private ExerciseAdapter mExerciseAdapter;
+    private com.thfw.ui.widget.LoadingView mLoadingView;
 
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, ExerciseActivity.class));
@@ -33,8 +38,8 @@ public class ExerciseActivity extends BaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public UserToolPresenter onCreatePresenter() {
+        return new UserToolPresenter(this);
     }
 
     @Override
@@ -42,20 +47,47 @@ public class ExerciseActivity extends BaseActivity {
 
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
-        mRvExercise = (RecyclerView) findViewById(R.id.rv_exercise);
+        mRvList = (RecyclerView) findViewById(R.id.rv_exercise);
+        mRvList.setLayoutManager(new LinearLayoutManager(mContext));
+
+        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
     }
 
     @Override
     public void initData() {
-
-        mRvExercise.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        ExerciseAdapter exerciseAdapter = new ExerciseAdapter(null);
-        exerciseAdapter.setOnRvItemListener(new OnRvItemListener<ExerciseModel>() {
+        mExerciseAdapter = new ExerciseAdapter(null);
+        mExerciseAdapter.setOnRvItemListener(new OnRvItemListener<ExerciseModel>() {
             @Override
             public void onItemClick(List<ExerciseModel> list, int position) {
-                ExerciseDetailActivity.startActivity(mContext);
+                ExerciseModel model = list.get(position);
+                ExerciseDetailActivity.startActivity(mContext, model);
             }
         });
-        mRvExercise.setAdapter(exerciseAdapter);
+        mRvList.setAdapter(mExerciseAdapter);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPresenter.onGetList();
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(List<ExerciseModel> data) {
+        mExerciseAdapter.setDataListNotify(data);
+        mLoadingView.hide();
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        mLoadingView.showFail(v -> {
+            mPresenter.onGetList();
+        });
     }
 }

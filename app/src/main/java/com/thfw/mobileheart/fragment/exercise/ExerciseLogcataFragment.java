@@ -1,22 +1,18 @@
 package com.thfw.mobileheart.fragment.exercise;
 
-import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.base.IPresenter;
-import com.thfw.mobileheart.activity.exercise.ExerciseIngActivity;
-import com.thfw.mobileheart.adapter.BaseAdapter;
+import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.ExerciseModel;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.adapter.ExerciseLogcateAdapter;
 import com.thfw.ui.base.BaseFragment;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.List;
 
 /**
  * Author:pengs
@@ -26,6 +22,12 @@ import org.jetbrains.annotations.NotNull;
 public class ExerciseLogcataFragment extends BaseFragment {
     private SmartRefreshLayout mRefreshLayout;
     private RecyclerView mRvExercise;
+
+    ExerciseModel exerciseModel;
+
+    public void setExerciseModel(ExerciseModel exerciseModel) {
+        this.exerciseModel = exerciseModel;
+    }
 
     @Override
     public int getContentView() {
@@ -41,45 +43,39 @@ public class ExerciseLogcataFragment extends BaseFragment {
     public void initView() {
 
         mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
+        mRefreshLayout.setEnableRefresh(false);
+        mRefreshLayout.setEnableLoadMore(false);
+
         mRvExercise = (RecyclerView) findViewById(R.id.rv_exercise);
-    }
-
-    @Override
-    public void initData() {
-
         mRvExercise.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false) {
             @Override
             public boolean canScrollVertically() {
                 return false;
             }
         });
-        mRvExercise.setAdapter(new BaseAdapter(null) {
-            @NonNull
-            @NotNull
-            @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-                return new LogcataHolder(LayoutInflater.from(mContext).inflate(R.layout.item_exercise_logcata_layout, parent, false));
-            }
-
-            @Override
-            public void onBindViewHolder(@NonNull @NotNull RecyclerView.ViewHolder holder, int position) {
-
-            }
-
-            @Override
-            public int getItemCount() {
-                return 30;
-            }
-        });
     }
 
-    public class LogcataHolder extends RecyclerView.ViewHolder {
+    @Override
+    public void initData() {
+        initAdapter();
 
-        public LogcataHolder(@NonNull @NotNull View itemView) {
-            super(itemView);
-            itemView.setOnClickListener(v -> {
-                startActivity(new Intent(mContext, ExerciseIngActivity.class));
+    }
+
+    private void initAdapter() {
+        if (exerciseModel != null && mRvExercise != null) {
+            ExerciseLogcateAdapter exerciseLogcateAdapter = new ExerciseLogcateAdapter(exerciseModel.getLinkList());
+            exerciseLogcateAdapter.setOnRvItemListener(new OnRvItemListener<ExerciseModel.LinkModel>() {
+                @Override
+                public void onItemClick(List<ExerciseModel.LinkModel> list, int position) {
+                    if (list.get(position).getStatus() == -1) {
+                        ToastUtil.show("需要按顺序完成后，方可解锁");
+                        return;
+                    }
+                    ToastUtil.show("onItemClick -> " + position);
+                }
             });
+            mRvExercise.setAdapter(exerciseLogcateAdapter);
         }
     }
+
 }

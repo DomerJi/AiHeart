@@ -208,6 +208,7 @@ public class LoginActivity extends BaseActivity {
             user.setMobile(mobile);
             user.setSetUserInfo(data.isSetUserInfo());
             user.setOrganization(data.organization);
+            user.setAuthTypeList(data.getAuthType());
             LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
             if (data.isNoOrganization()) {
                 user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
