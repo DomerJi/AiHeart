@@ -232,7 +232,13 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
                 if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
                     if (!softKeyBoardShow) {
                         mRlKeyword.setVisibility(View.VISIBLE);
+                    } else {
+                        // todo 待验证
+                        mRlKeyword.setVisibility(View.VISIBLE);
                     }
+                } else {
+                    // todo 待验证
+                    mRlKeyword.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -240,6 +246,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
 
         mRlKeyword.setOnClickListener(v -> {
             mRlKeywordInput.setVisibility(View.VISIBLE);
+            mRlKeyword.setVisibility(View.GONE);
             showInput(mEtContent);
         });
     }
@@ -677,6 +684,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
             hideInput();
             mRvSelect.setVisibility(View.VISIBLE);
             mRlKeyword.setVisibility(View.GONE);
+            mRlKeywordInput.setVisibility(View.GONE);
             if (mSelectAdapter == null) {
                 mSelectAdapter = new ChatSelectAdapter(talkModel.getCheckRadio());
                 mRvSelect.setAdapter(mSelectAdapter);
@@ -687,6 +695,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
         } else if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
             if (!softKeyBoardShow) {
                 mRlKeyword.setVisibility(View.VISIBLE);
+                mRlKeywordInput.setVisibility(View.GONE);
             }
             mRvSelect.setVisibility(View.GONE);
         } else {

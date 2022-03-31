@@ -371,6 +371,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
             @Override
             public void keyBoardShow(int height) {
+                LogUtil.d(TAG, "SoftKeyBoardListener keyBoardShow");
                 mRlVoice.setVisibility(View.GONE);
                 mRlKeywordInput.setVisibility(View.VISIBLE);
                 mRlKeyword.setVisibility(View.GONE);
@@ -381,6 +382,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
             @Override
             public void keyBoardHide(int height) {
+                LogUtil.d(TAG, "SoftKeyBoardListener keyBoardHide");
                 softKeyBoardShow = false;
                 mRlKeywordInput.setVisibility(View.GONE);
                 mRlVoice.setVisibility(View.VISIBLE);
@@ -400,6 +402,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
         mRlKeyword.setOnClickListener(v -> {
             mRlKeywordInput.setVisibility(View.VISIBLE);
+            mRlKeyword.setVisibility(View.GONE);
             showInput(mEtContent);
         });
         mIvTalkModel.setOnClickListener(v -> {
@@ -851,6 +854,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             hideInput();
             mRvSelect.setVisibility(View.VISIBLE);
             mRlKeyword.setVisibility(View.GONE);
+            mRlKeywordInput.setVisibility(View.GONE);
             if (mSelectAdapter == null) {
                 mSelectAdapter = new ChatSelectAdapter(talkModel.getCheckRadio());
                 mRvSelect.setAdapter(mSelectAdapter);
@@ -861,6 +865,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         } else if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
             if (!softKeyBoardShow) {
                 mRlKeyword.setVisibility(View.VISIBLE);
+                mRlKeywordInput.setVisibility(View.GONE);
+            } else {
+                mRlKeywordInput.setVisibility(View.VISIBLE);
+                mRlKeyword.setVisibility(View.GONE);
             }
             mRvSelect.setVisibility(View.GONE);
         } else {
