@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,6 +31,9 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.thfw.base.api.TalkApi;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.face.OnRvItemListener;
@@ -53,8 +57,8 @@ import com.thfw.robotheart.activitys.talk.TalkItemJumpHelper;
 import com.thfw.robotheart.activitys.text.BookActivity;
 import com.thfw.robotheart.adapter.ChatAdapter;
 import com.thfw.robotheart.adapter.ChatSelectAdapter;
-import com.thfw.robotheart.util.PageJumpUtils;
 import com.thfw.robotheart.util.DialogRobotFactory;
+import com.thfw.robotheart.util.PageJumpUtils;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.robotheart.view.boom.ExplosionField;
 import com.thfw.robotheart.view.fall.FallObject;
@@ -63,6 +67,8 @@ import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.yalantis.ucrop.util.ScreenUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +102,9 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
     private android.widget.ImageView mIvLiziText;
     private boolean mIsAchieve;
     private int countDownFinish;
+    private SmartRefreshLayout mRefreshLayout;
+    private int historyDialogId = -1;
+
 
     public static void startActivity(Context context, int id, boolean used) {
         ((Activity) context).startActivityForResult(new Intent(context, ExerciseIngActivity.class)
@@ -124,6 +133,9 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
         mEtContent = (EditText) findViewById(R.id.et_content);
         mRlKeyword = (RelativeLayout) findViewById(R.id.rl_keyword);
         mRvSelect = (RecyclerView) findViewById(R.id.rv_select);
+        mRefreshLayout = findViewById(R.id.refreshLayout);
+        mRefreshLayout.setEnableLoadMore(false);
+
 
         // 设置布局管理器
         FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(mContext);
@@ -230,6 +242,66 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
             mRlKeywordInput.setVisibility(View.VISIBLE);
             showInput(mEtContent);
         });
+    }
+
+    /**
+     * 获取工具包历史记录
+     *
+     * @param toolPackageId 工具包点击课程的dialog_id
+     * @param id            当需要获取最近的15条记录，不传即可，向上翻页时，需传入最后一个ID
+     */
+    private void historyDialog(int toolPackageId, int id) {
+        NetParams netParams = NetParams.crete().add("tool_package_id", toolPackageId);
+        if (id > 0) {
+            netParams.add("id", id);
+        }
+        new UserToolPresenter(new UserToolPresenter.UserToolUi<List<DialogTalkModel>>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return ExerciseIngActivity.this;
+            }
+
+            @Override
+            public void onSuccess(List<DialogTalkModel> data) {
+                LogUtil.d("mChatAdapter JPS size onSuccess");
+                List<ChatEntity> list = new ArrayList<>();
+                if (EmptyUtil.isEmpty(data)) {
+                    list.add(ChatEntity.createHint("没有更多数据了"));
+                    mRefreshLayout.setEnableRefresh(false);
+                } else {
+                    historyDialogId = data.get(0).getId();
+                    boolean addTime = false;
+                    long lastTime = 0;
+                    long firstTime = 0;
+                    for (DialogTalkModel model : data) {
+                        ChatEntity chatEntity = new ChatEntity(model);
+                        chatEntity.setTime(model.getTimeMills());
+                        long limit = chatEntity.time - lastTime;
+                        if (!addTime || limit > HourUtil.LEN_MINUTE || chatEntity.time - firstTime > HourUtil.LEN_5_MINUTE) {
+                            addTime = true;
+                            list.add(ChatEntity.createTime(chatEntity.time));
+                            firstTime = chatEntity.time;
+                        }
+                        lastTime = chatEntity.time;
+                        list.add(chatEntity);
+                        // 个人选项
+                        if (model.hasCheckRadio()) {
+                            list.add(model.getMeCheckRadio());
+                        }
+                    }
+                }
+                LogUtil.d("mChatAdapter JPS size 12 - " + mChatAdapter.getItemCount());
+                LogUtil.d("mChatAdapter JPS size " + list.size());
+                mChatAdapter.addDataListNotify(list, true);
+                mRefreshLayout.finishRefresh(true);
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                LogUtil.d("mChatAdapter JPS size fail" + throwable.getMessage());
+                mRefreshLayout.finishRefresh(false);
+            }
+        }).onDialogToolHistory(netParams);
     }
 
     private void startFinishAnim(boolean isBoom) {
@@ -486,8 +558,14 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
         } else {
             joinDialog(false);
         }
-
-
+        // 历史记录
+        mRefreshLayout.setEnableRefresh(true);
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                historyDialog(mToolPackageId, historyDialogId);
+            }
+        });
     }
 
     private void joinDialog(boolean continueValue) {
@@ -507,6 +585,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
                 ExerciseIngActivity.this.onFail(throwable);
             }
         }).onJoinDialog(TalkApi.JOIN_TYPE_TOOL, mToolPackageId, continueValue);
+
     }
 
     @Override

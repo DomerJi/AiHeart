@@ -45,6 +45,12 @@ public class UserToolPresenter extends IPresenter<UserToolPresenter.UserToolUi> 
         OkHttpUtil.requestByHttpResult(observable, getUI());
     }
 
+    public void onDialogToolHistory(NetParams params) {
+        Observable<HttpResult<List<DialogTalkModel>>> observable = OkHttpUtil.createService(UserToolApi.class)
+                .onDialogToolHistory(params);
+        OkHttpUtil.request(observable, getUI());
+    }
+
     public void onJoinDialog(int enter_type, int id) {
         NetParams netParams = NetParams.crete().add("enter_type", enter_type);
         if (enter_type == TalkApi.JOIN_TYPE_SPEECH_CRAFT || enter_type == TalkApi.JOIN_TYPE_TOOL) {

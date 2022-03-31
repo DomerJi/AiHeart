@@ -52,5 +52,15 @@ public interface UserToolApi {
     @POST("dialog/tool_package")
     Observable<HttpResult<List<DialogTalkModel>>> onDialogTool(@FieldMap Map<String, Object> params);
 
+    /**
+     * 工具包-对话
+     *
+     * @param params
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("dialog/tool_package_history")
+    Observable<HttpResult<List<DialogTalkModel>>> onDialogToolHistory(@FieldMap Map<String, Object> params);
+
 
 }

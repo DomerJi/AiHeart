@@ -67,14 +67,15 @@ public class BindMobileActivity extends BaseActivity<LoginPresenter>
         MyTextWatcher myTextWatcher = new MyTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String code = mVFcode.getVerificationCode().toString();
+                String code = mVFcode.getVerificationCode().getText().toString();
                 boolean canSubmit = !TextUtils.isEmpty(code) && code.length() >= 4;
-                mBtSubmit.setEnabled(canSubmit);
-                phone = s.toString();
+                phone = mEtPhone.getText().toString();
+                mBtSubmit.setEnabled(canSubmit && RegularUtil.isPhone(phone));
                 mVFcode.getGainVerification().setEnabled(RegularUtil.isPhone(phone));
             }
         };
         mVFcode.getVerificationCode().addTextChangedListener(myTextWatcher);
+        mEtPhone.addTextChangedListener(myTextWatcher);
         mVFcode.setVerificationListener(new VerificationCodeView.VerificationListener() {
             @Override
             public void gainVerificationCodeClick() {

@@ -54,7 +54,7 @@
                 android:layout_toRightOf="@id/tv_country"
                 android:background="@null"
                 android:gravity="center_vertical"
-                android:hint="@string/please_input_mobile"
+                android:hint="@string/please_input_mobile_only"
                 android:paddingLeft="8dp"
                 android:textColor="@color/text_common"
                 android:textColorHint="@color/text_hint"
