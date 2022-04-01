@@ -419,7 +419,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                     return;
                 }
                 // 未选中，不处理字符
-                if (!mIvVolumeSwitch.isSelected()) {
+                if (!mIvTalkModel.isSelected()) {
                     return;
                 }
                 if (PolicyHelper.getInstance().isPressMode()) {
@@ -435,7 +435,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             @Override
             public void onIng(boolean ing) {
                 LogUtil.d(TAG, "ing =================================== " + ing);
-//                mStvText.show();
                 if (ing) {
                     showOriginVolume = mIvVolumeSwitch.isSelected();
                     if (mIvVolumeSwitch.isSelected()) {

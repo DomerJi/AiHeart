@@ -487,7 +487,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
      * 查询组织信息
      */
     private void initOrganization() {
-        if (initOrganization) {
+        if (!initOrganization) {
             new OrganizationPresenter(new OrganizationPresenter.OrganizationUi<OrganizationSelectedModel>() {
 
                 @Override
@@ -545,7 +545,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
      * 查询用户信息
      */
     private void initUserInfo() {
-        if (initUserInfo) {
+        if (!initUserInfo) {
             new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<User.UserInfo>() {
                 @Override
                 public LifecycleProvider getLifecycleProvider() {
@@ -590,7 +590,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     }
 
     private void initUmeng() {
-        if (initUmeng) {
+        if (!initUmeng) {
             if (hasAgreedAgreement()) {
                 PushAgent.getInstance(this).onAppStart();
                 String deviceToken = PushAgent.getInstance(this).getRegistrationId();

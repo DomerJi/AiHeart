@@ -35,7 +35,7 @@
         android:paddingRight="80dp"
         android:weightSum="7"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.18">
+        app:layout_constraintHeight_percent="0.15">
 
         <TextView
             android:id="@+id/tv_set_net"

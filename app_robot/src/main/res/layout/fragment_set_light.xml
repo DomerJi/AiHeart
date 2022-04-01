@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginLeft="26dp"
-        android:layout_marginRight="26dp">
+        android:layout_marginRight="26dp"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:layout_width="wrap_content"
@@ -41,22 +42,25 @@
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/riv_light"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:src="@mipmap/ic_set_light_large"
         app:layout_constraintBottom_toBottomOf="@id/riv_light_border"
+        app:layout_constraintHeight_percent="0.4"
         app:layout_constraintLeft_toLeftOf="@id/riv_light_border"
         app:layout_constraintRight_toRightOf="@id/riv_light_border"
         app:layout_constraintTop_toTopOf="@id/riv_light_border"
+        app:layout_constraintWidth_percent="0.4"
         app:riv_oval="true" />
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/riv_light_border"
-        android:layout_width="220dp"
-        android:layout_height="220dp"
-        android:layout_marginTop="50dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:src="@color/transparent"
         app:layout_constraintBottom_toTopOf="@id/ll_seekbar_hint_volume"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintHeight_percent="0.5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rl_top"
@@ -68,16 +72,15 @@
     <LinearLayout
         android:id="@+id/ll_seekbar_hint_volume"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="122dp"
-        android:layout_marginRight="122dp"
         android:layout_weight="1"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/riv_light_border">
+        app:layout_constraintTop_toBottomOf="@id/riv_light_border"
+        app:layout_constraintWidth_percent="0.75">
 
         <ImageView
             android:layout_width="25dp"
