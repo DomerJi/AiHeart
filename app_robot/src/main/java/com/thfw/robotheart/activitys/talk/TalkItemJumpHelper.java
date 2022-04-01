@@ -10,6 +10,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.activitys.test.TestDetailActivity;
 import com.thfw.robotheart.activitys.text.BookDetailActivity;
+import com.thfw.robotheart.activitys.text.BookIdeoDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 
 /**
@@ -22,7 +23,13 @@ public class TalkItemJumpHelper {
     public static void onItemClick(Context mContext, int type, DialogTalkModel.RecommendInfoBean recommendInfoBean) {
         switch (type) {
             case ChatEntity.TYPE_RECOMMEND_TEXT:
-                BookDetailActivity.startActivity(mContext, recommendInfoBean.getId());
+                if (recommendInfoBean.getId() < 1000000) {
+                    // 心理文库
+                    BookDetailActivity.startActivity(mContext, recommendInfoBean.getId());
+                } else {
+                    // 思政文库
+                    BookIdeoDetailActivity.startActivity(mContext, recommendInfoBean.getId());
+                }
                 break;
             case ChatEntity.TYPE_RECOMMEND_VIDEO:
                 VideoPlayerActivity.startActivity(mContext, recommendInfoBean.getId(), true);
