@@ -105,7 +105,6 @@ public class BuglyUtil {
                     BuglyUtil.requestUpgradeStateListener.onVersion(true);
                     BuglyUtil.requestUpgradeStateListener = null;
                 }
-                onBetaCheckUpgrade();
             } else {
                 onBetaCheckUpgrade();
             }
