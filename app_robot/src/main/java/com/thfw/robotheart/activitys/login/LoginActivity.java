@@ -94,15 +94,16 @@ public class LoginActivity extends BaseActivity {
         // 检查权限
         checkPermissions();
         checkOrganDialog();
-        if (!UserManager.getInstance().isTrueLogin()) {
-            SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN, true);
-            SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN_TTS, true);
-        } else {
+        if (UserManager.getInstance().isTrueLogin()) {
             View view = findViewById(R.id.ll_back);
             view.setVisibility(View.VISIBLE);
             view.setOnClickListener(v -> {
                 onBackPressed();
             });
+        } else {
+            MainActivity.setShowLoginAnim(true);
+            SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN, true);
+            SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN_TTS, true);
         }
     }
 

@@ -78,11 +78,13 @@ import static com.thfw.robotheart.constants.AnimFileName.HOME_IP_ANIM_TIME;
 public class MainActivity extends RobotBaseActivity implements View.OnClickListener, MsgCountManager.OnCountChangeListener {
 
     /**
-     * 机构信息和用户信息初始化标识
+     * 机构信息、用户信息、友盟初始化标识
      */
     private static boolean initUserInfo;
     private static boolean initOrganization;
     private static boolean initUmeng;
+    // 登录动画是否显示，为了不频繁获取sp数据
+    private static boolean showLoginAnim;
     private com.thfw.robotheart.view.TitleBarView mTitleBarView;
     private com.thfw.ui.widget.WeekView mWeekView;
     private com.makeramen.roundedimageview.RoundedImageView mRivAvatar;
@@ -109,15 +111,44 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private ConstraintLayout mClMe;
     private ConstraintLayout mClSetting;
     private TextView mTvDotCount;
-    private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private TextView mTvDotHint;
-    private SVGAImageView mSvgaBody;
-    private SVGAImageView mSvgaFace;
     private TextView mTvSetDotHint;
     private TextView mTvMeDotHint;
-
-    private Random random = new Random();
+    // 身体和脸部动画
+    private SVGAImageView mSvgaBody;
+    private SVGAImageView mSvgaFace;
+    // 气泡文案动画
     private com.thfw.robotheart.view.HomeIpTextView mHitAnim;
+
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    private Random random = new Random();
+
+    /**
+     * 延时开启脸部动画
+     */
+    private Runnable mStartFaceRunnable = () -> {
+        if (isMeResumed()) {
+            startFaceAnim();
+        }
+    };
+
+    /**
+     * 延时检查版本动画
+     */
+    private Runnable mCheckVersionRunnable = () -> {
+        if (isMeResumed()) {
+            checkVersion();
+        }
+    };
+
+    /**
+     * 登录动画是否显示
+     *
+     * @param showLoginAnim
+     */
+    public static void setShowLoginAnim(boolean showLoginAnim) {
+        MainActivity.showLoginAnim = showLoginAnim;
+    }
 
     /**
      * 重新登录后重新获取用户相关信息
@@ -208,32 +239,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mSvgaFace = (SVGAImageView) findViewById(R.id.svga_face);
         mTvSetDotHint = (TextView) findViewById(R.id.tv_set_dot_hint);
         mTvMeDotHint = (TextView) findViewById(R.id.tv_me_dot_hint);
-
         mHitAnim = (HomeIpTextView) findViewById(R.id.hit_anim);
-
-        startFaceAnim();
     }
-
-
-    private void startFaceAnim() {
-        SVGAHelper.playSVGA(mSvgaFace, SVGAHelper.SVGAModel.create(AnimFileName.FACE_FACE).setLoopCount(1), new DialogRobotFactory.SimpleSVGACallBack() {
-            @Override
-            public void onFinished() {
-                if (!isMeResumed()) {
-                    return;
-                }
-                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isMeResumed()) {
-                            startFaceAnim();
-                        }
-                    }
-                }, random.nextInt(HOME_IP_ANIM_TIME));
-            }
-        });
-    }
-
 
     @Override
     public void initData() {
@@ -269,45 +276,53 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             // 未登录进入登录页面
             LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
         } else {
+            // 首次登录
             showSVGALogin();
+            // 开始动画
+            animResume(true);
+            // 检查版本更新
+            mMainHandler.removeCallbacks(mCheckVersionRunnable);
+            mMainHandler.postDelayed(mCheckVersionRunnable, isMeResumed2() ? 1000 : 2500);
         }
-        // 检查版本更新
-        mMainHandler.removeCallbacksAndMessages(null);
-        mMainHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (EmptyUtil.isEmpty(MainActivity.this)) {
-                    return;
-                }
-                if (isMeResumed()) {
-                    checkVersion();
-                }
-            }
-        }, isMeResumed2() ? 1000 : 2500);
 
-        animResume(true);
     }
 
-
-    private void showSVGALogin() {
-        if (!SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN, true)) {
-            return;
-        }
-        LogUtil.d(TAG, "showSVGALogin start");
-        DialogRobotFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_WELCOM, new DialogRobotFactory.OnSVGACallBack() {
+    /**
+     * 脸部动画
+     */
+    private void startFaceAnim() {
+        SVGAHelper.playSVGA(mSvgaFace, SVGAHelper.SVGAModel.create(AnimFileName.FACE_FACE).setLoopCount(1), new DialogRobotFactory.SimpleSVGACallBack() {
             @Override
-            public void callBack(SVGAImageView svgaImageView) {
-                LogUtil.d(TAG, "showSVGALogin end");
-                SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN, false);
+            public void onFinished() {
+                if (isMeResumed()) {
+                    mMainHandler.postDelayed(mStartFaceRunnable, random.nextInt(HOME_IP_ANIM_TIME));
+                }
             }
         });
+    }
+
+    /**
+     * 显示登录欢迎动画
+     */
+    private void showSVGALogin() {
+        if (showLoginAnim && SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN, true)) {
+            LogUtil.d(TAG, "showSVGALogin start");
+            DialogRobotFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_WELCOM, new DialogRobotFactory.OnSVGACallBack() {
+                @Override
+                public void callBack(SVGAImageView svgaImageView) {
+                    LogUtil.d(TAG, "showSVGALogin end");
+                    SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN, false);
+                    showLoginAnim = false;
+                }
+            });
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         animResume(false);
-        mMainHandler.removeCallbacksAndMessages(null);
+        mMainHandler.removeCallbacks(mCheckVersionRunnable);
     }
 
     /**
@@ -330,7 +345,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         } else {
             mHitAnim.pause();
             if (mSvgaFace.isAnimating()) {
-                mSvgaFace.startAnimation();
+                mSvgaFace.stopAnimation();
             }
             if (mSvgaBody.isAnimating()) {
                 mSvgaBody.stopAnimation();
@@ -347,10 +362,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             public void onVersion(boolean hasNewVersion) {
                 super.onVersion(hasNewVersion);
                 Log.d("requestNewVersion", "hasNewVersion = " + hasNewVersion);
-                if (EmptyUtil.isEmpty(MainActivity.this)) {
-                    return;
-                }
-                if (isMeResumed() && mTvDotHint != null) {
+                if (isMeResumed() && !EmptyUtil.isEmpty(MainActivity.this)) {
                     mTvDotHint.setText("新版本");
                     mTvDotHint.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
                     if (hasNewVersion) {
@@ -365,7 +377,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     public void onClick(View v) {
         int vId = v.getId();
         if (vId == R.id.cl_me) {
-//            DormantActivity.startActivity(mContext);
             startActivity(new Intent(mContext, MeActivity.class));
         } else if (vId == R.id.cl_setting) {
             startActivity(new Intent(mContext, SettingActivity.class));
@@ -454,8 +465,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                     initUmeng();
                     initUserInfo();
                     initOrganization();
+                    setUserMessage(user);
                 }
-                setUserMessage(user);
+
             }
         };
     }
@@ -476,47 +488,45 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
      */
     private void initOrganization() {
         if (initOrganization) {
-            return;
-        }
+            new OrganizationPresenter(new OrganizationPresenter.OrganizationUi<OrganizationSelectedModel>() {
 
-        new OrganizationPresenter(new OrganizationPresenter.OrganizationUi<OrganizationSelectedModel>() {
-
-            @Override
-            public LifecycleProvider getLifecycleProvider() {
-                return MainActivity.this;
-            }
-
-            @Override
-            public void onSuccess(OrganizationSelectedModel data) {
-                if (data != null) {
-                    LogUtil.d(TAG, "initOrganization onSuccess ++++++++++++++++++++++ ");
-                    ArrayList<OrganizationModel.OrganizationBean> mSelecteds = new ArrayList<>();
-                    initSelectedList(mSelecteds, data.getOrganization());
-                    CommonParameter.setOrganizationSelected(mSelecteds);
-                    UserManager.getInstance().getUser().setOrganList(mSelecteds);
-                    UserManager.getInstance().notifyUserInfo();
-                    UPushAlias.setTag(mSelecteds.get(mSelecteds.size() - 1).getId());
+                @Override
+                public LifecycleProvider getLifecycleProvider() {
+                    return MainActivity.this;
                 }
-                initOrganization = true;
-            }
 
-            @Override
-            public void onFail(ResponeThrowable throwable) {
-                LogUtil.d(TAG, "initOrganization onFail ++++++++++++++++++++++ ");
-                TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
-                    @Override
-                    public void onArrive() {
-                        initOrganization();
-                        LogUtil.d(TAG, "initOrganization onFail retry ++++++++++++++++++++++ ");
+                @Override
+                public void onSuccess(OrganizationSelectedModel data) {
+                    if (data != null) {
+                        LogUtil.d(TAG, "initOrganization onSuccess ++++++++++++++++++++++ ");
+                        ArrayList<OrganizationModel.OrganizationBean> mSelecteds = new ArrayList<>();
+                        initSelectedList(mSelecteds, data.getOrganization());
+                        CommonParameter.setOrganizationSelected(mSelecteds);
+                        UserManager.getInstance().getUser().setOrganList(mSelecteds);
+                        UserManager.getInstance().notifyUserInfo();
+                        UPushAlias.setTag(mSelecteds.get(mSelecteds.size() - 1).getId());
                     }
+                    initOrganization = true;
+                }
 
-                    @Override
-                    public WorkInt workInt() {
-                        return WorkInt.SECOND5_1;
-                    }
-                });
-            }
-        }).onGetJoinedList();
+                @Override
+                public void onFail(ResponeThrowable throwable) {
+                    LogUtil.d(TAG, "initOrganization onFail ++++++++++++++++++++++ ");
+                    TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
+                        @Override
+                        public void onArrive() {
+                            initOrganization();
+                            LogUtil.d(TAG, "initOrganization onFail retry ++++++++++++++++++++++ ");
+                        }
+
+                        @Override
+                        public WorkInt workInt() {
+                            return WorkInt.SECOND5_1;
+                        }
+                    });
+                }
+            }).onGetJoinedList();
+        }
     }
 
     private void initSelectedList(List<OrganizationModel.OrganizationBean> list, OrganizationSelectedModel.OrganizationBean bean) {
@@ -536,63 +546,59 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
      */
     private void initUserInfo() {
         if (initUserInfo) {
-            return;
-        }
-        new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<User.UserInfo>() {
-            @Override
-            public LifecycleProvider getLifecycleProvider() {
-                return MainActivity.this;
-            }
-
-            @Override
-            public void onSuccess(User.UserInfo data) {
-                if (data != null) {
-                    initUserInfo = true;
-                    LogUtil.d(TAG, "initUserInfo onSuccess ++++++++++++++++++++++ ");
-                    UserManager.getInstance().getUser().setUserInfo(data);
-                    UserManager.getInstance().notifyUserInfo();
-                    UPushAlias.set(MyApplication.getApp(), "user_" + data.id, "user");
-                    if (SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, true)) {
-                        SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false);
-                        TtsHelper.getInstance().start(new TtsModel("你好" + UserManager.getInstance().getUser().getVisibleName() + ",很高兴见到你"), null);
-                    }
-                } else {
-                    onFail(new ResponeThrowable(0, "data is null"));
+            new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<User.UserInfo>() {
+                @Override
+                public LifecycleProvider getLifecycleProvider() {
+                    return MainActivity.this;
                 }
-            }
 
-            @Override
-            public void onFail(ResponeThrowable throwable) {
-                LogUtil.d(TAG, "initUserInfo onFail ++++++++++++++++++++++ ");
-                TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
-                    @Override
-                    public void onArrive() {
-                        initUserInfo();
-                        LogUtil.d(TAG, "initUserInfo onFail retry ++++++++++++++++++++++ ");
+                @Override
+                public void onSuccess(User.UserInfo data) {
+                    if (data != null) {
+                        initUserInfo = true;
+                        LogUtil.d(TAG, "initUserInfo onSuccess ++++++++++++++++++++++ ");
+                        UserManager.getInstance().getUser().setUserInfo(data);
+                        UserManager.getInstance().notifyUserInfo();
+                        UPushAlias.set(MyApplication.getApp(), "user_" + data.id, "user");
+                        if (SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, true)) {
+                            SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false);
+                            TtsHelper.getInstance().start(new TtsModel("你好" + UserManager.getInstance().getUser().getVisibleName() + ",很高兴见到你"), null);
+                        }
+                    } else {
+                        onFail(new ResponeThrowable(0, "data is null"));
                     }
+                }
 
-                    @Override
-                    public WorkInt workInt() {
-                        return WorkInt.SECOND5;
-                    }
-                });
-            }
-        }).
+                @Override
+                public void onFail(ResponeThrowable throwable) {
+                    LogUtil.d(TAG, "initUserInfo onFail ++++++++++++++++++++++ ");
+                    TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
+                        @Override
+                        public void onArrive() {
+                            initUserInfo();
+                            LogUtil.d(TAG, "initUserInfo onFail retry ++++++++++++++++++++++ ");
+                        }
 
-                onGetUserInfo();
+                        @Override
+                        public WorkInt workInt() {
+                            return WorkInt.SECOND5;
+                        }
+                    });
+                }
+            }).onGetUserInfo();
+        }
     }
 
     private void initUmeng() {
         if (initUmeng) {
-            return;
-        }
-        if (hasAgreedAgreement()) {
-            PushAgent.getInstance(this).onAppStart();
-            String deviceToken = PushAgent.getInstance(this).getRegistrationId();
-            LogUtil.d(TAG, "deviceToken = " + deviceToken);
-            initUmeng = true;
-        } else {
-            agreementAfterInitUmeng();
+            if (hasAgreedAgreement()) {
+                PushAgent.getInstance(this).onAppStart();
+                String deviceToken = PushAgent.getInstance(this).getRegistrationId();
+                LogUtil.d(TAG, "deviceToken = " + deviceToken);
+                initUmeng = true;
+            } else {
+                agreementAfterInitUmeng();
+            }
         }
     }
 
@@ -630,11 +636,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
     @Override
     public void onItemState(int id, boolean read) {
-
     }
 
     @Override
     public void onReadAll(int type) {
-
     }
 }
