@@ -3,19 +3,19 @@ package com.thfw.mobileheart.activity;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.net.CommonParameter;
@@ -24,23 +24,30 @@ import com.thfw.base.presenter.OrganizationPresenter;
 import com.thfw.base.presenter.UserInfoPresenter;
 import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
+import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.login.LoginActivity;
+import com.thfw.mobileheart.activity.mood.StatusActivity;
 import com.thfw.mobileheart.activity.robot.RobotActivity;
+import com.thfw.mobileheart.activity.service.AutoUpdateService;
 import com.thfw.mobileheart.fragment.HomeFragment;
 import com.thfw.mobileheart.fragment.MeFragment;
 import com.thfw.mobileheart.fragment.MessageFragment;
 import com.thfw.mobileheart.push.MyPreferences;
 import com.thfw.mobileheart.push.helper.PushHelper;
 import com.thfw.mobileheart.push.tester.UPushAlias;
+import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FragmentLoader;
 import com.thfw.mobileheart.util.MsgCountManager;
 import com.thfw.mobileheart.view.SimpleAnimatorListener;
 import com.thfw.ui.base.BaseActivity;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.user.login.UserManager;
@@ -60,7 +67,13 @@ import java.util.List;
  */
 public class MainActivity extends BaseActivity implements Animator.AnimatorListener, MsgCountManager.OnCountChangeListener {
 
-    private Handler handler;
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    private Runnable checkVersionRunnable = new Runnable() {
+        @Override
+        public void run() {
+            checkVersion();
+        }
+    };
     private androidx.constraintlayout.widget.ConstraintLayout mMainRoot;
     private androidx.constraintlayout.widget.ConstraintLayout mMainRoot2;
 
@@ -85,7 +98,9 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private static boolean initUserInfo;
     private static boolean initOrganization;
     private static boolean initUmeng;
+    private static boolean moodHint;
     private TextView mTvMsgCount;
+    private TextView mTvMsgVersion;
 
     /**
      * 重新登录后重新获取用户相关信息
@@ -94,6 +109,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         initUserInfo = false;
         initOrganization = false;
         initUmeng = false;
+        moodHint = false;
     }
 
     private static boolean hasAgreedAgreement() {
@@ -126,6 +142,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         mTvHome = (TextView) findViewById(R.id.tv_home);
 
         mTvMsgCount = findViewById(R.id.tv_massage_count);
+        mTvMsgVersion = findViewById(R.id.tv_massage_version);
 
         mLlAiChat = (LinearLayout) findViewById(R.id.ll_ai_chat);
         mLlMessage = (LinearLayout) findViewById(R.id.ll_message);
@@ -178,6 +195,27 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         mLlHome.performClick();
     }
 
+
+    /**
+     * 检查版本更新
+     */
+    private void checkVersion() {
+        BuglyUtil.requestNewVersion(new SimpleUpgradeStateListener() {
+            @Override
+            public void onVersion(boolean hasNewVersion) {
+                super.onVersion(hasNewVersion);
+                Log.d("requestNewVersion", "hasNewVersion = " + hasNewVersion);
+                if (isMeResumed() && !EmptyUtil.isEmpty(MainActivity.this)) {
+                    mTvMsgVersion.setText("新");
+                    mTvMsgVersion.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
+                    if (hasNewVersion) {
+                        AutoUpdateService.startUpdate(mContext);
+                    }
+                }
+            }
+        });
+    }
+
     private void setTab(LinearLayout layout, boolean selected) {
         if (layout != null) {
             int childCount = layout.getChildCount();
@@ -218,7 +256,9 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                             if (EmptyUtil.isEmpty(MainActivity.this)) {
                                 return;
                             }
-                            mMainRoot.setBackgroundColor(getResources().getColor(R.color.page_background_gray));
+                            getWindow().setBackgroundDrawableResource(R.drawable.page_gray_radius);
+                            mMainRoot.setBackgroundColor(Color.TRANSPARENT);
+                            onMeResume();
                         }
                     }).setStartDelay(1200);
                 }
@@ -226,6 +266,32 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             }).setStartDelay(700);
 
         }
+    }
+
+
+    private void onMeResume() {
+        if (!UserManager.getInstance().isLogin()) {
+            LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+        } else {
+            mMainHandler.removeCallbacks(checkVersionRunnable);
+            mMainHandler.postDelayed(checkVersionRunnable, 1000);
+            if (!moodHint) {
+                moodHintDialog();
+            }
+        }
+    }
+
+    private void moodHintDialog() {
+        moodHint = true;
+        DialogFactory.createMoodSignInDialog(this, new OnViewClickListener() {
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+                if (view.getId() == R.id.bt_go) {
+                    startActivity(new Intent(mContext, StatusActivity.class));
+                }
+            }
+        });
     }
 
 
@@ -251,40 +317,27 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     @Override
     protected void onStart() {
         super.onStart();
-        handler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                showMain();
-            }
-        };
-        handler.sendEmptyMessageDelayed(0, 300);
-
+        if (mMainRoot.getVisibility() != View.VISIBLE) {
+            mMainHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showMain();
+                }
+            }, 300);
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null);
-            handler = null;
+        if (mMainHandler != null) {
+            mMainHandler.removeCallbacksAndMessages(null);
             if (mMainRoot.getVisibility() != View.VISIBLE) {
                 finish();
                 return;
             }
         }
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (!UserManager.getInstance().isLogin()) {
-            LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
-        } else {
-
-        }
-    }
-
 
     /**
      * 用户信息更新观察者
@@ -354,6 +407,14 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         }).onGetJoinedList();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isMeResumed2()) {
+            onMeResume();
+        }
+    }
+
     private void initSelectedList(List<OrganizationModel.OrganizationBean> list, OrganizationSelectedModel.OrganizationBean bean) {
         if (bean != null) {
             OrganizationModel.OrganizationBean oBean = new OrganizationModel.OrganizationBean();
@@ -412,9 +473,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     }
                 });
             }
-        }).
-
-                onGetUserInfo();
+        }).onGetUserInfo();
     }
 
     private void initUmeng() {
@@ -459,7 +518,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
 
     @Override
     public void onCount(int numTask, int numSystem) {
-        MsgCountManager.setTextView(mTvMsgCount, 8 + numSystem + numTask);
+        MsgCountManager.setTextView(mTvMsgCount, numSystem + numTask);
     }
 
     @Override
@@ -471,4 +530,5 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     public void onReadAll(int type) {
 
     }
+
 }

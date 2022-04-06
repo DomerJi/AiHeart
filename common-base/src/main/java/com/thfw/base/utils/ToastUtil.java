@@ -12,6 +12,8 @@ import androidx.annotation.StringRes;
 public final class ToastUtil {
 
     private static Context appContext;
+    private static long showTime;
+    private static final int LIMIT = 2000;
 
     private ToastUtil() {
     }
@@ -25,15 +27,24 @@ public final class ToastUtil {
     }
 
     public static void show(CharSequence charSequence) {
-        Toast.makeText(appContext, charSequence, Toast.LENGTH_SHORT).show();
+        if (System.currentTimeMillis() - showTime > LIMIT) {
+            showTime = System.currentTimeMillis();
+            Toast.makeText(appContext, charSequence, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static void show(@StringRes int resId) {
-        Toast.makeText(appContext, resId, Toast.LENGTH_SHORT).show();
+        if (System.currentTimeMillis() - showTime > LIMIT) {
+            showTime = System.currentTimeMillis();
+            Toast.makeText(appContext, resId, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static void showLong(CharSequence charSequence) {
-        Toast.makeText(appContext, charSequence, Toast.LENGTH_LONG).show();
+        if (System.currentTimeMillis() - showTime > LIMIT) {
+            showTime = System.currentTimeMillis();
+            Toast.makeText(appContext, charSequence, Toast.LENGTH_LONG).show();
+        }
     }
 
 }

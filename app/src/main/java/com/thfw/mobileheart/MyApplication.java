@@ -1,6 +1,10 @@
 package com.thfw.mobileheart;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.DisplayMetrics;
 
 import androidx.multidex.MultiDexApplication;
@@ -20,9 +24,11 @@ import com.scwang.smart.refresh.layout.listener.DefaultRefreshHeaderCreator;
 import com.thfw.base.ContextApp;
 import com.thfw.base.room.AppDatabase;
 import com.thfw.base.utils.BuglyUtil;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.mobileheart.activity.MainActivity;
 import com.thfw.mobileheart.push.MyPreferences;
 import com.thfw.mobileheart.push.helper.PushHelper;
 import com.thfw.mobileheart.util.ActivityLifeCycle;
@@ -31,7 +37,11 @@ import com.umeng.commonsdk.UMConfigure;
 import com.umeng.commonsdk.utils.UMUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 
 /**
  * 入口
@@ -42,6 +52,8 @@ public class MyApplication extends MultiDexApplication {
     private static MyApplication app;
     private static float lv;
     private static ActivityLifeCycle activityLifeCycle;
+    private static BroadcastReceiver broadcastReceiver;
+    private static List<OnMinuteListener> onMinuteListeners;
 
     public static MyApplication getApp() {
         return app;
@@ -49,6 +61,7 @@ public class MyApplication extends MultiDexApplication {
 
     // static 代码段可以防止内存泄露
     static {
+        onMinuteListeners = new ArrayList<>();
         activityLifeCycle = new ActivityLifeCycle();
         // 设置全局的Header构建器
         SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator() {
@@ -66,6 +79,20 @@ public class MyApplication extends MultiDexApplication {
                 return new ClassicsFooter(context).setDrawableSize(20);
             }
         });
+
+        // 每分钟时间改变监听
+        broadcastReceiver = null;
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (!EmptyUtil.isEmpty(onMinuteListeners)) {
+                    if (intent.ACTION_TIME_TICK.equals(intent.getAction())) {
+                        activityLifeCycle.saveAppUseTime();
+                    }
+                }
+                getApp().onMinuteChange();
+            }
+        };
     }
 
     public static float getFontScale() {
@@ -87,21 +114,15 @@ public class MyApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         app = this;
-
-        ContextApp.init(app);
+        ContextApp.init(this);
         SharePreferenceUtil.init(this);
-        BuglyUtil.init("382fc62522");
         ContextApp.setDeviceType(ContextApp.DeviceType.ROBOT);
         ToastUtil.init(this);
         TDialog.init(this);
-        initSpeech();
-        initUmengSDK();
-
+        initAtThread();
         registerActivityLifecycleCallbacks(activityLifeCycle);
-
-
+        initTimeReceiver();
     }
-
 
     private void initSpeech() {
         /*
@@ -114,39 +135,82 @@ public class MyApplication extends MultiDexApplication {
         // 设置使用v5+
         param.append(SpeechConstant.ENGINE_MODE + "=" + SpeechConstant.MODE_MSC);
         SpeechUtility.createUtility(app, param.toString());
-        Setting.setShowLog(false);
+        Setting.setShowLog(true);
     }
 
-    /**
-     * 初始化友盟SDK
-     */
-    private void initUmengSDK() {
+    private void initAtThread() {
         //日志开关
         UMConfigure.setLogEnabled(true);
         //预初始化
         PushHelper.preInit(this);
-        //是否同意隐私政策
-        boolean agreed = MyPreferences.getInstance(this).hasAgreePrivacyAgreement();
-        if (!agreed) {
-            return;
-        }
         boolean isMainProcess = UMUtils.isMainProgress(this);
         if (isMainProcess) {
             //启动优化：建议在子线程中执行初始化
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    PushHelper.init(getApplicationContext());
+                    init();
                 }
             }).start();
         } else {
-            //若不是主进程（":channel"结尾的进程），直接初始化sdk，不可在子线程中执行
+            init();
+        }
+    }
+
+    private void init() {
+        BuglyUtil.init("36df997c6c");
+        initSpeech();
+        //是否同意隐私政策
+        boolean agreed = MyPreferences.getInstance(this).hasAgreePrivacyAgreement();
+        if (agreed) {
             PushHelper.init(getApplicationContext());
         }
     }
 
+    public static void goAppHome(Activity activity) {
+        Intent intent = new Intent(activity, MainActivity.class);
+        intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK);
+        activity.startActivity(intent);
+    }
+
     public static AppDatabase getDatabase() {
         return Room.databaseBuilder(app, AppDatabase.class, "database-name").build();
+    }
+
+    private void initTimeReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_TIME_TICK);
+        filter.addAction(Intent.ACTION_TIME_CHANGED);
+        filter.addAction(Intent.ACTION_DATE_CHANGED);
+        getApp().registerReceiver(broadcastReceiver, filter);
+        //广播的注册，其中Intent.ACTION_TIME_CHANGED代表时间设置变化的时候会发出该广播
+    }
+
+
+    public void addOnMinuteListener(OnMinuteListener onMinuteListener) {
+        if (!onMinuteListeners.contains(onMinuteListener)) {
+            onMinuteListeners.add(onMinuteListener);
+        }
+    }
+
+    public void onRemoveOnMinuteListener(OnMinuteListener onMinuteListener) {
+        if (onMinuteListeners.contains(onMinuteListener)) {
+            onMinuteListeners.remove(onMinuteListener);
+        }
+    }
+
+    private void onMinuteChange() {
+        if (!EmptyUtil.isEmpty(onMinuteListeners)) {
+            for (OnMinuteListener listener : onMinuteListeners) {
+                if (listener != null) {
+                    listener.onChanged();
+                }
+            }
+        }
+    }
+
+    public interface OnMinuteListener {
+        void onChanged();
     }
 
 }

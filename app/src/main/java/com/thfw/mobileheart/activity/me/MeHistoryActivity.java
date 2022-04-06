@@ -30,9 +30,8 @@ public class MeHistoryActivity extends BaseActivity {
     private String[] tabs = new String[]{"我测的", "我练的", "我听的", "我看的", "我读的", "我学的"};
 
     // 1-测评  2-文章 3-音频 4-视频 5-话术 6-思政文章 7-工具包
-    private int[] types = new int[]{HistoryApi.TYPE_TEST, HistoryApi.TYPE_VIDEO,
-            HistoryApi.TYPE_AUDIO, HistoryApi.TYPE_BOOK,
-            HistoryApi.TYPE_EXERCISE, HistoryApi.TYPE_STUDY};
+    private int[] types = new int[]{HistoryApi.TYPE_TEST, HistoryApi.TYPE_EXERCISE,
+            HistoryApi.TYPE_AUDIO, HistoryApi.TYPE_VIDEO, HistoryApi.TYPE_BOOK, HistoryApi.TYPE_STUDY};
 
     private int mCurrentItem = 0;
 

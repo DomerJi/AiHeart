@@ -1,5 +1,6 @@
 package com.thfw.robotheart.adapter;
 
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -45,7 +46,15 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
             holder.mTvFlag.setVisibility(View.VISIBLE);
             holder.mTvFlag.setText("已过期");
             holder.mTvFlag.setBackgroundResource(R.drawable.yellow_radius_bg);
+            holder.mTvTitle.setTextColor(0x8CCCCCCC);
+            holder.mTvType.setTextColor(0x8CCCCCCC);
+            holder.mTvStatus.setTextColor(0x8CCCCCCC);
+            holder.mTvTime.setTextColor(0x8CCCCCCC);
         } else {
+            holder.mTvTitle.setTextColor(Color.WHITE);
+            holder.mTvType.setTextColor(Color.WHITE);
+            holder.mTvStatus.setTextColor(Color.WHITE);
+            holder.mTvTime.setTextColor(Color.WHITE);
             holder.mTvFlag.setVisibility(View.GONE);
         }
 

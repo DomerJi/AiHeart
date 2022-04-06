@@ -9,7 +9,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0.0.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -39,7 +39,7 @@ android {
     signingConfigs {
         // 签名
         release {
-            storeFile file("sign/heart.jks")
+            storeFile file("sign/heart_phone.jks")
             storePassword "abc321654"
             keyAlias "thfw"
             keyPassword "abc321654"

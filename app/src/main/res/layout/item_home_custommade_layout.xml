@@ -5,14 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:padding="12dp">
+    android:paddingTop="12dp">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_left"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="1:1.4"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        app:layout_constraintDimensionRatio="629:669"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/cl_right_top"
@@ -22,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
-            android:src="@color/text_red"
+            android:src="@mipmap/ic_home_ai_chat"
             app:riv_corner_radius="10dp"
             app:riv_oval="false" />
 
@@ -32,163 +34,225 @@
         android:id="@+id/cl_right_top"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginBottom="6dp"
-        app:layout_constraintBottom_toTopOf="@id/cl_right_bottom"
+        android:layout_marginRight="12dp"
+        android:background="@drawable/ic_home_tab_mood_bg"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/cl_left"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintLeft_toRightOf="@id/cl_left"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/cl_left"
         tools:ignore="MissingConstraints">
 
-        <com.makeramen.roundedimageview.RoundedImageView
+        <TextView
+            android:id="@+id/tv_mood_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="心情日记"
+            android:textSize="@dimen/textSize_large"
+            app:layout_constraintBottom_toTopOf="@id/ll_mood"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/ll_mood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_home_mood_border"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="6dp"
+            android:paddingTop="3dp"
+            android:paddingRight="6dp"
+            android:paddingBottom="3dp"
+            app:layout_constraintBottom_toTopOf="@id/tv_active_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_mood_title">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/riv_emoji"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@color/text_green"
+                app:riv_oval="true" />
+
+            <TextView
+                android:id="@+id/tv_mood_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="保持微信"
+                android:textColor="@color/text_content"
+                android:textSize="@dimen/textSize_small" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_active_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的活跃度"
+            android:textSize="@dimen/textSize_large"
+            app:layout_constraintBottom_toTopOf="@id/ll_active"
+            app:layout_constraintTop_toBottomOf="@id/ll_mood" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ll_active"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@color/colorPrimary"
-            app:riv_corner_radius="10dp"
-            app:riv_oval="false" />
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="6dp"
+            android:paddingTop="3dp"
+            android:paddingRight="6dp"
+            android:paddingBottom="3dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_active_title">
+
+            <TextView
+                android:id="@+id/tv_today_activity_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="今日活跃"
+                android:textColor="@color/text_yellow2"
+                android:textSize="@dimen/textSize_product"
+                app:layout_constraintBottom_toTopOf="@id/tv_today_activity_value"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/tv_sum_activity_title"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_sum_activity_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="累计活跃"
+                android:textColor="@color/text_yellow2"
+                android:textSize="@dimen/textSize_product"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toRightOf="@id/tv_today_activity_title"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_today_activity_title" />
+
+            <TextView
+                android:id="@+id/tv_today_activity_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="63"
+                android:textColor="@color/text_common"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_today_activity_title"
+                tools:text="63" />
+
+
+            <TextView
+                android:id="@+id/tv_sum_activity_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="2963"
+                android:textColor="@color/text_common"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/tv_sum_activity_title"
+                app:layout_constraintTop_toBottomOf="@id/tv_today_activity_title"
+                tools:text="2963" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:text="分钟"
+                android:textColor="@color/text_content"
+                android:textSize="@dimen/textSize_product"
+                app:layout_constraintBaseline_toBaselineOf="@id/tv_today_activity_value"
+                app:layout_constraintLeft_toRightOf="@id/tv_today_activity_value" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:text="天"
+                android:textColor="@color/text_content"
+                android:textSize="@dimen/textSize_product"
+                app:layout_constraintBaseline_toBaselineOf="@id/tv_sum_activity_value"
+                app:layout_constraintLeft_toRightOf="@id/tv_sum_activity_value" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_right_bottom"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="6dp"
-        app:layout_constraintBottom_toBottomOf="@id/cl_left"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toRightOf="@id/cl_left"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_right_top"
-        tools:ignore="MissingConstraints">
-
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@color/black"
-            app:riv_corner_radius="10dp"
-            app:riv_oval="false" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-       android:id="@+id/root_hotline"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/page_background_gray"
+        app:layout_constraintTop_toBottomOf="@id/cl_left" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root_hotline"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/ic_hot_call_bg"
+        android:padding="8dp"
+        app:layout_constraintDimensionRatio="1381:448"
         app:layout_constraintTop_toBottomOf="@id/cl_left"
         tools:ignore="MissingConstraints">
 
 
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:scaleType="fitXY"
-            android:src="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:riv_corner_radius="10dp"
-            app:riv_oval="false" />
-
-
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:layout_width="@dimen/home_hint_dot"
-            android:layout_height="@dimen/home_hint_dot"
-            android:layout_margin="8dp"
-            android:src="@color/btn_red"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:riv_corner_radius="@dimen/home_hint_dot_radius"
-            app:riv_oval="true" />
-
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:layout_width="@dimen/home_hint_dot"
-            android:layout_height="@dimen/home_hint_dot"
-            android:layout_margin="8dp"
-            android:src="@color/btn_red"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:riv_corner_radius="@dimen/home_hint_dot_radius"
-            app:riv_oval="true" />
-
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:layout_width="@dimen/home_hint_dot"
-            android:layout_height="@dimen/home_hint_dot"
-            android:layout_margin="8dp"
-            android:src="@color/btn_red"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:riv_corner_radius="@dimen/home_hint_dot_radius"
-            app:riv_oval="true" />
-
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:layout_width="@dimen/home_hint_dot"
-            android:layout_height="@dimen/home_hint_dot"
-            android:layout_margin="8dp"
-            android:scaleType="fitXY"
-            android:src="@color/btn_red"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:riv_corner_radius="@dimen/home_hint_dot_radius"
-            app:riv_oval="false" />
-
-
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
+            android:paddingTop="2dp"
             android:text="@string/xt_hint_title"
             android:textColor="@color/xt_hint_title"
-            android:textSize="20sp"
+            android:textSize="@dimen/textSize_large"
+            app:layout_constraintBottom_toTopOf="@id/tv_content"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintWidth_percent="0.9" />
 
         <TextView
             android:id="@+id/tv_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:lineSpacingExtra="8dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="16dp"
+            android:layout_marginTop="4dp"
             android:text="@string/xt_hint_content"
-            android:textColor="@color/text_common"
-            android:textSize="@dimen/textSize"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:textColor="@color/text_content"
+            android:textSize="@dimen/textSize_small"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/tv_title"
             app:layout_constraintRight_toLeftOf="@id/ll_more"
             app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
         <LinearLayout
             android:id="@+id/ll_more"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_percent="0.6"
+            app:layout_constraintHorizontal_bias="0.93"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintLeft_toRightOf="@id/tv_content"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="60dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
-                android:src="@color/colorPrimary" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/read_more"
-                android:textColor="@color/colorPrimary" />
+                android:adjustViewBounds="true"
+                android:src="@mipmap/ic_hot_more" />
 
         </LinearLayout>
 

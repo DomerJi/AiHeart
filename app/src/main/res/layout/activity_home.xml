@@ -6,14 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/splash2"
-    android:visibility="invisible">
+    android:visibility="invisible"
+    tools:visibility="visible">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_root2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        tools:visibility="visible">
 
         <FrameLayout
             android:id="@+id/fl_content"
@@ -134,12 +136,32 @@
             app:layout_constraintLeft_toRightOf="@id/ll_message"
             app:layout_constraintRight_toRightOf="parent">
 
-            <ImageView
-                android:id="@+id/iv_me"
-                android:layout_width="@dimen/home_tab_icon_height"
-                android:layout_height="@dimen/home_tab_icon_height"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/hometab_me_selector" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp">
+
+                <include
+                    android:id="@+id/tv_massage_version"
+                    layout="@layout/custom_message_number_red_dot_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    app:layout_constraintLeft_toRightOf="@id/iv_me"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_me"
+                    android:layout_width="@dimen/home_tab_icon_height"
+                    android:layout_height="@dimen/home_tab_icon_height"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/hometab_me_selector"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/tv_me"

@@ -51,9 +51,10 @@
     <color name="text_green">#00A871</color>
     <color name="green_selected_text">#00CC99</color>
     <color name="text_yellow">#FF8600</color>
+    <color name="text_yellow2">#FF5311</color>
     <color name="text_green_80">#CC00A871</color>
     <color name="text_red">#FF5454</color>
-    <color name="dot_red">#E64550</color>
+    <color name="dot_red">#FF0000</color>
     <color name="btn_red">#E64550</color>
     <color name="gray">#888888</color>
     <color name="gray_ccc">#CCCCCC</color>

@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -19,11 +18,11 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 import com.scwang.smart.refresh.layout.simple.SimpleMultiListener;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.HomeEntity;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.ExoPlayerActivity;
 import com.thfw.mobileheart.adapter.HomeAdapter;
-import com.thfw.base.models.HomeEntity;
 import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.widget.LinearTopLayout;
@@ -34,7 +33,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * 首页
@@ -181,16 +179,7 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
-                if (new Random().nextInt(100) == 1) {
-                    pageHelper.onFail(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            loadData();
-                        }
-                    });
-                } else {
-                    pageHelper.onSuccess(getList());
-                }
+                pageHelper.onSuccess(getList());
                 isFirst = false;
             }
         }.sendEmptyMessageDelayed(0, isFirst ? 0 : 300);
@@ -213,18 +202,18 @@ public class HomeFragment extends BaseFragment {
 
             list.add(new HomeEntity().setType(HomeEntity.TYPE_SORT));
             list.add(new HomeEntity().setType(HomeEntity.TYPE_CUSTOM_MADE));
-            list.add(new HomeEntity().setType(HomeEntity.TYPE_TAB_TITLE).setTabTitle("最近浏览"));
-            list.add(new HomeEntity().setType(HomeEntity.TYPE_HISTORY));
+//            list.add(new HomeEntity().setType(HomeEntity.TYPE_TAB_TITLE).setTabTitle("最近浏览"));
+//            list.add(new HomeEntity().setType(HomeEntity.TYPE_HISTORY));
+            list.add(new HomeEntity().setType(HomeEntity.TYPE_TAB_TITLE).setTabTitle("小天推荐"));
         }
 
-        list.add(new HomeEntity().setType(HomeEntity.TYPE_TAB_TITLE).setTabTitle("小天推荐"));
         for (int i = 0; i < 18; i++) {
             list.add(new HomeEntity());
         }
-        list.add(new HomeEntity().setType(HomeEntity.TYPE_TAB_TITLE).setTabTitle("猜你喜欢"));
-        for (int i = 0; i < 18; i++) {
-            list.add(new HomeEntity().setType(HomeEntity.TYPE_BODY2).setBody2Position(i));
-        }
+//        list.add(new HomeEntity().setType(HomeEntity.TYPE_TAB_TITLE).setTabTitle("猜你喜欢"));
+//        for (int i = 0; i < 18; i++) {
+//            list.add(new HomeEntity().setType(HomeEntity.TYPE_BODY2).setBody2Position(i));
+//        }
 
         return list;
     }

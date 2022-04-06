@@ -2,6 +2,7 @@ package com.thfw.mobileheart.util;
 
 import android.app.Activity;
 
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 import com.thfw.mobileheart.activity.exercise.ExerciseActivity;
@@ -74,6 +75,15 @@ public class FunctionDurationUtil {
             }
         }
         return -1;
+    }
+
+    public static long getFunctionTime(int type) {
+        String key = ActivityLifeCycle.getTodayStartTime() + "_" + type;
+        return SharePreferenceUtil.getLong(key, 0);
+    }
+
+    public static String getFunctionTimeHour(int type) {
+        return String.valueOf(getFunctionTime(type) / (60 * 1000));
     }
 
     public static String getFunctionName(int type) {

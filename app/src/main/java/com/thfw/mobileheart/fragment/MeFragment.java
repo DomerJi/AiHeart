@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.fragment;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,6 +12,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.face.SimpleUpgradeStateListener;
+import com.thfw.base.utils.BuglyUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.integral.ClockInActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
@@ -18,6 +21,7 @@ import com.thfw.mobileheart.activity.me.CollectActivity;
 import com.thfw.mobileheart.activity.me.MeHistoryActivity;
 import com.thfw.mobileheart.activity.mood.MoodDetailActivity;
 import com.thfw.mobileheart.activity.mood.StatusActivity;
+import com.thfw.mobileheart.activity.service.AutoUpdateService;
 import com.thfw.mobileheart.activity.settings.HelpBackActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
 import com.thfw.mobileheart.activity.settings.SettingActivity;
@@ -65,6 +69,7 @@ public class MeFragment extends BaseFragment {
     private Button mBtLogout;
     private TextView mTvMeLevel;
     private TextView mTvHistoryHappy;
+    private TextView mTvMsgVersion;
 
     @Override
     public int getContentView() {
@@ -82,6 +87,7 @@ public class MeFragment extends BaseFragment {
         mRivAvatar = (RoundedImageView) findViewById(R.id.riv_avatar);
         mTvName = (TextView) findViewById(R.id.tv_name);
         mTvMeLevel = (TextView) findViewById(R.id.tv_me_level);
+        mTvMsgVersion = (TextView) findViewById(R.id.tv_massage_version);
         mTvStatus = (TextView) findViewById(R.id.tv_status);
         mRivAvatar.setOnClickListener(v -> {
             if (UserManager.getInstance().isTrueLogin()) {
@@ -215,6 +221,35 @@ public class MeFragment extends BaseFragment {
             mTvMeLevel.setText("");
             GlideUtil.load(mContext, R.mipmap.ic_launcher, mRivAvatar);
         }
+    }
+
+
+    @Override
+    public void onVisible(boolean isVisible) {
+        super.onVisible(isVisible);
+        if (isVisible) {
+            checkVersion();
+        }
+    }
+
+    /**
+     * 检查版本更新
+     */
+    private void checkVersion() {
+        BuglyUtil.requestNewVersion(new SimpleUpgradeStateListener() {
+            @Override
+            public void onVersion(boolean hasNewVersion) {
+                super.onVersion(hasNewVersion);
+                Log.d("requestNewVersion", "hasNewVersion = " + hasNewVersion);
+                if (isVisible()) {
+                    mTvMsgVersion.setText("新");
+                    mTvMsgVersion.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
+                    if (hasNewVersion) {
+                        AutoUpdateService.startUpdate(mContext);
+                    }
+                }
+            }
+        });
     }
 
 }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -12,11 +11,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.animation.BounceInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -54,7 +51,8 @@ import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
 import com.thfw.robotheart.activitys.talk.AndroidBug5497Workaround;
 import com.thfw.robotheart.activitys.talk.SoftKeyBoardListener;
 import com.thfw.robotheart.activitys.talk.TalkItemJumpHelper;
-import com.thfw.robotheart.activitys.text.BookActivity;
+import com.thfw.robotheart.activitys.talk.ThemeTalkActivity;
+import com.thfw.robotheart.activitys.test.TestActivity;
 import com.thfw.robotheart.adapter.ChatAdapter;
 import com.thfw.robotheart.adapter.ChatSelectAdapter;
 import com.thfw.robotheart.util.DialogRobotFactory;
@@ -189,25 +187,6 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
             TalkItemJumpHelper.onItemClick(mContext, type, recommendInfoBean);
         });
 
-        FrameLayout parentContent = findViewById(android.R.id.content);
-
-        parentContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                Rect r = new Rect();
-                parentContent.getWindowVisibleDisplayFrame(r);
-
-                int displayHeight = r.bottom - r.top;
-                Log.v(TAG, "displayHeight:" + displayHeight);
-
-                int parentHeight = parentContent.getHeight();
-                Log.v(TAG, "parentHeight:" + parentHeight);
-
-                int softKeyHeight = parentHeight - displayHeight;
-                Log.v(TAG, "softKeyHeight:" + softKeyHeight);
-            }
-        });
-
         mTitleRobotView.getIvBack().setOnClickListener(v -> {
             if (!mIsAchieve) {
                 finishService();
@@ -233,12 +212,10 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
                     if (!softKeyBoardShow) {
                         mRlKeyword.setVisibility(View.VISIBLE);
                     } else {
-                        // todo 待验证
                         mRlKeyword.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    // todo 待验证
-                    mRlKeyword.setVisibility(View.VISIBLE);
+                    mRlKeyword.setVisibility(View.GONE);
                 }
             }
         });
@@ -723,12 +700,13 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
                         public void onJump(int type, Object obj) {
                             switch (type) {
                                 case PageJumpUtils.JUMP_TEXT:
-                                    startActivity(new Intent(mContext, BookActivity.class));
+                                    startActivityForResult(new Intent(mContext, TestActivity.class), type);
                                     break;
                                 case PageJumpUtils.JUMP_MUSIC:
-                                    startActivity(new Intent(mContext, AudioHomeActivity.class));
+                                    startActivityForResult(new Intent(mContext, AudioHomeActivity.class), type);
                                     break;
                                 case PageJumpUtils.JUMP_AI_HOME:
+                                    startActivityForResult(new Intent(mContext, ThemeTalkActivity.class), type);
                                     break;
                             }
                         }
@@ -754,6 +732,16 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
         }
 
         switch (requestCode) {
+            case PageJumpUtils.JUMP_TEXT:
+            case PageJumpUtils.JUMP_MUSIC:
+            case PageJumpUtils.JUMP_AI_HOME:
+                // todo 待验证
+                if (mHelper.getTalkModel() != null) {
+                    mPresenter.onDialogTool(NetParams.crete()
+                            .add("id", mHelper.getTalkModel().getId())
+                            .add("value", "list_return"));
+                }
+                break;
             case ChatEntity.TYPE_RECOMMEND_TEXT:
             case ChatEntity.TYPE_RECOMMEND_VIDEO:
             case ChatEntity.TYPE_RECOMMEND_AUDIO:

@@ -2,7 +2,6 @@ package com.thfw.robotheart.activitys.talk;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -10,10 +9,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -128,7 +125,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, AiTalkActivity.class).putExtra(KEY_DATA, talkModel));
     }
-
 
     @Override
     public int getContentView() {
@@ -344,30 +340,11 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             TalkItemJumpHelper.onItemClick(mContext, type, recommendInfoBean);
         });
 
-        FrameLayout parentContent = findViewById(android.R.id.content);
-
-        parentContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                Rect r = new Rect();
-                parentContent.getWindowVisibleDisplayFrame(r);
-
-                int displayHeight = r.bottom - r.top;
-                Log.v(TAG, "displayHeight:" + displayHeight);
-
-                int parentHeight = parentContent.getHeight();
-                Log.v(TAG, "parentHeight:" + parentHeight);
-
-                int softKeyHeight = parentHeight - displayHeight;
-                Log.v(TAG, "softKeyHeight:" + softKeyHeight);
-            }
-        });
-
         mTitleRobotView.getIvBack().setOnClickListener(v -> {
             finishService();
         });
-        AndroidBug5497Workaround.assistActivity(this);
 
+        AndroidBug5497Workaround.assistActivity(this);
         SoftKeyBoardListener.setListener(this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
             @Override
             public void keyBoardShow(int height) {

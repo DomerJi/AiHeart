@@ -7,7 +7,8 @@
     android:layout_height="0dp"
     android:background="@mipmap/ic_login_top_bg"
     app:layout_constraintDimensionRatio="18:10"
-    tools:ignore="MissingConstraints">
+    tools:ignore="MissingConstraints"
+    tools:layout_height="200dp">
 
     <com.thfw.ui.widget.LinearTopLayout
         android:layout_width="match_parent"
@@ -37,7 +38,6 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginBottom="10dp"
-        android:padding="10dp"
         android:src="@mipmap/ic_login_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

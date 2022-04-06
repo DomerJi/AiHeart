@@ -41,6 +41,12 @@ import java.util.List;
  */
 public class DialogFactory {
 
+    private static final float WIDTH_ASPECT = 0.75f;
+
+    public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack) {
+        return createCustomDialog(activity, onViewCallBack, true);
+    }
+
     /**
      * 通用弹框
      *
@@ -48,19 +54,20 @@ public class DialogFactory {
      * @param onViewCallBack
      * @return
      */
-    public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack) {
+    public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack, boolean cancleOutside) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_custom_layout)
-                .setDialogAnimationRes(R.style.animate_dialog_fade)
-                .addOnClickListener(R.id.tv_left, R.id.tv_right)
-                .setScreenWidthAspect(activity, 0.65f)
+                .setLayoutRes(com.thfw.ui.R.layout.dialog_custom_layout)
+                .setDialogAnimationRes(com.thfw.ui.R.style.animate_dialog_fade)
+                .addOnClickListener(com.thfw.ui.R.id.tv_left, com.thfw.ui.R.id.tv_right)
+                .setScreenWidthAspect(activity, WIDTH_ASPECT)
+                .setCancelableOutside(cancleOutside)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
-                    TextView mTvTitle = viewHolder.getView(R.id.tv_title);
-                    TextView mTvHint = viewHolder.getView(R.id.tv_hint);
-                    TextView mTvLeft = viewHolder.getView(R.id.tv_left);
-                    TextView mTvRight = viewHolder.getView(R.id.tv_right);
-                    View mVLineVertical = viewHolder.getView(R.id.vline_vertical);
+                    TextView mTvTitle = viewHolder.getView(com.thfw.ui.R.id.tv_title);
+                    TextView mTvHint = viewHolder.getView(com.thfw.ui.R.id.tv_hint);
+                    TextView mTvLeft = viewHolder.getView(com.thfw.ui.R.id.tv_left);
+                    TextView mTvRight = viewHolder.getView(com.thfw.ui.R.id.tv_right);
+                    View mVLineVertical = viewHolder.getView(com.thfw.ui.R.id.vline_vertical);
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
                 })
                 .setOnViewClickListener(onViewCallBack).create().show();
@@ -78,7 +85,7 @@ public class DialogFactory {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_custom_three_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
-                .setScreenWidthAspect(activity, 0.65f)
+                .setScreenWidthAspect(activity, WIDTH_ASPECT)
                 .addOnClickListener(R.id.tv_one, R.id.tv_two, R.id.tv_three)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
@@ -88,6 +95,25 @@ public class DialogFactory {
                     TextView mTvTwo = viewHolder.getView(R.id.tv_two);
                     TextView mTvThree = viewHolder.getView(R.id.tv_three);
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvOne, mTvTwo, mTvThree);
+                })
+                .setOnViewClickListener(onViewCallBack).create().show();
+    }
+
+    /**
+     * 通用弹框
+     *
+     * @param activity
+     * @param onViewCallBack
+     * @return
+     */
+    public static TDialog createMoodSignInDialog(FragmentActivity activity, OnViewClickListener onViewCallBack) {
+        return new TDialog.Builder(activity.getSupportFragmentManager())
+                .setLayoutRes(R.layout.dialog_mood_sign_in_layout)
+                .setDialogAnimationRes(R.style.animate_dialog_fade)
+                .setScreenWidthAspect(activity, WIDTH_ASPECT)
+                .addOnClickListener(R.id.bt_go, R.id.iv_close)
+                // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
+                .setOnBindViewListener(viewHolder -> {
                 })
                 .setOnViewClickListener(onViewCallBack).create().show();
     }

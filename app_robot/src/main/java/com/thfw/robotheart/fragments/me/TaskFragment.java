@@ -11,6 +11,7 @@ import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TaskPresenter;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.task.TaskDetailsActivity;
@@ -65,6 +66,10 @@ public class TaskFragment extends RobotBaseFragment<TaskPresenter> implements Ta
         mTaskAdapter.setOnRvItemListener(new OnRvItemListener<TaskItemModel>() {
             @Override
             public void onItemClick(List<TaskItemModel> list, int position) {
+                if (list.get(position).getStatus() == 2) {
+                    ToastUtil.show("已过期");
+                    return;
+                }
                 TaskDetailsActivity.startActivity(mContext, list.get(position).getId());
             }
         });

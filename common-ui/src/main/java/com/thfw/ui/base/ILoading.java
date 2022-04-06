@@ -23,10 +23,10 @@ public interface ILoading {
 //        int EMPTY_ADDRESS = 5;
 //        int EMPTY_ORDER = 6;
 
-        ERROR_NET(1, "啊欧！网络找不到了啦…", "重新尝试"),
+        ERROR_NET(1, "网络故障，请检查网络连接", "重新尝试"),
         EMPTY_PRODUCT_CART(2, "购物车里空空如也，去挑选商品吧…", "去逛逛"),
         EMPTY_PRODUCT_SEARCH(2, "抱歉，没有找到符合条件的商品", ""),
-        EMPTY_PRODUCT(2, "这里空空如也~", ""),
+        EMPTY_PRODUCT(2, "暂无内容", ""),
         EMPTY_SHOP(3, "没有关注的店铺哦", "去逛逛"),
         EMPTY_NOTICE(4, "暂时没有通知哟", "去逛逛"),
         EMPTY_ADDRESS(5, "这里空空如也，快去添加地址吧…", "添加地址"),

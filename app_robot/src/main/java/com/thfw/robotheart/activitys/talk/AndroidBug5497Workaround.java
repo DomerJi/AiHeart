@@ -43,7 +43,8 @@ public class AndroidBug5497Workaround {
                 frameLayoutParams.height = usableHeightSansKeyboard - heightDifference;
             } else {
                 // keyboard probably just became hidden
-                frameLayoutParams.height = usableHeightSansKeyboard;
+                frameLayoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT;
+
             }
             mChildOfContent.requestLayout();
             usableHeightPrevious = usableHeightNow;

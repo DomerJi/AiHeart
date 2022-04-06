@@ -7,6 +7,9 @@
     <string name="me">我的</string>
     <string name="local_one_step_login">本机号码一键登录</string>
 
+
+    <string name="finishDownlaodApk">已在Wifi连接下，为您下载好新版本，是否现在安装？</string>
+
     <string name="sort_type_talk">聊一聊</string>
     <string name="sort_type_what">问一问</string>
     <string name="sort_type_test">测一测</string>

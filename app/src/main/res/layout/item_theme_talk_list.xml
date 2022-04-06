@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="12dp"
+    android:paddingTop="8dp"
+    android:paddingRight="12dp"
+    tools:background="@color/white">
+
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/riv_etc_bg"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:scaleType="centerCrop"
+        app:riv_corner_radius="@dimen/cardview_default_radius"
+        app:riv_oval="false"
+        tools:ignore="MissingConstraints"
+        tools:src="@mipmap/ic_launcher" />
+
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:gravity="left"
+        android:maxLines="2"
+        android:paddingLeft="8dp"
+        android:textColor="@color/text_common"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintLeft_toRightOf="@id/riv_etc_bg"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="@string/title" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_1px"
+        android:layout_marginTop="8dp"
+        android:background="@color/divider_color"
+        app:layout_constraintTop_toBottomOf="@id/riv_etc_bg" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,6 +10,19 @@ import com.thfw.base.base.IModel;
  */
 public class ThemeTalkModel implements IModel {
 
+    public static final int TYPE_TOP = 1;
+    public static final int TYPE_BODY = 0;
+
+    @SerializedName("m_item_type")
+    private int itemType;
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
+
+    public int getItemType() {
+        return itemType;
+    }
 
     /**
      * id : 459

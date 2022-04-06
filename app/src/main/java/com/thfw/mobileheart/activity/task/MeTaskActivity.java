@@ -12,7 +12,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.R;
-import com.thfw.mobileheart.fragment.list.TestHistoryListFragment;
+import com.thfw.mobileheart.fragment.list.TaskFragment;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;
 
@@ -55,8 +55,9 @@ public class MeTaskActivity extends BaseActivity {
         //添加tab
         for (int i = 0; i < tabs.length; i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(tabs[i]));
-            tabFragmentList.add(new TestHistoryListFragment(tabs[i]));
         }
+        tabFragmentList.add(new TaskFragment(0));
+        tabFragmentList.add(new TaskFragment(1));
 
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             @NonNull

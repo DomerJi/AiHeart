@@ -664,6 +664,16 @@
                     android:textSize="@dimen/textSize" />
 
 
+                <include
+                    android:id="@+id/tv_massage_version"
+                    layout="@layout/custom_message_number_red_dot_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    app:layout_constraintLeft_toRightOf="@id/iv_me"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="wrap_content"

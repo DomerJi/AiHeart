@@ -148,17 +148,22 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
         //当前已经是最后的一个Activity，代表此时应用退出了，保存时间。
         // 如果跨天了，则从新一天的0点开始计时
         if (foregroundActivityCount == 0) {
-            isForegroundNow = false;
-            LogUtil.d(TAG, "switch to background (reduce time[" + appUseReduceTime + "])");
-            if (getTodayStartTime() > appStartTime) {
-                runTimeThisDay = System.currentTimeMillis() - getTodayStartTime();
-            } else {
-                runTimeThisDay = System.currentTimeMillis() - appStartTime;
-            }
-            saveTodayPlayTime(runTimeThisDay);
-            lastCheckTime = System.currentTimeMillis();
-            LogUtil.d(TAG, "run time  :" + runTimeThisDay);
+            saveAppUseTime();
         }
+    }
+
+    public void saveAppUseTime() {
+        isForegroundNow = false;
+        LogUtil.d(TAG, "switch to background (reduce time[" + appUseReduceTime + "])");
+        if (getTodayStartTime() > appStartTime) {
+            runTimeThisDay = System.currentTimeMillis() - getTodayStartTime();
+        } else {
+            runTimeThisDay = System.currentTimeMillis() - appStartTime;
+        }
+        appStartTime = System.currentTimeMillis();
+        saveTodayPlayTime(runTimeThisDay);
+        lastCheckTime = System.currentTimeMillis();
+        LogUtil.d(TAG, "run time  :" + runTimeThisDay);
     }
 
     @Override
@@ -201,7 +206,7 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
      *
      * @return
      */
-    private long getTodayStartTime() {
+    public static long getTodayStartTime() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.set(Calendar.HOUR_OF_DAY, 0);

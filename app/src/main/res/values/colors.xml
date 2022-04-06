@@ -3,5 +3,7 @@
 
     <color name="login_agree">#00A871</color>
     <color name="xt_hint_title">#E64550</color>
+    <color name="chat_green">#96ec6f</color>
+    <color name="chat_green_80">#AC96ec6f</color>
 
 </resources>

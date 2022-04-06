@@ -26,47 +26,100 @@
     <RelativeLayout
         android:id="@+id/rl_send"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:minHeight="46dp"
         tools:ignore="MissingConstraints">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/divider_2px"
-            android:background="@color/divider" />
-
-
-        <TextView
-            android:id="@+id/tv_send"
-            android:layout_width="60dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
+        <ImageView
+            android:id="@+id/iv_input_type"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
             android:layout_centerVertical="true"
-            android:layout_marginRight="12dp"
-            android:background="@drawable/common_guadual_btn_selector"
-            android:gravity="center"
-            android:text="发送"
-            android:textColor="@color/white"
-            android:textSize="@dimen/textSize_small" />
+            android:layout_marginLeft="4dp"
+            android:padding="8dp"
+            android:src="@drawable/chat_input_type_selector" />
+
 
         <EditText
             android:id="@+id/et_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="6dp"
             android:layout_marginRight="12dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="6dp"
             android:layout_toLeftOf="@id/tv_send"
-            android:background="@drawable/bg_chat_radius_box_border"
+            android:layout_toRightOf="@id/iv_input_type"
+            android:background="@drawable/radius_4dp_page_gray_bg"
             android:hint="请输入您的问题"
+            android:maxLines="6"
+            android:minHeight="34dp"
             android:paddingLeft="12dp"
+            android:paddingTop="6dp"
             android:paddingRight="12dp"
-            android:textColor="@color/text_hint"
-            android:textColorHint="@color/text_content"
-            android:textSize="@dimen/textSize_small" />
+            android:paddingBottom="6dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/text_hint"
+            android:textSize="@dimen/textSize" />
+
+
+        <TextView
+            android:id="@+id/tv_press_speech"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="6dp"
+            android:layout_toLeftOf="@id/tv_send"
+            android:layout_toRightOf="@id/iv_input_type"
+            android:background="@drawable/radius_4dp_page_gray_bg"
+            android:gravity="center"
+            android:maxLines="6"
+            android:minHeight="34dp"
+            android:paddingLeft="12dp"
+            android:paddingTop="6dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="6dp"
+            android:text="按住 说话"
+            android:textColor="@color/text_content"
+            android:textSize="@dimen/textSize"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_send"
+            style="@style/common_button"
+            android:layout_width="60dp"
+            android:layout_height="34dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/common_4dp_guadual_btn_selector"
+            android:gravity="center"
+            android:text="发送"
+            android:textColor="@drawable/common_btn_textcolor_selector"
+            android:textSize="@dimen/textSize" />
 
 
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_1px"
+        android:layout_above="@id/rl_send"
+        android:background="@color/divider" />
+
+
+    <include
+        android:id="@+id/i_input_voice_control"
+        layout="@layout/input_voice_control"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/titleView"
+        android:visibility="gone" />
 
 </RelativeLayout>

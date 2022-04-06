@@ -9,7 +9,7 @@
 
     <ImageView
         android:id="@+id/iv_load_fail"
-        android:layout_width="100dp"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:src="@mipmap/ic_load_net_error"

@@ -47,9 +47,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activity.talk.ThemeListActivity"></activity>
         <activity
             android:name=".activity.mood.MoodDetailActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.task.TaskDetailsActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.settings.SimpleTextActivity"
             android:screenOrientation="portrait" />
@@ -213,7 +217,12 @@
         <activity
             android:name=".activity.login.LoginActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.AudioSuspendActivity" />
+        <activity
+            android:name=".activity.AudioSuspendActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.settings.SystemAppActivity"
+            android:screenOrientation="portrait" />
 
         <service android:name="com.thfw.base.net.download.DownLoadIntentService">
             <intent-filter>
@@ -242,6 +251,9 @@
             android:name=".push.MyCustomMessageService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".activity.service.AutoUpdateService"
+            android:exported="false" />
 
         <activity
             android:name=".push.MyCustomNotificationClickActivity"

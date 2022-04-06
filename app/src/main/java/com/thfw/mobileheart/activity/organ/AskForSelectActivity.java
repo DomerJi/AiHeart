@@ -131,8 +131,22 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
                 LogUtil.d(TAG, "codeData = " + codeData);
                 // todo
                 CommonParameter.setOrganizationId("1");
+                if (!mSelecteds.isEmpty()) {
+                    mLoadingView.showLoading();
+                    mSelecteds.clear();
+                    if (mOranSelectedAdapter != null) {
+                        mOranSelectedAdapter.setDataListNotify(null);
+                    }
+                    if (mOrganSelectChildrenAdapter != null) {
+                        mOrganSelectChildrenAdapter.setDataListNotify(null);
+                    }
+                }
                 mClSelect.setVisibility(View.VISIBLE);
                 mClRequest.setVisibility(View.GONE);
+                mTitleView.setRightText("重新扫码");
+                mTitleView.setOnClickListener(v -> {
+                    mBtScanJoin.performClick();
+                });
                 initDataList();
                 break;
         }
