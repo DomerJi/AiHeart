@@ -20,7 +20,9 @@ import com.thfw.models.TokenModel;
 import com.thfw.net.CommonInterceptor;
 import com.thfw.net.ResponeThrowable;
 import com.thfw.presenter.LoginPresenter;
+import com.thfw.util.AESUtils3;
 import com.thfw.util.ContextApp;
+import com.thfw.util.EmptyUtil;
 import com.thfw.util.LogUtil;
 import com.thfw.util.SharePreferenceUtil;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -30,10 +32,11 @@ import java.util.Locale;
 
 public final class YmHandler {
 
-
-    private static final String ORGAN_ID = "1";
-
+    //手机号
+    private static final String REGEX_PHONE = "0?(13|14|15|16|17|18|19)[0-9]{9}";
+    private static String appKey;
     private static OnYmLoginCallBack statciOnYmLoginCallBack;
+    private static OnYmLoginLoadingListener onYmLoginLoadingListener;
     private static String token;
 
     static {
@@ -63,16 +66,33 @@ public final class YmHandler {
 
     }
 
-    public static void setOnYmLoginCallBack(OnYmLoginCallBack onYmLoginCallBack) {
-        statciOnYmLoginCallBack = onYmLoginCallBack;
+
+    private YmHandler() {
+
     }
 
+    // 9HgJ5TNZEMmuoNDuxfRjIg==
+    public static void setAppKey(String appKey) {
+        YmHandler.appKey = appKey;
+    }
 
-    private static void init(Context context, String userId, String phone, String nickname, OnYmLoginCallBack onYmLoginCallBack) {
+    public static void setOnYmLoginCallBack(OnYmLoginCallBack onYmLoginCallBack) {
+        YmHandler.statciOnYmLoginCallBack = onYmLoginCallBack;
+    }
+
+    public static void setOnYmLoginLoadingListener(OnYmLoginLoadingListener onYmLoginLoadingListener) {
+        YmHandler.onYmLoginLoadingListener = onYmLoginLoadingListener;
+    }
+
+    private static void init(Context context, String userId, String phone, String userName, OnYmLoginCallBack onYmLoginCallBack) {
         ContextApp.init(context.getApplicationContext());
-        ContextApp.setDeviceType(ContextApp.DeviceType.ROBOT);
+        if (EmptyUtil.isEmpty(appKey)) {
+            onYmLoginCallBack.onFail(-7, "参数错误-7");
+            return;
+        }
         String packageName = context.getPackageName();
-        String openId = packageName + "_" + ORGAN_ID + "_" + userId;
+        String organId = AESUtils3.decrypt(appKey, "900677d13b86e89d01dafe179f5b36ce");
+        String openId = packageName + "_" + organId + "_" + userId;
         token = SharePreferenceUtil.getString(openId, null);
         if (!TextUtils.isEmpty(token)) {
             onYmLoginCallBack.onSuccess();
@@ -80,10 +100,19 @@ public final class YmHandler {
                 statciOnYmLoginCallBack.onSuccess();
             }
         } else {
-            if (context instanceof FragmentActivity) {
-                LoadingDialog.show((FragmentActivity) context, "加载中");
+            if (!EmptyUtil.isEmpty(phone)) {
+                if (!phone.matches(REGEX_PHONE)) {
+                    onYmLoginCallBack.onFail(-8, "参数错误-8");
+                    return;
+                }
             }
-
+            if (context instanceof FragmentActivity) {
+                if (YmHandler.onYmLoginLoadingListener == null) {
+                    LoadingDialog.show((FragmentActivity) context, "加载中");
+                } else {
+                    YmHandler.onYmLoginLoadingListener.show();
+                }
+            }
             new LoginPresenter(new LoginPresenter.LoginUi<TokenModel>() {
                 @Override
                 public LifecycleProvider getLifecycleProvider() {
@@ -92,6 +121,9 @@ public final class YmHandler {
 
                 @Override
                 public void onSuccess(TokenModel data) {
+                    if (YmHandler.onYmLoginLoadingListener != null) {
+                        YmHandler.onYmLoginLoadingListener.hide();
+                    }
                     LoadingDialog.hide();
                     if (data == null || TextUtils.isEmpty(data.token)) {
                         onFail(new ResponeThrowable(-99, "login data null"));
@@ -100,20 +132,24 @@ public final class YmHandler {
                     token = data.token;
                     SharePreferenceUtil.setString(openId, data.token);
                     onYmLoginCallBack.onSuccess();
-                    if (statciOnYmLoginCallBack != null) {
-                        statciOnYmLoginCallBack.onSuccess();
+                    if (YmHandler.onYmLoginLoadingListener != null) {
+                        YmHandler.onYmLoginLoadingListener.hide();
                     }
+                    if (YmHandler.statciOnYmLoginCallBack != null) {
+                        YmHandler.statciOnYmLoginCallBack.onSuccess();
+                    }
+
                 }
 
                 @Override
                 public void onFail(ResponeThrowable throwable) {
                     LoadingDialog.hide();
                     onYmLoginCallBack.onFail(throwable.getCode(), throwable.getMessage());
-                    if (statciOnYmLoginCallBack != null) {
-                        statciOnYmLoginCallBack.onFail(throwable.getCode(), throwable.getMessage());
+                    if (YmHandler.statciOnYmLoginCallBack != null) {
+                        YmHandler.statciOnYmLoginCallBack.onFail(throwable.getCode(), throwable.getMessage());
                     }
                 }
-            }).loginByPassword("16630007656", "123456");
+            }).loginByOpenId(phone, organId, userName, openId);
         }
     }
 
@@ -151,6 +187,7 @@ public final class YmHandler {
         });
     }
 
+
     public interface OnYmLoginCallBack {
 
         void onSuccess();
@@ -159,7 +196,11 @@ public final class YmHandler {
 
     }
 
-    private YmHandler() {
+    public interface OnYmLoginLoadingListener {
+
+        void show();
+
+        void hide();
 
     }
 }

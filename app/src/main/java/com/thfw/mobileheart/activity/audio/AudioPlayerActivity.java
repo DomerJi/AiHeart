@@ -72,6 +72,9 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
         VideoGestureHelper.VideoGestureListener, AudioPresenter.AudioUi<AudioEtcDetailModel> {
 
 
+    private static final String KEY_RECOMMEND = "key.recommend";
+    private static TaskMusicEtcModel mStaticTaskEtcModel;
+    boolean flDurationEnd = true;
     private com.google.android.exoplayer2.ui.StyledPlayerView mAudioView;
     private ImageView mIvBlurBg;
     private View btPlay;
@@ -81,10 +84,6 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
     private TextView mTvAudioTitle;
     private TextView mTvEtcTitle;
     private TextView mTvEtcTitleLogcate;
-
-    private static final String KEY_RECOMMEND = "key.recommend";
-    private static TaskMusicEtcModel mStaticTaskEtcModel;
-    boolean flDurationEnd = true;
     private LoadingView mPbBar;
     private ObjectAnimator animation;
     private ArrayList<AudioEtcDetailModel.AudioItemModel> mAudios = new ArrayList<>();
@@ -117,13 +116,27 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
     private View mVborder01;
     private boolean animatIng;
 
+    public static void startActivity(Context context, AudioEtcModel audioEtcModel) {
+        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
+                .putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
+    }
+
+    public static void startActivity(Context context, AudioEtcModel audioEtcModel, TaskMusicEtcModel taskMusicEtcModel) {
+        mStaticTaskEtcModel = taskMusicEtcModel;
+        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
+                .putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
+    }
+
+    public static void startActivity(Context context, AudioEtcDetailModel.AudioItemModel audioItemModel) {
+        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
+                .putExtra(KEY_RECOMMEND, audioItemModel), ChatEntity.TYPE_RECOMMEND_AUDIO);
+    }
 
     @Override
     public int getContentView() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         return R.layout.activity_audio_player;
     }
-
 
     @Override
     public void initView() {
@@ -178,7 +191,6 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
         initGesture();
     }
 
-
     private void startAnimateBorder(View view, long delay) {
         if (!animatIng) {
             return;
@@ -215,29 +227,10 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
                 }).start();
     }
 
-
     @Override
     public int getStatusBarColor() {
         return STATUSBAR_TRANSPARENT;
     }
-
-
-    public static void startActivity(Context context, AudioEtcModel audioEtcModel) {
-        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
-                .putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
-    }
-
-    public static void startActivity(Context context, AudioEtcModel audioEtcModel, TaskMusicEtcModel taskMusicEtcModel) {
-        mStaticTaskEtcModel = taskMusicEtcModel;
-        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
-                .putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
-    }
-
-    public static void startActivity(Context context, AudioEtcDetailModel.AudioItemModel audioItemModel) {
-        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
-                .putExtra(KEY_RECOMMEND, audioItemModel), ChatEntity.TYPE_RECOMMEND_AUDIO);
-    }
-
 
     @Override
     public AudioPresenter onCreatePresenter() {
@@ -299,6 +292,11 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
             mPbBar.hide();
             autoFinished = mItemModel.isAutoFinished();
         } else {
+            if (mModel == null) {
+                ToastUtil.show("参数错误");
+                finish();
+                return;
+            }
             autoFinished = mModel.isAutoFinished();
 
             // 正念冥想任务

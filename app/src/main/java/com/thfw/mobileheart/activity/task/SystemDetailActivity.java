@@ -20,7 +20,8 @@ import com.thfw.base.models.SystemDetailModel;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TaskPresenter;
-import com.thfw.base.utils.ToastUtil;import com.thfw.mobileheart.R;
+import com.thfw.base.utils.ToastUtil;
+import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.util.WebSizeUtil;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.LoadingView;
@@ -36,6 +37,7 @@ import java.util.Iterator;
 
 public class SystemDetailActivity extends BaseActivity<TaskPresenter> implements TaskPresenter.TaskUi<SystemDetailModel> {
 
+    private static final String KEY_DATA_STR = "key.data.str";
     private AgentWeb mAgentWeb;
     private String contentHtml;
     private String fontSize;
@@ -47,7 +49,6 @@ public class SystemDetailActivity extends BaseActivity<TaskPresenter> implements
     private LoadingView mLoadingView;
     private boolean requestIng = false;
     private int bookId;
-    private static final String KEY_DATA_STR = "key.data.str";
 
     public static void startActivity(Context context, int id) {
         ((Activity) context).startActivity(new Intent(context, SystemDetailActivity.class)

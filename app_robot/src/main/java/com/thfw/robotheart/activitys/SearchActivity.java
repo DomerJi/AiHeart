@@ -130,6 +130,7 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
                     hideResult();
                     mClHistory.setVisibility(View.VISIBLE);
                     mLoadingView.hide();
+                    return;
                 }
                 if (clickSearch) {
                     onGoSearch(key);

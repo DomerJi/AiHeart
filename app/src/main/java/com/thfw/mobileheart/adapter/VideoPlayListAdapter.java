@@ -40,12 +40,12 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
 
     private int playPosition;
 
-    public void setPlayPosition(int playPosition) {
-        this.playPosition = playPosition;
-    }
-
     public VideoPlayListAdapter(List<VideoPlayListModel> dataList) {
         super(dataList);
+    }
+
+    public void setPlayPosition(int playPosition) {
+        this.playPosition = playPosition;
     }
 
     @NonNull

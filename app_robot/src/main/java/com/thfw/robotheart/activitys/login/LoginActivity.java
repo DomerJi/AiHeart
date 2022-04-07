@@ -65,6 +65,59 @@ public class LoginActivity extends BaseActivity {
         context.startActivity(new Intent(context, LoginActivity.class).putExtra(KEY_DATA, type));
     }
 
+    public static void login(Activity activity, TokenModel data, String mobile) {
+        if (data != null && !TextUtils.isEmpty(data.token)) {
+            User user = new User();
+            user.setToken(data.token);
+            user.setMobile(mobile);
+            user.setSetUserInfo(data.isSetUserInfo());
+            user.setOrganization(data.organization);
+            user.setAuthTypeList(data.getAuthType());
+            LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
+            if (data.isNoOrganization()) {
+                user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
+                UserManager.getInstance().login(user);
+                SelectOrganizationActivity.startActivity(activity, true);
+            } else if (data.isNoSetUserInfo()) {
+                user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
+                UserManager.getInstance().login(user);
+                InfoActivity.startActivityFirst(activity);
+            } else {
+                user.setLoginStatus(LoginStatus.LOGINED);
+                UserManager.getInstance().login(user);
+            }
+            activity.finish();
+        } else {
+            ToastUtil.show("token 参数错误");
+        }
+    }
+
+    /**
+     * 检测不到有效的机构编码，请联系管理员解决
+     *
+     * @param activity
+     */
+    public static void showOrganIdNoValid(FragmentActivity activity) {
+
+        DialogRobotFactory.createCustomDialog(activity, new DialogRobotFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                String organId = CommonParameter.getOrganizationId();
+                mTvTitle.setText("设备状态");
+                mTvHint.setText("无效的机构编码，请联系管理员解决！"
+                        + "\n当前机构编码：" + (TextUtils.isEmpty(organId) ? "空" : organId));
+                mVLineVertical.setVisibility(View.GONE);
+                mTvLeft.setVisibility(View.GONE);
+                mTvRight.setTextColor(Color.RED);
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+            }
+        }, false);
+    }
+
     @Override
     public int getContentView() {
         return R.layout.activity_login;
@@ -202,63 +255,10 @@ public class LoginActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    public static void login(Activity activity, TokenModel data, String mobile) {
-        if (data != null && !TextUtils.isEmpty(data.token)) {
-            User user = new User();
-            user.setToken(data.token);
-            user.setMobile(mobile);
-            user.setSetUserInfo(data.isSetUserInfo());
-            user.setOrganization(data.organization);
-            user.setAuthTypeList(data.getAuthType());
-            LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
-            if (data.isNoOrganization()) {
-                user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
-                UserManager.getInstance().login(user);
-                SelectOrganizationActivity.startActivity(activity, true);
-            } else if (data.isNoSetUserInfo()) {
-                user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
-                UserManager.getInstance().login(user);
-                InfoActivity.startActivityFirst(activity);
-            } else {
-                user.setLoginStatus(LoginStatus.LOGINED);
-                UserManager.getInstance().login(user);
-            }
-            activity.finish();
-        } else {
-            ToastUtil.show("token 参数错误");
-        }
-    }
-
     private void checkOrganDialog() {
 
         if (!CommonParameter.isValid() && checkPermissions()) {
             showOrganIdNoValid(LoginActivity.this);
         }
-    }
-
-    /**
-     * 检测不到有效的机构编码，请联系管理员解决
-     *
-     * @param activity
-     */
-    public static void showOrganIdNoValid(FragmentActivity activity) {
-
-        DialogRobotFactory.createCustomDialog(activity, new DialogRobotFactory.OnViewCallBack() {
-            @Override
-            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-                String organId = CommonParameter.getOrganizationId();
-                mTvTitle.setText("设备状态");
-                mTvHint.setText("无效的机构编码，请联系管理员解决！"
-                        + "\n当前机构编码：" + (TextUtils.isEmpty(organId) ? "空" : organId));
-                mVLineVertical.setVisibility(View.GONE);
-                mTvLeft.setVisibility(View.GONE);
-                mTvRight.setTextColor(Color.RED);
-            }
-
-            @Override
-            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                tDialog.dismiss();
-            }
-        }, false);
     }
 }

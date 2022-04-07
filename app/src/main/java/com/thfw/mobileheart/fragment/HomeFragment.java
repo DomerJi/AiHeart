@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -20,8 +21,10 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.HomeEntity;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.ToastUtil;
+import com.thfw.export_ym.YmHandler;
 import com.thfw.mobileheart.R;
-import com.thfw.mobileheart.activity.ExoPlayerActivity;
+import com.thfw.mobileheart.activity.SearchActivity;
 import com.thfw.mobileheart.adapter.HomeAdapter;
 import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.base.BaseFragment;
@@ -74,6 +77,17 @@ public class HomeFragment extends BaseFragment {
         mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
         mLtlTop = (LinearTopLayout) findViewById(R.id.ltl_top);
         mSearch = (MySearchView) findViewById(R.id.search);
+        mSearch.setOnSearchListener(new MySearchView.OnSearchListener() {
+            @Override
+            public void onSearch(String key, boolean clickSearch) {
+
+            }
+
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(mContext, SearchActivity.class));
+            }
+        });
         mRefreshLayout.setHeaderHeight(75);
     }
 
@@ -150,7 +164,19 @@ public class HomeFragment extends BaseFragment {
         mHomeAdapter.setOnRvItemListener(new OnRvItemListener<HomeEntity>() {
             @Override
             public void onItemClick(List<HomeEntity> list, int position) {
-                startActivity(new Intent(mContext, ExoPlayerActivity.class));
+//                startActivity(new Intent(mContext, ExoPlayerActivity.class));
+                YmHandler.setOnYmLoginCallBack(new YmHandler.OnYmLoginCallBack() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onFail(int code, String error) {
+                        ToastUtil.show(error);
+                    }
+                });
+                YmHandler.startMentalTest(mContext, "100010", "17085375010", "DomerJi");
             }
         });
         // 添加动画

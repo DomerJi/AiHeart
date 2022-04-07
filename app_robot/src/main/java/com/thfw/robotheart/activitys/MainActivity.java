@@ -31,6 +31,7 @@ import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
@@ -178,6 +179,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         OkHttpUtil.setBaseCodeListener(code -> {
             if (code == BaseCodeListener.LOGOUT) {
                 if (UserManager.getInstance().isTrueLogin()) {
+                    ToastUtil.show(com.thfw.ui.R.string.token_not_valid);
                     UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
                     MyApplication.goAppHome((Activity) mContext);
                 }

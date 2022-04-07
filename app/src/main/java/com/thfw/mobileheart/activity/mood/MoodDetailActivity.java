@@ -54,6 +54,23 @@ import java.util.List;
  */
 public class MoodDetailActivity extends BaseActivity {
 
+    private static final Object LINE_DATA = new Object();
+    private static final float CHART_TEXTSIZE = 7.5f;
+    protected final String[] months = new String[]{
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
+    };
+    protected final String[] parties = new String[]{
+            "Party A", "Party B", "Party C", "Party D", "Party E", "Party F", "Party G", "Party H",
+            "Party I", "Party J", "Party K", "Party L", "Party M", "Party N", "Party O", "Party P",
+            "Party Q", "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X",
+            "Party Y", "Party Z"
+    };
+    /**
+     * 一个月4个礼拜计算
+     */
+    private final int count = 4;
+    protected Typeface tfRegular;
+    protected Typeface tfLight;
     private com.thfw.ui.widget.TitleView mTitleView;
     private androidx.constraintlayout.widget.ConstraintLayout mClCalendar;
     private android.widget.LinearLayout mLlYearMonth;
@@ -62,11 +79,6 @@ public class MoodDetailActivity extends BaseActivity {
     private android.widget.ImageView mIvRightMonth;
     private com.haibin.calendarview.CalendarLayout mCalendarLayout;
     private com.haibin.calendarview.CalendarView mCalendarView;
-
-    private static final Object LINE_DATA = new Object();
-
-    private static final float CHART_TEXTSIZE = 7.5f;
-
     private HashMap<String, HashSet<String>> mAllHasDayMap = new HashMap<>();
     private int schemeColor;
     private String mCurrentMonth;
@@ -245,13 +257,6 @@ public class MoodDetailActivity extends BaseActivity {
 //            }
 //        }).onMonthHasDay(scene, month);
     }
-
-    /**
-     * 一个月4个礼拜计算
-     */
-    private final int count = 4;
-    protected Typeface tfRegular;
-    protected Typeface tfLight;
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -549,17 +554,5 @@ public class MoodDetailActivity extends BaseActivity {
     protected float getRandom(float range, float start) {
         return (float) (Math.random() * range) + start;
     }
-
-
-    protected final String[] months = new String[]{
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
-    };
-
-    protected final String[] parties = new String[]{
-            "Party A", "Party B", "Party C", "Party D", "Party E", "Party F", "Party G", "Party H",
-            "Party I", "Party J", "Party K", "Party L", "Party M", "Party N", "Party O", "Party P",
-            "Party Q", "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X",
-            "Party Y", "Party Z"
-    };
 
 }

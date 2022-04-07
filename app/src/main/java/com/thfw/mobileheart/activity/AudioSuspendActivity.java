@@ -27,8 +27,8 @@ import com.iflytek.cloud.util.ResourceUtil;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
-import com.thfw.mobileheart.aiui.TTSLocalManager;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.aiui.TTSLocalManager;
 import com.thfw.ui.base.BaseActivity;
 
 import java.io.File;
@@ -46,6 +46,17 @@ import static com.just.agentweb.ActionActivity.REQUEST_CODE;
  */
 public class AudioSuspendActivity extends BaseActivity {
 
+    // 音频源：音频输入-麦克风
+    private final static int AUDIO_INPUT = MediaRecorder.AudioSource.MIC;
+    // 采样率
+    // 44100是目前的标准，但是某些设备仍然支持22050，16000，11025
+    // 采样频率一般共分为22.05KHz、44.1KHz、48KHz三个等级
+    private final static int AUDIO_SAMPLE_RATE = 16000;
+    // 音频通道 单声道
+    private final static int AUDIO_CHANNEL = AudioFormat.CHANNEL_IN_MONO;
+    // 音频格式：PCM编码
+    private final static int AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
+    private static final int MY_PERMISSIONS_REQUEST = 1001;
     String test = "东京的骄阳下，德约太累了。2021年7月，东京有明网球公园被盛夏的蝉鸣声所包围，" +
             "中午的气温可以达到35摄氏度，体感温度逼近50摄氏度。在这种火热的天气之下，带着为自己和" +
             "塞尔维亚代表团夺得一枚奥运金牌的渴望，刚刚在温网夺得第20座大满贯冠军的德约科维奇把自" +
@@ -55,12 +66,134 @@ public class AudioSuspendActivity extends BaseActivity {
             " 最终，他以男单第四名和退出混双铜牌战结束了第4次奥运之旅，奥运会最好成绩依然是2008年北京的那枚铜牌。" +
             "“很糟糕，我感到很糟糕，我的比赛打得支离破碎。”他在男单半决赛不敌小兹维列夫之后说，“但是为塞尔维亚出战，" +
             "我并不后悔。”";
+//    private TTSAndroidManager ttsAndroid;
+    SynthesizerListener synthesizerListener = new SynthesizerListener() {
+        @Override
+        public void onSpeakBegin() {
+            LogUtil.d("onSpeakBegin - ");
+        }
+
+        @Override
+        public void onBufferProgress(int i, int i1, int i2, String s) {
+            LogUtil.d("onBufferProgress - ");
+        }
+
+        @Override
+        public void onSpeakPaused() {
+            LogUtil.d("onSpeakPaused - ");
+        }
+
+        @Override
+        public void onSpeakResumed() {
+            LogUtil.d("onSpeakResumed - ");
+        }
+
+        @Override
+        public void onSpeakProgress(int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onCompleted(SpeechError speechError) {
+
+        }
+
+        @Override
+        public void onEvent(int i, int i1, int i2, Bundle bundle) {
+
+        }
+    };
     private android.widget.TextView mTvText;
     private android.widget.RadioGroup mRgType;
     private android.widget.RadioButton mRbWord;
     private android.widget.RadioButton mRbTalk;
     private TTSLocalManager ttsLocalManager;
-//    private TTSAndroidManager ttsAndroid;
+    // 唤醒配置
+    private int curThresh = 1150;
+    private String threshStr = "门限值：";
+    // 0：单次唤醒   1：循环唤醒
+    private String keep_alive = "1";
+    private String ivwNetMode = "0";
+    /**
+     * 需要申请的运行时权限
+     */
+    private String[] permissions = new String[]{
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+    private String pcmFileName;
+    private String wavFileName;
+
+    // android 录音 ==============================
+    private AudioRecord audioRecord = null;  // 声明 AudioRecord 对象
+    private int recordBufSize = 0; // 声明recoordBufffer的大小字段
+    private byte[] buffer;
+    private boolean isRecording;
+
+    /**
+     * 音量判断，录音检测
+     *
+     * @param var0
+     * @param var1
+     * @return
+     */
+    public static int calculateVolume(byte[] var0, int var1) {
+        int[] var3 = null;
+        int var4 = var0.length;
+        int var2;
+        if (var1 == 8) {
+            var3 = new int[var4];
+            for (var2 = 0; var2 < var4; ++var2) {
+                var3[var2] = var0[var2];
+            }
+        } else if (var1 == 16) {
+            var3 = new int[var4 / 2];
+            for (var2 = 0; var2 < var4 / 2; ++var2) {
+                byte var5 = var0[var2 * 2];
+                byte var6 = var0[var2 * 2 + 1];
+                int var13;
+                if (var5 < 0) {
+                    var13 = var5 + 256;
+                } else {
+                    var13 = var5;
+                }
+                short var7 = (short) (var13 + 0);
+                if (var6 < 0) {
+                    var13 = var6 + 256;
+                } else {
+                    var13 = var6;
+                }
+                var3[var2] = (short) (var7 + (var13 << 8));
+            }
+        }
+
+        int[] var8 = var3;
+        if (var3 != null && var3.length != 0) {
+            float var10 = 0.0F;
+            for (int var11 = 0; var11 < var8.length; ++var11) {
+                var10 += (float) (var8[var11] * var8[var11]);
+            }
+            var10 /= (float) var8.length;
+            float var12 = 0.0F;
+            for (var4 = 0; var4 < var8.length; ++var4) {
+                var12 += (float) var8[var4];
+            }
+            var12 /= (float) var8.length;
+            var4 = (int) (Math.pow(2.0D, (double) (var1 - 1)) - 1.0D);
+            double var14 = Math.sqrt((double) (var10 - var12 * var12));
+            int var9;
+            if ((var9 = (int) (10.0D * Math.log10(var14 * 10.0D * Math.sqrt(2.0D) / (double) var4 + 1.0D))) < 0) {
+                var9 = 0;
+            }
+            if (var9 > 10) {
+                var9 = 10;
+            }
+            return var9;
+        } else {
+            return 0;
+        }
+    }
 
     @Override
     public int getContentView() {
@@ -135,49 +268,6 @@ public class AudioSuspendActivity extends BaseActivity {
             ttsLocalManager.start(test, synthesizerListener);
         }
     }
-
-    SynthesizerListener synthesizerListener = new SynthesizerListener() {
-        @Override
-        public void onSpeakBegin() {
-            LogUtil.d("onSpeakBegin - ");
-        }
-
-        @Override
-        public void onBufferProgress(int i, int i1, int i2, String s) {
-            LogUtil.d("onBufferProgress - ");
-        }
-
-        @Override
-        public void onSpeakPaused() {
-            LogUtil.d("onSpeakPaused - ");
-        }
-
-        @Override
-        public void onSpeakResumed() {
-            LogUtil.d("onSpeakResumed - ");
-        }
-
-        @Override
-        public void onSpeakProgress(int i, int i1, int i2) {
-
-        }
-
-        @Override
-        public void onCompleted(SpeechError speechError) {
-
-        }
-
-        @Override
-        public void onEvent(int i, int i1, int i2, Bundle bundle) {
-
-        }
-    };
-    // 唤醒配置
-    private int curThresh = 1150;
-    private String threshStr = "门限值：";
-    // 0：单次唤醒   1：循环唤醒
-    private String keep_alive = "1";
-    private String ivwNetMode = "0";
 
     // 初始化唤醒
     private void initWakeUp() {
@@ -268,41 +358,6 @@ public class AudioSuspendActivity extends BaseActivity {
 
     }
 
-    // android 录音 ==============================
-
-
-    // 音频源：音频输入-麦克风
-    private final static int AUDIO_INPUT = MediaRecorder.AudioSource.MIC;
-
-    // 采样率
-    // 44100是目前的标准，但是某些设备仍然支持22050，16000，11025
-    // 采样频率一般共分为22.05KHz、44.1KHz、48KHz三个等级
-    private final static int AUDIO_SAMPLE_RATE = 16000;
-
-    // 音频通道 单声道
-    private final static int AUDIO_CHANNEL = AudioFormat.CHANNEL_IN_MONO;
-
-    // 音频格式：PCM编码
-    private final static int AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
-
-    /**
-     * 需要申请的运行时权限
-     */
-    private String[] permissions = new String[]{
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-
-
-    private static final int MY_PERMISSIONS_REQUEST = 1001;
-    private String pcmFileName;
-    private String wavFileName;
-    private AudioRecord audioRecord = null;  // 声明 AudioRecord 对象
-    private int recordBufSize = 0; // 声明recoordBufffer的大小字段
-    private byte[] buffer;
-    private boolean isRecording;
-
     private void stop() {
         isRecording = false;
 
@@ -375,70 +430,6 @@ public class AudioSuspendActivity extends BaseActivity {
                 }
             }
         }).start();
-    }
-
-    /**
-     * 音量判断，录音检测
-     *
-     * @param var0
-     * @param var1
-     * @return
-     */
-    public static int calculateVolume(byte[] var0, int var1) {
-        int[] var3 = null;
-        int var4 = var0.length;
-        int var2;
-        if (var1 == 8) {
-            var3 = new int[var4];
-            for (var2 = 0; var2 < var4; ++var2) {
-                var3[var2] = var0[var2];
-            }
-        } else if (var1 == 16) {
-            var3 = new int[var4 / 2];
-            for (var2 = 0; var2 < var4 / 2; ++var2) {
-                byte var5 = var0[var2 * 2];
-                byte var6 = var0[var2 * 2 + 1];
-                int var13;
-                if (var5 < 0) {
-                    var13 = var5 + 256;
-                } else {
-                    var13 = var5;
-                }
-                short var7 = (short) (var13 + 0);
-                if (var6 < 0) {
-                    var13 = var6 + 256;
-                } else {
-                    var13 = var6;
-                }
-                var3[var2] = (short) (var7 + (var13 << 8));
-            }
-        }
-
-        int[] var8 = var3;
-        if (var3 != null && var3.length != 0) {
-            float var10 = 0.0F;
-            for (int var11 = 0; var11 < var8.length; ++var11) {
-                var10 += (float) (var8[var11] * var8[var11]);
-            }
-            var10 /= (float) var8.length;
-            float var12 = 0.0F;
-            for (var4 = 0; var4 < var8.length; ++var4) {
-                var12 += (float) var8[var4];
-            }
-            var12 /= (float) var8.length;
-            var4 = (int) (Math.pow(2.0D, (double) (var1 - 1)) - 1.0D);
-            double var14 = Math.sqrt((double) (var10 - var12 * var12));
-            int var9;
-            if ((var9 = (int) (10.0D * Math.log10(var14 * 10.0D * Math.sqrt(2.0D) / (double) var4 + 1.0D))) < 0) {
-                var9 = 0;
-            }
-            if (var9 > 10) {
-                var9 = 10;
-            }
-            return var9;
-        } else {
-            return 0;
-        }
     }
 
 

@@ -4,11 +4,11 @@ package com.thfw.presenter;
 import com.thfw.api.TestApi;
 import com.thfw.base.IPresenter;
 import com.thfw.base.UI;
+import com.thfw.models.HttpResult;
 import com.thfw.models.ReportTestModel;
 import com.thfw.models.TestDetailModel;
 import com.thfw.models.TestModel;
 import com.thfw.models.TestResultModel;
-import com.thfw.models.HttpResult;
 import com.thfw.net.NetParams;
 import com.thfw.net.OkHttpUtil;
 

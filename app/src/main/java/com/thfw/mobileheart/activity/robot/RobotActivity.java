@@ -11,13 +11,15 @@ import android.widget.TextView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.MyApplication;
+import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.fragment.robot.RobotDetailFragment;
 import com.thfw.mobileheart.fragment.robot.RobotFragment;
-import com.thfw.mobileheart.R;
 import com.thfw.ui.base.BaseActivity;
 
 public class RobotActivity extends BaseActivity {
 
+    private static int MIN_DRAG_WIDTH = 200;
+    private static int MAX_DRAG_WIDTH = 0;
     private FrameLayout mFlRobot;
     private FrameLayout mFlRobotDetail;
     private RobotFragment mRobotFragment;
@@ -25,8 +27,6 @@ public class RobotActivity extends BaseActivity {
     private TextView mTvDrag;
     private RelativeLayout.LayoutParams rightLp;
     private RelativeLayout.LayoutParams leftLp;
-    private static int MIN_DRAG_WIDTH = 200;
-    private static int MAX_DRAG_WIDTH = 0;
 
     @Override
     public int getContentView() {

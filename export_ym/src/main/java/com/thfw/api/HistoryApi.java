@@ -141,5 +141,4 @@ public interface HistoryApi {
     Observable<HttpResult<List<CollectModel>>> getCollectList(@Field("type") int type, @Field("page") int page);
 
 
-
 }

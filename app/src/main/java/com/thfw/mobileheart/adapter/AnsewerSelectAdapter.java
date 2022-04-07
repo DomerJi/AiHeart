@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.mobileheart.util.AnsewerModel;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.util.AnsewerModel;
 
 import org.jetbrains.annotations.NotNull;
 

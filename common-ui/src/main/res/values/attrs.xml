@@ -55,6 +55,7 @@
         <attr name="sv_clearIcon" format="boolean" />
         <attr name="sv_hint" format="string" />
         <attr name="sv_hintColor" format="reference" />
+        <attr name="sv_searchColor" format="reference" />
         <attr name="sv_background" format="reference" />
     </declare-styleable>
 

@@ -36,7 +36,6 @@
         android:textColor="@color/white"
         android:textSize="@dimen/textSize"
         android:visibility="gone"
-        tools:ignore="MissingConstraints"
-        tools:text="@string/title" />
+        tools:ignore="MissingConstraints" />
 
 </RelativeLayout>

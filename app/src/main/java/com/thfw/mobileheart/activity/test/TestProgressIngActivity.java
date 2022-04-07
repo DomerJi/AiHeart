@@ -17,8 +17,8 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.adapter.TestngAdapter;
-import com.thfw.ui.base.BaseActivity;
 import com.thfw.mobileheart.util.DialogFactory;
+import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
@@ -32,13 +32,13 @@ public class TestProgressIngActivity extends BaseActivity<TestPresenter> impleme
 
 
     private static TestDetailModel testDetailModel;
+    SparseIntArray vpFlagArray = new SparseIntArray();
     private androidx.viewpager2.widget.ViewPager2 mVpList;
     private TestDetailModel mModel;
     // 测评开始时间
     private long beginTime;
     private TestngAdapter mTestIngAdapter;
     private TitleView titleView;
-    SparseIntArray vpFlagArray = new SparseIntArray();
 
     public static void startActivity(Context context, TestDetailModel testDetailModel) {
         TestProgressIngActivity.testDetailModel = testDetailModel;

@@ -466,16 +466,15 @@ public class TestDetailModel implements IModel {
         private String answer;
 
         private int selectedIndex = -1;
-
-        public void setSelectedIndex(int selectedIndex) {
-            this.selectedIndex = selectedIndex;
-        }
+        private List<SubjectListBean> optionArray;
 
         public int getSelectedIndex() {
             return selectedIndex;
         }
 
-        private List<SubjectListBean> optionArray;
+        public void setSelectedIndex(int selectedIndex) {
+            this.selectedIndex = selectedIndex;
+        }
 
         public List<SubjectListBean> getOptionArray() {
             return optionArray;
@@ -536,12 +535,11 @@ public class TestDetailModel implements IModel {
 
     public static class HintBean {
 
+        public String title;
+        public String des;
         public HintBean(String title, String des) {
             this.title = title;
             this.des = des;
         }
-
-        public String title;
-        public String des;
     }
 }

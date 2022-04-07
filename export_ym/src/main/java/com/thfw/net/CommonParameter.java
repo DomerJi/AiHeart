@@ -20,13 +20,6 @@ public class CommonParameter {
     private static final String KEY_ORGANIZATION_SELECT = "key_organization_select";
     private static final String TEST_ID = "1";
 
-    public interface DeviceType {
-        String PAD = "pad";
-        String MOBILE = "phone";
-        String ROBOT = "robot";
-    }
-
-
     public static String getDeviceType() {
         switch (ContextApp.getDeviceType()) {
             case ContextApp.DeviceType.PAD:
@@ -80,6 +73,12 @@ public class CommonParameter {
         return true;
         // todo 真实环境必须校验
 //        return !TextUtils.isEmpty(getOrganizationId()) && !TEST_ID.equals(getOrganizationId());
+    }
+
+    public interface DeviceType {
+        String PAD = "pad";
+        String MOBILE = "phone";
+        String ROBOT = "robot";
     }
 
 }

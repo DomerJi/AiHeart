@@ -1,11 +1,11 @@
 package com.thfw.api;
 
 
+import com.thfw.models.HttpResult;
 import com.thfw.models.ReportTestModel;
 import com.thfw.models.TestDetailModel;
 import com.thfw.models.TestModel;
 import com.thfw.models.TestResultModel;
-import com.thfw.models.HttpResult;
 
 import java.util.List;
 import java.util.TreeMap;

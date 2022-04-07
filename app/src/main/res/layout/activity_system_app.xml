@@ -10,7 +10,7 @@
         android:id="@+id/titleView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tv_centerText="系统更新"
+        app:tv_centerText="软件更新"
         tools:ignore="MissingConstraints" />
 
     <LinearLayout

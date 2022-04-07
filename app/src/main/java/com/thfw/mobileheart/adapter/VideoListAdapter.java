@@ -24,9 +24,9 @@ import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
+import com.thfw.base.models.VideoModel;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
-import com.thfw.base.models.VideoModel;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
 import com.thfw.ui.utils.GlideUtil;
 

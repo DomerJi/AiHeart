@@ -17,11 +17,6 @@ public final class ContextApp {
 
     }
 
-    public static void setDeviceType(int deviceType) {
-        ContextApp.deviceType = deviceType;
-        SharePreferenceUtil.setInt(KEY_DEVICES_TYPE, deviceType);
-    }
-
     public static int getDeviceType() {
         if (deviceType <= 0) {
             deviceType = SharePreferenceUtil.getInt(KEY_DEVICES_TYPE, deviceType);
@@ -29,6 +24,10 @@ public final class ContextApp {
         return deviceType;
     }
 
+    public static void setDeviceType(int deviceType) {
+        ContextApp.deviceType = deviceType;
+        SharePreferenceUtil.setInt(KEY_DEVICES_TYPE, deviceType);
+    }
 
     public static void init(Context context) {
         ContextApp.context = context.getApplicationContext();

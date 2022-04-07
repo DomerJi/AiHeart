@@ -37,6 +37,7 @@ import java.util.Iterator;
 
 public class SystemDetailActivity extends RobotBaseActivity<TaskPresenter> implements TaskPresenter.TaskUi<SystemDetailModel> {
 
+    private static final String KEY_DATA_STR = "key.data.str";
     private AgentWeb mAgentWeb;
     private String contentHtml;
     private String fontSize;
@@ -48,7 +49,6 @@ public class SystemDetailActivity extends RobotBaseActivity<TaskPresenter> imple
     private LoadingView mLoadingView;
     private boolean requestIng = false;
     private int bookId;
-    private static final String KEY_DATA_STR = "key.data.str";
 
     public static void startActivity(Context context, int id) {
         ((Activity) context).startActivity(new Intent(context, SystemDetailActivity.class)

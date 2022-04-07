@@ -1,16 +1,19 @@
 package com.thfw.mobileheart.activity;
 
 import android.animation.Animator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -18,7 +21,9 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
+import com.thfw.base.net.BaseCodeListener;
 import com.thfw.base.net.CommonParameter;
+import com.thfw.base.net.OkHttpUtil;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.OrganizationPresenter;
 import com.thfw.base.presenter.UserInfoPresenter;
@@ -28,6 +33,7 @@ import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.login.LoginActivity;
@@ -50,6 +56,7 @@ import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
 import com.thfw.user.models.User;
@@ -67,31 +74,7 @@ import java.util.List;
  */
 public class MainActivity extends BaseActivity implements Animator.AnimatorListener, MsgCountManager.OnCountChangeListener {
 
-    private Handler mMainHandler = new Handler(Looper.getMainLooper());
-    private Runnable checkVersionRunnable = new Runnable() {
-        @Override
-        public void run() {
-            checkVersion();
-        }
-    };
-    private androidx.constraintlayout.widget.ConstraintLayout mMainRoot;
-    private androidx.constraintlayout.widget.ConstraintLayout mMainRoot2;
-
-    private android.widget.LinearLayout mLlHome;
-    private android.widget.ImageView mIvHome;
-    private android.widget.TextView mTvHome;
-
-    private android.widget.LinearLayout mLlMessage;
-    private android.widget.ImageView mIvMessage;
-    private android.widget.TextView mTvMessage;
-
-    private android.widget.LinearLayout mLlMe;
-    private android.widget.ImageView mIvMe;
-    private android.widget.TextView mTvMe;
-    private FragmentLoader mFragmentLoader;
-    private View mCurrent;
-    private LinearLayout mLlAiChat;
-
+    private static MainActivity mainActivity;
     /**
      * 机构信息和用户信息初始化标识
      */
@@ -99,8 +82,31 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private static boolean initOrganization;
     private static boolean initUmeng;
     private static boolean moodHint;
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    private androidx.constraintlayout.widget.ConstraintLayout mMainRoot;
+    private androidx.constraintlayout.widget.ConstraintLayout mMainRoot2;
+    private android.widget.LinearLayout mLlHome;
+    private android.widget.ImageView mIvHome;
+    private android.widget.TextView mTvHome;
+    private android.widget.LinearLayout mLlMessage;
+    private android.widget.ImageView mIvMessage;
+    private android.widget.TextView mTvMessage;
+    private android.widget.LinearLayout mLlMe;
+    private android.widget.ImageView mIvMe;
+    private android.widget.TextView mTvMe;
+    private FragmentLoader mFragmentLoader;
+    private View mCurrent;
+    private LinearLayout mLlAiChat;
     private TextView mTvMsgCount;
     private TextView mTvMsgVersion;
+    private Runnable checkVersionRunnable = new Runnable() {
+        @Override
+        public void run() {
+            checkVersion();
+        }
+    };
+    private boolean trueResume;
+    private long exitTime = 0;
 
     /**
      * 重新登录后重新获取用户相关信息
@@ -116,9 +122,14 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         return MyPreferences.getInstance(MyApplication.getApp()).hasAgreePrivacyAgreement();
     }
 
-
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, MainActivity.class));
+    }
+
+    public static void finishMain() {
+        if (mainActivity != null) {
+            mainActivity.finish();
+        }
     }
 
     @Override
@@ -133,7 +144,16 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
 
     @Override
     public void initView() {
-
+        mainActivity = this;
+        OkHttpUtil.setBaseCodeListener(code -> {
+            if (code == BaseCodeListener.LOGOUT) {
+                if (UserManager.getInstance().isTrueLogin()) {
+                    ToastUtil.show(R.string.token_not_valid);
+                    UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+                    MyApplication.goAppHome((Activity) mContext);
+                }
+            }
+        });
         mMainRoot = (ConstraintLayout) findViewById(R.id.main_root);
         mMainRoot2 = (ConstraintLayout) findViewById(R.id.main_root2);
 
@@ -194,7 +214,6 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         mLlMessage.setOnClickListener(mOnTabListener);
         mLlHome.performClick();
     }
-
 
     /**
      * 检查版本更新
@@ -268,8 +287,8 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         }
     }
 
-
     private void onMeResume() {
+        trueResume = true;
         if (!UserManager.getInstance().isLogin()) {
             LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
         } else {
@@ -293,7 +312,6 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             }
         });
     }
-
 
     @Override
     public void onAnimationStart(Animator animation) {
@@ -531,4 +549,25 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
 
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // 启动页没关闭，直接退出
+        if (!trueResume) {
+            finish();
+            MyApplication.kill();
+            return true;
+        }
+        /*判断用户是否点击了“返回键”*/
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                finish();
+                MyApplication.kill();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

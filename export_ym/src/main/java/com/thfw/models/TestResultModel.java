@@ -20,26 +20,25 @@ public class TestResultModel implements IModel {
 
     @SerializedName("test_id")
     private int testId;
+    @SerializedName("recommend_info")
+    private List<RecommendInfoBean> recommendInfo;
+
+    public int getTestId() {
+        return testId;
+    }
 
     public TestResultModel setTestId(int testId) {
         this.testId = testId;
         return this;
     }
 
-    public int getTestId() {
-        return testId;
+    public int getResultId() {
+        return resultId;
     }
-
-    @SerializedName("recommend_info")
-    private List<RecommendInfoBean> recommendInfo;
 
     public TestResultModel setResultId(int resultId) {
         this.resultId = resultId;
         return this;
-    }
-
-    public int getResultId() {
-        return resultId;
     }
 
     public List<RecommendInfoBean> getRecommendInfo() {
@@ -69,12 +68,12 @@ public class TestResultModel implements IModel {
             return type;
         }
 
-        public int getTypeStr() {
-            return type;
-        }
-
         public void setType(int type) {
             this.type = type;
+        }
+
+        public int getTypeStr() {
+            return type;
         }
 
         public InfoBean getInfo() {

@@ -18,7 +18,7 @@ public class ForgetPasswordActivity extends BaseActivity {
     public static final int BY_SUSSES = 2;
 
     public static final String KEY_PHONE = "key_phone";
-    public static final String KEY_CODE= "key_phone_code";
+    public static final String KEY_CODE = "key_phone_code";
     private int type;
     private FragmentLoader fragmentLoader;
 

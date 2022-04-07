@@ -20,10 +20,9 @@ import java.util.List;
  * Describe:Todo
  */
 public class ExerciseLogcataFragment extends BaseFragment {
+    ExerciseModel exerciseModel;
     private SmartRefreshLayout mRefreshLayout;
     private RecyclerView mRvExercise;
-
-    ExerciseModel exerciseModel;
 
     public void setExerciseModel(ExerciseModel exerciseModel) {
         this.exerciseModel = exerciseModel;

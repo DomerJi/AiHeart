@@ -30,16 +30,13 @@ import java.util.List;
  * Describe:Todo
  */
 public class SearchFragment extends BaseFragment {
+    SearchResultModel data;
     private androidx.constraintlayout.widget.ConstraintLayout mClResult;
     private com.google.android.material.tabs.TabLayout mTabLayout;
     private androidx.viewpager.widget.ViewPager mViewPager;
-
     private MyResultAdapter myResultAdapter;
-
-
     private HashMap<Integer, SearchResultFragment> fragmentMaps = new HashMap<>();
     private List<Integer> fragments;
-    SearchResultModel data;
 
     public SearchFragment(SearchResultModel data) {
         super();

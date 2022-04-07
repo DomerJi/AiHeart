@@ -14,6 +14,30 @@ public interface ILoading {
 
     Level ERROR = Level.ERROR_NET;
 
+    /**
+     * 显示loading，开始加载数据时调用
+     */
+    public void showLoading();
+
+    /**
+     * 展示空布局，通常在没有数据可展示之后
+     */
+    public void showEmpty();
+
+    /**
+     * 展示加载失败状态
+     *
+     * @param onClickListener 失败，点击重试的回调
+     */
+    public void showFail(Level level, View.OnClickListener onClickListener);
+
+    public void showFail(View.OnClickListener onClickListener);
+
+    /**
+     * 隐藏所有，通常在数据正常加载后调用
+     */
+    public void hide();
+
     public enum Level {
 
 //        int ERROR_NET = 1;
@@ -56,29 +80,4 @@ public interface ILoading {
             return btnText;
         }
     }
-
-
-    /**
-     * 显示loading，开始加载数据时调用
-     */
-    public void showLoading();
-
-    /**
-     * 展示空布局，通常在没有数据可展示之后
-     */
-    public void showEmpty();
-
-    /**
-     * 展示加载失败状态
-     *
-     * @param onClickListener 失败，点击重试的回调
-     */
-    public void showFail(Level level, View.OnClickListener onClickListener);
-
-    public void showFail(View.OnClickListener onClickListener);
-
-    /**
-     * 隐藏所有，通常在数据正常加载后调用
-     */
-    public void hide();
 }

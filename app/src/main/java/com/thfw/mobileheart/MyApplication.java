@@ -55,10 +55,6 @@ public class MyApplication extends MultiDexApplication {
     private static BroadcastReceiver broadcastReceiver;
     private static List<OnMinuteListener> onMinuteListeners;
 
-    public static MyApplication getApp() {
-        return app;
-    }
-
     // static 代码段可以防止内存泄露
     static {
         onMinuteListeners = new ArrayList<>();
@@ -95,6 +91,10 @@ public class MyApplication extends MultiDexApplication {
         };
     }
 
+    public static MyApplication getApp() {
+        return app;
+    }
+
     public static float getFontScale() {
         if (lv > 0) {
             return lv;
@@ -108,6 +108,21 @@ public class MyApplication extends MultiDexApplication {
         lv = 1.0f * DisplayMetrics.DENSITY_XHIGH / screenDensity;
         LogUtil.d("getFontScale", "lv = " + lv);
         return lv;
+    }
+
+    public static void goAppHome(Activity activity) {
+        Intent intent = new Intent(activity, MainActivity.class);
+        intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK);
+        activity.startActivity(intent);
+    }
+
+    public static AppDatabase getDatabase() {
+        return Room.databaseBuilder(app, AppDatabase.class, "database-name").build();
+    }
+
+    public static void kill() {
+        MainActivity.finishMain();
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     @Override
@@ -167,16 +182,6 @@ public class MyApplication extends MultiDexApplication {
         }
     }
 
-    public static void goAppHome(Activity activity) {
-        Intent intent = new Intent(activity, MainActivity.class);
-        intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK);
-        activity.startActivity(intent);
-    }
-
-    public static AppDatabase getDatabase() {
-        return Room.databaseBuilder(app, AppDatabase.class, "database-name").build();
-    }
-
     private void initTimeReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
@@ -185,7 +190,6 @@ public class MyApplication extends MultiDexApplication {
         getApp().registerReceiver(broadcastReceiver, filter);
         //广播的注册，其中Intent.ACTION_TIME_CHANGED代表时间设置变化的时候会发出该广播
     }
-
 
     public void addOnMinuteListener(OnMinuteListener onMinuteListener) {
         if (!onMinuteListeners.contains(onMinuteListener)) {

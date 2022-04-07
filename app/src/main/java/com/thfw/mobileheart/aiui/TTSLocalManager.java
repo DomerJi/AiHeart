@@ -70,7 +70,7 @@ public class TTSLocalManager {
         //设置播放器音频流类型
 //        AudioManager.STREAM_SYSTEM
 //        AudioAttributes.CONTENT_TYPE_SPEECH
-        mTts.setParameter(SpeechConstant.STREAM_TYPE, AudioManager.STREAM_NOTIFICATION+"");
+        mTts.setParameter(SpeechConstant.STREAM_TYPE, AudioManager.STREAM_NOTIFICATION + "");
         //	mTts.setParameter(SpeechConstant.STREAM_TYPE, AudioManager.STREAM_MUSIC+"");
 
         // 设置播放合成音频打断音乐播放，默认为true

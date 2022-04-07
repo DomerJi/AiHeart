@@ -77,9 +77,11 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
         mTestId = testResultModel.getTestId();
         mBtTryOne.setOnClickListener(v -> {
             TestBeginActivity.startActivity(mContext, mTestId);
+            finish();
         });
         mBtHistory.setOnClickListener(v -> {
             TestReportActivity.startActivity(mContext, mTestId);
+            finish();
         });
         initAgentWeb(findViewById(R.id.fl_web_content));
         tvTitleView.setCenterText(title);

@@ -60,6 +60,23 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
 
     private SparseLongArray mFunctionTime = new SparseLongArray();
 
+    /**
+     * 获取今日0点的时间点，/1000*1000保证每次取值相同。
+     *
+     * @return
+     */
+    public static long getTodayStartTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        long time = calendar.getTimeInMillis() / 1000 * 1000;
+        LogUtil.d(TAG, "getTodayStartTime -> " + HourUtil.getYYMMDD_HHMMSS(time));
+        LogUtil.d(TAG, "getYesterdayStartTime -> " + HourUtil.getYYMMDD_HHMMSS(time - HourUtil.LEN_DAY));
+        return time;
+    }
+
     @Override
     public void onActivityCreated(Activity activity, Bundle bundle) {
         LogUtil.d(TAG, "onActivityCreated -> " + getActivityName(activity));
@@ -199,23 +216,6 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
 
     private String getActivityName(final Activity activity) {
         return activity.getClass().getCanonicalName();
-    }
-
-    /**
-     * 获取今日0点的时间点，/1000*1000保证每次取值相同。
-     *
-     * @return
-     */
-    public static long getTodayStartTime() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        long time = calendar.getTimeInMillis() / 1000 * 1000;
-        LogUtil.d(TAG, "getTodayStartTime -> " + HourUtil.getYYMMDD_HHMMSS(time));
-        LogUtil.d(TAG, "getYesterdayStartTime -> " + HourUtil.getYYMMDD_HHMMSS(time - HourUtil.LEN_DAY));
-        return time;
     }
 
     private void saveTodayPlayTime(long time) {

@@ -20,6 +20,17 @@ public class LastTextView extends androidx.appcompat.widget.AppCompatTextView {
 
     private Runnable runnable;
     private int lastVisible = -1;
+    RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(@NonNull @NotNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (dy == 0) {
+                return;
+            }
+            onAnim(dy < 0);
+
+        }
+    };
 
     public LastTextView(Context context) {
         super(context);
@@ -32,18 +43,6 @@ public class LastTextView extends androidx.appcompat.widget.AppCompatTextView {
     public LastTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
-    RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrolled(@NonNull @NotNull RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            if (dy == 0) {
-                return;
-            }
-            onAnim(dy < 0);
-
-        }
-    };
 
     public void onAttached(RecyclerView recyclerView) {
         recyclerView.addOnScrollListener(scrollListener);

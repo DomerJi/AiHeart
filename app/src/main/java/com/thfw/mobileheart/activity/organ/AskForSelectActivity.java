@@ -49,11 +49,11 @@ import java.util.List;
 public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> implements OrganizationPresenter.OrganizationUi<OrganizationModel> {
 
 
+    private static final int CODE_ASK_FOR = 12;
     private com.thfw.ui.widget.TitleView mTitleView;
     private com.makeramen.roundedimageview.RoundedImageView mRivAvatar;
     private android.widget.TextView mTvUserName;
     private android.widget.Button mBtScanJoin;
-    private static final int CODE_ASK_FOR = 12;
     // ============================= //
     private androidx.recyclerview.widget.RecyclerView mRvSelected;
     private androidx.recyclerview.widget.RecyclerView mRvSelectChildren;

@@ -9,16 +9,16 @@ import com.thfw.mobileheart.R;
  */
 public class AudioModel {
 
+    public int getPicId() {
+        return R.mipmap.ic_launcher;
+    }
+
+
     public interface Cmd {
         int PAUSE = 0;
         int PLAY = 1;
         int LAST = 2;
         int NEXT = 3;
-    }
-
-
-    public int getPicId() {
-        return R.mipmap.ic_launcher;
     }
 
 

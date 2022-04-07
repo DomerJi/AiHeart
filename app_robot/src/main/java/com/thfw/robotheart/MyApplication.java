@@ -89,6 +89,12 @@ public class MyApplication extends MultiDexApplication {
         return lv;
     }
 
+    public static void goAppHome(Activity activity) {
+        Intent intent = new Intent(activity, MainActivity.class);
+        intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK);
+        activity.startActivity(intent);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -142,12 +148,6 @@ public class MyApplication extends MultiDexApplication {
         if (agreed) {
             PushHelper.init(getApplicationContext());
         }
-    }
-
-    public static void goAppHome(Activity activity) {
-        Intent intent = new Intent(activity, MainActivity.class);
-        intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK);
-        activity.startActivity(intent);
     }
 
 }

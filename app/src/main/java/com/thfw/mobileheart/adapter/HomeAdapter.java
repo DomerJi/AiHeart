@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.HomeEntity;
 import com.thfw.base.models.HomeHistoryEntity;
+import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
@@ -43,8 +44,9 @@ import java.util.List;
  */
 public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder> implements MyApplication.OnMinuteListener {
     private static final long DELAY_TIME_BANNER = 5000;
-    private Banner mBanner;
     public static String imageUrl = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fattach.bbs.miui.com%2Fforum%2F201312%2F31%2F111849zs48tpa2r1rau2id.jpg&refer=http%3A%2F%2Fattach.bbs.miui.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1629516874&t=2717a45c8f2c0237c30da28ca41e0801";
+    private static long lastChange;
+    private Banner mBanner;
 
     public HomeAdapter(List<HomeEntity> dataList) {
         super(dataList);
@@ -63,14 +65,18 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         }
     }
 
+
     /**
      * 时间更新/活跃时长
      */
     @Override
     public void onChanged() {
-        LogUtil.d("===========================时间更新/活跃时长================================");
-        if (getItemCount() > 2) {
-            notifyItemChanged(2);
+        if (System.currentTimeMillis() - lastChange > HourUtil.LEN_MINUTE) {
+            lastChange = System.currentTimeMillis();
+            LogUtil.d("===========================时间更新/活跃时长================================");
+            if (getItemCount() > 2) {
+                notifyItemChanged(2);
+            }
         }
     }
 
@@ -132,6 +138,11 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
     @Override
     public int getItemViewType(int position) {
         return mDataList.get(position).type;
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull @NotNull RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
     }
 
     public class BodyHolder extends RecyclerView.ViewHolder {
@@ -257,11 +268,6 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             itemView.findViewById(R.id.rl_tab_07).setOnClickListener(clickViewListener);
             itemView.findViewById(R.id.rl_tab_08).setOnClickListener(clickViewListener);
         }
-    }
-
-    @Override
-    public void onViewRecycled(@NonNull @NotNull RecyclerView.ViewHolder holder) {
-        super.onViewRecycled(holder);
     }
 
     public class MadeHolder extends RecyclerView.ViewHolder {

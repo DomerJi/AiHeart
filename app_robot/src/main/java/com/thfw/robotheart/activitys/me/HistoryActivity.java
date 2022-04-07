@@ -134,7 +134,7 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
 //                    TestResultWebActivity.startActivity(mContext, new TestResultModel().setResultId(testModel.getId()));
                 } else if (historyModel instanceof HistoryModel.HistoryVideoModel) { // 视频
                     HistoryModel.HistoryVideoModel videoModel = (HistoryModel.HistoryVideoModel) historyModel;
-                    VideoPlayerActivity.startActivity(mContext, videoModel.getId(),false);
+                    VideoPlayerActivity.startActivity(mContext, videoModel.getId(), false);
                 } else if (historyModel instanceof HistoryModel.HistoryAudioModel) { // 音频
                     HistoryModel.HistoryAudioModel audioModel = (HistoryModel.HistoryAudioModel) historyModel;
                     AudioEtcModel audioEtcModel = new AudioEtcModel();

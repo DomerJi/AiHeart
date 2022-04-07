@@ -19,6 +19,7 @@ import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.MainActivity;
 import com.thfw.mobileheart.activity.organ.AskForSelectActivity;
@@ -43,16 +44,44 @@ public class LoginActivity extends BaseActivity {
     public static final int BY_FORGET = 2;
     public static final int BY_FACE = 3;
     public static final int BY_OTHER = 4;
-    private int type;
-    private FragmentLoader fragmentLoader;
-    private AlertDialog mDialog;
     // 登录后播放唤醒动画
     public static final String KEY_LOGIN_BEGIN = "login.begin";
     public static final String KEY_LOGIN_BEGIN_TTS = "login.begin.tts";
     public static String INPUT_PHONE = "";
+    private int type;
+    private FragmentLoader fragmentLoader;
+    private AlertDialog mDialog;
 
     public static void startActivity(Context context, int type) {
         context.startActivity(new Intent(context, LoginActivity.class).putExtra(KEY_DATA, type));
+    }
+
+    public static void login(Activity activity, TokenModel data, String mobile) {
+        if (data != null && !TextUtils.isEmpty(data.token)) {
+            User user = new User();
+            user.setToken(data.token);
+            user.setMobile(mobile);
+            user.setSetUserInfo(data.isSetUserInfo());
+            user.setOrganization(data.organization);
+            user.setAuthTypeList(data.getAuthType());
+            LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
+            if (data.isNoOrganization()) {
+                // todo 手机加入组织机构比较复杂
+                user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
+                UserManager.getInstance().login(user);
+                AskForSelectActivity.startForResult(activity, true);
+            } else if (data.isNoSetUserInfo()) {
+                user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
+                UserManager.getInstance().login(user);
+                InfoActivity.startActivityFirst(activity);
+            } else {
+                user.setLoginStatus(LoginStatus.LOGINED);
+                UserManager.getInstance().login(user);
+            }
+            activity.finish();
+        } else {
+            ToastUtil.show("token 参数错误");
+        }
     }
 
     @Override
@@ -95,7 +124,6 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void initData() {
     }
-
 
     /**
      * 动态获取内存存储权限
@@ -172,32 +200,11 @@ public class LoginActivity extends BaseActivity {
         super.onDestroy();
     }
 
-
-    public static void login(Activity activity, TokenModel data, String mobile) {
-        if (data != null && !TextUtils.isEmpty(data.token)) {
-            User user = new User();
-            user.setToken(data.token);
-            user.setMobile(mobile);
-            user.setSetUserInfo(data.isSetUserInfo());
-            user.setOrganization(data.organization);
-            user.setAuthTypeList(data.getAuthType());
-            LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
-            if (data.isNoOrganization()) {
-                // todo 手机加入组织机构比较复杂
-                user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
-                UserManager.getInstance().login(user);
-                AskForSelectActivity.startForResult(activity, true);
-            } else if (data.isNoSetUserInfo()) {
-                user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
-                UserManager.getInstance().login(user);
-                InfoActivity.startActivityFirst(activity);
-            } else {
-                user.setLoginStatus(LoginStatus.LOGINED);
-                UserManager.getInstance().login(user);
-            }
-            activity.finish();
-        } else {
-            ToastUtil.show("token 参数错误");
+    @Override
+    public void finish() {
+        super.finish();
+        if (!UserManager.getInstance().isLogin()) {
+            MyApplication.kill();
         }
     }
 }

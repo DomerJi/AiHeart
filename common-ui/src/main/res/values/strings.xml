@@ -7,6 +7,7 @@
     <string name="load_success">加载成功</string>
     <string name="load_empty">暂无内容</string>
     <string name="net_no_connected">请检查网络链接状态！</string>
+    <string name="token_not_valid">登陆状态失效，请重新登录。</string>
 
     <string name="info_hint_no_input">未填写</string>
     <string name="info_hint_please_input">请填写</string>

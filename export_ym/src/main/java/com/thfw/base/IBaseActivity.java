@@ -12,7 +12,6 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 
 
-
 /**
  * 通用基础Activity
  */
@@ -28,9 +27,8 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity {
     public static final long TOAST_DELAY_MILLIS = 1500;
     protected final String TAG = this.getClass().getSimpleName();
     protected T mPresenter;
-    private int resumed = -1;
     protected Context mContext;
-
+    private int resumed = -1;
     private int statusBarColor = STATUSBAR_WHITE;
 
     @Override
@@ -47,8 +45,6 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity {
     public int getStatusBarColor() {
         return STATUSBAR_NONE;
     }
-
-
 
 
     @Override

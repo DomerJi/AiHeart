@@ -21,15 +21,15 @@ import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.activitys.task.MsgActivity;
 import com.thfw.robotheart.activitys.task.TaskActivity;
 import com.thfw.robotheart.activitys.test.TestReportActivity;
-import com.thfw.robotheart.util.MsgCountManager;
 import com.thfw.robotheart.util.DialogRobotFactory;
+import com.thfw.robotheart.util.MsgCountManager;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.user.login.LoginStatus;
-import com.thfw.user.models.User;
 import com.thfw.user.login.UserManager;
+import com.thfw.user.models.User;
 
 import java.util.List;
 

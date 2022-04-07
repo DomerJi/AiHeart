@@ -4,10 +4,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
-import com.thfw.mobileheart.activity.video.VideoPlayActivity;
-import com.thfw.mobileheart.R;
-import com.thfw.mobileheart.adapter.VideoListAdapter;
 import com.thfw.base.models.VideoModel;
+import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.video.VideoPlayActivity;
+import com.thfw.mobileheart.adapter.VideoListAdapter;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
 import com.thfw.mobileheart.view.CustomDividerItemDecoration;
 import com.thfw.ui.base.BaseActivity;

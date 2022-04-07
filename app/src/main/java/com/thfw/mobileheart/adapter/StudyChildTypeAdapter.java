@@ -21,11 +21,11 @@ import java.util.List;
  */
 public class StudyChildTypeAdapter extends BaseAdapter<BookStudyTypeModel, StudyChildTypeAdapter.VideoChildHolder> {
 
+    private int mSelectedIndex = -1;
+
     public StudyChildTypeAdapter(List<BookStudyTypeModel> dataList) {
         super(dataList);
     }
-
-    private int mSelectedIndex = -1;
 
     public int getmSelectedIndex() {
         return mSelectedIndex;
@@ -42,6 +42,18 @@ public class StudyChildTypeAdapter extends BaseAdapter<BookStudyTypeModel, Study
     public void onBindViewHolder(@NonNull @NotNull VideoChildHolder holder, int position) {
         holder.mTvTitle.setText(mDataList.get(position).name);
         holder.mTvTitle.setSelected(position == mSelectedIndex);
+    }
+
+    public void setSelectedIndex(int mSelectedIndex) {
+        this.mSelectedIndex = mSelectedIndex;
+    }
+
+    public void resetSelectedIndex() {
+        this.mSelectedIndex = -1;
+        notifyDataSetChanged();
+        if (mOnRvItemListener != null) {
+            mOnRvItemListener.onItemClick(mDataList, mSelectedIndex);
+        }
     }
 
     public class VideoChildHolder extends RecyclerView.ViewHolder {
@@ -64,18 +76,6 @@ public class StudyChildTypeAdapter extends BaseAdapter<BookStudyTypeModel, Study
                     mOnRvItemListener.onItemClick(mDataList, mSelectedIndex);
                 }
             });
-        }
-    }
-
-    public void setSelectedIndex(int mSelectedIndex) {
-        this.mSelectedIndex = mSelectedIndex;
-    }
-
-    public void resetSelectedIndex() {
-        this.mSelectedIndex = -1;
-        notifyDataSetChanged();
-        if (mOnRvItemListener != null) {
-            mOnRvItemListener.onItemClick(mDataList, mSelectedIndex);
         }
     }
 }

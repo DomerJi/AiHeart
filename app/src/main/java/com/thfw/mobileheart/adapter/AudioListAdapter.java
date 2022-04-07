@@ -49,7 +49,7 @@ public class AudioListAdapter extends BaseAdapter<AudioEtcModel, AudioListAdapte
         } else {
             mHour = "已练习至  <font color='" + UIConfig.COLOR_HOUR + "'>" + model.getListenHistorySize()
                     + "</font>/" + model.getMusicSize() + "  课时";
-            holder.mTvState.setText(HtmlCompat.fromHtml(mHour,HtmlCompat.FROM_HTML_MODE_LEGACY));
+            holder.mTvState.setText(HtmlCompat.fromHtml(mHour, HtmlCompat.FROM_HTML_MODE_LEGACY));
         }
         GlideUtil.load(mContext, model.getImg(), holder.mRivBg);
     }

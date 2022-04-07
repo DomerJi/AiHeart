@@ -57,7 +57,7 @@ public class DialogFactory {
     public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack, boolean cancleOutside) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(com.thfw.ui.R.layout.dialog_custom_layout)
-                .setDialogAnimationRes(com.thfw.ui.R.style.animate_dialog_fade)
+                .setDialogAnimationRes(R.style.animate_dialog_fade)
                 .addOnClickListener(com.thfw.ui.R.id.tv_left, com.thfw.ui.R.id.tv_right)
                 .setScreenWidthAspect(activity, WIDTH_ASPECT)
                 .setCancelableOutside(cancleOutside)

@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
-import com.thfw.mobileheart.adapter.HeartBoxAdapter;
 import com.thfw.base.models.HeartBoxEntity;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.adapter.HeartBoxAdapter;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;
 

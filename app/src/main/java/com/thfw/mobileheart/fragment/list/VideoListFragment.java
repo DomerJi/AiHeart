@@ -37,6 +37,7 @@ import java.util.List;
 public class VideoListFragment extends BaseFragment<VideoPresenter> implements VideoPresenter.VideoUi<List<VideoEtcModel>> {
 
     public static final String KEY_CHILD_TYPE = "key.child.type";
+    private static final String KEY_INDEX = "key.video.index";
     private SmartRefreshLayout mRefreshLayout;
     private RecyclerView mRvList;
     private LoadingView mLoadingView;
@@ -44,7 +45,6 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
     private PageHelper<VideoEtcModel> mPageHelper;
     private RecyclerView mRvChildren;
     private VideoChildTypeAdapter videoChildTypeAdapter;
-    private static final String KEY_INDEX = "key.video.index";
 
     public VideoListFragment(int type) {
         super();

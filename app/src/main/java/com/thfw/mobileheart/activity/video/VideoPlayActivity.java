@@ -77,6 +77,8 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
         implements TimingHelper.WorkListener, VideoGestureHelper.VideoGestureListener, VideoPresenter.VideoUi<VideoModel> {
 
 
+    public static final String KEY_PLAY_POSITION = "key.position";
+    public static final String KEY_AUTO_FINISH = "key.position";
     private ImageView mIvBg;
     private PlayerView mMPlayerView;
     private ProgressBar mPbBottom;
@@ -84,9 +86,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     private SimpleExoPlayer mExoPlayer;
     private VideoModel mVideoModel;
     private PlayerListener mPlayerListener;
-    public static final String KEY_PLAY_POSITION = "key.position";
-    public static final String KEY_AUTO_FINISH = "key.position";
-
     private ConstraintLayout mVideoLayout;
     private RecyclerView mRvVideoDetail;
     private boolean isPlaying = false;
@@ -105,6 +104,32 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     private LoadingView mLoadingView;
     private VideoPlayListAdapter mVideoPlayListAdapter;
     private int mVideoId;
+    private VideoGestureHelper ly_VG;
+    private ShowChangeLayout scl;
+    private AudioManager mAudioManager;
+    private int maxVolume = 0;
+    private int oldVolume = 0;
+    private int newProgress = 0, oldProgress = 0;
+    private BrightnessHelper mBrightnessHelper;
+    private float brightness = 1;
+    private Window mWindow;
+    private WindowManager.LayoutParams mLayoutParams;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private View mLLShowForWard;
+    private float speed;
+    private Runnable speechRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mLLShowForWard == null) {
+                mLLShowForWard = findViewById(R.id.ll_show_forward);
+            }
+            mLLShowForWard.setVisibility(speed > 1 ? VISIBLE : View.GONE);
+            if (mExoPlayer != null) {
+                PlaybackParameters playbackParameters = new PlaybackParameters(speed, 1.0F);
+                mExoPlayer.setPlaybackParameters(playbackParameters);
+            }
+        }
+    };
 
     public static void startActivity(Context context, VideoModel videoModel) {
         context.startActivity(new Intent(context, VideoPlayActivity.class).putExtra(KEY_DATA, videoModel));
@@ -126,6 +151,9 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     public VideoPresenter onCreatePresenter() {
         return new VideoPresenter(this);
     }
+
+
+    //=============== 开始 视频手势 =======================//
 
     @Override
     public void initView() {
@@ -194,7 +222,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
         videoChanged(0);
     }
 
-
     private void setVideoList() {
         if (mVideoList == null) {
             mVideoList = new ArrayList<>();
@@ -233,7 +260,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
         }
 
     }
-
 
     @Override
     public void onBackPressed() {
@@ -371,14 +397,12 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
         initExoPlayer();
     }
 
-
     @Override
     public void onFail(ResponeThrowable throwable) {
         mLoadingView.showFail(v -> {
             videoChanged(mPlayPosition);
         });
     }
-
 
     private void initExoPlayer() {
         long positionMs = -1;
@@ -461,9 +485,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
         }, 3500);
     }
 
-
-    //=============== 开始 视频手势 =======================//
-
     /**
      * 视频播放错误处理
      */
@@ -505,7 +526,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
             mExoPlayer.setPlayWhenReady(false);
         }
     }
-
 
     @Override
     protected void onResume() {
@@ -580,35 +600,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
         overridePendingTransition(0, 0);
         super.finish();
     }
-
-
-    private VideoGestureHelper ly_VG;
-    private ShowChangeLayout scl;
-    private AudioManager mAudioManager;
-    private int maxVolume = 0;
-    private int oldVolume = 0;
-    private int newProgress = 0, oldProgress = 0;
-    private BrightnessHelper mBrightnessHelper;
-    private float brightness = 1;
-    private Window mWindow;
-    private WindowManager.LayoutParams mLayoutParams;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
-    private View mLLShowForWard;
-    private float speed;
-    private Runnable speechRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mLLShowForWard == null) {
-                mLLShowForWard = findViewById(R.id.ll_show_forward);
-            }
-            mLLShowForWard.setVisibility(speed > 1 ? VISIBLE : View.GONE);
-            if (mExoPlayer != null) {
-                PlaybackParameters playbackParameters = new PlaybackParameters(speed, 1.0F);
-                mExoPlayer.setPlaybackParameters(playbackParameters);
-            }
-        }
-    };
-
 
     private void initGesture() {
         ly_VG = new VideoGestureHelper(mContext, mMPlayerView);

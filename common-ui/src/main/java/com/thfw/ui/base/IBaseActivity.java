@@ -40,7 +40,7 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity imp
     private int resumed = -1;
     protected Context mContext;
     UserObserver userObserver;
-    private int statusBarColor = STATUSBAR_WHITE;
+    private int statusBarColor = STATUSBAR_NONE;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

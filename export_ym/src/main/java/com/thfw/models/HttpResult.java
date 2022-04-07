@@ -29,6 +29,8 @@ public class HttpResult<T> implements IResult, IModel {
      * 返回结果数据
      */
     private T data;
+    @SerializedName("ext")
+    private Ext ext;
 
     public T getData() {
         return data;
@@ -74,9 +76,6 @@ public class HttpResult<T> implements IResult, IModel {
         return code == CODE_SUCCESS;
     }
 
-    @SerializedName("ext")
-    private Ext ext;
-
     public Ext getExt() {
         return ext;
     }
@@ -94,6 +93,7 @@ public class HttpResult<T> implements IResult, IModel {
         // 表情
         @SerializedName("sentiment")
         private String sentiment;
+        private boolean achieve;
 
         public String getSentiment() {
             return sentiment;
@@ -114,8 +114,6 @@ public class HttpResult<T> implements IResult, IModel {
         public boolean isJumpTheme() {
             return "proPage".equals(turnPage);
         }
-
-        private boolean achieve;
 
         public boolean isAchieve() {
             return achieve;

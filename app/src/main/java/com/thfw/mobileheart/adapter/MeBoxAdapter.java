@@ -92,7 +92,7 @@ public class MeBoxAdapter extends BaseAdapter<HeartBoxEntity, MeBoxAdapter.MeBox
             mTvContent = (TextView) itemView.findViewById(R.id.tv_content);
             mIvSingle = (ImageView) itemView.findViewById(R.id.iv_single);
             mRvImages = (RecyclerView) itemView.findViewById(R.id.rv_images);
-            mRvImages.setLayoutManager(new GridLayoutManager(mContext,3));
+            mRvImages.setLayoutManager(new GridLayoutManager(mContext, 3));
         }
     }
 

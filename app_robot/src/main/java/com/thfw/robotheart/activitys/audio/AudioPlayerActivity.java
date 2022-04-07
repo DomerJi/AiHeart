@@ -65,9 +65,9 @@ import com.thfw.robotheart.util.AudioModel;
 import com.thfw.robotheart.util.ExoPlayerFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.utils.GlideUtil;
+import com.thfw.ui.utils.VideoGestureHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
-import com.thfw.ui.utils.VideoGestureHelper;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.io.IOException;

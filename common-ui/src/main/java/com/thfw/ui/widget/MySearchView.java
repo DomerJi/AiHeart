@@ -59,6 +59,7 @@ public class MySearchView extends FrameLayout {
             isEdit = ta.getBoolean(R.styleable.MySearchView_sv_isEdit, true);
             hint = ta.getString(R.styleable.MySearchView_sv_hint);
             int hintColor = ta.getColor(R.styleable.MySearchView_sv_hintColor, Color.WHITE);
+            int searchColor = ta.getColor(R.styleable.MySearchView_sv_searchColor, Color.WHITE);
             Drawable drawable = ta.getDrawable(R.styleable.MySearchView_sv_background);
             if (!TextUtils.isEmpty(hint)) {
                 mEtSearch.setHint(hint);
@@ -72,6 +73,7 @@ public class MySearchView extends FrameLayout {
                 mEtSearch.setFocusable(false);
                 mEtSearch.setCursorVisible(false);
             }
+            mIvSearch.setColorFilter(searchColor);
             ta.recycle();
         }
         if (clearIcon) {
@@ -79,6 +81,7 @@ public class MySearchView extends FrameLayout {
                 mEtSearch.setText("");
             });
         }
+
     }
 
     private void initView() {
@@ -154,6 +157,10 @@ public class MySearchView extends FrameLayout {
             LogUtil.d("onSearch key = " + key + " ; clickSearch = " + clickSearch);
             onSearchListener.onSearch(key, clickSearch);
         }
+    }
+
+    public boolean isKeyEmpty() {
+        return TextUtils.isEmpty(mEtSearch.getText().toString());
     }
 
     public interface OnSearchListener {

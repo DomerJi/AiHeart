@@ -32,13 +32,13 @@ public class TestProgressIngActivity extends BaseActivity<TestPresenter> impleme
 
 
     private static TestDetailModel testDetailModel;
+    SparseIntArray vpFlagArray = new SparseIntArray();
     private ViewPager2 mVpList;
     private TestDetailModel mModel;
     // 测评开始时间
     private long beginTime;
     private TestngAdapter mTestIngAdapter;
     private TitleView titleView;
-    SparseIntArray vpFlagArray = new SparseIntArray();
 
     public static void startActivity(Context context, TestDetailModel testDetailModel) {
         TestProgressIngActivity.testDetailModel = testDetailModel;

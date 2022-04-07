@@ -21,11 +21,11 @@ import java.util.List;
  */
 public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChildTypeAdapter.VideoChildHolder> {
 
+    private int mSelectedIndex = -1;
+
     public VideoChildTypeAdapter(List<VideoTypeModel> dataList) {
         super(dataList);
     }
-
-    private int mSelectedIndex = -1;
 
     public int getmSelectedIndex() {
         return mSelectedIndex;
@@ -48,6 +48,14 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
         holder.mTvTitle.setSelected(position == mSelectedIndex);
     }
 
+    public void resetSelectedIndex() {
+        this.mSelectedIndex = -1;
+        notifyDataSetChanged();
+        if (mOnRvItemListener != null) {
+            mOnRvItemListener.onItemClick(mDataList, mSelectedIndex);
+        }
+    }
+
     public class VideoChildHolder extends RecyclerView.ViewHolder {
 
         private final TextView mTvTitle;
@@ -68,14 +76,6 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
                     mOnRvItemListener.onItemClick(mDataList, mSelectedIndex);
                 }
             });
-        }
-    }
-
-    public void resetSelectedIndex() {
-        this.mSelectedIndex = -1;
-        notifyDataSetChanged();
-        if (mOnRvItemListener != null) {
-            mOnRvItemListener.onItemClick(mDataList, mSelectedIndex);
         }
     }
 }

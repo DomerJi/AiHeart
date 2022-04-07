@@ -26,6 +26,8 @@ import java.util.List;
  */
 public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, TestngAdapter.TestngHolder> {
 
+    OnLastNextListener onLastNextListener;
+
     public TestngAdapter(List<TestDetailModel.SubjectListBean> dataList) {
         super(dataList);
     }
@@ -76,14 +78,12 @@ public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, 
         });
     }
 
-    public interface OnLastNextListener {
-        void onClick(int lastOrNext);
-    }
-
-    OnLastNextListener onLastNextListener;
-
     public void setOnLastNextListener(OnLastNextListener onLastNextListener) {
         this.onLastNextListener = onLastNextListener;
+    }
+
+    public interface OnLastNextListener {
+        void onClick(int lastOrNext);
     }
 
     public class TestngHolder extends RecyclerView.ViewHolder {

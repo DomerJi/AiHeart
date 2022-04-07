@@ -9,7 +9,7 @@ import com.thfw.ui.base.BaseFragment;
  * Date: 2021/10/27 10:14
  * Describe:Todo
  */
-public class RobotFragment  extends BaseFragment {
+public class RobotFragment extends BaseFragment {
     @Override
     public int getContentView() {
         return R.layout.fragment_robot_home_layout;

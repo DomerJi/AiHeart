@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.thfw.base.base.IPresenter;
-import com.thfw.mobileheart.adapter.MeBoxAdapter;
 import com.thfw.base.models.HeartBoxEntity;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.adapter.MeBoxAdapter;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;
 
@@ -108,13 +108,6 @@ public class MeHeartBoxActivity extends BaseActivity {
         return list;
     }
 
-    public class BoxHolder extends RecyclerView.ViewHolder {
-
-        public BoxHolder(@NonNull @NotNull View itemView) {
-            super(itemView);
-        }
-    }
-
     @Override
     public int getStatusBarColor() {
         return STATUSBAR_TRANSPARENT;
@@ -123,5 +116,12 @@ public class MeHeartBoxActivity extends BaseActivity {
     @Override
     public void initData() {
 
+    }
+
+    public class BoxHolder extends RecyclerView.ViewHolder {
+
+        public BoxHolder(@NonNull @NotNull View itemView) {
+            super(itemView);
+        }
     }
 }
