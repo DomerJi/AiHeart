@@ -17,7 +17,9 @@ import com.thfw.dialog.LoadingDialog;
 import com.thfw.export_ym.test.TestReportActivity;
 import com.thfw.export_ym.test.TestingActivity;
 import com.thfw.models.TokenModel;
+import com.thfw.net.BaseCodeListener;
 import com.thfw.net.CommonInterceptor;
+import com.thfw.net.OkHttpUtil;
 import com.thfw.net.ResponeThrowable;
 import com.thfw.presenter.LoginPresenter;
 import com.thfw.util.AESUtils3;
@@ -94,6 +96,13 @@ public final class YmHandler {
         String organId = AESUtils3.decrypt(appKey, "900677d13b86e89d01dafe179f5b36ce");
         String openId = packageName + "_" + organId + "_" + userId;
         token = SharePreferenceUtil.getString(openId, null);
+        OkHttpUtil.setBaseCodeListener(new BaseCodeListener() {
+            @Override
+            public void onCode(int code) {
+                SharePreferenceUtil.setString(openId, "");
+                init(context, userId, phone, userName, onYmLoginCallBack);
+            }
+        });
         if (!TextUtils.isEmpty(token)) {
             onYmLoginCallBack.onSuccess();
             if (statciOnYmLoginCallBack != null) {

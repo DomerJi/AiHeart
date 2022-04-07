@@ -76,9 +76,18 @@ public class TestingActivity extends BaseActivity<TestPresenter> implements Test
             @Override
             public void onItemClick(List<TestModel> list, int position) {
                 TestBeginActivity.startActivity(mContext, list.get(position).getId());
+                finish();
             }
         });
         mRvTest.setAdapter(testOneAdapter);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (mLoadingView != null && mLoadingView.isLoadFail()) {
+            mLoadingView.reTry();
+        }
     }
 
     @Override

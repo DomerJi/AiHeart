@@ -12,8 +12,12 @@
         android:testOnly="true">
         <activity android:name="com.thfw.export_ym.test.TestBeginActivity" />
         <activity android:name="com.thfw.export_ym.test.TestProgressIngActivity" />
-        <activity android:name="com.thfw.export_ym.test.TestingActivity" />
-        <activity android:name="com.thfw.export_ym.test.TestReportActivity" />
+        <activity
+            android:name="com.thfw.export_ym.test.TestingActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name="com.thfw.export_ym.test.TestReportActivity"
+            android:launchMode="singleTask" />
         <activity
             android:name="com.thfw.export_ym.test.TestResultWebActivity"
             android:launchMode="singleTask" />

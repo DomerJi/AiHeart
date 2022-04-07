@@ -113,6 +113,15 @@ public class OkHttpUtil {
 
         if (httpResult.isSuccessful()) {
             return true;
+        } else {
+
+            if (httpResult.getCode() == HttpResult.FAIL_TOKEN) {
+                // token 失效
+                LogUtil.d(TAG, "OkHttpUtil.mBaseCodeListener.onCode(BaseCodeListener.LOGOUT)");
+                if (OkHttpUtil.mBaseCodeListener != null) {
+                    OkHttpUtil.mBaseCodeListener.onCode(BaseCodeListener.LOGOUT);
+                }
+            }
         }
         return true;
     }
@@ -181,6 +190,12 @@ public class OkHttpUtil {
                 }, exception -> {
                     resultUI.onFail(ExceptionHandle.handleException(exception));
                 });
+    }
+
+    private static BaseCodeListener mBaseCodeListener;
+
+    public static void setBaseCodeListener(BaseCodeListener mBaseCodeListener) {
+        OkHttpUtil.mBaseCodeListener = mBaseCodeListener;
     }
 
 }

@@ -135,6 +135,16 @@ public class LoadingView extends LinearLayout implements ILoading {
         mLayoutFail.setVisibility(VISIBLE);
     }
 
+    public boolean isLoadFail() {
+        return mLayoutFail != null && mLayoutFail.getVisibility() == VISIBLE;
+    }
+
+    public void reTry() {
+        if (mLayoutFail != null) {
+            mLayoutFail.performClick();
+        }
+    }
+
     private void hideLoading() {
         if (mLayoutLoading != null) {
             mProgressBar.setVisibility(GONE);

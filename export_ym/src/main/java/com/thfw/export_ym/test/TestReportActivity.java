@@ -108,6 +108,14 @@ public class TestReportActivity extends BaseActivity<TestPresenter> implements T
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (mLoadingView != null && mLoadingView.isLoadFail()) {
+            mLoadingView.reTry();
+        }
+    }
+
+    @Override
     public void onFail(ResponeThrowable throwable) {
         pageHelper.onFail(v -> {
             mPresenter.onResultHistory(rid, pageHelper.getPage());

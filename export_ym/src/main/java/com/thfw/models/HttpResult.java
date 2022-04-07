@@ -13,6 +13,7 @@ import com.thfw.base.IResult;
 public class HttpResult<T> implements IResult, IModel {
 
     private static final int CODE_SUCCESS = 1;
+    public static final int FAIL_TOKEN = 5;
 
     /**
      * 返回状态值
