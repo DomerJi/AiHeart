@@ -23,8 +23,9 @@ public class BuglyUtil {
     public static void init(String appKey) {
         Beta.autoCheckUpgrade = false;//自动检查更新开关 true表示初始化时自动检查升级; false表示不会自动检查升级,需要手动调用Beta.checkUpgrade()方法;
         Beta.autoInit = true;//自动初始化开关
+        Beta.initDelay = 1 * 1000;
         // 设置升级检查周期为60s(默认检查周期为0s)，60s内SDK不重复向后台请求策略);
-        Beta.upgradeCheckPeriod = 60 * 1000;
+        Beta.upgradeCheckPeriod = 5 * 60 * 1000;
         Beta.upgradeListener = new UpgradeListener() {
             @Override
             public void onUpgrade(int ret, UpgradeInfo strategy, boolean isManual, boolean isSilence) {
@@ -101,6 +102,7 @@ public class BuglyUtil {
                 if (Beta.getUpgradeInfo().versionCode <= versionCode) {
                     BuglyUtil.requestUpgradeStateListener.onUpgradeNoVersion(false);
                     BuglyUtil.requestUpgradeStateListener = null;
+                    onBetaCheckUpgrade();
                 } else {
                     BuglyUtil.requestUpgradeStateListener.onVersion(true);
                     BuglyUtil.requestUpgradeStateListener = null;

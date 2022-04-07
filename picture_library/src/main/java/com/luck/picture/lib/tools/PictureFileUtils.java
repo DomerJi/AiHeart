@@ -233,8 +233,7 @@ public class PictureFileUtils {
      * Callers should check whether the path is local before assuming it
      * represents a local file.
      *
-     * @param context The context.
-     * @param uri     The Uri to query.
+     * @param uri The Uri to query.
      * @author paulburke
      */
     @SuppressLint("NewApi")
@@ -486,7 +485,6 @@ public class PictureFileUtils {
      * set empty PictureSelector Cache
      *
      * @param context
-     * @param type    image、video、audio ...
      */
     public static void deleteAllCacheDirFile(Context context) {
 
@@ -517,6 +515,18 @@ public class PictureFileUtils {
         File dirMusic = context.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
         if (dirMusic != null) {
             File[] files = dirMusic.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
+                }
+            }
+        }
+
+        File downLoads = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+        if (downLoads != null) {
+            File[] files = downLoads.listFiles();
             if (files != null) {
                 for (File file : files) {
                     if (file.isFile()) {
