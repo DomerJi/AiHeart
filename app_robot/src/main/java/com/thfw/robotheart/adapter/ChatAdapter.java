@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -81,7 +82,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             case ChatEntity.TYPE_INPUT:
                 if (holder instanceof ChatFromHolder) {
                     ChatFromHolder chatFromHolder = (ChatFromHolder) holder;
-                    chatFromHolder.mTvTalk.setText(Html.fromHtml(chatEntity.getTalk()));
+                    chatFromHolder.mTvTalk.setText(HtmlCompat.fromHtml(chatEntity.getNotPTalk(), HtmlCompat.FROM_HTML_MODE_LEGACY));
                 }
                 break;
             case ChatEntity.TYPE_EMOJI:

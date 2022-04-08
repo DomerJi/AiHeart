@@ -1,6 +1,7 @@
 package com.thfw.base.models;
 
 import com.thfw.base.base.IModel;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HourUtil;
 
 public class ChatEntity implements IModel {
@@ -29,6 +30,7 @@ public class ChatEntity implements IModel {
 
     public int type;
     public String talk;
+    public String notPTalk;
     public long time = System.currentTimeMillis();
 
     public boolean isTalkType() {
@@ -59,6 +61,22 @@ public class ChatEntity implements IModel {
     public String getTalk() {
         return talk == null ? "" : talk;
     }
+
+    public String getNotPTalk() {
+        if (notPTalk == null) {
+            notPTalk = talk.trim();
+            if (!EmptyUtil.isEmpty(talk)) {
+                if (notPTalk.startsWith("<p>")) {
+                    notPTalk = notPTalk.replaceFirst("<p>", "");
+                }
+                if (notPTalk.endsWith("</p>")) {
+                    notPTalk = notPTalk.substring(0, notPTalk.length() - "</p>".length());
+                }
+            }
+        }
+        return notPTalk;
+    }
+
 
     public boolean isFrom() {
         return type == TYPE_FROM_NORMAL || type == TYPE_FROM_SELECT || type == TYPE_INPUT;

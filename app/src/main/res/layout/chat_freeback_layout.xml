@@ -76,7 +76,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="4dp"
                         android:text="满意"
-                        android:textColor="@drawable/yellow_textcolor_selector"
+                        android:textColor="@color/text_yellow"
                         android:textSize="@dimen/textSize_small" />
 
                 </LinearLayout>
@@ -101,7 +101,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="4dp"
                         android:text="一般"
-                        android:textColor="@drawable/yellow_textcolor_selector"
+                        android:textColor="@color/text_yellow"
                         android:textSize="@dimen/textSize_small" />
 
                 </LinearLayout>
@@ -126,7 +126,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="4dp"
                         android:text="不满意"
-                        android:textColor="@drawable/yellow_textcolor_selector"
+                        android:textColor="@color/text_yellow"
                         android:textSize="@dimen/textSize_small" />
 
                 </LinearLayout>

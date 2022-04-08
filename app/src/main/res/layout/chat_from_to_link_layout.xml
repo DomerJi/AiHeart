@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/riv_avatar"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginLeft="16dp"
+        android:src="@mipmap/ic_mobile_avatar"
+        app:riv_oval="true" />
+
+    <RelativeLayout
+        android:layout_width="220dp"
+        android:layout_height="160dp"
+        android:layout_marginLeft="12dp">
+
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/riv_link_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv_type"
+            android:scaleType="centerCrop"
+            tools:src="@color/chat_green" />
+
+
+        <TextView
+            android:id="@+id/tv_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/chat_type_top_bg"
+            android:padding="8dp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_small"
+            tools:text="正念冥想" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/chat_type_bottom_bg"
+            android:padding="8dp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_small"
+            tools:text="顺应变化" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

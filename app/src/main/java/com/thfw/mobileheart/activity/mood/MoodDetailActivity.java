@@ -41,6 +41,8 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NumberUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.constants.CharType;
+import com.thfw.mobileheart.view.ChartMarkerView;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;
 
@@ -54,7 +56,6 @@ import java.util.List;
  */
 public class MoodDetailActivity extends BaseActivity {
 
-    private static final Object LINE_DATA = new Object();
     private static final float CHART_TEXTSIZE = 7.5f;
     protected final String[] months = new String[]{
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
@@ -328,13 +329,14 @@ public class MoodDetailActivity extends BaseActivity {
             }
         });
 
+
         CombinedData data = new CombinedData();
         data.setDrawValues(Util.isPad(mContext));
         data.setData(generateLineData());
         data.setValueFormatter(new ValueFormatter() {
             @Override
             public String getPointLabel(Entry entry) {
-                if (LINE_DATA == entry.getData()) {
+                if (entry.getData() instanceof CharType && (CharType) entry.getData() == CharType.MOOD) {
                     return NumberUtil.getPeople(entry.getY() / 5);
                 }
                 return super.getPointLabel(entry);
@@ -350,6 +352,7 @@ public class MoodDetailActivity extends BaseActivity {
         LogUtil.d(TAG, "getAxisMaximum = " + xAxis.getAxisMaximum());
         chart.setData(data);
         chart.animateXY(1000, 1000);
+        chart.setMarker(new ChartMarkerView(this, R.layout.item_chart_indicator));
 //        chart.invalidate();
     }
 
@@ -367,7 +370,7 @@ public class MoodDetailActivity extends BaseActivity {
 
         for (int index = 0; index < count; index++) {
             Entry entry = new Entry(index + 0.5f, getRandom(50, 0));
-            entry.setData(LINE_DATA);
+            entry.setData(CharType.MOOD);
             entries.add(entry);
         }
 
@@ -412,14 +415,38 @@ public class MoodDetailActivity extends BaseActivity {
         ArrayList<BarEntry> entries8 = new ArrayList<>();
 
         for (int index = 0; index < count; index++) {
-            entries1.add(new BarEntry(0, getRandom(35, 15)));
-            entries2.add(new BarEntry(0, getRandom(35, 15)));
-            entries3.add(new BarEntry(0, getRandom(35, 15)));
-            entries4.add(new BarEntry(0, getRandom(35, 15)));
-            entries5.add(new BarEntry(0, getRandom(35, 15)));
-            entries6.add(new BarEntry(0, getRandom(35, 15)));
-            entries7.add(new BarEntry(0, getRandom(35, 15)));
-            entries8.add(new BarEntry(0, getRandom(35, 15)));
+            BarEntry barEntry1 = new BarEntry(0, getRandom(35, 15));
+            barEntry1.setData(CharType.TALK);
+            entries1.add(barEntry1);
+
+            BarEntry barEntry2 = new BarEntry(0, getRandom(35, 15));
+            barEntry2.setData(CharType.AI_TALK);
+            entries2.add(barEntry2);
+
+            BarEntry barEntry3 = new BarEntry(0, getRandom(35, 15));
+            barEntry3.setData(CharType.TEST);
+            entries3.add(barEntry3);
+
+            BarEntry barEntry4 = new BarEntry(0, getRandom(35, 15));
+            barEntry4.setData(CharType.AUDIO);
+            entries4.add(barEntry4);
+
+            BarEntry barEntry5 = new BarEntry(0, getRandom(35, 15));
+            barEntry5.setData(CharType.VIDEO);
+            entries5.add(barEntry5);
+
+
+            BarEntry barEntry6 = new BarEntry(0, getRandom(35, 15));
+            barEntry6.setData(CharType.TOOL);
+            entries6.add(barEntry6);
+
+            BarEntry barEntry7 = new BarEntry(0, getRandom(35, 15));
+            barEntry7.setData(CharType.BOOK);
+            entries7.add(barEntry7);
+
+            BarEntry barEntry8 = new BarEntry(0, getRandom(35, 15));
+            barEntry8.setData(CharType.IDEO_BOOK);
+            entries8.add(barEntry8);
         }
 
         BarDataSet set1 = new BarDataSet(entries1, "主题对话");

@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static com.thfw.mobileheart.adapter.HomeAdapter.imageUrl;
-
 public class MeHeartBoxActivity extends BaseActivity {
 
     private RecyclerView mRecyclerView;
@@ -101,7 +99,7 @@ public class MeHeartBoxActivity extends BaseActivity {
             }
             int len = random.nextInt(9);
             for (int j = 0; j < len; j++) {
-                heartBoxEntity.images.add(imageUrl);
+                heartBoxEntity.images.add("");
             }
             list.add(heartBoxEntity);
         }

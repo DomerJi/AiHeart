@@ -3,9 +3,12 @@ package com.thfw.mobileheart.activity.talk;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -14,31 +17,54 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.scwang.wave.MultiWaveHeader;
 import com.thfw.base.api.TalkApi;
-import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.MyTextWatcher;
+import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.ChatEntity;
+import com.thfw.base.models.ChosenModel;
+import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.models.TalkModel;
+import com.thfw.base.net.HttpResult;
+import com.thfw.base.net.NetParams;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.TalkPresenter;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.StringUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.TestActivity;
+import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
 import com.thfw.mobileheart.adapter.ChatAdapter;
+import com.thfw.mobileheart.adapter.ChatSelectAdapter;
+import com.thfw.mobileheart.constants.AnimFileName;
 import com.thfw.mobileheart.util.DialogFactory;
+import com.thfw.mobileheart.util.PageJumpUtils;
 import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.voice.PolicyHelper;
 import com.thfw.ui.voice.speech.SpeechHelper;
+import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.widget.TitleView;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
-import java.util.Random;
+import java.util.HashMap;
+import java.util.List;
 
-public class ChatActivity extends BaseActivity {
+public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPresenter.TalkUi<HttpResult<List<DialogTalkModel>>> {
 
     private androidx.recyclerview.widget.RecyclerView rvChatList;
     private ChatAdapter mChatAdapter;
@@ -62,6 +88,23 @@ public class ChatActivity extends BaseActivity {
     private ImageView mIvControlPress;
     private TextView mTvControlHintSend;
 
+
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+
+    private RecyclerView mRvSelect;
+    private ChatSelectAdapter mSelectAdapter;
+    private Helper mHelper = new Helper();
+    // 1、树洞聊天 2、咨询助理
+    private int mScene;
+
+    // 失败参数暂存;
+    private int mSceneError;
+    private NetParams mNetParamsError;
+    private long lastTime;
+
+
+    private int mCurrentChatType;
+
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, ChatActivity.class).putExtra(KEY_DATA, talkModel));
     }
@@ -77,21 +120,39 @@ public class ChatActivity extends BaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public TalkPresenter onCreatePresenter() {
+        return new TalkPresenter(this);
     }
 
     @Override
     public void initView() {
 
+        mRlRoot = (RelativeLayout) findViewById(R.id.rl_root);
+
         rvChatList = (RecyclerView) findViewById(R.id.rv_chatList);
-        LinearLayoutManager manager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        rvChatList.setLayoutManager(new LinearLayoutManager(mContext));
+        mRvSelect = (RecyclerView) findViewById(R.id.rv_select);
+        // 设置布局管理器
+        FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(mContext);
+        // flexDirection 属性决定主轴的方向（即项目的排列方向）。类似 LinearLayout 的 vertical 和 horizontal。
+        flexboxLayoutManager.setFlexDirection(FlexDirection.ROW);
+        // 主轴为水平方向，起点在左端。
+        // flexWrap 默认情况下 Flex 跟 LinearLayout 一样，都是不带换行排列的，但是flexWrap属性可以支持换行排列。
+        flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP);
+        // 按正常方向换行
+        // justifyContent 属性定义了项目在主轴上的对齐方式。
+        flexboxLayoutManager.setJustifyContent(JustifyContent.FLEX_START);//交叉轴的起点对齐。
+        mRvSelect.setLayoutManager(flexboxLayoutManager);
+
         softInput();
-        rvChatList.setLayoutManager(manager);
         mChatAdapter = new ChatAdapter(null);
         rvChatList.setAdapter(mChatAdapter);
-
-        mRlRoot = (RelativeLayout) findViewById(R.id.rl_root);
+        mChatAdapter.setRecommendListener(new ChatAdapter.OnRecommendListener() {
+            @Override
+            public void onRecommend(int type, DialogTalkModel.RecommendInfoBean recommendInfoBean) {
+                TalkItemJumpHelper.onItemClick(mContext, type, recommendInfoBean);
+            }
+        });
 
         rvChatList.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -193,7 +254,15 @@ public class ChatActivity extends BaseActivity {
 
     @Override
     public void initData() {
-
+        TalkModel talkModel = (TalkModel) getIntent().getSerializableExtra(KEY_DATA);
+        if (talkModel == null) {
+            ToastUtil.show("参数错误");
+            finish();
+            return;
+        }
+        mScene = talkModel.getType() == 3 ? 1 : 2;
+        mPresenter.onJoinDialog(talkModel.getType(), talkModel.getId());
+        mTitleView.setCenterText(talkModel.getTitle());
     }
 
 
@@ -231,7 +300,7 @@ public class ChatActivity extends BaseActivity {
         mTvSend = (TextView) findViewById(R.id.tv_send);
         mTvSend.setEnabled(!EmptyUtil.isEmpty(mEtContent.getText().toString()));
         mTvSend.setOnClickListener(v -> {
-            sendInputGo(mEtContent.getText().toString());
+            sendInputText(mEtContent.getText().toString());
         });
         mIvVoiceEdit = findViewById(R.id.iv_control_voice_edit);
         mIvVoiceClose = findViewById(R.id.iv_control_voice_close);
@@ -317,13 +386,13 @@ public class ChatActivity extends BaseActivity {
                         mIvVoiceEdit.setImageResource(R.drawable.ic_baseline_check_24);
                         mIvVoiceEdit.setColorFilter(Color.GREEN);
                         mIvVoiceEdit.setOnClickListener(v1 -> {
-                            sendInputGo(mEtControlContent.getText().toString());
+                            sendInputText(mEtControlContent.getText().toString());
                             closeVoiceControl();
                         });
                     } else if (isInCloseButton(event.getRawX(), event.getRawY())) {
                         closeVoiceControl();
                     } else {
-                        sendInputGo(mEtControlContent.getText().toString());
+                        sendInputText(mEtControlContent.getText().toString());
                         closeVoiceControl();
                     }
                 }
@@ -385,18 +454,6 @@ public class ChatActivity extends BaseActivity {
 
     }
 
-    private void sendInputGo(String content) {
-        if (TextUtils.isEmpty(content)) {
-            return;
-        }
-        ChatEntity chatEntity = new ChatEntity();
-        chatEntity.type = new Random().nextInt(4);
-        chatEntity.talk = content;
-        mChatAdapter.addData(chatEntity);
-        mChatAdapter.notifyItemInserted(mChatAdapter.getItemCount() - 1);
-        rvChatList.smoothScrollToPosition(mChatAdapter.getItemCount() - 1);
-        mEtContent.setText("");
-    }
 
     private void setBlackOrWhite(ImageView imageView, boolean black) {
         if (black) {
@@ -442,7 +499,403 @@ public class ChatActivity extends BaseActivity {
 
     private void vibrate() {
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        vibrator.vibrate(150);
+        vibrator.vibrate(120);
     }
 
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return this;
+    }
+
+    @Override
+    public void onSuccess(HttpResult<List<DialogTalkModel>> model) {
+        LogUtil.d(TAG, " +++++++++++++++++ model = " + model);
+        if (model != null) {
+            List<DialogTalkModel> data = model.getData();
+            if (model.getExt() != null) {
+                if (model.getExt().isEnterDeepDialog()) {
+                    sendData(ChatEntity.createJoinPage("欢迎进入深度疏导主题对话"));
+                }
+                if (model.getExt().isSentiment()
+                        && AnimFileName.getTalkEmojiBySentiment(model.getExt().getSentiment()) != null) {
+                    sendData(ChatEntity.createEmoji(model.getExt().getSentiment()));
+                }
+            }
+            if (data != null) {
+                // 再见
+                if (data.isEmpty()) {
+                    finish();
+                    LogUtil.d(TAG, "end 结束对话 data:[] ++++++++++++++++++++++++++");
+                    return;
+                }
+                mSceneError = -1;
+                mNetParamsError = null;
+                mHelper.setTalks(data);
+                onTalkEngine();
+            }
+        }
+
+    }
+
+    public void onTalkEngine() {
+        if (mHelper.hasNext()) {
+            onTalkData(mHelper.next());
+            if (mHelper.hasNext()) {
+                mMainHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onTalkEngine();
+                    }
+                }, 800);
+            }
+        }
+    }
+
+    /**
+     * 发送
+     *
+     * @param chatEntity
+     */
+    public void sendData(ChatEntity chatEntity) {
+        boolean addTime = false;
+        ChatEntity lastChatEntity = null;
+        // 添加时间
+        if (mChatAdapter.getItemCount() > 0) {
+            lastChatEntity = mChatAdapter.getDataList().get(mChatAdapter.getItemCount() - 1);
+            if (lastChatEntity != null && lastChatEntity.isTalkType()) {
+                long limitTime = chatEntity.time - lastChatEntity.time;
+                LogUtil.d(TAG, "sendData -> limitTime = " + limitTime);
+                if (limitTime > HourUtil.LEN_MINUTE ||
+                        System.currentTimeMillis() - lastTime > HourUtil.LEN_5_MINUTE) {
+                    lastTime = System.currentTimeMillis();
+                    mChatAdapter.addData(ChatEntity.createTime());
+                    mChatAdapter.notifyItemInserted(mChatAdapter.getItemCount() - 1);
+                    addTime = true;
+                    if (lastChatEntity.type == ChatEntity.TYPE_TO && mChatAdapter.getItemCount() > 2) {
+                        mChatAdapter.notifyItemChanged(mChatAdapter.getItemCount() - 2);
+                    }
+                }
+            }
+        } else {
+            lastTime = System.currentTimeMillis();
+            mChatAdapter.addData(ChatEntity.createTime());
+        }
+        mChatAdapter.addData(chatEntity);
+        // 插入一条
+        mChatAdapter.notifyItemInserted(mChatAdapter.getItemCount() - 1);
+        if (!addTime && lastChatEntity != null && lastChatEntity.type == ChatEntity.TYPE_TO
+                && mChatAdapter.getItemCount() > 2) {
+            mChatAdapter.notifyItemChanged(mChatAdapter.getItemCount() - 2);
+        }
+        rvChatList.smoothScrollToPosition(mChatAdapter.getItemCount() - 1);
+    }
+
+
+    /**
+     * 语音匹配自用输入和单选题
+     *
+     * @param result
+     * @param end
+     */
+    private void chooseOption(String result, boolean end) {
+        LogUtil.d(TAG, "chooseOption begin");
+        if (StringUtil.isEmpty(result)) {
+            return;
+        }
+        LogUtil.d(TAG, "chooseOption(result)" + result + "; end = " + end);
+        LogUtil.d(TAG, "chooseOption(result) mCurrentChatType = " + mCurrentChatType);
+        if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
+            if (end) {
+                sendInputText(result);
+            }
+        } else if (mCurrentChatType == ChatEntity.TYPE_FROM_SELECT) {
+            if (mSelectAdapter == null) {
+                return;
+            }
+
+            List<DialogTalkModel.CheckRadioBean> list = mSelectAdapter.getDataList();
+            if (EmptyUtil.isEmpty(list)) {
+                return;
+            }
+
+            for (int i = 0, size = list.size(); i < size; i++) {
+                if (result.equals(list.get(i).getValue())) {
+                    mSelectAdapter.getOnRvItemListener().onItemClick(list, i);
+                    return;
+                }
+            }
+            if (!end) {
+                return;
+            }
+            HashMap<String, String> radio = new HashMap<>();
+            for (DialogTalkModel.CheckRadioBean bean : list) {
+                radio.put(String.valueOf(bean.getKey()), bean.getValue());
+            }
+            LogUtil.d(TAG, "ChosenModel = " + GsonUtil.toJson(radio));
+            new TalkPresenter(new TalkPresenter.TalkUi<ChosenModel>() {
+                @Override
+                public LifecycleProvider getLifecycleProvider() {
+                    return ChatActivity.this;
+                }
+
+                @Override
+                public void onSuccess(ChosenModel data) {
+                    LogUtil.d(TAG, "ChosenModel = " + GsonUtil.toJson(data));
+                    if (data != null && !TextUtils.isEmpty(data.chosen)) {
+                        if (mSelectAdapter == null || mSelectAdapter.getOnRvItemListener() == null) {
+                            return;
+                        }
+                        for (int i = 0, size = list.size(); i < size; i++) {
+                            if (data.chosen.equals(String.valueOf(list.get(i).getKey()))) {
+                                LogUtil.d(TAG, "ChosenModel = data.chosen = " + list.get(i).getValue());
+                                mSelectAdapter.getOnRvItemListener().onItemClick(list, i);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFail(ResponeThrowable throwable) {
+
+                }
+            }).onChooseOption(result, radio);
+        }
+
+    }
+
+    private void sendInputText(String inputText) {
+        if (mHelper.getTalkModel() == null) {
+            LogUtil.d(TAG, "mHelper.getTalkModel() == null 对话还未开始！！！");
+            return;
+        }
+        if (EmptyUtil.isEmpty(inputText)) {
+            return;
+        }
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_TO;
+        chatEntity.talk = inputText;
+
+        NetParams netParams = NetParams.crete().add("question", chatEntity.talk);
+        LogUtil.d(TAG, "inputText = " + chatEntity.talk);
+        if (mScene != 1) {
+            netParams.add("id", mHelper.getTalkModel().getId());
+        }
+        onDialog(mScene, netParams);
+        sendData(chatEntity);
+        mEtContent.setText("");
+    }
+
+    /**
+     * 处理对话数据
+     *
+     * @param talkModel
+     */
+    private void onTalkData(DialogTalkModel talkModel) {
+        Log.d(TAG, talkModel != null ? talkModel.toString() : "talkModel is null");
+        if (talkModel == null) {
+            return;
+        }
+        final ChatEntity chatEntity = new ChatEntity(talkModel);
+        // 树洞 自由输入逻辑判断
+        if (mScene == 1) {
+            if (chatEntity.type == ChatEntity.TYPE_FROM_SELECT
+                    && !EmptyUtil.isEmpty(chatEntity.getTalkModel().getCheckRadio())) {
+                mCurrentChatType = chatEntity.type;
+            } else {
+                mCurrentChatType = ChatEntity.TYPE_INPUT;
+            }
+        } else {
+            mCurrentChatType = chatEntity.type;
+        }
+        onSceneHandle(talkModel);
+        sendData(chatEntity);
+        if (mCurrentChatType == ChatEntity.TYPE_FROM_SELECT) {
+            hideInput();
+            mRvSelect.setVisibility(View.VISIBLE);
+            mRlSend.setEnabled(false);
+            if (mSelectAdapter == null) {
+                mSelectAdapter = new ChatSelectAdapter(talkModel.getCheckRadio());
+                mRvSelect.setAdapter(mSelectAdapter);
+            } else {
+                mSelectAdapter.setDataListNotify(talkModel.getCheckRadio());
+            }
+            setSelectItemListener(chatEntity);
+        } else if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
+            mRlSend.setEnabled(true);
+            mRvSelect.setVisibility(View.GONE);
+        } else {
+            hideInput();
+            mRlSend.setEnabled(false);
+            mRvSelect.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 倾诉吐槽和主题对话跳转处理
+     *
+     * @param talkModel
+     */
+    private void onSceneHandle(DialogTalkModel talkModel) {
+        if (talkModel.getScene(mScene) != mScene) {
+            mScene = talkModel.getScene(mScene);
+            if (mScene == 1) {
+                mTitleView.setCenterText("倾诉吐槽");
+                sendData(ChatEntity.createJoinPage("欢迎进入倾诉吐槽"));
+            } else {
+                mTitleView.setCenterText("主题对话");
+                sendData(ChatEntity.createJoinPage("欢迎进入专业心理咨询"));
+            }
+        }
+    }
+
+    private void setSelectItemListener(ChatEntity chatEntity) {
+        mSelectAdapter.setOnRvItemListener(new OnRvItemListener<DialogTalkModel.CheckRadioBean>() {
+            @Override
+            public void onItemClick(List<DialogTalkModel.CheckRadioBean> list, int position) {
+
+                DialogTalkModel.CheckRadioBean radioBean = list.get(position);
+                sendData(new ChatEntity(ChatEntity.TYPE_TO, radioBean.getValue()));
+                if (radioBean.getKey() > 0) {
+                    NetParams netParams = NetParams.crete().add("id", chatEntity.getTalkModel().getId())
+                            .add("value", radioBean.getKey());
+                    onDialog(mScene, netParams);
+                } else {
+                    PageJumpUtils.jump(radioBean.getHref(), new PageJumpUtils.OnJumpListener() {
+                        @Override
+                        public void onJump(int type, Object obj) {
+                            switch (type) {
+                                case PageJumpUtils.JUMP_TEXT:
+                                    startActivityForResult(new Intent(mContext, TestActivity.class), type);
+                                    break;
+                                case PageJumpUtils.JUMP_MUSIC:
+                                    startActivityForResult(new Intent(mContext, AudioHomeActivity.class), type);
+                                    break;
+                                case PageJumpUtils.JUMP_AI_HOME:
+                                    startActivityForResult(new Intent(mContext, ThemeListActivity.class), type);
+                                    break;
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        LogUtil.d(TAG, "onFail = " + throwable.getMessage());
+        ToastUtil.show("onFail = " + throwable.getMessage());
+
+        // 消息重发
+        if (mSceneError != -1 && mNetParamsError != null && mChatAdapter != null) {
+            ChatEntity lastChatEntity = mChatAdapter.getDataList().get(mChatAdapter.getItemCount() - 1);
+            if (lastChatEntity != null) {
+                lastChatEntity.onError();
+                mChatAdapter.notifyItemChanged(mChatAdapter.getItemCount() - 1);
+                mChatAdapter.setOnSendStateChangeListener(new ChatAdapter.onSendStateChangeListener() {
+                    @Override
+                    public void onErrorResend() {
+                        lastChatEntity.onLoading();
+                        mChatAdapter.notifyItemChanged(mChatAdapter.getItemCount() - 1);
+                        onDialog(mSceneError, mNetParamsError);
+                    }
+                });
+            }
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        if (mScene == 1) {
+            // 树洞/倾诉吐槽 返回继续聊
+            DialogTalkModel talkModel = new DialogTalkModel();
+            talkModel.setType(ChatEntity.TYPE_INPUT);
+            talkModel.setQuestion("继续聊");
+            onTalkData(talkModel);
+            return;
+        }
+        switch (requestCode) {
+            case PageJumpUtils.JUMP_TEXT:
+            case PageJumpUtils.JUMP_MUSIC:
+            case PageJumpUtils.JUMP_AI_HOME:
+                mPresenter.onDialog(mScene, NetParams.crete()
+                        .add("id", mHelper.getTalkModel().getId())
+                        .add("value", "list_return"));
+                break;
+            case ChatEntity.TYPE_RECOMMEND_TEXT:
+            case ChatEntity.TYPE_RECOMMEND_VIDEO:
+            case ChatEntity.TYPE_RECOMMEND_AUDIO:
+            case ChatEntity.TYPE_RECOMMEND_AUDIO_ETC:
+            case ChatEntity.TYPE_RECOMMEND_TEST:
+                mPresenter.onDialog(mScene, NetParams.crete()
+                        .add("id", mHelper.getTalkModel().getId())
+                        .add("value", "talking_recommend"));
+                break;
+            default:
+                ToastUtil.show("未处理该类型结果 -> " + requestCode);
+                break;
+        }
+    }
+
+    private void onDialog(int mScene, NetParams netParams) {
+        mSceneError = mScene;
+        mNetParamsError = netParams;
+        mPresenter.onDialog(mScene, netParams);
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        PolicyHelper.getInstance().end();
+        TtsHelper.getInstance().stop();
+    }
+
+    public class Helper {
+
+        private List<DialogTalkModel> mTalks;
+        private int index = 0;
+        private DialogTalkModel talkModel;
+
+        public void setTalks(List<DialogTalkModel> mTalks) {
+            this.mTalks = mTalks;
+            this.index = 0;
+        }
+
+        public boolean hasNext() {
+            return mTalks != null && mTalks.size() > index;
+        }
+
+        public synchronized DialogTalkModel next() {
+            if (hasNext()) {
+                talkModel = mTalks.get(index);
+                index++;
+                return talkModel;
+            } else {
+                return null;
+            }
+        }
+
+        public DialogTalkModel getTalkModel() {
+            return talkModel;
+        }
+    }
 }

@@ -21,6 +21,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
+import com.thfw.base.models.TalkModel;
 import com.thfw.base.net.BaseCodeListener;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.OkHttpUtil;
@@ -38,8 +39,8 @@ import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.mood.StatusActivity;
-import com.thfw.mobileheart.activity.robot.RobotActivity;
 import com.thfw.mobileheart.activity.service.AutoUpdateService;
+import com.thfw.mobileheart.activity.talk.ChatActivity;
 import com.thfw.mobileheart.fragment.HomeFragment;
 import com.thfw.mobileheart.fragment.MeFragment;
 import com.thfw.mobileheart.fragment.MessageFragment;
@@ -172,15 +173,10 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         mLlMe = (LinearLayout) findViewById(R.id.ll_me);
         mIvMe = (ImageView) findViewById(R.id.iv_me);
         mTvMe = (TextView) findViewById(R.id.tv_me);
-        // 小天智能聊天
+        // 智能聊天/倾诉吐槽
         mLlAiChat.setOnClickListener(v -> {
-//            ChatActivity.startActivity(mContext);
-            startActivity(new Intent(mContext, RobotActivity.class));
+            ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
         });
-
-//            startActivity(new Intent(mContext, ExoPlayerActivity.class));
-//            startActivity(new Intent(mContext, TestActivity.class));
-//            startActivity(new Intent(mContext, ChatActivity.class));
 
         if (UserManager.getInstance().isTrueLogin()) {
             // 已登录 初始化用户信息和机构信息

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.HomeEntity;
 import com.thfw.base.models.HomeHistoryEntity;
+import com.thfw.base.models.TalkModel;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.mobileheart.MyApplication;
@@ -22,8 +23,11 @@ import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 import com.thfw.mobileheart.activity.exercise.ExerciseActivity;
 import com.thfw.mobileheart.activity.me.HotPhoneActivity;
+import com.thfw.mobileheart.activity.mood.MoodDetailActivity;
+import com.thfw.mobileheart.activity.mood.StatusActivity;
 import com.thfw.mobileheart.activity.read.ReadHomeActivity;
 import com.thfw.mobileheart.activity.read.StudyHomeActivity;
+import com.thfw.mobileheart.activity.talk.ChatActivity;
 import com.thfw.mobileheart.activity.talk.ThemeListActivity;
 import com.thfw.mobileheart.activity.test.TestingActivity;
 import com.thfw.mobileheart.activity.video.VideoHomeActivity;
@@ -44,7 +48,6 @@ import java.util.List;
  */
 public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder> implements MyApplication.OnMinuteListener {
     private static final long DELAY_TIME_BANNER = 5000;
-    public static String imageUrl = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fattach.bbs.miui.com%2Fforum%2F201312%2F31%2F111849zs48tpa2r1rau2id.jpg&refer=http%3A%2F%2Fattach.bbs.miui.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1629516874&t=2717a45c8f2c0237c30da28ca41e0801";
     private static long lastChange;
     private Banner mBanner;
 
@@ -117,8 +120,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             case HomeEntity.TYPE_BODY:
                 BodyHolder bodyHolder = (BodyHolder) holder;
                 bodyHolder.mTvTitle.setText("Home Body " + position);
-                bodyHolder.mTvTitle.setBackgroundColor(mDataList.get(position).color);
-                GlideUtil.load(mContext, imageUrl, bodyHolder.mRivAvatar);
+                GlideUtil.load(mContext, R.mipmap.cat, bodyHolder.mRivAvatar);
                 break;
             case HomeEntity.TYPE_BANNER:
                 BannerHolder bannerHolder = (BannerHolder) holder;
@@ -292,9 +294,24 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         public MadeHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             initView(itemView);
-            itemView.findViewById(R.id.root_hotline).setOnClickListener(v -> {
+            mRootHotline.setOnClickListener(v -> {
                 mContext.startActivity(new Intent(mContext, HotPhoneActivity.class));
             });
+            mClLeft.setOnClickListener(v -> {
+                ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
+            });
+
+            mLlActive.setOnClickListener(v -> {
+                MoodDetailActivity.startActivity(mContext);
+            });
+
+            mLlMood.setOnClickListener(v -> {
+                mContext.startActivity(new Intent(mContext, StatusActivity.class));
+            });
+            mTvMoodTitle.setOnClickListener(v -> {
+                mContext.startActivity(new Intent(mContext, StatusActivity.class));
+            });
+
         }
 
         private void initView(View itemView) {

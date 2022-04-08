@@ -17,11 +17,12 @@ public class MsgType {
     public static final int H5 = 7;
     public static final int COMMON_PROBLEM = 8;
     public static final int ABOUT_US = 9;
-    public static final int MOOD = 10;
+    public static final int MOOD = 10; // 心情签到
     public static final int VOICE_COMMAND = 11;
     public static final int SYSTEM = 12;
     public static final int BOOK = 13;
     public static final int IDEO_BOOK = 14;
+    public static final int SIGN_ONE_YEAR = 15;// 注册满一年
 
 
     /**

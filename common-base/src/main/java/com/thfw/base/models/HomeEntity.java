@@ -1,9 +1,6 @@
 package com.thfw.base.models;
 
-import android.graphics.Color;
-
 import java.util.List;
-import java.util.Random;
 
 /**
  * Author:pengs
@@ -23,8 +20,6 @@ public class HomeEntity {
     public int type = TYPE_BODY;
     public List<String> imageUrls;
     public String tabTitle;
-    public int color;
-    public static Random random = new Random();
 
     public int body2Position = -1;
 
@@ -44,9 +39,6 @@ public class HomeEntity {
     }
 
     public HomeEntity() {
-        color = Color.rgb(random.nextInt(255),
-                random.nextInt(255),
-                random.nextInt(255));
     }
 
 }

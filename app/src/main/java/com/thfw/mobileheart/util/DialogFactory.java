@@ -20,6 +20,7 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
+import com.opensource.svgaplayer.SVGACallback;
 import com.thfw.base.models.AreaModel;
 import com.thfw.base.models.PickerData;
 import com.thfw.base.utils.EmptyUtil;
@@ -412,6 +413,25 @@ public class DialogFactory {
 
     public interface OnViewThreeCallBack extends OnViewClickListener {
         void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvOne, TextView mTvTwo, TextView mTvThree);
+    }
+
+
+
+    public abstract static class SimpleSVGACallBack implements SVGACallback {
+        @Override
+        public void onPause() {
+
+        }
+
+        @Override
+        public void onRepeat() {
+
+        }
+
+        @Override
+        public void onStep(int i, double v) {
+
+        }
     }
 
 
