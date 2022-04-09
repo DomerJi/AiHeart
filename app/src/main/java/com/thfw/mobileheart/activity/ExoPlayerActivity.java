@@ -10,7 +10,6 @@ import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.VideoListAdapter;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
 import com.thfw.mobileheart.view.CustomDividerItemDecoration;
-import com.thfw.ui.base.BaseActivity;
 
 import java.util.List;
 

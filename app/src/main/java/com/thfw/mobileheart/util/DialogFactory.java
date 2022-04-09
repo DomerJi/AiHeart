@@ -416,7 +416,6 @@ public class DialogFactory {
     }
 
 
-
     public abstract static class SimpleSVGACallBack implements SVGACallback {
         @Override
         public void onPause() {

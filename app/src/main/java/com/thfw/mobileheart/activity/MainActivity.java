@@ -51,7 +51,6 @@ import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FragmentLoader;
 import com.thfw.mobileheart.util.MsgCountManager;
 import com.thfw.mobileheart.view.SimpleAnimatorListener;
-import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnViewClickListener;
@@ -303,7 +302,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
                 tDialog.dismiss();
                 if (view.getId() == R.id.bt_go) {
-                    startActivity(new Intent(mContext, StatusActivity.class));
+                    StatusActivity.startActivity(mContext);
                 }
             }
         });

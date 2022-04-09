@@ -23,7 +23,7 @@
         app:layout_constraintBottom_toTopOf="@id/rl_send"
         app:layout_constraintHorizontal_weight="@integer/left_weight"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/rv_list"
+        app:layout_constraintRight_toLeftOf="@id/refreshLayout"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView"
         tools:background="@color/white_10"
         tools:ignore="MissingConstraints">
@@ -129,17 +129,34 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_list"
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/refreshLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/rl_send"
         app:layout_constraintHorizontal_weight="@integer/right_weight"
         app:layout_constraintLeft_toRightOf="@id/cl_anim"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleRobotView" />
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView"
+        app:srlEnableFooterFollowWhenNoMoreData="true">
 
+        <com.scwang.smart.refresh.header.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srlEnableLastTime="false"
+            app:srlTextFailed="加载失败"
+            app:srlTextFinish="加载完成"
+            app:srlTextLoading="正在加载..."
+            app:srlTextPulling="下拉可以加载"
+            app:srlTextRefreshing="正在加载..."
+            app:srlTextRelease="释放立即加载" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
     <RelativeLayout
         android:id="@+id/rl_send"
@@ -243,7 +260,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/rv_list"
+        app:layout_constraintLeft_toLeftOf="@id/refreshLayout"
         app:layout_constraintRight_toRightOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -269,6 +286,15 @@
         app:layout_constraintHeight_min="80dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <com.thfw.ui.widget.LoadingView
+        android:id="@+id/loadingView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/refreshLayout"
+        app:layout_constraintLeft_toLeftOf="@id/refreshLayout"
+        app:layout_constraintRight_toRightOf="@id/refreshLayout"
+        app:layout_constraintTop_toTopOf="@id/refreshLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

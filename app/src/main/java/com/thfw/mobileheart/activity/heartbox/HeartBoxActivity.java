@@ -10,8 +10,8 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.HeartBoxEntity;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.HeartBoxAdapter;
-import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;
 
 import java.util.List;

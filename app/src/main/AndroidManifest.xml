@@ -28,6 +28,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 蓝牙通讯权限 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BIND_JOB_SERVICE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
     <uses-feature android:name="android.hardware.camera2.full" />
@@ -47,7 +48,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.talk.ThemeListActivity"></activity>
+        <activity
+            android:name=".activity.talk.ThemeListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.mood.MoodDetailActivity"
             android:screenOrientation="portrait" />
@@ -56,6 +59,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.task.TaskDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.talk.TalkHistoryActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.settings.SimpleTextActivity"
@@ -182,6 +188,7 @@
             android:theme="@style/AnimActivity" />
         <activity
             android:name=".activity.mood.StatusActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.login.ForgetPasswordActivity"

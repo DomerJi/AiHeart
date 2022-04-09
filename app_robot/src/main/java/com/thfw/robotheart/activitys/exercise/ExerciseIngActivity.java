@@ -367,7 +367,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
         }
 
         TextView tvFinish = findViewById(R.id.tv_finish_3s);
-        countDownFinish = 3;
+        countDownFinish = 4;
         mMainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {

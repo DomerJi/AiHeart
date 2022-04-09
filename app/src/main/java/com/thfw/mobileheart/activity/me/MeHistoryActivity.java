@@ -13,8 +13,8 @@ import com.google.android.material.tabs.TabLayout;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.fragment.list.HistoryListFragment;
-import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;
 
 import java.util.ArrayList;

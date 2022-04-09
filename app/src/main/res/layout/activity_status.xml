@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="com.thfw.mobileheart.activity.mood.StatusActivity">
 
     <ImageView
@@ -11,6 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
+
+    <com.thfw.ui.widget.LoadingView
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ltl_top" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_status_list"
@@ -32,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tv_background="@color/transparent"
-            app:tv_centerText="我的状态"
+            app:tv_centerText="心情状态"
             app:tv_centerTextColor="@color/white"
             app:tv_leftIconColor="@color/white"
             tools:ignore="MissingConstraints" />

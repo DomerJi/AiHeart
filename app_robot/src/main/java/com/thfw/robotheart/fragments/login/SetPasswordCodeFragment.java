@@ -17,7 +17,7 @@ import com.thfw.base.utils.NumberUtil;
 import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
-import com.thfw.ui.base.BaseFragment;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -27,7 +27,7 @@ import com.trello.rxlifecycle2.LifecycleProvider;
  * Date: 2021/12/7 9:19
  * Describe:Todo
  */
-public class SetPasswordCodeFragment extends BaseFragment<LoginPresenter>
+public class SetPasswordCodeFragment extends RobotBaseFragment<LoginPresenter>
         implements LoginPresenter.LoginUi<CommonModel>, TimingHelper.WorkListener {
     private TextView mTv01;
     private EditText mEtPhone;

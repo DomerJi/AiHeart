@@ -5,7 +5,7 @@ import android.widget.Button;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.R;
-import com.thfw.ui.base.BaseActivity;
+import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.ui.widget.TitleView;
 
 public class HelpHintsActivity extends BaseActivity {

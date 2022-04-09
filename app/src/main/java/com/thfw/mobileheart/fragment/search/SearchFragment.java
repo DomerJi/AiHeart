@@ -14,7 +14,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.SearchResultModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.mobileheart.R;
-import com.thfw.ui.base.BaseFragment;
+import com.thfw.mobileheart.activity.BaseFragment;
 
 import org.jetbrains.annotations.NotNull;
 

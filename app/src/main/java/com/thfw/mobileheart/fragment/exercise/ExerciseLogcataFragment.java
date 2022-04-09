@@ -9,8 +9,9 @@ import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.ExerciseModel;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseFragment;
+import com.thfw.mobileheart.activity.exercise.ExerciseIngActivity;
 import com.thfw.mobileheart.adapter.ExerciseLogcateAdapter;
-import com.thfw.ui.base.BaseFragment;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class ExerciseLogcataFragment extends BaseFragment {
 
     public void setExerciseModel(ExerciseModel exerciseModel) {
         this.exerciseModel = exerciseModel;
+        initAdapter();
     }
 
     @Override
@@ -70,7 +72,8 @@ public class ExerciseLogcataFragment extends BaseFragment {
                         ToastUtil.show("需要按顺序完成后，方可解锁");
                         return;
                     }
-                    ToastUtil.show("onItemClick -> " + position);
+                    ExerciseIngActivity.startActivity(mContext, list.get(position).getDialogId(),
+                            list.get(position).isUsed());
                 }
             });
             mRvExercise.setAdapter(exerciseLogcateAdapter);

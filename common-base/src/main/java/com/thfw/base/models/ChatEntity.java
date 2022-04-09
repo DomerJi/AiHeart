@@ -64,6 +64,10 @@ public class ChatEntity implements IModel {
 
     public String getNotPTalk() {
         if (notPTalk == null) {
+            if (talk == null) {
+                notPTalk = "";
+                return notPTalk;
+            }
             notPTalk = talk.trim();
             if (!EmptyUtil.isEmpty(talk)) {
                 if (notPTalk.startsWith("<p>")) {

@@ -7,10 +7,10 @@ import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.utils.ToastUtil;
-import com.thfw.export_ym.test.TestBeginActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 import com.thfw.mobileheart.activity.read.BookDetailActivity;
 import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
+import com.thfw.mobileheart.activity.test.TestBeginActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 
 /**

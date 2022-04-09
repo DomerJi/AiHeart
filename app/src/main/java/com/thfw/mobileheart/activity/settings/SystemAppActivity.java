@@ -17,8 +17,8 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.service.AutoUpdateService;
-import com.thfw.ui.base.BaseActivity;
 
 import java.math.BigDecimal;
 

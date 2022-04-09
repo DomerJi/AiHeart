@@ -135,7 +135,7 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 //   todo test
-    implementation project(':export_ym')
+//    implementation project(':export_ym')
 
 
 }

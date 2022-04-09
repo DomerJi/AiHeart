@@ -9,7 +9,7 @@
 
 
     <string name="finishDownlaodApk">已在Wifi连接下，为您下载好新版本，是否现在安装？</string>
-
+    <string name="finishToolTitle">确认退出当前训练吗？</string>
     <string name="sort_type_talk">聊一聊</string>
     <string name="sort_type_what">问一问</string>
     <string name="sort_type_test">测一测</string>
@@ -32,11 +32,11 @@
 
     <string name="me_quiz">我的提问</string>
     <string name="me_collect">我的收藏</string>
-    <string name="me_history">历史记录</string>
+    <string name="me_history">我的历史</string>
 
-    <string name="me_time_minute">累积分钟</string>
-    <string name="me_time_day">累积天数</string>
-    <string name="me_time_continuation_day">连续天数</string>
+    <string name="me_time_minute">今日活跃</string>
+    <string name="me_time_day">累积活跃</string>
+    <string name="me_time_continuation_day">连续活跃</string>
 
     <string name="me_test">我测的</string>
     <string name="me_test_history">我的测试</string>

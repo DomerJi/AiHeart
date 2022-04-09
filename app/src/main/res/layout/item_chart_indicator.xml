@@ -13,39 +13,87 @@
     android:paddingBottom="8dp"
     tools:ignore="MissingDefaultResource">
 
-    <TextView
-        android:id="@+id/tv_char_marker_title"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_market_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Title122222222"
-        android:textColor="@color/text_green"
-        android:textSize="@dimen/textSize"
-        app:layout_constraintLeft_toLeftOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/tv_char_marker_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textColor="@color/text_green"
+            android:textSize="@dimen/textSize"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:ignore="MissingConstraints" />
 
 
-    <TextView
-        android:id="@+id/tv_char_marker_unit"
+        <TextView
+            android:id="@+id/tv_char_marker_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Unit"
+            android:textColor="@color/text_common"
+            android:textSize="@dimen/textSize_small"
+            app:layout_constraintTop_toBottomOf="@id/tv_char_marker_title"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/tv_char_marker_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:text="value"
+            android:textColor="@color/text_content"
+            android:textSize="@dimen/textSize_small"
+            app:layout_constraintBottom_toBottomOf="@id/tv_char_marker_unit"
+            app:layout_constraintLeft_toRightOf="@id/tv_char_marker_unit"
+            app:layout_constraintTop_toTopOf="@id/tv_char_marker_unit" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_market_mood"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Unit122222222"
-        android:textColor="@color/text_common"
-        android:textSize="@dimen/textSize_small"
-        app:layout_constraintTop_toBottomOf="@id/tv_char_marker_title"
-        tools:ignore="MissingConstraints" />
+        android:visibility="gone"
+        tools:ignore="MissingConstraints">
 
-    <TextView
-        android:id="@+id/tv_char_marker_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
-        android:text="value"
-        android:textColor="@color/text_content"
-        android:textSize="@dimen/textSize_small"
-        app:layout_constraintBottom_toBottomOf="@id/tv_char_marker_unit"
-        app:layout_constraintLeft_toRightOf="@id/tv_char_marker_unit"
-        app:layout_constraintTop_toTopOf="@id/tv_char_marker_unit" />
+        <LinearLayout
+            android:id="@+id/ll_mood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_home_mood_border"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="6dp"
+            android:paddingTop="3dp"
+            android:paddingRight="6dp"
+            android:paddingBottom="3dp">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/riv_emoji"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@color/text_green"
+                app:riv_oval="true" />
+
+            <TextView
+                android:id="@+id/tv_mood_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="保持微笑"
+                android:textColor="@color/text_content"
+                android:textSize="@dimen/textSize_small" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

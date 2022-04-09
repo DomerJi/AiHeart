@@ -15,6 +15,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.utils.BuglyUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.integral.ClockInActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.me.CollectActivity;
@@ -28,7 +29,6 @@ import com.thfw.mobileheart.activity.settings.SettingActivity;
 import com.thfw.mobileheart.activity.task.MeTaskActivity;
 import com.thfw.mobileheart.activity.test.TestReportActivity;
 import com.thfw.mobileheart.util.DialogFactory;
-import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
@@ -149,7 +149,7 @@ public class MeFragment extends BaseFragment {
             startActivity(new Intent(mContext, SettingActivity.class));
         });
         mLlStatus.setOnClickListener(v -> {
-            startActivity(new Intent(mContext, StatusActivity.class));
+            StatusActivity.startActivity(mContext);
         });
         mLlTimeContinuationDay.setOnClickListener(v -> {
             startActivity(new Intent(mContext, ClockInActivity.class));

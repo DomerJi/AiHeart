@@ -13,6 +13,7 @@ import com.thfw.base.models.HistoryModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 import com.thfw.mobileheart.activity.read.BookDetailActivity;
 import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
@@ -20,7 +21,6 @@ import com.thfw.mobileheart.activity.test.TestBeginActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.HistoryAdapter;
 import com.thfw.mobileheart.util.PageHelper;
-import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

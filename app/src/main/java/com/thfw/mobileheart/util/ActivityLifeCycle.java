@@ -166,11 +166,15 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
         // 如果跨天了，则从新一天的0点开始计时
         if (foregroundActivityCount == 0) {
             saveAppUseTime();
+            isForegroundNow = false;
         }
     }
 
+    public boolean isForegroundNow() {
+        return isForegroundNow;
+    }
+
     public void saveAppUseTime() {
-        isForegroundNow = false;
         LogUtil.d(TAG, "switch to background (reduce time[" + appUseReduceTime + "])");
         if (getTodayStartTime() > appStartTime) {
             runTimeThisDay = System.currentTimeMillis() - getTodayStartTime();

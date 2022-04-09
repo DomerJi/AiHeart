@@ -170,4 +170,8 @@ public class LoadingView extends LinearLayout implements ILoading {
         hideEmpty();
     }
 
+    public boolean isHide() {
+        return getVisibility() == GONE;
+    }
+
 }

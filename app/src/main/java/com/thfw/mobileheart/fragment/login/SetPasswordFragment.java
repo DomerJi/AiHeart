@@ -14,8 +14,8 @@ import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.login.ForgetPasswordActivity;
-import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

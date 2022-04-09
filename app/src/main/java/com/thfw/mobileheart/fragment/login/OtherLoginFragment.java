@@ -7,8 +7,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.login.LoginActivity;
-import com.thfw.ui.base.BaseFragment;
 
 /**
  * Author:pengs

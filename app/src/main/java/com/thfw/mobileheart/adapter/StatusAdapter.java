@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.models.StatusEntity;
@@ -25,9 +26,12 @@ public class StatusAdapter extends BaseAdapter<StatusEntity, RecyclerView.ViewHo
 
     private ImageView mIvTopBanner;
 
+    private int mSelectedIndex = -1;
+
     public StatusAdapter(List<StatusEntity> dataList) {
         super(dataList);
     }
+
 
     @NonNull
     @NotNull
@@ -49,14 +53,17 @@ public class StatusAdapter extends BaseAdapter<StatusEntity, RecyclerView.ViewHo
 
         if (getItemViewType(position) == StatusEntity.TYPE_BODY) {
             int seat = mDataList.get(position).bodyPosition % 3;
+            StatusHolder statusHolder = (StatusHolder) holder;
+            statusHolder.mClMood.setSelected(position == mSelectedIndex);
             if (seat == 0) {
-                Util.setViewMargin(holder.itemView, true, 16, 5, 5, 5);
+                Util.setViewMargin(holder.itemView, true, 15, 5, 8, 8);
             } else if (seat == 1) {
-                Util.setViewMargin(holder.itemView, true, 5, 5, 5, 5);
+                Util.setViewMargin(holder.itemView, true, 10, 10, 8, 8);
             } else {
-                Util.setViewMargin(holder.itemView, true, 5, 16, 5, 5);
+                Util.setViewMargin(holder.itemView, true, 5, 15, 8, 8);
             }
         }
+
 
     }
 
@@ -80,9 +87,19 @@ public class StatusAdapter extends BaseAdapter<StatusEntity, RecyclerView.ViewHo
 
     public class StatusHolder extends RecyclerView.ViewHolder {
 
+
+        private final ConstraintLayout mClMood;
+
         public StatusHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            mClMood = itemView.findViewById(R.id.cl_mood);
             itemView.setOnClickListener(v -> {
+                int oldIndex = mSelectedIndex;
+                mSelectedIndex = getBindingAdapterPosition();
+                if (oldIndex != -1) {
+                    notifyItemChanged(oldIndex);
+                }
+                notifyItemChanged(mSelectedIndex);
                 if (mOnRvItemListener != null) {
                     mOnRvItemListener.onItemClick(getDataList(), getBindingAdapterPosition());
                 }

@@ -306,10 +306,10 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             });
 
             mLlMood.setOnClickListener(v -> {
-                mContext.startActivity(new Intent(mContext, StatusActivity.class));
+                StatusActivity.startActivity(mContext);
             });
             mTvMoodTitle.setOnClickListener(v -> {
-                mContext.startActivity(new Intent(mContext, StatusActivity.class));
+                StatusActivity.startActivity(mContext);
             });
 
         }

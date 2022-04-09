@@ -11,10 +11,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.fragment.message.MsgFragment;
 import com.thfw.mobileheart.fragment.message.MsgTaskFragment;
 import com.thfw.mobileheart.util.MsgCountManager;
-import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.TitleView;
 

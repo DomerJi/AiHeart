@@ -13,10 +13,10 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TaskPresenter;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.task.TaskDetailsActivity;
 import com.thfw.mobileheart.adapter.TaskAdapter;
 import com.thfw.mobileheart.util.PageHelper;
-import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

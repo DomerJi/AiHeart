@@ -18,12 +18,12 @@ import com.thfw.base.presenter.BookPresenter;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
 import com.thfw.mobileheart.adapter.StudyChildTypeAdapter;
 import com.thfw.mobileheart.adapter.StudyListAdapter;
 import com.thfw.mobileheart.util.FragmentLoader;
 import com.thfw.mobileheart.util.PageHelper;
-import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

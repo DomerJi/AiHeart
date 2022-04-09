@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.talk.TalkHistoryActivity">
+
+    <com.thfw.ui.widget.TitleView
+        android:id="@+id/titleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tv_centerText="历史记录"
+        tools:ignore="MissingConstraints" />
+
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleView"
+        app:srlEnableFooterFollowWhenNoMoreData="true"
+        tools:visibility="invisible">
+
+        <com.scwang.smart.refresh.header.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srlEnableLastTime="false"
+            app:srlTextFailed="加载失败"
+            app:srlTextFinish="加载完成"
+            app:srlTextLoading="正在加载..."
+            app:srlTextPulling="下拉可以加载"
+            app:srlTextRefreshing="正在加载..."
+            app:srlTextRelease="释放立即加载" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.scwang.smart.refresh.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+    <com.thfw.ui.widget.LoadingView
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleView" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_calendar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:layout_constraintHeight_min="220dp"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleView">
+
+
+        <LinearLayout
+            android:id="@+id/ll_year_month"
+            android:layout_width="wrap_content"
+            android:layout_height="46dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toTopOf="@id/calendarLayout"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <ImageView
+                android:id="@+id/iv_left_month"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:paddingTop="14dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="14dp"
+                android:src="@drawable/ic_back_white"
+                app:tint="@color/text_content" />
+
+            <TextView
+                android:id="@+id/tv_year_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:textColor="@color/text_common"
+                android:textSize="@dimen/textSize_large"
+                tools:text="2022 - 01" />
+
+
+            <ImageView
+                android:id="@+id/iv_right_month"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingTop="14dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="14dp"
+                android:src="@drawable/ic_arrow_right"
+                app:tint="@color/text_content" />
+
+        </LinearLayout>
+
+        <com.haibin.calendarview.CalendarLayout
+            android:id="@+id/calendarLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            app:calendar_content_view_id="@+id/recyclerView"
+            app:calendar_show_mode="only_month_view"
+            app:default_status="shrink"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ll_year_month"
+            app:layout_constraintWidth_percent="0.9">
+
+
+            <com.haibin.calendarview.CalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:calendar_match_parent="true"
+                app:current_month_lunar_text_color="#666"
+                app:current_month_text_color="#000"
+                app:day_text_size="@dimen/textSize"
+                app:lunar_text_size="8sp"
+                app:min_year="2004"
+                app:month_view="com.thfw.mobileheart.view.TalkMonthView"
+                app:month_view_show_mode="mode_all"
+                app:other_month_lunar_text_color="#ccc"
+                app:other_month_text_color="#ccc"
+                app:scheme_text="假"
+                app:scheme_text_color="#000"
+                app:scheme_theme_color="#FF7764"
+                app:select_mode="range_mode"
+                app:selected_lunar_text_color="#8CFFFFFF"
+                app:selected_text_color="#FFF"
+                app:selected_theme_color="@color/text_green"
+                app:week_background="@color/transparent"
+                app:week_bar_view="com.haibin.calendarview.WeekBar"
+                app:week_start_with="mon"
+                app:week_text_color="@color/text_green"
+                app:week_text_size="@dimen/textSize"
+                app:week_view="com.haibin.calendarview.DefaultWeekView" />
+
+        </com.haibin.calendarview.CalendarLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/bt_confirm"
+        android:layout_width="280dp"
+        android:layout_height="@dimen/button_height"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/common_green_selector"
+        android:text="查看记录"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_large"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_calendar" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

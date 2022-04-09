@@ -21,13 +21,12 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.HomeEntity;
 import com.thfw.base.utils.LogUtil;
-import com.thfw.base.utils.ToastUtil;
-import com.thfw.export_ym.YmHandler;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseFragment;
+import com.thfw.mobileheart.activity.ExoPlayerActivity;
 import com.thfw.mobileheart.activity.SearchActivity;
 import com.thfw.mobileheart.adapter.HomeAdapter;
 import com.thfw.mobileheart.util.PageHelper;
-import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.widget.LinearTopLayout;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.MySearchView;
@@ -164,19 +163,7 @@ public class HomeFragment extends BaseFragment {
         mHomeAdapter.setOnRvItemListener(new OnRvItemListener<HomeEntity>() {
             @Override
             public void onItemClick(List<HomeEntity> list, int position) {
-//                startActivity(new Intent(mContext, ExoPlayerActivity.class));
-                YmHandler.setOnYmLoginCallBack(new YmHandler.OnYmLoginCallBack() {
-                    @Override
-                    public void onSuccess() {
-
-                    }
-
-                    @Override
-                    public void onFail(int code, String error) {
-                        ToastUtil.show(error);
-                    }
-                });
-                YmHandler.startMentalTest(mContext, "100010", "17085375010", "DomerJi");
+                startActivity(new Intent(mContext, ExoPlayerActivity.class));
             }
         });
         // 添加动画

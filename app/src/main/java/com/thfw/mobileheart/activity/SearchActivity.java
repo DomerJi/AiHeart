@@ -26,7 +26,6 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.adapter.SearchHistoryAdapter;
 import com.thfw.mobileheart.fragment.search.SearchFragment;
-import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.MySearchView;

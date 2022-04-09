@@ -8,7 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.models.HotCallModel;
+import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,6 +53,16 @@ public class HotPhoneAdapter extends BaseAdapter<HotCallModel, HotPhoneAdapter.B
             mTvTitle = itemView.findViewById(R.id.tv_title);
             mTvTime = itemView.findViewById(R.id.tv_time);
             mTvPhone = itemView.findViewById(R.id.tv_phone);
+            itemView.setOnClickListener(v -> {
+                if (mContext instanceof BaseActivity) {
+                    BaseActivity baseActivity = (BaseActivity) mContext;
+                    baseActivity.call(mDataList.get(getBindingAdapterPosition()).phone);
+                }
+            });
+
+            mTvPhone.setOnClickListener(v -> {
+                MyApplication.copy(mDataList.get(getBindingAdapterPosition()).phone);
+            });
         }
     }
 }

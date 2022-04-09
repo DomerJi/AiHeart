@@ -29,7 +29,6 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.aiui.TTSLocalManager;
-import com.thfw.ui.base.BaseActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -66,7 +65,7 @@ public class AudioSuspendActivity extends BaseActivity {
             " 最终，他以男单第四名和退出混双铜牌战结束了第4次奥运之旅，奥运会最好成绩依然是2008年北京的那枚铜牌。" +
             "“很糟糕，我感到很糟糕，我的比赛打得支离破碎。”他在男单半决赛不敌小兹维列夫之后说，“但是为塞尔维亚出战，" +
             "我并不后悔。”";
-//    private TTSAndroidManager ttsAndroid;
+    //    private TTSAndroidManager ttsAndroid;
     SynthesizerListener synthesizerListener = new SynthesizerListener() {
         @Override
         public void onSpeakBegin() {

@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,6 +27,8 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.scwang.wave.MultiWaveHeader;
 import com.thfw.base.api.TalkApi;
 import com.thfw.base.face.MyTextWatcher;
@@ -45,6 +48,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.TestActivity;
 import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
 import com.thfw.mobileheart.adapter.ChatAdapter;
@@ -52,15 +56,19 @@ import com.thfw.mobileheart.adapter.ChatSelectAdapter;
 import com.thfw.mobileheart.constants.AnimFileName;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.PageJumpUtils;
-import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.voice.PolicyHelper;
 import com.thfw.ui.voice.speech.SpeechHelper;
 import com.thfw.ui.voice.tts.TtsHelper;
+import com.thfw.ui.widget.AnimBottomRelativeLayout;
+import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,7 +76,7 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
 
     private androidx.recyclerview.widget.RecyclerView rvChatList;
     private ChatAdapter mChatAdapter;
-    private android.widget.RelativeLayout mRlSend;
+    private AnimBottomRelativeLayout mRlSend;
     private android.widget.EditText mEtContent;
     private RelativeLayout mRlRoot;
     private TextView mTvSend;
@@ -96,6 +104,7 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
     private Helper mHelper = new Helper();
     // 1、树洞聊天 2、咨询助理
     private int mScene;
+    private int mOriginScene;
 
     // 失败参数暂存;
     private int mSceneError;
@@ -104,6 +113,10 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
 
 
     private int mCurrentChatType;
+    private LoadingView mLoadingView;
+    private TalkModel talkModel;
+    private RefreshLayout mRefreshLayout;
+    private DialogTalkModel mFirstTalkModel;
 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, ChatActivity.class).putExtra(KEY_DATA, talkModel));
@@ -128,7 +141,16 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
     public void initView() {
 
         mRlRoot = (RelativeLayout) findViewById(R.id.rl_root);
-
+        mLoadingView = findViewById(R.id.loadingView);
+        mRefreshLayout = findViewById(R.id.refreshLayout);
+        mRefreshLayout.setEnableRefresh(false);
+        mRefreshLayout.setEnableLoadMore(false);
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                onPreMessage();
+            }
+        });
         rvChatList = (RecyclerView) findViewById(R.id.rv_chatList);
         rvChatList.setLayoutManager(new LinearLayoutManager(mContext));
         mRvSelect = (RecyclerView) findViewById(R.id.rv_select);
@@ -175,8 +197,80 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         mTitleView.getIvBack().setOnClickListener(v -> {
             finishService();
         });
-
+        mTitleView.setRightText("历史记录");
+        mTitleView.setRightOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TalkHistoryActivity.startActivity(mContext, mScene);
+            }
+        });
         initChatInput();
+    }
+
+    /**
+     * 历史记录查询
+     */
+    private void onPreMessage() {
+        if (mFirstTalkModel != null) {
+            new TalkPresenter<List<DialogTalkModel>>(new TalkPresenter.TalkUi<List<DialogTalkModel>>() {
+                @Override
+                public LifecycleProvider getLifecycleProvider() {
+                    return ChatActivity.this;
+                }
+
+                @Override
+                public void onSuccess(List<DialogTalkModel> data) {
+                    LogUtil.d("mChatAdapter JPS size onSuccess");
+                    List<ChatEntity> list = new ArrayList<>();
+                    if (EmptyUtil.isEmpty(data)) {
+                        list.add(ChatEntity.createHint("没有更多数据了"));
+                        mRefreshLayout.setEnableRefresh(false);
+                    } else {
+                        mFirstTalkModel = data.get(0);
+                        boolean addTime = false;
+                        long lastTime = 0;
+                        long firstTime = 0;
+                        for (DialogTalkModel model : data) {
+                            ChatEntity chatEntity = new ChatEntity(model);
+                            chatEntity.setTime(model.getTimeMills());
+                            long limit = chatEntity.time - lastTime;
+                            if (!addTime || limit > HourUtil.LEN_MINUTE || chatEntity.time - firstTime > HourUtil.LEN_5_MINUTE) {
+                                addTime = true;
+                                list.add(ChatEntity.createTime(chatEntity.time));
+                                firstTime = chatEntity.time;
+                            }
+                            lastTime = chatEntity.time;
+                            list.add(chatEntity);
+                            // 个人选项
+                            if (model.hasCheckRadio()) {
+                                list.add(model.getMeCheckRadio());
+                            }
+                        }
+                    }
+                    LogUtil.d("mChatAdapter JPS size 12 - " + mChatAdapter.getItemCount());
+                    LogUtil.d("mChatAdapter JPS size " + list.size());
+                    mChatAdapter.addDataListNotify(list, true);
+                    mRefreshLayout.finishRefresh(true);
+                }
+
+
+                @Override
+                public void onFail(ResponeThrowable throwable) {
+                    LogUtil.d("mChatAdapter JPS size fail" + throwable.getMessage());
+                    mRefreshLayout.finishRefresh(false);
+                }
+            }) {
+            }.onDialogHistory(mOriginScene, "", mFirstTalkModel.getId(), "prev");
+        } else {
+            LogUtil.d("mChatAdapter JPS size fail mFirstTalkModel == null");
+            mRefreshLayout.finishRefresh(false);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        finishService();
     }
 
     /**
@@ -254,13 +348,14 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
 
     @Override
     public void initData() {
-        TalkModel talkModel = (TalkModel) getIntent().getSerializableExtra(KEY_DATA);
+        talkModel = (TalkModel) getIntent().getSerializableExtra(KEY_DATA);
         if (talkModel == null) {
             ToastUtil.show("参数错误");
             finish();
             return;
         }
         mScene = talkModel.getType() == 3 ? 1 : 2;
+        mOriginScene = mScene;
         mPresenter.onJoinDialog(talkModel.getType(), talkModel.getId());
         mTitleView.setCenterText(talkModel.getTitle());
     }
@@ -288,7 +383,7 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
     }
 
     private void initChatInput() {
-        mRlSend = (RelativeLayout) findViewById(R.id.rl_send);
+        mRlSend = (AnimBottomRelativeLayout) findViewById(R.id.rl_send);
         mEtContent = (EditText) findViewById(R.id.et_content);
         mEtContent.addTextChangedListener(new MyTextWatcher() {
             @Override
@@ -510,6 +605,10 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
     @Override
     public void onSuccess(HttpResult<List<DialogTalkModel>> model) {
         LogUtil.d(TAG, " +++++++++++++++++ model = " + model);
+        if (!mLoadingView.isHide()) {
+            mLoadingView.hide();
+            mRefreshLayout.setEnableRefresh(true);
+        }
         if (model != null) {
             List<DialogTalkModel> data = model.getData();
             if (model.getExt() != null) {
@@ -696,6 +795,9 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         if (talkModel == null) {
             return;
         }
+        if (mFirstTalkModel == null) {
+            mFirstTalkModel = talkModel;
+        }
         final ChatEntity chatEntity = new ChatEntity(talkModel);
         // 树洞 自由输入逻辑判断
         if (mScene == 1) {
@@ -713,7 +815,7 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         if (mCurrentChatType == ChatEntity.TYPE_FROM_SELECT) {
             hideInput();
             mRvSelect.setVisibility(View.VISIBLE);
-            mRlSend.setEnabled(false);
+            mRlSend.setVisibility(false);
             if (mSelectAdapter == null) {
                 mSelectAdapter = new ChatSelectAdapter(talkModel.getCheckRadio());
                 mRvSelect.setAdapter(mSelectAdapter);
@@ -722,11 +824,11 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
             }
             setSelectItemListener(chatEntity);
         } else if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
-            mRlSend.setEnabled(true);
+            mRlSend.setVisibility(true);
             mRvSelect.setVisibility(View.GONE);
         } else {
             hideInput();
-            mRlSend.setEnabled(false);
+            mRlSend.setVisibility(false);
             mRvSelect.setVisibility(View.GONE);
         }
     }
@@ -785,8 +887,13 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
     @Override
     public void onFail(ResponeThrowable throwable) {
         LogUtil.d(TAG, "onFail = " + throwable.getMessage());
-        ToastUtil.show("onFail = " + throwable.getMessage());
-
+        if (mChatAdapter != null && mChatAdapter.getItemCount() == 0) {
+            mLoadingView.showFail(v -> {
+                mScene = talkModel.getType() == 3 ? 1 : 2;
+                mPresenter.onJoinDialog(talkModel.getType(), talkModel.getId());
+            });
+            return;
+        }
         // 消息重发
         if (mSceneError != -1 && mNetParamsError != null && mChatAdapter != null) {
             ChatEntity lastChatEntity = mChatAdapter.getDataList().get(mChatAdapter.getItemCount() - 1);

@@ -14,7 +14,7 @@ import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
-import com.thfw.ui.base.BaseActivity;
+import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.VerificationCodeView;
 import com.thfw.user.login.UserManager;

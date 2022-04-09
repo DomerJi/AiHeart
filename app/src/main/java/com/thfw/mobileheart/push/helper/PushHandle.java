@@ -6,12 +6,16 @@ import android.content.Intent;
 import com.thfw.base.base.MsgType;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.PushModel;
+import com.thfw.base.models.TalkModel;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
+import com.thfw.mobileheart.activity.exercise.ExerciseDetailActivity;
+import com.thfw.mobileheart.activity.mood.StatusActivity;
 import com.thfw.mobileheart.activity.read.BookDetailActivity;
 import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
 import com.thfw.mobileheart.activity.settings.HelpBackActivity;
+import com.thfw.mobileheart.activity.talk.ChatActivity;
 import com.thfw.mobileheart.activity.task.MeTaskActivity;
 import com.thfw.mobileheart.activity.task.SystemDetailActivity;
 import com.thfw.mobileheart.activity.test.TestBeginActivity;
@@ -46,8 +50,11 @@ public class PushHandle {
                 TestBeginActivity.startActivity(mContext, contentId);
                 break;
             case MsgType.TOOL_PACKAGE:
+                ExerciseDetailActivity.startActivity(mContext, contentId);
                 break;
             case MsgType.TOPIC_DIALOG:
+                ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
+                        .setId(contentId));
                 break;
             case MsgType.MUSIC:
                 AudioEtcModel audioEtcModel = new AudioEtcModel();
@@ -64,16 +71,17 @@ public class PushHandle {
                 if (pushModel.getId() > 0) {
                     SystemDetailActivity.startActivity(mContext, pushModel.getId());
                 } else {
-                    SystemDetailActivity.startActivity(mContext, pushModel.getMsgId());
+                    SystemDetailActivity.startActivity(mContext, longTextId);
                 }
                 break;
             case MsgType.COMMON_PROBLEM:
                 HelpBackActivity.startActivity(mContext);
                 break;
             case MsgType.MOOD:
-                // todo 心情签到
+                StatusActivity.startActivity(mContext);
                 break;
             case MsgType.VOICE_COMMAND:
+                // todo 语音指令 手机是否需要呢
                 break;
             case MsgType.ABOUT_US:
                 WebActivity.startActivity(mContext, AgreeOn.AGREE_ABOUT);

@@ -2,7 +2,7 @@ package com.thfw.mobileheart.activity.integral;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.R;
-import com.thfw.ui.base.BaseActivity;
+import com.thfw.mobileheart.activity.BaseActivity;
 
 public class ClockInActivity extends BaseActivity {
 

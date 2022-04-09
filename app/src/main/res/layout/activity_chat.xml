@@ -14,13 +14,31 @@
         android:layout_height="wrap_content"
         app:tv_centerText="@string/sort_type_talk" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_chatList"
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/rv_select"
-        android:layout_below="@id/titleView" />
+        android:layout_below="@id/titleView"
+        app:srlEnableFooterFollowWhenNoMoreData="true">
+
+        <com.scwang.smart.refresh.header.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srlEnableLastTime="false"
+            app:srlTextFailed="加载失败"
+            app:srlTextFinish="加载完成"
+            app:srlTextLoading="正在加载..."
+            app:srlTextPulling="下拉可以加载"
+            app:srlTextRefreshing="正在加载..."
+            app:srlTextRelease="释放立即加载" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_chatList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_select"
@@ -31,19 +49,19 @@
         android:minHeight="46dp" />
 
 
-    <RelativeLayout
+    <com.thfw.ui.widget.AnimBottomRelativeLayout
         android:id="@+id/rl_send"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
-        android:minHeight="46dp"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints"
+        tools:layout_height="46dp">
 
         <ImageView
             android:id="@+id/iv_input_type"
             android:layout_width="46dp"
-            android:layout_height="46dp"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_marginLeft="4dp"
             android:padding="8dp"
@@ -113,7 +131,7 @@
             android:textSize="@dimen/textSize" />
 
 
-    </RelativeLayout>
+    </com.thfw.ui.widget.AnimBottomRelativeLayout>
 
     <View
         android:layout_width="match_parent"
@@ -129,5 +147,12 @@
         android:layout_height="match_parent"
         android:layout_below="@id/titleView"
         android:visibility="gone" />
+
+
+    <com.thfw.ui.widget.LoadingView
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/titleView" />
 
 </RelativeLayout>

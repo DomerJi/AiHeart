@@ -14,6 +14,7 @@ import com.thfw.base.models.SearchResultModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.SearchActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 import com.thfw.mobileheart.activity.exercise.ExerciseDetailActivity;
@@ -23,7 +24,6 @@ import com.thfw.mobileheart.activity.talk.ChatActivity;
 import com.thfw.mobileheart.activity.test.TestBeginActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.SearchAdapter;
-import com.thfw.ui.base.BaseFragment;
 
 import java.util.List;
 

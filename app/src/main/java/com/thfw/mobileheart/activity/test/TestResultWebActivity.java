@@ -23,7 +23,7 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TestPresenter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.mobileheart.R;
-import com.thfw.ui.base.BaseActivity;
+import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 

@@ -14,10 +14,10 @@ import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.login.SetPasswordActivity;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.FragmentLoader;
-import com.thfw.ui.base.BaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
@@ -29,7 +29,7 @@ import com.trello.rxlifecycle2.LifecycleProvider;
  * Date: 2021/12/7 9:19
  * Describe:Todo
  */
-public class SetPasswordOriginFragment extends BaseFragment<LoginPresenter> implements LoginPresenter.LoginUi<CommonModel> {
+public class SetPasswordOriginFragment extends RobotBaseFragment<LoginPresenter> implements LoginPresenter.LoginUi<CommonModel> {
     private TextView mTv01;
     private EditText mEtPasswordOrigin;
     private TextView mTv02;

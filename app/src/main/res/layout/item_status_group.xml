@@ -11,7 +11,8 @@
         android:padding="16dp"
         android:text="Group"
         android:textColor="@color/text_common"
-        android:textSize="17sp"
-        tools:ignore="MissingConstraints" />
+        android:textSize="@dimen/textSize_large"
+        tools:ignore="MissingConstraints"
+        tools:textColor="@color/black" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

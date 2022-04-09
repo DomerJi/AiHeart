@@ -9,16 +9,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcModel;
+import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.TaskDetailModel;
 import com.thfw.base.models.TaskMusicEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TaskPresenter;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
+import com.thfw.mobileheart.activity.talk.ChatActivity;
 import com.thfw.mobileheart.activity.test.TestBeginActivity;
 import com.thfw.mobileheart.adapter.TaskChildLineAdapter;
-import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
@@ -109,10 +111,8 @@ public class TaskDetailsActivity extends BaseActivity<TaskPresenter> implements 
                         musicEtcInfo(list.get(position).getId());
                         break;
                     case 3:
-                        // todo
-//                        ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
-//                                .setId(list.get(position).getId())
-//                                .setTitle(list.get(position).getTitle()));
+                        ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
+                                .setId(list.get(position).getId()).setTitle(title));
                         break;
                 }
             }

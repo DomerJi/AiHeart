@@ -7,7 +7,7 @@ import androidx.core.text.HtmlCompat;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.ExerciseModel;
 import com.thfw.mobileheart.R;
-import com.thfw.ui.base.BaseFragment;
+import com.thfw.mobileheart.activity.BaseFragment;
 
 /**
  * Author:pengs

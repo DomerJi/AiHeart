@@ -16,7 +16,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.SearchResultModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.R;
-import com.thfw.ui.base.BaseFragment;
+import com.thfw.robotheart.activitys.RobotBaseFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +29,7 @@ import java.util.List;
  * Date: 2022/3/16 17:16
  * Describe:Todo
  */
-public class SearchFragment extends BaseFragment {
+public class SearchFragment extends RobotBaseFragment {
     SearchResultModel data;
     private androidx.constraintlayout.widget.ConstraintLayout mClResult;
     private com.google.android.material.tabs.TabLayout mTabLayout;

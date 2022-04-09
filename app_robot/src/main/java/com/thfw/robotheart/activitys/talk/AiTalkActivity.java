@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,6 +28,8 @@ import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.iflytek.cloud.SpeechError;
 import com.opensource.svgaplayer.SVGAImageView;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.ChatEntity;
@@ -62,9 +65,12 @@ import com.thfw.ui.voice.PolicyHelper;
 import com.thfw.ui.voice.speech.SpeechHelper;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.SpeechTextView;
 import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -102,6 +108,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     private boolean mTtsStarted = false;
     // 1、树洞聊天 2、咨询助理
     private int mScene;
+    private int mOriginScene;
     private android.widget.LinearLayout mLlTalkHistory;
     private android.widget.ImageView mIvTalkSwitch;
     private android.widget.LinearLayout mLlVolumeSwitch;
@@ -121,6 +128,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     private int mSceneError;
     private NetParams mNetParamsError;
     private long lastTime;
+    private LoadingView mLoadingView;
+    private RefreshLayout mRefreshLayout;
+    private DialogTalkModel mFirstTalkModel;
+    private TalkModel talkModel;
 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, AiTalkActivity.class).putExtra(KEY_DATA, talkModel));
@@ -141,6 +152,17 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         KEY_ROBOT_SPEECH = "key.robot_speech" + UserManager.getInstance().getUID();
         mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
         mClAnim = (ConstraintLayout) findViewById(R.id.cl_anim);
+        mLoadingView = findViewById(R.id.loadingView);
+        mRefreshLayout = findViewById(R.id.refreshLayout);
+        mRefreshLayout.setEnableRefresh(false);
+        mRefreshLayout.setEnableLoadMore(false);
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                onPreMessage();
+            }
+        });
+
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
         mRvSelect = (RecyclerView) findViewById(R.id.rv_select);
         // 设置布局管理器
@@ -205,6 +227,67 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
         mHitAnim = (HomeIpTextView) findViewById(R.id.hit_anim);
     }
+
+    /**
+     * 历史记录查询
+     */
+    private void onPreMessage() {
+        if (mFirstTalkModel != null) {
+            new TalkPresenter<List<DialogTalkModel>>(new TalkPresenter.TalkUi<List<DialogTalkModel>>() {
+                @Override
+                public LifecycleProvider getLifecycleProvider() {
+                    return AiTalkActivity.this;
+                }
+
+                @Override
+                public void onSuccess(List<DialogTalkModel> data) {
+                    LogUtil.d("mChatAdapter JPS size onSuccess");
+                    List<ChatEntity> list = new ArrayList<>();
+                    if (EmptyUtil.isEmpty(data)) {
+                        list.add(ChatEntity.createHint("没有更多数据了"));
+                        mRefreshLayout.setEnableRefresh(false);
+                    } else {
+                        mFirstTalkModel = data.get(0);
+                        boolean addTime = false;
+                        long lastTime = 0;
+                        long firstTime = 0;
+                        for (DialogTalkModel model : data) {
+                            ChatEntity chatEntity = new ChatEntity(model);
+                            chatEntity.setTime(model.getTimeMills());
+                            long limit = chatEntity.time - lastTime;
+                            if (!addTime || limit > HourUtil.LEN_MINUTE || chatEntity.time - firstTime > HourUtil.LEN_5_MINUTE) {
+                                addTime = true;
+                                list.add(ChatEntity.createTime(chatEntity.time));
+                                firstTime = chatEntity.time;
+                            }
+                            lastTime = chatEntity.time;
+                            list.add(chatEntity);
+                            // 个人选项
+                            if (model.hasCheckRadio()) {
+                                list.add(model.getMeCheckRadio());
+                            }
+                        }
+                    }
+                    LogUtil.d("mChatAdapter JPS size 12 - " + mChatAdapter.getItemCount());
+                    LogUtil.d("mChatAdapter JPS size " + list.size());
+                    mChatAdapter.addDataListNotify(list, true);
+                    mRefreshLayout.finishRefresh(true);
+                }
+
+
+                @Override
+                public void onFail(ResponeThrowable throwable) {
+                    LogUtil.d("mChatAdapter JPS size fail" + throwable.getMessage());
+                    mRefreshLayout.finishRefresh(false);
+                }
+            }) {
+            }.onDialogHistory(mOriginScene, "", mFirstTalkModel.getId(), "prev");
+        } else {
+            LogUtil.d("mChatAdapter JPS size fail mFirstTalkModel == null");
+            mRefreshLayout.finishRefresh(false);
+        }
+    }
+
 
     private void volumeSwitch(boolean fromUser) {
         if (fromUser) {
@@ -308,13 +391,14 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     @Override
     public void initData() {
 
-        TalkModel talkModel = (TalkModel) getIntent().getSerializableExtra(KEY_DATA);
+        talkModel = (TalkModel) getIntent().getSerializableExtra(KEY_DATA);
         if (talkModel == null) {
             ToastUtil.show("参数错误");
             finish();
             return;
         }
         mScene = talkModel.getType() == 3 ? 1 : 2;
+        mOriginScene = mScene;
         mPresenter.onJoinDialog(talkModel.getType(), talkModel.getId());
         mTitleRobotView.setCenterText(talkModel.getTitle());
         mChatAdapter = new ChatAdapter(null);
@@ -679,6 +763,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     @Override
     public void onSuccess(HttpResult<List<DialogTalkModel>> model) {
+        if (!mLoadingView.isHide()) {
+            mLoadingView.hide();
+            mRefreshLayout.setEnableRefresh(true);
+        }
         if (model != null) {
             List<DialogTalkModel> data = model.getData();
             if (model.getExt() != null) {
@@ -811,6 +899,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         if (talkModel == null) {
             return;
         }
+        if (mFirstTalkModel == null) {
+            mFirstTalkModel = talkModel;
+        }
         final ChatEntity chatEntity = new ChatEntity(talkModel);
         // 树洞 自由输入逻辑判断
         if (mScene == 1) {
@@ -908,8 +999,13 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     @Override
     public void onFail(ResponeThrowable throwable) {
         LogUtil.d(TAG, "onFail = " + throwable.getMessage());
-        ToastUtil.show("onFail = " + throwable.getMessage());
-
+        if (mChatAdapter != null && mChatAdapter.getItemCount() == 0) {
+            mLoadingView.showFail(v -> {
+                mScene = talkModel.getType() == 3 ? 1 : 2;
+                mPresenter.onJoinDialog(talkModel.getType(), talkModel.getId());
+            });
+            return;
+        }
         // 消息重发
         if (mSceneError != -1 && mNetParamsError != null && mChatAdapter != null) {
             ChatEntity lastChatEntity = mChatAdapter.getDataList().get(mChatAdapter.getItemCount() - 1);

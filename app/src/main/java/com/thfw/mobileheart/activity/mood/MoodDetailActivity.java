@@ -41,9 +41,9 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NumberUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.constants.CharType;
 import com.thfw.mobileheart.view.ChartMarkerView;
-import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.widget.TitleView;
 
 import java.util.ArrayList;
@@ -57,6 +57,10 @@ import java.util.List;
 public class MoodDetailActivity extends BaseActivity {
 
     private static final float CHART_TEXTSIZE = 7.5f;
+    /**
+     * 展示最近三天
+     */
+    private static final int COUNT = 30;
     protected final String[] months = new String[]{
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
     };
@@ -66,10 +70,6 @@ public class MoodDetailActivity extends BaseActivity {
             "Party Q", "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X",
             "Party Y", "Party Z"
     };
-    /**
-     * 一个月4个礼拜计算
-     */
-    private final int count = 4;
     protected Typeface tfRegular;
     protected Typeface tfLight;
     private com.thfw.ui.widget.TitleView mTitleView;
@@ -325,7 +325,7 @@ public class MoodDetailActivity extends BaseActivity {
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                return "第" + Math.round(value + 1) + "周";
+                return "第" + Math.round(value + 1) + "天";
             }
         });
 
@@ -347,11 +347,17 @@ public class MoodDetailActivity extends BaseActivity {
 //        data.setData(generateScatterData());
 //        data.setData(generateCandleData());
         data.setValueTypeface(tfLight);
-        data.setDrawValues(Util.isPad(mContext));
+        data.setDrawValues(false);
         xAxis.setAxisMaximum(data.getXMax() + 0.5f);
         LogUtil.d(TAG, "getAxisMaximum = " + xAxis.getAxisMaximum());
         chart.setData(data);
-        chart.animateXY(1000, 1000);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setTouchEnabled(true);
+        chart.setDragEnabled(true);
+
+        chart.setVisibleXRange(0, 3);
+        chart.moveViewTo(data.getXMax(), 0, YAxis.AxisDependency.LEFT);
+        chart.invalidate();
         chart.setMarker(new ChartMarkerView(this, R.layout.item_chart_indicator));
 //        chart.invalidate();
     }
@@ -368,7 +374,7 @@ public class MoodDetailActivity extends BaseActivity {
         ArrayList<Entry> entries = new ArrayList<>();
 
 
-        for (int index = 0; index < count; index++) {
+        for (int index = 0; index < COUNT; index++) {
             Entry entry = new Entry(index + 0.5f, getRandom(50, 0));
             entry.setData(CharType.MOOD);
             entries.add(entry);
@@ -414,7 +420,7 @@ public class MoodDetailActivity extends BaseActivity {
         ArrayList<BarEntry> entries7 = new ArrayList<>();
         ArrayList<BarEntry> entries8 = new ArrayList<>();
 
-        for (int index = 0; index < count; index++) {
+        for (int index = 0; index < COUNT; index++) {
             BarEntry barEntry1 = new BarEntry(0, getRandom(35, 15));
             barEntry1.setData(CharType.TALK);
             entries1.add(barEntry1);
@@ -522,7 +528,7 @@ public class MoodDetailActivity extends BaseActivity {
 
         ArrayList<Entry> entries = new ArrayList<>();
 
-        for (float index = 0; index < count; index += 0.5f)
+        for (float index = 0; index < COUNT; index += 0.5f)
             entries.add(new Entry(index + 0.25f, getRandom(10, 55)));
 
         ScatterDataSet set = new ScatterDataSet(entries, "Scatter DataSet");
@@ -541,7 +547,7 @@ public class MoodDetailActivity extends BaseActivity {
 
         ArrayList<CandleEntry> entries = new ArrayList<>();
 
-        for (int index = 0; index < count; index += 2)
+        for (int index = 0; index < COUNT; index += 2)
             entries.add(new CandleEntry(index + 1f, 90, 70, 85, 75f));
 
         CandleDataSet set = new CandleDataSet(entries, "Candle DataSet");
@@ -561,7 +567,7 @@ public class MoodDetailActivity extends BaseActivity {
 
         ArrayList<BubbleEntry> entries = new ArrayList<>();
 
-        for (int index = 0; index < count; index++) {
+        for (int index = 0; index < COUNT; index++) {
             float y = getRandom(10, 105);
             float size = getRandom(100, 105);
             entries.add(new BubbleEntry(index + 0.5f, y, size));

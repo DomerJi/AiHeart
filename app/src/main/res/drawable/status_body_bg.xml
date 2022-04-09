@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <corners android:radius="8dp" />
 
-    <solid android:color="@color/black_05" />
+    <item android:state_selected="true">
+        <shape>
+            <corners android:radius="8dp" />
 
-</shape>
+            <solid android:color="#07916C" />
+        </shape>
+
+    </item>
+
+    <item>
+        <shape>
+            <corners android:radius="8dp" />
+            <solid android:color="#7F3AA29D" />
+        </shape>
+
+    </item>
+
+
+</selector>

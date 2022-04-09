@@ -26,6 +26,7 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.MainActivity;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.me.InfoActivity;
 import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
@@ -36,7 +37,6 @@ import com.thfw.robotheart.fragments.login.LoginMobileFragment;
 import com.thfw.robotheart.fragments.login.LoginPasswordFragment;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.FragmentLoader;
-import com.thfw.ui.base.BaseActivity;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.user.login.LoginStatus;
@@ -45,7 +45,7 @@ import com.thfw.user.models.User;
 
 import org.opencv.android.Static2Helper;
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends RobotBaseActivity {
 
     public static final int BY_MOBILE = 0;
     public static final int BY_PASSWORD = 1;
