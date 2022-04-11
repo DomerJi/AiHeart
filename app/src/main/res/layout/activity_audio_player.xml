@@ -34,12 +34,13 @@
     <!--  声音 亮度改变 -->
     <com.thfw.ui.widget.ShowChangeLayout
         android:id="@+id/scl"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="90dp"
+        android:layout_width="180dp"
+        android:layout_height="36dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.15"
         tools:ignore="MissingConstraints" />
 
     <com.thfw.ui.widget.LinearTopLayout

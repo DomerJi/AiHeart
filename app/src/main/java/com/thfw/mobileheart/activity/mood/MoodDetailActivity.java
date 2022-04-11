@@ -151,7 +151,7 @@ public class MoodDetailActivity extends BaseActivity {
             }
         });
 
-        schemeColor = Color.parseColor("#FF7764");
+        schemeColor = Color.parseColor("#FFAE00");
         mCalendarView.setOnMonthChangeListener(new CalendarView.OnMonthChangeListener() {
             @Override
             public void onMonthChange(int year, int month) {

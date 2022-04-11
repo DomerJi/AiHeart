@@ -25,6 +25,7 @@ public class DialogFactory {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_custom_layout_ym)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
+                .setScreenWidthAspect(activity, 0.7f)
                 .addOnClickListener(R.id.tv_left, R.id.tv_right)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {

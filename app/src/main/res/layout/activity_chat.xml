@@ -20,7 +20,7 @@
         android:layout_height="match_parent"
         android:layout_above="@id/rv_select"
         android:layout_below="@id/titleView"
-        app:srlEnableFooterFollowWhenNoMoreData="true">
+        app:srlEnableOverScrollDrag="true">
 
         <com.scwang.smart.refresh.header.ClassicsHeader
             android:layout_width="match_parent"
@@ -36,7 +36,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chatList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="12dp" />
 
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
@@ -46,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/rl_send"
         android:layout_alignParentRight="true"
-        android:minHeight="46dp" />
+        android:padding="4dp" />
 
 
     <com.thfw.ui.widget.AnimBottomRelativeLayout

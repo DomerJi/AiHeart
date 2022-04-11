@@ -519,6 +519,54 @@
                 android:background="@color/divider" />
 
             <LinearLayout
+                android:id="@+id/ll_me_face"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="12dp"
+                android:paddingTop="16dp"
+                android:paddingRight="12dp"
+                android:paddingBottom="16dp">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/me_face"
+                    android:textColor="@color/text_common"
+                    android:textSize="@dimen/textSize" />
+
+
+                <TextView
+                    android:id="@+id/tv_face_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="未录入"
+                    android:textColor="@color/text_blue"
+                    android:textSize="@dimen/textSize_small" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_right"
+                    app:tint="@color/text_hint" />
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider_1px"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/divider" />
+
+            <LinearLayout
                 android:id="@+id/ll_me_collect"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

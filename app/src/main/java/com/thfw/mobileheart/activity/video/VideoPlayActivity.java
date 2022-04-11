@@ -16,7 +16,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -79,7 +78,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
 
     public static final String KEY_PLAY_POSITION = "key.position";
     public static final String KEY_AUTO_FINISH = "key.position";
-    private ImageView mIvBg;
     private PlayerView mMPlayerView;
     private ProgressBar mPbBottom;
     private TextView mTvTitle;
@@ -90,7 +88,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     private RecyclerView mRvVideoDetail;
     private boolean isPlaying = false;
     private ConstraintLayout mVideoPlayConstranint;
-    private FrameLayout mFlVideo;
     private LinearLayout mLlTopControl;
     private ImageView mIvBack;
     private ImageView mIvScreenAll;
@@ -157,8 +154,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
 
     @Override
     public void initView() {
-
-        mIvBg = (ImageView) findViewById(R.id.iv_bg);
         mMPlayerView = (PlayerView) findViewById(R.id.mPlayerView);
         mPbBottom = (ProgressBar) findViewById(R.id.pb_bottom);
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
@@ -186,7 +181,6 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
         });
 
         mVideoPlayConstranint = (ConstraintLayout) findViewById(R.id.video_play_constranint);
-        mFlVideo = (FrameLayout) findViewById(R.id.fl_video);
         mLlTopControl = (LinearLayout) findViewById(R.id.ll_top_control);
         mIvBack = (ImageView) findViewById(R.id.iv_back);
         mIvBack.setOnClickListener(v -> {
@@ -292,7 +286,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
             layoutParams.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
             layoutParams.dimensionRatio = null;
             mMPlayerView.setLayoutParams(layoutParams);
-            LinearLayout.LayoutParams layoutParams1 = (LinearLayout.LayoutParams) mVideoLayout.getLayoutParams();
+            ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) mVideoLayout.getLayoutParams();
             layoutParams1.height = ConstraintLayout.LayoutParams.MATCH_PARENT;
             layoutParams1.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
             mVideoLayout.setLayoutParams(layoutParams1);
@@ -315,7 +309,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
             layoutParams.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
             mMPlayerView.setLayoutParams(layoutParams);
 
-            LinearLayout.LayoutParams layoutParams1 = (LinearLayout.LayoutParams) mVideoLayout.getLayoutParams();
+            ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) mVideoLayout.getLayoutParams();
             layoutParams1.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
             layoutParams1.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
             mVideoLayout.setLayoutParams(layoutParams1);

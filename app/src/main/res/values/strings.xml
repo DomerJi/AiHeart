@@ -52,6 +52,7 @@
     <string name="me_help_back">帮助与反馈</string>
     <string name="me_setting">设置</string>
     <string name="me_info">个人信息</string>
+    <string name="me_face">人脸录入</string>
     <string name="me_task">我的任务</string>
 
     <string name="set_account_safe">账户安全</string>
@@ -110,6 +111,7 @@
     <string name="face_discern">脸部识别</string>
     <string name="start_face_discern">开始识别</string>
     <string name="please_face_discern">请进行面部识别，以确保是本人操作</string>
+    <string name="face_fail">刷脸失败，请重新刷脸尝试，你也可以选择其他登录方式！</string>
     <string name="permission_please_auth_hint">您还没有授予权限，请先去设置页面授予权限。</string>
     <!--完善信息-->
     <string name="perfect_infomation">完善信息</string>

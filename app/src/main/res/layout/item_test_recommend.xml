@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:layout_width="300dp">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/riv_recommend_bg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="5:3"
+        app:riv_corner_radius="6dp"
+        tools:ignore="MissingConstraints"
+        tools:src="@color/white" />
+
+    <TextView
+        android:id="@+id/tv_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/left_top_radius_recommend"
+        android:padding="8dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_small"
+        app:layout_constraintLeft_toLeftOf="@id/riv_recommend_bg"
+        app:layout_constraintTop_toTopOf="@id/riv_recommend_bg"
+        tools:text="@string/title" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:paddingBottom="8dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/textSize_small"
+        app:layout_constraintLeft_toLeftOf="@id/riv_recommend_bg"
+        app:layout_constraintRight_toRightOf="@id/riv_recommend_bg"
+        app:layout_constraintTop_toBottomOf="@id/riv_recommend_bg"
+        tools:text="@string/title"
+        tools:textColor="@color/black" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

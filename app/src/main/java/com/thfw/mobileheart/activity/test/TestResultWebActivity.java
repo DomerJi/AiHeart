@@ -18,14 +18,25 @@ import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.WebViewClient;
+import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.AudioEtcModel;
+import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.TestResultModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TestPresenter;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
+import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
+import com.thfw.mobileheart.activity.read.BookDetailActivity;
+import com.thfw.mobileheart.activity.talk.ChatActivity;
+import com.thfw.mobileheart.activity.video.VideoPlayActivity;
+import com.thfw.mobileheart.adapter.TestRecommendAdapter;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
+
+import java.util.List;
 
 /**
  * 测评结果
@@ -71,7 +82,7 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
     public void initView() {
         tvTitleView = findViewById(R.id.titleView);
         mRvCommend = findViewById(R.id.rv_recommend);
-        mRvCommend.setLayoutManager(new GridLayoutManager(mContext, 4));
+        mRvCommend.setLayoutManager(new GridLayoutManager(mContext, 2));
 
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mFlWebContent = (FrameLayout) findViewById(R.id.fl_web_content);
@@ -220,7 +231,41 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
             findViewById(R.id.tv_recommend_title).setVisibility(View.VISIBLE);
             mRvCommend.setVisibility(View.VISIBLE);
         }
+        TestRecommendAdapter recommendAdapter = new TestRecommendAdapter(testResultModel.getRecommendInfo());
+        recommendAdapter.setOnRvItemListener(new OnRvItemListener<TestResultModel.RecommendInfoBean>() {
+            @Override
+            public void onItemClick(List<TestResultModel.RecommendInfoBean> list, int position) {
+                TestResultModel.RecommendInfoBean infoBean = list.get(position);
+                if (infoBean == null || infoBean.getInfo() == null) {
+                    ToastUtil.show("数据异常");
+                    return;
+                }
+                switch (infoBean.getType()) {
+                    case 1: // 测评
+                        TestBeginActivity.startActivity(mContext, infoBean.getInfo().getId());
+                        break;
+                    case 2: // 主题对话
+                        ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
+                                .setId(infoBean.getInfo().getId()));
+                        break;
+                    case 3: // 音频
+                        AudioEtcModel audioEtcModel = new AudioEtcModel();
+                        audioEtcModel.setTitle(infoBean.getInfo().getTitle());
+                        audioEtcModel.setImg(infoBean.getInfo().getPic());
+                        audioEtcModel.setId(infoBean.getInfo().getId());
+                        AudioPlayerActivity.startActivity(mContext, audioEtcModel);
+                        break;
+                    case 4: // 视频
+                        VideoPlayActivity.startActivity(mContext, infoBean.getInfo().getId(), false);
+                        break;
+                    case 5: // 科普文章
+                        BookDetailActivity.startActivity(mContext, infoBean.getInfo().getId());
+                        break;
 
+                }
+            }
+        });
+        mRvCommend.setAdapter(recommendAdapter);
     }
 
     @Override

@@ -70,6 +70,8 @@ public class MeFragment extends BaseFragment {
     private TextView mTvMeLevel;
     private TextView mTvHistoryHappy;
     private TextView mTvMsgVersion;
+    private LinearLayout mLlMeFace;
+    private TextView mTvFaceSwitch;
 
     @Override
     public int getContentView() {
@@ -169,6 +171,11 @@ public class MeFragment extends BaseFragment {
         mLlHistoryRead.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 4));
         mLlHistoryStudy.setOnClickListener(v -> MeHistoryActivity.startActivity(mContext, 5));
 
+        mLlMeFace = (LinearLayout) findViewById(R.id.ll_me_face);
+        mTvFaceSwitch = (TextView) findViewById(R.id.tv_face_switch);
+        mLlMeFace.setOnClickListener(v -> {
+            LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
+        });
     }
 
 

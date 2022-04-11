@@ -70,12 +70,42 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
             VideoTopHolder topHolder = (VideoTopHolder) holder;
             topHolder.mTvVideoName.setText(model.videoModel.getTitle());
             topHolder.mTvHint.setText(model.videoModel.getDes());
+            topHolder.mTvHint.post(new Runnable() {
+                @Override
+                public void run() {
+                    int ellipsisCount = topHolder.mTvHint.getLayout().getEllipsisCount(topHolder.mTvHint.getLineCount() - 1);
+                    //ellipsisCount>0说明没有显示全部，存在省略部分。
+                    if (ellipsisCount > 0) {
+                        topHolder.mIvExpandArrow.setVisibility(View.VISIBLE);
+                    } else {
+                        topHolder.mIvExpandArrow.setVisibility(View.GONE);
+                    }
+                    if (topHolder.mIvExpandArrow.getVisibility() == View.VISIBLE) {
+                        topHolder.mLlHintExpand.setOnClickListener(v -> {
+                            if (topHolder.mTvHint.getMaxLines() == Integer.MAX_VALUE) {
+                                topHolder.mTvHint.setMaxLines(4);
+                                topHolder.mIvExpandArrow.setRotation(0);
+                            } else {
+                                topHolder.mTvHint.setMaxLines(Integer.MAX_VALUE);
+                                topHolder.mIvExpandArrow.setRotation(180);
+                            }
+                        });
+                    }
+                }
+            });
             topHolder.mIvCollect.setSelected(model.videoModel.getCollected() == 1);
         } else if (holder instanceof VideoGroupHolder) {
             VideoGroupHolder etcHolder = (VideoGroupHolder) holder;
         } else if (holder instanceof VideoDetailsHolder) {
             VideoDetailsHolder itemHolder = (VideoDetailsHolder) holder;
-            itemHolder.mIvPlay.setVisibility((playPosition + 2) == position ? View.VISIBLE : View.GONE);
+            if ((playPosition + 2) == position) {
+                itemHolder.mTvTitle.setTextColor(mContext.getResources().getColor(R.color.text_green));
+                itemHolder.mIvPlay.setVisibility(View.VISIBLE);
+            } else {
+                itemHolder.mTvTitle.setTextColor(mContext.getResources().getColor(R.color.text_common));
+                itemHolder.mIvPlay.setVisibility(View.GONE);
+            }
+
             itemHolder.mTvTitle.setText(model.videoEtcModel.getTitle());
             GlideUtil.load(mContext, model.videoEtcModel.getImg(), itemHolder.mRivBg);
 
