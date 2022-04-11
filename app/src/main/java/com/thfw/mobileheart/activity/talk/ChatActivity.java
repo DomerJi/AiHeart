@@ -20,7 +20,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.flexbox.FlexDirection;
@@ -56,6 +55,7 @@ import com.thfw.mobileheart.adapter.ChatSelectAdapter;
 import com.thfw.mobileheart.constants.AnimFileName;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.PageJumpUtils;
+import com.thfw.ui.widget.SpeedLinearLayoutManager;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.voice.PolicyHelper;
@@ -152,7 +152,7 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
             }
         });
         rvChatList = (RecyclerView) findViewById(R.id.rv_chatList);
-        rvChatList.setLayoutManager(new LinearLayoutManager(mContext));
+        rvChatList.setLayoutManager(new SpeedLinearLayoutManager(mContext));
         mRvSelect = (RecyclerView) findViewById(R.id.rv_select);
         // 设置布局管理器
         FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(mContext);

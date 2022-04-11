@@ -21,7 +21,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.flexbox.FlexDirection;
@@ -63,6 +62,7 @@ import com.thfw.robotheart.view.fall.FallObject;
 import com.thfw.robotheart.view.fall.FallingView;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.widget.SpeedLinearLayoutManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.yalantis.ucrop.util.ScreenUtils;
 
@@ -124,7 +124,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
 
         mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
-        mRvList.setLayoutManager(new LinearLayoutManager(mContext));
+        mRvList.setLayoutManager(new SpeedLinearLayoutManager(mContext));
         mRlSend = (RelativeLayout) findViewById(R.id.rl_send);
         mRlKeywordInput = (RelativeLayout) findViewById(R.id.rl_keyword_input);
         mTvSend = (TextView) findViewById(R.id.tv_send);

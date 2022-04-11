@@ -19,7 +19,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.flexbox.FlexDirection;
@@ -67,6 +66,7 @@ import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.SpeechTextView;
+import com.thfw.ui.widget.SpeedLinearLayoutManager;
 import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -179,7 +179,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mTvSend = (TextView) findViewById(R.id.tv_send);
         mStvText = (SpeechTextView) findViewById(R.id.stv_text);
         mEtContent = (EditText) findViewById(R.id.et_content);
-        mRvList.setLayoutManager(new LinearLayoutManager(mContext));
+        mRvList.setLayoutManager(new SpeedLinearLayoutManager(mContext));
         softInput();
         mTvSend.setOnClickListener(v -> {
             sendInputText(mEtContent.getText().toString());

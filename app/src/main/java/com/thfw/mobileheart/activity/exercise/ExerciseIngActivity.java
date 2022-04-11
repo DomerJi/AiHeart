@@ -23,7 +23,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.flexbox.FlexDirection;
@@ -65,6 +64,7 @@ import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.voice.PolicyHelper;
 import com.thfw.ui.voice.speech.SpeechHelper;
+import com.thfw.ui.widget.SpeedLinearLayoutManager;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.yalantis.ucrop.util.ScreenUtils;
@@ -137,7 +137,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
 
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
-        mRvList.setLayoutManager(new LinearLayoutManager(mContext));
+        mRvList.setLayoutManager(new SpeedLinearLayoutManager(mContext));
         mRlSend = (RelativeLayout) findViewById(R.id.rl_send);
         mTvSend = (TextView) findViewById(R.id.tv_send);
         mEtContent = (EditText) findViewById(R.id.et_content);
