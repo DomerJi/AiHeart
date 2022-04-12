@@ -30,6 +30,7 @@ import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.activity.MainActivity;
 import com.thfw.mobileheart.push.MyPreferences;
 import com.thfw.mobileheart.push.helper.PushHelper;
@@ -150,7 +151,8 @@ public class MyApplication extends MultiDexApplication {
         app = this;
         ContextApp.init(this);
         SharePreferenceUtil.init(this);
-        ContextApp.setDeviceType(ContextApp.DeviceType.ROBOT);
+        ContextApp.setDeviceType(Util.isPad(this) ? ContextApp.DeviceType.PAD
+                : ContextApp.DeviceType.MOBILE);
         ToastUtil.init(this);
         TDialog.init(this);
         initAtThread();

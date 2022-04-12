@@ -3,16 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/black"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
+
+    <com.thfw.ui.widget.LinearTopLayout
+        android:id="@+id/ltl_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/video_play_constranint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/text_red"
+        app:layout_constraintTop_toBottomOf="@id/ltl_top"
         tools:ignore="MissingConstraints">
 
         <com.google.android.exoplayer2.ui.PlayerView
@@ -20,8 +26,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/chat_green_80"
-            android:clipToPadding="true"
-            android:fitsSystemWindows="true"
             app:controller_layout_id="@layout/custom_video_player_control_view"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="H,16:9"
