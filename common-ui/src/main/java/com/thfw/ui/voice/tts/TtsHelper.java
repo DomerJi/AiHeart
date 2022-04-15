@@ -9,6 +9,7 @@ import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechSynthesizer;
 import com.iflytek.cloud.SynthesizerListener;
 import com.thfw.base.ContextApp;
+import com.thfw.base.utils.InformantUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.ui.voice.VoiceType;
 import com.thfw.ui.voice.VoiceTypeManager;
@@ -21,9 +22,6 @@ import com.thfw.ui.voice.VoiceTypeManager;
 public class TtsHelper implements ITtsFace {
 
     private static final String TAG = TtsHelper.class.getSimpleName();
-
-    // "xiaoyan"; // "aisjinger"; // "aisjiuxu"; // "aisxping";
-    private static final String voicerCloud = "x2_yifei";
     // 采样率
     // 44100是目前的标准，但是某些设备仍然支持22050，16000，11025
     // 采样频率一般共分为22.05KHz、44.1KHz、48KHz三个等级
@@ -69,7 +67,7 @@ public class TtsHelper implements ITtsFace {
         //设置使用云端引擎
         mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);
         //设置发音人
-        mTts.setParameter(SpeechConstant.VOICE_NAME, voicerCloud);
+        mTts.setParameter(SpeechConstant.VOICE_NAME, InformantUtil.getInformant());
         //设置合成语速
         mTts.setParameter(SpeechConstant.SPEED, "50");
         //设置合成音调
@@ -105,7 +103,13 @@ public class TtsHelper implements ITtsFace {
         if (!initialized()) {
             VoiceTypeManager.getManager().setVoiceType(VoiceType.READ_PREPARE);
             init();
+        } else {
+            if (mTts != null) {
+                //设置发音人
+                mTts.setParameter(SpeechConstant.VOICE_NAME, InformantUtil.getInformant());
+            }
         }
+
     }
 
     @Override

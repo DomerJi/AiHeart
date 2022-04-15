@@ -114,6 +114,7 @@ public class MyApplication extends MultiDexApplication {
         StringBuffer param = new StringBuffer();
         //5f3de60d.jet
         param.append(SpeechConstant.APPID + "=5f3de60d");
+//        param.append(SpeechConstant.APPID + "=ec8b0856");
         param.append(",");
         // 设置使用v5+
         param.append(SpeechConstant.ENGINE_MODE + "=" + SpeechConstant.MODE_MSC);
