@@ -36,6 +36,9 @@ public class StatusAdapter extends BaseAdapter<StatusEntity, RecyclerView.ViewHo
         super(dataList);
     }
 
+    public void setSelectedIndex(int mSelectedIndex) {
+        this.mSelectedIndex = mSelectedIndex;
+    }
 
     @NonNull
     @NotNull
@@ -88,6 +91,11 @@ public class StatusAdapter extends BaseAdapter<StatusEntity, RecyclerView.ViewHo
         return mDataList.get(position).type;
     }
 
+    public void backScroll() {
+        mSelectedIndex = oldIndex;
+        notifyDataSetChanged();
+    }
+
     public class StatusTopHolder extends RecyclerView.ViewHolder {
 
 
@@ -133,10 +141,5 @@ public class StatusAdapter extends BaseAdapter<StatusEntity, RecyclerView.ViewHo
                 }
             });
         }
-    }
-
-    public void backScroll() {
-        mSelectedIndex = oldIndex;
-        notifyDataSetChanged();
     }
 }

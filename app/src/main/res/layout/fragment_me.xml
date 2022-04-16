@@ -103,11 +103,13 @@
                     app:layout_constraintLeft_toRightOf="@id/riv_avatar"
                     app:layout_constraintTop_toBottomOf="@id/tv_name">
 
-                    <ImageView
-                        android:layout_width="13dp"
-                        android:layout_height="13dp"
+                    <com.makeramen.roundedimageview.RoundedImageView
+                        android:id="@+id/iv_mood_status"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
                         android:scaleType="fitXY"
-                        android:src="@mipmap/cat" />
+                        android:src="@color/white_30"
+                        app:riv_oval="true" />
 
 
                     <TextView
@@ -116,7 +118,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="8dp"
-                        android:text="status"
+                        android:text="◠  ◠"
                         android:textColor="@color/white"
                         android:textSize="@dimen/textSize_small" />
 
@@ -192,8 +194,9 @@
                                 android:id="@+id/tv_time_minute"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="5692"
+                                android:hint="--"
                                 android:textColor="@color/text_common"
+                                android:textColorHint="@color/text_hint"
                                 android:textSize="24sp"
                                 android:textStyle="bold" />
 
@@ -222,8 +225,9 @@
                                 android:id="@+id/tv_time_day"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="301"
+                                android:hint="--"
                                 android:textColor="@color/text_common"
+                                android:textColorHint="@color/text_hint"
                                 android:textSize="24sp"
                                 android:textStyle="bold" />
 
@@ -253,8 +257,9 @@
                                 android:id="@+id/tv_time_continuation"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="97"
+                                android:hint="--"
                                 android:textColor="@color/text_common"
+                                android:textColorHint="@color/text_hint"
                                 android:textSize="24sp"
                                 android:textStyle="bold" />
 

@@ -31,6 +31,7 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.StatusAdapter;
 import com.thfw.mobileheart.util.DialogFactory;
+import com.thfw.mobileheart.util.MoodLivelyHelper;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
@@ -54,6 +55,7 @@ import java.util.List;
  */
 public class StatusActivity extends BaseActivity<MobilePresenter> implements MobilePresenter.MobileUi<List<MoodModel>> {
 
+    private static final String KEY_STATUS = "key.mood.list";
     private com.thfw.ui.widget.TitleView mTitleView;
     private androidx.recyclerview.widget.RecyclerView mRvStatusList;
     private StatusAdapter mStatusAdapter;
@@ -65,8 +67,6 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
     private int minHeight;
     private com.thfw.ui.widget.LinearTopLayout mLtlTop;
     private LoadingView mLoadingView;
-
-    private static final String KEY_STATUS = "key.mood.list";
     private boolean formHome;
 
     public static void startActivity(Context context) {
@@ -117,10 +117,11 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
         });
         mRvStatusList.setLayoutManager(gridLayoutManager);
         mStatusAdapter = new StatusAdapter(getList(null));
+
         mStatusAdapter.setOnRvItemListener(new OnRvItemListener<StatusEntity>() {
             @Override
             public void onItemClick(List<StatusEntity> list, int position) {
-                saveMood(list.get(position).moodModel.getId());
+                saveMood(list.get(position).moodModel);
             }
         });
         mRvStatusList.setAdapter(mStatusAdapter);
@@ -187,6 +188,7 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
             mapTags.put("正", "小太阳");
             mapTags.put("中", "小安静");
             mapTags.put("负", "小波动");
+
             for (MoodModel model : data) {
                 if (setTags.add(model.getTag())) {
                     arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_GROUP)
@@ -194,6 +196,7 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
                 }
                 arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY).setMoodModel(model));
             }
+            setSelected(arrayList);
 
             int bodyPosition = -1;
             for (StatusEntity statusEntity : arrayList) {
@@ -212,19 +215,40 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
         return arrayList;
     }
 
+    private void setSelected(List<StatusEntity> arrayList) {
+        String mSelectedName = null;
+        if (MoodLivelyHelper.getModel().getUserMood() != null) {
+            mSelectedName = MoodLivelyHelper.getModel().getUserMood().getName();
+        }
+        if (mSelectedName == null) {
+            return;
+        }
+        int size = arrayList.size();
+        for (int i = 0; i < size; i++) {
+            StatusEntity entity = arrayList.get(i);
+            if (entity.type == StatusEntity.TYPE_BODY) {
+                if (mSelectedName.equals(entity.moodModel.getName())) {
+                    mStatusAdapter.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
+    }
+
     @Override
     public void initData() {
         Type type = new TypeToken<List<StatusEntity>>() {
         }.getType();
         List<StatusEntity> cacheModel = SharePreferenceUtil.getObject(KEY_STATUS, type);
         if (!EmptyUtil.isEmpty(cacheModel)) {
+            setSelected(cacheModel);
             mStatusAdapter.setDataListNotify(cacheModel);
             mLoadingView.hide();
         }
         mPresenter.onGetMoodList();
     }
 
-    public void saveMood(int moodId) {
+    public void saveMood(MoodModel moodModel) {
         LoadingDialog.show(StatusActivity.this, "打卡中");
         new MobilePresenter(new MobilePresenter.MobileUi<CommonModel>() {
             @Override
@@ -235,8 +259,9 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
             @Override
             public void onSuccess(CommonModel data) {
                 LoadingDialog.hide();
+                MoodLivelyHelper.notifyMood(moodModel);
+                ToastUtil.showLong("心情打卡成功哦~");
                 if (formHome) {
-                    ToastUtil.showLong("心情打卡成功哦~");
                     new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -255,7 +280,7 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
                 ToastUtil.showLong("心情打卡失败~");
                 mStatusAdapter.backScroll();
             }
-        }).onSavedMood(NetParams.crete().add("mood", moodId));
+        }).onSavedMood(NetParams.crete().add("mood", moodModel.getId()));
     }
 
     private void customStatus() {

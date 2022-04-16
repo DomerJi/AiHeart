@@ -196,10 +196,11 @@
         <activity
             android:name=".activity.video.VideoPlayActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:screenOrientation="sensorPortrait" />
         <activity
             android:name=".activity.talk.ChatActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity

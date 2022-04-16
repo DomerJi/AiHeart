@@ -3,6 +3,7 @@ package com.thfw.mobileheart.adapter;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.HomeEntity;
 import com.thfw.base.models.HomeHistoryEntity;
+import com.thfw.base.models.MoodLivelyModel;
+import com.thfw.base.models.MoodModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
@@ -32,6 +35,7 @@ import com.thfw.mobileheart.activity.talk.ThemeListActivity;
 import com.thfw.mobileheart.activity.test.TestingActivity;
 import com.thfw.mobileheart.activity.video.VideoHomeActivity;
 import com.thfw.mobileheart.util.FunctionDurationUtil;
+import com.thfw.mobileheart.util.MoodLivelyHelper;
 import com.thfw.ui.utils.GlideUtil;
 import com.youth.banner.Banner;
 import com.youth.banner.indicator.CircleIndicator;
@@ -46,7 +50,8 @@ import java.util.List;
  * Date: 2021/7/22 10:21
  * Describe:首页适配器
  */
-public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder> implements MyApplication.OnMinuteListener {
+public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder>
+        implements MyApplication.OnMinuteListener, MoodLivelyHelper.MoodLivelyListener {
     private static final long DELAY_TIME_BANNER = 5000;
     private static long lastChange;
     private Banner mBanner;
@@ -68,6 +73,16 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         }
     }
 
+    @Override
+    public void onMoodLively(MoodLivelyModel data) {
+        if (getItemCount() > 2) {
+            RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForLayoutPosition(2);
+            if (viewHolder instanceof MadeHolder) {
+                ((MadeHolder) viewHolder).mTvSumActivityValue.setText(String.valueOf(data.getLoginDays()));
+                ((MadeHolder) viewHolder).setMood(data.getUserMood());
+            }
+        }
+    }
 
     /**
      * 时间更新/活跃时长
@@ -78,7 +93,10 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             lastChange = System.currentTimeMillis();
             LogUtil.d("===========================时间更新/活跃时长================================");
             if (getItemCount() > 2) {
-                notifyItemChanged(2);
+                RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForLayoutPosition(2);
+                if (viewHolder instanceof MadeHolder) {
+                    ((MadeHolder) viewHolder).notifyTodayTime();
+                }
             }
         }
     }
@@ -129,7 +147,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                 break;
             case HomeEntity.TYPE_CUSTOM_MADE:
                 MadeHolder madeHolder = (MadeHolder) holder;
-                madeHolder.mTvTodayActivityValue.setText(FunctionDurationUtil.getFunctionTimeHour(FunctionDurationUtil.FUNCTION_APP));
+                madeHolder.notifyTodayTime();
                 break;
             case HomeEntity.TYPE_TAB_TITLE:
                 TabTitleHolder tabTitleHolder = (TabTitleHolder) holder;
@@ -279,7 +297,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         private ConstraintLayout mClRightTop;
         private TextView mTvMoodTitle;
         private LinearLayout mLlMood;
-        private RoundedImageView mRivEmoji;
+        private ImageView mRivEmoji;
         private TextView mTvMoodValue;
         private TextView mTvActiveTitle;
         private ConstraintLayout mLlActive;
@@ -315,12 +333,26 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
 
         }
 
+        public void setMood(MoodModel mood) {
+            if (mood != null && mTvMoodValue != null && mRivEmoji != null) {
+                GlideUtil.load(mContext, mood.getPath(), mRivEmoji);
+                mTvMoodValue.setText(mood.getName());
+            }
+        }
+
+        public void notifyTodayTime() {
+            if (mTvTodayActivityValue != null) {
+                mTvTodayActivityValue.setText(FunctionDurationUtil
+                        .getFunctionTimeHour(FunctionDurationUtil.FUNCTION_APP));
+            }
+        }
+
         private void initView(View itemView) {
             mClLeft = (ConstraintLayout) itemView.findViewById(R.id.cl_left);
             mClRightTop = (ConstraintLayout) itemView.findViewById(R.id.cl_right_top);
             mTvMoodTitle = (TextView) itemView.findViewById(R.id.tv_mood_title);
             mLlMood = (LinearLayout) itemView.findViewById(R.id.ll_mood);
-            mRivEmoji = (RoundedImageView) itemView.findViewById(R.id.riv_emoji);
+            mRivEmoji = (ImageView) itemView.findViewById(R.id.iv_emoji);
             mTvMoodValue = (TextView) itemView.findViewById(R.id.tv_mood_value);
             mTvActiveTitle = (TextView) itemView.findViewById(R.id.tv_active_title);
             mLlActive = (ConstraintLayout) itemView.findViewById(R.id.ll_active);

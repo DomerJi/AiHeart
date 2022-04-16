@@ -50,6 +50,7 @@
 
 
     <color name="text_green">#00A871</color>
+    <color name="tint_emoji">#0CC21D</color>
     <color name="green_selected_text">#00CC99</color>
     <color name="text_yellow">#FF8600</color>
     <color name="text_yellow2">#FF5311</color>

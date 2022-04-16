@@ -61,7 +61,7 @@ public interface MobileApi {
      * @return
      */
     @FormUrlEncoded
-    @POST("user_mood_list")
+    @POST("get_user_active_info")
     Observable<HttpResult<MoodLivelyModel>> getMoodLivelyDetail(@FieldMap Map<String, Object> params);
 
     /**

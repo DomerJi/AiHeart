@@ -19,6 +19,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
+import com.thfw.base.models.MoodLivelyModel;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.models.TalkModel;
@@ -49,6 +50,7 @@ import com.thfw.mobileheart.push.helper.PushHelper;
 import com.thfw.mobileheart.push.tester.UPushAlias;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FragmentLoader;
+import com.thfw.mobileheart.util.MoodLivelyHelper;
 import com.thfw.mobileheart.util.MsgCountManager;
 import com.thfw.mobileheart.view.SimpleAnimatorListener;
 import com.thfw.ui.dialog.TDialog;
@@ -289,23 +291,34 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         } else {
             mMainHandler.removeCallbacks(checkVersionRunnable);
             mMainHandler.postDelayed(checkVersionRunnable, 1000);
-            if (!moodHint) {
-                moodHintDialog();
-            }
+
+            moodHintDialog();
         }
     }
 
     private void moodHintDialog() {
-        moodHint = true;
-        DialogFactory.createMoodSignInDialog(this, new OnViewClickListener() {
+        if (moodHint) {
+            return;
+        }
+        MoodLivelyHelper.addListener(new MoodLivelyHelper.MoodLivelyListener() {
             @Override
-            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                tDialog.dismiss();
-                if (view.getId() == R.id.bt_go) {
-                    StatusActivity.startActivity(mContext, true);
+            public void onMoodLively(MoodLivelyModel data) {
+                if (data.getUserMood() == null) {
+                    moodHint = true;
+                    DialogFactory.createMoodSignInDialog(MainActivity.this, new OnViewClickListener() {
+                        @Override
+                        public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                            tDialog.dismiss();
+                            if (view.getId() == R.id.bt_go) {
+                                StatusActivity.startActivity(mContext, true);
+                            }
+                        }
+                    });
                 }
+                MoodLivelyHelper.removeListener(this);
             }
         });
+
     }
 
     @Override

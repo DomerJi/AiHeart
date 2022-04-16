@@ -19,7 +19,6 @@ import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.HomeEntity;
 import com.thfw.base.models.MobileRecommendModel;
-import com.thfw.base.models.MoodLivelyModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.MobilePresenter;
@@ -38,6 +37,7 @@ import com.thfw.mobileheart.activity.talk.ChatActivity;
 import com.thfw.mobileheart.activity.test.TestBeginActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.HomeAdapter;
+import com.thfw.mobileheart.util.MoodLivelyHelper;
 import com.thfw.ui.widget.LinearTopLayout;
 import com.thfw.ui.widget.MySearchView;
 import com.thfw.user.login.UserManager;
@@ -75,7 +75,6 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
 
     private List<HomeEntity> mMainList = new ArrayList<>();
     private boolean isLogin;
-    private static boolean initMoodLively;
 
     @Override
     public int getContentView() {
@@ -239,7 +238,6 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
     private void loadData(boolean refresh) {
         if (refresh) {
             requestBanner();
-            requestMoodLively();
         }
         mPresenter.onGetRecommendList(recommendPage);
     }
@@ -262,31 +260,6 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
 
             }
         }).onGetBannerDetail();
-    }
-
-    private void requestMoodLively() {
-        if (initMoodLively) {
-            return;
-        }
-
-        new MobilePresenter(new MobilePresenter.MobileUi<MoodLivelyModel>() {
-            @Override
-            public LifecycleProvider getLifecycleProvider() {
-                return HomeFragment.this;
-            }
-
-            @Override
-            public void onSuccess(MoodLivelyModel data) {
-                initMoodLively = true;
-                mMainList.get(2).setMoodLivelyModel(data);
-                mHomeAdapter.notifyItemChanged(2);
-            }
-
-            @Override
-            public void onFail(ResponeThrowable throwable) {
-
-            }
-        }).onGetMoodLivelyDetail();
     }
 
     public void initList() {
@@ -314,6 +287,9 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
         super.onVisible(isVisible);
         if (mHomeAdapter != null) {
             mHomeAdapter.setBanner(isVisible);
+            if (isLogin) {
+                MoodLivelyHelper.addListener(mHomeAdapter);
+            }
         }
     }
 
@@ -363,6 +339,7 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
 
     }
 
+
     @Override
     public UserObserver addObserver() {
         return new UserObserver() {
@@ -372,6 +349,9 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
                     isLogin = accountManager.isTrueLogin();
                     if (isLogin) {
                         loadData(true);
+                        MoodLivelyHelper.addListener(mHomeAdapter);
+                    } else {
+                        MoodLivelyHelper.clearModel();
                     }
                 }
             }

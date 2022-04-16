@@ -36,6 +36,8 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
      * 上次检查时间，用于在运行时作为基准获取用户时间
      */
     public static long lastCheckTime = 0;
+    // 上次上传保存时长时间
+    private static long requestSaveTime = System.currentTimeMillis();
     /**
      * 前台Activity数量
      **/
@@ -63,17 +65,12 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
      * 每次有Activity启动时的开始时间点
      */
     private long appStartTime = 0L;
-
     /**
      * 本次统计时，App运行的时间
      */
     private long runTimeThisDay = 0L;
-
     private SparseLongArray mFunctionTime = new SparseLongArray();
-
     private HashMap<Integer, Long> mAwaitTimeMap = new HashMap<>();
-    // 上次上传保存时长时间
-    private static long requestSaveTime = System.currentTimeMillis();
 
     /**
      * 获取今日0点的时间点，/1000*1000保证每次取值相同。

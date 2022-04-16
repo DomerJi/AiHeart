@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.fragment;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -8,12 +9,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
+import com.thfw.base.models.MoodLivelyModel;
 import com.thfw.base.utils.BuglyUtil;
+import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.integral.ClockInActivity;
@@ -29,6 +34,8 @@ import com.thfw.mobileheart.activity.settings.SettingActivity;
 import com.thfw.mobileheart.activity.task.MeTaskActivity;
 import com.thfw.mobileheart.activity.test.TestReportActivity;
 import com.thfw.mobileheart.util.DialogFactory;
+import com.thfw.mobileheart.util.FunctionDurationUtil;
+import com.thfw.mobileheart.util.MoodLivelyHelper;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
@@ -37,10 +44,13 @@ import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
 import com.thfw.user.models.User;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * 我的
  */
-public class MeFragment extends BaseFragment {
+public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLivelyListener,
+        MyApplication.OnMinuteListener {
 
     private RoundedImageView mRivAvatar;
     private TextView mTvName;
@@ -72,6 +82,7 @@ public class MeFragment extends BaseFragment {
     private TextView mTvMsgVersion;
     private LinearLayout mLlMeFace;
     private TextView mTvFaceSwitch;
+    private ImageView mIvMoodStatus;
 
     @Override
     public int getContentView() {
@@ -85,7 +96,7 @@ public class MeFragment extends BaseFragment {
 
     @Override
     public void initView() {
-
+        mIvMoodStatus = (ImageView) findViewById(R.id.iv_mood_status);
         mRivAvatar = (RoundedImageView) findViewById(R.id.riv_avatar);
         mTvName = (TextView) findViewById(R.id.tv_name);
         mTvMeLevel = (TextView) findViewById(R.id.tv_me_level);
@@ -259,4 +270,36 @@ public class MeFragment extends BaseFragment {
         });
     }
 
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        MoodLivelyHelper.addListener(this);
+        MyApplication.getApp().addOnMinuteListener(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        MoodLivelyHelper.removeListener(this);
+        MyApplication.getApp().onRemoveOnMinuteListener(this);
+    }
+
+    @Override
+    public void onMoodLively(MoodLivelyModel data) {
+        mTvTimeMinute.setText(FunctionDurationUtil.getFunctionTimeHour(FunctionDurationUtil.FUNCTION_APP));
+        mTvTimeContinuation.setText(String.valueOf(data.getContinueDays()));
+        mTvTimeDay.setText(String.valueOf(data.getLoginDays()));
+
+        if (data.getUserMood() != null) {
+            GlideUtil.load(mContext, data.getUserMood().getPath(), mIvMoodStatus);
+            mTvStatus.setText(data.getUserMood().getName());
+        }
+    }
+
+    @Override
+    public void onChanged() {
+        if (mTvTimeMinute != null) {
+            mTvTimeMinute.setText(FunctionDurationUtil.getFunctionTimeHour(FunctionDurationUtil.FUNCTION_APP));
+        }
+    }
 }

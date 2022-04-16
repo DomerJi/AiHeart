@@ -84,6 +84,11 @@ public class FunctionDurationUtil {
         return SharePreferenceUtil.getLong(key, 0);
     }
 
+    public static void setFunctionTime(int type, long time) {
+        String key = ActivityLifeCycle.getTodayStartTime() + "_" + type;
+        SharePreferenceUtil.setLong(key, time);
+    }
+
     public static String getFunctionTimeHour(int type) {
         return String.valueOf(getFunctionTime(type) / (60 * 1000));
     }

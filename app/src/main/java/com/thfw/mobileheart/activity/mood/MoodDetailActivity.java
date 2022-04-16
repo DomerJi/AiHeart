@@ -36,7 +36,10 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarLayout;
 import com.haibin.calendarview.CalendarView;
-import com.thfw.base.base.IPresenter;
+import com.thfw.base.models.MoodModel;
+import com.thfw.base.net.NetParams;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.MobilePresenter;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NumberUtil;
 import com.thfw.base.utils.Util;
@@ -45,6 +48,7 @@ import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.constants.CharType;
 import com.thfw.mobileheart.view.ChartMarkerView;
 import com.thfw.ui.widget.TitleView;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +58,7 @@ import java.util.List;
 /**
  * 心情活跃详情/历史
  */
-public class MoodDetailActivity extends BaseActivity {
+public class MoodDetailActivity extends BaseActivity<MobilePresenter> implements MobilePresenter.MobileUi<List<MoodModel>> {
 
     private static final float CHART_TEXTSIZE = 7.5f;
     /**
@@ -105,8 +109,8 @@ public class MoodDetailActivity extends BaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public MobilePresenter onCreatePresenter() {
+        return new MobilePresenter(this);
     }
 
     @Override
@@ -187,6 +191,7 @@ public class MoodDetailActivity extends BaseActivity {
                 setMonthView(mCalendarView.getCurYear(), mCalendarView.getCurMonth());
             }
         });
+        mPresenter.onGetUserList(NetParams.crete());
 
     }
 
@@ -588,4 +593,18 @@ public class MoodDetailActivity extends BaseActivity {
         return (float) (Math.random() * range) + start;
     }
 
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return MoodDetailActivity.this;
+    }
+
+    @Override
+    public void onSuccess(List<MoodModel> data) {
+
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+
+    }
 }
