@@ -119,8 +119,9 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         switch (entity.type) {
             case HomeEntity.TYPE_BODY:
                 BodyHolder bodyHolder = (BodyHolder) holder;
-                bodyHolder.mTvTitle.setText("Home Body " + position);
-                GlideUtil.load(mContext, R.mipmap.cat, bodyHolder.mRivAvatar);
+                bodyHolder.mTvTitle.setText(entity.recommendModel.getTitle());
+                GlideUtil.load(mContext, entity.recommendModel.getPic(), bodyHolder.mRivAvatar);
+                bodyHolder.mTvType.setText(entity.recommendModel.getTypeStr());
                 break;
             case HomeEntity.TYPE_BANNER:
                 BannerHolder bannerHolder = (BannerHolder) holder;
@@ -349,7 +350,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             mBanner.setIndicator(new CircleIndicator(mContext));
             mBanner.setLoopTime(DELAY_TIME_BANNER);
             // mBanner.addPageTransformer(new ScaleInTransformer());
-            mBanner.setAdapter(new ImageAdapter(homeEntity.imageUrls));
+            mBanner.setAdapter(new ImageAdapter(homeEntity.bannerModels));
             mBanner.setOnBannerListener(new OnBannerListener() {
                 @Override
                 public void OnBannerClick(Object data, int position) {

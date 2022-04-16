@@ -14,6 +14,12 @@ public class StatusEntity implements IModel {
     public static final int TYPE_TOP = 2;
 
     public int type;
+    public String tag;
+
+    public StatusEntity setTag(String tag) {
+        this.tag = tag;
+        return this;
+    }
 
     public StatusEntity setType(int type) {
         this.type = type;
@@ -22,6 +28,15 @@ public class StatusEntity implements IModel {
     }
 
     public int bodyPosition = -1;
+
+    public MoodModel moodModel;
+
+
+
+    public StatusEntity setMoodModel(MoodModel moodModel) {
+        this.moodModel = moodModel;
+        return this;
+    }
 
     public void setBodyPosition(int bodyPosition) {
         this.bodyPosition = bodyPosition;

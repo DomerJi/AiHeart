@@ -10,6 +10,8 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.thfw.base.ContextApp;
+import com.thfw.base.base.MsgType;
 import com.thfw.base.models.PushMsgModel;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.robotheart.R;
@@ -93,9 +95,21 @@ public class MyCustomMessageService extends UmengMessageService {
                                 MsgCountManager.getInstance().addNumTask();
                             }
                         } else {
-                            if (!MsgCountManager.getInstance().hasSystemMsgId(msg_id)) {
-                                MsgCountManager.getInstance().addNumSystem();
+                            // 机器人只处理机器人的消息
+                            if (ContextApp.getDeviceType() == ContextApp.DeviceType.ROBOT
+                                    && MsgType.isRobotMsg(msgType)) {
+                                if (!MsgCountManager.getInstance().hasSystemMsgId(msg_id)) {
+                                    MsgCountManager.getInstance().addNumSystem();
+                                }
+                            } else {
+                                // 非机器人只处理非机器人的消息，
+                                if (MsgType.isMobileMsg(msgType)) {
+                                    if (!MsgCountManager.getInstance().hasSystemMsgId(msg_id)) {
+                                        MsgCountManager.getInstance().addNumSystem();
+                                    }
+                                }
                             }
+
                         }
                         handleCustomNotificationMessage(pushMsgModel, message);
                     }

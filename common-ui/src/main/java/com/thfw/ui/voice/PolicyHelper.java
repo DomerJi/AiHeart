@@ -87,6 +87,7 @@ public class PolicyHelper {
     public void startSpeech() {
         if (wakeType != WakeType.SPEECH) {
             wakeType = WakeType.SPEECH;
+            SpeechHelper.getInstance().clearCacheText();
             sendCheckMsg();
         }
     }
@@ -94,6 +95,7 @@ public class PolicyHelper {
     public void startPressed() {
         if (wakeType != WakeType.PRESS) {
             wakeType = WakeType.PRESS;
+            SpeechHelper.getInstance().clearCacheText();
             sendCheckMsg();
         }
     }

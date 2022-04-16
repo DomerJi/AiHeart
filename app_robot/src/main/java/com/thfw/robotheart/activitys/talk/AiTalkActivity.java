@@ -474,20 +474,17 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             boolean showOriginVolume = false;
 
             @Override
-            public void onResult(String result, boolean end) {
-                LogUtil.d(TAG, "result =================================== " + result + " ; end = " + end);
+            public void onResult(String result, boolean append, boolean end) {
                 if (!mStvText.isShow()) {
                     return;
                 }
+
                 // 未选中，不处理字符
                 if (!mIvTalkModel.isSelected()) {
                     return;
                 }
-                if (PolicyHelper.getInstance().isPressMode()) {
-                    mStvText.append(result);
-                } else {
-                    mStvText.setSpeechText(result);
-                }
+                mStvText.setSpeechText(result);
+
                 if (end && !PolicyHelper.getInstance().isPressMode()) {
                     chooseOption(mStvText.getText(), end);
                 }

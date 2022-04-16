@@ -1,15 +1,61 @@
 package com.thfw.ui.voice;
 
+import com.iflytek.cloud.RecognizerResult;
+import com.thfw.base.utils.LogUtil;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import java.util.HashMap;
 
 /**
  * Json结果解析类
  */
 public class JsonParser {
+    private static HashMap<String, String> mIatResults = new HashMap<>();
+
+    // 读取动态修正返回结果示例代码
+    public static String printResult(RecognizerResult results, boolean isLast) {
+        String text = JsonParser.parseIatResult(results.getResultString());
+
+        String sn = null;
+        String pgs = null;
+        String rg = null;
+
+        // 读取json结果中的sn字段
+        try {
+            JSONObject resultJson = new JSONObject(results.getResultString());
+            sn = resultJson.optString("sn");
+            pgs = resultJson.optString("pgs");
+            rg = resultJson.optString("rg");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // 如果pgs是rpl就在已有的结果中删除掉要覆盖的sn部分
+        if (pgs.equals("rpl")) {
+            String[] strings = rg.replace("[", "").replace("]", "").split(",");
+            int begin = Integer.parseInt(strings[0]);
+            int end = Integer.parseInt(strings[1]);
+            for (int i = begin; i <= end; i++) {
+                mIatResults.remove(i + "");
+            }
+        }
+
+        mIatResults.put(sn, text);
+        StringBuffer resultBuffer = new StringBuffer();
+        for (String key : mIatResults.keySet()) {
+            resultBuffer.append(mIatResults.get(key));
+        }
+        if (isLast) {
+            mIatResults.clear();
+        }
+        return resultBuffer.toString();
+    }
 
     public static String parseIatResult(String json) {
+        LogUtil.d("parseIatResult json = " + json);
         StringBuffer ret = new StringBuffer();
         try {
             JSONTokener tokener = new JSONTokener(json);
@@ -21,12 +67,6 @@ public class JsonParser {
                 JSONArray items = words.getJSONObject(i).getJSONArray("cw");
                 JSONObject obj = items.getJSONObject(0);
                 ret.append(obj.getString("w"));
-//				如果需要多候选结果，解析数组其他字段
-//				for(int j = 0; j < items.length(); j++)
-//				{
-//					JSONObject obj = items.getJSONObject(j);
-//					ret.append(obj.getString("w"));
-//				}
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -34,107 +74,5 @@ public class JsonParser {
         return ret.toString();
     }
 
-    public static String parseGrammarResult(String json, String engType) {
-        StringBuffer ret = new StringBuffer();
-        try {
-            JSONTokener tokener = new JSONTokener(json);
-            JSONObject joResult = new JSONObject(tokener);
 
-            JSONArray words = joResult.getJSONArray("ws");
-            // 云端和本地结果分情况解析
-            if ("cloud".equals(engType)) {
-                for (int i = 0; i < words.length(); i++) {
-                    JSONArray items = words.getJSONObject(i).getJSONArray("cw");
-                    for (int j = 0; j < items.length(); j++) {
-                        JSONObject obj = items.getJSONObject(j);
-                        if (obj.getString("w").contains("nomatch")) {
-                            ret.append("没有匹配结果.");
-                            return ret.toString();
-                        }
-                        ret.append("【结果】" + obj.getString("w"));
-                        ret.append("【置信度】" + obj.getInt("sc"));
-                        ret.append("\n");
-                    }
-                }
-            } else if ("local".equals(engType)) {
-                ret.append("【结果】");
-                for (int i = 0; i < words.length(); i++) {
-                    JSONObject wsItem = words.getJSONObject(i);
-                    JSONArray items = wsItem.getJSONArray("cw");
-                    if ("<contact>".equals(wsItem.getString("slot"))) {
-                        // 可能会有多个联系人供选择，用中括号括起来，这些候选项具有相同的置信度
-                        ret.append("【");
-                        for (int j = 0; j < items.length(); j++) {
-                            JSONObject obj = items.getJSONObject(j);
-                            if (obj.getString("w").contains("nomatch")) {
-                                ret.append("没有匹配结果.");
-                                return ret.toString();
-                            }
-                            ret.append(obj.getString("w")).append("|");
-                        }
-                        ret.setCharAt(ret.length() - 1, '】');
-                    } else {
-                        //本地多候选按照置信度高低排序，一般选取第一个结果即可
-                        JSONObject obj = items.getJSONObject(0);
-                        if (obj.getString("w").contains("nomatch")) {
-                            ret.append("没有匹配结果.");
-                            return ret.toString();
-                        }
-                        ret.append(obj.getString("w"));
-                    }
-                }
-                ret.append("【置信度】" + joResult.getInt("sc"));
-                ret.append("\n");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ret.append("没有匹配结果.");
-        }
-        return ret.toString();
-    }
-
-    public static String parseGrammarResult(String json) {
-        StringBuffer ret = new StringBuffer();
-        try {
-            JSONTokener tokener = new JSONTokener(json);
-            JSONObject joResult = new JSONObject(tokener);
-
-            JSONArray words = joResult.getJSONArray("ws");
-            for (int i = 0; i < words.length(); i++) {
-                JSONArray items = words.getJSONObject(i).getJSONArray("cw");
-                for (int j = 0; j < items.length(); j++) {
-                    JSONObject obj = items.getJSONObject(j);
-                    if (obj.getString("w").contains("nomatch")) {
-                        ret.append("没有匹配结果.");
-                        return ret.toString();
-                    }
-                    ret.append("【结果】" + obj.getString("w"));
-                    ret.append("【置信度】" + obj.getInt("sc"));
-                    ret.append("\n");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            ret.append("没有匹配结果.");
-        }
-        return ret.toString();
-    }
-
-    public static String parseTransResult(String json, String key) {
-        StringBuffer ret = new StringBuffer();
-        try {
-            JSONTokener tokener = new JSONTokener(json);
-            JSONObject joResult = new JSONObject(tokener);
-            String errorCode = joResult.optString("ret");
-            if (!errorCode.equals("0")) {
-                return joResult.optString("errmsg");
-            }
-            JSONObject transResult = joResult.optJSONObject("trans_result");
-            ret.append(transResult.optString(key));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ret.toString();
-    }
 }

@@ -134,7 +134,9 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
 
     @Override
     public void onArrive() {
-        getMsgCount(this.type);
+        if (UserManager.getInstance().isLogin()) {
+            getMsgCount(this.type);
+        }
     }
 
     @Override

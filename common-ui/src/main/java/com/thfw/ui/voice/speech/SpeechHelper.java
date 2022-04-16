@@ -29,19 +29,20 @@ public class SpeechHelper implements ISpeechFace {
     private static final String TAG = SpeechHelper.class.getSimpleName();
     private static final long VAD_EOS = 1600;// 语音后端点（说完后1.6秒无语音结束对话）
     private static final long VAD_BOS = 6000;// 语音前端点（开始后6秒无语音结束对话）
-    private static final String DEFAULT_TEXT = "...";
-    private static final String DEFAULT_EMPTY = "";
     private StringBuilder mSpeechResult;
 
     private SpeechRecognizer mIat;
     private CustomRecognizerListener mListener;
     private static SpeechHelper speechHelper;
     private static int ingState = -1;
-    private String text = "";
 
     private SpeechHelper() {
         mSpeechResult = new StringBuilder();
         mListener = new CustomRecognizerListener();
+    }
+
+    public void clearCacheText() {
+        mSpeechResult.setLength(0);
     }
 
     public static SpeechHelper getInstance() {
@@ -96,6 +97,7 @@ public class SpeechHelper implements ISpeechFace {
         mIat.setParameter(SpeechConstant.RESULT_TYPE, "json");
         // 设置语音前端点:静音超时时间，即用户多长时间不说话则当做超时处理
         mIat.setParameter(SpeechConstant.VAD_BOS, String.valueOf(VAD_BOS));
+        mIat.setParameter(SpeechConstant.ASR_DWA, "wpgs");
         // 设置语音后端点:后端点静音检测时间，即用户停止说话多长时间内即认为不再输入， 自动停止录音
         mIat.setParameter(SpeechConstant.VAD_EOS, String.valueOf(VAD_EOS));
         // 设置标点符号,设置为"0"返回结果无标点,设置为"1"返回结果有标点
@@ -146,16 +148,8 @@ public class SpeechHelper implements ISpeechFace {
         if (initialized()) {
             mIat.stopListening();
         }
+        SpeechHelper.getInstance().clearCacheText();
         VoiceTypeManager.getManager().setVoiceType(VoiceType.ACCEPT_STOP);
-    }
-
-    @Override
-    public void onResult(String newText, boolean append, boolean end) {
-
-        LogUtil.d(TAG, "String -> " + newText + " ; end = " + end);
-        if (this.resultListener != null) {
-            this.resultListener.onResult(newText, end);
-        }
     }
 
     public class CustomRecognizerListener implements RecognizerListener {
@@ -167,7 +161,6 @@ public class SpeechHelper implements ISpeechFace {
 
         @Override
         public void onBeginOfSpeech() {
-            SpeechHelper.this.onResult("", true, false);
             checkIngState();
         }
 
@@ -180,35 +173,20 @@ public class SpeechHelper implements ISpeechFace {
         @Override
         public void onResult(RecognizerResult recognizerResult, boolean isLast) {
             VoiceTypeManager.getManager().setVoiceType(VoiceType.ACCEPT_TEXT);
-
-            String text = JsonParser.parseIatResult(recognizerResult.getResultString());
+            String text = JsonParser.printResult(recognizerResult, isLast);
             LogUtil.i(TAG, "onResult -> text = " + text + "; isLast = " + isLast);
 
-            if (text.contains("小蜜")) {
-                text = text.replaceAll("小蜜", "小密");
-            }
-
-            if (isLast) {
-                if (text.endsWith("。")) {
-                    if (PolicyHelper.getInstance().isSpeechMode()) {
-                        text = text.substring(0, text.length() - 1);
-                    } else if (PolicyHelper.getInstance().isPressMode() && mSpeechResult.length() < 7) {
-                        text = text.replace("。", "，");
+            if (PolicyHelper.getInstance().isPressMode()) {
+                if (resultListener != null) {
+                    resultListener.onResult(mSpeechResult.toString() + text, false, isLast);
+                    if (isLast) {
+                        mSpeechResult.append(text);
                     }
                 }
-                mSpeechResult.append(text);
             } else {
-                mSpeechResult.append(text);
-            }
-            String result = mSpeechResult.toString();
-            if (isLast) {
-                mSpeechResult.setLength(0);
-            }
-            LogUtil.i(TAG, "onResult -> result = " + result);
-            if (PolicyHelper.getInstance().isPressMode()) {
-                SpeechHelper.this.onResult(text, true, isLast);
-            } else {
-                SpeechHelper.this.onResult(result, true, isLast);
+                if (resultListener != null) {
+                    resultListener.onResult(text, false, isLast);
+                }
             }
             isRestart();
             checkIngState();
@@ -216,12 +194,14 @@ public class SpeechHelper implements ISpeechFace {
 
         @Override
         public void onError(SpeechError speechError) {
+            LogUtil.i(TAG, "onError -> speechError = " + speechError.getErrorDescription());
             isRestart();
             checkIngState();
         }
 
         @Override
         public void onEvent(int i, int i1, int i2, Bundle bundle) {
+            LogUtil.i(TAG, "onError -> i = " + i);
             isRestart();
             checkIngState();
         }
@@ -248,7 +228,7 @@ public class SpeechHelper implements ISpeechFace {
     public ResultListener resultListener;
 
     public interface ResultListener {
-        void onResult(String result, boolean end);
+        void onResult(String result, boolean append, boolean end);
 
         void onIng(boolean ing);
     }

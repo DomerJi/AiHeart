@@ -13,7 +13,7 @@ public final class ToastUtil {
 
     private static Context appContext;
     private static long showTime;
-    private static final int LIMIT = 2000;
+    private static final int LIMIT = 1500;
 
     private ToastUtil() {
     }

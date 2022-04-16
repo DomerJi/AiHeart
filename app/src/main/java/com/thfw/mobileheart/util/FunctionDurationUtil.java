@@ -13,6 +13,7 @@ import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
 import com.thfw.mobileheart.activity.read.ReadHomeActivity;
 import com.thfw.mobileheart.activity.read.StudyHomeActivity;
 import com.thfw.mobileheart.activity.talk.ChatActivity;
+import com.thfw.mobileheart.activity.talk.ThemeListActivity;
 import com.thfw.mobileheart.activity.test.TestBeginActivity;
 import com.thfw.mobileheart.activity.test.TestProgressIngActivity;
 import com.thfw.mobileheart.activity.test.TestReportActivity;
@@ -32,21 +33,21 @@ import java.util.Map;
  */
 public class FunctionDurationUtil {
 
-    public static final int FUNCTION_APP = -1;
-    public static final int FUNCTION_THEME_TALK = 0;
-    public static final int FUNCTION_AI_TALK = 1;
-    public static final int FUNCTION_TEST = 2;
+    public static final int FUNCTION_APP = 0;
+    public static final int FUNCTION_TEST = 1;
+    public static final int FUNCTION_BOOK = 2;
     public static final int FUNCTION_AUDIO = 3;
     public static final int FUNCTION_VIDEO = 4;
-    public static final int FUNCTION_TOOL = 5;
-    public static final int FUNCTION_BOOK = 6;
-    public static final int FUNCTION_IDEO_BOOK = 7;
+    public static final int FUNCTION_THEME_TALK = 5;
+    public static final int FUNCTION_IDEO_BOOK = 6;
+    public static final int FUNCTION_TOOL = 7;
+    public static final int FUNCTION_AI_TALK = 8;
 
     private static HashMap<Integer, List<String>> sparseArray;
 
     static {
         sparseArray = new HashMap<>();
-        sparseArray.put(FUNCTION_THEME_TALK, Arrays.asList(ChatActivity.class.getCanonicalName()));
+        sparseArray.put(FUNCTION_THEME_TALK, Arrays.asList(ChatActivity.class.getCanonicalName(), ThemeListActivity.class.getCanonicalName()));
         sparseArray.put(FUNCTION_AI_TALK, Arrays.asList(ChatActivity.class.getCanonicalName()));
         sparseArray.put(FUNCTION_TEST, Arrays.asList(TestBeginActivity.class.getCanonicalName(),
                 TestingActivity.class.getCanonicalName(), TestProgressIngActivity.class.getCanonicalName(),
@@ -69,6 +70,7 @@ public class FunctionDurationUtil {
     }
 
     public static int getFunction(Activity activity) {
+
         for (Map.Entry<Integer, List<String>> entry : sparseArray.entrySet()) {
             if (entry.getValue().contains(activity.getClass().getCanonicalName())) {
                 return entry.getKey();

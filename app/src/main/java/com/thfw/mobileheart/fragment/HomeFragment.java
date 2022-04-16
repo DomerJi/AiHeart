@@ -2,9 +2,6 @@ package com.thfw.mobileheart.fragment;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -12,39 +9,58 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.common.reflect.TypeToken;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 import com.scwang.smart.refresh.layout.simple.SimpleMultiListener;
-import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.HomeEntity;
+import com.thfw.base.models.MobileRecommendModel;
+import com.thfw.base.models.MoodLivelyModel;
+import com.thfw.base.models.TalkModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.MobilePresenter;
+import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
-import com.thfw.mobileheart.activity.ExoPlayerActivity;
 import com.thfw.mobileheart.activity.SearchActivity;
+import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
+import com.thfw.mobileheart.activity.exercise.ExerciseDetailActivity;
+import com.thfw.mobileheart.activity.read.BookDetailActivity;
+import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
+import com.thfw.mobileheart.activity.talk.ChatActivity;
+import com.thfw.mobileheart.activity.test.TestBeginActivity;
+import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.HomeAdapter;
-import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.widget.LinearTopLayout;
-import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.MySearchView;
+import com.thfw.user.login.UserManager;
+import com.thfw.user.login.UserObserver;
+import com.thfw.user.models.User;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 首页
  */
-public class HomeFragment extends BaseFragment {
+public class HomeFragment extends BaseFragment<MobilePresenter>
+        implements MobilePresenter.MobileUi<List<MobileRecommendModel>> {
 
+    private static final String KEY_HOME_DEFAULT = "key.home.more1.";
+    private static String KEY_HOME = KEY_HOME_DEFAULT;
     private RecyclerView mRvHome;
-    private LoadingView mLoadingView;
     private SmartRefreshLayout mRefreshLayout;
-    private PageHelper<HomeEntity> pageHelper;
     private HomeAdapter mHomeAdapter;
     private LinearTopLayout mLtlTop;
     private MySearchView mSearch;
@@ -54,7 +70,12 @@ public class HomeFragment extends BaseFragment {
     private int maxHeight;
     private int minHeight;
 
-    private boolean isFirst = true;
+    private int recommendPage = 1;
+
+
+    private List<HomeEntity> mMainList = new ArrayList<>();
+    private boolean isLogin;
+    private static boolean initMoodLively;
 
     @Override
     public int getContentView() {
@@ -62,17 +83,16 @@ public class HomeFragment extends BaseFragment {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public MobilePresenter onCreatePresenter() {
+        return new MobilePresenter(this);
     }
 
     @Override
     public void initView() {
+        isLogin = UserManager.getInstance().isTrueLogin();
 
         mRvHome = (RecyclerView) findViewById(R.id.rv_home);
         mRvHome.setHasFixedSize(true);
-//        mRvHome.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
-        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
         mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
         mLtlTop = (LinearTopLayout) findViewById(R.id.ltl_top);
         mSearch = (MySearchView) findViewById(R.id.search);
@@ -159,76 +179,134 @@ public class HomeFragment extends BaseFragment {
         });
         mRvHome.setLayoutManager(gridLayoutManager);
 
-        mHomeAdapter = new HomeAdapter(null);
+        mHomeAdapter = new HomeAdapter(mMainList);
         mHomeAdapter.setOnRvItemListener(new OnRvItemListener<HomeEntity>() {
             @Override
             public void onItemClick(List<HomeEntity> list, int position) {
-                startActivity(new Intent(mContext, ExoPlayerActivity.class));
+                MobileRecommendModel model = list.get(position).recommendModel;
+                // type 1-测评 2-文章 3-音频  4-视频 5 话术 6-思政文章 7-工具包
+                switch (model.getType()) {
+                    case 1:
+                        TestBeginActivity.startActivity(mContext, model.getContentId());
+                        break;
+                    case 2:
+                        BookDetailActivity.startActivity(mContext, model.getContentId());
+                        break;
+                    case 3:
+                        AudioEtcModel audioEtcModel = new AudioEtcModel();
+                        audioEtcModel.setId(model.getContentId());
+                        audioEtcModel.setTitle(model.getTitle());
+                        audioEtcModel.setImg(model.getPic());
+                        AudioPlayerActivity.startActivity(mContext, audioEtcModel);
+                        break;
+                    case 4:
+                        VideoPlayActivity.startActivity(mContext, model.getContentId(), false);
+                        break;
+                    case 5:
+                        ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
+                                .setId(model.getContentId()));
+                        break;
+                    case 6:
+                        BookIdeoDetailActivity.startActivity(mContext, model.getContentId());
+                        break;
+                    case 7:
+                        ExerciseDetailActivity.startActivity(mContext, model.getContentId());
+                        break;
+                }
             }
         });
         // 添加动画
         mRvHome.setItemAnimator(new DefaultItemAnimator());
+        initList();
         mRvHome.setAdapter(mHomeAdapter);
-        pageHelper = new PageHelper<>(mLoadingView, mRefreshLayout, mHomeAdapter);
         mRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull @NotNull RefreshLayout refreshLayout) {
-                loadData();
+                loadData(false);
             }
 
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
-                pageHelper.onRefresh();
-                loadData();
+                recommendPage = 1;
+                loadData(true);
             }
         });
         searchViewScroll();
-        loadData();
+        loadData(true);
 
     }
 
-    private void loadData() {
-        new Handler(Looper.getMainLooper()) {
+    private void loadData(boolean refresh) {
+        if (refresh) {
+            requestBanner();
+            requestMoodLively();
+        }
+        mPresenter.onGetRecommendList(recommendPage);
+    }
+
+    private void requestBanner() {
+        new MobilePresenter(new MobilePresenter.MobileUi<List<HomeEntity.BannerModel>>() {
             @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                pageHelper.onSuccess(getList());
-                isFirst = false;
+            public LifecycleProvider getLifecycleProvider() {
+                return HomeFragment.this;
             }
-        }.sendEmptyMessageDelayed(0, isFirst ? 0 : 300);
+
+            @Override
+            public void onSuccess(List<HomeEntity.BannerModel> data) {
+                mMainList.get(0).setBannerModels(data);
+                mHomeAdapter.notifyItemChanged(0);
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+
+            }
+        }).onGetBannerDetail();
     }
 
-    public List<HomeEntity> getList() {
-        List<HomeEntity> list = new ArrayList<>();
-        if (pageHelper.isFirstPage()) {
-            HomeEntity homeEntity = new HomeEntity();
-            homeEntity.type = HomeEntity.TYPE_BANNER;
-            homeEntity.imageUrls = new ArrayList<>();
-            homeEntity.imageUrls.add("https://t7.baidu.com/it/u=4198287529,2774471735&fm=193&f=GIF");
-            homeEntity.imageUrls.add("https://t7.baidu.com/it/u=1595072465,3644073269&fm=193&f=GIF");
-            homeEntity.imageUrls.add("https://img03.sogoucdn.com/app/a/07/e58d89131f3a0882b804313208e0e983");
-            homeEntity.imageUrls.add("https://img03.sogoucdn.com/app/a/07/b4f5a091fb5c7d40d7b74893392a705b");
-            homeEntity.imageUrls.add("https://p0.ssl.qhimgs4.com/t019d96f95af289aafe.jpg");
-            homeEntity.imageUrls.add("http://p1.qhimgs4.com/t01bf942682a3b9fc7b.jpg");
-            homeEntity.imageUrls.add("https://desk-fd.zol-img.com.cn/t_s960x600c5/g5/M00/02/02/ChMkJlbKxWOIRxKoAAVChq3hCgEAALHVQBJ8IsABUKe444.jpg");
-            list.add(homeEntity);
-
-            list.add(new HomeEntity().setType(HomeEntity.TYPE_SORT));
-            list.add(new HomeEntity().setType(HomeEntity.TYPE_CUSTOM_MADE));
-//            list.add(new HomeEntity().setType(HomeEntity.TYPE_TAB_TITLE).setTabTitle("最近浏览"));
-//            list.add(new HomeEntity().setType(HomeEntity.TYPE_HISTORY));
-            list.add(new HomeEntity().setType(HomeEntity.TYPE_TAB_TITLE).setTabTitle("小天推荐"));
+    private void requestMoodLively() {
+        if (initMoodLively) {
+            return;
         }
 
-        for (int i = 0; i < 18; i++) {
-            list.add(new HomeEntity());
-        }
-//        list.add(new HomeEntity().setType(HomeEntity.TYPE_TAB_TITLE).setTabTitle("猜你喜欢"));
-//        for (int i = 0; i < 18; i++) {
-//            list.add(new HomeEntity().setType(HomeEntity.TYPE_BODY2).setBody2Position(i));
-//        }
+        new MobilePresenter(new MobilePresenter.MobileUi<MoodLivelyModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return HomeFragment.this;
+            }
 
-        return list;
+            @Override
+            public void onSuccess(MoodLivelyModel data) {
+                initMoodLively = true;
+                mMainList.get(2).setMoodLivelyModel(data);
+                mHomeAdapter.notifyItemChanged(2);
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+
+            }
+        }).onGetMoodLivelyDetail();
+    }
+
+    public void initList() {
+        if (UserManager.getInstance().isLogin()) {
+            KEY_HOME = KEY_HOME_DEFAULT + UserManager.getInstance().getUID();
+        } else {
+            KEY_HOME = KEY_HOME_DEFAULT;
+        }
+
+        Type type = new TypeToken<List<HomeEntity>>() {
+        }.getType();
+        List<HomeEntity> cacheModel = SharePreferenceUtil.getObject(KEY_HOME, type);
+        if (!EmptyUtil.isEmpty(cacheModel)) {
+            mMainList.addAll(cacheModel);
+        } else {
+            mMainList.add(new HomeEntity().setType(HomeEntity.TYPE_BANNER));
+            mMainList.add(new HomeEntity().setType(HomeEntity.TYPE_SORT));
+            mMainList.add(new HomeEntity().setType(HomeEntity.TYPE_CUSTOM_MADE));
+            mMainList.add(new HomeEntity().setType(HomeEntity.TYPE_TAB_TITLE).setTabTitle("小天推荐"));
+        }
     }
 
     @Override
@@ -237,5 +315,66 @@ public class HomeFragment extends BaseFragment {
         if (mHomeAdapter != null) {
             mHomeAdapter.setBanner(isVisible);
         }
+    }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return HomeFragment.this;
+    }
+
+    @Override
+    public void onSuccess(List<MobileRecommendModel> data) {
+        int oldSize = 0;
+        if (recommendPage == 1) {
+            int size = mMainList.size();
+            if (size > 4) {
+                for (int i = size - 1; i > 3; i--) {
+                    mMainList.remove(i);
+                }
+            }
+            mRefreshLayout.finishRefresh(true);
+        } else {
+            oldSize = mMainList.size();
+            mRefreshLayout.finishLoadMore(true);
+        }
+        if (!EmptyUtil.isEmpty(data)) {
+            for (MobileRecommendModel model : data) {
+                mMainList.add(new HomeEntity().setRecommendModel(model));
+            }
+            if (recommendPage == 1) {
+                SharePreferenceUtil.setString(KEY_HOME, GsonUtil.toJson(mMainList));
+            }
+        } else {
+            if (recommendPage > 1) {
+                mRefreshLayout.setNoMoreData(true);
+            }
+        }
+
+        if (recommendPage == 1) {
+            mHomeAdapter.notifyItemRangeChanged(4, mMainList.size());
+        } else {
+            mHomeAdapter.notifyItemRangeChanged(oldSize, mMainList.size());
+        }
+        recommendPage++;
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+
+    }
+
+    @Override
+    public UserObserver addObserver() {
+        return new UserObserver() {
+            @Override
+            public void onChanged(UserManager accountManager, User user) {
+                if (isLogin != accountManager.isTrueLogin()) {
+                    isLogin = accountManager.isTrueLogin();
+                    if (isLogin) {
+                        loadData(true);
+                    }
+                }
+            }
+        };
     }
 }

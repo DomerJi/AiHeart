@@ -29,11 +29,11 @@
         android:layout_marginLeft="14dp"
         android:layout_marginTop="@dimen/divider_2px"
         android:gravity="center"
-        android:text="Home Body"
         android:textColor="@color/text_common"
         android:textSize="@dimen/textSize"
         app:layout_constraintLeft_toRightOf="@id/riv_avatar"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:text="Home Body" />
 
     <TextView
         android:id="@+id/tv_number"
@@ -43,12 +43,13 @@
         android:layout_marginTop="9dp"
         android:layout_marginBottom="9dp"
         android:gravity="center"
-        android:text="Home Body"
         android:textColor="@color/text_content"
         android:textSize="10sp"
+        android:visibility="invisible"
         app:layout_constraintLeft_toRightOf="@id/riv_avatar"
         app:layout_constraintTop_toBottomOf="@id/tv_title"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:text="Home Body" />
 
     <TextView
         android:id="@+id/tv_type"
@@ -58,12 +59,12 @@
         android:layout_marginTop="9dp"
         android:layout_marginBottom="9dp"
         android:gravity="center"
-        android:text="Home Body"
         android:textColor="@color/text_yellow"
         android:textSize="10sp"
         app:layout_constraintLeft_toRightOf="@id/riv_avatar"
         app:layout_constraintTop_toBottomOf="@id/tv_number"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:text="听一听" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

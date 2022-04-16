@@ -55,7 +55,6 @@ import com.thfw.mobileheart.adapter.ChatSelectAdapter;
 import com.thfw.mobileheart.constants.AnimFileName;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.PageJumpUtils;
-import com.thfw.ui.widget.SpeedLinearLayoutManager;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.voice.PolicyHelper;
@@ -63,6 +62,7 @@ import com.thfw.ui.voice.speech.SpeechHelper;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.widget.AnimBottomRelativeLayout;
 import com.thfw.ui.widget.LoadingView;
+import com.thfw.ui.widget.SpeedLinearLayoutManager;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -117,6 +117,9 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
     private TalkModel talkModel;
     private RefreshLayout mRefreshLayout;
     private DialogTalkModel mFirstTalkModel;
+    private long joinTime;
+    private long useTimeAI;
+    private long useTimeTheme;
 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, ChatActivity.class).putExtra(KEY_DATA, talkModel));
@@ -354,10 +357,26 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
             finish();
             return;
         }
-        mScene = talkModel.getType() == 3 ? 1 : 2;
+        mScene = talkModel.getType() == TalkApi.JOIN_TYPE_AI ? 1 : 2;
         mOriginScene = mScene;
+        joinTime = System.currentTimeMillis();
         mPresenter.onJoinDialog(talkModel.getType(), talkModel.getId());
         mTitleView.setCenterText(talkModel.getTitle());
+    }
+
+    /**
+     * 对话和吐槽切换时间刷新
+     */
+    private void refreshTime() {
+        long currentTimeMillis = System.currentTimeMillis();
+        if (mScene == 1) {
+            useTimeAI = useTimeAI + (currentTimeMillis - joinTime);
+            LogUtil.d(TAG, "useTimeAI = " + HourUtil.getLimitTimeALl(useTimeAI));
+        } else {
+            useTimeTheme = useTimeTheme + (currentTimeMillis - joinTime);
+            LogUtil.d(TAG, "useTimeTheme = " + HourUtil.getLimitTimeALl(useTimeAI));
+        }
+        joinTime = currentTimeMillis;
     }
 
 
@@ -368,18 +387,18 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
      * @return
      */
     public long getUseDuration(int type) {
+        refreshTime();
         switch (type) {
             // 倾诉吐槽
             case TalkApi.JOIN_TYPE_AI:
-                break;
-            // 咨询助理
+                return useTimeAI;
+            // 咨询助理 || 主题对话
             case TalkApi.JOIN_TYPE_GUIDANCE:
-                break;
-            // 主题对话
             case TalkApi.JOIN_TYPE_SPEECH_CRAFT:
                 break;
         }
-        return 1000;
+
+        return useTimeTheme;
     }
 
     private void initChatInput() {
@@ -525,14 +544,12 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         PolicyHelper.getInstance().setResultListener(new SpeechHelper.ResultListener() {
 
             @Override
-            public void onResult(String result, boolean end) {
-                LogUtil.d(TAG, "result =================================== " + result + " ; end = " + end);
-
+            public void onResult(String result, boolean append, boolean end) {
                 // 没有按压返回
                 if (!PolicyHelper.getInstance().isPressMode()) {
                     return;
                 }
-                mEtControlContent.append(result);
+                mEtControlContent.setText(result);
             }
 
             @Override
@@ -840,6 +857,7 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
      */
     private void onSceneHandle(DialogTalkModel talkModel) {
         if (talkModel.getScene(mScene) != mScene) {
+            refreshTime();
             mScene = talkModel.getScene(mScene);
             if (mScene == 1) {
                 mTitleView.setCenterText("倾诉吐槽");

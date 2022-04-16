@@ -302,7 +302,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
                 tDialog.dismiss();
                 if (view.getId() == R.id.bt_go) {
-                    StatusActivity.startActivity(mContext);
+                    StatusActivity.startActivity(mContext, true);
                 }
             }
         });

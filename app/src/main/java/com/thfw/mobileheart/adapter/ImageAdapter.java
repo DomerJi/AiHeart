@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.base.models.HomeEntity;
 import com.thfw.ui.utils.GlideUtil;
 import com.youth.banner.adapter.BannerAdapter;
 
@@ -15,9 +16,9 @@ import java.util.List;
 /**
  * 自定义布局，下面是常见的图片样式，更多实现可以看demo，可以自己随意发挥
  */
-public class ImageAdapter extends BannerAdapter<String, ImageAdapter.BannerViewHolder> {
+public class ImageAdapter extends BannerAdapter<HomeEntity.BannerModel, ImageAdapter.BannerViewHolder> {
 
-    public ImageAdapter(List<String> mDatas) {
+    public ImageAdapter(List<HomeEntity.BannerModel> mDatas) {
         //设置数据，也可以调用banner提供的方法,或者自己在adapter中实现
         super(mDatas);
     }
@@ -36,8 +37,8 @@ public class ImageAdapter extends BannerAdapter<String, ImageAdapter.BannerViewH
     }
 
     @Override
-    public void onBindView(BannerViewHolder holder, String data, int position, int size) {
-        GlideUtil.load(holder.itemView.getContext(), data, holder.imageView);
+    public void onBindView(BannerViewHolder holder, HomeEntity.BannerModel data, int position, int size) {
+        GlideUtil.load(holder.itemView.getContext(), data.imageUrl, holder.imageView);
     }
 
     protected class BannerViewHolder extends RecyclerView.ViewHolder {

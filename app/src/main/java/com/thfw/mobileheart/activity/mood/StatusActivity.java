@@ -3,6 +3,8 @@ package com.thfw.mobileheart.activity.mood;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -12,15 +14,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.base.base.IPresenter;
+import com.google.common.reflect.TypeToken;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.MoodModel;
 import com.thfw.base.models.StatusEntity;
+import com.thfw.base.net.NetParams;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.MobilePresenter;
+import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.StatusAdapter;
 import com.thfw.mobileheart.util.DialogFactory;
+import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnBindViewListener;
@@ -28,16 +39,20 @@ import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.widget.LinearTopLayout;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
  * 我的状态
  */
-public class StatusActivity extends BaseActivity {
+public class StatusActivity extends BaseActivity<MobilePresenter> implements MobilePresenter.MobileUi<List<MoodModel>> {
 
     private com.thfw.ui.widget.TitleView mTitleView;
     private androidx.recyclerview.widget.RecyclerView mRvStatusList;
@@ -51,8 +66,22 @@ public class StatusActivity extends BaseActivity {
     private com.thfw.ui.widget.LinearTopLayout mLtlTop;
     private LoadingView mLoadingView;
 
+    private static final String KEY_STATUS = "key.mood.list";
+    private boolean formHome;
+
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, StatusActivity.class));
+    }
+
+    /**
+     * 来自弹窗打卡成功后，自动关闭
+     *
+     * @param context
+     * @param formHome
+     */
+    public static void startActivity(Context context, boolean formHome) {
+        context.startActivity(new Intent(context, StatusActivity.class)
+                .putExtra(KEY_DATA, formHome));
     }
 
     @Override
@@ -61,8 +90,8 @@ public class StatusActivity extends BaseActivity {
     }
 
     @Override
-    public IPresenter onCreatePresenter() {
-        return null;
+    public MobilePresenter onCreatePresenter() {
+        return new MobilePresenter(this);
     }
 
     @Override
@@ -72,7 +101,7 @@ public class StatusActivity extends BaseActivity {
 
     @Override
     public void initView() {
-
+        formHome = getIntent().getBooleanExtra(KEY_DATA, false);
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mTitleView.setRightText("历史心情");
         mTitleView.getTvRight().setOnClickListener(v -> {
@@ -87,11 +116,11 @@ public class StatusActivity extends BaseActivity {
             }
         });
         mRvStatusList.setLayoutManager(gridLayoutManager);
-        mStatusAdapter = new StatusAdapter(getList());
+        mStatusAdapter = new StatusAdapter(getList(null));
         mStatusAdapter.setOnRvItemListener(new OnRvItemListener<StatusEntity>() {
             @Override
             public void onItemClick(List<StatusEntity> list, int position) {
-
+                saveMood(list.get(position).moodModel.getId());
             }
         });
         mRvStatusList.setAdapter(mStatusAdapter);
@@ -118,6 +147,7 @@ public class StatusActivity extends BaseActivity {
             }
         });
         mLtlTop = (LinearTopLayout) findViewById(R.id.ltl_top);
+
     }
 
     /**
@@ -147,69 +177,36 @@ public class StatusActivity extends BaseActivity {
         }
     }
 
-    public List<StatusEntity> getList() {
+    public List<StatusEntity> getList(List<MoodModel> data) {
+
         List<StatusEntity> arrayList = new ArrayList<>();
         arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_TOP));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_GROUP));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_GROUP));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_GROUP));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_GROUP));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_GROUP));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_GROUP));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_GROUP));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_GROUP));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_GROUP));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY));
-        int bodyPosition = -1;
-        for (StatusEntity statusEntity : arrayList) {
-            if (statusEntity.type == StatusEntity.TYPE_BODY) {
-                if (bodyPosition == -1) {
-                    bodyPosition = 0;
-                } else {
-                    bodyPosition++;
+        if (data != null) {
+            HashSet<String> setTags = new HashSet<>();
+            HashMap<String, String> mapTags = new HashMap<>();
+            mapTags.put("正", "小太阳");
+            mapTags.put("中", "小安静");
+            mapTags.put("负", "小波动");
+            for (MoodModel model : data) {
+                if (setTags.add(model.getTag())) {
+                    arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_GROUP)
+                            .setTag(mapTags.get(model.getTag())));
                 }
-                statusEntity.setBodyPosition(bodyPosition);
-            } else {
-                bodyPosition = -1;
+                arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY).setMoodModel(model));
+            }
+
+            int bodyPosition = -1;
+            for (StatusEntity statusEntity : arrayList) {
+                if (statusEntity.type == StatusEntity.TYPE_BODY) {
+                    if (bodyPosition == -1) {
+                        bodyPosition = 0;
+                    } else {
+                        bodyPosition++;
+                    }
+                    statusEntity.setBodyPosition(bodyPosition);
+                } else {
+                    bodyPosition = -1;
+                }
             }
         }
         return arrayList;
@@ -217,7 +214,48 @@ public class StatusActivity extends BaseActivity {
 
     @Override
     public void initData() {
+        Type type = new TypeToken<List<StatusEntity>>() {
+        }.getType();
+        List<StatusEntity> cacheModel = SharePreferenceUtil.getObject(KEY_STATUS, type);
+        if (!EmptyUtil.isEmpty(cacheModel)) {
+            mStatusAdapter.setDataListNotify(cacheModel);
+            mLoadingView.hide();
+        }
+        mPresenter.onGetMoodList();
+    }
 
+    public void saveMood(int moodId) {
+        LoadingDialog.show(StatusActivity.this, "打卡中");
+        new MobilePresenter(new MobilePresenter.MobileUi<CommonModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return StatusActivity.this;
+            }
+
+            @Override
+            public void onSuccess(CommonModel data) {
+                LoadingDialog.hide();
+                if (formHome) {
+                    ToastUtil.showLong("心情打卡成功哦~");
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (EmptyUtil.isEmpty(StatusActivity.this)) {
+                                return;
+                            }
+                            finish();
+                        }
+                    }, 1500);
+                }
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                LoadingDialog.hide();
+                ToastUtil.showLong("心情打卡失败~");
+                mStatusAdapter.backScroll();
+            }
+        }).onSavedMood(NetParams.crete().add("mood", moodId));
     }
 
     private void customStatus() {
@@ -259,4 +297,30 @@ public class StatusActivity extends BaseActivity {
             }
         });
     }
+
+    @Override
+    public LifecycleProvider getLifecycleProvider() {
+        return StatusActivity.this;
+    }
+
+    @Override
+    public void onSuccess(List<MoodModel> data) {
+        if (mStatusAdapter.getItemCount() == 1) {
+            mLoadingView.hide();
+            List<StatusEntity> list = getList(data);
+            SharePreferenceUtil.setString(KEY_STATUS, GsonUtil.toJson(list));
+            mStatusAdapter.setDataListNotify(list);
+        }
+
+    }
+
+    @Override
+    public void onFail(ResponeThrowable throwable) {
+        if (mStatusAdapter.getItemCount() == 1) {
+            mLoadingView.showFail(v -> {
+                mPresenter.onGetMoodList();
+            });
+        }
+    }
+
 }

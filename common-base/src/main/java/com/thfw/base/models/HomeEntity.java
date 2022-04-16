@@ -1,5 +1,7 @@
 package com.thfw.base.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -18,10 +20,23 @@ public class HomeEntity {
     public static final int TYPE_TAB_TITLE = 6;
 
     public int type = TYPE_BODY;
-    public List<String> imageUrls;
+    public List<BannerModel> bannerModels;
+    public MoodLivelyModel moodLivelyModel;
     public String tabTitle;
 
+    public MobileRecommendModel recommendModel;
+
+    public HomeEntity setMoodLivelyModel(MoodLivelyModel moodLivelyModel) {
+        this.moodLivelyModel = moodLivelyModel;
+        return this;
+    }
+
     public int body2Position = -1;
+
+    public HomeEntity setBannerModels(List<BannerModel> bannerModels) {
+        this.bannerModels = bannerModels;
+        return this;
+    }
 
     public HomeEntity setBody2Position(int body2Position) {
         this.body2Position = body2Position;
@@ -38,7 +53,18 @@ public class HomeEntity {
         return this;
     }
 
+    public HomeEntity setRecommendModel(MobileRecommendModel recommendModel) {
+        this.recommendModel = recommendModel;
+        return this;
+    }
+
     public HomeEntity() {
+    }
+
+    public class BannerModel {
+
+        @SerializedName("imageUrl")
+        public String imageUrl;
     }
 
 }

@@ -890,14 +890,12 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
         PolicyHelper.getInstance().setResultListener(new SpeechHelper.ResultListener() {
 
             @Override
-            public void onResult(String result, boolean end) {
-                LogUtil.d(TAG, "result =================================== " + result + " ; end = " + end);
-
+            public void onResult(String result, boolean append, boolean end) {
                 // 没有按压返回
                 if (!PolicyHelper.getInstance().isPressMode()) {
                     return;
                 }
-                mEtControlContent.append(result);
+                mEtControlContent.setText(result);
             }
 
             @Override

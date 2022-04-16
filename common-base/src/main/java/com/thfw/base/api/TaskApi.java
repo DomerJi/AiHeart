@@ -58,17 +58,16 @@ public interface TaskApi {
     /**
      * 推送消息列表
      *
-     * @param msgType
-     * @param page
+     * device_type msgType  page
      * @return
      */
     @FormUrlEncoded
     @POST("push_msg_list")
-    Observable<HttpResult<List<TaskItemModel>>> onGetPushMsgList(@Field("msg_type") int msgType, @Field("page") int page);
+    Observable<HttpResult<List<TaskItemModel>>> onGetPushMsgList(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
     @POST("push_msg_list")
-    Observable<HttpResult<List<PushModel>>> onGetPushMsgList2(@Field("msg_type") int msgType, @Field("page") int page);
+    Observable<HttpResult<List<PushModel>>> onGetPushMsgList2(@FieldMap Map<String, Object> params);
 
     /**
      * 已读状态修改

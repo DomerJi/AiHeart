@@ -8,12 +8,23 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.SparseLongArray;
 
+import com.thfw.base.api.TalkApi;
+import com.thfw.base.models.CommonModel;
+import com.thfw.base.net.NetParams;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.MobilePresenter;
+import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
+import com.thfw.mobileheart.activity.talk.ChatActivity;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * 应用内统计功能使用时长
@@ -59,6 +70,10 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
     private long runTimeThisDay = 0L;
 
     private SparseLongArray mFunctionTime = new SparseLongArray();
+
+    private HashMap<Integer, Long> mAwaitTimeMap = new HashMap<>();
+    // 上次上传保存时长时间
+    private static long requestSaveTime = System.currentTimeMillis();
 
     /**
      * 获取今日0点的时间点，/1000*1000保证每次取值相同。
@@ -132,11 +147,26 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
             if (mFunctionTime.indexOfKey(function) == -1) {
                 return;
             }
-            long functionTime = System.currentTimeMillis() - mFunctionTime.get(function, -1);
+            if (activity instanceof ChatActivity) {
+                ChatActivity chatActivity = (ChatActivity) activity;
+                long useTimeAI = chatActivity.getUseDuration(TalkApi.JOIN_TYPE_AI);
+                if (useTimeAI > 0) {
+                    saveTodayPlayTime(FunctionDurationUtil.FUNCTION_AI_TALK, useTimeAI);
+                }
+
+                long useTimeTheme = chatActivity.getUseDuration(TalkApi.JOIN_TYPE_SPEECH_CRAFT);
+                if (useTimeTheme > 0) {
+                    saveTodayPlayTime(FunctionDurationUtil.FUNCTION_THEME_TALK, useTimeTheme);
+                }
+                return;
+            }
+
+            long functionTime = System.currentTimeMillis() - mFunctionTime.get(function, 0);
             LogUtil.d(TAG, "activityResumeOrPaused -> functionTime" + functionTime);
             if (functionTime > 0) {
                 saveTodayPlayTime(function, functionTime);
             }
+
         }
 
     }
@@ -250,5 +280,47 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
         if (yesterdayTime > 0) {
             SharePreferenceUtil.removeKey(yesterdayKey);
         }
+        if (mAwaitTimeMap.containsKey(type)) {
+            mAwaitTimeMap.put(type, mAwaitTimeMap.get(type) + time);
+        } else {
+            mAwaitTimeMap.put(type, time);
+        }
+        onSaveTimeByNet();
+    }
+
+
+    public void onSaveTimeByNet() {
+        if (System.currentTimeMillis() - requestSaveTime < HourUtil.LEN_MINUTE) {
+            return;
+        }
+        requestSaveTime = System.currentTimeMillis();
+        LogUtil.d(TAG, "onSaveTimeByNet -> begin " + GsonUtil.toJson(mAwaitTimeMap));
+        if (mAwaitTimeMap.size() == 0) {
+            return;
+        }
+        List<HashMap<String, Long>> saveTimeMap = new ArrayList<>();
+        for (Integer integer : mAwaitTimeMap.keySet()) {
+            HashMap<String, Long> timeMap = new HashMap<>();
+            timeMap.put("type", integer.longValue());
+            timeMap.put("time", mAwaitTimeMap.get(integer));
+            saveTimeMap.add(timeMap);
+        }
+        new MobilePresenter(new MobilePresenter.MobileUi<CommonModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return null;
+            }
+
+            @Override
+            public void onSuccess(CommonModel data) {
+                LogUtil.d(TAG, "onSaveTimeByNet -> onSuccess " + GsonUtil.toJson(saveTimeMap));
+                mAwaitTimeMap.clear();
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                LogUtil.d(TAG, "onSaveTimeByNet -> onFail " + GsonUtil.toJson(saveTimeMap));
+            }
+        }).onSaveActiveTime(NetParams.crete().add("use_time", GsonUtil.toJson(saveTimeMap)));
     }
 }

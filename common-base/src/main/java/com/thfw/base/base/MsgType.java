@@ -18,7 +18,7 @@ public class MsgType {
     public static final int COMMON_PROBLEM = 8;
     public static final int ABOUT_US = 9;
     public static final int MOOD = 10; // 心情签到
-    public static final int VOICE_COMMAND = 11;
+    public static final int VOICE_COMMAND = 11; // 语音指令
     public static final int SYSTEM = 12;
     public static final int BOOK = 13;
     public static final int IDEO_BOOK = 14;
@@ -54,5 +54,13 @@ public class MsgType {
      * <p>
      * 12=>system
      */
+
+    public static boolean isMobileMsg(int msgType) {
+        return VOICE_COMMAND != msgType;
+    }
+
+    public static boolean isRobotMsg(int msgType) {
+        return MOOD != msgType;
+    }
 
 }

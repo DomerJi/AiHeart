@@ -10,6 +10,7 @@ import com.thfw.base.models.SystemDetailModel;
 import com.thfw.base.models.TaskDetailModel;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.base.models.TaskMusicEtcModel;
+import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.OkHttpUtil;
@@ -47,13 +48,17 @@ public class TaskPresenter<T> extends IPresenter<TaskPresenter.TaskUi> {
      * @param msgType
      */
     public void onGetMsgList(int msgType, int page) {
+        // device_type 设备类型 区分 手机端和机器人消息不同的问题
+        NetParams netParams = NetParams.crete().add("device_type", CommonParameter.getDeviceType())
+                .add("msg_type", msgType)
+                .add("page", page);
         if (msgType == 1) {
             Observable<HttpResult<List<TaskItemModel>>> observable = OkHttpUtil.createService(TaskApi.class)
-                    .onGetPushMsgList(msgType, page);
+                    .onGetPushMsgList(netParams);
             OkHttpUtil.request(observable, getUI());
         } else {
             Observable<HttpResult<List<PushModel>>> observable = OkHttpUtil.createService(TaskApi.class)
-                    .onGetPushMsgList2(msgType, page);
+                    .onGetPushMsgList2(netParams);
             OkHttpUtil.request(observable, getUI());
         }
 
@@ -135,7 +140,8 @@ public class TaskPresenter<T> extends IPresenter<TaskPresenter.TaskUi> {
      */
     public void onNewMsgCount(int type) {
         Observable<HttpResult<MsgCountModel>> observable = OkHttpUtil.createService(TaskApi.class)
-                .onNewMsgCount(NetParams.crete().add("type", type));
+                .onNewMsgCount(NetParams.crete().add("device_type", CommonParameter.getDeviceType())
+                        .add("type", type));
         OkHttpUtil.request(observable, getUI());
     }
 
