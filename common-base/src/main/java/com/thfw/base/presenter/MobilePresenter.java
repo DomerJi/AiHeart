@@ -6,6 +6,7 @@ import com.thfw.base.base.UI;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.HomeEntity;
 import com.thfw.base.models.MobileRecommendModel;
+import com.thfw.base.models.MoodActiveModel;
 import com.thfw.base.models.MoodLivelyModel;
 import com.thfw.base.models.MoodModel;
 import com.thfw.base.net.HttpResult;
@@ -71,7 +72,7 @@ public class MobilePresenter extends IPresenter<MobilePresenter.MobileUi> {
 
 
     public void onGetUserList(NetParams netParams) {
-        Observable<HttpResult<List<MoodModel>>> observable = OkHttpUtil.createService(MobileApi.class)
+        Observable<HttpResult<List<MoodActiveModel>>> observable = OkHttpUtil.createService(MobileApi.class)
                 .getHistoryMoodList(netParams);
         OkHttpUtil.request(observable, getUI());
     }

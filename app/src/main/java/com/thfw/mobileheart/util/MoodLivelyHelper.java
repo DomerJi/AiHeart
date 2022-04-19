@@ -7,7 +7,10 @@ import com.thfw.base.models.MoodLivelyModel;
 import com.thfw.base.models.MoodModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.MobilePresenter;
+import com.thfw.base.timing.TimingHelper;
+import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.FunctionType;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.ArrayList;
@@ -39,13 +42,16 @@ public class MoodLivelyHelper {
 
     }
 
-    private static void change() {
+    private synchronized static void change() {
         if (!EmptyUtil.isEmpty(livelyListeners)) {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    for (MoodLivelyListener listener : livelyListeners) {
-                        listener.onMoodLively(model);
+                    int size = livelyListeners.size();
+                    for (int i = size - 1; i >= 0; i--) {
+                        if (livelyListeners.get(i) != null) {
+                            livelyListeners.get(i).onMoodLively(model);
+                        }
                     }
                 }
             });
@@ -79,19 +85,41 @@ public class MoodLivelyHelper {
             public void onSuccess(MoodLivelyModel data) {
                 if (data != null) {
                     model = data;
-                    FunctionDurationUtil.setFunctionTime(FunctionDurationUtil.FUNCTION_APP, model.getTodayActiveTime());
+                    FunctionDurationUtil.setFunctionTime(FunctionType.FUNCTION_APP, model.getTodayActiveTime());
                     change();
+                }
+                if(workListener!=null) {
+                    TimingHelper.getInstance().removeWorkArriveListener(workListener);
                 }
             }
 
             @Override
             public void onFail(ResponeThrowable throwable) {
-
+                initWorkListener();
+                TimingHelper.getInstance().addWorkArriveListener(workListener);
             }
         }).onGetMoodLivelyDetail();
     }
 
     public interface MoodLivelyListener {
         void onMoodLively(MoodLivelyModel data);
+    }
+
+    private static TimingHelper.WorkListener workListener;
+
+    private static void initWorkListener() {
+        if (workListener == null) {
+            workListener = new TimingHelper.WorkListener() {
+                @Override
+                public void onArrive() {
+                    addListener(null);
+                }
+
+                @Override
+                public WorkInt workInt() {
+                    return WorkInt.SECOND5_MSG_COUNT2;
+                }
+            };
+        }
     }
 }

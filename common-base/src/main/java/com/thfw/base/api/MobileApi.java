@@ -3,6 +3,7 @@ package com.thfw.base.api;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.HomeEntity;
 import com.thfw.base.models.MobileRecommendModel;
+import com.thfw.base.models.MoodActiveModel;
 import com.thfw.base.models.MoodLivelyModel;
 import com.thfw.base.models.MoodModel;
 import com.thfw.base.net.HttpResult;
@@ -52,7 +53,7 @@ public interface MobileApi {
      */
     @FormUrlEncoded
     @POST("user_mood_list")
-    Observable<HttpResult<List<MoodModel>>> getHistoryMoodList(@FieldMap Map<String, Object> params);
+    Observable<HttpResult<List<MoodActiveModel>>> getHistoryMoodList(@FieldMap Map<String, Object> params);
 
     /**
      * 手机端-【心情】与【活跃】详情

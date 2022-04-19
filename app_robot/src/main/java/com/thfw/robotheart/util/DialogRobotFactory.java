@@ -30,6 +30,7 @@ import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.thfw.base.models.AreaModel;
 import com.thfw.base.models.PickerData;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.Util;
@@ -93,32 +94,32 @@ public class DialogRobotFactory {
     }
 
     /**
-     * 通用弹框
+     * svga dialog
      *
      * @param activity
      * @param onViewCallBack
      * @return
      */
     public static void createSvgaDialog(FragmentActivity activity, String svgaAssets, final OnSVGACallBack onViewCallBack) {
+        long currentTimeMillis = System.currentTimeMillis();
         // 过场动画出现频率
         if (svgaAssets.startsWith("transition_") && PrivateSetActivity.getAnimFrequency() != AnimFileName.Frequency.EVERY_TIME) {
             int animFrequency = PrivateSetActivity.getAnimFrequency();
             long animTime = SharePreferenceUtil.getLong("Frequency_" + svgaAssets, 0);
-            long currentTimeMillis = System.currentTimeMillis();
-            if (animFrequency == AnimFileName.Frequency.TWO_HOUR_TIME) {
-                if (currentTimeMillis - animTime < 2 * 60 * 60 * 1000) {
+
+            if (animFrequency == AnimFileName.Frequency.WEEK_TIME) {
+                if (currentTimeMillis - animTime < HourUtil.LEN_DAY * 7) {
                     onViewCallBack.callBack(null);
                     return;
                 }
             } else {
-                if (currentTimeMillis - animTime < 23 * 60 * 60 * 1000) {
+                if (currentTimeMillis - animTime < HourUtil.LEN_DAY) {
                     onViewCallBack.callBack(null);
                     return;
                 }
             }
-            SharePreferenceUtil.setLong("Frequency_" + svgaAssets, currentTimeMillis);
         }
-        PrivateSetActivity.getAnimFrequency();
+        SharePreferenceUtil.setLong("Frequency_" + svgaAssets, currentTimeMillis);
         String hint = AnimFileName.getHint(svgaAssets);
         // 语音播放
         TtsHelper.getInstance().start(new TtsModel(hint), null);

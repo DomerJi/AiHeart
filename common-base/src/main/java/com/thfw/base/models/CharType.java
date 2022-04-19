@@ -1,4 +1,4 @@
-package com.thfw.mobileheart.constants;
+package com.thfw.base.models;
 
 public enum CharType {
     MOOD("情绪数值", "分"),
@@ -9,7 +9,8 @@ public enum CharType {
     VIDEO("视频集锦", "分钟"),
     TOOL("训练工具包", "分钟"),
     BOOK("心理文章", "分钟"),
-    IDEO_BOOK("思政文章", "分钟");
+    IDEO_BOOK("思政文章", "分钟"),
+    APP("应用程序", "分钟");
 
     private int type;
     private String label;

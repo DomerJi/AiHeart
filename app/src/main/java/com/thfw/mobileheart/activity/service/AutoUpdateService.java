@@ -33,7 +33,17 @@ public class AutoUpdateService extends IntentService {
     }
 
     public static void startUpdate(Context context) {
-        DownloadTask task = Beta.getStrategyTask();
+        DownloadTask task = null;
+        try {
+            task = Beta.getStrategyTask();
+        } catch (Exception e) {
+            task = null;
+        }
+        try {
+            task = Beta.getStrategyTask();
+        } catch (Exception e) {
+            task = null;
+        }
         if (task == null) {
             LogUtil.d(TAG, "startUpdate task == null");
             return;

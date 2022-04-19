@@ -217,7 +217,7 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
 
     private void setSelected(List<StatusEntity> arrayList) {
         String mSelectedName = null;
-        if (MoodLivelyHelper.getModel().getUserMood() != null) {
+        if (MoodLivelyHelper.getModel() != null && MoodLivelyHelper.getModel().getUserMood() != null) {
             mSelectedName = MoodLivelyHelper.getModel().getUserMood().getName();
         }
         if (mSelectedName == null) {

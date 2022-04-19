@@ -1,13 +1,18 @@
 package com.thfw.mobileheart.activity.settings;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +30,8 @@ import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.activity.service.AutoUpdateService;
 import com.thfw.mobileheart.constants.AgreeOn;
+import com.thfw.mobileheart.constants.AnimFileName;
+import com.thfw.mobileheart.util.AnimFrequencyUtil;
 import com.thfw.mobileheart.util.FileSizeUtil;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.user.login.LoginStatus;
@@ -46,6 +53,9 @@ public class SettingActivity extends BaseActivity {
     private Handler mHandler;
     private long deleteNum;
     private TextView mTvMsgVersion;
+    private LinearLayout mLlTransition;
+    private TextView mTvTransition;
+    private PopupWindow mPopWindow;
 
     @Override
     public int getContentView() {
@@ -99,6 +109,12 @@ public class SettingActivity extends BaseActivity {
             checkVersion(false);
         });
 
+        mLlTransition = (LinearLayout) findViewById(R.id.ll_transition);
+        mTvTransition = (TextView) findViewById(R.id.tv_transition);
+        mLlTransition.setOnClickListener(v -> {
+            showTransitionSelect();
+        });
+        mTvTransition.setText(AnimFrequencyUtil.getAnimFrequencyStr());
     }
 
     @Override
@@ -192,4 +208,63 @@ public class SettingActivity extends BaseActivity {
     public void initData() {
 
     }
+
+    /**
+     * 选择出场动画频率
+     */
+    private void showTransitionSelect() {
+        if (mPopWindow != null) {
+            mPopWindow.dismiss();
+            mPopWindow = null;
+            return;
+        }
+        View contentView = LayoutInflater.from(SettingActivity.this).inflate(R.layout.popwindow_anim_transition_selected, null);
+        mPopWindow = new PopupWindow(contentView);
+        mPopWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        // 点击外部取消显示
+        mPopWindow.setOutsideTouchable(true);
+        //  mPopWindow.setBackgroundDrawable(new BitmapDrawable()); // 括号内过时
+        mPopWindow.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        TextView mTvEvery = contentView.findViewById(R.id.tv_every);
+        TextView mTvDay = contentView.findViewById(R.id.tv_day);
+        TextView mTvWeek = contentView.findViewById(R.id.tv_week);
+        switch (AnimFrequencyUtil.getAnimFrequency()) {
+            case AnimFileName.Frequency.EVERY_TIME:
+                mTvEvery.setTextColor(getResources().getColor(R.color.text_green));
+                break;
+            case AnimFileName.Frequency.DAY_TIME:
+                mTvDay.setTextColor(getResources().getColor(R.color.text_green));
+                break;
+            case AnimFileName.Frequency.WEEK_TIME:
+                mTvWeek.setTextColor(getResources().getColor(R.color.text_green));
+                break;
+        }
+        // 每次
+        mTvEvery.setOnClickListener(v -> {
+            mPopWindow.dismiss();
+            mPopWindow = null;
+            AnimFrequencyUtil.setAnimFrequency(0);
+            mTvTransition.setText(AnimFrequencyUtil.getAnimFrequencyStr());
+        });
+        // 每天
+        mTvDay.setOnClickListener(v -> {
+            mPopWindow.dismiss();
+            mPopWindow = null;
+            AnimFrequencyUtil.setAnimFrequency(1);
+            mTvTransition.setText(AnimFrequencyUtil.getAnimFrequencyStr());
+        });
+        // 每星期
+        mTvWeek.setOnClickListener(v -> {
+            mPopWindow.dismiss();
+            mPopWindow = null;
+            AnimFrequencyUtil.setAnimFrequency(2);
+            mTvTransition.setText(AnimFrequencyUtil.getAnimFrequencyStr());
+        });
+
+        mPopWindow.showAsDropDown(mTvTransition, 0, 26, Gravity.LEFT);
+    }
+
+
 }

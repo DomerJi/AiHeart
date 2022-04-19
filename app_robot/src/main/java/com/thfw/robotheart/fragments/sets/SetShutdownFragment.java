@@ -165,4 +165,9 @@ public class SetShutdownFragment extends RobotBaseFragment implements TimingHelp
     }
 
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        TimingHelper.getInstance().removeWorkArriveListener(this);
+    }
 }

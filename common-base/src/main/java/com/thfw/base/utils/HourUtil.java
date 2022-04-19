@@ -111,6 +111,18 @@ public class HourUtil {
         }
     }
 
+    /**
+     * @param time 2021-12-27
+     * @return
+     */
+    public static long getYYMMDDbyLong(String time) {
+        try {
+            return formatyyMMdd.parse(time).getTime();
+        } catch (ParseException e) {
+            return -1;
+        }
+    }
+
     public static String getYYMMDD_HHMMSS(long time) {
         return format.format(new Date(time));
     }

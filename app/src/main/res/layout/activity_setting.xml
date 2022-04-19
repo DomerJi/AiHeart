@@ -95,6 +95,56 @@
 
 
     <LinearLayout
+        android:id="@+id/ll_transition"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="12dp"
+        android:paddingTop="16dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="16dp">
+
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/set_transition"
+            android:textColor="@color/text_common"
+            android:textSize="@dimen/textSize" />
+
+        <TextView
+            android:id="@+id/tv_transition"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:gravity="right"
+            android:hint="每次"
+            android:textColor="@color/text_content"
+            android:textColorHint="@color/text_content"
+            android:textSize="@dimen/textSize" />
+
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_right" />
+
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_2px"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/divider" />
+
+
+    <LinearLayout
         android:id="@+id/ll_clear_cache"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

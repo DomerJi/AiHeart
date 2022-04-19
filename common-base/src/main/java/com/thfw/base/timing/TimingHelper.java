@@ -30,6 +30,7 @@ public class TimingHelper {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
+                Log.d(TAG, "handleMessage count ===========================");
                 if (!mWorkInts.isEmpty()) {
                     for (WorkInt workInt : mWorkInts.keySet()) {
                         workInt.addCount();
@@ -38,12 +39,14 @@ public class TimingHelper {
                             notifyWork(workInt);
                         }
                     }
+                    if (!mWorkInts.isEmpty()) {
+                        removeMessages(0);
+                        sendEmptyMessageDelayed(0, 1000);
+                    }
                 }
 
-                sendEmptyMessageDelayed(0, 1000);
             }
         };
-        mHandler.sendEmptyMessageDelayed(0, 1000);
 
     }
 
@@ -86,12 +89,17 @@ public class TimingHelper {
     }
 
     public void addWorkArriveListener(WorkListener workListener) {
+        boolean isEmpty = mWorkInts.isEmpty();
         if (mWorkInts.containsKey(workListener.workInt())) {
             mWorkInts.get(workListener.workInt()).add(workListener);
         } else {
             HashSet<WorkListener> workListeners = new HashSet<>();
             workListeners.add(workListener);
             mWorkInts.put(workListener.workInt(), workListeners);
+        }
+        if (isEmpty && !mWorkInts.isEmpty()) {
+            mHandler.removeMessages(0);
+            mHandler.sendEmptyMessageDelayed(0, 1000);
         }
     }
 

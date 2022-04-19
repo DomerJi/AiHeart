@@ -508,6 +508,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                         UserManager.getInstance().notifyUserInfo();
                         UPushAlias.setTag(mSelecteds.get(mSelecteds.size() - 1).getId());
                     }
+                    TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND5_1);
                     initOrganization = true;
                 }
 
@@ -566,6 +567,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                             SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false);
                             TtsHelper.getInstance().start(new TtsModel("你好" + UserManager.getInstance().getUser().getVisibleName() + ",很高兴见到你"), null);
                         }
+                        TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND5);
                     } else {
                         onFail(new ResponeThrowable(0, "data is null"));
                     }

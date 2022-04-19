@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.adapter;
 
 import android.content.Intent;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -9,16 +10,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.models.HomeEntity;
 import com.thfw.base.models.HomeHistoryEntity;
 import com.thfw.base.models.MoodLivelyModel;
 import com.thfw.base.models.MoodModel;
 import com.thfw.base.models.TalkModel;
-import com.thfw.base.utils.HourUtil;
+import com.thfw.base.utils.FunctionType;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
@@ -34,6 +37,8 @@ import com.thfw.mobileheart.activity.talk.ChatActivity;
 import com.thfw.mobileheart.activity.talk.ThemeListActivity;
 import com.thfw.mobileheart.activity.test.TestingActivity;
 import com.thfw.mobileheart.activity.video.VideoHomeActivity;
+import com.thfw.mobileheart.constants.AnimFileName;
+import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FunctionDurationUtil;
 import com.thfw.mobileheart.util.MoodLivelyHelper;
 import com.thfw.ui.utils.GlideUtil;
@@ -53,7 +58,6 @@ import java.util.List;
 public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder>
         implements MyApplication.OnMinuteListener, MoodLivelyHelper.MoodLivelyListener {
     private static final long DELAY_TIME_BANNER = 5000;
-    private static long lastChange;
     private Banner mBanner;
 
     public HomeAdapter(List<HomeEntity> dataList) {
@@ -64,11 +68,8 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         if (this.mBanner != null) {
             if (resume) {
                 this.mBanner.start();
-                MyApplication.getApp().addOnMinuteListener(this);
-                onChanged();
             } else {
                 this.mBanner.stop();
-                MyApplication.getApp().onRemoveOnMinuteListener(this);
             }
         }
     }
@@ -89,16 +90,14 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
      */
     @Override
     public void onChanged() {
-        if (System.currentTimeMillis() - lastChange > HourUtil.LEN_MINUTE) {
-            lastChange = System.currentTimeMillis();
-            LogUtil.d("===========================时间更新/活跃时长================================");
-            if (getItemCount() > 2) {
-                RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForLayoutPosition(2);
-                if (viewHolder instanceof MadeHolder) {
-                    ((MadeHolder) viewHolder).notifyTodayTime();
-                }
+        LogUtil.d("===========================时间更新/活跃时长================================");
+        if (getItemCount() > 2) {
+            RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForLayoutPosition(2);
+            if (viewHolder instanceof MadeHolder) {
+                ((MadeHolder) viewHolder).notifyTodayTime();
             }
         }
+
     }
 
     public int getBannerHeight() {
@@ -116,6 +115,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             case HomeEntity.TYPE_SORT:
                 return new SortHolder(inflate(R.layout.item_home_sort_layout, parent));
             case HomeEntity.TYPE_CUSTOM_MADE:
+                MoodLivelyHelper.addListener(this);
                 MyApplication.getApp().addOnMinuteListener(this);
                 return new MadeHolder(inflate(R.layout.item_home_custommade_layout, parent));
             case HomeEntity.TYPE_HISTORY:// 去除
@@ -148,6 +148,9 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             case HomeEntity.TYPE_CUSTOM_MADE:
                 MadeHolder madeHolder = (MadeHolder) holder;
                 madeHolder.notifyTodayTime();
+                if (MoodLivelyHelper.getModel() != null) {
+                    madeHolder.setMood(MoodLivelyHelper.getModel().getUserMood());
+                }
                 break;
             case HomeEntity.TYPE_TAB_TITLE:
                 TabTitleHolder tabTitleHolder = (TabTitleHolder) holder;
@@ -252,31 +255,51 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             super(itemView);
 
             View.OnClickListener clickViewListener = new View.OnClickListener() {
+
+                SparseArray<String> sparseArray = new SparseArray<>();
+
                 @Override
                 public void onClick(View v) {
-                    switch (v.getId()) {
-                        case R.id.rl_tab_01:
-                            ThemeListActivity.startActivity(mContext);
-                            break;
-                        case R.id.rl_tab_03:
-                            TestingActivity.startActivity(mContext);
-                            break;
-                        case R.id.rl_tab_04:
-                            ExerciseActivity.startActivity(mContext);
-                            break;
-                        case R.id.rl_tab_05:
-                            AudioHomeActivity.startActivity(mContext);
-                            break;
-                        case R.id.rl_tab_06:
-                            VideoHomeActivity.startActivity(mContext);
-                            break;
-                        case R.id.rl_tab_07:
-                            ReadHomeActivity.startActivity(mContext);
-                            break;
-                        case R.id.rl_tab_08:
-                            StudyHomeActivity.startActivity(mContext);
-                            break;
+                    if (sparseArray.size() == 0) {
+                        sparseArray.put(R.id.rl_tab_01, AnimFileName.TRANSITION_THEME);
+                        sparseArray.put(R.id.rl_tab_03, AnimFileName.TRANSITION_TEST);
+                        sparseArray.put(R.id.rl_tab_04, AnimFileName.TRANSITION_TOOL);
+                        sparseArray.put(R.id.rl_tab_05, AnimFileName.TRANSITION_AUDIO);
+                        sparseArray.put(R.id.rl_tab_06, AnimFileName.TRANSITION_VIDEO);
+                        sparseArray.put(R.id.rl_tab_07, AnimFileName.TRANSITION_BOOK);
+                        sparseArray.put(R.id.rl_tab_08, AnimFileName.TRANSITION_IDEO);
                     }
+                    DialogFactory.createSvgaDialog((FragmentActivity) mContext,
+                            sparseArray.get(v.getId()),
+                            new DialogFactory.OnSVGACallBack() {
+                                @Override
+                                public void callBack(SVGAImageView svgaImageView) {
+                                    switch (v.getId()) {
+                                        case R.id.rl_tab_01:
+                                            ThemeListActivity.startActivity(mContext);
+                                            break;
+                                        case R.id.rl_tab_03:
+                                            TestingActivity.startActivity(mContext);
+                                            break;
+                                        case R.id.rl_tab_04:
+                                            ExerciseActivity.startActivity(mContext);
+                                            break;
+                                        case R.id.rl_tab_05:
+                                            AudioHomeActivity.startActivity(mContext);
+                                            break;
+                                        case R.id.rl_tab_06:
+                                            VideoHomeActivity.startActivity(mContext);
+                                            break;
+                                        case R.id.rl_tab_07:
+                                            ReadHomeActivity.startActivity(mContext);
+                                            break;
+                                        case R.id.rl_tab_08:
+                                            StudyHomeActivity.startActivity(mContext);
+                                            break;
+                                    }
+                                }
+                            });
+
                 }
             };
 
@@ -343,7 +366,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         public void notifyTodayTime() {
             if (mTvTodayActivityValue != null) {
                 mTvTodayActivityValue.setText(FunctionDurationUtil
-                        .getFunctionTimeHour(FunctionDurationUtil.FUNCTION_APP));
+                        .getFunctionTimeHour(FunctionType.FUNCTION_APP));
             }
         }
 

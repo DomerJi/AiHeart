@@ -60,7 +60,7 @@
         android:id="@+id/cl_market_mood"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
@@ -71,24 +71,27 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="6dp"
-            android:paddingTop="3dp"
+            android:paddingTop="2dp"
             android:paddingRight="6dp"
-            android:paddingBottom="3dp">
+            android:paddingBottom="2dp">
 
-            <com.makeramen.roundedimageview.RoundedImageView
+            <ImageView
                 android:id="@+id/riv_emoji"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@color/text_green"
-                app:riv_oval="true" />
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/gray_cirlle_bg"
+                app:tint="@color/tint_emoji" />
 
             <TextView
                 android:id="@+id/tv_mood_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
-                android:text="保持微笑"
-                android:textColor="@color/text_content"
+                android:gravity="center"
+                android:hint="◠  ◠"
+                android:minWidth="35dp"
+                android:textColor="@color/text_common"
+                android:textColorHint="@color/text_common"
                 android:textSize="@dimen/textSize_small" />
 
         </LinearLayout>

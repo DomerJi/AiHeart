@@ -6,8 +6,8 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,7 +22,7 @@ import static android.view.Gravity.CENTER;
  * 页面加载状态
  * Created By jishuaipeng on 2021/4/27
  */
-public class LoadingView extends LinearLayout implements ILoading {
+public class LoadingView extends RelativeLayout implements ILoading {
 
     private int iconWidth;
     private int iconHeight;

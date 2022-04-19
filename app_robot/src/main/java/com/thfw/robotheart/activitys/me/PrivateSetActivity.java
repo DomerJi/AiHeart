@@ -62,10 +62,10 @@ public class PrivateSetActivity extends RobotBaseActivity {
         switch (i) {
             case AnimFileName.Frequency.EVERY_TIME:
                 return "每次";
-            case AnimFileName.Frequency.TWO_HOUR_TIME:
-                return "每两小时一次";
             case AnimFileName.Frequency.DAY_TIME:
                 return "每天一次";
+            case AnimFileName.Frequency.WEEK_TIME:
+                return "每星期一次";
         }
         return "";
     }

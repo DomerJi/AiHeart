@@ -139,21 +139,25 @@
         <LinearLayout
             android:id="@+id/ll_status"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
-            android:background="@drawable/radius_black50_bg"
+            android:background="@drawable/bg_home_mood_border"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="6dp"
+            android:paddingTop="2dp"
             android:paddingRight="6dp"
+            android:paddingBottom="2dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
 
             <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:id="@+id/iv_mood_status"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:scaleType="fitXY"
-                android:src="@mipmap/cat" />
+                android:src="@drawable/gray_cirlle_bg"
+                app:tint="@color/text_green" />
 
 
             <TextView
@@ -162,9 +166,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="8dp"
-                android:text="status"
-                android:textColor="@color/white"
-                android:textSize="@dimen/textSize" />
+                android:text="◠  ◠"
+                android:textColor="@color/text_common"
+                android:textSize="@dimen/textSize_small" />
 
 
         </LinearLayout>
@@ -192,12 +196,14 @@
                     android:id="@+id/tv_time_minute"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5692"
+                    android:hint="--"
                     android:textColor="@color/text_common"
+                    android:textColorHint="@color/text_hint"
                     android:textSize="@dimen/textSize"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tv_active_time_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -220,8 +226,9 @@
                     android:id="@+id/tv_time_day"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="301"
+                    android:hint="--"
                     android:textColor="@color/text_common"
+                    android:textColorHint="@color/text_hint"
                     android:textSize="@dimen/textSize"
                     android:textStyle="bold" />
 
@@ -249,8 +256,9 @@
                     android:id="@+id/tv_time_continuation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="97"
+                    android:hint="--"
                     android:textColor="@color/text_common"
+                    android:textColorHint="@color/text_hint"
                     android:textSize="@dimen/textSize"
                     android:textStyle="bold" />
 
@@ -293,13 +301,19 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.github.mikephil.charting.charts.CombinedChart
+        <com.thfw.mobileheart.view.MeCombinedChart
             android:id="@+id/combinedChart"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_constraintLeft_toRightOf="@id/tv_left"
             app:layout_constraintRight_toLeftOf="@id/tv_right" />
 
+        <com.thfw.ui.widget.LoadingView
+            android:id="@+id/loadingView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toRightOf="@id/tv_left"
+            app:layout_constraintRight_toLeftOf="@id/tv_right"/>
 
         <TextView
             android:id="@+id/tv_right"

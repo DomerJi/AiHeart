@@ -16,7 +16,8 @@ public enum WorkInt {
     SECOND5_1(6, 5, false),
     SECOND3(7, 3, false),
     SECOND2(8, 2, true),
-    SECOND5_MSG_COUNT(9, 5, true);
+    SECOND5_MSG_COUNT(9, 5, true),
+    SECOND5_MSG_COUNT2(10, 5, true);
 
     /**
      * 标识

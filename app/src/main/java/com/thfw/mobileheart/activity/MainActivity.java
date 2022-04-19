@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.MoodLivelyModel;
@@ -42,6 +43,7 @@ import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.mood.StatusActivity;
 import com.thfw.mobileheart.activity.service.AutoUpdateService;
 import com.thfw.mobileheart.activity.talk.ChatActivity;
+import com.thfw.mobileheart.constants.AnimFileName;
 import com.thfw.mobileheart.fragment.HomeFragment;
 import com.thfw.mobileheart.fragment.MeFragment;
 import com.thfw.mobileheart.fragment.MessageFragment;
@@ -84,6 +86,14 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private static boolean initOrganization;
     private static boolean initUmeng;
     private static boolean moodHint;
+
+    // 登录动画是否显示，为了不频繁获取sp数据
+    private static boolean showLoginAnim;
+
+    public static void setShowLoginAnim(boolean showLoginAnim) {
+        MainActivity.showLoginAnim = showLoginAnim;
+    }
+
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private androidx.constraintlayout.widget.ConstraintLayout mMainRoot;
     private androidx.constraintlayout.widget.ConstraintLayout mMainRoot2;
@@ -176,7 +186,15 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         mTvMe = (TextView) findViewById(R.id.tv_me);
         // 智能聊天/倾诉吐槽
         mLlAiChat.setOnClickListener(v -> {
-            ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
+            DialogFactory.createSvgaDialog(MainActivity.this,
+                    AnimFileName.TRANSITION_TALK,
+                    new DialogFactory.OnSVGACallBack() {
+                        @Override
+                        public void callBack(SVGAImageView svgaImageView) {
+                            ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
+                        }
+                    });
+
         });
 
         if (UserManager.getInstance().isTrueLogin()) {
@@ -290,9 +308,28 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
         } else {
             mMainHandler.removeCallbacks(checkVersionRunnable);
-            mMainHandler.postDelayed(checkVersionRunnable, 1000);
+            mMainHandler.postDelayed(checkVersionRunnable, isMeResumed() ? 2500 : 1000);
 
             moodHintDialog();
+
+            showSVGALogin();
+        }
+    }
+
+    /**
+     * 显示登录欢迎动画
+     */
+    private void showSVGALogin() {
+        if (showLoginAnim && SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN, true)) {
+            LogUtil.d(TAG, "showSVGALogin start");
+            DialogFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_WELCOM, new DialogFactory.OnSVGACallBack() {
+                @Override
+                public void callBack(SVGAImageView svgaImageView) {
+                    LogUtil.d(TAG, "showSVGALogin end");
+                    SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN, false);
+                    showLoginAnim = false;
+                }
+            });
         }
     }
 
@@ -412,6 +449,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     UPushAlias.setTag(mSelecteds.get(mSelecteds.size() - 1).getId());
                 }
                 initOrganization = true;
+                TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND5_1);
             }
 
             @Override
@@ -478,6 +516,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                         SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false);
                         TtsHelper.getInstance().start(new TtsModel("你好" + UserManager.getInstance().getUser().getVisibleName() + ",很高兴见到你"), null);
                     }
+                    TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND5);
                 } else {
                     onFail(new ResponeThrowable(0, "data is null"));
                 }

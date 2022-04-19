@@ -18,6 +18,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.MoodLivelyModel;
 import com.thfw.base.utils.BuglyUtil;
+import com.thfw.base.utils.FunctionType;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
@@ -286,7 +287,7 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
 
     @Override
     public void onMoodLively(MoodLivelyModel data) {
-        mTvTimeMinute.setText(FunctionDurationUtil.getFunctionTimeHour(FunctionDurationUtil.FUNCTION_APP));
+        mTvTimeMinute.setText(FunctionDurationUtil.getFunctionTimeHour(FunctionType.FUNCTION_APP));
         mTvTimeContinuation.setText(String.valueOf(data.getContinueDays()));
         mTvTimeDay.setText(String.valueOf(data.getLoginDays()));
 
@@ -299,7 +300,7 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
     @Override
     public void onChanged() {
         if (mTvTimeMinute != null) {
-            mTvTimeMinute.setText(FunctionDurationUtil.getFunctionTimeHour(FunctionDurationUtil.FUNCTION_APP));
+            mTvTimeMinute.setText(FunctionDurationUtil.getFunctionTimeHour(FunctionType.FUNCTION_APP));
         }
     }
 }

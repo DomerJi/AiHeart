@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.util;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,18 +22,30 @@ import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.opensource.svgaplayer.SVGACallback;
+import com.opensource.svgaplayer.SVGADrawable;
+import com.opensource.svgaplayer.SVGAImageView;
+import com.opensource.svgaplayer.SVGAParser;
+import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.thfw.base.models.AreaModel;
 import com.thfw.base.models.PickerData;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HourUtil;
+import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.adapter.BaseAdapter;
 import com.thfw.mobileheart.adapter.DialogLikeAdapter;
+import com.thfw.mobileheart.constants.AnimFileName;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnBindViewListener;
 import com.thfw.ui.dialog.listener.OnViewClickListener;
+import com.thfw.ui.voice.tts.TtsHelper;
+import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.InputBoxView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
 import java.util.List;
@@ -43,6 +56,11 @@ import java.util.List;
 public class DialogFactory {
 
     private static final float WIDTH_ASPECT = 0.75f;
+    private static final String TAG = "DialogFactory";
+    private static TDialog mSvgaTDialog;
+    private static Runnable mMinuteRunnable;
+    private static TextView mTvTime;
+    private static int minute;
 
     public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack) {
         return createCustomDialog(activity, onViewCallBack, true);
@@ -101,7 +119,126 @@ public class DialogFactory {
     }
 
     /**
-     * 通用弹框
+     * svga dialog
+     *
+     * @param activity
+     * @param onViewCallBack
+     * @return
+     */
+    public static void createSvgaDialog(FragmentActivity activity, String svgaAssets, final OnSVGACallBack onViewCallBack) {
+        long currentTimeMillis = System.currentTimeMillis();
+        // 过场动画出现频率
+        if (svgaAssets.startsWith("transition_") && AnimFrequencyUtil.getAnimFrequency() != AnimFileName.Frequency.EVERY_TIME) {
+            int animFrequency = AnimFrequencyUtil.getAnimFrequency();
+            long animTime = SharePreferenceUtil.getLong("Frequency_" + svgaAssets, 0);
+
+            if (animFrequency == AnimFileName.Frequency.WEEK_TIME) {
+                if (currentTimeMillis - animTime < HourUtil.LEN_DAY * 7) {
+                    onViewCallBack.callBack(null);
+                    return;
+                }
+            } else {
+                if (currentTimeMillis - animTime < HourUtil.LEN_DAY) {
+                    onViewCallBack.callBack(null);
+                    return;
+                }
+            }
+        }
+        SharePreferenceUtil.setLong("Frequency_" + svgaAssets, currentTimeMillis);
+        String hint = AnimFileName.getHint(svgaAssets);
+        // 语音播放
+        TtsHelper.getInstance().start(new TtsModel(hint), null);
+
+        mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
+                .setLayoutRes(R.layout.dialog_svga_layout)
+                .setDialogAnimationRes(com.thfw.ui.R.style.animate_dialog_fade)
+                .setScreenWidthAspect(activity, 1.0f)
+                .setScreenHeightAspect(activity, 1.0f)
+                .setDimAmount(0.6f)
+                // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
+                .setOnBindViewListener(viewHolder -> {
+                    SVGAParser parser = new SVGAParser(activity);
+                    SVGAImageView svgaImageView = viewHolder.getView(R.id.svga_dialog);
+                    if (!TextUtils.isEmpty(hint)) {
+                        mTvTime = viewHolder.getView(R.id.tv_time);
+                        mMinuteRunnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mTvTime != null) {
+                                    mTvTime.setText(minute + "S");
+                                    minute--;
+                                    if (minute > 0) {
+                                        mTvTime.postDelayed(this, 1000);
+                                    }
+                                }
+                            }
+                        };
+                        TextView mTvJump = viewHolder.getView(R.id.tv_jump);
+                        TextView mTvHint = viewHolder.getView(R.id.tv_hint);
+                        mTvJump.setOnClickListener(v -> {
+                            LogUtil.d(TAG, "onFinished click");
+                            svgaImageView.getCallback().onFinished();
+                        });
+                        mTvHint.setText(hint);
+                    } else {
+                        viewHolder.getView(R.id.tv_time).setVisibility(View.INVISIBLE);
+                        viewHolder.getView(R.id.tv_jump).setVisibility(View.INVISIBLE);
+                        viewHolder.getView(R.id.tv_hint).setVisibility(View.INVISIBLE);
+                    }
+                    long time = System.currentTimeMillis();
+                    LogUtil.d(TAG, "Time start = " + time);
+                    // The third parameter is a default parameter, which is null by default. If this method is set, the audio parsing and playback will not be processed internally. The audio File instance will be sent back to the developer through PlayCallback, and the developer will control the audio playback and playback. stop
+                    parser.decodeFromAssets(svgaAssets, new SVGAParser.ParseCompletion() {
+                        @Override
+                        public void onComplete(@NotNull SVGAVideoEntity svgaVideoEntity) {
+                            SVGADrawable drawable = new SVGADrawable(svgaVideoEntity);
+
+                            if (mTvTime != null) {
+                                int fps = svgaVideoEntity.getFPS();
+                                int frames = svgaVideoEntity.getFrames();
+                                LogUtil.d(TAG, "onComplete = frames" + frames + ", fps = " + fps);
+                                minute = (int) (frames * 1.0f / fps + 0.3);
+                                mTvTime.postDelayed(mMinuteRunnable, 0);
+                            }
+
+                            svgaImageView.setImageDrawable(drawable);
+                            svgaImageView.startAnimation();
+                            LogUtil.d(TAG, "Time end limt = " + (System.currentTimeMillis() - time));
+                        }
+
+                        @Override
+                        public void onError() {
+                        }
+                    }, null);
+
+                    svgaImageView.setCallback(new SimpleSVGACallBack() {
+
+                        @Override
+                        public void onFinished() {
+                            LogUtil.d(TAG, "onFinished");
+                            if (svgaImageView.getCallback() == null) {
+                                return;
+                            }
+                            svgaImageView.setCallback(null);
+                            onViewCallBack.callBack(svgaImageView);
+                            svgaImageView.clear();
+                            if (mTvTime != null && mMinuteRunnable != null) {
+                                mTvTime.removeCallbacks(mMinuteRunnable);
+                                mTvTime = null;
+                                mMinuteRunnable = null;
+                            }
+                            if (mSvgaTDialog != null) {
+                                mSvgaTDialog.dismiss();
+                                mSvgaTDialog = null;
+                            }
+                        }
+                    });
+                })
+                .setOnViewClickListener(onViewCallBack).create().show();
+    }
+
+    /**
+     * 签到弹框
      *
      * @param activity
      * @param onViewCallBack
@@ -413,6 +550,15 @@ public class DialogFactory {
 
     public interface OnViewThreeCallBack extends OnViewClickListener {
         void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvOne, TextView mTvTwo, TextView mTvThree);
+    }
+
+    public static abstract class OnSVGACallBack implements OnViewClickListener {
+        public abstract void callBack(SVGAImageView svgaImageView);
+
+        @Override
+        public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+
+        }
     }
 
 

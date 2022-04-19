@@ -13,6 +13,7 @@ import com.thfw.base.models.CommonModel;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.MobilePresenter;
+import com.thfw.base.utils.FunctionType;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
@@ -148,12 +149,12 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
                 ChatActivity chatActivity = (ChatActivity) activity;
                 long useTimeAI = chatActivity.getUseDuration(TalkApi.JOIN_TYPE_AI);
                 if (useTimeAI > 0) {
-                    saveTodayPlayTime(FunctionDurationUtil.FUNCTION_AI_TALK, useTimeAI);
+                    saveTodayPlayTime(FunctionType.FUNCTION_AI_TALK, useTimeAI);
                 }
 
                 long useTimeTheme = chatActivity.getUseDuration(TalkApi.JOIN_TYPE_SPEECH_CRAFT);
                 if (useTimeTheme > 0) {
-                    saveTodayPlayTime(FunctionDurationUtil.FUNCTION_THEME_TALK, useTimeTheme);
+                    saveTodayPlayTime(FunctionType.FUNCTION_THEME_TALK, useTimeTheme);
                 }
                 return;
             }
@@ -250,7 +251,7 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
     }
 
     private void saveTodayPlayTime(long time) {
-        saveTodayPlayTime(FunctionDurationUtil.FUNCTION_APP, time);
+        saveTodayPlayTime(FunctionType.FUNCTION_APP, time);
     }
 
     /**

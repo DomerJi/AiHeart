@@ -26,8 +26,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import com.thfw.base.timing.TimingHelper;
-import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NetworkUtil;
@@ -41,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
  * Date: 2021/11/17 9:25
  * Describe:Todo
  */
-public class TitleBarView extends LinearLayout implements TimingHelper.WorkListener {
+public class TitleBarView extends LinearLayout {
 
 
     private static final String TAG = TitleBarView.class.getSimpleName();
@@ -187,8 +185,6 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
             filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
             mContext.registerReceiver(mWifiStateReceiver, filter);
         }
-
-        TimingHelper.getInstance().addWorkArriveListener(this);
     }
 
     @Override
@@ -206,19 +202,6 @@ public class TitleBarView extends LinearLayout implements TimingHelper.WorkListe
         if (mBluecastReceiver != null) {
             mContext.unregisterReceiver(this.mBluecastReceiver);
         }
-        TimingHelper.getInstance().removeWorkArriveListener(this);
-    }
-
-    @Override
-    public void onArrive() {
-        if (mTvTitleBarTime != null) {
-            mTvTitleBarTime.setText(HourUtil.getHHMM(System.currentTimeMillis()));
-        }
-    }
-
-    @Override
-    public WorkInt workInt() {
-        return WorkInt.TIME;
     }
 
     private void initReceiver() {

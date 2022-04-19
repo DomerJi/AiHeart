@@ -204,7 +204,7 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
 
             @Override
             public void onSuccess(MsgCountModel data) {
-
+                TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND5_MSG_COUNT);
                 if (data != null) {
                     if (type == TYPE_ALL) {
                         numSystemArray = data.system_msg_list;

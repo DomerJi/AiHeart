@@ -154,7 +154,8 @@ public class AnimFileName {
     public static class Frequency {
         public static final String KEY_FREQUENCY = "key.frequency";
         public static final int EVERY_TIME = 0;
-        public static final int TWO_HOUR_TIME = 1;
-        public static final int DAY_TIME = 2;
+        public static final int DAY_TIME = 1;
+
+        public static final int WEEK_TIME = 2;
     }
 }

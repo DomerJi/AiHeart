@@ -152,7 +152,7 @@ public class SetNetFragment extends RobotBaseFragment {
 
                         @Override
                         public void failed(@NonNull ConnectionErrorCode errorCode) {
-                            ToastUtil.show("链接失败");
+                            ToastUtil.show("连接失败");
                         }
                     }).start();
                     return;

@@ -18,6 +18,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
@@ -123,6 +124,12 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void initData() {
+
+        if (!UserManager.getInstance().isTrueLogin()) {
+            MainActivity.setShowLoginAnim(true);
+            SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN, true);
+            SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN_TTS, true);
+        }
     }
 
     /**
