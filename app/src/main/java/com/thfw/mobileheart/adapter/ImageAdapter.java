@@ -1,13 +1,15 @@
 package com.thfw.mobileheart.adapter;
 
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.HomeEntity;
+import com.thfw.mobileheart.R;
 import com.thfw.ui.utils.GlideUtil;
 import com.youth.banner.adapter.BannerAdapter;
 
@@ -23,17 +25,14 @@ public class ImageAdapter extends BannerAdapter<HomeEntity.BannerModel, ImageAda
         super(mDatas);
     }
 
+    protected View inflate(int layoutId, ViewGroup parent) {
+        return LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
+    }
+
     //创建ViewHolder，可以用viewType这个字段来区分不同的ViewHolder
     @Override
     public BannerViewHolder onCreateHolder(ViewGroup parent, int viewType) {
-        RoundedImageView imageView = new RoundedImageView(parent.getContext());
-        imageView.setOval(false);
-        //注意，必须设置为match_parent，这个是viewpager2强制要求的
-        imageView.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        return new BannerViewHolder(imageView);
+        return new BannerViewHolder(inflate(R.layout.item_banner_image, parent));
     }
 
     @Override
@@ -44,9 +43,9 @@ public class ImageAdapter extends BannerAdapter<HomeEntity.BannerModel, ImageAda
     protected class BannerViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
 
-        public BannerViewHolder(@NonNull ImageView view) {
+        public BannerViewHolder(@NonNull View view) {
             super(view);
-            this.imageView = view;
+            imageView = view.findViewById(R.id.iv_banner);
         }
     }
 }

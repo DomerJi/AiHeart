@@ -81,7 +81,7 @@
                 android:layout_marginLeft="4dp"
                 android:gravity="center"
                 android:minWidth="35dp"
-                android:text="◠  ◠"
+                android:text="@string/mood_defalut_hint"
                 android:textColor="@color/text_content"
                 android:textSize="@dimen/textSize_small" />
 

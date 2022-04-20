@@ -18,6 +18,7 @@
     <string name="sort_type_see">看一看</string>
     <string name="sort_type_read">读一读</string>
     <string name="sort_type_study">学一学</string>
+    <string name="mood_defalut_hint">◠  ◠</string>
 
     <string name="xt_hint_title">小天温馨提示：</string>
     <string name="xt_hint_content">如果你正处于危机情况，比如产生了自杀或自伤的念头，你可以拨打全国心理援助热线寻求援助。</string>

@@ -348,14 +348,16 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         if (moodHint) {
             return;
         }
-        moodHint = SharePreferenceUtil.getBoolean(KEY_MOOD_HINT + ActivityLifeCycle.getTodayStartTime(), false);
+        moodHint = SharePreferenceUtil.getBoolean(KEY_MOOD_HINT
+                + ActivityLifeCycle.getTodayStartTime()
+                + UserManager.getInstance().getUID(), false);
         if (moodHint) {
             return;
         }
         MoodLivelyHelper.addListener(new MoodLivelyHelper.MoodLivelyListener() {
             @Override
             public void onMoodLively(MoodLivelyModel data) {
-                if (data.getUserMood() == null) {
+                if (data != null && data.getUserMood() == null) {
                     DialogFactory.createMoodSignInDialog(MainActivity.this, new OnViewClickListener() {
                         @Override
                         public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {

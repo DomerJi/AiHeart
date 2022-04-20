@@ -333,7 +333,10 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
 
     @Override
     public void onFail(ResponeThrowable throwable) {
-
+        if (mRefreshLayout != null) {
+            mRefreshLayout.finishLoadMore(false);
+            mRefreshLayout.finishRefresh(false);
+        }
     }
 
 

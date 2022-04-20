@@ -287,13 +287,23 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
 
     @Override
     public void onMoodLively(MoodLivelyModel data) {
-        mTvTimeMinute.setText(FunctionDurationUtil.getFunctionTimeHour(FunctionType.FUNCTION_APP));
-        mTvTimeContinuation.setText(String.valueOf(data.getContinueDays()));
-        mTvTimeDay.setText(String.valueOf(data.getLoginDays()));
+        if (data != null) {
+            mTvTimeMinute.setText(FunctionDurationUtil.getFunctionTimeHour(FunctionType.FUNCTION_APP));
+            mTvTimeContinuation.setText(String.valueOf(data.getContinueDays()));
+            mTvTimeDay.setText(String.valueOf(data.getLoginDays()));
+        } else {
+            mTvTimeMinute.setText("");
+            mTvTimeContinuation.setText("");
+            mTvTimeDay.setText("");
+        }
 
-        if (data.getUserMood() != null) {
+
+        if (data != null && data.getUserMood() != null) {
             GlideUtil.load(mContext, data.getUserMood().getPath(), mIvMoodStatus);
             mTvStatus.setText(data.getUserMood().getName());
+        } else {
+            GlideUtil.load(mContext, R.drawable.gray_cirlle_bg, mIvMoodStatus);
+            mTvStatus.setText(getResources().getString(R.string.mood_defalut_hint));
         }
     }
 

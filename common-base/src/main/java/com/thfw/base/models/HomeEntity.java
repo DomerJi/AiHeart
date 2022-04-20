@@ -1,6 +1,7 @@
 package com.thfw.base.models;
 
 import com.google.gson.annotations.SerializedName;
+import com.thfw.base.base.IModel;
 
 import java.util.List;
 
@@ -61,10 +62,29 @@ public class HomeEntity {
     public HomeEntity() {
     }
 
-    public class BannerModel {
+    public static class BannerModel implements IModel {
 
-        @SerializedName("imageUrl")
+        /**
+         * pic : https://resource.soulbuddy.cn/public/uploads/tianhe/pic/famous_scenes_that_astronaut_have_their_meals_at_spacecraft.png
+         * type : 0
+         * url :
+         * content : null
+         */
+
+        @SerializedName("pic")
         public String imageUrl;
+        @SerializedName("type")
+        private int type;
+        @SerializedName("url")
+        private String url;
+        @SerializedName("content")
+        private String content;
+        @SerializedName("content_id")
+        private long contentId;
+
+        public int getType() {
+            return type;
+        }
     }
 
 }

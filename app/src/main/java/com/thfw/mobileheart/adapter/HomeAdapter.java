@@ -19,14 +19,13 @@ import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.models.HomeEntity;
 import com.thfw.base.models.HomeHistoryEntity;
 import com.thfw.base.models.MoodLivelyModel;
-import com.thfw.base.models.MoodModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.utils.FunctionType;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
-import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 import com.thfw.mobileheart.activity.exercise.ExerciseActivity;
 import com.thfw.mobileheart.activity.me.HotPhoneActivity;
 import com.thfw.mobileheart.activity.mood.MoodDetailActivity;
@@ -79,8 +78,8 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         if (getItemCount() > 2) {
             RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForLayoutPosition(2);
             if (viewHolder instanceof MadeHolder) {
-                ((MadeHolder) viewHolder).mTvSumActivityValue.setText(String.valueOf(data.getLoginDays()));
-                ((MadeHolder) viewHolder).setMood(data.getUserMood());
+                ((MadeHolder) viewHolder).setMood(data);
+                ((MadeHolder) viewHolder).notifyTodayTime();
             }
         }
     }
@@ -148,9 +147,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             case HomeEntity.TYPE_CUSTOM_MADE:
                 MadeHolder madeHolder = (MadeHolder) holder;
                 madeHolder.notifyTodayTime();
-                if (MoodLivelyHelper.getModel() != null) {
-                    madeHolder.setMood(MoodLivelyHelper.getModel().getUserMood());
-                }
+                madeHolder.setMood(MoodLivelyHelper.getModel());
                 break;
             case HomeEntity.TYPE_TAB_TITLE:
                 TabTitleHolder tabTitleHolder = (TabTitleHolder) holder;
@@ -356,12 +353,22 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
 
         }
 
-        public void setMood(MoodModel mood) {
-            if (mood != null && mTvMoodValue != null && mRivEmoji != null) {
-                GlideUtil.load(mContext, mood.getPath(), mRivEmoji);
-                mTvMoodValue.setText(mood.getName());
+        public void setMood(MoodLivelyModel mood) {
+            if (mTvMoodValue == null || mRivEmoji == null) {
+                return;
             }
+            if (mood != null && mood.getUserMood() != null) {
+                GlideUtil.load(mContext, mood.getUserMood().getPath(), mRivEmoji);
+                mTvMoodValue.setText(mood.getUserMood().getName());
+                mTvSumActivityValue.setText(String.valueOf(mood.getLoginDays()));
+            } else {
+                mTvSumActivityValue.setText("");
+                GlideUtil.load(mContext, R.drawable.gray_cirlle_bg, mRivEmoji);
+                mTvMoodValue.setText(mContext.getResources().getString(R.string.mood_defalut_hint));
+            }
+
         }
+
 
         public void notifyTodayTime() {
             if (mTvTodayActivityValue != null) {
@@ -406,11 +413,13 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             mBanner.setLoopTime(DELAY_TIME_BANNER);
             // mBanner.addPageTransformer(new ScaleInTransformer());
             mBanner.setAdapter(new ImageAdapter(homeEntity.bannerModels));
-            mBanner.setOnBannerListener(new OnBannerListener() {
+            mBanner.setOnBannerListener(new OnBannerListener<HomeEntity.BannerModel>() {
                 @Override
-                public void OnBannerClick(Object data, int position) {
-                    LogUtil.d("OnBannerClick -> " + position);
-                    mContext.startActivity(new Intent(mContext, AudioPlayerActivity.class));
+                public void OnBannerClick(HomeEntity.BannerModel bannerModel, int position) {
+                    ToastUtil.show(bannerModel.getType() + "");
+                    switch (bannerModel.getType()) {
+
+                    }
                 }
             });
         }

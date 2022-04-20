@@ -19,6 +19,7 @@ import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.activity.talk.ChatActivity;
+import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.ArrayList;
@@ -254,6 +255,14 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
         saveTodayPlayTime(FunctionType.FUNCTION_APP, time);
     }
 
+    public static String getKey(int type) {
+        return getTodayStartTime() + "_" + UserManager.getInstance().getUID() + "_" + type;
+    }
+
+    public static String getYesterdayKey(int type) {
+        return (getTodayStartTime() - HourUtil.LEN_DAY) + "_" + UserManager.getInstance().getUID() + "_" + type;
+    }
+
     /**
      * 保存今日运行时间，以今日0点的时间作为Key值。
      * todo 上传时长和活跃天数，上传策略机制，及保证不重复上传。
@@ -262,13 +271,13 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
      * @param time
      */
     private void saveTodayPlayTime(int type, long time) {
-        String key = getTodayStartTime() + "_" + type;
+        String key = getKey(type);
         long todayTime = SharePreferenceUtil.getLong(key, 0);
 
         LogUtil.d(TAG, "today :" + key + " : time : " + todayTime);
         LogUtil.d(TAG, "today totalTime:" + time + " :" + (todayTime + time));
         SharePreferenceUtil.setLong(key, todayTime + time);
-        String yesterdayKey = (getTodayStartTime() - HourUtil.LEN_DAY) + "_" + type;
+        String yesterdayKey = getYesterdayKey(type);
         long yesterdayTime = SharePreferenceUtil.getLong(yesterdayKey, 0);
         LogUtil.d(TAG, "yesterdayKey :" + yesterdayKey + " ->  key :" + key);
 

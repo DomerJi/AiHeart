@@ -23,7 +23,6 @@ import retrofit2.http.POST;
  */
 public interface MobileApi {
 
-
     /**
      * 手机端-首页-小密推荐
      *
@@ -66,13 +65,13 @@ public interface MobileApi {
     Observable<HttpResult<MoodLivelyModel>> getMoodLivelyDetail(@FieldMap Map<String, Object> params);
 
     /**
-     * 手机端-【心情】与【活跃】详情
+     * 手机端-【轮播图】
      *
      * @param params
      * @return
      */
     @FormUrlEncoded
-    @POST("user_mood_list")
+    @POST("banner")
     Observable<HttpResult<List<HomeEntity.BannerModel>>> getHomeBanner(@FieldMap Map<String, Object> params);
 
 

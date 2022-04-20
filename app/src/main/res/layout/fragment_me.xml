@@ -118,7 +118,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="8dp"
-                        android:text="◠  ◠"
+                        android:text="@string/mood_defalut_hint"
                         android:textColor="@color/white"
                         android:textSize="@dimen/textSize_small" />
 

@@ -73,12 +73,12 @@ public class FunctionDurationUtil {
     }
 
     public static long getFunctionTime(int type) {
-        String key = ActivityLifeCycle.getTodayStartTime() + "_" + type;
+        String key = ActivityLifeCycle.getKey(type);
         return SharePreferenceUtil.getLong(key, 0);
     }
 
     public static void setFunctionTime(int type, long time) {
-        String key = ActivityLifeCycle.getTodayStartTime() + "_" + type;
+        String key = ActivityLifeCycle.getKey(type);
         SharePreferenceUtil.setLong(key, time);
     }
 

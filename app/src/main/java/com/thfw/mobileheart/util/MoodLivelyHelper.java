@@ -32,6 +32,7 @@ public class MoodLivelyHelper {
 
     public static void clearModel() {
         model = null;
+        change();
     }
 
     public static void notifyMood(MoodModel moodModel) {
@@ -88,7 +89,7 @@ public class MoodLivelyHelper {
                     FunctionDurationUtil.setFunctionTime(FunctionType.FUNCTION_APP, model.getTodayActiveTime());
                     change();
                 }
-                if(workListener!=null) {
+                if (workListener != null) {
                     TimingHelper.getInstance().removeWorkArriveListener(workListener);
                 }
             }
