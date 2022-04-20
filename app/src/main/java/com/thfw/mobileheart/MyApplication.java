@@ -155,6 +155,7 @@ public class MyApplication extends MultiDexApplication {
                 : ContextApp.DeviceType.MOBILE);
         ToastUtil.init(this);
         TDialog.init(this);
+        LogUtil.setLogEnabled(LogUtil.isLogEnable());
         initAtThread();
         registerActivityLifecycleCallbacks(activityLifeCycle);
         initTimeReceiver();

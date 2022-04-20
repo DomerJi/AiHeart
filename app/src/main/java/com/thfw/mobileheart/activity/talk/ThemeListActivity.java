@@ -136,7 +136,6 @@ public class ThemeListActivity extends BaseActivity<TalkPresenter> implements Ta
      * @param y
      */
     public void onScroll(int y) {
-        LogUtil.d("onScroll(y)" + y);
         ViewGroup.LayoutParams lp = mClTalkTop.getLayoutParams();
         lp.height = bannerHeight - y;
         if (lp.height < minHeight) {

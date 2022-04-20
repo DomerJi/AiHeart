@@ -50,6 +50,7 @@ import com.thfw.mobileheart.fragment.MessageFragment;
 import com.thfw.mobileheart.push.MyPreferences;
 import com.thfw.mobileheart.push.helper.PushHelper;
 import com.thfw.mobileheart.push.tester.UPushAlias;
+import com.thfw.mobileheart.util.ActivityLifeCycle;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FragmentLoader;
 import com.thfw.mobileheart.util.MoodLivelyHelper;
@@ -86,6 +87,8 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private static boolean initOrganization;
     private static boolean initUmeng;
     private static boolean moodHint;
+    // 心情打卡今日第一次 记录
+    private static final String KEY_MOOD_HINT = "key.mood.first";
 
     // 登录动画是否显示，为了不频繁获取sp数据
     private static boolean showLoginAnim;
@@ -320,7 +323,10 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
      * 显示登录欢迎动画
      */
     private void showSVGALogin() {
-        if (showLoginAnim && SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN, true)) {
+        if (!showLoginAnim) {
+            return;
+        }
+        if (SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN, true)) {
             LogUtil.d(TAG, "showSVGALogin start");
             DialogFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_WELCOM, new DialogFactory.OnSVGACallBack() {
                 @Override
@@ -330,10 +336,19 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     showLoginAnim = false;
                 }
             });
+        } else {
+            showLoginAnim = false;
         }
     }
 
+    /**
+     * 心情打卡提醒。今日提醒一次。
+     */
     private void moodHintDialog() {
+        if (moodHint) {
+            return;
+        }
+        moodHint = SharePreferenceUtil.getBoolean(KEY_MOOD_HINT + ActivityLifeCycle.getTodayStartTime(), false);
         if (moodHint) {
             return;
         }
@@ -341,7 +356,6 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             @Override
             public void onMoodLively(MoodLivelyModel data) {
                 if (data.getUserMood() == null) {
-                    moodHint = true;
                     DialogFactory.createMoodSignInDialog(MainActivity.this, new OnViewClickListener() {
                         @Override
                         public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
@@ -352,6 +366,8 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                         }
                     });
                 }
+                moodHint = true;
+                SharePreferenceUtil.setBoolean(KEY_MOOD_HINT + ActivityLifeCycle.getTodayStartTime(), moodHint);
                 MoodLivelyHelper.removeListener(this);
             }
         });
@@ -512,7 +528,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     UserManager.getInstance().getUser().setUserInfo(data);
                     UserManager.getInstance().notifyUserInfo();
                     UPushAlias.set(MyApplication.getApp(), "user_" + data.id, "user");
-                    if (SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, true)) {
+                    if (SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false)) {
                         SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false);
                         TtsHelper.getInstance().start(new TtsModel("你好" + UserManager.getInstance().getUser().getVisibleName() + ",很高兴见到你"), null);
                     }

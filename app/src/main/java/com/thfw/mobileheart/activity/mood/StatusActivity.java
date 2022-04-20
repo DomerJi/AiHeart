@@ -157,7 +157,6 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
      * @param y
      */
     public void onScroll(int y) {
-        LogUtil.d("onScroll(y)" + y);
         if (ivHeight == 0 || topHeight == 0) {
             ivHeight = mStatusAdapter.getTopBanner();
             topHeight = mLtlTop.getMeasuredHeight();

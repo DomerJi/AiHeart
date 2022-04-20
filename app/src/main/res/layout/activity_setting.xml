@@ -9,6 +9,7 @@
     tools:context="com.thfw.mobileheart.activity.settings.SettingActivity">
 
     <com.thfw.ui.widget.TitleView
+        android:id="@+id/titleView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tv_centerText="@string/me_setting"

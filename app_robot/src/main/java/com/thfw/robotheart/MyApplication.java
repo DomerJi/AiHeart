@@ -104,6 +104,7 @@ public class MyApplication extends MultiDexApplication {
         ContextApp.setDeviceType(ContextApp.DeviceType.ROBOT);
         ToastUtil.init(this);
         TDialog.init(this);
+        LogUtil.setLogEnabled(LogUtil.isLogEnable());
         initAtThread();
     }
 

@@ -24,7 +24,6 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.MobilePresenter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
-import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
@@ -123,7 +122,6 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
                     } else {
                         mLtlTop.setAlpha(f);
                     }
-                    LogUtil.d("searchViewScroll -> " + f);
                 }
 
             }
@@ -146,7 +144,6 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
      * @param y
      */
     public void onScroll(int y) {
-        LogUtil.d("onScroll(y)" + y);
         if (ivHeight == 0 || topHeight == 0) {
             ivHeight = mHomeAdapter.getBannerHeight();
             topHeight = mLtlTop.getMeasuredHeight();

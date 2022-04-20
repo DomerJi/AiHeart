@@ -97,7 +97,7 @@ public class TaskItemModel implements IModel {
     }
 
     /**
-     * 0-未完成 1-已完成 2-过期
+     * 0-未完成 1-已完成 2-过期 3-已废弃
      *
      * @return
      */

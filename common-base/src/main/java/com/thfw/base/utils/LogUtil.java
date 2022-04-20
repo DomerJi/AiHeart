@@ -10,31 +10,30 @@ import android.util.Log;
  */
 public class LogUtil {
 
-    public static final String LOG_LOGCAT = "Logcat.log";
-    public static final String LOG_DCS_ALL = "DcsAll.log";
     private static final String TAG = "THFW_HEART";
-    // 当文件大小超过FILE_LOG_SIZE时，只保留文件后面的KEEP_LOG_SIZE的日志内容
-    private static final long FILE_LOG_SIZE = 24 * 1024 * 1024; // 24M
-    private static final long KEEP_LOG_SIZE = 16 * 1024 * 1024; // 16M
 
     private static boolean isLogEnabled = true;
-    private static boolean isFileLogEnabled = false;
     private static String versionName = "1.0.0";
 
-    public static boolean isLogEnabled() {
+    // 用于存储日志的调试开关
+    private static final String KEY_LOG_ENABLE = "key.log.enabled";
+
+    public static boolean switchLogEnable() {
+        isLogEnabled = !isLogEnable();
+        SharePreferenceUtil.setBoolean(KEY_LOG_ENABLE, isLogEnabled);
+        return isLogEnabled;
+    }
+
+    public static boolean isLogEnable() {
+        return SharePreferenceUtil.getBoolean(KEY_LOG_ENABLE, false);
+    }
+
+    private static boolean isLogEnabled() {
         return isLogEnabled;
     }
 
     public static void setLogEnabled(boolean logEnabled) {
         isLogEnabled = logEnabled;
-    }
-
-    public static boolean isFileLogEnabled() {
-        return isFileLogEnabled;
-    }
-
-    public static void setFileLogEnabled(boolean fileLogEnabled) {
-        isFileLogEnabled = fileLogEnabled;
     }
 
     /**

@@ -66,11 +66,15 @@ public class TaskFragment extends BaseFragment<TaskPresenter> implements TaskPre
         mTaskAdapter.setOnRvItemListener(new OnRvItemListener<TaskItemModel>() {
             @Override
             public void onItemClick(List<TaskItemModel> list, int position) {
-                if (list.get(position).getStatus() == 2) {
+                TaskItemModel itemModel = list.get(position);
+                if (itemModel.getStatus() == 2) {
                     ToastUtil.show("已过期");
                     return;
+                } else if (itemModel.getStatus() == 3) {
+                    ToastUtil.show("已废弃");
+                    return;
                 }
-                TaskDetailsActivity.startActivity(mContext, list.get(position).getId());
+                TaskDetailsActivity.startActivity(mContext, itemModel.getId());
             }
         });
 

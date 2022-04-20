@@ -38,7 +38,6 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
     private static final String KEY_SYSTEM_FINAL = "msg.count.system_";
     private static String KEY_TASK;
     private static String KEY_SYSTEM;
-    private static int requestCount = 0;
     private int type = TYPE_ALL;
 
     private int numTask;
@@ -51,6 +50,7 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
 
     private MsgCountManager() {
         onCountChangeListeners = new ArrayList<>();
+        UserManager.getInstance().addObserver(this);
         init(UserManager.getInstance().isLogin());
     }
 
@@ -85,6 +85,7 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
             KEY_SYSTEM = KEY_SYSTEM_FINAL;
             numTask = 0;
             numSystem = 0;
+
         }
 
         LogUtil.d(TAG, "KEY_TASK = " + KEY_TASK + " , KEY_SYSTEM = " + KEY_SYSTEM);
@@ -194,7 +195,6 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
      */
     public void getMsgCount(int type) {
         this.type = type;
-        LogUtil.d(TAG, "getMsgCount() requestCount = " + requestCount);
         TimingHelper.getInstance().removeWorkArriveListener(MsgCountManager.this);
         new TaskPresenter<>(new TaskPresenter.TaskUi<MsgCountModel>() {
             @Override
@@ -296,7 +296,6 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
 
             @Override
             public void onFail(ResponeThrowable throwable) {
-                TimingHelper.getInstance().addWorkArriveListener(MsgCountManager.this);
             }
         }).onReadStated(msgId);
     }
