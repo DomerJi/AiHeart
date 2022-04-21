@@ -1,5 +1,7 @@
 package com.thfw.ui.voice.tts;
 
+import android.text.TextUtils;
+
 /**
  * Author:pengs
  * Date: 2021/11/23 16:37
@@ -11,9 +13,13 @@ public class TtsModel {
     public String text;
 
     public TtsModel(String text) {
-        this.text = text.replaceAll("&nbsp;","");
-        this.text = this.text.replaceAll(" ","");
-        this.ttsType = TtsType.READ_NORMAL;
+        if (TextUtils.isEmpty(text)) {
+            this.text = "";
+            this.ttsType = TtsType.READ_NORMAL;
+            return;
+        }
+        this.text = text.replaceAll("&nbsp;", "");
+        this.text = this.text.replaceAll(" ", "");
     }
 
     public TtsModel(String text, TtsType ttsType) {

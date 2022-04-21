@@ -2,6 +2,7 @@ package com.thfw.mobileheart.fragment;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -254,7 +255,13 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
 
             @Override
             public void onFail(ResponeThrowable throwable) {
-
+                if (UserManager.getInstance().isTrueLogin()) {
+                    new Handler().postDelayed(() -> {
+                        if (!EmptyUtil.isEmpty(getActivity())) {
+                            requestBanner();
+                        }
+                    }, 3000);
+                }
             }
         }).onGetBannerDetail();
     }

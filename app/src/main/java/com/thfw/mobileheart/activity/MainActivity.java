@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -277,7 +278,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             // 淡入
             mMainRoot.setAlpha(0f);
             mMainRoot.setVisibility(View.VISIBLE);
-            mMainRoot.animate().alpha(1f).setDuration(400).setListener(new SimpleAnimatorListener() {
+            mMainRoot.animate().alpha(1f).setDuration(300).setListener(new SimpleAnimatorListener() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     if (EmptyUtil.isEmpty(MainActivity.this)) {
@@ -316,6 +317,16 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             moodHintDialog();
 
             showSVGALogin();
+        }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        // 页面显示后才可点击
+        if (trueResume) {
+            return super.dispatchTouchEvent(event);
+        } else {
+            return true;
         }
     }
 

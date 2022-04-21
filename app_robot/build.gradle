@@ -75,24 +75,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    //解决JavaCV中文件重复问题
-    packagingOptions {
-        pickFirst 'META-INF/native-image/android-arm/jnijavacpp/jni-config.json'
-        pickFirst 'META-INF/native-image/android-arm64/jnijavacpp/jni-config.json'
-        pickFirst 'META-INF/native-image/android-arm/jnijavacpp/reflect-config.json'
-        pickFirst 'META-INF/native-image/android-arm64/jnijavacpp/reflect-config.json'
-//        exclude 'META-INF/rxjava.properties'
-//        exclude 'META-INF/maven/com.squareup.okhttp3/okhttp/pom.xml'
-//        exclude 'META-INF/maven/com.squareup.okhttp3/okhttp/pom.properties'
-//        exclude 'META-INF/maven/com.squareup.okio/okio/pom.xml'
-//        exclude 'META-INF/maven/com.squareup.okio/okio/pom.properties'
-//        exclude 'META-INF/maven/com.google.code.gson/gson/pom.xml'
-//        exclude 'META-INF/maven/com.google.code.gson/gson/pom.properties'
-    }
-
-//    configurations {
-//        all*.exclude group: 'com.google.code.gson'
-//    }
 }
 
 dependencies {
@@ -107,21 +89,13 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
     implementation 'androidx.navigation:navigation-ui:2.3.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     api 'com.thanosfisherman.wifiutils:wifiutils:1.6.5'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'com.github.yyued:SVGAPlayer-Android:2.6.1'
     api 'me.samlss:bloom:1.0.0'
 
-    api 'org.bytedeco:openblas:0.3.17-1.5.6'
-    api 'org.bytedeco:openblas:0.3.17-1.5.6:android-arm'
-
     api 'org.bytedeco:opencv:4.5.3-1.5.6'
     api 'org.bytedeco:opencv:4.5.3-1.5.6:android-arm'
 
-    api group: 'org.bytedeco', name: 'javacpp', version: '1.5.6'
-    api group: 'org.bytedeco', name: 'javacpp', version: '1.5.6', classifier: 'android-arm64'
-    implementation 'androidx.preference:preference:1.1.1'
 }
