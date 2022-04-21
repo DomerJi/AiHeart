@@ -73,6 +73,8 @@ public class HomeEntity {
 
         @SerializedName("pic")
         public String imageUrl;
+        @SerializedName("title")
+        public String title;
         @SerializedName("type")
         private int type;
         @SerializedName("url")
@@ -80,10 +82,23 @@ public class HomeEntity {
         @SerializedName("content")
         private String content;
         @SerializedName("content_id")
-        private long contentId;
+        private int contentId;
 
         public int getType() {
             return type;
+        }
+
+        public int getContentId() {
+            return contentId;
+        }
+
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getTitle() {
+            return title;
         }
     }
 

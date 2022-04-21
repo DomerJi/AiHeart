@@ -5,8 +5,10 @@ import android.content.Intent;
 
 import com.thfw.base.base.MsgType;
 import com.thfw.base.models.AudioEtcModel;
+import com.thfw.base.models.HomeEntity;
 import com.thfw.base.models.PushModel;
 import com.thfw.base.models.TalkModel;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
@@ -73,6 +75,61 @@ public class PushHandle {
                 } else {
                     SystemDetailActivity.startActivity(mContext, longTextId);
                 }
+                break;
+            case MsgType.COMMON_PROBLEM:
+                HelpBackActivity.startActivity(mContext);
+                break;
+            case MsgType.MOOD:
+                StatusActivity.startActivity(mContext);
+                break;
+            case MsgType.VOICE_COMMAND:
+                // todo 语音指令 手机是否需要呢
+                break;
+            case MsgType.ABOUT_US:
+                WebActivity.startActivity(mContext, AgreeOn.AGREE_ABOUT);
+                break;
+            case MsgType.BOOK:
+                BookDetailActivity.startActivity(mContext, contentId);
+                break;
+            case MsgType.IDEO_BOOK:
+                BookIdeoDetailActivity.startActivity(mContext, contentId);
+                break;
+        }
+
+    }
+
+
+    public static final void handleMessage(Context mContext, HomeEntity.BannerModel bannerModel) {
+        int msgType = bannerModel.getType();
+        LogUtil.d("OnBannerClick", "BannerModel type = " + msgType);
+        int contentId = bannerModel.getContentId();
+        switch (msgType) {
+            case MsgType.TASK:
+                mContext.startActivity(new Intent(mContext, MeTaskActivity.class));
+                break;
+            case MsgType.TESTING:
+                TestBeginActivity.startActivity(mContext, contentId);
+                break;
+            case MsgType.TOOL_PACKAGE:
+                ExerciseDetailActivity.startActivity(mContext, contentId);
+                break;
+            case MsgType.TOPIC_DIALOG:
+                ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
+                        .setId(contentId));
+                break;
+            case MsgType.MUSIC:
+                AudioEtcModel audioEtcModel = new AudioEtcModel();
+                audioEtcModel.setId(contentId);
+                AudioPlayerActivity.startActivity(mContext, audioEtcModel);
+                break;
+            case MsgType.VIDEO:
+                VideoPlayActivity.startActivity(mContext, contentId, false);
+                break;
+            case MsgType.H5:
+                WebActivity.startActivity(mContext, bannerModel.getUrl(), bannerModel.getTitle());
+                break;
+            case MsgType.SYSTEM:
+                SystemDetailActivity.startActivity(mContext, contentId);
                 break;
             case MsgType.COMMON_PROBLEM:
                 HelpBackActivity.startActivity(mContext);

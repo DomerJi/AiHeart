@@ -27,7 +27,6 @@ import com.thfw.robotheart.fragments.sets.SetSpeechFragment;
 import com.thfw.robotheart.fragments.sets.SetUpdateFragment;
 import com.thfw.robotheart.fragments.sets.SetVolumeFragment;
 import com.thfw.robotheart.util.FragmentLoader;
-import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.robotheart.view.TitleRobotView;
 
 public class SettingActivity extends RobotBaseActivity {
@@ -62,8 +61,8 @@ public class SettingActivity extends RobotBaseActivity {
     @Override
     public void initView() {
 
-        mTitleBarView = (TitleBarView) findViewById(R.id.titleBarView);
-        mTitleBarView.setOnClickListener(v -> {
+        mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
+        mTitleRobotView.setOnClickListener(v -> {
             if (ClickCountUtils.click(10)) {
                 if (LogUtil.switchLogEnable()) {
                     ToastUtil.show("Log调试 -> 开启");

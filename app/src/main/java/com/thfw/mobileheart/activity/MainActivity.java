@@ -311,7 +311,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
         } else {
             mMainHandler.removeCallbacks(checkVersionRunnable);
-            mMainHandler.postDelayed(checkVersionRunnable, isMeResumed() ? 2500 : 1000);
+            mMainHandler.postDelayed(checkVersionRunnable, isMeResumed2() ? 1000 : 2500);
 
             moodHintDialog();
 
@@ -369,7 +369,9 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     });
                 }
                 moodHint = true;
-                SharePreferenceUtil.setBoolean(KEY_MOOD_HINT + ActivityLifeCycle.getTodayStartTime(), moodHint);
+                SharePreferenceUtil.setBoolean(KEY_MOOD_HINT
+                        + ActivityLifeCycle.getTodayStartTime()
+                        + UserManager.getInstance().getUID(), moodHint);
                 MoodLivelyHelper.removeListener(this);
             }
         });

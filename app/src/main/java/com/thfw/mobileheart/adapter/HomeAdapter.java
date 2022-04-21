@@ -22,7 +22,6 @@ import com.thfw.base.models.MoodLivelyModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.utils.FunctionType;
 import com.thfw.base.utils.LogUtil;
-import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
@@ -37,6 +36,7 @@ import com.thfw.mobileheart.activity.talk.ThemeListActivity;
 import com.thfw.mobileheart.activity.test.TestingActivity;
 import com.thfw.mobileheart.activity.video.VideoHomeActivity;
 import com.thfw.mobileheart.constants.AnimFileName;
+import com.thfw.mobileheart.push.helper.PushHandle;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FunctionDurationUtil;
 import com.thfw.mobileheart.util.MoodLivelyHelper;
@@ -357,9 +357,11 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             if (mTvMoodValue == null || mRivEmoji == null) {
                 return;
             }
-            if (mood != null && mood.getUserMood() != null) {
-                GlideUtil.load(mContext, mood.getUserMood().getPath(), mRivEmoji);
-                mTvMoodValue.setText(mood.getUserMood().getName());
+            if (mood != null) {
+                if (mood.getUserMood() != null) {
+                    GlideUtil.load(mContext, mood.getUserMood().getPath(), mRivEmoji);
+                    mTvMoodValue.setText(mood.getUserMood().getName());
+                }
                 mTvSumActivityValue.setText(String.valueOf(mood.getLoginDays()));
             } else {
                 mTvSumActivityValue.setText("");
@@ -416,10 +418,8 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             mBanner.setOnBannerListener(new OnBannerListener<HomeEntity.BannerModel>() {
                 @Override
                 public void OnBannerClick(HomeEntity.BannerModel bannerModel, int position) {
-                    ToastUtil.show(bannerModel.getType() + "");
-                    switch (bannerModel.getType()) {
-
-                    }
+                    LogUtil.d("OnBannerClick", "position = " + position);
+                    PushHandle.handleMessage(mContext, bannerModel);
                 }
             });
         }
