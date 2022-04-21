@@ -1,12 +1,14 @@
 package com.thfw.mobileheart.activity.settings;
 
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.common.reflect.TypeToken;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -14,6 +16,12 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.MyTextWatcher;
+import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.HeadModel;
+import com.thfw.base.net.ApiHost;
+import com.thfw.base.net.HttpResult;
+import com.thfw.base.net.MultipartBodyFactory;
+import com.thfw.base.net.OkHttpUtil;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
@@ -22,10 +30,18 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.util.GlideImageEngine;
+import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.TitleView;
 import com.thfw.user.login.UserManager;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class MeWillHelpBackActivity extends BaseActivity {
 
@@ -88,7 +104,7 @@ public class MeWillHelpBackActivity extends BaseActivity {
     @Override
     public void initData() {
         mBtSubmit.setOnClickListener(v -> {
-            ToastUtil.show("提交");
+            uploadHelpBack(avatarUrl, mEtHelpbackContent.getText().toString(), mEtMobile.getText().toString().trim());
         });
     }
 
@@ -120,7 +136,7 @@ public class MeWillHelpBackActivity extends BaseActivity {
                         LogUtil.e("onResult = " + GsonUtil.toJson(result));
                         avatarUrl = result.get(0).getCompressPath();
                         mIvAdd.setImageBitmap(BitmapFactory.decodeFile(avatarUrl));
-                        // todo
+                        checkSubmit();
                     }
 
                     @Override
@@ -129,5 +145,73 @@ public class MeWillHelpBackActivity extends BaseActivity {
                     }
                 });
 
+    }
+
+
+    private void uploadHelpBack(String avatarUrl, String content, String phone) {
+        LoadingDialog.show(this, "反馈中...");
+        MultipartBodyFactory factory = MultipartBodyFactory.crete();
+
+        // file
+        if (!TextUtils.isEmpty(avatarUrl)) {
+            factory.addImage("pic", avatarUrl);
+        }
+        factory.addString("content", content);
+        factory.addString("mobile", phone);
+        // 手机端-用户反馈-用户反馈上传
+        OkHttpUtil.request(ApiHost.getHost() + "feedback_uploads", factory.build(), new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                if (EmptyUtil.isEmpty(MeWillHelpBackActivity.this)) {
+                    return;
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (EmptyUtil.isEmpty(MeWillHelpBackActivity.this)) {
+                            return;
+                        }
+                        LoadingDialog.hide();
+                        LogUtil.d(TAG, "反馈上传失败---------------------------------");
+                    }
+                });
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (EmptyUtil.isEmpty(MeWillHelpBackActivity.this)) {
+                    return;
+                }
+                String json = response.body().string();
+                LogUtil.d(TAG, "用户反馈上传json --- " + json);
+                Type type = new TypeToken<HttpResult<HeadModel>>() {
+                }.getType();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (EmptyUtil.isEmpty(MeWillHelpBackActivity.this)) {
+                            return;
+                        }
+                        // 删除源文件
+                        File file = new File(avatarUrl);
+                        if (file.exists()) {
+                            file.delete();
+                        }
+                        LoadingDialog.hide();
+                        HttpResult<CommonModel> result = GsonUtil.fromJson(json, type);
+                        if (result != null && result.isSuccessful()) {
+                            LogUtil.d(TAG, "用户反馈上传成功---------------------------------");
+                            ToastUtil.show("反馈成功");
+                            finish();
+                        } else {
+                            LogUtil.d(TAG, "用户反馈上传失败_01---------------------------------");
+
+                        }
+                    }
+                });
+            }
+        });
     }
 }

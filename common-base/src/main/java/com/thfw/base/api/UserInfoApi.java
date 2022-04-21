@@ -21,7 +21,7 @@ import retrofit2.http.POST;
 public interface UserInfoApi {
 
     /**
-     * [获取主题对话列表]
+     * [获取用户信息]
      *
      * @return
      */

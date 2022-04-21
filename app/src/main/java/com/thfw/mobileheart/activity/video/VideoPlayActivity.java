@@ -158,7 +158,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
         mPbBottom = (ProgressBar) findViewById(R.id.pb_bottom);
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
         mLoadingView.showLoadingNoText();
-        mTvTitle = (TextView) findViewById(R.id.tv_title);
+        mTvTitle = (TextView) findViewById(R.id.tv_video_title);
         mExoPlay = findViewById(R.id.exo_play);
         mExoNext = findViewById(R.id.exo_next);
         mVideoLayout = findViewById(R.id.video_play_constranint);
@@ -411,6 +411,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
             mExoPlayer.addListener(mPlayerListener);
             mMPlayerView.setPlayer(mExoPlayer);
         }
+        mTvTitle.setText(mVideoModel.title);
         setVideoList();
         setListAdapter();
         mExoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(mVideoModel.getUrl())));

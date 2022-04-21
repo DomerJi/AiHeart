@@ -1,10 +1,12 @@
 package com.thfw.base.presenter;
 
+import com.thfw.base.api.HelpApi;
 import com.thfw.base.api.OtherApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
 import com.thfw.base.models.AboutUsModel;
 import com.thfw.base.models.CommonProblemModel;
+import com.thfw.base.models.FeedBackModel;
 import com.thfw.base.models.HotCallModel;
 import com.thfw.base.models.VoiceInstructionModel;
 import com.thfw.base.net.HttpResult;
@@ -49,6 +51,12 @@ public class OtherPresenter extends IPresenter<OtherPresenter.OtherUi> {
     public void onGetAboutUs() {
         Observable<HttpResult<AboutUsModel>> observable = OkHttpUtil.createService(OtherApi.class)
                 .getAboutUs(NetParams.crete());
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    public void onGetFeedBackList() {
+        Observable<HttpResult<List<FeedBackModel>>> observable = OkHttpUtil.createService(HelpApi.class)
+                .getFeedBackList(NetParams.crete());
         OkHttpUtil.request(observable, getUI());
     }
 

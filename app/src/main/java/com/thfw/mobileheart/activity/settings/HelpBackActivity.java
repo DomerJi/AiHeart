@@ -2,6 +2,7 @@ package com.thfw.mobileheart.activity.settings;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -62,6 +63,12 @@ public class HelpBackActivity extends BaseActivity<OtherPresenter> implements Ot
 
         mTvMeBack.setOnClickListener(v -> {
             startActivity(new Intent(mContext, MeWillHelpBackActivity.class));
+        });
+        mTitleView.setRightOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mContext, MeHelpBackActivity.class));
+            }
         });
     }
 
