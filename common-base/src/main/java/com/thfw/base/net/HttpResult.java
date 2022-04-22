@@ -40,6 +40,11 @@ public class HttpResult<T> implements IResult, IModel {
     public static final int FAIL_PHONE_EXISTS = 10;
     public static final int FAIL_ROBOT_ID = 11;
     public static final int FAIL_NO_ORGAN = 12;
+    public static final int FAIL_PUSH_ID_ERROR = 13;
+    public static final int FAIL_USER_NO_FOUNT = 14;
+    // 选择加入机构的时候，【您所在设备类型不能加入此机构】
+    public static final int FAIL_DEVICE_NOT_JOIN_ORGAN_BY_AUTH = 15;
+    public static final int FAIL_NO_ACCOUNT = 16;
 
     public static boolean isOrganValid(int code) {
         return code == FAIL_ROBOT_ID || code == FAIL_NO_ORGAN;
@@ -99,6 +104,14 @@ public class HttpResult<T> implements IResult, IModel {
                 return "用户所在机构与该设备不同";
             case FAIL_NO_ORGAN:
                 return "未找到用户所在机构";
+            case FAIL_PUSH_ID_ERROR:
+                return "错误的推送ID";
+            case FAIL_USER_NO_FOUNT:
+                return "用户未找到";
+            case FAIL_DEVICE_NOT_JOIN_ORGAN_BY_AUTH:
+                return "您所在设备类型不能加入此机构";
+            case FAIL_NO_ACCOUNT:
+                return "账号不存在，请创建账号";
         }
         return msg;
     }

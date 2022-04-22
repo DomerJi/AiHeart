@@ -97,8 +97,9 @@
             android:id="@+id/tv_choose_organization"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
+            android:padding="10dp"
             android:textColor="@color/text_common"
+            android:textSize="@dimen/textSize"
             app:layout_constraintBottom_toTopOf="@id/bt_confirm"
             app:layout_constraintLeft_toLeftOf="@id/bt_confirm"
             app:layout_constraintRight_toRightOf="@id/bt_confirm" />

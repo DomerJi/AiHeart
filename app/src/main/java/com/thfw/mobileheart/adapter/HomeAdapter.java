@@ -359,13 +359,13 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             }
             if (mood != null) {
                 if (mood.getUserMood() != null) {
-                    GlideUtil.load(mContext, mood.getUserMood().getPath(), mRivEmoji);
+                    GlideUtil.load(mTvMoodValue.getContext(), mood.getUserMood().getPath(), mRivEmoji);
                     mTvMoodValue.setText(mood.getUserMood().getName());
                 }
                 mTvSumActivityValue.setText(String.valueOf(mood.getLoginDays()));
             } else {
                 mTvSumActivityValue.setText("");
-                GlideUtil.load(mContext, R.drawable.gray_cirlle_bg, mRivEmoji);
+                GlideUtil.load(mTvMoodValue.getContext(), R.drawable.gray_cirlle_bg, mRivEmoji);
                 mTvMoodValue.setText(mContext.getResources().getString(R.string.mood_defalut_hint));
             }
 

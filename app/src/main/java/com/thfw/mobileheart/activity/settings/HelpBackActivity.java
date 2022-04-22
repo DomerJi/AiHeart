@@ -16,6 +16,7 @@ import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.CommonProblemModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.OtherPresenter;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.CommonProblemAdapter;
@@ -64,12 +65,16 @@ public class HelpBackActivity extends BaseActivity<OtherPresenter> implements Ot
         mTvMeBack.setOnClickListener(v -> {
             startActivity(new Intent(mContext, MeWillHelpBackActivity.class));
         });
-        mTitleView.setRightOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(mContext, MeHelpBackActivity.class));
-            }
-        });
+        if (LogUtil.isLogEnable()) {
+            mTitleView.setRightOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(mContext, MeHelpBackActivity.class));
+                }
+            });
+        } else {
+            mTitleView.setRightText("");
+        }
     }
 
 

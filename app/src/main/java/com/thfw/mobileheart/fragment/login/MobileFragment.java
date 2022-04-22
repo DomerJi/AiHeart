@@ -1,6 +1,5 @@
 package com.thfw.mobileheart.fragment.login;
 
-import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -15,7 +14,6 @@ import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
-import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
@@ -26,9 +24,6 @@ import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.VerificationCodeView;
-import com.thfw.user.login.LoginStatus;
-import com.thfw.user.login.UserManager;
-import com.thfw.user.models.User;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 /**
@@ -182,24 +177,7 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
     @Override
     public void onSuccess(TokenModel data) {
         LoadingDialog.hide();
-        if (data != null && !TextUtils.isEmpty(data.token)) {
-            ToastUtil.show("登录成功");
-            User user = new User();
-            user.setToken(data.token);
-            user.setMobile(phone);
-            user.setLoginStatus(LoginStatus.LOGINED);
-            UserManager.getInstance().login(user);
-            LogUtil.d(TAG, "UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
-            if (data.isNoOrganization()) {
-//                SelectOrganizationActivity.isNoSetUserInfo = data.isNoSetUserInfo();
-//                SelectOrganizationActivity.startActivity(mContext, true);
-            } else if (data.isNoSetUserInfo()) {
-//                InfoActivity.startActivityFirst(mContext);
-            }
-            getActivity().finish();
-        } else {
-            ToastUtil.show("token 参数错误");
-        }
+        LoginActivity.login(getActivity(), data, phone);
     }
 
     @Override

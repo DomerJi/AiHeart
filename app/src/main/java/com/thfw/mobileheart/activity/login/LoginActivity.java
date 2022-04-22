@@ -13,10 +13,12 @@ import android.text.TextUtils;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
+import com.thfw.base.ContextApp;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.TokenModel;
-import com.thfw.base.net.CommonParameter;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -31,6 +33,7 @@ import com.thfw.mobileheart.fragment.login.LoginByFaceFragment;
 import com.thfw.mobileheart.fragment.login.MobileFragment;
 import com.thfw.mobileheart.fragment.login.OtherLoginFragment;
 import com.thfw.mobileheart.fragment.login.PasswordFragment;
+import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FragmentLoader;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
@@ -65,6 +68,12 @@ public class LoginActivity extends BaseActivity {
             user.setSetUserInfo(data.isSetUserInfo());
             user.setOrganization(data.organization);
             user.setAuthTypeList(data.getAuthType());
+            if (EmptyUtil.isEmpty(data.getAuthType()) || !data.getAuthType().contains(ContextApp.getDeviceTypeStr())) {
+                DialogFactory.createSimple((FragmentActivity) activity,
+                        MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login));
+                return;
+            }
+
             LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
             if (data.isNoOrganization()) {
                 // todo 手机加入组织机构比较复杂
@@ -97,8 +106,6 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void initView() {
-        // todo test
-        CommonParameter.setOrganizationId("1");
         MainActivity.resetInit();
         type = getIntent().getIntExtra(KEY_DATA, BY_MOBILE);
         fragmentLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
@@ -194,6 +201,7 @@ public class LoginActivity extends BaseActivity {
         mDialog.setCanceledOnTouchOutside(false);
         mDialog.show();
     }
+
 
     @Override
     public void onResume() {

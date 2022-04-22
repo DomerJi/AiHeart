@@ -93,6 +93,33 @@ public class DialogRobotFactory {
                 .setOnViewClickListener(onViewCallBack).create().show();
     }
 
+    public static void createSimple(FragmentActivity activity, String msg) {
+        createSimple(activity, "温馨提示", msg);
+    }
+
+    /**
+     * 简单提示
+     *
+     * @param activity
+     */
+    public static void createSimple(FragmentActivity activity, String title, String msg) {
+        DialogRobotFactory.createCustomDialog(activity, new DialogRobotFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvHint.setText(msg);
+                mTvTitle.setText(title);
+                mTvLeft.setVisibility(View.GONE);
+                mTvRight.setBackgroundResource(com.thfw.robotheart.R.drawable.dialog_button_selector);
+                mVLineVertical.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+            }
+        }).setCancelable(false);
+    }
+
     /**
      * svga dialog
      *

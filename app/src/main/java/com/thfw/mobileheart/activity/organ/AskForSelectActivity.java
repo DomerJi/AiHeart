@@ -3,6 +3,7 @@ package com.thfw.mobileheart.activity.organ;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -10,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,8 +23,11 @@ import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.OrganizationPresenter;
+import com.thfw.base.utils.AESUtils;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
@@ -34,8 +37,6 @@ import com.thfw.mobileheart.adapter.OrganSelectedAdapter;
 import com.thfw.mobileheart.push.tester.UPushAlias;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.LoadingDialog;
-import com.thfw.ui.dialog.TDialog;
-import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
@@ -44,6 +45,7 @@ import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> implements OrganizationPresenter.OrganizationUi<OrganizationModel> {
@@ -98,7 +100,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
 
         //===============================//
         mRvSelected = (RecyclerView) findViewById(R.id.rv_selected);
-        mRvSelected.setLayoutManager(new GridLayoutManager(mContext, 6));
+        mRvSelected.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false));
         mRvSelectChildren = (RecyclerView) findViewById(R.id.rv_select_children);
         mRvSelectChildren.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
@@ -113,8 +115,26 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
         mLlWelcome = (LinearLayout) findViewById(R.id.ll_welcome);
         mTvChooseOrganization = (TextView) findViewById(R.id.tv_choose_organization);
         mClSelect = (ConstraintLayout) findViewById(R.id.cl_select);
+    }
 
-
+    private void initSelectedList() {
+        if (!mSelecteds.isEmpty()) {
+            mLoadingView.showLoading();
+            mSelecteds.clear();
+            if (mOranSelectedAdapter != null) {
+                mOranSelectedAdapter.setDataListNotify(null);
+            }
+            if (mOrganSelectChildrenAdapter != null) {
+                mOrganSelectChildrenAdapter.setDataListNotify(null);
+            }
+        }
+        mClSelect.setVisibility(View.VISIBLE);
+        mClRequest.setVisibility(View.GONE);
+        mTitleView.setRightText("重新扫码");
+        mTitleView.setOnClickListener(v -> {
+            mBtScanJoin.performClick();
+        });
+        initDataList();
     }
 
 
@@ -127,29 +147,64 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
         switch (requestCode) {
             case ZbarScanActivity.REQUEST_CODE:
                 String codeData = data.getStringExtra(ZbarScanActivity.CODE_DATA);
-                ToastUtil.show("扫码结果：" + codeData);
                 LogUtil.d(TAG, "codeData = " + codeData);
-                // todo
-                CommonParameter.setOrganizationId("1");
-                if (!mSelecteds.isEmpty()) {
-                    mLoadingView.showLoading();
-                    mSelecteds.clear();
-                    if (mOranSelectedAdapter != null) {
-                        mOranSelectedAdapter.setDataListNotify(null);
-                    }
-                    if (mOrganSelectChildrenAdapter != null) {
-                        mOrganSelectChildrenAdapter.setDataListNotify(null);
-                    }
+                HashMap<String, String> params = parseCode(codeData);
+                if (!EmptyUtil.isEmpty(params) && !TextUtils.isEmpty(params.get("i"))) {
+                    String organizationId = params.get("i");
+                    CommonParameter.setOrganizationId(organizationId);
+                    initSelectedList();
+                } else {
+                    ToastUtil.show("无法识别该二维码！");
                 }
-                mClSelect.setVisibility(View.VISIBLE);
-                mClRequest.setVisibility(View.GONE);
-                mTitleView.setRightText("重新扫码");
-                mTitleView.setOnClickListener(v -> {
-                    mBtScanJoin.performClick();
-                });
-                initDataList();
                 break;
         }
+    }
+
+
+    /**
+     * https://www.baidu.com/t=1&i=10000
+     * https://www.baidu.com/Sl4/ir9bsXacHaDev/QmKQ==
+     * <p>
+     * https://www.baidu.com/t=1&i=1
+     * https://www.baidu.com/3RcI1a4bWnQc8oCo1qa5iw==
+     *
+     * @param qRCode
+     * @return
+     */
+    private HashMap<String, String> parseCode(String qRCode) {
+        String finalQRCode = qRCode;
+        if (TextUtils.isEmpty(finalQRCode)) {
+            return null;
+        }
+        HashMap<String, String> params = new HashMap<>();
+
+        if (finalQRCode.startsWith("http")) {
+            String paramsStr = finalQRCode.replaceAll(RegularUtil.REGEX_HTTP, "");
+            LogUtil.d(TAG, "paramsStr = " + paramsStr);
+            if (EmptyUtil.isEmpty(paramsStr)) {
+                return params;
+            }
+            // 3b86e89d01dafe17【3b86e89d01dafe17】
+            String paramsHttp = AESUtils.decryptBase64(paramsStr, "3b86e89d01dafe17");
+            LogUtil.d(TAG, "paramsHttp = " + paramsHttp);
+            if (paramsHttp != null && paramsHttp.length() > 2 && paramsHttp.startsWith("t")) {
+                String[] mKeyValues = paramsHttp.split("&");
+                LogUtil.d(TAG, "【&】mKeyValues = " + GsonUtil.toJson(mKeyValues));
+                if (mKeyValues != null && mKeyValues.length > 0) {
+                    for (String keyValue : mKeyValues) {
+                        String[] values = keyValue.split("=");
+                        LogUtil.d(TAG, "【=】values = " + GsonUtil.toJson(values));
+                        if (values != null && values.length == 2) {
+                            params.put(values[0], values[1]);
+                        }
+                    }
+                    LogUtil.d(TAG, "结果params " + GsonUtil.toJson(params));
+                    return params;
+                }
+            }
+        }
+
+        return params;
     }
 
     private void onConfirm() {
@@ -179,21 +234,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
             @Override
             public void onFail(ResponeThrowable throwable) {
                 LoadingDialog.hide();
-                DialogFactory.createCustomDialog(AskForSelectActivity.this, new DialogFactory.OnViewCallBack() {
-                    @Override
-                    public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-                        mTvHint.setText(throwable.getMessage());
-                        mTvTitle.setText("温馨提示");
-                        mTvLeft.setVisibility(View.GONE);
-                        mTvRight.setBackgroundResource(R.drawable.dialog_button_selector);
-                        mVLineVertical.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                        tDialog.dismiss();
-                    }
-                }).setCancelable(false);
+                DialogFactory.createSimple(AskForSelectActivity.this, throwable.getMessage());
             }
         }).onSelectOrganization(String.valueOf(mSelecteds.get(mSelecteds.size() - 1).getId()));
     }
@@ -220,8 +261,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
         } else {
             mClSelect.setVisibility(View.VISIBLE);
             mClRequest.setVisibility(View.GONE);
-            CommonParameter.setOrganizationId(UserManager.getInstance().getUser().getOrganization() + "");
-            initDataList();
+            initSelectedList();
         }
 
     }
@@ -238,6 +278,9 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
             @Override
             public void onSuccess(OrganizationSelectedModel data) {
                 if (data != null) {
+                    if (data.getOrganization() != null) {
+                        CommonParameter.setOrganizationId(String.valueOf(data.getOrganization().getId()));
+                    }
                     mSelectedRequest = new ArrayList<>();
                     initSelectedList(mSelectedRequest, data.getOrganization());
                 }

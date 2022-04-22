@@ -3,6 +3,10 @@ package com.thfw.base.utils;
 import android.text.TextUtils;
 
 public class RegularUtil {
+
+    // 网址 前端匹配 https://www.baidu.com/Sl4/ir9bsXacHaDev/QmKQ== replaceAll Sl4/ir9bsXacHaDev/QmKQ==
+    public static final String REGEX_HTTP = "^(https?:\\/\\/)[a-z0-9_\\\\.-]{2,20}\\/";
+
     //身份证
     public static final String REGEX_ID_CARD = "^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$";
 

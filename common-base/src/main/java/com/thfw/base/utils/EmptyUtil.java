@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Created by jishuaipeng on 2021-04-26.
@@ -25,6 +26,10 @@ public final class EmptyUtil {
 
     public static boolean isEmpty(Context activity) {
         return activity == null || ((activity instanceof Activity) && isEmpty((Activity) activity));
+    }
+
+    public static boolean isEmpty(Map map) {
+        return map == null || map.isEmpty();
     }
 
     public static boolean isEmpty(Fragment fragment) {

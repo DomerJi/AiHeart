@@ -28,8 +28,6 @@ import com.thfw.robotheart.push.tester.UPushAlias;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.LoadingDialog;
-import com.thfw.ui.dialog.TDialog;
-import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
@@ -123,21 +121,8 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
             @Override
             public void onFail(ResponeThrowable throwable) {
                 LoadingDialog.hide();
-                DialogRobotFactory.createCustomDialog(SelectOrganizationActivity.this, new DialogRobotFactory.OnViewCallBack() {
-                    @Override
-                    public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-                        mTvHint.setText(throwable.getMessage());
-                        mTvTitle.setText("温馨提示");
-                        mTvLeft.setVisibility(View.GONE);
-                        mTvRight.setBackgroundResource(R.drawable.dialog_button_selector);
-                        mVLineVertical.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                        tDialog.dismiss();
-                    }
-                }).setCancelable(false);
+                DialogRobotFactory.createSimple(SelectOrganizationActivity.this, throwable.getMessage()
+                        + "(code:" + throwable.getCode() + ")");
             }
         }).onSelectOrganization(String.valueOf(mSelecteds.get(mSelecteds.size() - 1).getId()));
     }

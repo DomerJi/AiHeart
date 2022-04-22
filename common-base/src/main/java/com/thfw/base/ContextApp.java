@@ -31,6 +31,10 @@ public final class ContextApp {
         return deviceType;
     }
 
+    public static String getDeviceTypeStr() {
+        return String.valueOf(getDeviceType());
+    }
+
 
     public static void init(Context context) {
         ContextApp.context = context.getApplicationContext();

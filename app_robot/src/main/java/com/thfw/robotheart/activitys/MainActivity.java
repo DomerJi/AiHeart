@@ -504,6 +504,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                         ArrayList<OrganizationModel.OrganizationBean> mSelecteds = new ArrayList<>();
                         initSelectedList(mSelecteds, data.getOrganization());
                         CommonParameter.setOrganizationSelected(mSelecteds);
+                        if (data.getOrganization() != null) {
+                            CommonParameter.setOrganizationId(String.valueOf(data.getOrganization().getId()));
+                        }
                         UserManager.getInstance().getUser().setOrganList(mSelecteds);
                         UserManager.getInstance().notifyUserInfo();
                         UPushAlias.setTag(mSelecteds.get(mSelecteds.size() - 1).getId());

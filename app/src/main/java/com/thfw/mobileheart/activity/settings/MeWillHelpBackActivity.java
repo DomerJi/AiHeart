@@ -194,10 +194,12 @@ public class MeWillHelpBackActivity extends BaseActivity {
                         if (EmptyUtil.isEmpty(MeWillHelpBackActivity.this)) {
                             return;
                         }
-                        // 删除源文件
-                        File file = new File(avatarUrl);
-                        if (file.exists()) {
-                            file.delete();
+                        if (!TextUtils.isEmpty(avatarUrl)) {
+                            // 删除源文件
+                            File file = new File(avatarUrl);
+                            if (file.exists()) {
+                                file.delete();
+                            }
                         }
                         LoadingDialog.hide();
                         HttpResult<CommonModel> result = GsonUtil.fromJson(json, type);

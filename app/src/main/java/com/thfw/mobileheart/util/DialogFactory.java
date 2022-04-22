@@ -62,6 +62,7 @@ public class DialogFactory {
     private static TextView mTvTime;
     private static int minute;
 
+
     public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack) {
         return createCustomDialog(activity, onViewCallBack, true);
     }
@@ -90,6 +91,29 @@ public class DialogFactory {
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
                 })
                 .setOnViewClickListener(onViewCallBack).create().show();
+    }
+
+
+    /**
+     * 简单提示
+     * @param activity
+     */
+    public static void createSimple(FragmentActivity activity,String msg){
+        DialogFactory.createCustomDialog(activity, new DialogFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvHint.setText(msg);
+                mTvTitle.setText("温馨提示");
+                mTvLeft.setVisibility(View.GONE);
+                mTvRight.setBackgroundResource(R.drawable.dialog_button_selector);
+                mVLineVertical.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+            }
+        }).setCancelable(false);
     }
 
 

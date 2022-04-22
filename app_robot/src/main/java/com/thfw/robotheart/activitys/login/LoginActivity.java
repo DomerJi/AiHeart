@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -17,13 +16,16 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.luck.picture.lib.tools.PictureFileUtils;
+import com.thfw.base.ContextApp;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.utils.ClickCountUtils;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.MainActivity;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
@@ -73,6 +75,15 @@ public class LoginActivity extends RobotBaseActivity {
             user.setSetUserInfo(data.isSetUserInfo());
             user.setOrganization(data.organization);
             user.setAuthTypeList(data.getAuthType());
+            user.setAuthTypeList(data.getAuthType());
+            if (!data.isNoOrganization()) {
+                if (EmptyUtil.isEmpty(data.getAuthType())
+                        || !data.getAuthType().contains(ContextApp.getDeviceTypeStr())) {
+                    DialogRobotFactory.createSimple((FragmentActivity) activity,
+                            MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login));
+                    return;
+                }
+            }
             LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
             if (data.isNoOrganization()) {
                 user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
@@ -98,24 +109,9 @@ public class LoginActivity extends RobotBaseActivity {
      * @param activity
      */
     public static void showOrganIdNoValid(FragmentActivity activity) {
-
-        DialogRobotFactory.createCustomDialog(activity, new DialogRobotFactory.OnViewCallBack() {
-            @Override
-            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-                String organId = CommonParameter.getOrganizationId();
-                mTvTitle.setText("设备状态");
-                mTvHint.setText("无效的机构编码，请联系管理员解决！"
-                        + "\n当前机构编码：" + (TextUtils.isEmpty(organId) ? "空" : organId));
-                mVLineVertical.setVisibility(View.GONE);
-                mTvLeft.setVisibility(View.GONE);
-                mTvRight.setTextColor(Color.RED);
-            }
-
-            @Override
-            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                tDialog.dismiss();
-            }
-        }, false);
+        String organId = CommonParameter.getOrganizationId();
+        DialogRobotFactory.createSimple(activity, "设备状态", "无效的机构编码，请联系管理员解决！"
+                + "\n当前机构编码：" + (TextUtils.isEmpty(organId) ? "空" : organId));
     }
 
     @Override
