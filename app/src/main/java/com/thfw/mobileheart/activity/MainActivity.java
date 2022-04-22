@@ -308,7 +308,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
 
     private void onMeResume() {
         trueResume = true;
-        if (!UserManager.getInstance().isLogin()) {
+        if (!UserManager.getInstance().isTrueLogin()) {
             LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
         } else {
             mMainHandler.removeCallbacks(checkVersionRunnable);
@@ -609,6 +609,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mainActivity = null;
         resetInit();
     }
 
@@ -648,4 +649,5 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         }
         return super.onKeyDown(keyCode, event);
     }
+
 }
