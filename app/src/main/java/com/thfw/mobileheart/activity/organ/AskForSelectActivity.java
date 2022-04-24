@@ -149,8 +149,10 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
                 String codeData = data.getStringExtra(ZbarScanActivity.CODE_DATA);
                 LogUtil.d(TAG, "codeData = " + codeData);
                 HashMap<String, String> params = parseCode(codeData);
+                LogUtil.d(TAG, "codeData params = " + GsonUtil.toJson(params));
                 if (!EmptyUtil.isEmpty(params) && !TextUtils.isEmpty(params.get("i"))) {
                     String organizationId = params.get("i");
+                    LogUtil.d(TAG, "codeData organizationId = " + organizationId);
                     CommonParameter.setOrganizationId(organizationId);
                     initSelectedList();
                 } else {
@@ -278,9 +280,6 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
             @Override
             public void onSuccess(OrganizationSelectedModel data) {
                 if (data != null) {
-                    if (data.getOrganization() != null) {
-                        CommonParameter.setOrganizationId(String.valueOf(data.getOrganization().getId()));
-                    }
                     mSelectedRequest = new ArrayList<>();
                     initSelectedList(mSelectedRequest, data.getOrganization());
                 }

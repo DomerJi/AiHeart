@@ -250,7 +250,7 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
             @Override
             public void onSuccess(List<HomeEntity.BannerModel> data) {
                 mMainList.get(0).setBannerModels(data);
-                mHomeAdapter.notifyItemChanged(0);
+                mHomeAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -313,8 +313,10 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
                 }
             }
             mRefreshLayout.finishRefresh(true);
+            mRefreshLayout.finishLoadMore(true);
         } else {
             oldSize = mMainList.size();
+            mRefreshLayout.finishRefresh(true);
             mRefreshLayout.finishLoadMore(true);
         }
         if (!EmptyUtil.isEmpty(data)) {

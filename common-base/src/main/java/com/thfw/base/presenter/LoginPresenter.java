@@ -1,6 +1,8 @@
 package com.thfw.base.presenter;
 
 
+import android.text.TextUtils;
+
 import com.thfw.base.api.LoginApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
@@ -32,8 +34,10 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
                 .add("device_id", CommonParameter.getDeviceId())
                 .add("verification_code", code)
                 .add("identification", phone)
-                .add("organization", CommonParameter.getOrganizationId())
                 .add("time_stamp", System.currentTimeMillis());
+        if (!TextUtils.isEmpty(CommonParameter.getOrganizationId())) {
+            netParams.add("organization", CommonParameter.getOrganizationId());
+        }
         Observable<HttpResult<TokenModel>> observable = OkHttpUtil.createService(LoginApi.class).onLogin(netParams);
         OkHttpUtil.request(observable, getUI());
     }
@@ -48,9 +52,11 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
         NetParams netParams = NetParams.crete().add("device_type", CommonParameter.getDeviceType())
                 .add("device_id", CommonParameter.getDeviceId())
                 .add("password", password)
-                .add("organization", CommonParameter.getOrganizationId())
                 .add("identification", identification)
                 .add("time_stamp", System.currentTimeMillis());
+        if (!TextUtils.isEmpty(CommonParameter.getOrganizationId())) {
+            netParams.add("organization", CommonParameter.getOrganizationId());
+        }
         Observable<HttpResult<TokenModel>> observable = OkHttpUtil.createService(LoginApi.class).onLogin(netParams);
         OkHttpUtil.request(observable, getUI());
     }

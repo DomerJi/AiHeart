@@ -8,8 +8,8 @@ android {
         applicationId "com.thfw.mobileheart"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 3
-        versionName "1.0.0.5"
+        versionCode 5
+        versionName "1.0.0.6"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -20,17 +20,6 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            // 是否混淆
-            minifyEnabled false
-            // 是否移除无用资源
-            zipAlignEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
-        }
-    }
-
     signingConfigs {
         // 签名
         release {
@@ -38,6 +27,18 @@ android {
             storePassword "abc321654"
             keyAlias "thfw"
             keyPassword "abc321654"
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            // 是否混淆
+            minifyEnabled false
+            // 是否移除无用资源
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
         }
     }
 

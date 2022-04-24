@@ -18,6 +18,8 @@ import androidx.fragment.app.FragmentActivity;
 import com.thfw.base.ContextApp;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.TokenModel;
+import com.thfw.base.net.CommonParameter;
+import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
@@ -68,10 +70,15 @@ public class LoginActivity extends BaseActivity {
             user.setSetUserInfo(data.isSetUserInfo());
             user.setOrganization(data.organization);
             user.setAuthTypeList(data.getAuthType());
-            if (EmptyUtil.isEmpty(data.getAuthType()) || !data.getAuthType().contains(ContextApp.getDeviceTypeStr())) {
-                DialogFactory.createSimple((FragmentActivity) activity,
-                        MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login));
-                return;
+            if (!data.isNoOrganization()) {
+                if (EmptyUtil.isEmpty(data.getAuthType()) || !data.getAuthType().contains(ContextApp.getDeviceTypeStr())) {
+                    DialogFactory.createSimple((FragmentActivity) activity,
+                            MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login));
+                    return;
+                }
+            }
+            if (data.organization > 0) {
+                CommonParameter.setOrganizationId(String.valueOf(data.organization));
             }
 
             LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
@@ -118,6 +125,16 @@ public class LoginActivity extends BaseActivity {
         fragmentLoader.load(type);
 
         checkPermissions();
+
+        findViewById(R.id.fl_content).setOnClickListener(v -> {
+            if (ClickCountUtils.click(10)) {
+                if (LogUtil.switchLogEnable()) {
+                    ToastUtil.show("Log调试 -> 开启");
+                } else {
+                    ToastUtil.show("Log调试 -> 关闭");
+                }
+            }
+        });
     }
 
     @Override
@@ -222,4 +239,5 @@ public class LoginActivity extends BaseActivity {
             MyApplication.kill();
         }
     }
+
 }

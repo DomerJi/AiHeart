@@ -405,17 +405,19 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         public BannerHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mBanner = itemView.findViewById(R.id.banner);
+            mBanner.setIndicator(new CircleIndicator(mContext));
+            mBanner.setLoopTime(DELAY_TIME_BANNER);
         }
 
         public void initData(HomeEntity homeEntity) {
             if (mBanner.getAdapter() != null) {
+                mBanner.setDatas(homeEntity.bannerModels);
                 return;
             }
-            mBanner.setIndicator(new CircleIndicator(mContext));
-            mBanner.setLoopTime(DELAY_TIME_BANNER);
             // mBanner.addPageTransformer(new ScaleInTransformer());
             mBanner.setAdapter(new ImageAdapter(homeEntity.bannerModels));
             mBanner.setOnBannerListener(new OnBannerListener<HomeEntity.BannerModel>() {
+
                 @Override
                 public void OnBannerClick(HomeEntity.BannerModel bannerModel, int position) {
                     LogUtil.d("OnBannerClick", "position = " + position);

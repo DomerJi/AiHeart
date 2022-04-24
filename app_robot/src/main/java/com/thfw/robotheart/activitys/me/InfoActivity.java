@@ -626,6 +626,10 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
                                 checkedDatas.add(data);
                             }
                         }
+                        if (checkedDatas.isEmpty()) {
+                            ToastUtil.show("请先选择");
+                            return;
+                        }
                         tDialog.dismiss();
                         mTvLevel.setText(checkedDatas.get(0).getPickerViewText());
                         onUpdateInfo("rank", mTvLevel.getText().toString());

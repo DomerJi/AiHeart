@@ -3,6 +3,7 @@ package com.thfw.base.models;
 import com.google.gson.annotations.SerializedName;
 import com.thfw.base.base.IModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ public class HomeEntity {
     public static final int TYPE_TAB_TITLE = 6;
 
     public int type = TYPE_BODY;
-    public List<BannerModel> bannerModels;
+    public List<BannerModel> bannerModels = new ArrayList<>();
     public MoodLivelyModel moodLivelyModel;
     public String tabTitle;
 
@@ -35,7 +36,8 @@ public class HomeEntity {
     public int body2Position = -1;
 
     public HomeEntity setBannerModels(List<BannerModel> bannerModels) {
-        this.bannerModels = bannerModels;
+        this.bannerModels.clear();
+        this.bannerModels.addAll(bannerModels);
         return this;
     }
 

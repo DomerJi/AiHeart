@@ -75,7 +75,6 @@ public class LoginActivity extends RobotBaseActivity {
             user.setSetUserInfo(data.isSetUserInfo());
             user.setOrganization(data.organization);
             user.setAuthTypeList(data.getAuthType());
-            user.setAuthTypeList(data.getAuthType());
             if (!data.isNoOrganization()) {
                 if (EmptyUtil.isEmpty(data.getAuthType())
                         || !data.getAuthType().contains(ContextApp.getDeviceTypeStr())) {
@@ -130,6 +129,15 @@ public class LoginActivity extends RobotBaseActivity {
         findViewById(R.id.titleBarView).setOnClickListener(v -> {
             if (ClickCountUtils.click(10)) {
                 startActivity(new Intent(mContext, PrivateSetActivity.class));
+            }
+        });
+        findViewById(R.id.fl_content).setOnClickListener(v -> {
+            if (ClickCountUtils.click(10)) {
+                if (LogUtil.switchLogEnable()) {
+                    ToastUtil.show("Log调试 -> 开启");
+                } else {
+                    ToastUtil.show("Log调试 -> 关闭");
+                }
             }
         });
         fragmentLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);

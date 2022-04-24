@@ -1,7 +1,9 @@
 package com.thfw.mobileheart.activity.settings;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -94,6 +96,18 @@ public class MeWillHelpBackActivity extends BaseActivity {
                 checkSubmit();
             }
         });
+
+        if (LogUtil.isLogEnable()) {
+            mTitleView.setRightText("历史反馈");
+            mTitleView.setRightOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(mContext, MeHelpBackActivity.class));
+                }
+            });
+        } else {
+            mTitleView.setRightText("");
+        }
     }
 
     private void checkSubmit() {

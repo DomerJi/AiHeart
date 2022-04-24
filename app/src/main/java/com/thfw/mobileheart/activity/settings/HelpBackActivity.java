@@ -66,6 +66,7 @@ public class HelpBackActivity extends BaseActivity<OtherPresenter> implements Ot
             startActivity(new Intent(mContext, MeWillHelpBackActivity.class));
         });
         if (LogUtil.isLogEnable()) {
+            mTitleView.setRightText("历史反馈");
             mTitleView.setRightOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
