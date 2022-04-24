@@ -651,8 +651,8 @@ public class MoodDetailActivity extends BaseActivity<MobilePresenter> implements
 //        // (0.45 + 0.02) * 2 + 0.06 = 1.00 -> interval per "group"
 
         float groupSpace = 0.15f; //   = 0.15
-        float barSpace = 0.04f; // x8 dataset 0.32
-        float barWidth = 0.06625f; // x8 dataset 0.53
+        float barSpace = 0.02f; // x8 dataset 0.16
+        float barWidth = 0.08625f; // x8 dataset 0.69
 
         BarData d = new BarData(set1, set2, set3, set4, set5, set6, set7, set8);
         d.setBarWidth(barWidth);
