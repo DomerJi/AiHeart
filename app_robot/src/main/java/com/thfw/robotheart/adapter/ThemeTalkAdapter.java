@@ -38,7 +38,7 @@ public class ThemeTalkAdapter extends BaseAdapter<ThemeTalkModel, ThemeTalkAdapt
     public void onBindViewHolder(@NonNull @NotNull AudioEdtListHolder holder, int position) {
         ThemeTalkModel model = mDataList.get(position);
         holder.mTvTitle.setText(model.getTitle());
-        GlideUtil.load(mContext, model.getPic(), holder.mRivImage);
+        GlideUtil.loadThumbnail(mContext, model.getPic(), holder.mRivImage);
 
     }
 

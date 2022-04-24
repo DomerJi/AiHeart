@@ -37,7 +37,7 @@ public class VideoEtcListAdapter extends BaseAdapter<VideoEtcModel, VideoEtcList
     @Override
     public void onBindViewHolder(@NonNull @NotNull VideoEdtListHolder holder, int position) {
         holder.mTvTitle.setText(mDataList.get(position).getTitle());
-        GlideUtil.load(mContext, mDataList.get(position).getPic(), holder.mRivImage);
+        GlideUtil.loadThumbnail(mContext, mDataList.get(position).getPic(), holder.mRivImage);
 
     }
 

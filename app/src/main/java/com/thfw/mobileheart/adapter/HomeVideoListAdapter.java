@@ -38,7 +38,7 @@ public class HomeVideoListAdapter extends BaseAdapter<VideoEtcModel, HomeVideoLi
     @Override
     public void onBindViewHolder(@NonNull @NotNull VideoHolder holder, int position) {
         VideoEtcModel etcModel = mDataList.get(position);
-        GlideUtil.load(mContext, etcModel.getPic(), holder.mRivBg);
+        GlideUtil.loadThumbnail(mContext, etcModel.getPic(), holder.mRivBg);
         holder.mTvTitle.setText(etcModel.getTitle());
     }
 

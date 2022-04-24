@@ -41,7 +41,7 @@ public class ExerciseAdapter extends BaseAdapter<ExerciseModel, ExerciseAdapter.
         ExerciseModel model = mDataList.get(position);
         holder.mTvTitle.setText(model.getTitle());
         holder.mTvHint.setText(model.getDesc());
-        GlideUtil.load(mContext, model.getPic(), holder.mRivBg);
+        GlideUtil.loadThumbnail(mContext, model.getPic(), holder.mRivBg);
         if (model.getHistoryCount() == model.getCount()) {
             holder.mTvHour.setText("已完成");
             holder.mTvHour.setTextColor(mContext.getResources().getColor(R.color.text_yellow));

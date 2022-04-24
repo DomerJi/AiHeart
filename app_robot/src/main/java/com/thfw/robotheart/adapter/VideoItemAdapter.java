@@ -45,7 +45,7 @@ public class VideoItemAdapter extends BaseAdapter<VideoModel.RecommendModel, Vid
     public void onBindViewHolder(@NonNull @NotNull VideoItemAdapter.VideoItemHolder holder, int position) {
         holder.mTvTitle.setText(mDataList.get(position).getTitle());
         holder.mTvTitle.setSelected(mCurrentIndex == position);
-        GlideUtil.load(mContext, mDataList.get(position).getImg(), holder.mRivDot);
+        GlideUtil.loadThumbnail(mContext, mDataList.get(position).getImg(), holder.mRivDot);
     }
 
     public class VideoItemHolder extends RecyclerView.ViewHolder {

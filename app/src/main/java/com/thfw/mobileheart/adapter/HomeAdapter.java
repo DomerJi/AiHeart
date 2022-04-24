@@ -137,7 +137,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             case HomeEntity.TYPE_BODY:
                 BodyHolder bodyHolder = (BodyHolder) holder;
                 bodyHolder.mTvTitle.setText(entity.recommendModel.getTitle());
-                GlideUtil.load(mContext, entity.recommendModel.getPic(), bodyHolder.mRivAvatar);
+                GlideUtil.loadThumbnail(mContext, entity.recommendModel.getPic(), bodyHolder.mRivAvatar);
                 bodyHolder.mTvType.setText(entity.recommendModel.getTypeStr());
                 break;
             case HomeEntity.TYPE_BANNER:

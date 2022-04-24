@@ -247,7 +247,10 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     mTvMsgVersion.setText("新");
                     mTvMsgVersion.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
                     if (hasNewVersion) {
-                        AutoUpdateService.startUpdate(mContext);
+                        // 防止和欢迎动画重叠
+                        if (DialogFactory.getSvgaTDialog() == null) {
+                            AutoUpdateService.startUpdate(mContext);
+                        }
                     }
                 }
             }
@@ -313,10 +316,8 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         } else {
             mMainHandler.removeCallbacks(checkVersionRunnable);
             mMainHandler.postDelayed(checkVersionRunnable, isMeResumed2() ? 1000 : 2500);
-
-            moodHintDialog();
-
             showSVGALogin();
+            moodHintDialog();
         }
     }
 
@@ -359,10 +360,21 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         if (moodHint) {
             return;
         }
-        moodHint = SharePreferenceUtil.getBoolean(KEY_MOOD_HINT
-                + ActivityLifeCycle.getTodayStartTime()
-                + UserManager.getInstance().getUID(), false);
+//        moodHint = SharePreferenceUtil.getBoolean(KEY_MOOD_HINT
+//                + ActivityLifeCycle.getTodayStartTime()
+//                + UserManager.getInstance().getUID(), false);
         if (moodHint) {
+            return;
+        }
+        if (DialogFactory.getSvgaTDialog() != null) {
+            mMainHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isMeResumed()) {
+                        moodHintDialog();
+                    }
+                }
+            }, 6000);
             return;
         }
         MoodLivelyHelper.addListener(new MoodLivelyHelper.MoodLivelyListener() {

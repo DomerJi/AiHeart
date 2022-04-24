@@ -52,7 +52,7 @@ public class AudioEtcListAdapter extends BaseAdapter<AudioEtcModel, AudioEtcList
         }
 
         holder.mTvTitle.setText(bean.getTitle());
-        GlideUtil.load(mContext, bean.getImg(), holder.mRivImage);
+        GlideUtil.loadThumbnail(mContext, bean.getImg(), holder.mRivImage);
 
     }
 

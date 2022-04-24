@@ -15,6 +15,7 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.request.RequestOptions;
 import com.thfw.base.ContextApp;
+import com.thfw.base.utils.Util;
 import com.thfw.ui.R;
 
 import java.security.MessageDigest;
@@ -30,6 +31,7 @@ public class GlideUtil {
 
 
     private static RequestOptions requestOptions;
+    private static RequestOptions requestThumbnail;
 
     public static RequestOptions getRequestOptions() {
         if (requestOptions != null) {
@@ -47,6 +49,35 @@ public class GlideUtil {
                     .fallback(R.drawable.glide_fallback_phone);
         }
         return requestOptions;
+    }
+
+    private static RequestOptions getRequestOptionsThumbnail() {
+        if (requestThumbnail != null) {
+            return requestThumbnail;
+        }
+        if (ContextApp.getDeviceType() == ContextApp.DeviceType.ROBOT) {
+            requestThumbnail = RequestOptions
+                    .placeholderOf(R.drawable.glide_placeholder)
+                    .error(R.drawable.glide_error)
+                    .fallback(R.drawable.glide_fallback)
+                    .override(Util.dipToPx(160, ContextApp.get()), Util.dipToPx(90, ContextApp.get()));
+        } else {
+            requestThumbnail = RequestOptions
+                    .placeholderOf(R.drawable.glide_placeholder_phone)
+                    .error(R.drawable.glide_error_phone)
+                    .fallback(R.drawable.glide_fallback_phone)
+                    .override(Util.dipToPx(90, ContextApp.get()));
+        }
+        return requestThumbnail;
+    }
+
+    public static void loadThumbnail(Context mContext, String url, ImageView imageView) {
+        Glide.with(mContext)
+                .load(url)
+                .apply(getRequestOptionsThumbnail())
+//                .transition(DrawableTransitionOptions.withCrossFade())
+                .centerCrop()
+                .into(imageView);
     }
 
     public static void load(Context mContext, String url, ImageView imageView) {

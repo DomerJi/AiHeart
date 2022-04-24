@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
@@ -26,6 +27,7 @@ import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
+import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.WebActivity;
@@ -201,6 +203,12 @@ public class SettingActivity extends BaseActivity {
                 LogUtil.d(TAG, "clearAppCache onFail ");
             }
         });
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide.get(MyApplication.getApp()).clearDiskCache();
+            }
+        }).start();
     }
 
     @Override

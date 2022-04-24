@@ -736,12 +736,15 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     @Override
     public void onSingleTapGesture(MotionEvent e) {
         Log.d(TAG, "onSingleTapGesture: ");
-        setSpeed(1);
-        if (mMPlayerView != null) {
-            if (mMPlayerView.isControllerVisible()) {
-                mMPlayerView.hideController();
-            } else {
-                mMPlayerView.showController();
+        if (speed > 1) {
+            setSpeed(1);
+        } else {
+            if (mMPlayerView != null) {
+                if (mMPlayerView.isControllerVisible()) {
+                    mMPlayerView.hideController();
+                } else {
+                    mMPlayerView.showController();
+                }
             }
         }
     }

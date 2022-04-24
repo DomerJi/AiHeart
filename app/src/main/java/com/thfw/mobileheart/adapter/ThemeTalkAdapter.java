@@ -42,7 +42,7 @@ public class ThemeTalkAdapter extends BaseAdapter<ThemeTalkModel, ThemeTalkAdapt
         if (getItemViewType(position) == ThemeTalkModel.TYPE_BODY) {
             ThemeTalkModel model = mDataList.get(position);
             holder.mTvTitle.setText(model.getTitle());
-            GlideUtil.load(mContext, model.getPic(), holder.mRivImage);
+            GlideUtil.loadThumbnail(mContext, model.getPic(), holder.mRivImage);
         }
 
     }

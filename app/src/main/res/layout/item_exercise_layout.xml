@@ -12,7 +12,8 @@
     <RelativeLayout
         android:id="@+id/rl_top"
         android:layout_width="match_parent"
-        android:layout_height="80dp">
+        android:layout_height="80dp"
+        tools:ignore="MissingConstraints">
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/riv_bg"
@@ -23,8 +24,7 @@
             android:layout_marginBottom="@dimen/divider_2px"
             android:scaleType="centerCrop"
             android:src="@mipmap/cat"
-            app:riv_corner_radius_bottom_left="3dp"
-            app:riv_corner_radius_top_left="3dp"
+            app:riv_corner_radius="6dp"
             app:riv_oval="false" />
 
         <TextView

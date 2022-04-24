@@ -62,6 +62,9 @@ public class DialogFactory {
     private static TextView mTvTime;
     private static int minute;
 
+    public static TDialog getSvgaTDialog() {
+        return mSvgaTDialog;
+    }
 
     public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack) {
         return createCustomDialog(activity, onViewCallBack, true);
@@ -96,9 +99,10 @@ public class DialogFactory {
 
     /**
      * 简单提示
+     *
      * @param activity
      */
-    public static void createSimple(FragmentActivity activity,String msg){
+    public static void createSimple(FragmentActivity activity, String msg) {
         DialogFactory.createCustomDialog(activity, new DialogFactory.OnViewCallBack() {
             @Override
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {

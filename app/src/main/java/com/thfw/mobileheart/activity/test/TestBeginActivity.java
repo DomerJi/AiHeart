@@ -40,6 +40,7 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
     private android.widget.ImageView mIvCollect;
     private TestDetailModel mDetailModel;
     private boolean requestIng;
+    private int mTestId;
 
     public static void startActivity(Context context, int id) {
         context.startActivity(new Intent(context, TestBeginActivity.class).putExtra(KEY_DATA, id));
@@ -71,7 +72,7 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
     @Override
     public void initData() {
 
-        int mTestId = getIntent().getIntExtra(KEY_DATA, 0);
+        mTestId = getIntent().getIntExtra(KEY_DATA, 0);
         if (mTestId <= 0) {
             ToastUtil.show("参数错误");
             finish();
@@ -149,7 +150,9 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
 
     @Override
     public void onFail(ResponeThrowable throwable) {
-
+        mLoadingView.showFail(v -> {
+            mPresenter.onGetInfo(mTestId);
+        });
     }
 
 

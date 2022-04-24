@@ -18,7 +18,8 @@
         android:src="@drawable/default_card_image"
         app:layout_constraintDimensionRatio="5:3"
         app:riv_corner_radius="@dimen/card_image_radius"
-        app:riv_oval="false" />
+        app:riv_oval="false"
+        tools:ignore="MissingConstraints" />
 
     <ImageView
         android:layout_width="wrap_content"

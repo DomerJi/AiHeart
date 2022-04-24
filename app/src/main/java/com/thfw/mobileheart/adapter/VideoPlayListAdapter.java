@@ -107,7 +107,7 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
             }
 
             itemHolder.mTvTitle.setText(model.videoEtcModel.getTitle());
-            GlideUtil.load(mContext, model.videoEtcModel.getImg(), itemHolder.mRivBg);
+            GlideUtil.loadThumbnail(mContext, model.videoEtcModel.getImg(), itemHolder.mRivBg);
 
         }
 

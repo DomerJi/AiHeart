@@ -161,7 +161,15 @@ public class MoodDetailActivity extends BaseActivity<MobilePresenter> implements
             if (data.getUserMood() != null) {
                 GlideUtil.load(mContext, data.getUserMood().getPath(), mIvMoodStatus);
                 mTvStatus.setText(data.getUserMood().getName());
+            } else {
+                GlideUtil.load(mContext, R.drawable.gray_cirlle_bg, mIvMoodStatus);
+                mTvStatus.setText(getResources().getString(R.string.mood_defalut_hint));
             }
+        } else {
+            mTvTimeMinuteTitle.setText("今日活跃");
+            mTvTimeMinute.setText(FunctionDurationUtil.getFunctionTimeHour(FunctionType.FUNCTION_APP));
+            GlideUtil.load(mContext, R.drawable.gray_cirlle_bg, mIvMoodStatus);
+            mTvStatus.setText(getResources().getString(R.string.mood_defalut_hint));
         }
     }
 
@@ -214,6 +222,9 @@ public class MoodDetailActivity extends BaseActivity<MobilePresenter> implements
                         if (!TextUtils.isEmpty(model.getMoodPic()) && !TextUtils.isEmpty(model.getOriginName())) {
                             GlideUtil.load(mContext, model.getMoodPic(), mIvMoodStatus);
                             mTvStatus.setText(model.getMoodName());
+                        } else {
+                            GlideUtil.load(mContext, R.drawable.gray_cirlle_bg, mIvMoodStatus);
+                            mTvStatus.setText(getResources().getString(R.string.mood_defalut_hint));
                         }
                     }
                     String monthDay = String.format("%02d", calendar.getMonth())
@@ -221,14 +232,9 @@ public class MoodDetailActivity extends BaseActivity<MobilePresenter> implements
 
                     mTvTimeMinuteTitle.setText(monthDay + "：活跃");
                 }
-                if (data != null) {
-                    chart.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            chart.moveViewTo(data.getXMax() / COUNT * (calendar.getDay() - 1), 0, YAxis.AxisDependency.LEFT);
-                        }
-                    });
-                }
+
+                moveTo(calendar.getDay() - 1);
+
             }
         });
 
@@ -247,6 +253,28 @@ public class MoodDetailActivity extends BaseActivity<MobilePresenter> implements
             }
         });
 
+    }
+
+
+    private void moveTo(int index) {
+        if (index < 0 || index >= COUNT) {
+            return;
+        }
+        if (data == null || data.getXMax() <= 0) {
+            chart.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    moveTo(index);
+                }
+            }, 300);
+        } else {
+            chart.post(new Runnable() {
+                @Override
+                public void run() {
+                    chart.moveViewTo(data.getXMax() / COUNT * index, 0, YAxis.AxisDependency.LEFT);
+                }
+            });
+        }
     }
 
     private NetParams getNetParams(String startTime, String endTime) {
@@ -310,16 +338,26 @@ public class MoodDetailActivity extends BaseActivity<MobilePresenter> implements
         COUNT = size;
         LogUtil.d(TAG, "setChartData COUNT -> " + COUNT);
         mMainDataList.clear();
+        int moveIndex = -1;
         for (int i = 0; i < size; i++) {
             String ymd = mCurrentMonthStr + String.format("-%02d", i + 1);
             LogUtil.d(TAG, "setChartData ymd -> " + ymd);
             if (mAllDataMap.containsKey(ymd)) {
+                if (moveIndex == -1) {
+                    moveIndex = i;
+                }
                 mMainDataList.add(mAllDataMap.get(ymd));
             } else {
                 mMainDataList.add(new MoodActiveModel().setTime(ymd));
             }
         }
+
+        String today = HourUtil.getYYMMDD(System.currentTimeMillis());
+        if (today.startsWith(mCurrentMonthStr)) {
+            moveIndex = mCalendarView.getCurDay() - 1;
+        }
         initChart();
+        moveTo(moveIndex);
     }
 
     //获取一个月天数
@@ -699,20 +737,22 @@ public class MoodDetailActivity extends BaseActivity<MobilePresenter> implements
     public void onSuccess(List<MoodActiveModel> data) {
         if (data != null) {
             HashSet<String> mHasDays = new HashSet<>();
-            String today = HourUtil.getYYMMDD(System.currentTimeMillis());
-            boolean isToDayMonth = today.startsWith(mCurrentMonthStr);
+
 
             for (MoodActiveModel model : data) {
                 if (!TextUtils.isEmpty(model.getTime())) {
-                    if (isToDayMonth && today.equals(model.getTime())) {
-                        model = getToday();
-                    }
                     String[] ymd = model.getTime().split("-");
                     if (ymd.length == 3) {
                         mHasDays.add(ymd[2]);
                     }
                     mAllDataMap.put(model.getTime(), model);
                 }
+            }
+            // 当前月份，今天使用本地数据
+            String today = HourUtil.getYYMMDD(System.currentTimeMillis());
+            if (today.startsWith(mCurrentMonthStr)) {
+                MoodActiveModel model = getToday();
+                mAllDataMap.put(model.time, model);
             }
             LogUtil.d(TAG, "mHasDays = " + GsonUtil.toJson(mHasDays));
             mAllHasDayMap.put(mCurrentMonthStr, mHasDays);

@@ -51,7 +51,7 @@ public class AudioListAdapter extends BaseAdapter<AudioEtcModel, AudioListAdapte
                     + "</font>/" + model.getMusicSize() + "  课时";
             holder.mTvState.setText(HtmlCompat.fromHtml(mHour, HtmlCompat.FROM_HTML_MODE_LEGACY));
         }
-        GlideUtil.load(mContext, model.getImg(), holder.mRivBg);
+        GlideUtil.loadThumbnail(mContext, model.getImg(), holder.mRivBg);
     }
 
 
