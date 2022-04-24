@@ -77,9 +77,6 @@ public class LoginActivity extends BaseActivity {
                     return;
                 }
             }
-            if (data.organization > 0) {
-                CommonParameter.setOrganizationId(String.valueOf(data.organization));
-            }
 
             LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
             if (data.isNoOrganization()) {

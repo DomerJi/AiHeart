@@ -486,6 +486,10 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     LogUtil.d(TAG, "initOrganization onSuccess ++++++++++++++++++++++ ");
                     ArrayList<OrganizationModel.OrganizationBean> mSelecteds = new ArrayList<>();
                     initSelectedList(mSelecteds, data.getOrganization());
+                    // 此处是手机端 的逻辑。 用户不同于机器人端。用于判断原有的组织机构。
+                    if (data.getOrganization() != null && data.getOrganization().getId() > 0) {
+                        CommonParameter.setOrganizationId(String.valueOf(data.getOrganization().getId()));
+                    }
                     CommonParameter.setOrganizationSelected(mSelecteds);
                     UserManager.getInstance().getUser().setOrganList(mSelecteds);
                     UserManager.getInstance().notifyUserInfo();
