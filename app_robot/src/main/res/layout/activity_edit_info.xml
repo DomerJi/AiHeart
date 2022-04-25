@@ -22,6 +22,7 @@
         android:maxLength="15"
         android:maxLines="1"
         android:paddingLeft="26dp"
+        android:singleLine="true"
         android:textColor="@color/colorRobotFore"
         android:textColorHint="@color/white_50"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView" />

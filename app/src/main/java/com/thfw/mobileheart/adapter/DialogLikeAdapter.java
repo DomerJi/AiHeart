@@ -14,6 +14,7 @@ import com.thfw.base.models.PickerData;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.ui.utils.EditTextUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -68,6 +69,7 @@ public class DialogLikeAdapter extends BaseAdapter<PickerData, DialogLikeAdapter
                     holder.mTvName.setVisibility(View.GONE);
                     holder.mEtName.setVisibility(View.VISIBLE);
                     holder.mEtName.setText(pickerData.getPickerViewText());
+                    EditTextUtil.setEditTextInhibitInputSpeChatAndSpace(holder.mEtName);
                     holder.mEtName.addTextChangedListener(new MyTextWatcher() {
                         @Override
                         public void onTextChanged(CharSequence s, int start, int before, int count) {

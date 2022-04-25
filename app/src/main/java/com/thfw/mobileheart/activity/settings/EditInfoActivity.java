@@ -11,6 +11,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
+import com.thfw.ui.utils.EditTextUtil;
 import com.thfw.ui.widget.TitleView;
 
 public class EditInfoActivity extends BaseActivity {
@@ -50,6 +51,7 @@ public class EditInfoActivity extends BaseActivity {
         mTitleRobotView = (TitleView) findViewById(R.id.titleRobotView);
         mTitleRobotView.setCenterText(editType.title);
         mEtInput = (EditText) findViewById(R.id.et_input);
+        EditTextUtil.setEditTextInhibitInputSpace(mEtInput);
         mBtConfirm = (Button) findViewById(R.id.bt_confirm);
         mEtInput.setMaxEms(tempEditType.textSizeMax);
         mBtConfirm.setEnabled(false);

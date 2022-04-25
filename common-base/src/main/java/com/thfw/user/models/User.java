@@ -31,7 +31,9 @@ public class User implements IUser, IUserInfo {
     private UserInfo userInfo = new UserInfo();
 
     public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
+        if (userInfo != null) {
+            this.userInfo = userInfo;
+        }
     }
 
     public UserInfo getUserInfo() {
