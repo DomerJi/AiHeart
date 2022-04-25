@@ -87,6 +87,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private static boolean initUserInfo;
     private static boolean initOrganization;
     private static boolean initUmeng;
+    private static boolean initTts;
     private static boolean moodHint;
     // 心情打卡今日第一次 记录
     private static final String KEY_MOOD_HINT = "key.mood.first";
@@ -132,6 +133,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         initOrganization = false;
         initUmeng = false;
         moodHint = false;
+        initTts = false;
     }
 
     private static boolean hasAgreedAgreement() {
@@ -318,6 +320,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             mMainHandler.postDelayed(checkVersionRunnable, isMeResumed2() ? 1000 : 2500);
             showSVGALogin();
             moodHintDialog();
+            ttsWelcome();
         }
     }
 
@@ -360,9 +363,9 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         if (moodHint) {
             return;
         }
-//        moodHint = SharePreferenceUtil.getBoolean(KEY_MOOD_HINT
-//                + ActivityLifeCycle.getTodayStartTime()
-//                + UserManager.getInstance().getUID(), false);
+        moodHint = SharePreferenceUtil.getBoolean(KEY_MOOD_HINT
+                + ActivityLifeCycle.getTodayStartTime()
+                + UserManager.getInstance().getUID(), false);
         if (moodHint) {
             return;
         }
@@ -486,10 +489,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     LogUtil.d(TAG, "initOrganization onSuccess ++++++++++++++++++++++ ");
                     ArrayList<OrganizationModel.OrganizationBean> mSelecteds = new ArrayList<>();
                     initSelectedList(mSelecteds, data.getOrganization());
-                    // 此处是手机端 的逻辑。 用户不同于机器人端。用于判断原有的组织机构。
-                    if (data.getOrganization() != null && data.getOrganization().getId() > 0) {
-                        CommonParameter.setOrganizationId(String.valueOf(data.getOrganization().getId()));
-                    }
+                    CommonParameter.setOrganizationModelPhone(data);
                     CommonParameter.setOrganizationSelected(mSelecteds);
                     UserManager.getInstance().getUser().setOrganList(mSelecteds);
                     UserManager.getInstance().notifyUserInfo();
@@ -559,10 +559,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     UserManager.getInstance().getUser().setUserInfo(data);
                     UserManager.getInstance().notifyUserInfo();
                     UPushAlias.set(MyApplication.getApp(), "user_" + data.id, "user");
-                    if (SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false)) {
-                        SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false);
-                        TtsHelper.getInstance().start(new TtsModel("你好" + UserManager.getInstance().getUser().getVisibleName() + ",很高兴见到你"), null);
-                    }
+                    ttsWelcome();
                     TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND5);
                 } else {
                     onFail(new ResponeThrowable(0, "data is null"));
@@ -586,6 +583,21 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                 });
             }
         }).onGetUserInfo();
+    }
+
+    private void ttsWelcome() {
+        if (initTts) {
+            return;
+        }
+        initTts = !SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false);
+        if (initTts) {
+            return;
+        }
+        if (isMeResumed() && initUserInfo) {
+            SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false);
+            TtsHelper.getInstance().start(new TtsModel("你好" + UserManager.getInstance().getUser().getVisibleName() + ",很高兴见到你"), null);
+            initTts = true;
+        }
     }
 
     private void initUmeng() {

@@ -50,7 +50,7 @@
             android:background="@drawable/dialog_left_button_selector"
             android:gravity="center"
             android:text="@string/cancel"
-            android:textColor="@color/text_content"
+            android:textColor="@color/text_hint"
             android:textSize="@dimen/textSize" />
 
         <View

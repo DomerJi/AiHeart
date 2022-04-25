@@ -1,7 +1,10 @@
 package com.thfw.mobileheart.fragment.login;
 
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,6 +15,7 @@ import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
@@ -21,6 +25,7 @@ import com.thfw.mobileheart.activity.login.ForgetPasswordActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.utils.EditTextUtil;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 /**
@@ -46,6 +51,7 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
     private TextView mTvProductMsg;
     private TextView mTvProductAgree;
     private String phone;
+    private ImageView mIvSeePassword;
 
     @Override
     public int getContentView() {
@@ -91,6 +97,20 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
                 hideInput();
             }
         });
+        mIvSeePassword = findViewById(R.id.iv_see_password);
+        mIvSeePassword.setOnClickListener(v -> {
+
+            mIvSeePassword.setSelected(!mIvSeePassword.isSelected());
+            LogUtil.i("mIvSeePassword.isSelected() = " + mIvSeePassword.isSelected());
+            if (mIvSeePassword.isSelected()) {
+                // 如果选中，显示密码
+                mEtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            } else {
+                // 否则隐藏密码
+                mEtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            }
+            mEtPassword.setSelection(mEtPassword.getText().length());
+        });
 
         mTvForgetPassword.setOnClickListener(v -> {
             ForgetPasswordActivity.startActivity(mContext, ForgetPasswordActivity.BY_MOBILE);
@@ -106,6 +126,8 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
             LoadingDialog.show(getActivity(), "登录中");
             mPresenter.loginByPassword(phone, password);
         });
+        EditTextUtil.setEditTextInhibitInputSpeChatAndSpace(mEtMobile);
+        EditTextUtil.setEditTextInhibitInputSpace(mEtPassword);
     }
 
     @Override

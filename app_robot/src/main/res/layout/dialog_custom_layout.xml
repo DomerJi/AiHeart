@@ -14,7 +14,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/page_margin"
         android:text="@string/title"
-        android:textColor="@color/text_common"
+        android:textColor="#00F"
         android:textSize="@dimen/textSize_large"
         tools:ignore="MissingConstraints" />
 
@@ -24,12 +24,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
+        android:lineSpacingExtra="4dp"
         android:minHeight="80dp"
         android:padding="16dp"
         android:textColor="@color/text_common"
         android:textSize="@dimen/textSize"
         tools:ignore="MissingConstraints"
-        tools:text="@string/title" />
+        tools:text="@string/bigText2" />
 
     <View
         android:id="@+id/vline_horizontal"

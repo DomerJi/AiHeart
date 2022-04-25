@@ -16,6 +16,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.utils.EditTextUtil;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -49,6 +50,9 @@ public class SetPasswordOriginActivity extends BaseActivity<LoginPresenter> impl
         mBtSubmit = (Button) findViewById(R.id.bt_submit);
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mTvHint = (TextView) findViewById(R.id.tv_hint);
+        EditTextUtil.setEditTextInhibitInputSpace(mEtPasswordOrigin);
+        EditTextUtil.setEditTextInhibitInputSpace(mEtPasswordNew);
+        EditTextUtil.setEditTextInhibitInputSpace(mEtPasswordNewConfirm);
     }
 
     @Override

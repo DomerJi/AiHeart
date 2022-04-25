@@ -155,6 +155,7 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
                 if (data != null) {
                     mSelectedRequest = new ArrayList<>();
                     initSelectedList(mSelectedRequest, data.getOrganization());
+                    CommonParameter.setOrganizationModel(data);
                 }
                 mPresenter.onGetOrganizationList();
             }

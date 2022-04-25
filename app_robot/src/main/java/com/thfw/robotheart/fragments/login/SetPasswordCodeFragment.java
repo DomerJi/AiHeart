@@ -19,6 +19,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.utils.EditTextUtil;
 import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -63,6 +64,8 @@ public class SetPasswordCodeFragment extends RobotBaseFragment<LoginPresenter>
         mEtPassword = (EditText) findViewById(R.id.et_password);
         mTvSendSuccess = (TextView) findViewById(R.id.tv_send_success);
         mBtGetCode = (Button) findViewById(R.id.bt_get_code);
+        EditTextUtil.setEditTextInhibitInputSpace(mEtPassword);
+        EditTextUtil.setEditTextInhibitInputSpace(mEtCode);
     }
 
     @Override

@@ -1018,6 +1018,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
                     ArrayList<OrganizationModel.OrganizationBean> mSelecteds = new ArrayList<>();
                     initSelectedList(mSelecteds, data.getOrganization());
                     CommonParameter.setOrganizationSelected(mSelecteds);
+                    CommonParameter.setOrganizationModelPhone(data);
                     if (UserManager.getInstance().isLogin()) {
                         UserManager.getInstance().getUser().setOrganList(mSelecteds);
                         mTvTeam.setText(UserManager.getInstance().getUser().getOrganListStr());

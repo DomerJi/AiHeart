@@ -2,15 +2,16 @@ package com.thfw.mobileheart.activity.login;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -22,6 +23,7 @@ import com.thfw.base.net.CommonParameter;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.PermissionUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.MyApplication;
@@ -37,11 +39,15 @@ import com.thfw.mobileheart.fragment.login.OtherLoginFragment;
 import com.thfw.mobileheart.fragment.login.PasswordFragment;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FragmentLoader;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.models.User;
 
 import org.opencv.android.Static2Helper;
+
+import java.util.ArrayList;
 
 public class LoginActivity extends BaseActivity {
 
@@ -56,7 +62,8 @@ public class LoginActivity extends BaseActivity {
     public static String INPUT_PHONE = "";
     private int type;
     private FragmentLoader fragmentLoader;
-    private AlertDialog mDialog;
+    private TDialog mPermissionDialog;
+    private boolean checkPermissionFirst = true;
 
     public static void startActivity(Context context, int type) {
         context.startActivity(new Intent(context, LoginActivity.class).putExtra(KEY_DATA, type));
@@ -111,6 +118,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void initView() {
         MainActivity.resetInit();
+        CommonParameter.setOrganizationId("");
         type = getIntent().getIntExtra(KEY_DATA, BY_MOBILE);
         fragmentLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
 
@@ -120,8 +128,6 @@ public class LoginActivity extends BaseActivity {
         fragmentLoader.add(BY_OTHER, new OtherLoginFragment());
 
         fragmentLoader.load(type);
-
-        checkPermissions();
 
         findViewById(R.id.fl_content).setOnClickListener(v -> {
             if (ClickCountUtils.click(10)) {
@@ -156,34 +162,56 @@ public class LoginActivity extends BaseActivity {
     /**
      * 动态获取内存存储权限
      */
-    public void checkPermissions() {
+    public boolean checkPermissions() {
+        boolean has = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // 验证是否许可权限
             for (String str : UIConfig.NEEDED_PERMISSION) {
                 if (ContextCompat.checkSelfPermission(this, str) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this, UIConfig.NEEDED_PERMISSION, 1);
+                    has = false;
                     break;
                 }
             }
         }
+        return has;
+    }
+
+    /**
+     * 动态获取内存存储权限
+     */
+    public boolean checkPermissionsNoRequest() {
+        boolean has = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // 验证是否许可权限
+            for (String str : UIConfig.NEEDED_PERMISSION) {
+                if (ContextCompat.checkSelfPermission(this, str) != PackageManager.PERMISSION_GRANTED) {
+                    has = false;
+                    break;
+                }
+            }
+        }
+        return has;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == 1) {
             for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) { // 选择了“始终允许”
                     if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i])) {//用户选择了禁止不再询问
                         permissionDialog(true);
+                        break;
                     } else { // 选择禁止
                         permissionDialog(false);
+                        break;
                     }
                 }
             }
         }
     }
+
 
     /**
      * 禁止权限后的弹框处理
@@ -191,36 +219,62 @@ public class LoginActivity extends BaseActivity {
      * @param never
      */
     private void permissionDialog(boolean never) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-        builder.setTitle("权限申请")
-                .setMessage("点击允许才可以使用相应功能哦")
-                .setPositiveButton("去允许", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (mDialog != null && mDialog.isShowing()) {
-                            mDialog.dismiss();
-                        }
-                        if (never) {// 从不询问，禁止
-                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            // 注意就是"package",不用改成自己的包名
-                            Uri uri = Uri.fromParts("package", getPackageName(), null);
-                            intent.setData(uri);
-                            startActivityForResult(intent, 1);
-                        } else {
-                            ActivityCompat.requestPermissions(LoginActivity.this, UIConfig.NEEDED_PERMISSION, 1);
-                        }
+        if (mPermissionDialog != null) {
+            mPermissionDialog.dismiss();
+        }
+        mPermissionDialog = DialogFactory.createCustomDialog(this, new DialogFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvTitle.setText("权限申请");
+                mTvLeft.setText("关闭应用");
+                mTvRight.setText("去允许");
+                mTvRight.setBackgroundResource(R.drawable.dialog_button_selector);
+                ArrayList<String> noGrantedPermission = new ArrayList<>();
+                for (String str : UIConfig.NEEDED_PERMISSION) {
+                    if (ContextCompat.checkSelfPermission(LoginActivity.this, str)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        noGrantedPermission.add(str);
                     }
-                });
+                }
+                mTvHint.setText(PermissionUtil.getInfo(noGrantedPermission.toArray(new String[noGrantedPermission.size()])));
+                mTvHint.setGravity(Gravity.LEFT);
+            }
 
-        mDialog = builder.create();
-        mDialog.setCanceledOnTouchOutside(false);
-        mDialog.show();
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                if (mPermissionDialog != null) {
+                    mPermissionDialog.dismiss();
+                }
+                if (view.getId() == com.thfw.ui.R.id.tv_left) {
+                    finish();
+                    MyApplication.kill();
+                } else {
+                    if (never) {// 从不询问，禁止
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        // 注意就是"package",不用改成自己的包名
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivityForResult(intent, 1);
+                    } else {
+                        ActivityCompat.requestPermissions(LoginActivity.this, UIConfig.NEEDED_PERMISSION, 1);
+                    }
+                }
+            }
+        }, false);
     }
-
 
     @Override
     public void onResume() {
         super.onResume();
         Static2Helper.initOpenCV(true);
+        if (!checkPermissionsNoRequest()) {
+            if (checkPermissionFirst) {
+                checkPermissions();
+                checkPermissionFirst = false;
+            } else {
+                permissionDialog(true);
+            }
+        }
     }
 
     @Override

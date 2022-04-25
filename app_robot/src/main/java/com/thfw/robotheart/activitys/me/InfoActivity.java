@@ -1011,6 +1011,7 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
                     ArrayList<OrganizationModel.OrganizationBean> mSelecteds = new ArrayList<>();
                     initSelectedList(mSelecteds, data.getOrganization());
                     CommonParameter.setOrganizationSelected(mSelecteds);
+                    CommonParameter.setOrganizationModel(data);
                     if (UserManager.getInstance().isLogin()) {
                         UserManager.getInstance().getUser().setOrganList(mSelecteds);
                         mTvTeam.setText(UserManager.getInstance().getUser().getOrganListStr());

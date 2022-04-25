@@ -17,6 +17,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.utils.EditTextUtil;
 import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -54,6 +55,8 @@ public class BindPhoneActivity extends RobotBaseActivity<LoginPresenter>
         mBtSubmit = (Button) findViewById(R.id.bt_submit);
         mTvSendSuccess = (TextView) findViewById(R.id.tv_send_success);
         mBtGetCode = (Button) findViewById(R.id.bt_get_code);
+        EditTextUtil.setEditTextInhibitInputSpace(mEtCode);
+        EditTextUtil.setEditTextInhibitInputSpace(mEtPhone);
     }
 
     @Override

@@ -21,6 +21,7 @@ import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.utils.EditTextUtil;
 import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -60,6 +61,11 @@ public class SetPasswordOriginFragment extends RobotBaseFragment<LoginPresenter>
         mEtPasswordNewConfirm = (EditText) findViewById(R.id.et_password_new_confirm);
         mTvForgetPassword = (TextView) findViewById(R.id.tv_forget_password);
         mBtSubmit = (Button) findViewById(R.id.bt_submit);
+
+
+        EditTextUtil.setEditTextInhibitInputSpace(mEtPasswordOrigin);
+        EditTextUtil.setEditTextInhibitInputSpace(mEtPasswordNew);
+        EditTextUtil.setEditTextInhibitInputSpace(mEtPasswordNewConfirm);
     }
 
     @Override

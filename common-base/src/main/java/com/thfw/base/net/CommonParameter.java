@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.reflect.TypeToken;
 import com.thfw.base.ContextApp;
 import com.thfw.base.models.OrganizationModel;
+import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.utils.DeviceIdUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
@@ -58,6 +59,20 @@ public class CommonParameter {
         String id = SharePreferenceUtil.getString(KEY_ORGANIZATION_ID, null);
         LogUtil.d("getOrganizationId = " + id);
         return TextUtils.isEmpty(id) ? "" : id;
+    }
+
+    public static void setOrganizationModel(OrganizationSelectedModel model) {
+        if (!CommonParameter.isValid()) {
+            if (model.getOrganization() != null && model.getOrganization().getId() > 0) {
+                CommonParameter.setOrganizationId(model.getOrganization().getId() + "");
+            }
+        }
+    }
+
+    public static void setOrganizationModelPhone(OrganizationSelectedModel model) {
+        if (model.getOrganization() != null && model.getOrganization().getId() > 0) {
+            CommonParameter.setOrganizationId(model.getOrganization().getId() + "");
+        }
     }
 
     public static void setOrganizationId(String organizationId) {

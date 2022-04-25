@@ -281,6 +281,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
             public void onSuccess(OrganizationSelectedModel data) {
                 if (data != null) {
                     mSelectedRequest = new ArrayList<>();
+                    CommonParameter.setOrganizationModelPhone(data);
                     initSelectedList(mSelectedRequest, data.getOrganization());
                 }
                 mPresenter.onGetOrganizationList();

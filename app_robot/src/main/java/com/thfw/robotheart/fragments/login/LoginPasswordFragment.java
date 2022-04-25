@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.models.TokenModel;
+import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
@@ -28,6 +29,7 @@ import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.activitys.login.SetPasswordActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.utils.EditTextUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -85,7 +87,8 @@ public class LoginPasswordFragment extends RobotBaseFragment<LoginPresenter> imp
         mTvLoginByPassword = (TextView) findViewById(R.id.tv_login_by_password);
         mTvLoginByPassword.setVisibility(View.GONE);
         Util.addUnderLine(mTvProductUser, mTvProductMsg, mTvProductAgree);
-
+        EditTextUtil.setEditTextInhibitInputSpeChatAndSpace(mEtMobile);
+        EditTextUtil.setEditTextInhibitInputSpace(mEtPassword);
         mIvSeePassword.setOnClickListener(v -> {
 
             mIvSeePassword.setSelected(!mIvSeePassword.isSelected());
@@ -100,10 +103,6 @@ public class LoginPasswordFragment extends RobotBaseFragment<LoginPresenter> imp
             mEtPassword.setSelection(mEtPassword.getText().length());
         });
 
-        mTvLoginByFace.setOnClickListener(v -> {
-            LoginActivity loginActivity = (LoginActivity) getActivity();
-            loginActivity.getFragmentLoader().load(LoginActivity.BY_FACE);
-        });
         initAgreeClick();
 
     }
@@ -146,14 +145,30 @@ public class LoginPasswordFragment extends RobotBaseFragment<LoginPresenter> imp
         mEtPassword.addTextChangedListener(myTextWatcher);
         mBtLogin.setEnabled(false);
         mBtLogin.setOnClickListener(v -> {
+            if (!CommonParameter.isValid()) {
+                LoginActivity.showOrganIdNoValid(getActivity());
+                return;
+            }
             String phone = mEtMobile.getText().toString();
             String password = mEtPassword.getText().toString();
             LoadingDialog.show(getActivity(), "登录中");
             mPresenter.loginByPassword(phone, password);
         });
         mTvLoginByMobile.setOnClickListener(v -> {
+            if (!CommonParameter.isValid()) {
+                LoginActivity.showOrganIdNoValid(getActivity());
+                return;
+            }
             LoginActivity loginActivity = (LoginActivity) getActivity();
             loginActivity.getFragmentLoader().load(LoginActivity.BY_MOBILE);
+        });
+        mTvLoginByFace.setOnClickListener(v -> {
+            if (!CommonParameter.isValid()) {
+                LoginActivity.showOrganIdNoValid(getActivity());
+                return;
+            }
+            LoginActivity loginActivity = (LoginActivity) getActivity();
+            loginActivity.getFragmentLoader().load(LoginActivity.BY_FACE);
         });
         mTvForgetPassword.setOnClickListener(v -> {
             SetPasswordActivity.startActivity(mContext, SetPasswordActivity.SET_CODE);

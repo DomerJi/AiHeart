@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ import com.thfw.base.net.CommonParameter;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.PermissionUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.MyApplication;
@@ -47,6 +49,8 @@ import com.thfw.user.models.User;
 
 import org.opencv.android.Static2Helper;
 
+import java.util.ArrayList;
+
 public class LoginActivity extends RobotBaseActivity {
 
     public static final int BY_MOBILE = 0;
@@ -62,6 +66,8 @@ public class LoginActivity extends RobotBaseActivity {
     public static String INPUT_PHONE = "";
     private int type;
     private FragmentLoader fragmentLoader;
+    private TDialog mPermissionDialog;
+    private boolean checkPermissionFirst = true;
 
     public static void startActivity(Context context, int type) {
         context.startActivity(new Intent(context, LoginActivity.class).putExtra(KEY_DATA, type));
@@ -148,9 +154,6 @@ public class LoginActivity extends RobotBaseActivity {
         fragmentLoader.add(BY_FACE, new LoginByFaceFragment());
         PictureFileUtils.deleteAllCacheDirFile(mContext);
         fragmentLoader.load(type);
-        // 检查权限
-        checkPermissions();
-        checkOrganDialog();
         if (UserManager.getInstance().isTrueLogin()) {
             View view = findViewById(R.id.ll_back);
             view.setVisibility(View.VISIBLE);
@@ -197,22 +200,41 @@ public class LoginActivity extends RobotBaseActivity {
         return has;
     }
 
+    /**
+     * 动态获取内存存储权限
+     */
+    public boolean checkPermissionsNoRequest() {
+        boolean has = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // 验证是否许可权限
+            for (String str : UIConfig.NEEDED_PERMISSION) {
+                if (ContextCompat.checkSelfPermission(this, str) != PackageManager.PERMISSION_GRANTED) {
+                    has = false;
+                    break;
+                }
+            }
+        }
+        return has;
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == 1) {
             for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) { // 选择了“始终允许”
                     if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i])) {//用户选择了禁止不再询问
                         permissionDialog(true);
+                        break;
                     } else { // 选择禁止
                         permissionDialog(false);
+                        break;
                     }
                 }
             }
         }
     }
+
 
     /**
      * 禁止权限后的弹框处理
@@ -220,18 +242,33 @@ public class LoginActivity extends RobotBaseActivity {
      * @param never
      */
     private void permissionDialog(boolean never) {
-        DialogRobotFactory.createCustomDialog(this, new DialogRobotFactory.OnViewCallBack() {
+        if (mPermissionDialog != null) {
+            mPermissionDialog.dismiss();
+        }
+        mPermissionDialog = DialogRobotFactory.createCustomDialog(this, new DialogRobotFactory.OnViewCallBack() {
             @Override
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-                mTvHint.setText("点击允许才可以使用相应功能哦");
                 mTvTitle.setText("权限申请");
                 mTvLeft.setVisibility(View.GONE);
+                mVLineVertical.setVisibility(View.GONE);
                 mTvRight.setText("去允许");
+                mTvRight.setBackgroundResource(R.drawable.dialog_button_selector);
+                ArrayList<String> noGrantedPermission = new ArrayList<>();
+                for (String str : UIConfig.NEEDED_PERMISSION) {
+                    if (ContextCompat.checkSelfPermission(LoginActivity.this, str)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        noGrantedPermission.add(str);
+                    }
+                }
+                mTvHint.setText(PermissionUtil.getInfo(noGrantedPermission.toArray(new String[noGrantedPermission.size()])));
+                mTvHint.setGravity(Gravity.LEFT);
             }
 
             @Override
             public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                tDialog.dismiss();
+                if (mPermissionDialog != null) {
+                    mPermissionDialog.dismiss();
+                }
                 if (never) {// 从不询问，禁止
                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                     // 注意就是"package",不用改成自己的包名
@@ -241,7 +278,6 @@ public class LoginActivity extends RobotBaseActivity {
                 } else {
                     ActivityCompat.requestPermissions(LoginActivity.this, UIConfig.NEEDED_PERMISSION, 1);
                 }
-                checkOrganDialog();
             }
         }, false);
     }
@@ -251,6 +287,16 @@ public class LoginActivity extends RobotBaseActivity {
         super.onResume();
         Static2Helper.initOpenCV(true);
         MainActivity.resetInit();
+        if (!checkPermissionsNoRequest()) {
+            if (checkPermissionFirst) {
+                checkPermissions();
+                checkPermissionFirst = false;
+            } else {
+                permissionDialog(true);
+            }
+        } else {
+            checkOrganDialog();
+        }
     }
 
     @Override
@@ -260,8 +306,7 @@ public class LoginActivity extends RobotBaseActivity {
     }
 
     private void checkOrganDialog() {
-
-        if (!CommonParameter.isValid() && checkPermissions()) {
+        if (!CommonParameter.isValid() && checkPermissionsNoRequest()) {
             showOrganIdNoValid(LoginActivity.this);
         }
     }

@@ -25,6 +25,9 @@
         android:layout_weight="1"
         android:background="@null"
         android:hint="@string/please_input_verification"
+        android:inputType="number"
+        android:maxLines="1"
+        android:singleLine="true"
         android:textSize="@dimen/textSize" />
 
     <View

@@ -17,6 +17,7 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.login.ForgetPasswordActivity;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.utils.EditTextUtil;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 /**
@@ -57,7 +58,8 @@ public class SetPasswordFragment extends BaseFragment<LoginPresenter> implements
         mEtPassword = (EditText) findViewById(R.id.et_password);
         mBtConfirm = (Button) findViewById(R.id.bt_confirm);
 
-
+        EditTextUtil.setEditTextInhibitInputSpace(mEtPassword);
+        EditTextUtil.setEditTextInhibitInputSpace(mEtMobile);
         mBtConfirm.setOnClickListener(v -> {
             if (getActivity() instanceof ForgetPasswordActivity) {
 

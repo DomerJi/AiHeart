@@ -22,6 +22,7 @@ import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.utils.EditTextUtil;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> implements LoginPresenter.LoginUi<CommonModel> {
@@ -75,6 +76,7 @@ public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> imple
         mTvLoginByMobile = (TextView) findViewById(R.id.tv_login_by_mobile);
         mTvLoginByMobile.setVisibility(View.GONE);
         initAgreeClick();
+        EditTextUtil.setEditTextInhibitInputSpace(mEtMobile);
     }
 
     private void initAgreeClick() {

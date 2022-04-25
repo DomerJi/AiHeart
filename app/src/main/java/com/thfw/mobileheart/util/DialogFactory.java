@@ -55,7 +55,7 @@ import java.util.List;
  */
 public class DialogFactory {
 
-    private static final float WIDTH_ASPECT = 0.75f;
+    private static final float WIDTH_ASPECT = 0.7f;
     private static final String TAG = "DialogFactory";
     private static TDialog mSvgaTDialog;
     private static Runnable mMinuteRunnable;

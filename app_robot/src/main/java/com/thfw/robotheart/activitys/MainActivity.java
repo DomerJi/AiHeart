@@ -84,6 +84,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private static boolean initUserInfo;
     private static boolean initOrganization;
     private static boolean initUmeng;
+    private static boolean initTts;
     // 登录动画是否显示，为了不频繁获取sp数据
     private static boolean showLoginAnim;
     private com.thfw.robotheart.view.TitleBarView mTitleBarView;
@@ -158,6 +159,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         initUserInfo = false;
         initOrganization = false;
         initUmeng = false;
+        initTts = false;
     }
 
     private static boolean hasAgreedAgreement() {
@@ -282,6 +284,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             showSVGALogin();
             // 开始动画
             animResume(true);
+            // 登录欢迎语
+            ttsWelcome();
             // 检查版本更新
             mMainHandler.removeCallbacks(mCheckVersionRunnable);
             mMainHandler.postDelayed(mCheckVersionRunnable, isMeResumed2() ? 1000 : 2500);
@@ -504,6 +508,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                         ArrayList<OrganizationModel.OrganizationBean> mSelecteds = new ArrayList<>();
                         initSelectedList(mSelecteds, data.getOrganization());
                         CommonParameter.setOrganizationSelected(mSelecteds);
+                        CommonParameter.setOrganizationModel(data);
                         UserManager.getInstance().getUser().setOrganList(mSelecteds);
                         UserManager.getInstance().notifyUserInfo();
                         UPushAlias.setTag(mSelecteds.get(mSelecteds.size() - 1).getId());
@@ -563,10 +568,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                         UserManager.getInstance().getUser().setUserInfo(data);
                         UserManager.getInstance().notifyUserInfo();
                         UPushAlias.set(MyApplication.getApp(), "user_" + data.id, "user");
-                        if (SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, true)) {
-                            SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false);
-                            TtsHelper.getInstance().start(new TtsModel("你好" + UserManager.getInstance().getUser().getVisibleName() + ",很高兴见到你"), null);
-                        }
+                        ttsWelcome();
                         TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND5);
                     } else {
                         onFail(new ResponeThrowable(0, "data is null"));
@@ -603,6 +605,21 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             } else {
                 agreementAfterInitUmeng();
             }
+        }
+    }
+
+    private void ttsWelcome() {
+        if (initTts) {
+            return;
+        }
+        initTts = !SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false);
+        if (initTts) {
+            return;
+        }
+        if (isMeResumed() && initUserInfo) {
+            SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN_TTS, false);
+            TtsHelper.getInstance().start(new TtsModel("你好" + UserManager.getInstance().getUser().getVisibleName() + ",很高兴见到你"), null);
+            initTts = true;
         }
     }
 
