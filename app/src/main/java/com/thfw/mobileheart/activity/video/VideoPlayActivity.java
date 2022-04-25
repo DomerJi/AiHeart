@@ -688,9 +688,8 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     @Override
     public void onSingleTapGesture(MotionEvent e) {
         Log.d(TAG, "onSingleTapGesture: ");
-        if (speed > 1) {
-            setSpeed(1);
-        } else {
+        setSpeed(1);
+        if (!(mLLShowForWard != null && mLLShowForWard.getVisibility() == VISIBLE)) {
             if (mMPlayerView != null) {
                 if (mMPlayerView.isControllerVisible()) {
                     mMPlayerView.hideController();
