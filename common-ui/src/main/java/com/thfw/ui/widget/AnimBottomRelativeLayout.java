@@ -1,5 +1,6 @@
 package com.thfw.ui.widget;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -59,6 +60,30 @@ public class AnimBottomRelativeLayout extends RelativeLayout {
                 int height = (int) animation.getAnimatedValue();
                 getLayoutParams().height = height;
                 setLayoutParams(getLayoutParams());
+            }
+        });
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (getLayoutParams().height > 0) {
+                    getLayoutParams().height = LayoutParams.WRAP_CONTENT;
+                    setLayoutParams(getLayoutParams());
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
             }
         });
         animator.start();
