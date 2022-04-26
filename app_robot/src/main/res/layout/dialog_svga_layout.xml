@@ -58,6 +58,8 @@
         android:autoLink="web"
         android:letterSpacing="0.1"
         android:minWidth="30dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:textColor="@color/text_yellow"
         android:textSize="@dimen/textSize_large"
         app:layout_constraintRight_toRightOf="parent"

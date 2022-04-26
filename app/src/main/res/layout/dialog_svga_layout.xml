@@ -7,8 +7,6 @@
     tools:ignore="MissingDefaultResource">
 
 
-
-
     <TextView
         android:id="@+id/tv_hint"
         android:layout_width="wrap_content"
@@ -20,14 +18,14 @@
         android:paddingLeft="12dp"
         android:paddingTop="8dp"
         android:paddingRight="12dp"
-        app:layout_constraintVertical_bias="0.25"
         android:paddingBottom="8dp"
         android:textColor="@color/white"
         android:textSize="@dimen/textSize_small"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.25"
         tools:text="倾听你的心事" />
 
 
@@ -55,6 +53,8 @@
         android:autoLink="web"
         android:letterSpacing="0.1"
         android:minWidth="30dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:textColor="@color/text_yellow"
         android:textSize="@dimen/textSize_large"
         app:layout_constraintRight_toRightOf="parent"

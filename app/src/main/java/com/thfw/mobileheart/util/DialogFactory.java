@@ -189,6 +189,12 @@ public class DialogFactory {
                     SVGAImageView svgaImageView = viewHolder.getView(R.id.svga_dialog);
                     if (!TextUtils.isEmpty(hint)) {
                         mTvTime = viewHolder.getView(R.id.tv_time);
+                        if (mTvTime != null) {
+                            mTvTime.setOnClickListener(v -> {
+                                LogUtil.d(TAG, "onFinished click tvtime");
+                                svgaImageView.getCallback().onFinished();
+                            });
+                        }
                         mMinuteRunnable = new Runnable() {
                             @Override
                             public void run() {
