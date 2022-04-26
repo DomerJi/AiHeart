@@ -84,7 +84,7 @@
             android:layout_height="0dp"
             app:hip_text="Hi,我是小密 Hi,我在呢"
             app:layout_constraintBottom_toTopOf="@id/svga_body"
-            app:layout_constraintDimensionRatio="H,166:179"
+            app:layout_constraintDimensionRatio="W,179:166"
             app:layout_constraintHeight_percent="0.15"
             app:layout_constraintRight_toRightOf="@id/svga_body" />
 

@@ -120,7 +120,7 @@
             android:layout_height="0dp"
             app:hip_text="Hi,点击我进入\n专业心理咨询"
             app:layout_constraintBottom_toTopOf="@id/svga_body"
-            app:layout_constraintDimensionRatio="H,166:179"
+            app:layout_constraintDimensionRatio="W,179:166"
             app:layout_constraintHeight_percent="0.2"
             app:layout_constraintRight_toRightOf="@id/svga_body" />
 
