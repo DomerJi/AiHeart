@@ -68,7 +68,7 @@ public class AnimFileName {
     public static final String TALK_YIYU = "talk_yiyu.svga";
     public static final String TALK_ZENGHENG = "talk_zengheng.svga";
     // 首页随机
-    public static final int HOME_IP_ANIM_TIME = 3000;
+    public static final int HOME_IP_ANIM_TIME = 4000;
     // 出场动画
     public static String TRANSITION_WELCOM = "login_welcom.svga";
     private static HashMap<String, String> mNameHintMap;

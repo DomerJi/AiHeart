@@ -301,7 +301,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             @Override
             public void onFinished() {
                 if (isMeResumed()) {
-                    mMainHandler.postDelayed(mStartFaceRunnable, random.nextInt(HOME_IP_ANIM_TIME));
+                    mMainHandler.postDelayed(mStartFaceRunnable, 1500 + random.nextInt(HOME_IP_ANIM_TIME));
                 }
             }
         });

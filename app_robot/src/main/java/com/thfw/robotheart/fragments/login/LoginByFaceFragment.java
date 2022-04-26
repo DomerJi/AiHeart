@@ -5,10 +5,14 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,28 +21,32 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import com.google.common.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.MyAnimationListener;
-import com.thfw.base.room.face.Face;
+import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.TokenModel;
+import com.thfw.base.net.ApiHost;
+import com.thfw.base.net.HttpResult;
+import com.thfw.base.net.MultipartBodyFactory;
+import com.thfw.base.net.OkHttpUtil;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.FileUtil;
 import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
-import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
-import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.robotheart.constants.UIConfig;
-import com.thfw.user.login.LoginStatus;
+import com.thfw.robotheart.util.Dormant;
 import com.thfw.user.login.UserManager;
-import com.thfw.user.models.User;
 
-import org.bytedeco.opencv.opencv_face.FisherFaceRecognizer;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCamera2CircleView;
 import org.opencv.core.Mat;
@@ -46,6 +54,7 @@ import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.helper.FaceUtil;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
@@ -55,9 +64,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * 登录
@@ -66,7 +79,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 
     public static final int JAVA_DETECTOR = 0;
     public static final int NATIVE_DETECTOR = 1;
-    private static final int FAIL_COUNT_MAX = 200;
+    private static final int FAIL_COUNT_MAX = 10;
     private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
     private TextView mTvLoginByPassword;
     private LinearLayout mClBottom;
@@ -83,11 +96,13 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     private boolean mLineUpAnim = true;
     // true 录入人脸  false 人脸识别
     private boolean inputFace;
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
     /**
      * 正在处理图像数据
      */
     private boolean frameHandleIng = false;
     private int failCount = 0;
+    private long beginTime;
     private Mat mRgba; //图像容器
     private Mat mGray;
     private File mCascadeFile;
@@ -102,6 +117,17 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     private int mAbsoluteFaceSize = 0;
     private TextView mTvLoginByFace;
     private TextView mTvLoginByMobile;
+    private String faceHint01 = "请正对屏幕，保持脸在取景框内";
+    private String faceHint02 = "请靠近摄像头，保持双眼睁开";
+    private String faceHint03 = "正在识别...";
+    private TextView mTvFaceHint;
+    private long changeFaceHintTime;
+    private ConstraintLayout mClLoginCenter;
+    private TextView mTvPageTitle;
+    private LinearLayout mClFail;
+    private TextView mTvFaceFailHint;
+    private Button mBtRetry;
+    private ConstraintLayout mClFace;
 
     @Override
     public int getContentView() {
@@ -124,6 +150,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         mTvProductUser = (TextView) findViewById(R.id.tv_product_user);
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
+        mTvFaceHint = (TextView) findViewById(R.id.tv_face_hint);
 
         mJavaCamera2CircleView = (JavaCamera2CircleView) findViewById(R.id.javaCamera2CircleView);
         mIvBorder = (ImageView) findViewById(R.id.iv_border);
@@ -144,6 +171,12 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         });
         Util.addUnderLine(mTvProductUser, mTvProductMsg, mTvProductAgree);
         initAgreeClick();
+        mClLoginCenter = (ConstraintLayout) findViewById(R.id.cl_login_center);
+        mTvPageTitle = (TextView) findViewById(R.id.tv_page_title);
+        mClFail = (LinearLayout) findViewById(R.id.cl_fail);
+        mTvFaceFailHint = (TextView) findViewById(R.id.tv_face_fail_hint);
+        mBtRetry = (Button) findViewById(R.id.bt_retry);
+        mClFace = (ConstraintLayout) findViewById(R.id.cl_face);
     }
 
     private void initAgreeClick() {
@@ -201,31 +234,26 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             mClBottom.setVisibility(View.GONE);
 
         }
-        mIvBorder.post(new Runnable() {
-            @Override
-            public void run() {
-                startLineAnim();
-            }
-        });
+
     }
 
     @Override
     public void onVisible(boolean isVisible) {
         super.onVisible(isVisible);
+        failCount = 0;
         if (mJavaCamera2CircleView != null) {
             if (isVisible) {
+                mIvBorder.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        startLineAnim();
+                        startBorderAnim();
+                    }
+                });
                 mJavaCamera2CircleView.enableView();
             } else {
                 mJavaCamera2CircleView.disableView();
             }
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (mJavaCamera2CircleView != null) {
-            mJavaCamera2CircleView.disableView();
         }
     }
 
@@ -243,7 +271,9 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 mLineUpAnim = !mLineUpAnim;
-                startLineAnim();
+                if (isVisible()) {
+                    startLineAnim();
+                }
 
             }
         });
@@ -370,8 +400,19 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     public Mat onCameraFrameHandle(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         LogUtil.d(TAG, "frameHandleIng = " + frameHandleIng);
         LogUtil.d(TAG, "failCount >= FAIL_COUNT_MAX " + (failCount >= FAIL_COUNT_MAX));
-
-        if (frameHandleIng || failCount >= FAIL_COUNT_MAX) {
+        Dormant.reset();
+        if (beginTime == 0) {
+            beginTime = System.currentTimeMillis();
+        }
+        if (frameHandleIng) {
+            return inputFrame.rgba();
+        } else if (failCount >= FAIL_COUNT_MAX) {
+            showFaceFail(inputFace ? "人脸录入失败，已经为您重试多次，要求面部无遮挡，光照好的环境。" :
+                    "刷脸登录失败，已为您重试多次，您可以选择重新尝试或其他登录方式");
+            return inputFrame.rgba();
+        } else if (System.currentTimeMillis() - beginTime > HourUtil.LEN_MINUTE * 2) {
+            showFaceFail(inputFace ? "人脸录入超时，要求面部无遮挡，光照好的环境。" :
+                    "刷脸登录超时，您可以选择重新尝试或其他登录方式");
             return inputFrame.rgba();
         }
         frameHandleIng = true;
@@ -391,7 +432,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         if (mDetectorType == JAVA_DETECTOR) {
             if (mJavaDetector != null)
                 mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
-                        new org.opencv.core.Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new org.opencv.core.Size());
+                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
 
         } else if (mDetectorType == NATIVE_DETECTOR) {
             if (mNativeDetector != null)
@@ -400,34 +441,73 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             Log.e(TAG, "Detection method is not selected!");
         }
 
-
         Rect[] facesArray = faces.toArray();
         Log.d(TAG, "facesArray.len = " + facesArray.length);
         if (facesArray.length == 1) {
             //  画眼睛
-            onEyeDraw(mGray);
-            if (!inputFace || onEyeCheck2(mGray)) {
-                String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                boolean saveImage = FaceUtil.saveImage(getContext(), mRgba, facesArray[0], fileName, true);
-                Log.d(TAG, "saveImage = " + saveImage);
-                frameHandleIng = saveImage;
-                if (saveImage) {
-                    loginOrInput(fileName);
-                } else {
-                    // 保存失败 重新开始处理
-                    frameHandleIng = false;
-                }
+//            onEyeDraw(mGray);
+            setFaceHint(faceHint02);
+            String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + "_" + System.currentTimeMillis();
+            boolean saveImage = FaceUtil.saveImageRgba(getContext(), mRgba, fileName);
+            Log.d(TAG, "saveImage = " + saveImage);
+            if (saveImage) {
+                loginOrInput(FaceUtil.getFilePath(mContext, fileName));
+                setFaceHint(faceHint03);
             } else {
+                // 保存失败 重新开始处理
                 frameHandleIng = false;
             }
         } else {
+            setFaceHint(faceHint01);
             frameHandleIng = false;
         }
         // 画脸型
-        for (int i = 0; i < facesArray.length; i++) {
-            Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 3);
-        }
+//        for (int i = 0; i < facesArray.length; i++) {
+//            Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 3);
+//        }
         return mRgba;
+    }
+
+    private void showFaceFail(String s) {
+
+        if (mClFail != null && mClFail.getVisibility() != View.VISIBLE) {
+            mMainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mTvFaceFailHint != null) {
+                        mTvFaceFailHint.setText(s);
+                    }
+                    mClFail.setVisibility(View.VISIBLE);
+                    mClFace.setVisibility(View.INVISIBLE);
+                    mTvFaceHint.setVisibility(View.INVISIBLE);
+                    mBtRetry.setOnClickListener(v -> {
+                        failCount = 0;
+                        beginTime = 0;
+                        mClFail.setVisibility(View.GONE);
+                        mClFace.setVisibility(View.VISIBLE);
+                        mTvFaceHint.setVisibility(View.VISIBLE);
+                    });
+                }
+            });
+        }
+    }
+
+    private void setFaceHint(String text) {
+        if (mTvFaceHint != null) {
+            if (mTvFaceHint.getText().toString().equals(text)) {
+                return;
+            }
+            if (System.currentTimeMillis() - changeFaceHintTime < 400) {
+                return;
+            }
+            changeFaceHintTime = System.currentTimeMillis();
+            mMainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mTvFaceHint.setText(text);
+                }
+            });
+        }
     }
 
     /**
@@ -436,104 +516,127 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
      * @param fileName
      */
     private void loginOrInput(String fileName) {
-        LogUtil.d(TAG, "loginOrInput begin ======================================================");
+        LogUtil.d(TAG, "loginOrInput begin ====================================================== fileName = " + fileName);
         if (inputFace) {
-            User user = UserManager.getInstance().getUser();
-            Face face = new Face(user.getMobile(), user.getToken(), FaceUtil.getFilePath(getContext(), fileName));
-            MyApplication.getDatabase().faceDao().insert(face);
-            List<Face> faceList = MyApplication.getDatabase().faceDao().getAll();
-            for (Face f : faceList) {
-                if (StringUtil.contentEquals(face.getUid(), f.getUid())) {
-                    ToastUtil.show("人脸录入成功!");
-                    LogUtil.d(TAG, "人脸录入成功!======================================================");
-                    LogUtil.d(TAG, "人脸录入成功!======================================================");
-                    LogUtil.d(TAG, "人脸录入成功!======================================================");
-                    break;
-                }
-            }
-
-//            List<Mat> mats = new ArrayList<>();
-//            mats.add(Imgcodecs.imread(fileName));
-//            Mat lables = new Mat(1, 1, CV_32SC1);//对应20个标签值
-//            FisherFaceRecognizer faceRecognizer = FisherFaceRecognizer.create();
-//            faceRecognizer.train(mats, lables);
-//            faceRecognizer.save(FaceUtil.getFilePath(mContext, "FisherRecognize.xml"));
-            frameHandleIng = false;
+            requestInput(fileName);
         } else {
-            List<Face> faceList = MyApplication.getDatabase().faceDao().getAll();
-            LogUtil.d(TAG, "faceList[] = " + GsonUtil.toJson(faceList));
-            FisherFaceRecognizer faceRecognizer = FisherFaceRecognizer.create();
-            String filename = "FisherRecognize.xml";
-
-            File file = new File(mContext.getApplicationContext().getFilesDir(), fileName);
-
-            if (!file.exists()) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            LogUtil.d(TAG, "filename = " + filename + "____" + file.exists());
-            LogUtil.d(TAG, "filename = " + file.getAbsolutePath() + File.separator + filename);
-//            faceRecognizer.read(file.getAbsolutePath() + File.separator + filename);
-//            faceRecognizer.read(filename);
-//            int lable = faceRecognizer.predict_label(Imgcodecs.imread(fileName));
-//            ToastUtil.show("lable = " + lable);
-//            LogUtil.d(TAG, "lable = " + lable);
-
-            if (EmptyUtil.isEmpty(faceList)) {
-                frameHandleIng = false;
-                ToastUtil.show("本地无人脸数据！！！！！");
-                LogUtil.d(TAG, "本地无人脸数据！！！！！!======================================================");
-                LogUtil.d(TAG, "本地无人脸数据！！！！！!======================================================");
-                LogUtil.d(TAG, "本地无人脸数据！！！！！!======================================================");
-                return;
-            }
-
-            Face loginFace = null;
-            for (Face f : faceList) {
-//                double lv = com.kongqw.util.FaceUtil.compare(mContext, f.getFileName(), FaceUtil.getFilePath(getContext(), fileName));
-                double lv = FaceUtil.CmpPic(f.getFileName(), FaceUtil.getFilePath(getContext(), fileName));
-                Log.d("FaceUtil", "user -> mobile = " + f.getUid());
-                if (lv > 0.5) {
-                    loginFace = f;
-                    break;
-                }
-            }
-            if (loginFace != null) {
-                ToastUtil.show("人脸【登录】成功！->" + loginFace.getUid());
-                LogUtil.d(TAG, "人脸【登录】成功！！！！！!======================================================" + loginFace.getUid());
-                LogUtil.d(TAG, "人脸【登录】成功！！！！！!======================================================" + loginFace.getUid());
-                LogUtil.d(TAG, "人脸【登录】成功！！！！！!======================================================" + loginFace.getUid());
-                loginByFace(loginFace);
-                frameHandleIng = false;
-            } else {
-                failCount++;
-                frameHandleIng = false;
-                if (failCount >= FAIL_COUNT_MAX) {
-                    ToastUtil.show("人脸【登录】失败！！！！！");
-                }
-                LogUtil.d(TAG, "人脸【登录】失败！！！！！!======================================================");
-                LogUtil.d(TAG, "人脸【登录】失败！！！！！!======================================================");
-                LogUtil.d(TAG, "人脸【登录】失败！！！！！!======================================================");
-
-            }
+            requestLogin(fileName);
         }
     }
 
-    private void loginByFace(Face loginFace) {
-        User user = new User();
-        user.setToken(loginFace.getToken());
-        user.setMobile(loginFace.getUid());
-        user.setLoginStatus(LoginStatus.LOGINED);
-        UserManager.getInstance().login(user);
-//        if (data.isNoOrganization()) {
-//            SelectOrganizationActivity.startActivity(mContext, true);
-//        }
-        LogUtil.d(TAG, "UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
-        getActivity().finish();
+    private void requestInput(String avatarUrl) {
+        MultipartBodyFactory factory = MultipartBodyFactory.crete();
+        // file
+        if (!TextUtils.isEmpty(avatarUrl)) {
+            factory.addImage("pic", avatarUrl);
+        }
+        OkHttpUtil.request(ApiHost.getHost() + "face_login/face_enter", factory.build(), new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                FileUtil.deleteFile(avatarUrl);
+                if (EmptyUtil.isEmpty(getActivity())) {
+                    return;
+                }
+                failCount++;
+                frameHandleIng = false;
+                LogUtil.d(TAG, "人脸录入失败---------------------------------failCount = " + failCount);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                FileUtil.deleteFile(avatarUrl);
+                if (EmptyUtil.isEmpty(getActivity())) {
+                    return;
+                }
+                String json = response.body().string();
+                LogUtil.d(TAG, "人脸录入 --- " + json);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (EmptyUtil.isEmpty(getActivity())) {
+                            return;
+                        }
+                        try {
+                            Type type = new TypeToken<HttpResult<CommonModel>>() {
+                            }.getType();
+                            HttpResult<CommonModel> result = GsonUtil.fromJson(json, type);
+                            if (result != null && result.isSuccessful()) {
+                                ToastUtil.showLong("人脸录入成功");
+                                getActivity().finish();
+                                LogUtil.d(TAG, "人脸录入成功---------------------------------");
+                            } else {
+                                LogUtil.d(TAG, "人脸录入失败_01--------------------------------- failCount = " + failCount);
+                                failCount++;
+                                frameHandleIng = false;
+                            }
+                        } catch (Exception e) {
+                            failCount++;
+                            frameHandleIng = false;
+                        }
+                    }
+                });
+            }
+        });
     }
+
+    private void requestLogin(String avatarUrl) {
+        MultipartBodyFactory factory = MultipartBodyFactory.crete();
+        // file
+        if (!TextUtils.isEmpty(avatarUrl)) {
+            factory.addImage("pic", avatarUrl);
+        }
+        OkHttpUtil.request(ApiHost.getHost() + "face_login/face_recognition", factory.build(), new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                FileUtil.deleteFile(avatarUrl);
+                if (EmptyUtil.isEmpty(getActivity())) {
+                    return;
+                }
+                failCount++;
+                frameHandleIng = false;
+                LogUtil.d(TAG, "人脸【登录】失败---------------------------------failCount = " + failCount);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                FileUtil.deleteFile(avatarUrl);
+                if (EmptyUtil.isEmpty(getActivity())) {
+                    return;
+                }
+                String json = response.body().string();
+                LogUtil.d(TAG, "人脸【登录】 --- " + json);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (EmptyUtil.isEmpty(getActivity())) {
+                            return;
+                        }
+                        try {
+                            Type type = new TypeToken<HttpResult<TokenModel>>() {
+                            }.getType();
+                            HttpResult<TokenModel> result = GsonUtil.fromJson(json, type);
+                            if (result != null && result.isSuccessful()) {
+                                if (getActivity() instanceof LoginActivity) {
+                                    LoginActivity.login(getActivity(), result.getData(), "");
+                                }
+                                ToastUtil.show("人脸【登录】成功");
+                                getActivity().finish();
+                                LogUtil.d(TAG, "人脸【登录】成功---------------------------------");
+                            } else {
+                                LogUtil.d(TAG, "人脸【登录】失败_01--------------------------------- failCount = " + failCount);
+                                failCount++;
+                                frameHandleIng = false;
+                            }
+                        } catch (Exception e) {
+                            failCount++;
+                            frameHandleIng = false;
+                        }
+                    }
+                });
+            }
+        });
+    }
+
 
     /**
      * 检测人脸眼睛
@@ -548,7 +651,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         if (mDetectorType == JAVA_DETECTOR) {
             if (mJavaEyeDetector != null)
                 mJavaEyeDetector.detectMultiScale(image, faceDetections, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
-                        new org.opencv.core.Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new org.opencv.core.Size());
+                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else if (mDetectorType == NATIVE_DETECTOR) {
             if (mNativeEyeDetector != null)
                 mNativeEyeDetector.detect(image, faceDetections);
@@ -575,7 +678,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         if (mDetectorType == JAVA_DETECTOR) {
             if (mJavaEyeDetector != null)
                 mJavaEyeDetector.detectMultiScale(image, faceDetections, 1.1, 2, 2,
-                        new org.opencv.core.Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new org.opencv.core.Size());
+                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else if (mDetectorType == NATIVE_DETECTOR) {
             if (mNativeEyeDetector != null)
                 mNativeEyeDetector.detect(image, faceDetections);
@@ -615,10 +718,28 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mJavaCamera2CircleView != null) {
+            mJavaCamera2CircleView.disableView();
+        }
+    }
+
+    @Override
     public void onDestroy() {
-        super.onDestroy();
         if (mJavaCamera2CircleView != null) {
             mJavaCamera2CircleView.surfaceDestroyed(null);
         }
+        if (mIvLine != null) {
+            mIvLine.clearAnimation();
+        }
+        if (mIvBorder != null) {
+            mIvBorder.clearAnimation();
+        }
+        if (borderAnimation != null) {
+            borderAnimation.cancel();
+        }
+        super.onDestroy();
     }
+
 }

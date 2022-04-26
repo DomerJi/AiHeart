@@ -41,6 +41,12 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
     }
 
     @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        Dormant.reset();
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Dormant.reset();
         return super.onKeyDown(keyCode, event);

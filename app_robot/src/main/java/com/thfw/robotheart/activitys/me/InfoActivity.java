@@ -44,6 +44,7 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.OrganizationPresenter;
 import com.thfw.base.presenter.UserInfoPresenter;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.FileUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
@@ -69,7 +70,6 @@ import com.thfw.user.login.UserObserver;
 import com.thfw.user.models.User;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -804,6 +804,7 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
         OkHttpUtil.request(ApiHost.getHost() + "user/pic/upload", factory.build(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                FileUtil.deleteFile(avatarUrl);
                 if (EmptyUtil.isEmpty(InfoActivity.this)) {
                     return;
                 }
@@ -822,7 +823,7 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-
+                FileUtil.deleteFile(avatarUrl);
                 if (EmptyUtil.isEmpty(InfoActivity.this)) {
                     return;
                 }
@@ -835,13 +836,6 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
                     public void run() {
                         if (EmptyUtil.isEmpty(InfoActivity.this)) {
                             return;
-                        }
-                        if (!TextUtils.isEmpty(avatarUrl)) {
-                            // 删除源文件
-                            File file = new File(avatarUrl);
-                            if (file.exists()) {
-                                file.delete();
-                            }
                         }
                         LoadingDialog.hide();
                         HttpResult<HeadModel> result = GsonUtil.fromJson(json, type);

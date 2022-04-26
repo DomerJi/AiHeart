@@ -3,6 +3,7 @@ package com.thfw.base.net;
 import android.text.TextUtils;
 
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.LogUtil;
 
 import java.io.File;
 import java.util.List;
@@ -33,8 +34,10 @@ public class MultipartBodyFactory {
             if (file == null || !file.exists()) {
                 // todo 暂时用于修改店铺信息和商品图片修改地方
                 addString(key, imageUrl);
+                LogUtil.d("MultipartBodyFactory", "imageUrl addString -> " + imageUrl);
                 return this;
             }
+            LogUtil.d("MultipartBodyFactory", "imageUrl -> " + imageUrl);
             builder.addFormDataPart(key, file.getName(), RequestBody.create(MediaType.parse("image/*"), file));
         }
         return this;

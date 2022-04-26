@@ -19,11 +19,11 @@ public class SVGAHelper {
     private static final String TAG = SVGAHelper.class.getSimpleName();
 
     public static void playSVGA(SVGAImageView svgaImageView, SVGAModel svgaModel, DialogRobotFactory.SimpleSVGACallBack simpleSVGACallBack) {
-        SVGAParser parser = new SVGAParser(svgaImageView.getContext());
         if (svgaImageView.isAnimating()) {
             svgaImageView.setCallback(null);
             svgaImageView.stopAnimation(true);
         }
+        SVGAParser parser = new SVGAParser(svgaImageView.getContext());
         parser.decodeFromAssets(svgaModel.fileName, new SVGAParser.ParseCompletion() {
             @Override
             public void onComplete(@NotNull SVGAVideoEntity svgaVideoEntity) {
@@ -37,7 +37,6 @@ public class SVGAHelper {
                     LogUtil.d(TAG, "startAnimation(SVGARange)");
                 } else {
                     svgaImageView.startAnimation();
-
                     LogUtil.d(TAG, "startAnimation");
                 }
 

@@ -1,8 +1,6 @@
 package com.thfw.robotheart.activitys.me;
 
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -12,9 +10,10 @@ import android.widget.TextView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.base.IPresenter;
-import com.thfw.base.room.face.Face;
-import com.thfw.base.utils.StringUtil;
-import com.thfw.robotheart.MyApplication;
+import com.thfw.base.models.CommonModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.LoginPresenter;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
@@ -30,8 +29,7 @@ import com.thfw.ui.utils.GlideUtil;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.models.User;
-
-import java.util.List;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnCountChangeListener {
 
@@ -58,6 +56,9 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
     private RelativeLayout mRlReport;
     private TextView mTvMeMsgTitle;
     private TextView mTvDotCount;
+
+    private static final String KEY_INPUT_FACE = "key.input.face";
+    private static boolean initFaceState;
 
     @Override
     public int getContentView() {
@@ -179,10 +180,6 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
             HistoryActivity.startActivity(mContext, HistoryApi.TYPE_VIDEO);
         });
 
-        mRlFace.setOnClickListener(v -> {
-            LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
-        });
-
         mRlReport.setOnClickListener(v -> {
             TestReportActivity.startActivity(mContext);
         });
@@ -196,33 +193,48 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
     @Override
     protected void onResume() {
         super.onResume();
-        setInputState();
         if (UserManager.getInstance().isLogin()) {
+            setInputState();
             setUserMessage(UserManager.getInstance().getUser());
         }
     }
 
     private void setInputState() {
-        if (UserManager.getInstance().isLogin()) {
-            new Thread() {
-                @Override
-                public void run() {
-                    super.run();
-                    List<Face> faceList = MyApplication.getDatabase().faceDao().getAll();
-                    for (Face f : faceList) {
-                        if (StringUtil.contentEquals(UserManager.getInstance().getUser().getMobile(), f.getUid())) {
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mTvInputState.setText("已录入");
-                                }
-                            });
-                            break;
-                        }
-                    }
-                }
-            }.start();
+        if (initFaceState) {
+            int inputState = SharePreferenceUtil.getInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), -1);
+            if (inputState == 1) {
+                mTvInputState.setText("已录入");
+            } else {
+                mTvInputState.setText("未录入");
+                mRlFace.setOnClickListener(v -> {
+                    LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
+                });
+            }
+            return;
         }
+        new LoginPresenter(new LoginPresenter.LoginUi<CommonModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return null;
+            }
+
+            @Override
+            public void onSuccess(CommonModel data) {
+                initFaceState = true;
+                mTvInputState.setText("已录入");
+                SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), 1);
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                initFaceState = true;
+                SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), 0);
+                mTvInputState.setText("未录入");
+                mRlFace.setOnClickListener(v -> {
+                    LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
+                });
+            }
+        }).onIsFaceOpen();
     }
 
     private void setUserMessage(User user) {

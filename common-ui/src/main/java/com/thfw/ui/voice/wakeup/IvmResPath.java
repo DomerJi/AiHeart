@@ -13,7 +13,7 @@ public class IvmResPath {
 
     public static String getResPath() {
         if (resPath == null) {
-            resPath = ResourceUtil.generateResourcePath(ContextApp.get(), ResourceUtil.RESOURCE_TYPE.assets, "ivw/5f3de60d.jet");
+            resPath = ResourceUtil.generateResourcePath(ContextApp.get(), ResourceUtil.RESOURCE_TYPE.assets, "ivw/ec8b0856.jet");
         }
         return resPath;
     }

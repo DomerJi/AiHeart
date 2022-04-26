@@ -36,6 +36,40 @@
             app:layout_constraintVertical_chainStyle="packed" />
 
 
+        <LinearLayout
+            android:id="@+id/cl_fail"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/tv_face_hint"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_page_title"
+            tools:ignore="MissingConstraints">
+
+            <TextView
+                android:id="@+id/tv_face_fail_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="刷脸失败"
+                android:textColor="@color/text_content"
+                android:textSize="@dimen/textSize_large" />
+
+            <Button
+                android:id="@+id/bt_retry"
+                android:layout_width="180dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="56dp"
+                android:background="@drawable/common_yellow_btn_selector"
+                android:text="重新尝试"
+                android:textColor="@drawable/textcolor_white_white50_selector"
+                android:textSize="@dimen/textSize" />
+
+        </LinearLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_face"
             android:layout_width="0dp"

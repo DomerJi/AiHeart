@@ -15,11 +15,11 @@ public class TtsModel {
     public TtsModel(String text) {
         if (TextUtils.isEmpty(text)) {
             this.text = "";
-            this.ttsType = TtsType.READ_NORMAL;
-            return;
+        } else {
+            this.text = text.replaceAll("&nbsp;", "");
+            this.text = this.text.replaceAll(" ", "");
         }
-        this.text = text.replaceAll("&nbsp;", "");
-        this.text = this.text.replaceAll(" ", "");
+        this.ttsType = TtsType.READ_NORMAL;
     }
 
     public TtsModel(String text, TtsType ttsType) {

@@ -25,6 +25,7 @@ import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.MultipartBodyFactory;
 import com.thfw.base.net.OkHttpUtil;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.FileUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.RegularUtil;
@@ -36,7 +37,6 @@ import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.TitleView;
 import com.thfw.user.login.UserManager;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -176,6 +176,7 @@ public class MeWillHelpBackActivity extends BaseActivity {
         OkHttpUtil.request(ApiHost.getHost() + "feedback_uploads", factory.build(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                FileUtil.deleteFile(avatarUrl);
                 if (EmptyUtil.isEmpty(MeWillHelpBackActivity.this)) {
                     return;
                 }
@@ -194,7 +195,7 @@ public class MeWillHelpBackActivity extends BaseActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-
+                FileUtil.deleteFile(avatarUrl);
                 if (EmptyUtil.isEmpty(MeWillHelpBackActivity.this)) {
                     return;
                 }
@@ -207,13 +208,6 @@ public class MeWillHelpBackActivity extends BaseActivity {
                     public void run() {
                         if (EmptyUtil.isEmpty(MeWillHelpBackActivity.this)) {
                             return;
-                        }
-                        if (!TextUtils.isEmpty(avatarUrl)) {
-                            // 删除源文件
-                            File file = new File(avatarUrl);
-                            if (file.exists()) {
-                                file.delete();
-                            }
                         }
                         LoadingDialog.hide();
                         HttpResult<CommonModel> result = GsonUtil.fromJson(json, type);

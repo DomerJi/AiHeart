@@ -86,6 +86,7 @@ public class HomeIpTextView extends ConstraintLayout {
         if (textViewRunnable != null) {
             removeCallbacks(textViewRunnable);
         }
+        clearAnimation();
         resume = false;
     }
 

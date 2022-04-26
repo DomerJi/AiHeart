@@ -81,4 +81,14 @@ public class FileUtil {
 //            }
 //        }
     }
+
+    public static void deleteFile(String fileNanme) {
+//        if (!TextUtils.isEmpty(fileNanme)) {
+//            // 删除源文件
+//            File file = new File(fileNanme);
+//            if (file.exists()) {
+//                file.delete();
+//            }
+//        }
+    }
 }

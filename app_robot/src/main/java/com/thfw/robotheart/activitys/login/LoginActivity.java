@@ -77,7 +77,9 @@ public class LoginActivity extends RobotBaseActivity {
         if (data != null && !TextUtils.isEmpty(data.token)) {
             User user = new User();
             user.setToken(data.token);
-            user.setMobile(mobile);
+            if (!TextUtils.isEmpty(mobile)) {
+                user.setMobile(mobile);
+            }
             user.setSetUserInfo(data.isSetUserInfo());
             user.setOrganization(data.organization);
             user.setAuthTypeList(data.getAuthType());

@@ -125,6 +125,11 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
         OkHttpUtil.request(observable, getUI());
     }
 
+    public void onIsFaceOpen() {
+        Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(LoginApi.class).onIsFaceOpen(NetParams.crete());
+        OkHttpUtil.request(observable, getUI());
+    }
+
     public void loginByThirdParty(Map<String, String> map) {
 
     }

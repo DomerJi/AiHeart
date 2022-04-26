@@ -350,9 +350,9 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="26dp"
                     android:padding="8dp"
-                    android:text="未录入"
                     android:textColor="@color/colorRobotFore"
-                    android:textSize="@dimen/textSize_large" />
+                    android:textSize="@dimen/textSize_large"
+                    tools:text="录入状态" />
 
 
                 <View

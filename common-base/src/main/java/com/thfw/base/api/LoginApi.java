@@ -36,11 +36,12 @@ public interface LoginApi {
 
     /**
      * 第三方登录/免账号/免手机号+验证吗登录
+     * <p>
+     * phone 手机号，通过手机号来定位用户是否存在（非必传）
+     * organization 机构ID
+     * user_name 用户昵称
+     * open_id  三方渠道用户唯一标识ID（必传）
      *
-     phone 手机号，通过手机号来定位用户是否存在（非必传）
-     organization 机构ID
-     user_name 用户昵称
-     open_id  三方渠道用户唯一标识ID（必传）
      * @param params
      * @return
      */
@@ -59,6 +60,15 @@ public interface LoginApi {
     @POST("send_mobile_code")
     Observable<HttpResult<CommonModel>> onSendCode(@Field("phone_number") String phoneNumber,
                                                    @Field("type") int type);
+
+    /**
+     * [发送验证码]
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("face_login/query_user")
+    Observable<HttpResult<CommonModel>> onIsFaceOpen(@FieldMap Map<String, Object> params);
 
     /**
      * [密码重置]
@@ -82,7 +92,7 @@ public interface LoginApi {
     @FormUrlEncoded
     @POST("mobile_code_check")
     Observable<HttpResult<CommonModel>> onCheckMobileCode(@Field("mobile") String mobile,
-                                                      @Field("code") String code);
+                                                          @Field("code") String code);
 
 
 }
