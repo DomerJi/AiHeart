@@ -16,10 +16,16 @@ public class AboutUsModel implements IModel {
      * update_time : 2022-02-24 18:26:57
      */
 
+    @SerializedName("url")
+    private String companyUrl;
     @SerializedName("content")
     private String content;
     @SerializedName("update_time")
     private String updateTime;
+
+    public String getCompanyUrl() {
+        return companyUrl;
+    }
 
     public String getContent() {
         return content;

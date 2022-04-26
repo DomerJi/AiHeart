@@ -26,6 +26,7 @@ public class AboutMeFragment extends RobotBaseFragment<OtherPresenter> implement
     private TextView mTvVersion;
     private LinearLayout mLlCheckVersion;
     private TextView mTvCheckVersion;
+    private TextView mTvCompanyAddress;
 
     @Override
     public int getContentView() {
@@ -41,6 +42,7 @@ public class AboutMeFragment extends RobotBaseFragment<OtherPresenter> implement
     public void initView() {
 
         mTvHint = (TextView) findViewById(R.id.tv_hint);
+        mTvCompanyAddress = (TextView) findViewById(R.id.tv_company_net_address);
         mTvVersion = (TextView) findViewById(R.id.tv_version);
         mLlCheckVersion = (LinearLayout) findViewById(R.id.ll_check_version);
         mTvCheckVersion = (TextView) findViewById(R.id.tv_check_version);
@@ -66,6 +68,10 @@ public class AboutMeFragment extends RobotBaseFragment<OtherPresenter> implement
         String hint = "<font color='#91dff3'>产品概述：</font>"
                 + data.getContent();
         mTvHint.setText(Html.fromHtml(hint));
+
+        String companyHttp = "<font color='#91dff3'>公司官网：</font>"
+                + data.getCompanyUrl();
+        mTvCompanyAddress.setText(Html.fromHtml(companyHttp));
     }
 
     /**
