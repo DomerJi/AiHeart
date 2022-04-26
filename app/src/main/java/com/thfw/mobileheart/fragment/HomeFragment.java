@@ -291,9 +291,6 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
         super.onVisible(isVisible);
         if (mHomeAdapter != null) {
             mHomeAdapter.setBanner(isVisible);
-            if (isLogin) {
-                MoodLivelyHelper.addListener(mHomeAdapter);
-            }
         }
     }
 

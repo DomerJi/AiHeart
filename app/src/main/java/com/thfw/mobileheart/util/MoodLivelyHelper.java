@@ -11,6 +11,7 @@ import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.FunctionType;
+import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.ArrayList;
@@ -76,6 +77,11 @@ public class MoodLivelyHelper {
             }
             return;
         }
+        if (!UserManager.getInstance().isTrueLogin()) {
+            initWorkListener();
+            TimingHelper.getInstance().addWorkArriveListener(workListener);
+            return;
+        }
         new MobilePresenter(new MobilePresenter.MobileUi<MoodLivelyModel>() {
             @Override
             public LifecycleProvider getLifecycleProvider() {
@@ -113,7 +119,9 @@ public class MoodLivelyHelper {
             workListener = new TimingHelper.WorkListener() {
                 @Override
                 public void onArrive() {
-                    addListener(null);
+                    if (UserManager.getInstance().isTrueLogin()) {
+                        addListener(null);
+                    }
                 }
 
                 @Override
