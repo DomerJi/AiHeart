@@ -5,6 +5,9 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
@@ -19,14 +22,21 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import com.google.common.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.MyAnimationListener;
-import com.thfw.base.room.face.Face;
+import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.TokenModel;
+import com.thfw.base.net.ApiHost;
+import com.thfw.base.net.HttpResult;
+import com.thfw.base.net.MultipartBodyFactory;
+import com.thfw.base.net.OkHttpUtil;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.FileUtil;
 import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
-import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.MyApplication;
@@ -36,11 +46,8 @@ import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.mobileheart.constants.UIConfig;
-import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
-import com.thfw.user.models.User;
 
-import org.bytedeco.opencv.opencv_face.FisherFaceRecognizer;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCamera2CircleView;
 import org.opencv.core.Mat;
@@ -58,19 +65,20 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * 登录
  */
 public class LoginByFaceFragment extends BaseFragment implements CameraBridgeViewBase.CvCameraViewListener2 {
 
-    public static final int JAVA_DETECTOR = 0;
-    public static final int NATIVE_DETECTOR = 1;
-    private static final int FAIL_COUNT_MAX = 200;
-    private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
+
     private LinearLayout mLlLoginCenter;
     private TextView mTvLoginByPassword;
     private LinearLayout mClBottom;
@@ -84,14 +92,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     private ImageView mIvBorder;
     private ImageView mIvLine;
     private ObjectAnimator borderAnimation;
-    private boolean mLineUpAnim = true;
-    // true 录入人脸  false 人脸识别
-    private boolean inputFace;
-    /**
-     * 正在处理图像数据
-     */
-    private boolean frameHandleIng = false;
-    private int failCount = 0;
+
     private Mat mRgba; //图像容器
     private Mat mGray;
     private File mCascadeFile;
@@ -100,20 +101,50 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     private CascadeClassifier mJavaEyeDetector;
     private DetectionBasedTracker mNativeDetector;
     private DetectionBasedTracker mNativeEyeDetector;
-    private int mDetectorType = NATIVE_DETECTOR;
-    private String[] mDetectorName;
-    private float mRelativeFaceSize = 0.2f;
-    private int mAbsoluteFaceSize = 0;
     private ConstraintLayout mClTop;
     private RoundedImageView mRivIconBg;
     private RoundedImageView mRivIcon;
-    private LinearLayout mLlFaceEnd;
-    private Button mBtRetryFace;
     private LinearLayout mLlFaceIng;
     private LinearLayout mLlFaceBegin;
     private Button mBtBegin;
     private TextView mTvOtherLogin;
     private TextView mTvProduct3g;
+    private TextView mTvFaceFailHint;
+    private LinearLayout mLlFaceFail;
+    private Button mBtRetry;
+
+    /**
+     * 检测器类型
+     */
+    public static final int JAVA_DETECTOR = 0;
+    public static final int NATIVE_DETECTOR = 1;
+    // 最大失败数量
+    private static final int FAIL_COUNT_MAX = 10;
+    private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
+    // 动画扫描线上下标识
+    private boolean mLineUpAnim = true;
+    // true 录入人脸  false 人脸识别
+    private boolean inputFace;
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    /**
+     * 正在处理图像数据
+     */
+    private volatile boolean frameHandleIng = false;
+    private volatile int failCount = 0;
+    private volatile boolean failByNet = false;
+    private volatile long beginTime;
+    private volatile long changeFaceHintTime;
+    // 提示语
+    private String faceHint01 = "请正对屏幕，保持脸在取景框内";
+    private String faceHint02 = "请靠近摄像头，保持双眼睁开";
+    private String faceHint03 = "正在识别...";
+    // 检测器
+    private int mDetectorType = NATIVE_DETECTOR;
+    private String[] mDetectorName;
+    private float mRelativeFaceSize = 0.2f;
+    private int mAbsoluteFaceSize = 0;
+    private TextView mTvFaceHint;
+    private Runnable changeFaceHintRunnable;
 
     @Override
     public int getContentView() {
@@ -145,8 +176,6 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         mClTop = (ConstraintLayout) findViewById(R.id.cl_top);
         mRivIconBg = (RoundedImageView) findViewById(R.id.riv_icon_bg);
         mRivIcon = (RoundedImageView) findViewById(R.id.riv_icon);
-        mLlFaceEnd = (LinearLayout) findViewById(R.id.ll_face_end);
-        mBtRetryFace = (Button) findViewById(R.id.bt_retry_face);
         mLlFaceIng = (LinearLayout) findViewById(R.id.ll_face_ing);
         mLlFaceBegin = (LinearLayout) findViewById(R.id.ll_face_begin);
         mBtBegin = (Button) findViewById(R.id.bt_begin);
@@ -158,6 +187,10 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
             loginActivity.getFragmentLoader().load(LoginActivity.BY_OTHER);
             hideInput();
         });
+        mTvFaceFailHint = (TextView) findViewById(R.id.tv_face_fail_hint);
+        mLlFaceFail = (LinearLayout) findViewById(R.id.ll_face_fail);
+        mBtRetry = (Button) findViewById(R.id.bt_retry);
+        mTvFaceHint = (TextView) findViewById(R.id.tv_face_hint);
     }
 
     private void initAgreeClick() {
@@ -223,11 +256,31 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         });
     }
 
+    /**
+     * 重置刷脸标识
+     */
+    private void resetFaceFlag() {
+        failCount = 0;
+        beginTime = 0;
+        failByNet = false;
+        frameHandleIng = false;
+    }
+
     @Override
     public void onVisible(boolean isVisible) {
         super.onVisible(isVisible);
+        if (isVisible) {
+            resetFaceFlag();
+        }
         if (mJavaCamera2CircleView != null) {
             if (isVisible) {
+                mIvBorder.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        startLineAnim();
+                        startBorderAnim();
+                    }
+                });
                 mJavaCamera2CircleView.enableView();
             } else {
                 mJavaCamera2CircleView.disableView();
@@ -235,13 +288,6 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (mJavaCamera2CircleView != null) {
-            mJavaCamera2CircleView.disableView();
-        }
-    }
 
     public void startLineAnim() {
         mIvLine.clearAnimation();
@@ -258,8 +304,10 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                mLineUpAnim = !mLineUpAnim;
-                startLineAnim();
+                if (isVisible()) {
+                    mLineUpAnim = !mLineUpAnim;
+                    startLineAnim();
+                }
 
             }
         });
@@ -273,7 +321,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
                 int r = mRCircle;
                 int d = (int) Math.abs(value - mRCircle);
                 int l = (int) (2 * Math.sqrt(r * r - d * d));
-                LogUtil.d("onAnimationUpdate", "d = " + d + " ; r = " + r + " ; l = " + l);
+//                LogUtil.d("onAnimationUpdate", "d = " + d + " ; r = " + r + " ; l = " + l);
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mIvLine.getLayoutParams();
                 lp.width = l;
                 lp.topMargin = margin;
@@ -387,9 +435,6 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     }
 
     public Mat onCameraFrameHandle(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        LogUtil.d(TAG, "frameHandleIng = " + frameHandleIng);
-        LogUtil.d(TAG, "failCount >= FAIL_COUNT_MAX " + (failCount >= FAIL_COUNT_MAX));
-
         Mat dstRgba = new Mat();
         Mat rgba = inputFrame.rgba();
         Mat gray = inputFrame.gray();
@@ -397,11 +442,25 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         Imgproc.warpAffine(rgba, dstRgba, rotateMat, dstRgba.size());
         mRgba = dstRgba;
 
-        if (frameHandleIng || failCount >= FAIL_COUNT_MAX) {
+        if (beginTime == 0) {
+            beginTime = System.currentTimeMillis();
+        }
+        if (frameHandleIng) {
+            return mRgba;
+        } else if (failByNet) {
+            showFaceFail(inputFace ? "人脸录入失败，当前网络异常，请检查网络状态。" :
+                    "刷脸失败，当前网络异常，请检查网络状态。");
+            return mRgba;
+        } else if (failCount >= FAIL_COUNT_MAX) {
+            showFaceFail(inputFace ? "人脸录入失败，已经为您重试多次，要求面部无遮挡，光照好的环境。" :
+                    "刷脸失败，请重新刷脸尝试，您也可以选择其他登录方式！");
+            return mRgba;
+        } else if (System.currentTimeMillis() - beginTime > HourUtil.LEN_MINUTE) {
+            showFaceFail(inputFace ? "人脸录入超时，要求面部无遮挡，光照好的环境。" :
+                    "刷脸超时，请重新刷脸尝试，您可以选择重新尝试或其他登录方式");
             return mRgba;
         }
         frameHandleIng = true;
-
         Mat dstGray = new Mat();
         Imgproc.warpAffine(gray, dstGray, rotateMat, dstGray.size());
         mGray = dstGray;
@@ -428,34 +487,84 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
             Log.e(TAG, "Detection method is not selected!");
         }
 
-
         Rect[] facesArray = faces.toArray();
         Log.d(TAG, "facesArray.len = " + facesArray.length);
         if (facesArray.length == 1) {
             //  画眼睛
-            onEyeDraw(mGray);
-            if (!inputFace || onEyeCheck2(mGray)) {
-                String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                boolean saveImage = FaceUtil.saveImage(getContext(), mRgba, facesArray[0], fileName, true);
-                Log.d(TAG, "saveImage = " + saveImage);
-                frameHandleIng = saveImage;
-                if (saveImage) {
-                    loginOrInput(fileName);
-                } else {
-                    // 保存失败 重新开始处理
-                    frameHandleIng = false;
-                }
+//            onEyeDraw(mGray);
+            setFaceHint(faceHint02);
+            String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + "_" + System.currentTimeMillis();
+            boolean saveImage = FaceUtil.saveImageRgba(getContext(), mRgba, fileName);
+            Log.d(TAG, "saveImage = " + saveImage);
+            if (saveImage) {
+                loginOrInput(FaceUtil.getFilePath(mContext, fileName));
+                setFaceHint(faceHint03);
             } else {
+                // 保存失败 重新开始处理
                 frameHandleIng = false;
             }
         } else {
+            setFaceHint(faceHint01);
             frameHandleIng = false;
         }
         // 画脸型
-        for (int i = 0; i < facesArray.length; i++) {
-            Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 3);
-        }
+//        for (int i = 0; i < facesArray.length; i++) {
+//            Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 3);
+//        }
         return mRgba;
+    }
+
+    /**
+     * 显示刷脸失败弹框
+     *
+     * @param s
+     */
+    private void showFaceFail(String s) {
+        if (mLlFaceFail != null && mLlFaceFail.getVisibility() != View.VISIBLE) {
+            mMainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mTvFaceFailHint != null) {
+                        mTvFaceFailHint.setText(s);
+                    }
+                    mLlFaceFail.setVisibility(View.VISIBLE);
+                    mLlFaceIng.setVisibility(View.INVISIBLE);
+                    mBtRetry.setOnClickListener(v -> {
+                        resetFaceFlag();
+                        mLlFaceFail.setVisibility(View.GONE);
+                        mLlFaceIng.setVisibility(View.VISIBLE);
+                    });
+                }
+            });
+        }
+    }
+
+    /**
+     * 提示用户当前刷脸或录入状态，引导用户
+     *
+     * @param text
+     */
+    private void setFaceHint(String text) {
+        if (mTvFaceHint != null) {
+            if (mTvFaceHint.getText().toString().equals(text)) {
+                return;
+            }
+            if (System.currentTimeMillis() - changeFaceHintTime < 500) {
+                changeFaceHintRunnable = () -> {
+                    mTvFaceHint.setText(text);
+                };
+                mMainHandler.postDelayed(changeFaceHintRunnable, 500);
+                return;
+            }
+            changeFaceHintTime = System.currentTimeMillis();
+            if (changeFaceHintRunnable != null) {
+                mMainHandler.removeCallbacks(changeFaceHintRunnable);
+            }
+            changeFaceHintRunnable = () -> {
+                mTvFaceHint.setText(text);
+            };
+            mMainHandler.post(changeFaceHintRunnable);
+        }
     }
 
     /**
@@ -464,103 +573,169 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
      * @param fileName
      */
     private void loginOrInput(String fileName) {
-        LogUtil.d(TAG, "loginOrInput begin ======================================================");
+        LogUtil.d(TAG, "loginOrInput begin ====================================================== fileName = " + fileName);
         if (inputFace) {
-            User user = UserManager.getInstance().getUser();
-            Face face = new Face(user.getMobile(), user.getToken(), FaceUtil.getFilePath(getContext(), fileName));
-            MyApplication.getDatabase().faceDao().insert(face);
-            List<Face> faceList = MyApplication.getDatabase().faceDao().getAll();
-            for (Face f : faceList) {
-                if (StringUtil.contentEquals(face.getUid(), f.getUid())) {
-                    ToastUtil.show("人脸录入成功!");
-                    LogUtil.d(TAG, "人脸录入成功!======================================================");
-                    LogUtil.d(TAG, "人脸录入成功!======================================================");
-                    LogUtil.d(TAG, "人脸录入成功!======================================================");
-                    break;
-                }
-            }
-
-//            List<Mat> mats = new ArrayList<>();
-//            mats.add(Imgcodecs.imread(fileName));
-//            Mat lables = new Mat(1, 1, CV_32SC1);//对应20个标签值
-//            FisherFaceRecognizer faceRecognizer = FisherFaceRecognizer.create();
-//            faceRecognizer.train(mats, lables);
-//            faceRecognizer.save(FaceUtil.getFilePath(mContext, "FisherRecognize.xml"));
-            frameHandleIng = false;
+            requestInput(fileName);
         } else {
-            List<Face> faceList = MyApplication.getDatabase().faceDao().getAll();
-            LogUtil.d(TAG, "faceList[] = " + GsonUtil.toJson(faceList));
-            FisherFaceRecognizer faceRecognizer = FisherFaceRecognizer.create();
-            String filename = "FisherRecognize.xml";
-
-            File file = new File(mContext.getApplicationContext().getFilesDir(), fileName);
-
-            if (!file.exists()) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            LogUtil.d(TAG, "filename = " + filename + "____" + file.exists());
-            LogUtil.d(TAG, "filename = " + file.getAbsolutePath() + File.separator + filename);
-//            faceRecognizer.read(file.getAbsolutePath() + File.separator + filename);
-//            faceRecognizer.read(filename);
-//            int lable = faceRecognizer.predict_label(Imgcodecs.imread(fileName));
-//            ToastUtil.show("lable = " + lable);
-//            LogUtil.d(TAG, "lable = " + lable);
-
-            if (EmptyUtil.isEmpty(faceList)) {
-                frameHandleIng = false;
-                ToastUtil.show("本地无人脸数据！！！！！");
-                LogUtil.d(TAG, "本地无人脸数据！！！！！!======================================================");
-                LogUtil.d(TAG, "本地无人脸数据！！！！！!======================================================");
-                LogUtil.d(TAG, "本地无人脸数据！！！！！!======================================================");
-                return;
-            }
-
-            Face loginFace = null;
-            for (Face f : faceList) {
-//                double lv = com.kongqw.util.FaceUtil.compare(mContext, f.getFileName(), FaceUtil.getFilePath(getContext(), fileName));
-                double lv = FaceUtil.CmpPic(f.getFileName(), FaceUtil.getFilePath(getContext(), fileName));
-                Log.d("FaceUtil", "user -> mobile = " + f.getUid());
-                if (lv > 0.5) {
-                    loginFace = f;
-                    break;
-                }
-            }
-            if (loginFace != null) {
-                ToastUtil.show("人脸【登录】成功！->" + loginFace.getUid());
-                LogUtil.d(TAG, "人脸【登录】成功！！！！！!======================================================" + loginFace.getUid());
-                LogUtil.d(TAG, "人脸【登录】成功！！！！！!======================================================" + loginFace.getUid());
-                LogUtil.d(TAG, "人脸【登录】成功！！！！！!======================================================" + loginFace.getUid());
-                loginByFace(loginFace);
-                frameHandleIng = false;
-            } else {
-                failCount++;
-                frameHandleIng = false;
-                if (failCount >= FAIL_COUNT_MAX) {
-                    ToastUtil.show("人脸【登录】失败！！！！！");
-                }
-                LogUtil.d(TAG, "人脸【登录】失败！！！！！!======================================================");
-                LogUtil.d(TAG, "人脸【登录】失败！！！！！!======================================================");
-                LogUtil.d(TAG, "人脸【登录】失败！！！！！!======================================================");
-
-            }
+            requestLogin(fileName);
         }
     }
 
-    private void loginByFace(Face loginFace) {
-        User user = new User();
-        user.setToken(loginFace.getToken());
-        user.setMobile(loginFace.getUid());
-        user.setLoginStatus(LoginStatus.LOGINED);
-        UserManager.getInstance().login(user);
-//        if (data.isNoOrganization()) {
-//            SelectOrganizationActivity.startActivity(mContext, true);
-//        }
-        LogUtil.d(TAG, "UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
-        getActivity().finish();
+    /**
+     * 请求录入人脸
+     *
+     * @param avatarUrl
+     */
+    private void requestInput(String avatarUrl) {
+        MultipartBodyFactory factory = MultipartBodyFactory.crete();
+        // file
+        if (!TextUtils.isEmpty(avatarUrl)) {
+            factory.addImage("pic", avatarUrl);
+        }
+        LogUtil.d(TAG, "人脸【录入】开始---------------------------------");
+        failByNet = false;
+        OkHttpUtil.request(ApiHost.getHost() + "face_login/face_enter", factory.build(), new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                failByNet = true;
+                FileUtil.deleteFile(avatarUrl);
+                if (EmptyUtil.isEmpty(getActivity())) {
+                    return;
+                }
+                failCount++;
+                frameHandleIng = false;
+                LogUtil.d(TAG, "人脸【录入】失败---------------------------------failCount = " + failCount);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                FileUtil.deleteFile(avatarUrl);
+                if (EmptyUtil.isEmpty(getActivity())) {
+                    return;
+                }
+                String json = response.body().string();
+                LogUtil.d(TAG, "人脸【录入】 --- " + json);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (EmptyUtil.isEmpty(getActivity())) {
+                            return;
+                        }
+                        try {
+                            Type type = new TypeToken<HttpResult<CommonModel>>() {
+                            }.getType();
+                            HttpResult<CommonModel> result = GsonUtil.fromJson(json, type);
+                            if (result != null && result.isSuccessful()) {
+                                ToastUtil.showLong("录入成功");
+                                getActivity().finish();
+                                LogUtil.d(TAG, "人脸【录入】成功---------------------------------");
+                            } else {
+                                LogUtil.d(TAG, "人脸【录入】失败_01--------------------------------- failCount = " + failCount);
+                                failCount++;
+                                frameHandleIng = false;
+                            }
+                        } catch (Exception e) {
+                            failCount++;
+                            frameHandleIng = false;
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * 请求人脸登录
+     *
+     * @param avatarUrl
+     */
+    private void requestLogin(String avatarUrl) {
+        MultipartBodyFactory factory = MultipartBodyFactory.crete();
+        // file
+        if (!TextUtils.isEmpty(avatarUrl)) {
+            factory.addImage("pic", avatarUrl);
+        }
+        LogUtil.d(TAG, "人脸【登录】开始---------------------------------");
+        failByNet = false;
+        OkHttpUtil.request(ApiHost.getHost() + "face_login/face_recognition", factory.build(), new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                FileUtil.deleteFile(avatarUrl);
+                if (EmptyUtil.isEmpty(getActivity())) {
+                    return;
+                }
+                failByNet = true;
+                failCount++;
+                frameHandleIng = false;
+                LogUtil.d(TAG, "人脸【登录】失败 onFailure--------------------------------- failCount = " + failCount);
+                LogUtil.d(TAG, "人脸【登录】失败 onFailure--------------------------------- e = " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                FileUtil.deleteFile(avatarUrl);
+                if (EmptyUtil.isEmpty(getActivity())) {
+                    return;
+                }
+                String json = response.body().string();
+                LogUtil.d(TAG, "人脸【登录】 --- " + json);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (EmptyUtil.isEmpty(getActivity())) {
+                            return;
+                        }
+                        try {
+                            Type type = new TypeToken<HttpResult<TokenModel>>() {
+                            }.getType();
+                            HttpResult<TokenModel> result = GsonUtil.fromJson(json, type);
+                            if (result != null && result.isSuccessful()) {
+                                boolean loginSuccessful = LoginActivity.login(getActivity(), result.getData(), "");
+                                if (loginSuccessful) {
+                                    LogUtil.d(TAG, "人脸【登录】成功---------------------------------");
+                                } else {
+                                    showFaceFail("刷脸登录失败，原因：" + MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login) + "");
+                                }
+                            } else {
+                                LogUtil.d(TAG, "人脸【登录】失败--------------------------------- failCount = " + failCount);
+                                failCount++;
+                                frameHandleIng = false;
+                            }
+                        } catch (Exception e) {
+                            failCount++;
+                            frameHandleIng = false;
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mJavaCamera2CircleView != null) {
+            mJavaCamera2CircleView.disableView();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mJavaCamera2CircleView != null) {
+            mJavaCamera2CircleView.surfaceDestroyed(null);
+        }
+        if (mIvLine != null) {
+            mIvLine.clearAnimation();
+        }
+        if (mIvBorder != null) {
+            mIvBorder.clearAnimation();
+        }
+        if (borderAnimation != null) {
+            borderAnimation.cancel();
+        }
+        mMainHandler.removeCallbacksAndMessages(null);
+        super.onDestroy();
     }
 
     /**

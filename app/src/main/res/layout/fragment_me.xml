@@ -551,7 +551,7 @@
                     android:id="@+id/tv_face_switch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="未录入"
+                    tools:text="未录入"
                     android:textColor="@color/text_blue"
                     android:textSize="@dimen/textSize_small" />
 

@@ -31,6 +31,7 @@ import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.WebActivity;
+import com.thfw.mobileheart.activity.me.AboutMeActivity;
 import com.thfw.mobileheart.activity.service.AutoUpdateService;
 import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.mobileheart.constants.AnimFileName;
@@ -97,7 +98,7 @@ public class SettingActivity extends BaseActivity {
             WebActivity.startActivity(mContext, AgreeOn.AGREE_MSG);
         });
         mLlAbout.setOnClickListener(v -> {
-            WebActivity.startActivity(mContext, AgreeOn.AGREE_ABOUT);
+            startActivity(new Intent(mContext, AboutMeActivity.class));
         });
         mBtLogout.setOnClickListener(v -> {
             UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);

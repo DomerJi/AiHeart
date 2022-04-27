@@ -14,6 +14,7 @@
     <color name="colorRobotForeDark">#74b5c6</color>
     <color name="colorRobotDialogBg">#76bbce</color>
     <color name="text_blue">#6B9DFD</color>
+    <color name="blue">#00f</color>
 
     <!--辅助线颜色-->
     <color name="divider_color">#E7EBF0</color>

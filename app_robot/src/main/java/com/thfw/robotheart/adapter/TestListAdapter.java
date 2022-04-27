@@ -1,11 +1,11 @@
 package com.thfw.robotheart.adapter;
 
-import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -42,7 +42,7 @@ public class TestListAdapter extends BaseAdapter<TestModel, TestListAdapter.Audi
         String mHour = "<font color='" + UIConfig.COLOR_HOUR + "'>" + model.getNum()
                 + "人</font>完成测试";
 
-        holder.mTvHour.setText(Html.fromHtml(mHour));
+        holder.mTvHour.setText(HtmlCompat.fromHtml(mHour,HtmlCompat.FROM_HTML_MODE_LEGACY));
         holder.mTvTitle.setText(model.getTitle());
         GlideUtil.load(mContext, model.getPic(), holder.mRivImage);
 

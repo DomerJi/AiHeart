@@ -32,6 +32,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.MainActivity;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.me.InfoActivity;
+import com.thfw.robotheart.activitys.me.MeActivity;
 import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
 import com.thfw.robotheart.constants.UIConfig;
@@ -73,7 +74,7 @@ public class LoginActivity extends RobotBaseActivity {
         context.startActivity(new Intent(context, LoginActivity.class).putExtra(KEY_DATA, type));
     }
 
-    public static void login(Activity activity, TokenModel data, String mobile) {
+    public static boolean login(Activity activity, TokenModel data, String mobile) {
         if (data != null && !TextUtils.isEmpty(data.token)) {
             User user = new User();
             user.setToken(data.token);
@@ -88,7 +89,7 @@ public class LoginActivity extends RobotBaseActivity {
                         || !data.getAuthType().contains(ContextApp.getDeviceTypeStr())) {
                     DialogRobotFactory.createSimple((FragmentActivity) activity,
                             MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login));
-                    return;
+                    return false;
                 }
             }
             LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
@@ -105,8 +106,10 @@ public class LoginActivity extends RobotBaseActivity {
                 UserManager.getInstance().login(user);
             }
             activity.finish();
+            return true;
         } else {
             ToastUtil.show("token 参数错误");
+            return false;
         }
     }
 
@@ -133,6 +136,7 @@ public class LoginActivity extends RobotBaseActivity {
 
     @Override
     public void initView() {
+        MeActivity.resetInitFaceState();
         type = getIntent().getIntExtra(KEY_DATA, BY_MOBILE);
         findViewById(R.id.titleBarView).setOnClickListener(v -> {
             if (ClickCountUtils.click(10)) {

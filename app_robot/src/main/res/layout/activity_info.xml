@@ -529,7 +529,10 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="12dp" />
+                    android:layout_height="@dimen/divider_2px"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@color/divider" />
 
                 <LinearLayout
                     android:id="@+id/ll_schooling"

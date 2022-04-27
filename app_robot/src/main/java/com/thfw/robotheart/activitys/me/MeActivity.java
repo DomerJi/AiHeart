@@ -13,6 +13,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
+import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
@@ -59,6 +60,10 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
 
     private static final String KEY_INPUT_FACE = "key.input.face";
     private static boolean initFaceState;
+
+    public static void resetInitFaceState() {
+        MeActivity.initFaceState = false;
+    }
 
     @Override
     public int getContentView() {
@@ -202,14 +207,7 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
     private void setInputState() {
         if (initFaceState) {
             int inputState = SharePreferenceUtil.getInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), -1);
-            if (inputState == 1) {
-                mTvInputState.setText("已录入");
-            } else {
-                mTvInputState.setText("未录入");
-                mRlFace.setOnClickListener(v -> {
-                    LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
-                });
-            }
+            setInputState(inputState);
             return;
         }
         new LoginPresenter(new LoginPresenter.LoginUi<CommonModel>() {
@@ -221,7 +219,7 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
             @Override
             public void onSuccess(CommonModel data) {
                 initFaceState = true;
-                mTvInputState.setText("已录入");
+                setInputState(1);
                 SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), 1);
             }
 
@@ -229,12 +227,26 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
             public void onFail(ResponeThrowable throwable) {
                 initFaceState = true;
                 SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), 0);
-                mTvInputState.setText("未录入");
-                mRlFace.setOnClickListener(v -> {
-                    LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
-                });
+                setInputState(0);
             }
         }).onIsFaceOpen();
+    }
+
+    private void setInputState(int inputState) {
+        if (inputState == 1) {
+            mTvInputState.setText("已录入");
+            mRlFace.setOnClickListener(v -> {
+                if (ClickCountUtils.click(10)) {
+                    LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
+                }
+            });
+        } else {
+            mTvInputState.setText("未录入");
+            mRlFace.setOnClickListener(v -> {
+                LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
+            });
+        }
+
     }
 
     private void setUserMessage(User user) {

@@ -107,6 +107,40 @@ public final class FaceUtil {
     }
 
 
+    /**
+     * 特征保存
+     *
+     * @param context  Context
+     * @param image    Mat
+     * @param fileName 文件名字
+     * @return 保存是否成功
+     */
+    public static boolean saveImageRgba(Context context, Mat image, Rect rect, String fileName) {
+
+        Mat rgbaMat = image;
+        Rect roi = rect.clone();
+        final int offset = 50;
+        // 把检测到的人脸重新定义大小后保存成文件
+        if (0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= rgbaMat.cols() && 0 <= roi.y && 0 <= roi.height && roi.y + roi.height <= rgbaMat.rows()) {
+            if (roi.y > offset) {
+                roi.y = roi.y - offset;
+            }
+            if (roi.y + roi.height < rgbaMat.height() + offset) {
+                roi.height = roi.height + offset;
+            }
+
+            Mat sub = rgbaMat.submat(roi);
+//            Mat mat = new Mat();
+//            Size size = new Size(260, 260);
+//            Imgproc.resize(sub, mat, size);
+
+            return saveImageRgba(context, sub, fileName);
+        }
+
+        return false;
+    }
+
+
     public static void saveBitmapFile(Bitmap bitmap, String filePath) {
         File file = new File(filePath);//将要保存图片的路径
         try {

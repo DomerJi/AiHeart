@@ -33,6 +33,7 @@ import com.thfw.mobileheart.activity.MainActivity;
 import com.thfw.mobileheart.activity.organ.AskForSelectActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
 import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.mobileheart.fragment.MeFragment;
 import com.thfw.mobileheart.fragment.login.LoginByFaceFragment;
 import com.thfw.mobileheart.fragment.login.MobileFragment;
 import com.thfw.mobileheart.fragment.login.OtherLoginFragment;
@@ -69,11 +70,13 @@ public class LoginActivity extends BaseActivity {
         context.startActivity(new Intent(context, LoginActivity.class).putExtra(KEY_DATA, type));
     }
 
-    public static void login(Activity activity, TokenModel data, String mobile) {
+    public static boolean login(Activity activity, TokenModel data, String mobile) {
         if (data != null && !TextUtils.isEmpty(data.token)) {
             User user = new User();
             user.setToken(data.token);
-            user.setMobile(mobile);
+            if (!TextUtils.isEmpty(mobile)) {
+                user.setMobile(mobile);
+            }
             user.setSetUserInfo(data.isSetUserInfo());
             user.setOrganization(data.organization);
             user.setAuthTypeList(data.getAuthType());
@@ -81,7 +84,7 @@ public class LoginActivity extends BaseActivity {
                 if (EmptyUtil.isEmpty(data.getAuthType()) || !data.getAuthType().contains(ContextApp.getDeviceTypeStr())) {
                     DialogFactory.createSimple((FragmentActivity) activity,
                             MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login));
-                    return;
+                    return false;
                 }
             }
 
@@ -100,8 +103,10 @@ public class LoginActivity extends BaseActivity {
                 UserManager.getInstance().login(user);
             }
             activity.finish();
+            return true;
         } else {
             ToastUtil.show("token 参数错误");
+            return false;
         }
     }
 
@@ -118,6 +123,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void initView() {
         MainActivity.resetInit();
+        MeFragment.resetInitFaceState();
         CommonParameter.setOrganizationId("");
         type = getIntent().getIntExtra(KEY_DATA, BY_MOBILE);
         fragmentLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);

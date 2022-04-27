@@ -1,4 +1,4 @@
-package com.thfw.robotheart.fragments.help;
+package com.thfw.mobileheart.activity.me;
 
 import android.content.Intent;
 import android.util.Log;
@@ -17,13 +17,15 @@ import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
-import com.thfw.robotheart.R;
-import com.thfw.robotheart.activitys.RobotBaseFragment;
-import com.thfw.robotheart.activitys.set.SystemAppActivity;
+import com.thfw.mobileheart.MyApplication;
+import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseActivity;
+import com.thfw.mobileheart.activity.WebActivity;
+import com.thfw.mobileheart.activity.settings.SystemAppActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
-public class AboutMeFragment extends RobotBaseFragment<OtherPresenter> implements OtherPresenter.OtherUi<AboutUsModel> {
+public class AboutMeActivity extends BaseActivity<OtherPresenter> implements OtherPresenter.OtherUi<AboutUsModel> {
 
     private TextView mTvHint;
     private TextView mTvVersion;
@@ -31,12 +33,12 @@ public class AboutMeFragment extends RobotBaseFragment<OtherPresenter> implement
     private TextView mTvCheckVersion;
     private TextView mTvCompanyAddress;
 
-
     private static final String KEY_ABOUT = "key.about.me";
+    private TextView mTvCopy;
 
     @Override
     public int getContentView() {
-        return R.layout.fragment_about_me;
+        return R.layout.activity_about_me;
     }
 
     @Override
@@ -52,10 +54,12 @@ public class AboutMeFragment extends RobotBaseFragment<OtherPresenter> implement
         mTvVersion = (TextView) findViewById(R.id.tv_version);
         mLlCheckVersion = (LinearLayout) findViewById(R.id.ll_check_version);
         mTvCheckVersion = (TextView) findViewById(R.id.tv_check_version);
+        mTvCopy = (TextView) findViewById(R.id.tv_copy);
     }
 
     @Override
     public void initData() {
+
 
         mTvVersion.setText("V" + Util.getAppVersion(mContext));
         mTvCheckVersion.setOnClickListener(v -> {
@@ -77,28 +81,34 @@ public class AboutMeFragment extends RobotBaseFragment<OtherPresenter> implement
             return;
         }
         SharePreferenceUtil.setString(KEY_ABOUT, GsonUtil.toJson(data));
-        String hint = "<font color='#91dff3'>产品概述：</font>"
+        String hint = "<font color='#0000FF'>产品概述：</font>"
                 + data.getContent();
-        mTvHint.setText(HtmlCompat.fromHtml(hint,HtmlCompat.FROM_HTML_MODE_LEGACY));
+        mTvHint.setText(HtmlCompat.fromHtml(hint, HtmlCompat.FROM_HTML_MODE_LEGACY));
 
-        String companyHttp = "<font color='#91dff3'>公司官网：</font>"
-                + data.getCompanyUrl();
-        mTvCompanyAddress.setText(HtmlCompat.fromHtml(companyHttp,HtmlCompat.FROM_HTML_MODE_LEGACY));
+        String companyHttp = "<font color='#0000FF'>公司官网：</font>"
+                + "<u>" + data.getCompanyUrl() + "</u>";
 
+        mTvCompanyAddress.setText(HtmlCompat.fromHtml(companyHttp, HtmlCompat.FROM_HTML_MODE_LEGACY));
+        mTvCompanyAddress.setOnClickListener(v -> {
+            WebActivity.startActivity(mContext, data.getCompanyUrl(), "公司官网");
+        });
+        mTvCopy.setOnClickListener(v -> {
+            MyApplication.copy(data.getCompanyUrl());
+        });
     }
 
     /**
      * 检查版本更新
      */
     private void checkVersion() {
-        LoadingDialog.show(getActivity(), "正在检查");
+        LoadingDialog.show(AboutMeActivity.this, "正在检查");
         BuglyUtil.requestNewVersion(new SimpleUpgradeStateListener() {
             @Override
             public void onVersion(boolean hasNewVersion) {
                 super.onVersion(hasNewVersion);
                 LoadingDialog.hide();
                 Log.d("requestNewVersion", "hasNewVersion = " + hasNewVersion);
-                if (EmptyUtil.isEmpty(AboutMeFragment.this)) {
+                if (EmptyUtil.isEmpty(AboutMeActivity.this)) {
                     return;
                 }
                 if (hasNewVersion) {

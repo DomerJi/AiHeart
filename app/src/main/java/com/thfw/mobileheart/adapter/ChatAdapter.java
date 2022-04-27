@@ -1,6 +1,5 @@
 package com.thfw.mobileheart.adapter;
 
-import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -96,7 +95,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             case ChatEntity.TYPE_TO:
                 if (holder instanceof ChatToHolder) {
                     ChatToHolder chatToHolder = (ChatToHolder) holder;
-                    chatToHolder.mTvTalk.setText(Html.fromHtml(chatEntity.getTalk()));
+                    chatToHolder.mTvTalk.setText(HtmlCompat.fromHtml(chatEntity.getTalk(),HtmlCompat.FROM_HTML_MODE_LEGACY));
                     if (position == getItemCount() - 1) {
                         if (chatEntity.loading == -1) {
                             chatToHolder.mPbToTalk.setVisibility(View.GONE);

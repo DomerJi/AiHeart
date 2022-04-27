@@ -16,9 +16,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
+import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.MoodLivelyModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.utils.BuglyUtil;
+import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.FunctionType;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
@@ -44,6 +49,7 @@ import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
 import com.thfw.user.models.User;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -84,6 +90,14 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
     private LinearLayout mLlMeFace;
     private TextView mTvFaceSwitch;
     private ImageView mIvMoodStatus;
+
+
+    private static final String KEY_INPUT_FACE = "key.input.face";
+    private static boolean initFaceState;
+
+    public static void resetInitFaceState() {
+        initFaceState = false;
+    }
 
     @Override
     public int getContentView() {
@@ -235,6 +249,7 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
             mTvName.setText(user.getVisibleName());
             mTvMeLevel.setText(user.getOrganListStr());
             GlideUtil.load(mContext, user.getVisibleAvatar(), mRivAvatar);
+            setInputState();
         } else {
             mTvName.setText("");
             mTvMeLevel.setText("");
@@ -249,6 +264,51 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
         if (isVisible) {
             checkVersion();
         }
+    }
+
+    private void setInputState() {
+        if (initFaceState) {
+            int inputState = SharePreferenceUtil.getInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), -1);
+            setInputState(inputState);
+            return;
+        }
+        new LoginPresenter(new LoginPresenter.LoginUi<CommonModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return null;
+            }
+
+            @Override
+            public void onSuccess(CommonModel data) {
+                initFaceState = true;
+                SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), 1);
+                setInputState(1);
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                initFaceState = true;
+                SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), 0);
+                setInputState(0);
+            }
+        }).onIsFaceOpen();
+    }
+
+    private void setInputState(int inputState) {
+        if (inputState == 1) {
+            mTvFaceSwitch.setText("已录入");
+            mLlMeFace.setOnClickListener(v -> {
+                if (ClickCountUtils.click(10)) {
+                    LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
+                }
+            });
+        } else {
+            mTvFaceSwitch.setText("未录入");
+            mLlMeFace.setOnClickListener(v -> {
+                LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
+            });
+        }
+
     }
 
     /**

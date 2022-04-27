@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -16,7 +17,10 @@ import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +68,55 @@ public final class FaceUtil {
         }
 
         return false;
+    }
+
+
+    /**
+     * 特征保存
+     *
+     * @param context  Context
+     * @param image    Mat
+     * @param fileName 文件名字
+     * @return 保存是否成功
+     */
+    public static boolean saveImageRgba(Context context, Mat image, String fileName) {
+        Mat rgbaMat = image;
+
+        final float maxWH = 400f;
+        int width = image.width();
+        int height = image.height();
+        if (width > maxWH) {
+            float scale = maxWH / width;
+            height = (int) (height * scale);
+            width = (int) maxWH;
+        } else if (image.height() > maxWH) {
+            float scale = maxWH / height;
+            width = (int) (width * scale);
+            height = (int) maxWH;
+        }
+
+        Mat mat = new Mat();
+        Size size = new Size(width, height);
+        Imgproc.resize(rgbaMat, mat, size);
+
+        Bitmap map = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(mat, map);
+        saveBitmapFile(map, getFilePath(context, fileName));
+        File file = new File(getFilePath(context, fileName));
+        return file != null && file.exists();
+    }
+
+
+    public static void saveBitmapFile(Bitmap bitmap, String filePath) {
+        File file = new File(filePath);//将要保存图片的路径
+        try {
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

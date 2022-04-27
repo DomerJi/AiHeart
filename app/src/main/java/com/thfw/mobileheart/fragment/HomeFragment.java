@@ -282,7 +282,7 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
             mMainList.add(new HomeEntity().setType(HomeEntity.TYPE_BANNER));
             mMainList.add(new HomeEntity().setType(HomeEntity.TYPE_SORT));
             mMainList.add(new HomeEntity().setType(HomeEntity.TYPE_CUSTOM_MADE));
-            mMainList.add(new HomeEntity().setType(HomeEntity.TYPE_TAB_TITLE).setTabTitle("小天推荐"));
+            mMainList.add(new HomeEntity().setType(HomeEntity.TYPE_TAB_TITLE).setTabTitle("小密推荐"));
         }
     }
 

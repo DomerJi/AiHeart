@@ -21,38 +21,11 @@
             android:text="刷脸登录"
             android:textColor="@color/black"
             android:textSize="18sp" />
+            <FrameLayout
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:id="@+id/ll_face_end"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="46dp"
-                    android:layout_marginBottom="36dp"
-                    android:text="刷脸失败，请重新刷脸尝试，你也可以选择其他登录方式！"
-                    android:textSize="12sp" />
-
-
-                <Button
-                    android:id="@+id/bt_retry_face"
-                    android:layout_width="200dp"
-                    android:layout_height="@dimen/button_height"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/common_yellow_btn_selector"
-                    android:text="重新刷脸"
-                    android:textColor="@color/white" />
-
-            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_face_ing"
@@ -101,6 +74,7 @@
 
 
                 <TextView
+                    android:id="@+id/tv_face_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -108,6 +82,7 @@
                     android:text="请正对屏幕，保持脸在取景框内"
                     android:textColor="#666"
                     android:textSize="@dimen/textSize" />
+
             </LinearLayout>
 
 
@@ -196,6 +171,7 @@
 
 
                 <TextView
+                    android:id="@+id/tv_face_fail_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -213,9 +189,10 @@
                     android:layout_marginTop="36dp"
                     android:layout_marginRight="26dp"
                     android:background="@drawable/common_yellow_btn_selector"
-                    android:text="重新刷脸"
+                    android:text="重新尝试"
                     android:textColor="@drawable/textcolor_white_white50_selector"
                     android:textSize="@dimen/textSize" />
+
             </LinearLayout>
 
 

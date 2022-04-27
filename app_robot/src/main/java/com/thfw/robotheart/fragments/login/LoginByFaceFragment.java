@@ -38,6 +38,7 @@ import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
+import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.WebActivity;
@@ -77,10 +78,7 @@ import okhttp3.Response;
  */
 public class LoginByFaceFragment extends RobotBaseFragment implements CameraBridgeViewBase.CvCameraViewListener2 {
 
-    public static final int JAVA_DETECTOR = 0;
-    public static final int NATIVE_DETECTOR = 1;
-    private static final int FAIL_COUNT_MAX = 10;
-    private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
+
     private TextView mTvLoginByPassword;
     private LinearLayout mClBottom;
     private RoundedImageView mRivWechat;
@@ -93,16 +91,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     private ImageView mIvBorder;
     private ImageView mIvLine;
     private ObjectAnimator borderAnimation;
-    private boolean mLineUpAnim = true;
-    // true 录入人脸  false 人脸识别
-    private boolean inputFace;
-    private Handler mMainHandler = new Handler(Looper.getMainLooper());
-    /**
-     * 正在处理图像数据
-     */
-    private boolean frameHandleIng = false;
-    private int failCount = 0;
-    private long beginTime;
+
     private Mat mRgba; //图像容器
     private Mat mGray;
     private File mCascadeFile;
@@ -111,23 +100,48 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     private CascadeClassifier mJavaEyeDetector;
     private DetectionBasedTracker mNativeDetector;
     private DetectionBasedTracker mNativeEyeDetector;
-    private int mDetectorType = NATIVE_DETECTOR;
-    private String[] mDetectorName;
-    private float mRelativeFaceSize = 0.2f;
-    private int mAbsoluteFaceSize = 0;
+
+
     private TextView mTvLoginByFace;
     private TextView mTvLoginByMobile;
-    private String faceHint01 = "请正对屏幕，保持脸在取景框内";
-    private String faceHint02 = "请靠近摄像头，保持双眼睁开";
-    private String faceHint03 = "正在识别...";
     private TextView mTvFaceHint;
-    private long changeFaceHintTime;
     private ConstraintLayout mClLoginCenter;
     private TextView mTvPageTitle;
     private LinearLayout mClFail;
     private TextView mTvFaceFailHint;
     private Button mBtRetry;
     private ConstraintLayout mClFace;
+    private Runnable changeFaceHintRunnable;
+    /**
+     * 检测器类型
+     */
+    public static final int JAVA_DETECTOR = 0;
+    public static final int NATIVE_DETECTOR = 1;
+    // 最大失败数量
+    private static final int FAIL_COUNT_MAX = 10;
+    private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
+    // 动画扫描线上下标识
+    private boolean mLineUpAnim = true;
+    // true 录入人脸  false 人脸识别
+    private boolean inputFace;
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    /**
+     * 正在处理图像数据
+     */
+    private volatile boolean frameHandleIng = false;
+    private volatile int failCount = 0;
+    private volatile boolean failByNet = false;
+    private volatile long beginTime;
+    private volatile long changeFaceHintTime;
+    // 提示语
+    private String faceHint01 = "请正对屏幕，保持脸在取景框内";
+    private String faceHint02 = "请靠近摄像头，保持双眼睁开";
+    private String faceHint03 = "正在识别...";
+    // 检测器
+    private int mDetectorType = NATIVE_DETECTOR;
+    private String[] mDetectorName;
+    private float mRelativeFaceSize = 0.2f;
+    private int mAbsoluteFaceSize = 0;
 
     @Override
     public int getContentView() {
@@ -237,10 +251,22 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 
     }
 
+    /**
+     * 重置刷脸标识
+     */
+    private void resetFaceFlag() {
+        failCount = 0;
+        beginTime = 0;
+        failByNet = false;
+        frameHandleIng = false;
+    }
+
     @Override
     public void onVisible(boolean isVisible) {
         super.onVisible(isVisible);
-        failCount = 0;
+        if (isVisible) {
+            resetFaceFlag();
+        }
         if (mJavaCamera2CircleView != null) {
             if (isVisible) {
                 mIvBorder.post(new Runnable() {
@@ -288,7 +314,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                 int r = mRCircle;
                 int d = (int) Math.abs(value - mRCircle);
                 int l = (int) (2 * Math.sqrt(r * r - d * d));
-                LogUtil.d("onAnimationUpdate", "d = " + d + " ; r = " + r + " ; l = " + l);
+//                LogUtil.d("onAnimationUpdate", "d = " + d + " ; r = " + r + " ; l = " + l);
                 ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) mIvLine.getLayoutParams();
                 lp.width = l;
                 mIvLine.setLayoutParams(lp);
@@ -365,7 +391,6 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     private void initializeDetectEye() {
 
         try {
-
             // load cascade file from application resources
             InputStream is = getResources().openRawResource(R.raw.haarcascade_eye);
             File cascadeDir = getActivity().getDir("cascade", Context.MODE_PRIVATE);
@@ -398,19 +423,21 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     }
 
     public Mat onCameraFrameHandle(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        LogUtil.d(TAG, "frameHandleIng = " + frameHandleIng);
-        LogUtil.d(TAG, "failCount >= FAIL_COUNT_MAX " + (failCount >= FAIL_COUNT_MAX));
         Dormant.reset();
         if (beginTime == 0) {
             beginTime = System.currentTimeMillis();
         }
         if (frameHandleIng) {
             return inputFrame.rgba();
+        } else if (failByNet) {
+            showFaceFail(inputFace ? "人脸录入失败，当前网络异常，请检查网络状态。" :
+                    "刷脸登录失败，当前网络异常，请检查网络状态。");
+            return inputFrame.rgba();
         } else if (failCount >= FAIL_COUNT_MAX) {
             showFaceFail(inputFace ? "人脸录入失败，已经为您重试多次，要求面部无遮挡，光照好的环境。" :
                     "刷脸登录失败，已为您重试多次，您可以选择重新尝试或其他登录方式");
             return inputFrame.rgba();
-        } else if (System.currentTimeMillis() - beginTime > HourUtil.LEN_MINUTE * 2) {
+        } else if (System.currentTimeMillis() - beginTime > HourUtil.LEN_MINUTE) {
             showFaceFail(inputFace ? "人脸录入超时，要求面部无遮挡，光照好的环境。" :
                     "刷脸登录超时，您可以选择重新尝试或其他登录方式");
             return inputFrame.rgba();
@@ -448,7 +475,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 //            onEyeDraw(mGray);
             setFaceHint(faceHint02);
             String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + "_" + System.currentTimeMillis();
-            boolean saveImage = FaceUtil.saveImageRgba(getContext(), mRgba, fileName);
+            boolean saveImage = FaceUtil.saveImageRgba(getContext(), mRgba, facesArray[0], fileName);
             Log.d(TAG, "saveImage = " + saveImage);
             if (saveImage) {
                 loginOrInput(FaceUtil.getFilePath(mContext, fileName));
@@ -468,8 +495,12 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         return mRgba;
     }
 
+    /**
+     * 显示刷脸失败弹框
+     *
+     * @param s
+     */
     private void showFaceFail(String s) {
-
         if (mClFail != null && mClFail.getVisibility() != View.VISIBLE) {
             mMainHandler.post(new Runnable() {
                 @Override
@@ -481,8 +512,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                     mClFace.setVisibility(View.INVISIBLE);
                     mTvFaceHint.setVisibility(View.INVISIBLE);
                     mBtRetry.setOnClickListener(v -> {
-                        failCount = 0;
-                        beginTime = 0;
+                        resetFaceFlag();
                         mClFail.setVisibility(View.GONE);
                         mClFace.setVisibility(View.VISIBLE);
                         mTvFaceHint.setVisibility(View.VISIBLE);
@@ -492,21 +522,31 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         }
     }
 
+    /**
+     * 提示用户当前刷脸或录入状态，引导用户
+     *
+     * @param text
+     */
     private void setFaceHint(String text) {
         if (mTvFaceHint != null) {
             if (mTvFaceHint.getText().toString().equals(text)) {
                 return;
             }
-            if (System.currentTimeMillis() - changeFaceHintTime < 400) {
+            if (System.currentTimeMillis() - changeFaceHintTime < 500) {
+                changeFaceHintRunnable = () -> {
+                    mTvFaceHint.setText(text);
+                };
+                mMainHandler.postDelayed(changeFaceHintRunnable, 500);
                 return;
             }
             changeFaceHintTime = System.currentTimeMillis();
-            mMainHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    mTvFaceHint.setText(text);
-                }
-            });
+            if (changeFaceHintRunnable != null) {
+                mMainHandler.removeCallbacks(changeFaceHintRunnable);
+            }
+            changeFaceHintRunnable = () -> {
+                mTvFaceHint.setText(text);
+            };
+            mMainHandler.post(changeFaceHintRunnable);
         }
     }
 
@@ -524,22 +564,30 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         }
     }
 
+    /**
+     * 请求录入人脸
+     *
+     * @param avatarUrl
+     */
     private void requestInput(String avatarUrl) {
         MultipartBodyFactory factory = MultipartBodyFactory.crete();
         // file
         if (!TextUtils.isEmpty(avatarUrl)) {
             factory.addImage("pic", avatarUrl);
         }
+        LogUtil.d(TAG, "人脸【录入】开始---------------------------------");
+        failByNet = false;
         OkHttpUtil.request(ApiHost.getHost() + "face_login/face_enter", factory.build(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                failByNet = true;
                 FileUtil.deleteFile(avatarUrl);
                 if (EmptyUtil.isEmpty(getActivity())) {
                     return;
                 }
                 failCount++;
                 frameHandleIng = false;
-                LogUtil.d(TAG, "人脸录入失败---------------------------------failCount = " + failCount);
+                LogUtil.d(TAG, "人脸【录入】失败---------------------------------failCount = " + failCount);
             }
 
             @Override
@@ -549,7 +597,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                     return;
                 }
                 String json = response.body().string();
-                LogUtil.d(TAG, "人脸录入 --- " + json);
+                LogUtil.d(TAG, "人脸【录入】 --- " + json);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -561,11 +609,11 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                             }.getType();
                             HttpResult<CommonModel> result = GsonUtil.fromJson(json, type);
                             if (result != null && result.isSuccessful()) {
-                                ToastUtil.showLong("人脸录入成功");
+                                ToastUtil.showLong("录入成功");
                                 getActivity().finish();
-                                LogUtil.d(TAG, "人脸录入成功---------------------------------");
+                                LogUtil.d(TAG, "人脸【录入】成功---------------------------------");
                             } else {
-                                LogUtil.d(TAG, "人脸录入失败_01--------------------------------- failCount = " + failCount);
+                                LogUtil.d(TAG, "人脸【录入】失败_01--------------------------------- failCount = " + failCount);
                                 failCount++;
                                 frameHandleIng = false;
                             }
@@ -579,12 +627,19 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         });
     }
 
+    /**
+     * 请求人脸登录
+     *
+     * @param avatarUrl
+     */
     private void requestLogin(String avatarUrl) {
         MultipartBodyFactory factory = MultipartBodyFactory.crete();
         // file
         if (!TextUtils.isEmpty(avatarUrl)) {
             factory.addImage("pic", avatarUrl);
         }
+        LogUtil.d(TAG, "人脸【登录】开始---------------------------------");
+        failByNet = false;
         OkHttpUtil.request(ApiHost.getHost() + "face_login/face_recognition", factory.build(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -592,9 +647,12 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                 if (EmptyUtil.isEmpty(getActivity())) {
                     return;
                 }
+                failByNet = true;
                 failCount++;
                 frameHandleIng = false;
-                LogUtil.d(TAG, "人脸【登录】失败---------------------------------failCount = " + failCount);
+
+                LogUtil.d(TAG, "人脸【登录】失败 onFailure--------------------------------- failCount = " + failCount);
+                LogUtil.d(TAG, "人脸【登录】失败 onFailure--------------------------------- e = " + e.getMessage());
             }
 
             @Override
@@ -616,14 +674,14 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                             }.getType();
                             HttpResult<TokenModel> result = GsonUtil.fromJson(json, type);
                             if (result != null && result.isSuccessful()) {
-                                if (getActivity() instanceof LoginActivity) {
-                                    LoginActivity.login(getActivity(), result.getData(), "");
+                                boolean loginSuccessful = LoginActivity.login(getActivity(), result.getData(), "");
+                                if (loginSuccessful) {
+                                    LogUtil.d(TAG, "人脸【登录】成功---------------------------------");
+                                } else {
+                                    showFaceFail("刷脸登录失败，原因：" + MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login) + "");
                                 }
-                                ToastUtil.show("人脸【登录】成功");
-                                getActivity().finish();
-                                LogUtil.d(TAG, "人脸【登录】成功---------------------------------");
                             } else {
-                                LogUtil.d(TAG, "人脸【登录】失败_01--------------------------------- failCount = " + failCount);
+                                LogUtil.d(TAG, "人脸【登录】失败--------------------------------- failCount = " + failCount);
                                 failCount++;
                                 frameHandleIng = false;
                             }
@@ -637,6 +695,37 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         });
     }
 
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mJavaCamera2CircleView != null) {
+            mJavaCamera2CircleView.disableView();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mJavaCamera2CircleView != null) {
+            mJavaCamera2CircleView.surfaceDestroyed(null);
+        }
+        if (mIvLine != null) {
+            mIvLine.clearAnimation();
+        }
+        if (mIvBorder != null) {
+            mIvBorder.clearAnimation();
+        }
+        if (borderAnimation != null) {
+            borderAnimation.cancel();
+        }
+        mMainHandler.removeCallbacksAndMessages(null);
+        super.onDestroy();
+    }
+
+
+    /**
+     * ======================== 检测画框 ================================
+     */
 
     /**
      * 检测人脸眼睛
@@ -717,29 +806,8 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (mJavaCamera2CircleView != null) {
-            mJavaCamera2CircleView.disableView();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        if (mJavaCamera2CircleView != null) {
-            mJavaCamera2CircleView.surfaceDestroyed(null);
-        }
-        if (mIvLine != null) {
-            mIvLine.clearAnimation();
-        }
-        if (mIvBorder != null) {
-            mIvBorder.clearAnimation();
-        }
-        if (borderAnimation != null) {
-            borderAnimation.cancel();
-        }
-        super.onDestroy();
-    }
+    /**
+     * ======================== 检测画框 ================================ 结束
+     */
 
 }

@@ -3,6 +3,7 @@ package com.thfw.user.models;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
+import com.thfw.base.ContextApp;
 import com.thfw.base.R;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.utils.EmptyUtil;
@@ -128,7 +129,11 @@ public class User implements IUser, IUserInfo {
 
     public Object getVisibleAvatar() {
         if (TextUtils.isEmpty(getAvatar())) {
-            return R.drawable.ic_default_avatar;
+            if (ContextApp.DeviceType.ROBOT == ContextApp.getDeviceType()) {
+                return R.drawable.ic_default_avatar;
+            } else {
+                return R.drawable.ic_default_avatar_phone;
+            }
         }
         return getAvatar();
     }
