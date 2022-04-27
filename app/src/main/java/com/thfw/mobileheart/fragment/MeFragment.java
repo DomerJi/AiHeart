@@ -254,6 +254,7 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
             mTvName.setText("");
             mTvMeLevel.setText("");
             GlideUtil.load(mContext, R.mipmap.ic_launcher, mRivAvatar);
+            setInputState(-1);
         }
     }
 
@@ -302,11 +303,13 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
                     LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
                 }
             });
-        } else {
+        } else if (inputState == 0) {
             mTvFaceSwitch.setText("未录入");
             mLlMeFace.setOnClickListener(v -> {
                 LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
             });
+        } else {
+            mTvFaceSwitch.setText("");
         }
 
     }

@@ -475,7 +475,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 //            onEyeDraw(mGray);
             setFaceHint(faceHint02);
             String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + "_" + System.currentTimeMillis();
-            boolean saveImage = FaceUtil.saveImageRgba(getContext(), mRgba, facesArray[0], fileName);
+            boolean saveImage = FaceUtil.saveImageRgba(getContext(), mRgba, fileName);
             Log.d(TAG, "saveImage = " + saveImage);
             if (saveImage) {
                 loginOrInput(FaceUtil.getFilePath(mContext, fileName));
@@ -580,11 +580,11 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         OkHttpUtil.request(ApiHost.getHost() + "face_login/face_enter", factory.build(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                failByNet = true;
                 FileUtil.deleteFile(avatarUrl);
                 if (EmptyUtil.isEmpty(getActivity())) {
                     return;
                 }
+                failByNet = true;
                 failCount++;
                 frameHandleIng = false;
                 LogUtil.d(TAG, "人脸【录入】失败---------------------------------failCount = " + failCount);

@@ -1,5 +1,9 @@
 package com.thfw.base.utils;
 
+import android.text.TextUtils;
+
+import java.io.File;
+
 import okhttp3.ResponseBody;
 
 public class FileUtil {
@@ -83,12 +87,12 @@ public class FileUtil {
     }
 
     public static void deleteFile(String fileNanme) {
-//        if (!TextUtils.isEmpty(fileNanme)) {
-//            // 删除源文件
-//            File file = new File(fileNanme);
-//            if (file.exists()) {
-//                file.delete();
-//            }
-//        }
+        if (!TextUtils.isEmpty(fileNanme)) {
+            // 删除源文件
+            File file = new File(fileNanme);
+            if (file.exists()) {
+                file.delete();
+            }
+        }
     }
 }

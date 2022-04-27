@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.thfw.base.utils.LogUtil;
+
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -122,11 +124,14 @@ public final class FaceUtil {
         final int offset = 50;
         // 把检测到的人脸重新定义大小后保存成文件
         if (0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= rgbaMat.cols() && 0 <= roi.y && 0 <= roi.height && roi.y + roi.height <= rgbaMat.rows()) {
-            if (roi.y > offset) {
+            LogUtil.d("roi.y 1= " + roi.y);
+            int y = roi.y;
+            if (y > offset) {
                 roi.y = roi.y - offset;
             }
-            if (roi.y + roi.height < rgbaMat.height() + offset) {
-                roi.height = roi.height + offset;
+            LogUtil.d("roi.y 2= " + roi.y);
+            if (y + roi.height < rgbaMat.height() + offset * 2) {
+                roi.height = roi.height + offset * 2;
             }
 
             Mat sub = rgbaMat.submat(roi);
