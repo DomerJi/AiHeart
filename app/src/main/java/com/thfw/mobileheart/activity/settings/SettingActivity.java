@@ -139,7 +139,9 @@ public class SettingActivity extends BaseActivity {
      * 检查版本更新
      */
     private void checkVersion(boolean hint) {
-        LoadingDialog.show(SettingActivity.this, "正在检查");
+        if (!hint) {
+            LoadingDialog.show(SettingActivity.this, "正在检查");
+        }
         BuglyUtil.requestNewVersion(new SimpleUpgradeStateListener() {
             @Override
             public void onVersion(boolean hasNewVersion) {

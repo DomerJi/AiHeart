@@ -1,5 +1,6 @@
 package com.thfw.mobileheart.activity.me;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -35,6 +36,10 @@ public class AboutMeActivity extends BaseActivity<OtherPresenter> implements Oth
 
     private static final String KEY_ABOUT = "key.about.me";
     private TextView mTvCopy;
+
+    public static void startActivity(Context context) {
+        context.startActivity(new Intent(context, AboutMeActivity.class));
+    }
 
     @Override
     public int getContentView() {

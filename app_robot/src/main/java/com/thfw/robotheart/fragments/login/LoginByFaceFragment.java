@@ -32,6 +32,7 @@ import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.MultipartBodyFactory;
 import com.thfw.base.net.OkHttpUtil;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.FaceSetUtil;
 import com.thfw.base.utils.FileUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HourUtil;
@@ -475,7 +476,8 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 //            onEyeDraw(mGray);
             setFaceHint(faceHint02);
             String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + "_" + System.currentTimeMillis();
-            boolean saveImage = FaceUtil.saveImageRgba(getContext(), mRgba, fileName);
+            FaceUtil.setMaxWH(inputFace ? FaceSetUtil.INPUT_MAX : FaceSetUtil.LOGIN_MAX);
+            boolean saveImage = FaceUtil.saveImageRgba(getContext(), mRgba, facesArray[0], fileName);
             Log.d(TAG, "saveImage = " + saveImage);
             if (saveImage) {
                 loginOrInput(FaceUtil.getFilePath(mContext, fileName));

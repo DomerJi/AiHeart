@@ -13,6 +13,7 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 import com.thfw.mobileheart.activity.exercise.ExerciseDetailActivity;
+import com.thfw.mobileheart.activity.me.AboutMeActivity;
 import com.thfw.mobileheart.activity.mood.StatusActivity;
 import com.thfw.mobileheart.activity.read.BookDetailActivity;
 import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
@@ -22,7 +23,6 @@ import com.thfw.mobileheart.activity.task.MeTaskActivity;
 import com.thfw.mobileheart.activity.task.SystemDetailActivity;
 import com.thfw.mobileheart.activity.test.TestBeginActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
-import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.mobileheart.util.MsgCountManager;
 
 /**
@@ -86,7 +86,7 @@ public class PushHandle {
                 // todo 语音指令 手机是否需要呢
                 break;
             case MsgType.ABOUT_US:
-                WebActivity.startActivity(mContext, AgreeOn.AGREE_ABOUT);
+                AboutMeActivity.startActivity(mContext);
                 break;
             case MsgType.BOOK:
                 BookDetailActivity.startActivity(mContext, contentId);
@@ -141,7 +141,7 @@ public class PushHandle {
                 // todo 语音指令 手机是否需要呢
                 break;
             case MsgType.ABOUT_US:
-                WebActivity.startActivity(mContext, AgreeOn.AGREE_ABOUT);
+                AboutMeActivity.startActivity(mContext);
                 break;
             case MsgType.BOOK:
                 BookDetailActivity.startActivity(mContext, contentId);

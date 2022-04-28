@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.thfw.base.utils.FaceSetUtil;
 import com.thfw.base.utils.LogUtil;
 
 import org.opencv.android.Utils;
@@ -34,6 +35,16 @@ public final class FaceUtil {
 
     private static final String TAG = "FaceUtil";
 
+    private static float maxWH = 200f;
+
+    private static final int offset = FaceSetUtil.OFFSET;
+
+    public static void setMaxWH(float maxWH) {
+        if (maxWH > 100f) {
+            FaceUtil.maxWH = maxWH;
+        }
+    }
+
     private FaceUtil() {
     }
 
@@ -42,7 +53,7 @@ public final class FaceUtil {
     }
 
     /**
-     * 特征保存
+     * 特征保存灰度图
      *
      * @param context  Context
      * @param image    Mat
@@ -82,24 +93,32 @@ public final class FaceUtil {
      * @return 保存是否成功
      */
     public static boolean saveImageRgba(Context context, Mat image, String fileName) {
-        Mat rgbaMat = image;
 
-        final float maxWH = 400f;
+        Mat rgbaMat = image;
+        // 此参数可以控制图片尺寸，及存储大小
         int width = image.width();
         int height = image.height();
+        boolean resize = false;
         if (width > maxWH) {
             float scale = maxWH / width;
             height = (int) (height * scale);
             width = (int) maxWH;
+            resize = true;
         } else if (image.height() > maxWH) {
             float scale = maxWH / height;
             width = (int) (width * scale);
             height = (int) maxWH;
+            resize = true;
         }
 
-        Mat mat = new Mat();
-        Size size = new Size(width, height);
-        Imgproc.resize(rgbaMat, mat, size);
+        Mat mat;
+        if (resize) {
+            mat = new Mat();
+            Size size = new Size(width, height);
+            Imgproc.resize(rgbaMat, mat, size);
+        } else {
+            mat = rgbaMat;
+        }
 
         Bitmap map = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(mat, map);
@@ -121,7 +140,8 @@ public final class FaceUtil {
 
         Mat rgbaMat = image;
         Rect roi = rect.clone();
-        final int offset = 50;
+        // 训练数据人脸外有一部分背景图，根据算法要求，可以设置偏移量
+        // 偏移量越大人脸在图像中的比例越小，目前低于50成功率不高，需高于60
         // 把检测到的人脸重新定义大小后保存成文件
         if (0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= rgbaMat.cols() && 0 <= roi.y && 0 <= roi.height && roi.y + roi.height <= rgbaMat.rows()) {
             LogUtil.d("roi.y 1= " + roi.y);
@@ -134,18 +154,28 @@ public final class FaceUtil {
                 roi.height = roi.height + offset * 2;
             }
 
-            Mat sub = rgbaMat.submat(roi);
-//            Mat mat = new Mat();
-//            Size size = new Size(260, 260);
-//            Imgproc.resize(sub, mat, size);
+            int x = roi.x;
+            if (x > offset) {
+                roi.x = roi.x - offset;
+            }
+            LogUtil.d("roi.y 2= " + roi.y);
+            if (y + roi.width < rgbaMat.width() + offset * 2) {
+                roi.width = roi.width + offset * 2;
+            }
 
+            Mat sub = rgbaMat.submat(roi);
             return saveImageRgba(context, sub, fileName);
         }
 
-        return false;
+        return saveImageRgba(context, image, fileName);
     }
 
-
+    /**
+     * 保存图片到文件
+     *
+     * @param bitmap
+     * @param filePath 文件全路径
+     */
     public static void saveBitmapFile(Bitmap bitmap, String filePath) {
         File file = new File(filePath);//将要保存图片的路径
         try {

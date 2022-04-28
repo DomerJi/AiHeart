@@ -6,6 +6,9 @@ import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.thfw.base.utils.FaceSetUtil;
+import com.thfw.base.utils.LogUtil;
+
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -32,6 +35,16 @@ public final class FaceUtil {
 
     private static final String TAG = "FaceUtil";
 
+    private static float maxWH = 200f;
+
+    private static final int offset = FaceSetUtil.OFFSET;
+
+    public static void setMaxWH(float maxWH) {
+        if (maxWH > 100f) {
+            FaceUtil.maxWH = maxWH;
+        }
+    }
+
     private FaceUtil() {
     }
 
@@ -40,7 +53,7 @@ public final class FaceUtil {
     }
 
     /**
-     * 特征保存
+     * 特征保存灰度图
      *
      * @param context  Context
      * @param image    Mat
@@ -80,24 +93,32 @@ public final class FaceUtil {
      * @return 保存是否成功
      */
     public static boolean saveImageRgba(Context context, Mat image, String fileName) {
-        Mat rgbaMat = image;
 
-        final float maxWH = 400f;
+        Mat rgbaMat = image;
+        // 此参数可以控制图片尺寸，及存储大小
         int width = image.width();
         int height = image.height();
+        boolean resize = false;
         if (width > maxWH) {
             float scale = maxWH / width;
             height = (int) (height * scale);
             width = (int) maxWH;
+            resize = true;
         } else if (image.height() > maxWH) {
             float scale = maxWH / height;
             width = (int) (width * scale);
             height = (int) maxWH;
+            resize = true;
         }
 
-        Mat mat = new Mat();
-        Size size = new Size(width, height);
-        Imgproc.resize(rgbaMat, mat, size);
+        Mat mat;
+        if (resize) {
+            mat = new Mat();
+            Size size = new Size(width, height);
+            Imgproc.resize(rgbaMat, mat, size);
+        } else {
+            mat = rgbaMat;
+        }
 
         Bitmap map = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(mat, map);
@@ -107,6 +128,53 @@ public final class FaceUtil {
     }
 
 
+    /**
+     * 特征保存
+     *
+     * @param context  Context
+     * @param image    Mat
+     * @param fileName 文件名字
+     * @return 保存是否成功
+     */
+    public static boolean saveImageRgba(Context context, Mat image, Rect rect, String fileName) {
+
+        Mat rgbaMat = image;
+        Rect roi = rect.clone();
+
+        // 把检测到的人脸重新定义大小后保存成文件
+        if (0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= rgbaMat.cols() && 0 <= roi.y && 0 <= roi.height && roi.y + roi.height <= rgbaMat.rows()) {
+            LogUtil.d("roi.y 1= " + roi.y);
+            int y = roi.y;
+            if (y > offset) {
+                roi.y = roi.y - offset;
+            }
+            LogUtil.d("roi.y 2= " + roi.y);
+            if (y + roi.height < rgbaMat.height() + offset * 2) {
+                roi.height = roi.height + offset * 2;
+            }
+
+            int x = roi.x;
+            if (x > offset) {
+                roi.x = roi.x - offset;
+            }
+            LogUtil.d("roi.y 2= " + roi.y);
+            if (y + roi.width < rgbaMat.width() + offset * 2) {
+                roi.width = roi.width + offset * 2;
+            }
+
+            Mat sub = rgbaMat.submat(roi);
+            return saveImageRgba(context, sub, fileName);
+        }
+
+        return saveImageRgba(context, image, fileName);
+    }
+
+    /**
+     * 保存图片到文件
+     *
+     * @param bitmap
+     * @param filePath 文件全路径
+     */
     public static void saveBitmapFile(Bitmap bitmap, String filePath) {
         File file = new File(filePath);//将要保存图片的路径
         try {
@@ -148,23 +216,23 @@ public final class FaceUtil {
         try {
 
             long startTime = System.currentTimeMillis();
-            Mat mat_src = Imgcodecs.imread(src);
-            Mat mat_des = Imgcodecs.imread(des);
+            org.opencv.core.Mat mat_src = Imgcodecs.imread(src);
+            org.opencv.core.Mat mat_des = Imgcodecs.imread(des);
 
             if (mat_src.empty() || mat_des.empty()) {
                 throw new Exception("no file.");
             }
 
 
-            Mat hsv_src = new Mat();
-            Mat hsv_des = new Mat();
+            org.opencv.core.Mat hsv_src = new org.opencv.core.Mat();
+            org.opencv.core.Mat hsv_des = new org.opencv.core.Mat();
 
             // 转换成HSV
             Imgproc.cvtColor(mat_src, hsv_src, Imgproc.COLOR_BGR2HSV);
             Imgproc.cvtColor(mat_des, hsv_des, Imgproc.COLOR_BGR2HSV);
 
             List<Mat> listImg1 = new ArrayList<Mat>();
-            List<Mat> listImg2 = new ArrayList<Mat>();
+            List<org.opencv.core.Mat> listImg2 = new ArrayList<org.opencv.core.Mat>();
             listImg1.add(hsv_src);
             listImg2.add(hsv_des);
 
@@ -172,18 +240,18 @@ public final class FaceUtil {
             MatOfInt histSize = new MatOfInt(50);
             MatOfInt channels = new MatOfInt(0);
 
-            Mat histImg1 = new Mat();
-            Mat histImg2 = new Mat();
+            org.opencv.core.Mat histImg1 = new org.opencv.core.Mat();
+            org.opencv.core.Mat histImg2 = new org.opencv.core.Mat();
 
             //org.bytedeco.javacpp中的方法不太了解参数，所以直接上org.opencv中的方法，所以需要加载一下dll，System.load("D:\\soft\\openCV3\\opencv\\build\\java\\x64\\opencv_java345.dll");
             //opencv_imgproc.calcHist(images, nimages, channels, mask, hist, dims, histSize, ranges, uniform, accumulate);
-            Imgproc.calcHist(listImg1, channels, new Mat(), histImg1, histSize, ranges);
-            Imgproc.calcHist(listImg2, channels, new Mat(), histImg2, histSize, ranges);
+            Imgproc.calcHist(listImg1, channels, new org.opencv.core.Mat(), histImg1, histSize, ranges);
+            Imgproc.calcHist(listImg2, channels, new org.opencv.core.Mat(), histImg2, histSize, ranges);
 
-            Core.normalize(histImg1, histImg1, 0d, 1d, Core.NORM_MINMAX, -1,
-                    new Mat());
-            Core.normalize(histImg2, histImg2, 0d, 1d, Core.NORM_MINMAX, -1,
-                    new Mat());
+            org.opencv.core.Core.normalize(histImg1, histImg1, 0d, 1d, Core.NORM_MINMAX, -1,
+                    new org.opencv.core.Mat());
+            org.opencv.core.Core.normalize(histImg2, histImg2, 0d, 1d, Core.NORM_MINMAX, -1,
+                    new org.opencv.core.Mat());
 
             double result0, result1, result2, result3;
             result0 = Imgproc.compareHist(histImg1, histImg2, Imgproc.HISTCMP_CORREL);
