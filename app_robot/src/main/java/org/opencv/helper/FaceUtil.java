@@ -37,7 +37,7 @@ public final class FaceUtil {
 
     private static float maxWH = 200f;
 
-    private static final int offset = FaceSetUtil.OFFSET;
+    private static int offset = FaceSetUtil.OFFSET;
 
     public static void setMaxWH(float maxWH) {
         if (maxWH > 100f) {
@@ -140,6 +140,8 @@ public final class FaceUtil {
 
         Mat rgbaMat = image;
         Rect roi = rect.clone();
+        offset = roi.width / 3;
+        LogUtil.d("roi.width = " + roi.width + " ; offset = " + offset);
         // 训练数据人脸外有一部分背景图，根据算法要求，可以设置偏移量
         // 偏移量越大人脸在图像中的比例越小，目前低于50成功率不高，需高于60
         // 把检测到的人脸重新定义大小后保存成文件
@@ -163,8 +165,10 @@ public final class FaceUtil {
                 roi.width = roi.width + offset * 2;
             }
 
-            Mat sub = rgbaMat.submat(roi);
-            return saveImageRgba(context, sub, fileName);
+            if (0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= rgbaMat.cols() && 0 <= roi.y && 0 <= roi.height && roi.y + roi.height <= rgbaMat.rows()) {
+                Mat sub = rgbaMat.submat(roi);
+                return saveImageRgba(context, sub, fileName);
+            }
         }
 
         return saveImageRgba(context, image, fileName);

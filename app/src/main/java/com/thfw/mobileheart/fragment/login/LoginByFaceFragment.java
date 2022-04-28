@@ -146,6 +146,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     private int mAbsoluteFaceSize = 0;
     private TextView mTvFaceHint;
     private Runnable changeFaceHintRunnable;
+    private ImageView mIvTest;
 
     @Override
     public int getContentView() {
@@ -192,6 +193,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         mLlFaceFail = (LinearLayout) findViewById(R.id.ll_face_fail);
         mBtRetry = (Button) findViewById(R.id.bt_retry);
         mTvFaceHint = (TextView) findViewById(R.id.tv_face_hint);
+        mIvTest = (ImageView) findViewById(R.id.iv_test);
     }
 
     private void initAgreeClick() {
