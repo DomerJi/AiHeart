@@ -113,11 +113,13 @@ public class AudioListFragment extends BaseFragment<AudioPresenter>
             if (EmptyUtil.isEmpty(dataList)) {
                 return;
             }
-            for (AudioEtcModel bean : dataList) {
+            int len = dataList.size();
+            for (int i = 0; i < len; i++) {
+                AudioEtcModel bean = dataList.get(i);
                 if (bean.getId() == collectionId) {
                     bean.setLastMusicId(musicId);
                     bean.setListenHistorySize(hour);
-                    audioListAdapter.notifyDataSetChanged();
+                    audioListAdapter.notifyItemChanged(i);
                     break;
                 }
             }

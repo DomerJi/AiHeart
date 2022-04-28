@@ -97,8 +97,8 @@
     <string name="box_title">心灵筒</string>
     <string name="share">分享</string>
     <!-- 聊天 -->
-    <string name="finishServiceTitle">确认结束服务?</string>
-    <string name="finishServiceHint">感谢您的咨询，希望下次还可以为您服务</string>
+    <string name="finishServiceTitle">确认退出当前对话吗？</string>
+    <string name="finishServiceHint">确认退出当前对话吗？</string>
 
     <!--订单-->
     <string name="order">订单</string>

@@ -46,6 +46,7 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.VideoPresenter;
 import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
+import com.thfw.base.utils.DataChangeHelper;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NetworkUtil;
@@ -539,6 +540,11 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
 
     @Override
     public void onDestroy() {
+        if (mVideoPlayListAdapter != null) {
+            if (mVideoId > 0) {
+                DataChangeHelper.collectChange(mVideoPlayListAdapter.getmIvCollectTop(), mVideoId);
+            }
+        }
         super.onDestroy();
         TimingHelper.getInstance().removeWorkArriveListener(this);
 

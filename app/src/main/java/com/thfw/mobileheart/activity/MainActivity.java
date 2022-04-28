@@ -150,6 +150,10 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         }
     }
 
+    public static boolean isFinished() {
+        return EmptyUtil.isEmpty(mainActivity);
+    }
+
     @Override
     public int getContentView() {
         return R.layout.activity_home;
@@ -441,10 +445,9 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         super.onStop();
         if (mMainHandler != null) {
             mMainHandler.removeCallbacksAndMessages(null);
-            if (mMainRoot.getVisibility() != View.VISIBLE) {
-                finish();
-                return;
-            }
+        }
+        if (!trueResume && mMainRoot.getVisibility() != View.VISIBLE) {
+            finish();
         }
     }
 
@@ -521,6 +524,9 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     @Override
     protected void onResume() {
         super.onResume();
+        if (DialogFactory.getSvgaTDialog() != null) {
+            DialogFactory.getSvgaTDialog().dismiss();
+        }
         if (isMeResumed2()) {
             onMeResume();
         }

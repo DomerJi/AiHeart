@@ -20,6 +20,7 @@ import com.thfw.base.models.ExerciseModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.presenter.UserToolPresenter;
+import com.thfw.base.utils.DataChangeHelper;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
@@ -56,6 +57,7 @@ public class ExerciseDetailActivity extends BaseActivity<UserToolPresenter> impl
     private boolean requestIng;
     private com.thfw.ui.widget.MyScrollView mScrollView;
     private com.thfw.ui.widget.LoadingView mLoadingView;
+    private ExerciseModel mExerciseModel;
 
     public static void startActivity(Context context, ExerciseModel exerciseModel) {
         context.startActivity(new Intent(context, ExerciseDetailActivity.class).putExtra(KEY_DATA, exerciseModel));
@@ -125,6 +127,7 @@ public class ExerciseDetailActivity extends BaseActivity<UserToolPresenter> impl
 
     @Override
     public void onSuccess(ExerciseModel data) {
+        mExerciseModel = data;
         GlideUtil.load(mContext, data.getPic(), mIvTopBanner);
         mTvTitle.setText(data.getTitle());
         mTvClassHour.setText(data.getTitle() + data.getLinkList().size() + "课时");
@@ -204,6 +207,14 @@ public class ExerciseDetailActivity extends BaseActivity<UserToolPresenter> impl
                 mLogcataFragment.setExerciseModel(data);
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mExerciseModel != null) {
+            DataChangeHelper.collectChange(mIvCollect, mExerciseModel.getId());
+        }
+        super.onDestroy();
     }
 
     @Override

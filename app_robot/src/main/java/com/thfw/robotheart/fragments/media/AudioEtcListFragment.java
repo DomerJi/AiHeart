@@ -127,11 +127,13 @@ public class AudioEtcListFragment extends RobotBaseFragment<AudioPresenter>
             if (EmptyUtil.isEmpty(dataList)) {
                 return;
             }
-            for (AudioEtcModel bean : dataList) {
+            int len = dataList.size();
+            for (int i = 0; i < len; i++) {
+                AudioEtcModel bean = dataList.get(i);
                 if (bean.getId() == collectionId) {
                     bean.setLastMusicId(musicId);
                     bean.setListenHistorySize(hour);
-                    mAudioEtcListAdapter.notifyDataSetChanged();
+                    mAudioEtcListAdapter.notifyItemChanged(i);
                     break;
                 }
             }

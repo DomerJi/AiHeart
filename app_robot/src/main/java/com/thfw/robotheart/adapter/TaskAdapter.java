@@ -44,7 +44,7 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
         holder.mTvType.setText(itemModel.getTaskTypeStr());
         if (itemModel.getStatus() == 3) {
             holder.mTvFlag.setVisibility(View.VISIBLE);
-            holder.mTvFlag.setText("已废弃");
+            holder.mTvFlag.setText("已作废");
             holder.mTvFlag.setBackgroundResource(R.drawable.yellow_radius_bg);
             holder.mTvTitle.setTextColor(0x8CCCCCCC);
             holder.mTvType.setTextColor(0x8CCCCCCC);

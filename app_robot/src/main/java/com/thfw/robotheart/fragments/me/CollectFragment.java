@@ -13,6 +13,8 @@ import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.CollectModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
+import com.thfw.base.utils.DataChangeHelper;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
@@ -28,11 +30,12 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 
 
 public class CollectFragment extends RobotBaseFragment<HistoryPresenter>
-        implements HistoryPresenter.HistoryUi<List<CollectModel>> {
+        implements HistoryPresenter.HistoryUi<List<CollectModel>>, DataChangeHelper.DataChangeListener {
 
     private int type;
     private SmartRefreshLayout mRefreshLayout;
@@ -63,6 +66,7 @@ public class CollectFragment extends RobotBaseFragment<HistoryPresenter>
         mRvList = (RecyclerView) findViewById(R.id.rvList);
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+        DataChangeHelper.getInstance().add(this);
     }
 
     @Override
@@ -132,5 +136,35 @@ public class CollectFragment extends RobotBaseFragment<HistoryPresenter>
         mPageHelper.onFail(v -> {
             mPresenter.getCollectList(type, mPageHelper.getPage());
         });
+    }
+
+    @Override
+    public void onChanged(HashMap<String, Object> map) {
+        if (!TYPE_COLLECT.equals(map.get(KEY_TYPE))) {
+            return;
+        }
+        if (mCollectAdapter == null || EmptyUtil.isEmpty(mCollectAdapter.getDataList())) {
+            return;
+        }
+        List<CollectModel> collectModels = mCollectAdapter.getDataList();
+        int len = collectModels.size();
+
+
+        int id = (int) map.get(KEY_ID);
+        for (int i = 0; i < len; i++) {
+            if (id == collectModels.get(i).id) {
+                collectModels.remove(i);
+                mCollectAdapter.notifyItemRemoved(i);
+                break;
+            }
+        }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        DataChangeHelper.getInstance().remove(this);
+        super.onDestroy();
+
     }
 }

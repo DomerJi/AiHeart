@@ -35,6 +35,7 @@ import java.util.List;
 public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, RecyclerView.ViewHolder> {
 
 
+    private ImageView mIvCollectTop;
     private boolean requestIng;
     private int mVideoId;
 
@@ -182,6 +183,7 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
             mIvExpandArrow = (ImageView) itemView.findViewById(R.id.iv_expand_arrow);
             mTvHint = (TextView) itemView.findViewById(R.id.tv_hint);
             mIvCollect = (ImageView) itemView.findViewById(R.id.iv_collect);
+            mIvCollectTop = mIvCollect;
             mIvCollect.setOnClickListener(v -> {
                 addCollect();
             });
@@ -224,5 +226,14 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
                 }
             }).addCollect(HistoryApi.TYPE_COLLECT_VIDEO, mVideoId);
         }
+    }
+
+
+    public int getmVideoId() {
+        return mVideoId;
+    }
+
+    public ImageView getmIvCollectTop() {
+        return mIvCollectTop;
     }
 }

@@ -17,6 +17,7 @@ import com.thfw.base.models.TestDetailModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.presenter.TestPresenter;
+import com.thfw.base.utils.DataChangeHelper;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
@@ -127,6 +128,7 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
         mBtnBegin.setOnClickListener(v -> {
             TestProgressIngActivity.startActivity(mContext, mDetailModel);
         });
+        mIvCollect.setSelected(mDetailModel.getPsychtestInfo().isCollected());
         mIvCollect.setOnClickListener(v -> {
             addCollect();
         });
@@ -156,4 +158,11 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
     }
 
 
+    @Override
+    public void onDestroy() {
+        if (mDetailModel != null) {
+            DataChangeHelper.collectChange(mIvCollect, mTestId);
+        }
+        super.onDestroy();
+    }
 }

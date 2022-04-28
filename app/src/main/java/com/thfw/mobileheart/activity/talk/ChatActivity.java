@@ -283,8 +283,8 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         DialogFactory.createCustomDialog(this, new DialogFactory.OnViewCallBack() {
             @Override
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-                mTvTitle.setText(R.string.finishServiceTitle);
-                mTvHint.setText(R.string.finishServiceHint);
+                mTvHint.setText(R.string.finishServiceTitle);
+                mTvTitle.setVisibility(View.GONE);
             }
 
             @Override

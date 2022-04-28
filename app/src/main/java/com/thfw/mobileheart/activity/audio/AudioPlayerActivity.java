@@ -45,6 +45,7 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.AudioPresenter;
 import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.presenter.TaskPresenter;
+import com.thfw.base.utils.DataChangeHelper;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HourChangeHelper;
 import com.thfw.base.utils.LogUtil;
@@ -535,6 +536,9 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
 
     @Override
     public void onDestroy() {
+        if (mDetailModel != null && mDetailModel.getCollectionInfo() != null) {
+            DataChangeHelper.collectChange(mIvCollect, mDetailModel.getCollectionInfo().getId());
+        }
         super.onDestroy();
         ExoPlayerFactory.release();
     }

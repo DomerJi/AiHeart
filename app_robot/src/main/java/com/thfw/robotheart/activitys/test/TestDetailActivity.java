@@ -19,6 +19,7 @@ import com.thfw.base.models.TestDetailModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.presenter.TestPresenter;
+import com.thfw.base.utils.DataChangeHelper;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
@@ -176,5 +177,13 @@ public class TestDetailActivity extends RobotBaseActivity<TestPresenter> impleme
         mLoadingView.showFail(v -> {
             mPresenter.onGetInfo(mTestId);
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mModel != null) {
+            DataChangeHelper.collectChange(mIvCollect, mTestId);
+        }
+        super.onDestroy();
     }
 }

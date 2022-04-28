@@ -25,6 +25,7 @@ import com.thfw.base.models.CommonModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.BookPresenter;
 import com.thfw.base.presenter.HistoryPresenter;
+import com.thfw.base.utils.DataChangeHelper;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
@@ -276,6 +277,9 @@ public class BookDetailActivity extends RobotBaseActivity<BookPresenter> impleme
 
     @Override
     public void onDestroy() {
+        if (bookId > 0) {
+            DataChangeHelper.collectChange(mIvCollect, bookId);
+        }
         super.onDestroy();
         if (mAgentWeb != null) {
             mAgentWeb.getWebLifeCycle().onDestroy();
@@ -337,4 +341,5 @@ public class BookDetailActivity extends RobotBaseActivity<BookPresenter> impleme
             }
         }).addCollect(HistoryApi.TYPE_COLLECT_BOOK, bookId);
     }
+
 }

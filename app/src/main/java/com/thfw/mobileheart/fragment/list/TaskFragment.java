@@ -11,6 +11,8 @@ import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TaskPresenter;
+import com.thfw.base.utils.DataChangeHelper;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
@@ -22,10 +24,12 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 
 
-public class TaskFragment extends BaseFragment<TaskPresenter> implements TaskPresenter.TaskUi<List<TaskItemModel>> {
+public class TaskFragment extends BaseFragment<TaskPresenter>
+        implements TaskPresenter.TaskUi<List<TaskItemModel>>, DataChangeHelper.DataChangeListener {
 
     private int type;
     private SmartRefreshLayout mRefreshLayout;
@@ -56,6 +60,7 @@ public class TaskFragment extends BaseFragment<TaskPresenter> implements TaskPre
         mRvList = (RecyclerView) findViewById(R.id.rvList);
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+        DataChangeHelper.getInstance().add(this);
     }
 
     @Override
@@ -71,7 +76,7 @@ public class TaskFragment extends BaseFragment<TaskPresenter> implements TaskPre
                     ToastUtil.show("已过期");
                     return;
                 } else if (itemModel.getStatus() == 3) {
-                    ToastUtil.show("已废弃");
+                    ToastUtil.show("已作废");
                     return;
                 }
                 TaskDetailsActivity.startActivity(mContext, itemModel.getId());
@@ -110,5 +115,37 @@ public class TaskFragment extends BaseFragment<TaskPresenter> implements TaskPre
         mPageHelper.onFail(v -> {
             mPresenter.onGetList(type, mPageHelper.getPage());
         });
+    }
+
+    @Override
+    public void onChanged(HashMap<String, Object> map) {
+        if (!TYPE_TASK.equals(map.get(KEY_TYPE))) {
+            return;
+        }
+        if (mTaskAdapter == null || EmptyUtil.isEmpty(mTaskAdapter.getDataList())) {
+            return;
+        }
+        List<TaskItemModel> taskItemModels = mTaskAdapter.getDataList();
+        int len = taskItemModels.size();
+
+
+        int id = (int) map.get(KEY_ID);
+        int current = (int) map.get(KEY_CURRENT);
+        int count = (int) map.get(KEY_COUNT);
+        for (int i = 0; i < len; i++) {
+            if (id == taskItemModels.get(i).getId()) {
+                taskItemModels.get(i).setFinishCount(current);
+                taskItemModels.get(i).setCount(count);
+                mTaskAdapter.notifyItemChanged(i);
+                break;
+            }
+        }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DataChangeHelper.getInstance().remove(this);
     }
 }

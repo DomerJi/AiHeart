@@ -2,6 +2,7 @@ package com.thfw.mobileheart.activity.task;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import com.thfw.base.models.TaskDetailModel;
 import com.thfw.base.models.TaskMusicEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TaskPresenter;
+import com.thfw.base.utils.DataChangeHelper;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
@@ -26,6 +28,7 @@ import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class TaskDetailsActivity extends BaseActivity<TaskPresenter> implements TaskPresenter.TaskUi<TaskDetailModel> {
@@ -92,7 +95,16 @@ public class TaskDetailsActivity extends BaseActivity<TaskPresenter> implements 
     @Override
     public void onSuccess(TaskDetailModel data) {
         mTvTaskType.setText(data.getTaskTypeStr());
+        String oldStatus = mTvTaskStatus.getText().toString();
         mTvTaskStatus.setText(data.getFinish() + "/" + data.getCount());
+        if (!TextUtils.isEmpty(oldStatus) && !oldStatus.equals(mTvTaskStatus.getText().toString())) {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put(DataChangeHelper.DataChangeListener.KEY_ID, mId);
+            map.put(DataChangeHelper.DataChangeListener.KEY_TYPE, DataChangeHelper.DataChangeListener.TYPE_TASK);
+            map.put(DataChangeHelper.DataChangeListener.KEY_CURRENT, data.getFinish());
+            map.put(DataChangeHelper.DataChangeListener.KEY_COUNT, data.getCount());
+            DataChangeHelper.getInstance().notify(map);
+        }
         mTvTaskTime.setText(data.getDeadline());
         mTvTaskTitle.setText(data.getTitle());
         TaskChildLineAdapter adapter = new TaskChildLineAdapter(data.getContentList());

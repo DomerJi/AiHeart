@@ -138,7 +138,7 @@ public class PictureSelectionModel {
     /**
      * Only for Android version Q
      * <p>
-     * 已废弃，没有存在的意义了，之前主要是为了解决在华为10系统上一直loading问题
+     * 已作废，没有存在的意义了，之前主要是为了解决在华为10系统上一直loading问题
      * </p>
      *
      * @param cacheResourcesEngine Image Cache

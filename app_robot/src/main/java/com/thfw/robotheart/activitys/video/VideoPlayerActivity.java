@@ -47,6 +47,7 @@ import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.presenter.VideoPresenter;
 import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
+import com.thfw.base.utils.DataChangeHelper;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NetworkUtil;
@@ -531,6 +532,9 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
 
     @Override
     public void onDestroy() {
+        if (mVideoModel != null) {
+            DataChangeHelper.collectChange(mIvCollect, mVideoModel.getId());
+        }
         super.onDestroy();
         if (windowPlay) {
             return;

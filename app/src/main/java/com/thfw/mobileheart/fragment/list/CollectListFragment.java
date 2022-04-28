@@ -13,10 +13,12 @@ import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.CollectModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
-import com.thfw.base.utils.ToastUtil;
+import com.thfw.base.utils.DataChangeHelper;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
+import com.thfw.mobileheart.activity.exercise.ExerciseDetailActivity;
 import com.thfw.mobileheart.activity.read.BookDetailActivity;
 import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
 import com.thfw.mobileheart.activity.test.TestBeginActivity;
@@ -28,11 +30,12 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 
 
 public class CollectListFragment extends BaseFragment<HistoryPresenter>
-        implements HistoryPresenter.HistoryUi<List<CollectModel>> {
+        implements HistoryPresenter.HistoryUi<List<CollectModel>>, DataChangeHelper.DataChangeListener {
 
     private int type;
     private SmartRefreshLayout mRefreshLayout;
@@ -63,6 +66,7 @@ public class CollectListFragment extends BaseFragment<HistoryPresenter>
         mRvList = (RecyclerView) findViewById(R.id.rvList);
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+        DataChangeHelper.getInstance().add(this);
     }
 
     @Override
@@ -91,7 +95,7 @@ public class CollectListFragment extends BaseFragment<HistoryPresenter>
                         BookIdeoDetailActivity.startActivity(mContext, collectModel.id);
                         break;
                     case HistoryApi.TYPE_COLLECT_TOOL:
-                        ToastUtil.show("tool");
+                        ExerciseDetailActivity.startActivity(mContext,collectModel.id);
                         break;
                     case HistoryApi.TYPE_COLLECT_VIDEO:
                         VideoPlayActivity.startActivity(mContext, collectModel.id, false);
@@ -132,5 +136,34 @@ public class CollectListFragment extends BaseFragment<HistoryPresenter>
         mPageHelper.onFail(v -> {
             mPresenter.getCollectList(type, mPageHelper.getPage());
         });
+    }
+
+    @Override
+    public void onChanged(HashMap<String, Object> map) {
+        if (!TYPE_COLLECT.equals(map.get(KEY_TYPE))) {
+            return;
+        }
+        if (mCollectAdapter == null || EmptyUtil.isEmpty(mCollectAdapter.getDataList())) {
+            return;
+        }
+        List<CollectModel> collectModels = mCollectAdapter.getDataList();
+        int len = collectModels.size();
+
+
+        int id = (int) map.get(KEY_ID);
+        for (int i = 0; i < len; i++) {
+            if (id == collectModels.get(i).id) {
+                collectModels.remove(i);
+                mCollectAdapter.notifyItemRemoved(i);
+                break;
+            }
+        }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DataChangeHelper.getInstance().remove(this);
     }
 }

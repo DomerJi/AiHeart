@@ -19,6 +19,7 @@ import com.thfw.base.models.ExerciseModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.presenter.UserToolPresenter;
+import com.thfw.base.utils.DataChangeHelper;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
@@ -53,6 +54,7 @@ public class ExerciseDetailsActivity extends RobotBaseActivity<UserToolPresenter
     private LinearLayout mLlCollect;
     private ImageView mIvCollect;
     private TextView mTvCollect;
+    private ExerciseModel mExerciseModel;
 
     public static void startActivity(Context context, ExerciseModel exerciseModel) {
         context.startActivity(new Intent(context, ExerciseDetailsActivity.class).putExtra(KEY_DATA, exerciseModel));
@@ -163,6 +165,7 @@ public class ExerciseDetailsActivity extends RobotBaseActivity<UserToolPresenter
 
     @Override
     public void onSuccess(ExerciseModel data) {
+        mExerciseModel = data;
         GlideUtil.load(mContext, data.getPic(), mIvBg);
         mTvVideoTitle.setText(data.getTitle());
         String hint = "<font color='" + UIConfig.COLOR_GRREN + "'>" + "简介：" + "</font>" + data.getDesc();
@@ -189,5 +192,13 @@ public class ExerciseDetailsActivity extends RobotBaseActivity<UserToolPresenter
         if (resultCode == RESULT_OK && requestCode == ExerciseIngActivity.REQUEST_CODE) {
             mPresenter.onGetInfo(mId);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mExerciseModel != null) {
+            DataChangeHelper.collectChange(mIvCollect, mId);
+        }
+        super.onDestroy();
     }
 }

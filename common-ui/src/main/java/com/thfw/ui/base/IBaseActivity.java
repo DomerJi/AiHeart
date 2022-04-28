@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.jaeger.library.StatusBarUtil;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.role.Limits;
@@ -196,16 +197,6 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity imp
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (resumed == -1) {
-            resumed = 1;
-        } else {
-            resumed = 2;
-        }
-    }
-
     public boolean isMeResumed() {
         return resumed > 0;
     }
@@ -215,9 +206,22 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity imp
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Glide.with(mContext).resumeRequests();
+        if (resumed == -1) {
+            resumed = 1;
+        } else {
+            resumed = 2;
+        }
+    }
+
+    @Override
     @CallSuper
     protected void onPause() {
         super.onPause();
         resumed = 0;
+        Glide.with(mContext).pauseRequests();
     }
+
 }
