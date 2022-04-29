@@ -51,6 +51,7 @@ import com.thfw.user.login.UserManager;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCamera2CircleView;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
@@ -131,6 +132,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
      * 正在处理图像数据
      */
     private volatile boolean frameHandleIng = false;
+    private volatile boolean showFail = false;
     private volatile int failCount = 0;
     private volatile boolean failByNet = false;
     private volatile long beginTime;
@@ -147,6 +149,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     private TextView mTvFaceHint;
     private Runnable changeFaceHintRunnable;
     private ImageView mIvTest;
+    private Mat rotateMat;
 
     @Override
     public int getContentView() {
@@ -161,6 +164,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     @Override
     public void initView() {
 
+        inputFace = UserManager.getInstance().isLogin();
         mClBottom = (LinearLayout) findViewById(R.id.cl_bottom);
         mRivWechat = (RoundedImageView) findViewById(R.id.riv_wechat);
         mRivQq = (RoundedImageView) findViewById(R.id.riv_qq);
@@ -247,10 +251,6 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     @Override
     public void onResume() {
         super.onResume();
-        inputFace = UserManager.getInstance().isLogin();
-        if (inputFace) {
-            // todo
-        }
         mIvBorder.post(new Runnable() {
             @Override
             public void run() {
@@ -267,6 +267,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         beginTime = 0;
         failByNet = false;
         frameHandleIng = false;
+        showFail = false;
     }
 
     @Override
@@ -438,17 +439,23 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     }
 
     public Mat onCameraFrameHandle(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        Mat dstRgba = new Mat();
+
         Mat rgba = inputFrame.rgba();
-        Mat gray = inputFrame.gray();
-        Mat rotateMat = Imgproc.getRotationMatrix2D(new Point(gray.cols() / 2, gray.rows() / 2), 90, 1);
+        // 手机角度旋转
+        if (rotateMat == null) {
+            rotateMat = Imgproc.getRotationMatrix2D(new Point(rgba.cols() / 2, rgba.rows() / 2), 90, 1);
+        }
+        Mat dstRgba = new Mat();
         Imgproc.warpAffine(rgba, dstRgba, rotateMat, dstRgba.size());
-        mRgba = dstRgba;
+        // 水平翻转
+        Mat flipMap = new Mat();
+        Core.flip(dstRgba, flipMap, 1);
+        mRgba = flipMap;
 
         if (beginTime == 0) {
             beginTime = System.currentTimeMillis();
         }
-        if (frameHandleIng) {
+        if (frameHandleIng || showFail) {
             return mRgba;
         } else if (failByNet) {
             showFaceFail(inputFace ? "人脸录入失败，当前网络异常，请检查网络状态。" :
@@ -465,8 +472,12 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         }
         frameHandleIng = true;
         Mat dstGray = new Mat();
+        Mat gray = inputFrame.gray();
         Imgproc.warpAffine(gray, dstGray, rotateMat, dstGray.size());
-        mGray = dstGray;
+        // 水平翻转
+        Mat flipGrayMap = new Mat();
+        Core.flip(dstGray, flipGrayMap, 1);
+        mGray = flipGrayMap;
 
         if (mAbsoluteFaceSize == 0) {
             int height = mGray.rows();
@@ -524,7 +535,8 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
      * @param s
      */
     private void showFaceFail(String s) {
-        if (mLlFaceFail != null && mLlFaceFail.getVisibility() != View.VISIBLE) {
+        if (!showFail && mLlFaceFail != null && mLlFaceFail.getVisibility() != View.VISIBLE) {
+            showFail = true;
             mMainHandler.post(new Runnable() {
                 @Override
                 public void run() {

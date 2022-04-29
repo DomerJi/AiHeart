@@ -24,7 +24,6 @@ import org.opencv.core.Mat;
 import org.opencv.helper.ImageUtils;
 import org.opencv.imgproc.Imgproc;
 
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
@@ -175,30 +174,30 @@ public class JavaCamera2View extends CameraBridgeViewBase {
                     deliverAndDrawFrame(javaCameraFrame);
                     image.close();
                     javaCameraFrame.release();
-                    if (true) {
-                        return;
-                    }
-
-                    // yuv有问题
-                    // sanity checks - 3 planes
-                    Image.Plane[] planes = image.getPlanes();
-                    assert (planes.length == 3);
-                    assert (image.getFormat() == mPreviewFormat);
-
-                    // see also https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888
-                    // Y plane (0) non-interleaved => stride == 1; U/V plane interleaved => stride == 2
-                    assert (planes[0].getPixelStride() == 1);
-                    assert (planes[1].getPixelStride() == 2);
-                    assert (planes[2].getPixelStride() == 2);
-
-                    ByteBuffer y_plane = planes[0].getBuffer();
-                    ByteBuffer uv_plane = planes[1].getBuffer();
-                    Mat y_mat = new Mat(h, w, CvType.CV_8UC1, y_plane);
-                    Mat uv_mat = new Mat(h / 2, w / 2, CvType.CV_8UC2, uv_plane);
-                    JavaCamera2Frame tempFrame = new JavaCamera2Frame(y_mat, uv_mat, w, h);
-                    deliverAndDrawFrame(tempFrame);
-                    tempFrame.release();
-                    image.close();
+//                    if (true) {
+//                        return;
+//                    }
+//
+//                    // yuv有问题
+//                    // sanity checks - 3 planes
+//                    Image.Plane[] planes = image.getPlanes();
+//                    assert (planes.length == 3);
+//                    assert (image.getFormat() == mPreviewFormat);
+//
+//                    // see also https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888
+//                    // Y plane (0) non-interleaved => stride == 1; U/V plane interleaved => stride == 2
+//                    assert (planes[0].getPixelStride() == 1);
+//                    assert (planes[1].getPixelStride() == 2);
+//                    assert (planes[2].getPixelStride() == 2);
+//
+//                    ByteBuffer y_plane = planes[0].getBuffer();
+//                    ByteBuffer uv_plane = planes[1].getBuffer();
+//                    Mat y_mat = new Mat(h, w, CvType.CV_8UC1, y_plane);
+//                    Mat uv_mat = new Mat(h / 2, w / 2, CvType.CV_8UC2, uv_plane);
+//                    JavaCamera2Frame tempFrame = new JavaCamera2Frame(y_mat, uv_mat, w, h);
+//                    deliverAndDrawFrame(tempFrame);
+//                    tempFrame.release();
+//                    image.close();
                 }
             }, mBackgroundHandler);
             Surface surface = mImageReader.getSurface();
@@ -274,7 +273,6 @@ public class JavaCamera2View extends CameraBridgeViewBase {
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
 
             int bestWidth = 0, bestHeight = 0;
-            float aspect = (float) width / height;
             android.util.Size[] sizes = map.getOutputSizes(ImageReader.class);
             bestWidth = sizes[0].getWidth();
             bestHeight = sizes[0].getHeight();
@@ -282,12 +280,6 @@ public class JavaCamera2View extends CameraBridgeViewBase {
             for (android.util.Size sz : sizes) {
                 int w = sz.getWidth(), h = sz.getHeight();
                 Log.d(LOGTAG, "trying size: " + w + "x" + h);
-                // todo 源码不好用
-//                if (width >= w && height >= h && bestWidth <= w && bestHeight <= h
-//                        && Math.abs(aspect - (float) w / h) < 0.2) {
-//                    bestWidth = w;
-//                    bestHeight = h;
-//                }
                 // todo me 根据成像大小设置预览画面
                 if (h >= height && h - height < min) {
                     min = h - height;

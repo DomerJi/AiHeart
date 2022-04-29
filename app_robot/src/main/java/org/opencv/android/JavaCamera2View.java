@@ -24,7 +24,6 @@ import org.opencv.core.Mat;
 import org.opencv.helper.ImageUtils;
 import org.opencv.imgproc.Imgproc;
 
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
@@ -53,27 +52,6 @@ public class JavaCamera2View extends CameraBridgeViewBase {
 
     private HandlerThread mBackgroundThread;
     private Handler mBackgroundHandler;
-    private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
-
-        @Override
-        public void onOpened(CameraDevice cameraDevice) {
-            mCameraDevice = cameraDevice;
-            createCameraPreviewSession();
-        }
-
-        @Override
-        public void onDisconnected(CameraDevice cameraDevice) {
-            cameraDevice.close();
-            mCameraDevice = null;
-        }
-
-        @Override
-        public void onError(CameraDevice cameraDevice, int error) {
-            cameraDevice.close();
-            mCameraDevice = null;
-        }
-
-    };
 
     public JavaCamera2View(Context context, int cameraId) {
         super(context, cameraId);
@@ -144,6 +122,28 @@ public class JavaCamera2View extends CameraBridgeViewBase {
         return false;
     }
 
+    private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
+
+        @Override
+        public void onOpened(CameraDevice cameraDevice) {
+            mCameraDevice = cameraDevice;
+            createCameraPreviewSession();
+        }
+
+        @Override
+        public void onDisconnected(CameraDevice cameraDevice) {
+            cameraDevice.close();
+            mCameraDevice = null;
+        }
+
+        @Override
+        public void onError(CameraDevice cameraDevice, int error) {
+            cameraDevice.close();
+            mCameraDevice = null;
+        }
+
+    };
+
     private void createCameraPreviewSession() {
         final int w = mPreviewSize.getWidth(), h = mPreviewSize.getHeight();
         Log.i(LOGTAG, "createCameraPreviewSession(" + w + "x" + h + ")");
@@ -160,13 +160,13 @@ public class JavaCamera2View extends CameraBridgeViewBase {
             }
 
             mImageReader = ImageReader.newInstance(w, h, mPreviewFormat, 2);
+//            mImageReader = ImageReader.newInstance(w, h, ImageFormat.JPEG, 2);
             mImageReader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
                     Image image = reader.acquireLatestImage();
                     if (image == null)
                         return;
-
                     // nv21没有问题
                     Mat mFrameChain = new Mat(mFrameHeight + (mFrameHeight / 2), mFrameWidth, CvType.CV_8UC1);
                     mFrameChain.put(0, 0, ImageUtils.YUV_420_888toNV21(image));
@@ -174,37 +174,36 @@ public class JavaCamera2View extends CameraBridgeViewBase {
                     deliverAndDrawFrame(javaCameraFrame);
                     image.close();
                     javaCameraFrame.release();
-                    if (true) {
-                        return;
-                    }
-
-                    // yuv有问题
-                    // sanity checks - 3 planes
-                    Image.Plane[] planes = image.getPlanes();
-                    assert (planes.length == 3);
-                    assert (image.getFormat() == mPreviewFormat);
-
-                    // see also https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888
-                    // Y plane (0) non-interleaved => stride == 1; U/V plane interleaved => stride == 2
-                    assert (planes[0].getPixelStride() == 1);
-                    assert (planes[1].getPixelStride() == 2);
-                    assert (planes[2].getPixelStride() == 2);
-
-                    ByteBuffer y_plane = planes[0].getBuffer();
-                    ByteBuffer uv_plane = planes[1].getBuffer();
-                    Mat y_mat = new Mat(h, w, CvType.CV_8UC1, y_plane);
-                    Mat uv_mat = new Mat(h / 2, w / 2, CvType.CV_8UC2, uv_plane);
-                    JavaCamera2Frame tempFrame = new JavaCamera2Frame(y_mat, uv_mat, w, h);
-                    deliverAndDrawFrame(tempFrame);
-                    tempFrame.release();
-                    image.close();
+//                    if (true) {
+//                        return;
+//                    }
+//
+//                    // yuv有问题
+//                    // sanity checks - 3 planes
+//                    Image.Plane[] planes = image.getPlanes();
+//                    assert (planes.length == 3);
+//                    assert (image.getFormat() == mPreviewFormat);
+//
+//                    // see also https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888
+//                    // Y plane (0) non-interleaved => stride == 1; U/V plane interleaved => stride == 2
+//                    assert (planes[0].getPixelStride() == 1);
+//                    assert (planes[1].getPixelStride() == 2);
+//                    assert (planes[2].getPixelStride() == 2);
+//
+//                    ByteBuffer y_plane = planes[0].getBuffer();
+//                    ByteBuffer uv_plane = planes[1].getBuffer();
+//                    Mat y_mat = new Mat(h, w, CvType.CV_8UC1, y_plane);
+//                    Mat uv_mat = new Mat(h / 2, w / 2, CvType.CV_8UC2, uv_plane);
+//                    JavaCamera2Frame tempFrame = new JavaCamera2Frame(y_mat, uv_mat, w, h);
+//                    deliverAndDrawFrame(tempFrame);
+//                    tempFrame.release();
+//                    image.close();
                 }
             }, mBackgroundHandler);
             Surface surface = mImageReader.getSurface();
 
             mPreviewRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mPreviewRequestBuilder.addTarget(surface);
-
             mCameraDevice.createCaptureSession(Arrays.asList(surface),
                     new CameraCaptureSession.StateCallback() {
                         @Override
@@ -272,8 +271,8 @@ public class JavaCamera2View extends CameraBridgeViewBase {
         try {
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(mCameraID);
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+
             int bestWidth = 0, bestHeight = 0;
-            float aspect = (float) width / height;
             android.util.Size[] sizes = map.getOutputSizes(ImageReader.class);
             bestWidth = sizes[0].getWidth();
             bestHeight = sizes[0].getHeight();
@@ -281,12 +280,6 @@ public class JavaCamera2View extends CameraBridgeViewBase {
             for (android.util.Size sz : sizes) {
                 int w = sz.getWidth(), h = sz.getHeight();
                 Log.d(LOGTAG, "trying size: " + w + "x" + h);
-                // todo 源码不好用
-//                if (width >= w && height >= h && bestWidth <= w && bestHeight <= h
-//                        && Math.abs(aspect - (float) w / h) < 0.2) {
-//                    bestWidth = w;
-//                    bestHeight = h;
-//                }
                 // todo me 根据成像大小设置预览画面
                 if (h >= height && h - height < min) {
                     min = h - height;
@@ -346,19 +339,6 @@ public class JavaCamera2View extends CameraBridgeViewBase {
 
     private class JavaCameraFrame implements CvCameraViewFrame {
         int mPreviewFormat;
-        private Mat mYuvFrameData;
-        private Mat mRgba;
-        private int mWidth;
-        private int mHeight;
-
-        public JavaCameraFrame(Mat Yuv420sp, int width, int height) {
-            super();
-            this.mPreviewFormat = ImageFormat.NV21;
-            mWidth = width;
-            mHeight = height;
-            mYuvFrameData = Yuv420sp;
-            mRgba = new Mat();
-        }
 
         @Override
         public Mat gray() {
@@ -377,36 +357,26 @@ public class JavaCamera2View extends CameraBridgeViewBase {
             return mRgba;
         }
 
-        public void release() {
-            mRgba.release();
-        }
-    }
-
-    private class JavaCamera2Frame implements CvCameraViewFrame {
-        private Mat mYuvFrameData;
-        private Mat mUVFrameData;
-        private Mat mRgba;
-        private int mWidth;
-        private int mHeight;
-
-        public JavaCamera2Frame(Mat Yuv420sp, int width, int height) {
+        public JavaCameraFrame(Mat Yuv420sp, int width, int height) {
             super();
+            this.mPreviewFormat = ImageFormat.NV21;
             mWidth = width;
             mHeight = height;
             mYuvFrameData = Yuv420sp;
-            mUVFrameData = null;
             mRgba = new Mat();
         }
 
-        public JavaCamera2Frame(Mat Y, Mat UV, int width, int height) {
-            super();
-            mWidth = width;
-            mHeight = height;
-            mYuvFrameData = Y;
-            mUVFrameData = UV;
-            mRgba = new Mat();
+        public void release() {
+            mRgba.release();
         }
 
+        private Mat mYuvFrameData;
+        private Mat mRgba;
+        private int mWidth;
+        private int mHeight;
+    }
+
+    private class JavaCamera2Frame implements CvCameraViewFrame {
         @Override
         public Mat gray() {
             return mYuvFrameData.submat(0, mHeight, 0, mWidth);
@@ -427,9 +397,33 @@ public class JavaCamera2View extends CameraBridgeViewBase {
             return mRgba;
         }
 
+        public JavaCamera2Frame(Mat Yuv420sp, int width, int height) {
+            super();
+            mWidth = width;
+            mHeight = height;
+            mYuvFrameData = Yuv420sp;
+            mUVFrameData = null;
+            mRgba = new Mat();
+        }
+
+        public JavaCamera2Frame(Mat Y, Mat UV, int width, int height) {
+            super();
+            mWidth = width;
+            mHeight = height;
+            mYuvFrameData = Y;
+            mUVFrameData = UV;
+            mRgba = new Mat();
+        }
+
         public void release() {
             mRgba.release();
         }
+
+        private Mat mYuvFrameData;
+        private Mat mUVFrameData;
+        private Mat mRgba;
+        private int mWidth;
+        private int mHeight;
     }
 
     ;

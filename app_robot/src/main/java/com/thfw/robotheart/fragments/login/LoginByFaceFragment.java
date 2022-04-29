@@ -51,6 +51,7 @@ import com.thfw.user.login.UserManager;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCamera2CircleView;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
@@ -130,6 +131,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
      * 正在处理图像数据
      */
     private volatile boolean frameHandleIng = false;
+    private volatile boolean showFail = false;
     private volatile int failCount = 0;
     private volatile boolean failByNet = false;
     private volatile long beginTime;
@@ -260,6 +262,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         beginTime = 0;
         failByNet = false;
         frameHandleIng = false;
+        showFail = false;
     }
 
     @Override
@@ -428,24 +431,33 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         if (beginTime == 0) {
             beginTime = System.currentTimeMillis();
         }
-        if (frameHandleIng) {
-            return inputFrame.rgba();
+
+        Mat rgba = inputFrame.rgba();
+        Mat flipRgbaMap = new Mat();
+        Core.flip(rgba, flipRgbaMap, 1);
+        mRgba = flipRgbaMap;
+
+        if (frameHandleIng || showFail) {
+            return mRgba;
         } else if (failByNet) {
             showFaceFail(inputFace ? "人脸录入失败，当前网络异常，请检查网络状态。" :
                     "刷脸登录失败，当前网络异常，请检查网络状态。");
-            return inputFrame.rgba();
+            return mRgba;
         } else if (failCount >= FAIL_COUNT_MAX) {
             showFaceFail(inputFace ? "人脸录入失败，已经为您重试多次，要求面部无遮挡，光照好的环境。" :
                     "刷脸登录失败，已为您重试多次，您可以选择重新尝试或其他登录方式");
-            return inputFrame.rgba();
+            return mRgba;
         } else if (System.currentTimeMillis() - beginTime > HourUtil.LEN_MINUTE) {
             showFaceFail(inputFace ? "人脸录入超时，要求面部无遮挡，光照好的环境。" :
                     "刷脸登录超时，您可以选择重新尝试或其他登录方式");
-            return inputFrame.rgba();
+            return mRgba;
         }
         frameHandleIng = true;
-        mRgba = inputFrame.rgba();
-        mGray = inputFrame.gray();
+
+        Mat gray = inputFrame.gray();
+        Mat flipGrayMap = new Mat();
+        Core.flip(gray, flipGrayMap, 1);
+        mGray = flipGrayMap;
 
         if (mAbsoluteFaceSize == 0) {
             int height = mGray.rows();
@@ -503,7 +515,8 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
      * @param s
      */
     private void showFaceFail(String s) {
-        if (mClFail != null && mClFail.getVisibility() != View.VISIBLE) {
+        if (!showFail && mClFail != null && mClFail.getVisibility() != View.VISIBLE) {
+            showFail = true;
             mMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
