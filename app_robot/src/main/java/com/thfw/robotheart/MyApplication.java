@@ -79,13 +79,7 @@ public class MyApplication extends MultiDexApplication {
             return lv;
         }
         int screenDensity = app.getResources().getDisplayMetrics().densityDpi;
-        if (DisplayMetrics.DENSITY_XHIGH == screenDensity) {
-            lv = 1f;
-            LogUtil.d("getFontScale", "lv = " + lv);
-            return lv;
-        }
         lv = 1.0f * DisplayMetrics.DENSITY_XHIGH / screenDensity;
-        LogUtil.d("getFontScale", "lv = " + lv);
         return lv;
     }
 
