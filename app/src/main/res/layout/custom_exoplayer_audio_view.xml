@@ -17,10 +17,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="bottom"
-    android:background="#66000000"
     android:layoutDirection="ltr"
     android:orientation="vertical"
     tools:targetApi="28">
+
+    <ImageView
+        android:id="@+id/iv_blur_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#66000000" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,6 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
+                android:padding="12dp"
                 android:src="@mipmap/ic_audio_last" />
 
             <RelativeLayout
@@ -95,6 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
+                android:padding="12dp"
                 android:src="@mipmap/ic_audio_next" />
 
 
@@ -194,8 +206,8 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:padding="12dp"
-                android:visibility="gone"
-                android:src="@mipmap/ic_play_random" />
+                android:src="@mipmap/ic_play_random"
+                android:visibility="gone" />
 
 
             <ImageView

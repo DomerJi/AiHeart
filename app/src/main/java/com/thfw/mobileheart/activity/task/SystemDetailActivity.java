@@ -3,7 +3,6 @@ package com.thfw.mobileheart.activity.task;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -186,7 +185,7 @@ public class SystemDetailActivity extends BaseActivity<TaskPresenter> implements
             mAgentWeb = preAgentWeb.get();
             Log.d("contentHtml", "contentHtml = " + contentHtml);
             WebView webView = mAgentWeb.getWebCreator().getWebView();
-            frameLayout.setBackgroundColor(Color.WHITE);
+            
             webView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
             webView.getSettings().setDefaultTextEncodingName("UTF-8");//设置默认为utf-8
             WebSizeUtil.setSize(mContext, webView.getSettings());
