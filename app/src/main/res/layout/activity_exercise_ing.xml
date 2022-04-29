@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/page_background_gray"
     tools:context=".activity.exercise.ExerciseIngActivity">
 
     <com.thfw.ui.widget.TitleView
@@ -47,8 +48,8 @@
         android:id="@+id/rl_send"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_alignParentBottom="true"
         android:background="@color/white"
+        android:layout_alignParentBottom="true"
         tools:ignore="MissingConstraints"
         tools:layout_height="46dp">
 

@@ -27,7 +27,6 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
-import com.thfw.mobileheart.activity.integral.ClockInActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.me.CollectActivity;
 import com.thfw.mobileheart.activity.me.MeHistoryActivity;
@@ -179,8 +178,9 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
         mLlStatus.setOnClickListener(v -> {
             StatusActivity.startActivity(mContext);
         });
-        mLlTimeContinuationDay.setOnClickListener(v -> {
-            startActivity(new Intent(mContext, ClockInActivity.class));
+
+        findViewById(R.id.ll_time_all).setOnClickListener(v -> {
+            MoodDetailActivity.startActivity(mContext);
         });
         mLlHelpBack.setOnClickListener(v -> {
             startActivity(new Intent(mContext, HelpBackActivity.class));

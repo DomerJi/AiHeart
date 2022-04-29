@@ -1,6 +1,7 @@
 package com.thfw.ui.widget;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
@@ -24,6 +25,8 @@ public class LinearTopLayout extends LinearLayout {
 
     public LinearTopLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setPadding(0, Util.getStatusBarHeight(context), 0, 0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            setPadding(0, Util.getStatusBarHeight(context), 0, 0);
+        }
     }
 }

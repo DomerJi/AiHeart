@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/page_background_gray"
     android:orientation="vertical"
     tools:context="com.thfw.mobileheart.fragment.MeFragment">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:background="@color/colorPrimary"
+        tools:ignore="MissingConstraints" />
 
     <com.thfw.ui.widget.LinearTopLayout
+        android:id="@+id/ltl_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:gravity="right">
+        android:gravity="right"
+        tools:ignore="MissingConstraints">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/me_message"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/button_height"
+            android:layout_height="@dimen/button_height"
             android:layout_marginRight="16dp">
 
             <ImageView
@@ -35,8 +42,8 @@
                 layout="@layout/custom_message_number_red_dot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintRight_toRightOf="parent" />
+                app:layout_constraintRight_toRightOf="parent"
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -46,8 +53,10 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ltl_top">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -57,8 +66,6 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                android:paddingTop="16dp"
                 android:paddingBottom="16dp">
 
                 <com.makeramen.roundedimageview.RoundedImageView
@@ -157,12 +164,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:background="@color/colorPrimary"
-                    tools:ignore="MissingConstraints" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -175,6 +176,7 @@
 
 
                     <LinearLayout
+                        android:id="@+id/ll_time_all"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -227,7 +229,6 @@
 
 
                         </LinearLayout>
-
 
 
                         <LinearLayout
@@ -325,7 +326,6 @@
 
 
                         </LinearLayout>
-
 
 
                     </LinearLayout>
@@ -809,4 +809,5 @@
 
     </ScrollView>
 
-</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

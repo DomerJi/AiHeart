@@ -56,7 +56,6 @@
         android:id="@+id/cl_history"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/white"
         android:paddingLeft="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

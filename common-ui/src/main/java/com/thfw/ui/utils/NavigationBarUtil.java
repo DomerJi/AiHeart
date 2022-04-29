@@ -2,10 +2,15 @@ package com.thfw.ui.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
+
+import com.thfw.base.utils.LogUtil;
+
+import java.lang.reflect.Method;
 
 /**
  *
@@ -45,7 +50,7 @@ public class NavigationBarUtil {
 
     public static int getSystemComponentDimen(Context context, String dimenName) {
         // 反射手机运行的类：android.R.dimen.status_bar_height.
-        int statusHeight = -1;
+        int statusHeight = 0;
         try {
             Class<?> clazz = Class.forName("com.android.internal.R$dimen");
             Object object = clazz.newInstance();
@@ -54,8 +59,32 @@ public class NavigationBarUtil {
             //dp->px
             statusHeight = context.getResources().getDimensionPixelSize(height);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.d("getSystemComponentDimen", "statusHeight e = 0");
         }
         return statusHeight;
+    }
+
+    //获取是否存在NavigationBar
+    public static boolean checkDeviceHasNavigationBar(Context context) {
+        boolean hasNavigationBar = false;
+        Resources rs = context.getResources();
+        int id = rs.getIdentifier("config_showNavigationBar", "bool", "android");
+        if (id > 0) {
+            hasNavigationBar = rs.getBoolean(id);
+        }
+        try {
+            Class systemPropertiesClass = Class.forName("android.os.SystemProperties");
+            Method m = systemPropertiesClass.getMethod("get", String.class);
+            String navBarOverride = (String) m.invoke(systemPropertiesClass, "qemu.hw.mainkeys");
+            if ("1".equals(navBarOverride)) {
+                hasNavigationBar = false;
+            } else if ("0".equals(navBarOverride)) {
+                hasNavigationBar = true;
+            }
+        } catch (Exception e) {
+
+        }
+        return hasNavigationBar;
+
     }
 }

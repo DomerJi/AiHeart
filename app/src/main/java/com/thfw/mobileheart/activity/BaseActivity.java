@@ -64,7 +64,7 @@ public abstract class BaseActivity<T extends IPresenter> extends IBaseActivity<T
         switch (requestCode) {
             case REQUEST_CALL_PERMISSION: //拨打电话
                 if (permissions.length != 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {//失败
-                    Toast.makeText(this, "请允许拨号权限后再试", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "请允许电话权限后再试", Toast.LENGTH_SHORT).show();
                 } else {
                     // 成功
                     if (!TextUtils.isEmpty(phoneCall)) {

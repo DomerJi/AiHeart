@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -45,9 +47,9 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity imp
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        setStatusBarBackGround(getStatusBarColor());
         super.onCreate(savedInstanceState);
         mContext = this;
-        setStatusBarBackGround(getStatusBarColor());
         userObserver = addObserver();
         if (userObserver != null) {
             UserManager.getInstance().addObserver(userObserver);
@@ -74,12 +76,17 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity imp
             case STATUSBAR_NONE:
                 break;
             case STATUSBAR_TRANSPARENT:
-                StatusBarUtil.setTranslucent(this, 0);
+                // todo 验证此种方式的兼容性
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                }
+                // 原来使用的方法
+//                StatusBarUtil.setTranslucent(this, 0);
                 // 底部虚拟导航栏适配
                 if (NavigationBarUtil.hasNavigationBarShow(this)) {
+                    LogUtil.e("hasNavigationBarShow -> true");
                     getWindow().getDecorView().findViewById(android.R.id.content).setPadding(0, 0, 0, NavigationBarUtil.getNavigationBarHeight(this));
                 }
-                LogUtil.e("3222222222222222-----" + NavigationBarUtil.hasNavigationBarShow(this));
                 break;
             default:
                 // 默认白色，如果再设置白色不需要

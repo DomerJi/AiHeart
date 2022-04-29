@@ -14,8 +14,7 @@
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rv_children"
-        android:background="@color/white">
+        android:layout_below="@id/rv_children">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_list"

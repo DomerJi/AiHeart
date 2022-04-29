@@ -9,10 +9,9 @@
         <item name="colorAccent">@color/colorAccent</item>
         <!-- 分割线主题颜色设置 -->
         <item name="android:listDivider">@drawable/list_divider</item>
-        <item name="android:windowBackground">@color/page_background_gray</item>
+        <item name="android:windowBackground">@color/page_background_white</item>
         <!--        <item name="android:windowDrawsSystemBarBackgrounds">false</item>-->
         <item name="android:overScrollMode">never</item>
-        <item name="android:navigationBarColor">@color/transparent</item>
     </style>
 
     <!-- 用于纯白背景的页面-->
