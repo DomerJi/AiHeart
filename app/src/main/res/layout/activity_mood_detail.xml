@@ -180,6 +180,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="6dp"
             android:layout_marginRight="16dp"
+            android:layout_marginBottom="4dp"
             android:orientation="horizontal"
             android:weightSum="3"
             app:layout_constraintTop_toBottomOf="@id/ll_status">
@@ -192,51 +193,39 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_time_minute"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="--"
-                    android:textColor="@color/text_common"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="@dimen/textSize"
-                    android:textStyle="bold" />
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_time_minute"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="-"
+                        android:textColor="@color/text_common"
+                        android:textColorHint="@color/text_hint"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_time_minute_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="分钟"
+                        android:textColor="@color/text_content"
+                        android:textSize="@dimen/textSize_product"
+                        app:layout_constraintBaseline_toBaselineOf="@id/tv_time_minute"
+                        app:layout_constraintLeft_toRightOf="@id/tv_time_minute" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 <TextView
                     android:id="@+id/tv_active_time_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:text="@string/me_time_minute"
-                    android:textColor="@color/text_content"
-                    android:textSize="@dimen/textSize_small" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_time_day"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_time_day"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="--"
-                    android:textColor="@color/text_common"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="@dimen/textSize"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/me_time_day"
                     android:textColor="@color/text_content"
                     android:textSize="@dimen/textSize_small" />
 
@@ -252,21 +241,84 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_time_continuation"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="--"
-                    android:textColor="@color/text_common"
-                    android:textColorHint="@color/text_hint"
-                    android:textSize="@dimen/textSize"
-                    android:textStyle="bold" />
+                    android:layout_height="wrap_content">
+
+
+                    <TextView
+                        android:id="@+id/tv_time_continuation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="-"
+                        android:textColor="@color/text_common"
+                        android:textColorHint="@color/text_hint"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_time_continuation_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="天"
+                        android:textColor="@color/text_hint"
+                        android:textSize="@dimen/textSize_product"
+                        app:layout_constraintBaseline_toBaselineOf="@id/tv_time_continuation"
+                        app:layout_constraintLeft_toRightOf="@id/tv_time_continuation" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:text="@string/me_time_continuation_day"
+                    android:textColor="@color/text_content"
+                    android:textSize="@dimen/textSize_small" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_time_day"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_time_day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="-"
+                        android:textColor="@color/text_common"
+                        android:textColorHint="@color/text_hint"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_time_day_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="天"
+                        android:textColor="@color/text_content"
+                        android:textSize="@dimen/textSize_product"
+                        app:layout_constraintBaseline_toBaselineOf="@id/tv_time_day"
+                        app:layout_constraintLeft_toRightOf="@id/tv_time_day" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/me_time_day"
                     android:textColor="@color/text_content"
                     android:textSize="@dimen/textSize_small" />
 
@@ -313,7 +365,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_constraintLeft_toRightOf="@id/tv_left"
-            app:layout_constraintRight_toLeftOf="@id/tv_right"/>
+            app:layout_constraintRight_toLeftOf="@id/tv_right" />
 
         <TextView
             android:id="@+id/tv_right"

@@ -230,7 +230,7 @@ public class MoodDetailActivity extends BaseActivity<MobilePresenter> implements
                     String monthDay = String.format("%02d", calendar.getMonth())
                             + "-" + String.format("%02d", calendar.getDay());
 
-                    mTvTimeMinuteTitle.setText(monthDay + "：活跃");
+                    mTvTimeMinuteTitle.setText(monthDay + "•活跃");
                 }
 
                 moveTo(calendar.getDay() - 1);

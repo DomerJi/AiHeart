@@ -34,8 +34,8 @@
     <string name="me_collect">我的收藏</string>
     <string name="me_history">历史记录</string>
 
-    <string name="me_time_minute">累积分钟</string>
-    <string name="me_time_day">累积天数</string>
+    <string name="me_time_minute">累计分钟</string>
+    <string name="me_time_day">累计天数</string>
     <string name="me_time_continuation_day">连续天数</string>
 
     <string name="me_test">测评问卷</string>

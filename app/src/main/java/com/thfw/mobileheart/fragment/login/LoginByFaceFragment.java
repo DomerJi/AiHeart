@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -106,13 +105,13 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     private ConstraintLayout mClTop;
     private RoundedImageView mRivIconBg;
     private RoundedImageView mRivIcon;
-    private LinearLayout mLlFaceIng;
-    private LinearLayout mLlFaceBegin;
+    private ConstraintLayout mClFaceIng;
+    private ConstraintLayout mClFaceBegin;
     private Button mBtBegin;
     private TextView mTvOtherLogin;
     private TextView mTvProduct3g;
     private TextView mTvFaceFailHint;
-    private LinearLayout mLlFaceFail;
+    private ConstraintLayout mClFaceFail;
     private Button mBtRetry;
 
     /**
@@ -148,7 +147,6 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     private int mAbsoluteFaceSize = 0;
     private TextView mTvFaceHint;
     private Runnable changeFaceHintRunnable;
-    private ImageView mIvTest;
     private Mat rotateMat;
 
     @Override
@@ -182,8 +180,8 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         mClTop = (ConstraintLayout) findViewById(R.id.cl_top);
         mRivIconBg = (RoundedImageView) findViewById(R.id.riv_icon_bg);
         mRivIcon = (RoundedImageView) findViewById(R.id.riv_icon);
-        mLlFaceIng = (LinearLayout) findViewById(R.id.ll_face_ing);
-        mLlFaceBegin = (LinearLayout) findViewById(R.id.ll_face_begin);
+        mClFaceIng = (ConstraintLayout) findViewById(R.id.cl_face_ing);
+        mClFaceBegin = (ConstraintLayout) findViewById(R.id.cl_face_begin);
         mBtBegin = (Button) findViewById(R.id.bt_begin);
         mTvOtherLogin = (TextView) findViewById(R.id.tv_other_login);
         mTvProduct3g = (TextView) findViewById(R.id.tv_product_3g);
@@ -194,10 +192,9 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
             hideInput();
         });
         mTvFaceFailHint = (TextView) findViewById(R.id.tv_face_fail_hint);
-        mLlFaceFail = (LinearLayout) findViewById(R.id.ll_face_fail);
+        mClFaceFail = (ConstraintLayout) findViewById(R.id.cl_face_fail);
         mBtRetry = (Button) findViewById(R.id.bt_retry);
         mTvFaceHint = (TextView) findViewById(R.id.tv_face_hint);
-        mIvTest = (ImageView) findViewById(R.id.iv_test);
     }
 
     private void initAgreeClick() {
@@ -222,8 +219,8 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
                 ToastUtil.show("没有开启相机权限");
                 return;
             }
-            mLlFaceBegin.setVisibility(View.GONE);
-            mLlFaceIng.setVisibility(View.VISIBLE);
+            mClFaceBegin.setVisibility(View.GONE);
+            mClFaceIng.setVisibility(View.VISIBLE);
             // opencv
             initializeOpenCVDependencies();
             initializeDetectEye();
@@ -326,7 +323,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
                 int d = (int) Math.abs(value - mRCircle);
                 int l = (int) (2 * Math.sqrt(r * r - d * d));
 //                LogUtil.d("onAnimationUpdate", "d = " + d + " ; r = " + r + " ; l = " + l);
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mIvLine.getLayoutParams();
+                ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) mIvLine.getLayoutParams();
                 lp.width = l;
                 lp.topMargin = margin;
                 lp.rightMargin = margin;
@@ -535,7 +532,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
      * @param s
      */
     private void showFaceFail(String s) {
-        if (!showFail && mLlFaceFail != null && mLlFaceFail.getVisibility() != View.VISIBLE) {
+        if (!showFail && mClFaceFail != null && mClFaceFail.getVisibility() != View.VISIBLE) {
             showFail = true;
             mMainHandler.post(new Runnable() {
                 @Override
@@ -543,12 +540,12 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
                     if (mTvFaceFailHint != null) {
                         mTvFaceFailHint.setText(s);
                     }
-                    mLlFaceFail.setVisibility(View.VISIBLE);
-                    mLlFaceIng.setVisibility(View.INVISIBLE);
+                    mClFaceFail.setVisibility(View.VISIBLE);
+                    mClFaceIng.setVisibility(View.INVISIBLE);
                     mBtRetry.setOnClickListener(v -> {
                         resetFaceFlag();
-                        mLlFaceFail.setVisibility(View.GONE);
-                        mLlFaceIng.setVisibility(View.VISIBLE);
+                        mClFaceFail.setVisibility(View.GONE);
+                        mClFaceIng.setVisibility(View.VISIBLE);
                     });
                 }
             });

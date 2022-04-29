@@ -19,7 +19,6 @@ public class EditTextUtil {
      *
      * @param editText
      */
-
     public static void setEditTextInhibitInputSpace(EditText editText) {
 
         InputFilter filter = new InputFilter() {
@@ -36,7 +35,18 @@ public class EditTextUtil {
 
         };
 
-        editText.setFilters(new InputFilter[]{filter});
+        if (editText.getFilters() != null) {
+            int len = editText.getFilters().length;
+            int newLen = len + 1;
+            InputFilter[] filters = new InputFilter[newLen];
+            for (int i = 0; i < len; i++) {
+                filters[i] = editText.getFilters()[i];
+            }
+            filters[newLen - 1] = filter;
+            editText.setFilters(filters);
+        } else {
+            editText.setFilters(new InputFilter[]{filter});
+        }
 
     }
 
@@ -69,7 +79,18 @@ public class EditTextUtil {
 
         };
 
-        editText.setFilters(new InputFilter[]{filter});
+        if (editText.getFilters() != null) {
+            int len = editText.getFilters().length;
+            int newLen = len + 1;
+            InputFilter[] filters = new InputFilter[newLen];
+            for (int i = 0; i < len; i++) {
+                filters[i] = editText.getFilters()[i];
+            }
+            filters[newLen - 1] = filter;
+            editText.setFilters(filters);
+        } else {
+            editText.setFilters(new InputFilter[]{filter});
+        }
 
     }
 
@@ -103,8 +124,19 @@ public class EditTextUtil {
             }
 
         };
+        if (editText.getFilters() != null) {
+            int len = editText.getFilters().length;
+            int newLen = len + 1;
+            InputFilter[] filters = new InputFilter[newLen];
+            for (int i = 0; i < len; i++) {
+                filters[i] = editText.getFilters()[i];
+            }
+            filters[newLen - 1] = filter;
+            editText.setFilters(filters);
+        } else {
+            editText.setFilters(new InputFilter[]{filter});
+        }
 
-        editText.setFilters(new InputFilter[]{filter});
 
     }
 

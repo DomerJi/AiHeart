@@ -36,7 +36,7 @@
     <string name="me_history">我的历史</string>
 
     <string name="me_time_minute">今日活跃</string>
-    <string name="me_time_day">累积活跃</string>
+    <string name="me_time_day">累计活跃</string>
     <string name="me_time_continuation_day">连续活跃</string>
 
     <string name="me_test">我测的</string>

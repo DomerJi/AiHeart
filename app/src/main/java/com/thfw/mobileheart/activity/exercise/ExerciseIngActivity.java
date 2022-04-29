@@ -17,7 +17,6 @@ import android.view.animation.BounceInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -64,6 +63,7 @@ import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.voice.PolicyHelper;
 import com.thfw.ui.voice.speech.SpeechHelper;
+import com.thfw.ui.widget.AnimBottomRelativeLayout;
 import com.thfw.ui.widget.SpeedLinearLayoutManager;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -99,7 +99,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
     private int countDownFinish;
     private SmartRefreshLayout mRefreshLayout;
     private int historyDialogId = -1;
-    private android.widget.RelativeLayout mRlSend;
+    private AnimBottomRelativeLayout mRlSend;
     private android.widget.EditText mEtContent;
     private TextView mTvSend;
     private ImageView mIvInputType;
@@ -138,7 +138,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
         mRvList.setLayoutManager(new SpeedLinearLayoutManager(mContext));
-        mRlSend = (RelativeLayout) findViewById(R.id.rl_send);
+
         mTvSend = (TextView) findViewById(R.id.tv_send);
         mEtContent = (EditText) findViewById(R.id.et_content);
         mRvSelect = (RecyclerView) findViewById(R.id.rv_select);
@@ -638,7 +638,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
         if (mCurrentChatType == ChatEntity.TYPE_FROM_SELECT) {
             hideInput();
             mRvSelect.setVisibility(View.VISIBLE);
-            mRlSend.setEnabled(false);
+            mRlSend.setVisibility(false);
             if (mSelectAdapter == null) {
                 mSelectAdapter = new ChatSelectAdapter(talkModel.getCheckRadio());
                 mRvSelect.setAdapter(mSelectAdapter);
@@ -647,11 +647,11 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
             }
             setSelectItemListener(chatEntity);
         } else if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
-            mRlSend.setEnabled(true);
+            mRlSend.setVisibility(true);
             mRvSelect.setVisibility(View.GONE);
         } else {
             hideInput();
-            mRlSend.setEnabled(false);
+            mRlSend.setVisibility(false);
             mRvSelect.setVisibility(View.GONE);
         }
     }
@@ -748,7 +748,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
     }
 
     private void initChatInput() {
-        mRlSend = (RelativeLayout) findViewById(R.id.rl_send);
+        mRlSend = (AnimBottomRelativeLayout) findViewById(R.id.rl_send);
         mEtContent = (EditText) findViewById(R.id.et_content);
         mEtContent.addTextChangedListener(new MyTextWatcher() {
             @Override
