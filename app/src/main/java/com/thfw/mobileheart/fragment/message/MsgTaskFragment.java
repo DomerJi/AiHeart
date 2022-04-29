@@ -23,6 +23,9 @@ import com.thfw.mobileheart.adapter.MsgTaskAdapter;
 import com.thfw.mobileheart.util.MsgCountManager;
 import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
+import com.thfw.user.login.UserManager;
+import com.thfw.user.login.UserObserver;
+import com.thfw.user.models.User;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +40,8 @@ public class MsgTaskFragment extends BaseFragment<TaskPresenter> implements Task
     private MsgTaskAdapter mMsgAdapter;
     private PageHelper<TaskItemModel> mPageHelper;
     private int numTask;
+    private boolean isLogin;
+    private boolean needRefresh;
 
 
     @Override
@@ -51,6 +56,7 @@ public class MsgTaskFragment extends BaseFragment<TaskPresenter> implements Task
 
     @Override
     public void initView() {
+        isLogin = UserManager.getInstance().isTrueLogin();
         mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
         mRvList = (RecyclerView) findViewById(R.id.rvList);
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
@@ -95,6 +101,19 @@ public class MsgTaskFragment extends BaseFragment<TaskPresenter> implements Task
         LogUtil.d(TAG, "isVisible = " + isVisible);
         if (isVisible) {
             numTask = MsgCountManager.getInstance().getNumTask();
+        }
+        if (needRefresh) {
+            needRefresh = false;
+            if (mLoadingView != null) {
+                mLoadingView.showLoading();
+            }
+            if (mMsgAdapter != null) {
+                mMsgAdapter.setDataListNotify(null);
+            }
+            if (mPresenter != null && mPageHelper != null) {
+                mPageHelper.onRefresh();
+                mPresenter.onGetMsgList(1, mPageHelper.getPage());
+            }
         }
     }
 
@@ -152,5 +171,28 @@ public class MsgTaskFragment extends BaseFragment<TaskPresenter> implements Task
     public void onDestroy() {
         super.onDestroy();
         MsgCountManager.getInstance().removeOnCountChangeListener(this);
+    }
+
+
+    @Override
+    public UserObserver addObserver() {
+        return new UserObserver() {
+            @Override
+            public void onChanged(UserManager accountManager, User user) {
+                if (isLogin != accountManager.isTrueLogin()) {
+                    isLogin = accountManager.isTrueLogin();
+                    if (isLogin) {
+                        needRefresh = true;
+                    } else {
+                        if (mLoadingView != null) {
+                            mLoadingView.showLoading();
+                        }
+                        if (mMsgAdapter != null) {
+                            mMsgAdapter.setDataListNotify(null);
+                        }
+                    }
+                }
+            }
+        };
     }
 }

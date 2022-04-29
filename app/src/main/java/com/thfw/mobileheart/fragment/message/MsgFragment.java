@@ -20,6 +20,9 @@ import com.thfw.mobileheart.push.helper.PushHandle;
 import com.thfw.mobileheart.util.MsgCountManager;
 import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
+import com.thfw.user.login.UserManager;
+import com.thfw.user.login.UserObserver;
+import com.thfw.user.models.User;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +38,8 @@ public class MsgFragment extends BaseFragment<TaskPresenter> implements TaskPres
     private MsgAdapter mMsgAdapter;
     private PageHelper<PushModel> mPageHelper;
     private int numSystem;
-
+    private boolean isLogin;
+    private boolean needRefresh;
 
     @Override
     public int getContentView() {
@@ -93,6 +97,19 @@ public class MsgFragment extends BaseFragment<TaskPresenter> implements TaskPres
         if (isVisible) {
             numSystem = MsgCountManager.getInstance().getNumSystem();
         }
+        if (needRefresh) {
+            needRefresh = false;
+            if (mLoadingView != null) {
+                mLoadingView.showLoading();
+            }
+            if (mMsgAdapter != null) {
+                mMsgAdapter.setDataListNotify(null);
+            }
+            if (mPresenter != null && mPageHelper != null) {
+                mPageHelper.onRefresh();
+                mPresenter.onGetMsgList(2, mPageHelper.getPage());
+            }
+        }
     }
 
     @Override
@@ -149,5 +166,27 @@ public class MsgFragment extends BaseFragment<TaskPresenter> implements TaskPres
     public void onDestroy() {
         super.onDestroy();
         MsgCountManager.getInstance().removeOnCountChangeListener(this);
+    }
+
+    @Override
+    public UserObserver addObserver() {
+        return new UserObserver() {
+            @Override
+            public void onChanged(UserManager accountManager, User user) {
+                if (isLogin != accountManager.isTrueLogin()) {
+                    isLogin = accountManager.isTrueLogin();
+                    if (isLogin) {
+                        needRefresh = true;
+                    } else {
+                        if (mLoadingView != null) {
+                            mLoadingView.showLoading();
+                        }
+                        if (mMsgAdapter != null) {
+                            mMsgAdapter.setDataListNotify(null);
+                        }
+                    }
+                }
+            }
+        };
     }
 }

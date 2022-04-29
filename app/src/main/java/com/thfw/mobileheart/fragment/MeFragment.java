@@ -251,6 +251,11 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
             GlideUtil.load(mContext, user.getVisibleAvatar(), mRivAvatar);
             setInputState();
         } else {
+            // 活跃时长
+            mTvTimeMinute.setText("");
+            mTvTimeContinuation.setText("");
+            mTvTimeDay.setText("");
+            // 姓名昵称
             mTvName.setText("");
             mTvMeLevel.setText("");
             GlideUtil.load(mContext, R.mipmap.ic_launcher, mRivAvatar);
