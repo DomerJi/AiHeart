@@ -112,14 +112,12 @@ public class SystemDetailActivity extends BaseActivity<TaskPresenter> implements
 
         if (!contentHtml.startsWith("<html>")) {
 //            contentHtml = newHtml();
-            contentHtml = "<html><head>" + "<style>img {\n" +
-                    "  display: block;\n" +
-                    "  margin-left: auto;\n" +
-                    "  margin-right: auto;\n" +
-                    "}" + "body{padding-top:20px; padding-bottom:20px; padding-left:20px;padding-right:20px;}"
+            contentHtml = "<html><head><style>"
+                    + "img{max-width: 80%;height: auto;object-fit: scale-down;}"
+                    + "body{padding-top:20px; padding-bottom:20px; padding-left:20px;padding-right:20px;}"
 //                    + "span{" + fontSize + "}"
 //                    + "p{" + fontSize + "}"
-                    + "</style>" + "<title>"
+                    + "</style><title>"
                     + title + "</title></head><body>" + titleHtml
                     + contentHtml + "</body></html>";
         }
@@ -185,7 +183,7 @@ public class SystemDetailActivity extends BaseActivity<TaskPresenter> implements
             mAgentWeb = preAgentWeb.get();
             Log.d("contentHtml", "contentHtml = " + contentHtml);
             WebView webView = mAgentWeb.getWebCreator().getWebView();
-            
+
             webView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
             webView.getSettings().setDefaultTextEncodingName("UTF-8");//设置默认为utf-8
             WebSizeUtil.setSize(mContext, webView.getSettings());

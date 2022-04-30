@@ -111,14 +111,12 @@ public class BookIdeoDetailActivity extends BaseActivity<BookPresenter> implemen
 
         if (!contentHtml.startsWith("<html>")) {
 //            contentHtml = newHtml();
-            contentHtml = "<html><head>" + "<style>img {\n" +
-                    "  display: block;\n" +
-                    "  margin-left: auto;\n" +
-                    "  margin-right: auto;\n" +
-                    "}" + "body{padding-top:26px; padding-bottom:26px; padding-left:26px;padding-right:26px;}"
+            contentHtml = "<html><head><style>"
+                    + "img{max-width: 80%;height: auto;object-fit: scale-down;}"
+                    + "body{padding-top:26px; padding-bottom:26px; padding-left:26px;padding-right:26px;}"
 //                    + "span{" + fontSize + "}"
 //                    + "p{" + fontSize + "}"
-                    + "</style>" + "<title>"
+                    + "</style><title>"
                     + title + "</title></head><body>" + titleHtml
                     + contentHtml + "</body></html>";
         }

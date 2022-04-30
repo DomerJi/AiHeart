@@ -112,14 +112,12 @@ public class BookDetailActivity extends RobotBaseActivity<BookPresenter> impleme
 
         if (!contentHtml.startsWith("<html>")) {
 //            contentHtml = newHtml();
-            contentHtml = "<html><head>" + "<style>img {\n" +
-                    "  display: block;\n" +
-                    "  margin-left: auto;\n" +
-                    "  margin-right: auto;\n" +
-                    "}" + "body{padding-top:20px; padding-bottom:20px; padding-left:90px;padding-right:90px;}"
+            contentHtml = "<html><head><style>"
+                    + "img{max-width: 70%;height: auto;object-fit: scale-down;}"
+                    + "body{padding-top:20px; padding-bottom:20px; padding-left:90px;padding-right:90px;}"
 //                    + "span{" + fontSize + "}"
 //                    + "p{" + fontSize + "}"
-                    + "</style>" + "<title>"
+                    + "</style><title>"
                     + title + "</title></head><body>" + titleHtml
                     + contentHtml + "</body></html>";
         }
