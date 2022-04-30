@@ -58,7 +58,7 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
     private TextView mTvMeMsgTitle;
     private TextView mTvDotCount;
 
-    private static final String KEY_INPUT_FACE = "key.input.face";
+    public static final String KEY_INPUT_FACE = "key.input.face";
     private static boolean initFaceState;
 
     public static void resetInitFaceState() {

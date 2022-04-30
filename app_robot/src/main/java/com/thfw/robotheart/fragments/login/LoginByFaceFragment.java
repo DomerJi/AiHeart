@@ -37,6 +37,7 @@ import com.thfw.base.utils.FileUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.MyApplication;
@@ -44,6 +45,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
+import com.thfw.robotheart.activitys.me.MeActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.util.Dormant;
@@ -145,6 +147,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     private String[] mDetectorName;
     private float mRelativeFaceSize = 0.2f;
     private int mAbsoluteFaceSize = 0;
+    private ObjectAnimator lineAnimation;
 
     @Override
     public int getContentView() {
@@ -221,13 +224,21 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         mJavaCamera2CircleView.setCvCameraViewListener(this);
         mJavaCamera2CircleView.setVisibility(SurfaceView.VISIBLE);
         mJavaCamera2CircleView.enableView();
+        startAnim();
+    }
 
-        startBorderAnim();
-
+    public void startAnim() {
+        mIvBorder.post(new Runnable() {
+            @Override
+            public void run() {
+                startLineAnim();
+                startBorderAnim();
+            }
+        });
     }
 
     public void startBorderAnim() {
-        mIvBorder.clearAnimation();
+        cancelBorderAnim();
         borderAnimation = ObjectAnimator.ofFloat(mIvBorder, "rotation", 0, 360);
         borderAnimation.setRepeatCount(ObjectAnimator.INFINITE);
         borderAnimation.setRepeatMode(ObjectAnimator.RESTART);
@@ -268,31 +279,53 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     @Override
     public void onVisible(boolean isVisible) {
         super.onVisible(isVisible);
+        mClFail.setVisibility(View.GONE);
+        mClFace.setVisibility(View.VISIBLE);
+        mTvFaceHint.setVisibility(View.VISIBLE);
         if (isVisible) {
             resetFaceFlag();
-        }
-        if (mJavaCamera2CircleView != null) {
-            if (isVisible) {
-                mIvBorder.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        startLineAnim();
-                        startBorderAnim();
-                    }
-                });
+            startAnim();
+            if (mJavaCamera2CircleView != null) {
                 mJavaCamera2CircleView.enableView();
-            } else {
+            }
+        } else {
+            cancelLineAnim();
+            cancelBorderAnim();
+            if (mJavaCamera2CircleView != null) {
                 mJavaCamera2CircleView.disableView();
             }
         }
     }
 
+    public void cancelLineAnim() {
+        if (lineAnimation != null) {
+            lineAnimation.removeAllListeners();
+            lineAnimation.cancel();
+            lineAnimation = null;
+        }
+        if (mIvLine != null) {
+            mIvLine.clearAnimation();
+        }
+    }
+
+    public void cancelBorderAnim() {
+        if (borderAnimation != null) {
+            borderAnimation.removeAllListeners();
+            borderAnimation.cancel();
+            borderAnimation = null;
+        }
+        if (mIvBorder != null) {
+            mIvBorder.clearAnimation();
+        }
+    }
+
+
     public void startLineAnim() {
-        mIvLine.clearAnimation();
+        cancelLineAnim();
         int height = mJavaCamera2CircleView.getHeight() - mIvLine.getHeight();
         int mRCircle = mJavaCamera2CircleView.getHeight() / 2;
 
-        ObjectAnimator lineAnimation = ObjectAnimator.ofFloat(mIvLine, "translationY",
+        lineAnimation = ObjectAnimator.ofFloat(mIvLine, "translationY",
                 mLineUpAnim ? 0 : height, mLineUpAnim ? height : 0);
         lineAnimation.setDuration(3000);
         lineAnimation.setInterpolator(new LinearInterpolator());
@@ -523,11 +556,14 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                     if (mTvFaceFailHint != null) {
                         mTvFaceFailHint.setText(s);
                     }
+                    cancelBorderAnim();
+                    cancelLineAnim();
                     mClFail.setVisibility(View.VISIBLE);
                     mClFace.setVisibility(View.INVISIBLE);
                     mTvFaceHint.setVisibility(View.INVISIBLE);
                     mBtRetry.setOnClickListener(v -> {
                         resetFaceFlag();
+                        startAnim();
                         mClFail.setVisibility(View.GONE);
                         mClFace.setVisibility(View.VISIBLE);
                         mTvFaceHint.setVisibility(View.VISIBLE);
@@ -596,7 +632,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             @Override
             public void onFailure(Call call, IOException e) {
                 FileUtil.deleteFile(avatarUrl);
-                if (EmptyUtil.isEmpty(getActivity())) {
+                if (!isVisible() || EmptyUtil.isEmpty(getActivity())) {
                     return;
                 }
                 failByNet = true;
@@ -608,7 +644,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 FileUtil.deleteFile(avatarUrl);
-                if (EmptyUtil.isEmpty(getActivity())) {
+                if (!isVisible() || EmptyUtil.isEmpty(getActivity())) {
                     return;
                 }
                 String json = response.body().string();
@@ -624,6 +660,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                             }.getType();
                             HttpResult<CommonModel> result = GsonUtil.fromJson(json, type);
                             if (result != null && result.isSuccessful()) {
+                                SharePreferenceUtil.setInt(MeActivity.KEY_INPUT_FACE + UserManager.getInstance().getUID(), 1);
                                 ToastUtil.showLong("录入成功");
                                 getActivity().finish();
                                 LogUtil.d(TAG, "人脸【录入】成功---------------------------------");
@@ -659,7 +696,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             @Override
             public void onFailure(Call call, IOException e) {
                 FileUtil.deleteFile(avatarUrl);
-                if (EmptyUtil.isEmpty(getActivity())) {
+                if (!isVisible() || EmptyUtil.isEmpty(getActivity())) {
                     return;
                 }
                 failByNet = true;
@@ -673,7 +710,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 FileUtil.deleteFile(avatarUrl);
-                if (EmptyUtil.isEmpty(getActivity())) {
+                if (!isVisible() || EmptyUtil.isEmpty(getActivity())) {
                     return;
                 }
                 String json = response.body().string();
@@ -724,15 +761,8 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         if (mJavaCamera2CircleView != null) {
             mJavaCamera2CircleView.surfaceDestroyed(null);
         }
-        if (mIvLine != null) {
-            mIvLine.clearAnimation();
-        }
-        if (mIvBorder != null) {
-            mIvBorder.clearAnimation();
-        }
-        if (borderAnimation != null) {
-            borderAnimation.cancel();
-        }
+        cancelBorderAnim();
+        cancelLineAnim();
         mMainHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }

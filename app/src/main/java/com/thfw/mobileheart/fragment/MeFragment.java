@@ -91,7 +91,7 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
     private ImageView mIvMoodStatus;
 
 
-    private static final String KEY_INPUT_FACE = "key.input.face";
+    public static final String KEY_INPUT_FACE = "key.input.face";
     private static boolean initFaceState;
 
     public static void resetInitFaceState() {

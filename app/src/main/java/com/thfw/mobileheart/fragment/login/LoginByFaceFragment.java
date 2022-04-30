@@ -37,6 +37,7 @@ import com.thfw.base.utils.FileUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.MyApplication;
@@ -46,6 +47,7 @@ import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.mobileheart.fragment.MeFragment;
 import com.thfw.user.login.UserManager;
 
 import org.opencv.android.CameraBridgeViewBase;
@@ -148,6 +150,8 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     private TextView mTvFaceHint;
     private Runnable changeFaceHintRunnable;
     private Mat rotateMat;
+    private TextView mTvPageTitle;
+    private ObjectAnimator lineAnimation;
 
     @Override
     public int getContentView() {
@@ -171,6 +175,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         mTvProductUser = (TextView) findViewById(R.id.tv_product_user);
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
+        mTvPageTitle = (TextView) findViewById(R.id.tv_page_title);
 
         mJavaCamera2CircleView = (JavaCamera2CircleView) findViewById(R.id.javaCamera2CircleView);
         mIvBorder = (ImageView) findViewById(R.id.iv_border);
@@ -195,6 +200,11 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         mClFaceFail = (ConstraintLayout) findViewById(R.id.cl_face_fail);
         mBtRetry = (Button) findViewById(R.id.bt_retry);
         mTvFaceHint = (TextView) findViewById(R.id.tv_face_hint);
+
+        if (inputFace) {
+            mTvPageTitle.setText("人脸录入");
+            mBtBegin.setText("开始录入");
+        }
     }
 
     private void initAgreeClick() {
@@ -212,7 +222,6 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     @Override
     public void initData() {
 
-
         mBtBegin.setOnClickListener(v -> {
             if (ContextCompat.checkSelfPermission(mContext, UIConfig.NEEDED_PERMISSION[0])
                     != PackageManager.PERMISSION_GRANTED) {
@@ -221,21 +230,32 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
             }
             mClFaceBegin.setVisibility(View.GONE);
             mClFaceIng.setVisibility(View.VISIBLE);
-            // opencv
-            initializeOpenCVDependencies();
-            initializeDetectEye();
+            if (mNativeEyeDetector == null || mNativeDetector == null) {
+                // opencv
+                initializeOpenCVDependencies();
+                initializeDetectEye();
+            }
             mJavaCamera2CircleView.setCvCameraViewListener(this);
             mJavaCamera2CircleView.setVisibility(SurfaceView.VISIBLE);
             mJavaCamera2CircleView.enableView();
-
-            startBorderAnim();
+            startAnim();
         });
 
 
     }
 
+    public void startAnim() {
+        mIvBorder.post(new Runnable() {
+            @Override
+            public void run() {
+                startLineAnim();
+                startBorderAnim();
+            }
+        });
+    }
+
     public void startBorderAnim() {
-        mIvBorder.clearAnimation();
+        cancelBorderAnim();
         borderAnimation = ObjectAnimator.ofFloat(mIvBorder, "rotation", 0, 360);
         borderAnimation.setRepeatCount(ObjectAnimator.INFINITE);
         borderAnimation.setRepeatMode(ObjectAnimator.RESTART);
@@ -245,16 +265,6 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mIvBorder.post(new Runnable() {
-            @Override
-            public void run() {
-                startLineAnim();
-            }
-        });
-    }
 
     /**
      * 重置刷脸标识
@@ -270,34 +280,56 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     @Override
     public void onVisible(boolean isVisible) {
         super.onVisible(isVisible);
+        if (mClFaceIng != null) {
+            mClFaceIng.setVisibility(View.GONE);
+        }
+        if (mClFaceBegin != null) {
+            mClFaceBegin.setVisibility(View.VISIBLE);
+        }
+        if (mClFaceFail != null) {
+            mClFaceFail.setVisibility(View.GONE);
+        }
         if (isVisible) {
             resetFaceFlag();
-        }
-        if (mJavaCamera2CircleView != null) {
-            if (isVisible) {
-                mIvBorder.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        startLineAnim();
-                        startBorderAnim();
-                    }
-                });
-                mJavaCamera2CircleView.enableView();
-            } else {
+        } else {
+            cancelLineAnim();
+            cancelBorderAnim();
+            if (mJavaCamera2CircleView != null) {
                 mJavaCamera2CircleView.disableView();
             }
         }
+
     }
 
+    public void cancelLineAnim() {
+        if (lineAnimation != null) {
+            lineAnimation.removeAllListeners();
+            lineAnimation.cancel();
+            lineAnimation = null;
+        }
+        if (mIvLine != null) {
+            mIvLine.clearAnimation();
+        }
+    }
+
+    public void cancelBorderAnim() {
+        if (borderAnimation != null) {
+            borderAnimation.removeAllListeners();
+            borderAnimation.cancel();
+            borderAnimation = null;
+        }
+        if (mIvBorder != null) {
+            mIvBorder.clearAnimation();
+        }
+    }
 
     public void startLineAnim() {
-        mIvLine.clearAnimation();
+        cancelLineAnim();
 
-        int margin = Util.dipToPx(12, mContext);
-        int height = mIvBorder.getHeight() - 2 * margin - mIvLine.getHeight();
-        int mRCircle = height / 2;
+        int height = mJavaCamera2CircleView.getHeight() - mIvLine.getHeight();
+        int mRCircle = mJavaCamera2CircleView.getHeight() / 2;
 
-        ObjectAnimator lineAnimation = ObjectAnimator.ofFloat(mIvLine, "translationY",
+        lineAnimation = ObjectAnimator.ofFloat(mIvLine, "translationY",
                 mLineUpAnim ? 0 : height, mLineUpAnim ? height : 0);
         lineAnimation.setDuration(3000);
         lineAnimation.setInterpolator(new LinearInterpolator());
@@ -309,13 +341,13 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
                     mLineUpAnim = !mLineUpAnim;
                     startLineAnim();
                 }
-
             }
         });
         lineAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
+                value = value + mIvLine.getHeight() / 2f;
                 // 知道半径是R，圆心到直线的距离是d，
                 // 那么这条直线的长度计算可以利用勾股定理
                 // L=2√(R²-d²)
@@ -325,10 +357,6 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
 //                LogUtil.d("onAnimationUpdate", "d = " + d + " ; r = " + r + " ; l = " + l);
                 ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) mIvLine.getLayoutParams();
                 lp.width = l;
-                lp.topMargin = margin;
-                lp.rightMargin = margin;
-                lp.leftMargin = margin;
-                lp.bottomMargin = margin;
                 mIvLine.setLayoutParams(lp);
             }
         });
@@ -542,10 +570,13 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
                     }
                     mClFaceFail.setVisibility(View.VISIBLE);
                     mClFaceIng.setVisibility(View.INVISIBLE);
+                    cancelLineAnim();
+                    cancelBorderAnim();
                     mBtRetry.setOnClickListener(v -> {
                         resetFaceFlag();
                         mClFaceFail.setVisibility(View.GONE);
                         mClFaceIng.setVisibility(View.VISIBLE);
+                        startAnim();
                     });
                 }
             });
@@ -610,11 +641,11 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         OkHttpUtil.request(ApiHost.getHost() + "face_login/face_enter", factory.build(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                failByNet = true;
                 FileUtil.deleteFile(avatarUrl);
-                if (EmptyUtil.isEmpty(getActivity())) {
+                if (!isVisible() || EmptyUtil.isEmpty(getActivity())) {
                     return;
                 }
+                failByNet = true;
                 failCount++;
                 frameHandleIng = false;
                 LogUtil.d(TAG, "人脸【录入】失败---------------------------------failCount = " + failCount);
@@ -623,7 +654,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 FileUtil.deleteFile(avatarUrl);
-                if (EmptyUtil.isEmpty(getActivity())) {
+                if (!isVisible() || EmptyUtil.isEmpty(getActivity())) {
                     return;
                 }
                 String json = response.body().string();
@@ -639,6 +670,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
                             }.getType();
                             HttpResult<CommonModel> result = GsonUtil.fromJson(json, type);
                             if (result != null && result.isSuccessful()) {
+                                SharePreferenceUtil.setInt(MeFragment.KEY_INPUT_FACE + UserManager.getInstance().getUID(), 1);
                                 ToastUtil.showLong("录入成功");
                                 getActivity().finish();
                                 LogUtil.d(TAG, "人脸【录入】成功---------------------------------");
@@ -674,7 +706,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
             @Override
             public void onFailure(Call call, IOException e) {
                 FileUtil.deleteFile(avatarUrl);
-                if (EmptyUtil.isEmpty(getActivity())) {
+                if (!isVisible() || EmptyUtil.isEmpty(getActivity())) {
                     return;
                 }
                 failByNet = true;
@@ -687,7 +719,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 FileUtil.deleteFile(avatarUrl);
-                if (EmptyUtil.isEmpty(getActivity())) {
+                if (!isVisible() || EmptyUtil.isEmpty(getActivity())) {
                     return;
                 }
                 String json = response.body().string();
@@ -738,15 +770,8 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         if (mJavaCamera2CircleView != null) {
             mJavaCamera2CircleView.surfaceDestroyed(null);
         }
-        if (mIvLine != null) {
-            mIvLine.clearAnimation();
-        }
-        if (mIvBorder != null) {
-            mIvBorder.clearAnimation();
-        }
-        if (borderAnimation != null) {
-            borderAnimation.cancel();
-        }
+        cancelBorderAnim();
+        cancelLineAnim();
         mMainHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
