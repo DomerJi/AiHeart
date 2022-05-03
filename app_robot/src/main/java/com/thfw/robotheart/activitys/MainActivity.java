@@ -486,7 +486,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private void setUserMessage(User user) {
         mTvInstitution.setText(user.getOrganListStr());
         mTvNickname.setText(user.getVisibleName());
-        GlideUtil.load(mContext, user.getVisibleAvatar(), mRivAvatar);
+        if (!EmptyUtil.isEmpty(mContext)) {
+            GlideUtil.load(mContext, user.getVisibleAvatar(), mRivAvatar);
+        }
     }
 
     /**
