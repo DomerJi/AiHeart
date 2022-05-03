@@ -102,6 +102,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
     private int countDownFinish;
     private SmartRefreshLayout mRefreshLayout;
     private int historyDialogId = -1;
+    private boolean handleResult;
 
 
     public static void startActivity(Context context, int id, boolean used) {
@@ -183,7 +184,8 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
             }
         });
 
-        mChatAdapter.setRecommendListener((type, recommendInfoBean) -> {
+        mChatAdapter.setRecommendListener((type, recommendInfoBean, position) -> {
+            handleResult = mChatAdapter.getItemCount() < position + 5;
             TalkItemJumpHelper.onItemClick(mContext, type, recommendInfoBean);
         });
 
@@ -726,6 +728,9 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (!handleResult) {
+            return;
+        }
 
         if (resultCode != RESULT_OK) {
             return;

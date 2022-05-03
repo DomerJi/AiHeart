@@ -95,7 +95,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             case ChatEntity.TYPE_TO:
                 if (holder instanceof ChatToHolder) {
                     ChatToHolder chatToHolder = (ChatToHolder) holder;
-                    chatToHolder.mTvTalk.setText(HtmlCompat.fromHtml(chatEntity.getTalk(),HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    chatToHolder.mTvTalk.setText(HtmlCompat.fromHtml(chatEntity.getTalk(), HtmlCompat.FROM_HTML_MODE_LEGACY));
                     if (position == getItemCount() - 1) {
                         if (chatEntity.loading == -1) {
                             chatToHolder.mPbToTalk.setVisibility(View.GONE);
@@ -159,7 +159,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
     }
 
     public interface OnRecommendListener {
-        void onRecommend(int type, DialogTalkModel.RecommendInfoBean recommendInfoBean);
+        void onRecommend(int type, DialogTalkModel.RecommendInfoBean recommendInfoBean, int position);
     }
 
     public interface onSendStateChangeListener {
@@ -227,7 +227,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             itemView.setOnClickListener(v -> {
                 if (mRecommendListener != null) {
                     int position = getBindingAdapterPosition();
-                    mRecommendListener.onRecommend(mDataList.get(position).type, mDataList.get(position).getTalkModel().getRecommendInfo());
+                    mRecommendListener.onRecommend(mDataList.get(position).type, mDataList.get(position).getTalkModel().getRecommendInfo(), position);
                 }
             });
 

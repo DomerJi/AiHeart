@@ -202,7 +202,7 @@ public class TalkHistoryActivity extends RobotBaseActivity<TalkPresenter> implem
         scene = getIntent().getIntExtra(KEY_DATA, 1);
         chatAdapter = new ChatAdapter(null);
         mRvHistory.setAdapter(chatAdapter);
-        chatAdapter.setRecommendListener((type, recommendInfoBean) -> {
+        chatAdapter.setRecommendListener((type, recommendInfoBean, position) -> {
             TalkItemJumpHelper.onItemClick(mContext, type, recommendInfoBean);
         });
         pageHelper = new PageHelper<>(mLoadingView, mRefreshLayout, chatAdapter);

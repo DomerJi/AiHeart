@@ -116,6 +116,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
     private ImageView mIvControlVoiceIng;
     private ImageView mIvControlPress;
     private TextView mTvControlHintSend;
+    private boolean handleResult;
 
     public static void startActivity(Context context, int id, boolean used) {
         ((Activity) context).startActivityForResult(new Intent(context, ExerciseIngActivity.class)
@@ -194,7 +195,8 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
             }
         });
 
-        mChatAdapter.setRecommendListener((type, recommendInfoBean) -> {
+        mChatAdapter.setRecommendListener((type, recommendInfoBean, position) -> {
+            handleResult = mChatAdapter.getItemCount() < position + 5;
             TalkItemJumpHelper.onItemClick(mContext, type, recommendInfoBean);
         });
 
@@ -682,6 +684,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
                     PageJumpUtils.jump(radioBean.getHref(), new PageJumpUtils.OnJumpListener() {
                         @Override
                         public void onJump(int type, Object obj) {
+                            handleResult = true;
                             switch (type) {
                                 case PageJumpUtils.JUMP_TEXT:
                                     startActivityForResult(new Intent(mContext, TestActivity.class), type);
@@ -710,6 +713,9 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (!handleResult) {
+            return;
+        }
 
         if (resultCode != RESULT_OK) {
             return;

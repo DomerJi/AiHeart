@@ -120,6 +120,7 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
     private long joinTime;
     private long useTimeAI;
     private long useTimeTheme;
+    private boolean handleResult;
 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, ChatActivity.class).putExtra(KEY_DATA, talkModel));
@@ -174,7 +175,8 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         rvChatList.setAdapter(mChatAdapter);
         mChatAdapter.setRecommendListener(new ChatAdapter.OnRecommendListener() {
             @Override
-            public void onRecommend(int type, DialogTalkModel.RecommendInfoBean recommendInfoBean) {
+            public void onRecommend(int type, DialogTalkModel.RecommendInfoBean recommendInfoBean, int position) {
+                handleResult = mChatAdapter.getItemCount() < position + 5;
                 TalkItemJumpHelper.onItemClick(mContext, type, recommendInfoBean);
             }
         });
@@ -884,6 +886,7 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
                     PageJumpUtils.jump(radioBean.getHref(), new PageJumpUtils.OnJumpListener() {
                         @Override
                         public void onJump(int type, Object obj) {
+                            handleResult = true;
                             switch (type) {
                                 case PageJumpUtils.JUMP_TEXT:
                                     startActivityForResult(new Intent(mContext, TestActivity.class), type);
@@ -934,6 +937,9 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (!handleResult) {
+            return;
+        }
         if (resultCode != RESULT_OK) {
             return;
         }

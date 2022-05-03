@@ -132,6 +132,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     private RefreshLayout mRefreshLayout;
     private DialogTalkModel mFirstTalkModel;
     private TalkModel talkModel;
+    private boolean handleResult;
 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, AiTalkActivity.class).putExtra(KEY_DATA, talkModel));
@@ -420,7 +421,8 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             }
         });
 
-        mChatAdapter.setRecommendListener((type, recommendInfoBean) -> {
+        mChatAdapter.setRecommendListener((type, recommendInfoBean, position) -> {
+            handleResult = mChatAdapter.getItemCount() < position + 5;
             TalkItemJumpHelper.onItemClick(mContext, type, recommendInfoBean);
         });
 
@@ -975,6 +977,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                     PageJumpUtils.jump(radioBean.getHref(), new PageJumpUtils.OnJumpListener() {
                         @Override
                         public void onJump(int type, Object obj) {
+                            handleResult = true;
                             switch (type) {
                                 case PageJumpUtils.JUMP_TEXT:
                                     startActivityForResult(new Intent(mContext, TestActivity.class), type);
@@ -1025,6 +1028,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (!handleResult) {
+            return;
+        }
         if (resultCode != RESULT_OK) {
             return;
         }
