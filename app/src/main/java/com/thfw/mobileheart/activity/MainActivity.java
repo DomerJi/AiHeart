@@ -147,6 +147,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     public static void finishMain() {
         if (mainActivity != null) {
             mainActivity.finish();
+            mainActivity = null;
         }
     }
 
@@ -532,7 +533,9 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         }
     }
 
-    private void initSelectedList(List<OrganizationModel.OrganizationBean> list, OrganizationSelectedModel.OrganizationBean bean) {
+    private void initSelectedList
+            (List<OrganizationModel.OrganizationBean> list, OrganizationSelectedModel.OrganizationBean
+                    bean) {
         if (bean != null) {
             OrganizationModel.OrganizationBean oBean = new OrganizationModel.OrganizationBean();
             oBean.setId(bean.getId());

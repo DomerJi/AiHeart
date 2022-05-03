@@ -145,6 +145,17 @@ public class MyApplication extends MultiDexApplication {
         ToastUtil.show("已复制到剪贴板");
     }
 
+    /**
+     * 实现粘贴功能
+     */
+    public static String paste() {
+        ClipboardManager cm = (ClipboardManager) getApp().getSystemService(CLIPBOARD_SERVICE);
+        ClipData data = cm.getPrimaryClip();
+        ClipData.Item item = data.getItemAt(0);
+        String content = item.getText().toString().trim();
+        return content;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();

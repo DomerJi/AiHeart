@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +30,7 @@ import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
@@ -37,6 +39,8 @@ import com.thfw.mobileheart.adapter.OrganSelectedAdapter;
 import com.thfw.mobileheart.push.tester.UPushAlias;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
@@ -173,7 +177,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
      * @param qRCode
      * @return
      */
-    private HashMap<String, String> parseCode(String qRCode) {
+    public static HashMap<String, String> parseCode(String qRCode) {
         String finalQRCode = qRCode;
         if (TextUtils.isEmpty(finalQRCode)) {
             return null;
@@ -182,25 +186,25 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
 
         if (finalQRCode.startsWith("http")) {
             String paramsStr = finalQRCode.replaceAll(RegularUtil.REGEX_HTTP, "");
-            LogUtil.d(TAG, "paramsStr = " + paramsStr);
+            LogUtil.d("parseCode", "paramsStr = " + paramsStr);
             if (EmptyUtil.isEmpty(paramsStr)) {
                 return params;
             }
             // 3b86e89d01dafe17【3b86e89d01dafe17】
             String paramsHttp = AESUtils.decryptBase64(paramsStr, "3b86e89d01dafe17");
-            LogUtil.d(TAG, "paramsHttp = " + paramsHttp);
+            LogUtil.d("parseCode", "paramsHttp = " + paramsHttp);
             if (paramsHttp != null && paramsHttp.length() > 2 && paramsHttp.startsWith("t")) {
                 String[] mKeyValues = paramsHttp.split("&");
-                LogUtil.d(TAG, "【&】mKeyValues = " + GsonUtil.toJson(mKeyValues));
+                LogUtil.d("parseCode", "【&】mKeyValues = " + GsonUtil.toJson(mKeyValues));
                 if (mKeyValues != null && mKeyValues.length > 0) {
                     for (String keyValue : mKeyValues) {
                         String[] values = keyValue.split("=");
-                        LogUtil.d(TAG, "【=】values = " + GsonUtil.toJson(values));
+                        LogUtil.d("parseCode", "【=】values = " + GsonUtil.toJson(values));
                         if (values != null && values.length == 2) {
                             params.put(values[0], values[1]);
                         }
                     }
-                    LogUtil.d(TAG, "结果params " + GsonUtil.toJson(params));
+                    LogUtil.d("parseCode", "结果params " + GsonUtil.toJson(params));
                     return params;
                 }
             }
@@ -426,5 +430,42 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
             return;
         }
         super.finish();
+    }
+
+    /**
+     * 读取剪贴板内容，识别成功后弹窗询问。
+     * todo 暂时保留
+     *
+     * @param fragmentActivity
+     */
+    public static void readClip(FragmentActivity fragmentActivity) {
+        String clipContent = MyApplication.paste();
+        if (!TextUtils.isEmpty(clipContent)) {
+            HashMap<String, String> params = AskForSelectActivity.parseCode(clipContent);
+            LogUtil.d("readClip", "codeData params = " + GsonUtil.toJson(params));
+            if (!EmptyUtil.isEmpty(params) && !TextUtils.isEmpty(params.get("i"))) {
+                String organizationId = params.get("i");
+                LogUtil.d("readClip", "codeData organizationId = " + organizationId);
+                DialogFactory.createCustomDialog(fragmentActivity, new DialogFactory.OnViewCallBack() {
+                    @Override
+                    public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                        mTvTitle.setText("温馨提示");
+                        mTvHint.setText("检测到您复制了'选择机构识别码'，是否现在选择");
+                        mTvLeft.setText("取消");
+                        mTvRight.setText("去选择");
+                    }
+
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                        tDialog.dismiss();
+                        if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                            CommonParameter.setOrganizationId(organizationId);
+                            AskForSelectActivity.startForResult(fragmentActivity, false);
+                        }
+                    }
+                });
+            }
+        }
+
     }
 }
