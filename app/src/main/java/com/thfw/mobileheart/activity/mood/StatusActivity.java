@@ -24,7 +24,6 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.MobilePresenter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
-import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
@@ -269,7 +268,7 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
                             }
                             finish();
                         }
-                    }, 1500);
+                    }, 1000);
                 }
             }
 

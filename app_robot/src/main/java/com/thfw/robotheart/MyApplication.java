@@ -85,7 +85,7 @@ public class MyApplication extends MultiDexApplication {
 
     public static void goAppHome(Activity activity) {
         Intent intent = new Intent(activity, MainActivity.class);
-        intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivity(intent);
     }
 

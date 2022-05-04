@@ -173,7 +173,11 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                 if (UserManager.getInstance().isTrueLogin()) {
                     ToastUtil.show(R.string.token_not_valid);
                     UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
-                    MyApplication.goAppHome((Activity) mContext);
+                    if (isMeResumed()) {
+                        LoginActivity.startActivity(mContext, LoginActivity.BY_OTHER);
+                    } else {
+                        MyApplication.goAppHome((Activity) mContext);
+                    }
                 }
             }
         });

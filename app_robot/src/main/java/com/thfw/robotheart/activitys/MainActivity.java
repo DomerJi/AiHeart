@@ -183,7 +183,12 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 if (UserManager.getInstance().isTrueLogin()) {
                     ToastUtil.show(com.thfw.ui.R.string.token_not_valid);
                     UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
-                    MyApplication.goAppHome((Activity) mContext);
+                    if (isMeResumed()) {
+                        LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+                    } else {
+                        MyApplication.goAppHome((Activity) mContext);
+                    }
+
                 }
             }
         });
