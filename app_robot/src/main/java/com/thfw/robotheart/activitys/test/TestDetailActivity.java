@@ -53,7 +53,7 @@ public class TestDetailActivity extends RobotBaseActivity<TestPresenter> impleme
 
     public static void startActivity(Context context, int id) {
         ((Activity) context).startActivityForResult(new Intent(context, TestDetailActivity.class)
-                .putExtra(KEY_DATA, id), ChatEntity.TYPE_RECOMMEND_TEXT);
+                .putExtra(KEY_DATA, id), ChatEntity.TYPE_RECOMMEND_TEST);
     }
 
     @Override

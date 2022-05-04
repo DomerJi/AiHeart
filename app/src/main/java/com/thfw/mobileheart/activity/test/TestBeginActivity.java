@@ -1,5 +1,6 @@
 package com.thfw.mobileheart.activity.test;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.api.HistoryApi;
+import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.MTestDetailAdapterModel;
 import com.thfw.base.models.TestDetailModel;
@@ -44,7 +46,8 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
     private int mTestId;
 
     public static void startActivity(Context context, int id) {
-        context.startActivity(new Intent(context, TestBeginActivity.class).putExtra(KEY_DATA, id));
+        ((Activity) context).startActivityForResult(new Intent(context, TestBeginActivity.class)
+                .putExtra(KEY_DATA, id), ChatEntity.TYPE_RECOMMEND_TEST);
     }
 
     @Override
@@ -164,5 +167,11 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
             DataChangeHelper.collectChange(mIvCollect, mTestId);
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void finish() {
+        setResult(RESULT_OK);
+        super.finish();
     }
 }
