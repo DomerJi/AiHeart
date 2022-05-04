@@ -138,6 +138,7 @@
         app:layout_constraintLeft_toRightOf="@id/cl_anim"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView"
+        app:srlEnableFooterFollowWhenLoadFinished="true"
         app:srlEnableFooterFollowWhenNoMoreData="true"
         app:srlEnableOverScrollDrag="true">
 

@@ -23,6 +23,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView"
         app:srlEnableFooterFollowWhenNoMoreData="true"
+        app:srlEnableFooterFollowWhenLoadFinished="true"
         app:srlEnableOverScrollDrag="true">
 
         <com.scwang.smart.refresh.header.ClassicsHeader

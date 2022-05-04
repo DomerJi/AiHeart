@@ -20,6 +20,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleView"
         app:srlEnableFooterFollowWhenNoMoreData="true"
+        app:srlEnableFooterFollowWhenLoadFinished="true"
         tools:visibility="invisible">
 
         <com.scwang.smart.refresh.header.ClassicsHeader

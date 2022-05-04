@@ -9,6 +9,7 @@
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:srlEnableFooterFollowWhenLoadFinished="true"
         app:srlEnableFooterFollowWhenNoMoreData="true">
 
         <androidx.recyclerview.widget.RecyclerView

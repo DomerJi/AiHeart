@@ -21,6 +21,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView"
         app:srlEnableFooterFollowWhenNoMoreData="true"
+        app:srlEnableFooterFollowWhenLoadFinished="true"
         app:srlEnableLoadMore="false"
         app:srlEnableRefresh="false">
 
