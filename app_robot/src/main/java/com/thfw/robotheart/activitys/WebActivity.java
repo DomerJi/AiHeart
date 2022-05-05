@@ -110,8 +110,8 @@ public class WebActivity extends RobotBaseActivity {
         // 开启DOM storage API功能（HTML5 提供的一种标准的接口，主要将键值对存储在本地，在页面加载完毕后可以通过 javascript 来操作这些数据。）
         mAgentWeb.getWebCreator().getWebView().getSettings().setDomStorageEnabled(true);
         // 支持缩放
-        mAgentWeb.getWebCreator().getWebView().getSettings().setBuiltInZoomControls(true);
-        mAgentWeb.getWebCreator().getWebView().getSettings().setSupportZoom(true);
+        mAgentWeb.getWebCreator().getWebView().getSettings().setBuiltInZoomControls(false);
+        mAgentWeb.getWebCreator().getWebView().getSettings().setSupportZoom(false);
 
         // 允许webview对文件的操作
         mAgentWeb.getWebCreator().getWebView().getSettings().setAllowFileAccess(true);

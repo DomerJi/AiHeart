@@ -104,6 +104,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="，"
+            android:visibility="gone"
             android:textColor="@color/white"
             android:textSize="@dimen/textSize_product" />
 
@@ -114,6 +115,7 @@
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
             android:text="《知情同意书》"
+            android:visibility="gone"
             android:textColor="@color/white"
             android:textSize="@dimen/textSize_product" />
 
