@@ -48,12 +48,7 @@ public class ExerciseLogcataFragment extends BaseFragment {
         mRefreshLayout.setEnableLoadMore(false);
 
         mRvExercise = (RecyclerView) findViewById(R.id.rv_exercise);
-        mRvExercise.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false) {
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        });
+        mRvExercise.setLayoutManager(new LinearLayoutManager(mContext));
     }
 
     @Override

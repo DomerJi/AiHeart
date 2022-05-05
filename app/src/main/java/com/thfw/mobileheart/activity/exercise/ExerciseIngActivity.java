@@ -871,9 +871,46 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
                 mTvControlHintSend.setVisibility(View.VISIBLE);
                 mIvControlVoiceIng.setVisibility(View.VISIBLE);
                 mIvControlPress.setVisibility(View.VISIBLE);
+                // 录音60S后停止
+                if (mStopHint == null) {
+                    mStopHint = findViewById(R.id.tv_stop_hint);
+                }
+                if (mStopHint != null) {
+                    mStopHint.setVisibility(View.INVISIBLE);
+                }
+                count = 60;
+                mMainHandler.postDelayed(mStopRunnable, 1000);
             }
+            // 录音60S后停止
+            private TextView mStopHint;
+            int count;
+            Runnable mStopRunnable = new Runnable() {
+
+                @Override
+                public void run() {
+                    count--;
+                    if (count <= 10) {
+                        if (mStopHint != null) {
+                            mStopHint.setVisibility(View.VISIBLE);
+                            if (count <= 0) {
+                                mStopHint.setText("已停止录音");
+                                PolicyHelper.getInstance().end();
+                            } else {
+                                mStopHint.setText(count + "S后将停止录音");
+                            }
+                        }
+                    } else {
+                        mStopHint.setVisibility(View.INVISIBLE);
+                    }
+                    if (count > 0) {
+                        mMainHandler.postDelayed(mStopRunnable, 1000);
+                    }
+                }
+            };
 
             private void closeVoiceControl() {
+                count = 0;
+                mMainHandler.removeCallbacks(mStopRunnable);
                 hideInput();
                 zoomClose = false;
                 zoomEdit = false;

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black_70">
@@ -29,6 +30,19 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.4" />
+
+
+    <TextView
+        android:id="@+id/tv_stop_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/white_40"
+        android:textSize="@dimen/textSize_large"
+        app:layout_constraintBottom_toTopOf="@id/tv_control_hint_send"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="录音已停止" />
 
 
     <ImageView
@@ -70,7 +84,7 @@
         android:layout_marginBottom="12dp"
         android:text="松开 发送"
         android:textColor="@color/white_40"
-        android:textSize="@dimen/textSize_large"
+        android:textSize="@dimen/textSize"
         app:layout_constraintBottom_toTopOf="@id/iv_control_press"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
