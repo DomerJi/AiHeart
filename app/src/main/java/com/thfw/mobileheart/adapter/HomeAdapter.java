@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.adapter;
 
 import android.content.Intent;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -415,7 +416,9 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         }
 
         public void initData(HomeEntity homeEntity) {
+            Log.e("jsp", "mBanner.getAdapter() != null = " + (mBanner.getAdapter() != null));
             if (mBanner.getAdapter() != null) {
+                mBanner.setCurrentItem(0);
                 mBanner.setDatas(homeEntity.bannerModels);
                 return;
             }

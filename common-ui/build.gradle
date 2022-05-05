@@ -34,7 +34,7 @@ dependencies {
     api 'androidx.constraintlayout:constraintlayout:' + rootProject.ext.constraintlayout
     api 'androidx.legacy:' + rootProject.ext.legacySupport
     api 'com.jaeger.statusbarutil:library:' + rootProject.ext.statusbarutil
-    api 'com.youth.banner:banner:' + rootProject.ext.banner
+    api 'io.github.youth5201314:banner:2.2.2'
     api 'com.github.yhaolpz:FloatWindow:1.0.9'
     api 'me.zhanghai.android.materialratingbar:library:' + rootProject.ext.materialratingbar
     api 'com.google.android.flexbox:flexbox:3.0.0'
