@@ -85,10 +85,7 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
-        long time = calendar.getTimeInMillis() / 1000 * 1000;
-        LogUtil.d(TAG, "getTodayStartTime -> " + HourUtil.getYYMMDD_HHMMSS(time));
-        LogUtil.d(TAG, "getYesterdayStartTime -> " + HourUtil.getYYMMDD_HHMMSS(time - HourUtil.LEN_DAY));
-        return time;
+        return calendar.getTimeInMillis() / 1000 * 1000;
     }
 
     @Override
@@ -271,18 +268,16 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
      * @param time
      */
     private void saveTodayPlayTime(int type, long time) {
-        String key = getKey(type);
-        long todayTime = SharePreferenceUtil.getLong(key, 0);
+        long todayTime = FunctionDurationUtil.getFunctionTime(type);
 
-        LogUtil.d(TAG, "today :" + key + " : time : " + todayTime);
+        LogUtil.d(TAG, "today : time : " + todayTime);
         LogUtil.d(TAG, "today totalTime:" + time + " :" + (todayTime + time));
-        SharePreferenceUtil.setLong(key, todayTime + time);
+        FunctionDurationUtil.setFunctionTime(type, todayTime + time);
         String yesterdayKey = getYesterdayKey(type);
         long yesterdayTime = SharePreferenceUtil.getLong(yesterdayKey, 0);
-        LogUtil.d(TAG, "yesterdayKey :" + yesterdayKey + " ->  key :" + key);
 
         LogUtil.d(TAG, "【" + FunctionDurationUtil.getFunctionName(type) + "】今日累计时长:"
-                + HourUtil.getLimitTimeALl(SharePreferenceUtil.getLong(key, 0)));
+                + FunctionDurationUtil.getFunctionTimeHour(type) + "分钟");
         //清除前一天的值
         if (yesterdayTime > 0) {
             SharePreferenceUtil.removeKey(yesterdayKey);

@@ -250,7 +250,7 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
             @Override
             public void onSuccess(List<HomeEntity.BannerModel> data) {
                 mMainList.get(0).setBannerModels(data);
-                mHomeAdapter.notifyDataSetChanged();
+                mHomeAdapter.notifyBanner();
             }
 
             @Override

@@ -35,7 +35,6 @@ import java.util.Map;
 public class FunctionDurationUtil {
 
 
-
     private static HashMap<Integer, List<String>> sparseArray;
 
     static {
@@ -74,7 +73,7 @@ public class FunctionDurationUtil {
 
     public static long getFunctionTime(int type) {
         String key = ActivityLifeCycle.getKey(type);
-        return SharePreferenceUtil.getLong(key, 0);
+        return SharePreferenceUtil.getLong(key, FunctionType.FUNCTION_APP == type ? MoodLivelyHelper.getTodayActiveTime() : 0);
     }
 
     public static void setFunctionTime(int type, long time) {

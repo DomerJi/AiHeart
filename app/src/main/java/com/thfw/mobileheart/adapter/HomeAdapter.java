@@ -1,7 +1,6 @@
 package com.thfw.mobileheart.adapter;
 
 import android.content.Intent;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,18 +58,32 @@ import java.util.List;
 public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder>
         implements MyApplication.OnMinuteListener, MoodLivelyHelper.MoodLivelyListener {
     private static final long DELAY_TIME_BANNER = 5000;
-    private Banner mBanner;
+
 
     public HomeAdapter(List<HomeEntity> dataList) {
         super(dataList);
     }
 
     public void setBanner(boolean resume) {
-        if (this.mBanner != null) {
-            if (resume) {
-                this.mBanner.start();
-            } else {
-                this.mBanner.stop();
+        RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForLayoutPosition(0);
+        if (viewHolder instanceof BannerHolder) {
+            BannerHolder bannerHolder = (BannerHolder) viewHolder;
+            if (bannerHolder.mBanner != null) {
+                if (resume) {
+                    bannerHolder.mBanner.start();
+                } else {
+                    bannerHolder.mBanner.stop();
+                }
+            }
+        }
+    }
+
+    public void notifyBanner() {
+        RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForLayoutPosition(0);
+        if (viewHolder instanceof BannerHolder) {
+            BannerHolder bannerHolder = (BannerHolder) viewHolder;
+            if (bannerHolder.mBanner != null && bannerHolder.mBanner.getAdapter() != null) {
+                bannerHolder.mBanner.setDatas(mDataList.get(0).bannerModels);
             }
         }
     }
@@ -102,7 +115,13 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
     }
 
     public int getBannerHeight() {
-        return mBanner == null ? 0 : mBanner.getMeasuredHeight();
+        RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForLayoutPosition(0);
+        if (viewHolder instanceof BannerHolder) {
+            BannerHolder bannerHolder = (BannerHolder) viewHolder;
+            return bannerHolder.mBanner == null ? 0 : bannerHolder.mBanner.getMeasuredHeight();
+        } else {
+            return 0;
+        }
     }
 
     @NonNull
@@ -161,11 +180,6 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
     @Override
     public int getItemViewType(int position) {
         return mDataList.get(position).type;
-    }
-
-    @Override
-    public void onViewRecycled(@NonNull @NotNull RecyclerView.ViewHolder holder) {
-        super.onViewRecycled(holder);
     }
 
     public class BodyHolder extends RecyclerView.ViewHolder {
@@ -407,6 +421,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
 
     public class BannerHolder extends RecyclerView.ViewHolder {
 
+        private Banner mBanner;
 
         public BannerHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -416,10 +431,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         }
 
         public void initData(HomeEntity homeEntity) {
-            Log.e("jsp", "mBanner.getAdapter() != null = " + (mBanner.getAdapter() != null));
             if (mBanner.getAdapter() != null) {
-                mBanner.setCurrentItem(0);
-                mBanner.setDatas(homeEntity.bannerModels);
                 return;
             }
             // mBanner.addPageTransformer(new ScaleInTransformer());

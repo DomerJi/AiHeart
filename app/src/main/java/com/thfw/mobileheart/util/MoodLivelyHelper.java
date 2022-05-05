@@ -27,6 +27,10 @@ public class MoodLivelyHelper {
     private static MoodLivelyModel model;
     private static List<MoodLivelyListener> livelyListeners = new ArrayList<>();
 
+    public static long getTodayActiveTime() {
+        return model == null ? 0 : model.getTodayActiveTime();
+    }
+
     public static MoodLivelyModel getModel() {
         return model;
     }
