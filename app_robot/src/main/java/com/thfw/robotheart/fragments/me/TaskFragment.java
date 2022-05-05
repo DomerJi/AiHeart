@@ -1,5 +1,7 @@
 package com.thfw.robotheart.fragments.me;
 
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,6 +39,7 @@ public class TaskFragment extends RobotBaseFragment<TaskPresenter> implements Ta
     private LoadingView mLoadingView;
     private TaskAdapter mTaskAdapter;
     private PageHelper<TaskItemModel> mPageHelper;
+    private TextView mTvTime;
 
     public TaskFragment(int type) {
         super();
@@ -59,8 +62,10 @@ public class TaskFragment extends RobotBaseFragment<TaskPresenter> implements Ta
         mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
         mRvList = (RecyclerView) findViewById(R.id.rvList);
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
+        mTvTime = findViewById(R.id.tv_time);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         DataChangeHelper.getInstance().add(this);
+        mTvTime.setText(type == 1 ? "完成时间" : "截止时间");
     }
 
     @Override
