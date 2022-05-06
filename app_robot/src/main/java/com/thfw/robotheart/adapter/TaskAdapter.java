@@ -23,6 +23,11 @@ import java.util.List;
  */
 public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHolder> {
 
+    private int type;
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public TaskAdapter(List<TaskItemModel> dataList) {
         super(dataList);
@@ -38,7 +43,7 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
     @Override
     public void onBindViewHolder(@NonNull @NotNull TaskHolder holder, int position) {
         TaskItemModel itemModel = mDataList.get(position);
-        holder.mTvTime.setText(itemModel.getDeadline());
+        holder.mTvTime.setText(itemModel.getVisibleTime(type));
         holder.mTvStatus.setText(itemModel.getFinishCount() + "/" + itemModel.getCount());
         holder.mTvTitle.setText(itemModel.getTitle());
         holder.mTvType.setText(itemModel.getTaskTypeStr());

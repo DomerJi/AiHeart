@@ -25,6 +25,11 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
 
 
     private int textDefaultColor;
+    private int type;
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public TaskAdapter(List<TaskItemModel> dataList) {
         super(dataList);
@@ -41,7 +46,7 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
     @Override
     public void onBindViewHolder(@NonNull @NotNull TaskHolder holder, int position) {
         TaskItemModel itemModel = mDataList.get(position);
-        holder.mTvTime.setText(itemModel.getDeadline());
+        holder.mTvTime.setText(itemModel.getVisibleTime(type));
         holder.mTvStatus.setText(itemModel.getFinishCount() + "/" + itemModel.getCount());
         holder.mTvTitle.setText(itemModel.getTitle());
         holder.mTvType.setText(itemModel.getTaskTypeStr());
@@ -49,10 +54,10 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
             holder.mTvFlag.setVisibility(View.VISIBLE);
             holder.mTvFlag.setText("已作废");
             holder.mTvFlag.setBackgroundResource(R.drawable.yellow_radius_bg);
-            holder.mTvTitle.setTextColor(0x8CCCCCCC);
-            holder.mTvType.setTextColor(0x8CCCCCCC);
-            holder.mTvStatus.setTextColor(0x8CCCCCCC);
-            holder.mTvTime.setTextColor(0x8CCCCCCC);
+            holder.mTvTitle.setTextColor(Color.LTGRAY);
+            holder.mTvType.setTextColor(Color.LTGRAY);
+            holder.mTvStatus.setTextColor(Color.LTGRAY);
+            holder.mTvTime.setTextColor(Color.LTGRAY);
         } else if (itemModel.getStatus() == 2) {
             holder.mTvFlag.setVisibility(View.VISIBLE);
             holder.mTvFlag.setText("已过期");

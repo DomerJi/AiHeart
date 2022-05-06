@@ -42,6 +42,7 @@ import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FunctionDurationUtil;
 import com.thfw.mobileheart.util.MoodLivelyHelper;
 import com.thfw.ui.utils.GlideUtil;
+import com.thfw.user.login.UserManager;
 import com.youth.banner.Banner;
 import com.youth.banner.indicator.CircleIndicator;
 import com.youth.banner.listener.OnBannerListener;
@@ -65,6 +66,9 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
     }
 
     public void setBanner(boolean resume) {
+        if (resume) {
+            onChanged();
+        }
         RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForLayoutPosition(0);
         if (viewHolder instanceof BannerHolder) {
             BannerHolder bannerHolder = (BannerHolder) viewHolder;
@@ -373,14 +377,22 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             if (mTvMoodValue == null || mRivEmoji == null) {
                 return;
             }
-            if (mood != null) {
-                if (mood.getUserMood() != null) {
-                    if (!EmptyUtil.isEmpty(mContext)) {
-                        GlideUtil.load(mContext, mood.getUserMood().getPath(), mRivEmoji);
+            if (UserManager.getInstance().isTrueLogin()) {
+                if (mood != null) {
+                    if (mood.getUserMood() != null) {
+                        if (!EmptyUtil.isEmpty(mContext)) {
+                            GlideUtil.load(mContext, mood.getUserMood().getPath(), mRivEmoji);
+                        }
+                        mTvMoodValue.setText(mood.getUserMood().getName());
                     }
-                    mTvMoodValue.setText(mood.getUserMood().getName());
+                    mTvSumActivityValue.setText(String.valueOf(mood.getLoginDays()));
+                } else {
+                    mTvSumActivityValue.setText("");
+                    if (!EmptyUtil.isEmpty(mContext)) {
+                        GlideUtil.load(mContext, R.drawable.gray_cirlle_bg, mRivEmoji);
+                    }
+                    mTvMoodValue.setText(mContext.getResources().getString(R.string.mood_defalut_hint));
                 }
-                mTvSumActivityValue.setText(String.valueOf(mood.getLoginDays()));
             } else {
                 mTvSumActivityValue.setText("");
                 if (!EmptyUtil.isEmpty(mContext)) {
@@ -393,10 +405,17 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
 
 
         public void notifyTodayTime() {
-            if (mTvTodayActivityValue != null) {
-                mTvTodayActivityValue.setText(FunctionDurationUtil
-                        .getFunctionTimeHour(FunctionType.FUNCTION_APP));
+            if (UserManager.getInstance().isTrueLogin()) {
+                if (mTvTodayActivityValue != null) {
+                    mTvTodayActivityValue.setText(FunctionDurationUtil
+                            .getFunctionTimeHour(FunctionType.FUNCTION_APP));
+                }
+            } else {
+                if (mTvTodayActivityValue != null) {
+                    mTvTodayActivityValue.setText("");
+                }
             }
+
         }
 
         private void initView(View itemView) {

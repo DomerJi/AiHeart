@@ -269,6 +269,7 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
         super.onVisible(isVisible);
         if (isVisible) {
             checkVersion();
+            onChanged();
         }
     }
 

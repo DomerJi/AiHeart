@@ -121,8 +121,16 @@ public class MsgTaskFragment extends RobotBaseFragment<TaskPresenter> implements
             return;
         }
         if (this.numTask < numTask) {
-            if (mRefreshLayout != null) {
-                mRefreshLayout.autoRefresh();
+            if (mLoadingView != null && !mLoadingView.isHide()) {
+                mLoadingView.showLoading();
+                if (mPageHelper != null) {
+                    mPageHelper.onRefresh();
+                    mPresenter.onGetMsgList(1, mPageHelper.getPage());
+                }
+            } else {
+                if (mRefreshLayout != null) {
+                    mRefreshLayout.autoRefresh();
+                }
             }
         }
     }

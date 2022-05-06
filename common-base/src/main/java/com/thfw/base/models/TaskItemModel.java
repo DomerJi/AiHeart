@@ -31,6 +31,8 @@ public class TaskItemModel implements IModel {
     private int taskType;
     @SerializedName("deadline")
     private String deadline;
+    @SerializedName("finish_time")
+    private String finishTime;
     @SerializedName("title")
     private String title;
     @SerializedName("count")
@@ -111,6 +113,10 @@ public class TaskItemModel implements IModel {
 
     public String getDeadline() {
         return deadline;
+    }
+
+    public String getVisibleTime(int type) {
+        return type == 1 ? finishTime : deadline;
     }
 
     public void setDeadline(String deadline) {

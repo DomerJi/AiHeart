@@ -72,6 +72,7 @@ public class TaskFragment extends RobotBaseFragment<TaskPresenter> implements Ta
     public void initData() {
 
         mTaskAdapter = new TaskAdapter(null);
+        mTaskAdapter.setType(type);
         mRvList.setAdapter(mTaskAdapter);
         mTaskAdapter.setOnRvItemListener(new OnRvItemListener<TaskItemModel>() {
             @Override

@@ -278,7 +278,9 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
      * @param time
      */
     private synchronized void saveTodayPlayTime(int type, long time) {
-
+        if (!UserManager.getInstance().isTrueLogin()) {
+            return;
+        }
         long todayTime = FunctionDurationUtil.getFunctionTime(type);
         FunctionDurationUtil.setFunctionTime(type, todayTime + time);
 

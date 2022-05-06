@@ -118,8 +118,16 @@ public class MsgFragment extends RobotBaseFragment<TaskPresenter> implements Tas
             return;
         }
         if (this.numSystem < numSystem) {
-            if (mRefreshLayout != null) {
-                mRefreshLayout.autoRefresh();
+            if (mLoadingView != null && !mLoadingView.isHide()) {
+                mLoadingView.showLoading();
+                if (mPageHelper != null) {
+                    mPageHelper.onRefresh();
+                    mPresenter.onGetMsgList(2, mPageHelper.getPage());
+                }
+            } else {
+                if (mRefreshLayout != null) {
+                    mRefreshLayout.autoRefresh();
+                }
             }
         }
     }

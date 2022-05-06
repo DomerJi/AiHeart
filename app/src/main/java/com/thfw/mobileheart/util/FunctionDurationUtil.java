@@ -21,6 +21,7 @@ import com.thfw.mobileheart.activity.test.TestReportActivity;
 import com.thfw.mobileheart.activity.test.TestingActivity;
 import com.thfw.mobileheart.activity.video.VideoHomeActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
+import com.thfw.user.login.UserManager;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -80,7 +81,10 @@ public class FunctionDurationUtil {
     }
 
     public static String getFunctionTimeHour(int type) {
-        return String.valueOf(getFunctionTime(type) / (60 * 1000));
+        if (UserManager.getInstance().isTrueLogin()) {
+            return String.valueOf(getFunctionTime(type) / (60 * 1000));
+        }
+        return "";
     }
 
     public static String getFunctionName(int type) {

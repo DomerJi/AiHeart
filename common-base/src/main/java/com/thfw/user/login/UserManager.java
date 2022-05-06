@@ -44,8 +44,10 @@ public class UserManager extends Observable {
     }
 
     public String getUID() {
-        if (getUser() != null && getUser().getUserId() != null) {
-            return getUser().getUserId();
+        if (isTrueLogin()) {
+            if (getUser() != null && getUser().getUserId() != null) {
+                return getUser().getUserId();
+            }
         }
         return "visitor";
     }

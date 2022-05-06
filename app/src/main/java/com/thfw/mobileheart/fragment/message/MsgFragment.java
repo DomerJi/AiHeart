@@ -135,8 +135,16 @@ public class MsgFragment extends BaseFragment<TaskPresenter> implements TaskPres
             return;
         }
         if (this.numSystem < numSystem) {
-            if (mRefreshLayout != null) {
-                mRefreshLayout.autoRefresh();
+            if (mLoadingView != null && !mLoadingView.isHide()) {
+                mLoadingView.showLoading();
+                if (mPageHelper != null) {
+                    mPageHelper.onRefresh();
+                    mPresenter.onGetMsgList(2, mPageHelper.getPage());
+                }
+            } else {
+                if (mRefreshLayout != null) {
+                    mRefreshLayout.autoRefresh();
+                }
             }
         }
     }

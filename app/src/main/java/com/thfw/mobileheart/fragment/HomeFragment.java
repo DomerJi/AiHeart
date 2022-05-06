@@ -357,6 +357,9 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
                         loadData(true);
                         MoodLivelyHelper.addListener(mHomeAdapter);
                     } else {
+                        if (mHomeAdapter != null) {
+                            mHomeAdapter.notifyDataSetChanged();
+                        }
                         MoodLivelyHelper.clearModel();
                     }
                 }
