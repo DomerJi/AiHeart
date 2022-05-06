@@ -72,13 +72,11 @@ public class FunctionDurationUtil {
     }
 
     public static long getFunctionTime(int type) {
-        String key = ActivityLifeCycle.getKey(type);
-        return SharePreferenceUtil.getLong(key, FunctionType.FUNCTION_APP == type ? MoodLivelyHelper.getTodayActiveTime() : 0);
+        return SharePreferenceUtil.getLong(ActivityLifeCycle.getKey(type), FunctionType.FUNCTION_APP == type ? MoodLivelyHelper.getTodayActiveTime() : 0);
     }
 
-    public static void setFunctionTime(int type, long time) {
-        String key = ActivityLifeCycle.getKey(type);
-        SharePreferenceUtil.setLong(key, time);
+    public static synchronized void setFunctionTime(int type, long time) {
+        SharePreferenceUtil.setLong(ActivityLifeCycle.getKey(type), time);
     }
 
     public static String getFunctionTimeHour(int type) {

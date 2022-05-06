@@ -253,11 +253,21 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
     }
 
     public static String getKey(int type) {
-        return getTodayStartTime() + "_" + UserManager.getInstance().getUID() + "_" + type;
+        return new StringBuilder().append(getTodayStartTime())
+                .append("_")
+                .append(UserManager.getInstance().getUID())
+                .append("_")
+                .append(type)
+                .toString();
     }
 
     public static String getYesterdayKey(int type) {
-        return (getTodayStartTime() - HourUtil.LEN_DAY) + "_" + UserManager.getInstance().getUID() + "_" + type;
+        return new StringBuilder().append(getTodayStartTime() - HourUtil.LEN_DAY)
+                .append("_")
+                .append(UserManager.getInstance().getUID())
+                .append("_")
+                .append(type)
+                .toString();
     }
 
     /**
@@ -267,21 +277,24 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
      *
      * @param time
      */
-    private void saveTodayPlayTime(int type, long time) {
-        long todayTime = FunctionDurationUtil.getFunctionTime(type);
+    private synchronized void saveTodayPlayTime(int type, long time) {
 
-        LogUtil.d(TAG, "today : time : " + todayTime);
-        LogUtil.d(TAG, "today totalTime:" + time + " :" + (todayTime + time));
+        long todayTime = FunctionDurationUtil.getFunctionTime(type);
         FunctionDurationUtil.setFunctionTime(type, todayTime + time);
+
+        if (LogUtil.isLogEnable()) {
+            LogUtil.d(TAG, "today : todayTime : " + todayTime + " ; time : " + time);
+            LogUtil.d(TAG, "【" + FunctionDurationUtil.getFunctionName(type) + "】今日累计时长:"
+                    + FunctionDurationUtil.getFunctionTimeHour(type) + "分钟");
+        }
+
         String yesterdayKey = getYesterdayKey(type);
         long yesterdayTime = SharePreferenceUtil.getLong(yesterdayKey, 0);
-
-        LogUtil.d(TAG, "【" + FunctionDurationUtil.getFunctionName(type) + "】今日累计时长:"
-                + FunctionDurationUtil.getFunctionTimeHour(type) + "分钟");
-        //清除前一天的值
+        // 清除前一天的值
         if (yesterdayTime > 0) {
             SharePreferenceUtil.removeKey(yesterdayKey);
         }
+
         if (mAwaitTimeMap.containsKey(type)) {
             mAwaitTimeMap.put(type, mAwaitTimeMap.get(type) + time);
         } else {
@@ -296,7 +309,6 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
             return;
         }
         requestSaveTime = System.currentTimeMillis();
-        LogUtil.d(TAG, "onSaveTimeByNet -> begin " + GsonUtil.toJson(mAwaitTimeMap));
         if (mAwaitTimeMap.size() == 0) {
             return;
         }
