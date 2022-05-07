@@ -18,6 +18,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:tabIndicatorAnimationDuration="300"
             app:tabIndicatorFullWidth="false"
+            android:background="@drawable/tab_layout_bottom_divider"
             app:tabMode="scrollable"
             app:tabRippleColor="@color/transparent"
             app:tabSelectedTextColor="@color/text_green"

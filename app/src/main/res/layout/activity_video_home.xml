@@ -22,6 +22,7 @@
         app:layout_constraintTop_toBottomOf="@id/titleView"
         app:tabIndicatorAnimationDuration="300"
         app:tabIndicatorFullWidth="false"
+        android:background="@drawable/tab_layout_bottom_divider"
         app:tabMinWidth="60dp"
         app:tabMode="fixed"
         app:tabRippleColor="@color/transparent"

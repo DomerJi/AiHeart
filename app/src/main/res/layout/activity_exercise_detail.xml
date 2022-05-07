@@ -107,7 +107,7 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:background="@drawable/tab_layout_bottom_divider"
                 app:tabIndicatorAnimationDuration="300"
                 app:tabIndicatorFullWidth="false"
                 app:tabMaxWidth="100dp"
