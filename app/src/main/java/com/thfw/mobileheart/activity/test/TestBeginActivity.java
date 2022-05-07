@@ -132,7 +132,7 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
             TestProgressIngActivity.startActivity(mContext, mDetailModel);
         });
         mIvCollect.setSelected(mDetailModel.getPsychtestInfo().isCollected());
-        mIvCollect.setOnClickListener(v -> {
+        mLlCollect.setOnClickListener(v -> {
             addCollect();
         });
         List<MTestDetailAdapterModel> list = new ArrayList<>();

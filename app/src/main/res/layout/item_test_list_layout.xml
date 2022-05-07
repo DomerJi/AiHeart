@@ -3,9 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="6dp"
-    android:paddingBottom="6dp">
+    android:layout_height="wrap_content">
 
 
     <com.makeramen.roundedimageview.RoundedImageView
@@ -13,9 +11,9 @@
         android:layout_width="73dp"
         android:layout_height="73dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
         android:scaleType="centerCrop"
         android:src="@mipmap/cat"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:riv_corner_radius="@dimen/corner"
@@ -26,11 +24,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="14dp"
-        android:layout_marginTop="@dimen/divider_2px"
+        android:layout_marginTop="4dp"
         android:gravity="center"
         android:textColor="@color/text_common"
         android:textSize="@dimen/textSize"
         app:layout_constraintLeft_toRightOf="@id/riv_avatar"
+        app:layout_constraintTop_toTopOf="@id/riv_avatar"
         tools:ignore="MissingConstraints"
         tools:text="Home Body" />
 
@@ -44,6 +43,7 @@
         android:gravity="center"
         android:textColor="@color/text_content"
         android:textSize="10sp"
+        app:layout_constraintBottom_toTopOf="@id/tv_type"
         app:layout_constraintLeft_toRightOf="@id/riv_avatar"
         app:layout_constraintTop_toBottomOf="@id/tv_title"
         tools:ignore="MissingConstraints"
@@ -54,13 +54,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="14dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginBottom="9dp"
+        android:layout_marginBottom="4dp"
         android:gravity="center"
         android:textColor="@color/text_content"
         android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@id/riv_avatar"
         app:layout_constraintLeft_toRightOf="@id/riv_avatar"
-        app:layout_constraintTop_toBottomOf="@id/tv_number"
         tools:ignore="MissingConstraints"
         tools:text="Home Body" />
 
@@ -69,11 +68,12 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_1px"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginRight="16dp"
         android:background="@color/divider"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/riv_avatar" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

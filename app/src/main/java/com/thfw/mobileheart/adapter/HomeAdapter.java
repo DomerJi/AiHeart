@@ -364,6 +364,10 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                 MoodDetailActivity.startActivity(mContext);
             });
 
+            mTvActiveTitle.setOnClickListener(v -> {
+                MoodDetailActivity.startActivity(mContext);
+            });
+
             mLlMood.setOnClickListener(v -> {
                 StatusActivity.startActivity(mContext);
             });

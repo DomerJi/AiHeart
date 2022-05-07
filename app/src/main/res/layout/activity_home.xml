@@ -172,6 +172,12 @@
 
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_2px"
+            android:background="@color/page_background_gray"
+            app:layout_constraintBottom_toTopOf="@id/ll_home"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
