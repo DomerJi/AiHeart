@@ -152,6 +152,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     private Mat rotateMat;
     private TextView mTvPageTitle;
     private ObjectAnimator lineAnimation;
+    private boolean mGoFinish;
 
     @Override
     public int getContentView() {
@@ -181,7 +182,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         mIvBorder = (ImageView) findViewById(R.id.iv_border);
         mIvLine = (ImageView) findViewById(R.id.iv_line);
         Util.addUnderLine(mTvProductUser, mTvProductMsg, mTvProductAgree);
-        initAgreeClick();
+
         mClTop = (ConstraintLayout) findViewById(R.id.cl_top);
         mRivIconBg = (RoundedImageView) findViewById(R.id.riv_icon_bg);
         mRivIcon = (RoundedImageView) findViewById(R.id.riv_icon);
@@ -204,6 +205,10 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         if (inputFace) {
             mTvPageTitle.setText("人脸录入");
             mBtBegin.setText("开始录入");
+            mTvOtherLogin.setVisibility(View.INVISIBLE);
+            mClBottom.setVisibility(View.INVISIBLE);
+        } else {
+            initAgreeClick();
         }
     }
 
@@ -280,14 +285,17 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     @Override
     public void onVisible(boolean isVisible) {
         super.onVisible(isVisible);
-        if (mClFaceIng != null) {
-            mClFaceIng.setVisibility(View.GONE);
-        }
-        if (mClFaceBegin != null) {
-            mClFaceBegin.setVisibility(View.VISIBLE);
-        }
-        if (mClFaceFail != null) {
-            mClFaceFail.setVisibility(View.GONE);
+        // 成功的时候不隐藏，会有页面切换的怪异感觉
+        if (!mGoFinish) {
+            if (mClFaceIng != null) {
+                mClFaceIng.setVisibility(View.GONE);
+            }
+            if (mClFaceBegin != null) {
+                mClFaceBegin.setVisibility(View.VISIBLE);
+            }
+            if (mClFaceFail != null) {
+                mClFaceFail.setVisibility(View.GONE);
+            }
         }
         if (isVisible) {
             resetFaceFlag();
@@ -672,6 +680,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
                             if (result != null && result.isSuccessful()) {
                                 SharePreferenceUtil.setInt(MeFragment.KEY_INPUT_FACE + UserManager.getInstance().getUID(), 1);
                                 ToastUtil.showLong("录入成功");
+                                mGoFinish = true;
                                 getActivity().finish();
                                 LogUtil.d(TAG, "人脸【录入】成功---------------------------------");
                             } else {
@@ -737,6 +746,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
                             if (result != null && result.isSuccessful()) {
                                 boolean loginSuccessful = LoginActivity.login(getActivity(), result.getData(), "");
                                 if (loginSuccessful) {
+                                    mGoFinish = true;
                                     LogUtil.d(TAG, "人脸【登录】成功---------------------------------");
                                 } else {
                                     showFaceFail("刷脸登录失败，原因：" + MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login) + "");
