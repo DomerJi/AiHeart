@@ -8,18 +8,18 @@ public class PushConstants {
      * 应用申请的Appkey
      */
 //    public static final String APP_KEY = "应用申请的Appkey";
-    public static final String APP_KEY = "620cacf957fbe07bcd5723ab";
+    public static final String APP_KEY = "6275fea430121a652b80b8e8";
 
     /**
      * 应用申请的UmengMessageSecret
      */
 //    public static final String MESSAGE_SECRET = "应用申请的UmengMessageSecret";
-    public static final String MESSAGE_SECRET = "04f19339488a3669bd903cbd900c36db";
+    public static final String MESSAGE_SECRET = "9536259d0c94683a1d2d9cf558e9206a";
 
     /**
      * 后台加密消息的密码（仅Demo用，请勿将此密码泄漏）
      */
-    public static final String APP_MASTER_SECRET = "f0qqzq6frjpkjmc2ypedofyjqdqex03w";
+    public static final String APP_MASTER_SECRET = "sw5hkgamtz4ael5kfkfghtlwfrenuam0";
 
     /**
      * 渠道名称，修改为您App的发布渠道名称

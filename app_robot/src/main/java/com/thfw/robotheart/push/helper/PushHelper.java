@@ -61,7 +61,7 @@ public class PushHelper {
         PushAgent pushAgent = PushAgent.getInstance(context);
 
         //TODO:需修改为您app/src/main/AndroidManifest.xml中package值
-        pushAgent.setResourcePackageName("com.umeng.message.sample");
+        pushAgent.setResourcePackageName("com.thfw.robotheart");
 
         //推送设置
         pushSetting(context);
