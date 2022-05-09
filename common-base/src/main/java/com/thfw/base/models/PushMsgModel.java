@@ -58,6 +58,28 @@ public class PushMsgModel implements IModel {
         return type;
     }
 
+    public boolean isImportant() {
+        switch (type) {
+            case MsgType.TASK:
+            case MsgType.TESTING:
+            case MsgType.TOOL_PACKAGE:
+            case MsgType.TOPIC_DIALOG:
+            case MsgType.MUSIC:
+            case MsgType.VIDEO:
+            case MsgType.BOOK:
+            case MsgType.IDEO_BOOK:
+            case MsgType.SYSTEM:
+                return true;
+            case MsgType.H5:
+            case MsgType.COMMON_PROBLEM:
+            case MsgType.VOICE_COMMAND:
+            case MsgType.ABOUT_US:
+                return false;
+            default:
+                return false;
+        }
+    }
+
     public void setType(int type) {
         this.type = type;
     }

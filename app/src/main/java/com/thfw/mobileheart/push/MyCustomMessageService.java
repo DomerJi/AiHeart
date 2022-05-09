@@ -117,8 +117,13 @@ public class MyCustomMessageService extends UmengMessageService {
             String channelName = PushAgent.getInstance(this).getNotificationChannelName();
             NotificationChannel channel = manager.getNotificationChannel(channelId);
             if (channel == null) {
-                channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT);
+                channel = new NotificationChannel(channelId, channelName,
+                        msg.isImportant() ? NotificationManager.IMPORTANCE_HIGH :
+                                NotificationManager.IMPORTANCE_DEFAULT);
                 manager.createNotificationChannel(channel);
+            } else {
+                channel.setImportance(msg.isImportant() ? NotificationManager.IMPORTANCE_HIGH :
+                        NotificationManager.IMPORTANCE_DEFAULT);
             }
             builder = new Notification.Builder(this, UPushNotificationChannel.PRIMARY_CHANNEL);
         } else {
