@@ -63,8 +63,11 @@ import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.AudioItemAdapter;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.util.AudioModel;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.ExoPlayerFactory;
 import com.thfw.robotheart.view.TitleRobotView;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.utils.VideoGestureHelper;
 import com.thfw.ui.widget.LoadingView;
@@ -768,4 +771,37 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isTask) {
+            for (AudioEtcDetailModel.AudioItemModel itemModel : mAudios) {
+                if (itemModel.status != 1) {
+                    showAudioTaskStop();
+                    return;
+                }
+            }
+
+        }
+        super.onBackPressed();
+    }
+
+    private void showAudioTaskStop() {
+        DialogRobotFactory.createCustomDialog(AudioPlayerActivity.this, new DialogRobotFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvHint.setText("您尚未完成任务，确认退出？");
+                mTvLeft.setText("直接退出");
+                mTvRight.setText("继续完成");
+                mTvTitle.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+                if (view.getId() == R.id.tv_left) {
+                    finish();
+                }
+            }
+        });
+    }
 }

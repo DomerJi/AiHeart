@@ -55,7 +55,10 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.AudioItemAdapter;
 import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.VideoGestureHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
@@ -422,16 +425,6 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
         mAudioView.showController();
     }
 
-    @Override
-    public void onBackPressed() {
-        // 音频列表打开，点击返回，隐藏列表
-        if (mClContent != null && mClContent.getVisibility() == View.VISIBLE) {
-            audioLogcatue();
-        } else {
-            super.onBackPressed();
-        }
-    }
-
     //=============== 开始 视频手势 =======================//
     @Override
     public LifecycleProvider getLifecycleProvider() {
@@ -765,6 +758,44 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
             }
 
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        // 音频列表打开，点击返回，隐藏列表
+        if (mClContent != null && mClContent.getVisibility() == View.VISIBLE) {
+            audioLogcatue();
+        } else if (isTask) {
+            for (AudioEtcDetailModel.AudioItemModel itemModel : mAudios) {
+                if (itemModel.status != 1) {
+                    showAudioTaskStop();
+                    return;
+                }
+            }
+
+        }
+        super.onBackPressed();
+    }
+
+    private void showAudioTaskStop() {
+        DialogFactory.createCustomDialog(AudioPlayerActivity.this, new DialogFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvHint.setText("您尚未完成任务，确认退出？");
+                mTvLeft.setText("直接退出");
+                mTvRight.setText("继续完成");
+                mTvTitle.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+                if (view.getId() == R.id.tv_left) {
+                    finish();
+                }
+            }
+        });
     }
 
 }
