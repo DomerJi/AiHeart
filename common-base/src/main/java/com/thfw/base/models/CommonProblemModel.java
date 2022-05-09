@@ -25,10 +25,20 @@ public class CommonProblemModel implements IModel {
     private String question;
     @SerializedName("answer")
     private String answer;
+    @SerializedName("answer_url")
+    private String answerUrl;
     @SerializedName("create_time")
     private String createTime;
     @SerializedName("device")
     private String device;
+
+    public String getAnswerUrl() {
+        return answerUrl;
+    }
+
+    public void setAnswerUrl(String answerUrl) {
+        this.answerUrl = answerUrl;
+    }
 
     public int getId() {
         return id;

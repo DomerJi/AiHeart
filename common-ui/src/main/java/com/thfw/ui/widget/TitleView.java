@@ -121,8 +121,14 @@ public class TitleView extends FrameLayout {
         this.centerText = centerText;
         if (!TextUtils.isEmpty(centerText)) {
             mTvTitle.setText(centerText);
+            if (centerText.length() > 20) {
+                mTvTitle.setTextSize(12);
+            } else if (centerText.length() > 13) {
+                mTvTitle.setTextSize(14);
+            }
         }
     }
+
 
     public int getCenterTextColor() {
         if (mTvTitle != null) {

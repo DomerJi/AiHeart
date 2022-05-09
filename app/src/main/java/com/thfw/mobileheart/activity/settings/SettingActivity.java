@@ -30,10 +30,8 @@ import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
-import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.activity.me.AboutMeActivity;
 import com.thfw.mobileheart.activity.service.AutoUpdateService;
-import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.mobileheart.constants.AnimFileName;
 import com.thfw.mobileheart.util.AnimFrequencyUtil;
 import com.thfw.mobileheart.util.FileSizeUtil;
@@ -95,7 +93,7 @@ public class SettingActivity extends BaseActivity {
             startActivity(new Intent(mContext, AccountSafeActivity.class));
         });
         mLlPrivacyPolicy.setOnClickListener(v -> {
-            WebActivity.startActivity(mContext, AgreeOn.AGREE_MSG);
+            startActivity(new Intent(mContext, PrivacyPolicyActivity.class));
         });
         mLlAbout.setOnClickListener(v -> {
             startActivity(new Intent(mContext, AboutMeActivity.class));

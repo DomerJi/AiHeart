@@ -1,5 +1,7 @@
 package com.thfw.robotheart.fragments.help;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,8 +14,10 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.OtherPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
+import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.me.SimpleTextActivity;
 import com.thfw.robotheart.adapter.CommonProblemAdapter;
+import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.robotheart.view.CustomRefreshLayout;
 import com.thfw.ui.widget.LoadingView;
@@ -60,9 +64,14 @@ public class CommonProblemFragment extends RobotBaseFragment<OtherPresenter> imp
         commonProblemAdapter.setOnRvItemListener(new OnRvItemListener<CommonProblemModel>() {
             @Override
             public void onItemClick(List<CommonProblemModel> list, int position) {
-                SimpleTextActivity.startActivity(mContext,
-                        list.get(position).getQuestion(),
-                        list.get(position).getAnswer());
+                if (TextUtils.isEmpty(list.get(position).getAnswerUrl())) {
+                    SimpleTextActivity.startActivity(mContext,
+                            list.get(position).getQuestion(),
+                            list.get(position).getAnswer());
+                } else {
+                    WebActivity.startActivity(mContext, list.get(position).getQuestion(),
+                            list.get(position).getAnswerUrl());
+                }
             }
         });
         mRvList.setAdapter(commonProblemAdapter);
@@ -86,6 +95,17 @@ public class CommonProblemFragment extends RobotBaseFragment<OtherPresenter> imp
 
     @Override
     public void onSuccess(List<CommonProblemModel> data) {
+        if (data != null && mPageHelper.isFirstPage()) {
+            CommonProblemModel commonProblemModel = new CommonProblemModel();
+            commonProblemModel.setQuestion("《用户服务协议》");
+            commonProblemModel.setAnswerUrl(AgreeOn.AGREE_USER.getUrl());
+
+            CommonProblemModel commonProblemModel2 = new CommonProblemModel();
+            commonProblemModel2.setQuestion("《隐私保护政策》");
+            commonProblemModel2.setAnswerUrl(AgreeOn.AGREE_MSG.getUrl());
+            data.add(0,commonProblemModel);
+            data.add(1,commonProblemModel2);
+        }
         mPageHelper.onSuccess(data, false);
     }
 
