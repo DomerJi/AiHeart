@@ -69,8 +69,8 @@ public class CommonProblemFragment extends RobotBaseFragment<OtherPresenter> imp
                             list.get(position).getQuestion(),
                             list.get(position).getAnswer());
                 } else {
-                    WebActivity.startActivity(mContext, list.get(position).getQuestion(),
-                            list.get(position).getAnswerUrl());
+                    WebActivity.startActivity(mContext, list.get(position).getAnswerUrl(),
+                            list.get(position).getQuestion());
                 }
             }
         });
@@ -103,8 +103,8 @@ public class CommonProblemFragment extends RobotBaseFragment<OtherPresenter> imp
             CommonProblemModel commonProblemModel2 = new CommonProblemModel();
             commonProblemModel2.setQuestion("《隐私保护政策》");
             commonProblemModel2.setAnswerUrl(AgreeOn.AGREE_MSG.getUrl());
-            data.add(0,commonProblemModel);
-            data.add(1,commonProblemModel2);
+            data.add(0, commonProblemModel);
+            data.add(1, commonProblemModel2);
         }
         mPageHelper.onSuccess(data, false);
     }

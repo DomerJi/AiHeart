@@ -36,6 +36,17 @@ public class TaskDetailModel implements IModel {
     @SerializedName("content_list")
     private List<ContentListBean> contentList;
 
+    @SerializedName("id")
+    private int id;
+    @SerializedName("user_id")
+    private int userId;
+    @SerializedName("status")
+    private int status;
+    @SerializedName("finish_time")
+    private String finishTime;
+    @SerializedName("create_time")
+    private String createTime;
+
     public int getTaskType() {
         return taskType;
     }

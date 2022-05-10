@@ -46,7 +46,7 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
     @Override
     public void onBindViewHolder(@NonNull @NotNull TaskHolder holder, int position) {
         TaskItemModel itemModel = mDataList.get(position);
-        holder.mTvTime.setText(itemModel.getVisibleTime(type));
+        holder.mTvTime.setText((type == 1 ? "完成：" : "截止：") + itemModel.getVisibleTime(type));
         holder.mTvStatus.setText(itemModel.getFinishCount() + "/" + itemModel.getCount());
         holder.mTvTitle.setText(itemModel.getTitle());
         holder.mTvType.setText(itemModel.getTaskTypeStr());

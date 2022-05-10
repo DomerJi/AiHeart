@@ -47,7 +47,7 @@ public class MsgTaskAdapter extends BaseAdapter<TaskItemModel, MsgTaskAdapter.Ta
         } else {
             holder.mVDotState.setVisibility(View.INVISIBLE);
         }
-        holder.mTvTime.setText(itemModel.getDeadline());
+        holder.mTvTime.setText(itemModel.getCreateTime());
     }
 
 

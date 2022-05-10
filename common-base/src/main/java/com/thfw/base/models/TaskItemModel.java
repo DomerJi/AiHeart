@@ -33,12 +33,25 @@ public class TaskItemModel implements IModel {
     private String deadline;
     @SerializedName("finish_time")
     private String finishTime;
+    @SerializedName("create_time")
+    private String createTime;
+    @SerializedName("start_time")
+    private String startTime;
     @SerializedName("title")
     private String title;
     @SerializedName("count")
     private int count;
     @SerializedName("finish_count")
     private int finishCount;
+
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
 
     // start ================== 任务消息参数
     @SerializedName("task_id")

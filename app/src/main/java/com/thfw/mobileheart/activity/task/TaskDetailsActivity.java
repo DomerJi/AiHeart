@@ -105,7 +105,7 @@ public class TaskDetailsActivity extends BaseActivity<TaskPresenter> implements 
             map.put(DataChangeHelper.DataChangeListener.KEY_COUNT, data.getCount());
             DataChangeHelper.getInstance().notify(map);
         }
-        mTvTaskTime.setText(data.getDeadline());
+        mTvTaskTime.setText("截止：" + data.getDeadline());
         mTvTaskTitle.setText(data.getTitle());
         TaskChildLineAdapter adapter = new TaskChildLineAdapter(data.getContentList());
         adapter.setOnRvItemListener(new OnRvItemListener<TaskDetailModel.ContentListBean>() {
