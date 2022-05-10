@@ -21,7 +21,6 @@ import com.jaeger.library.StatusBarUtil;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.role.Limits;
 import com.thfw.base.utils.LogUtil;
-import com.thfw.ui.utils.NavigationBarUtil;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
 
@@ -47,8 +46,8 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity imp
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setStatusBarBackGround(getStatusBarColor());
         super.onCreate(savedInstanceState);
+        setStatusBarBackGround(getStatusBarColor());
         mContext = this;
         userObserver = addObserver();
         if (userObserver != null) {
@@ -76,17 +75,17 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity imp
             case STATUSBAR_NONE:
                 break;
             case STATUSBAR_TRANSPARENT:
-                // todo 验证此种方式的兼容性
+//                // todo 验证此种方式的兼容性
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 }
                 // 原来使用的方法
 //                StatusBarUtil.setTranslucent(this, 0);
                 // 底部虚拟导航栏适配
-                if (NavigationBarUtil.hasNavigationBarShow(this)) {
-                    LogUtil.e("hasNavigationBarShow -> true");
-                    getWindow().getDecorView().findViewById(android.R.id.content).setPadding(0, 0, 0, NavigationBarUtil.getNavigationBarHeight(this));
-                }
+//                if (NavigationBarUtil.checkDeviceHasNavigationBar(this)) {
+//                    LogUtil.e("hasNavigationBarShow -> true");
+//                    getWindow().getDecorView().findViewById(android.R.id.content).setPadding(0, 0, 0, NavigationBarUtil.getNavigationBarHeight(this));
+//                }
                 break;
             default:
                 // 默认白色，如果再设置白色不需要

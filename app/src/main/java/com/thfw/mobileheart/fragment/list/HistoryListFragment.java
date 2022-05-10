@@ -15,6 +15,7 @@ import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
+import com.thfw.mobileheart.activity.exercise.ExerciseIngActivity;
 import com.thfw.mobileheart.activity.read.BookDetailActivity;
 import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
 import com.thfw.mobileheart.activity.test.TestBeginActivity;
@@ -99,7 +100,7 @@ public class HistoryListFragment extends BaseFragment<HistoryPresenter> implemen
                     BookIdeoDetailActivity.startActivity(mContext, bookModel.getId());
                 } else if (historyModel instanceof HistoryModel.HistoryExerciseModel) { // 工具包
                     HistoryModel.HistoryExerciseModel exerciseModel = (HistoryModel.HistoryExerciseModel) historyModel;
-//                    ExerciseIngActivity.startActivity(mContext, exerciseModel.getId(), exerciseModel.isUsed());
+                    ExerciseIngActivity.startActivity(mContext, exerciseModel.getId(), exerciseModel.isUsed());
                 }
             }
         });
