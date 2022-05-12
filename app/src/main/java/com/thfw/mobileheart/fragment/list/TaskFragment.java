@@ -135,9 +135,15 @@ public class TaskFragment extends BaseFragment<TaskPresenter>
         int count = (int) map.get(KEY_COUNT);
         for (int i = 0; i < len; i++) {
             if (id == taskItemModels.get(i).getId()) {
-                taskItemModels.get(i).setFinishCount(current);
-                taskItemModels.get(i).setCount(count);
-                mTaskAdapter.notifyItemChanged(i);
+                // 完成后，不在未完成列表展示
+                if (type == 0 && count == current) {
+                    taskItemModels.remove(i);
+                    mTaskAdapter.notifyItemRemoved(i);
+                } else {
+                    taskItemModels.get(i).setFinishCount(current);
+                    taskItemModels.get(i).setCount(count);
+                    mTaskAdapter.notifyItemChanged(i);
+                }
                 break;
             }
         }
