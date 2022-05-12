@@ -324,7 +324,7 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
             @Override
             public void onResourceReady(@NonNull @NotNull Bitmap resource, @Nullable @org.jetbrains.annotations.Nullable Transition<? super Bitmap> transition) {
                 LogUtil.d(TAG, "onResourceReady++++++++++++++++++++++++++++++++++++");
-                mIvBlurBg.setImageBitmap(PaletteUtil.doBlur(resource, 2, true));
+                mIvBlurBg.setImageBitmap(PaletteUtil.doBlur(resource, 6, true));
             }
         });
     }

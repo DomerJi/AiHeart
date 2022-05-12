@@ -7,9 +7,11 @@ import android.graphics.BitmapFactory;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,9 +42,12 @@ public class ThemeListActivity extends BaseActivity<TalkPresenter> implements Ta
     private ThemeTalkAdapter talkAdapter;
     private ConstraintLayout mClTalkTop;
     private int bannerHeight;
+    private int bannerWidth;
     private ImageView mIvTalkBanner;
     private Bitmap blurBitmap;
     private int minHeight;
+    private TextView mTvDeepTalk;
+    private TextView mTvJustTalk;
 
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, ThemeListActivity.class));
@@ -67,6 +72,8 @@ public class ThemeListActivity extends BaseActivity<TalkPresenter> implements Ta
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
         mIvTalkBanner = findViewById(R.id.iv_talk_banner);
         mClTalkTop = findViewById(R.id.i_talk_top);
+        mTvDeepTalk = findViewById(R.id.tv_deep_talk);
+        mTvJustTalk = findViewById(R.id.tv_just_talk);
     }
 
     @Override
@@ -107,6 +114,7 @@ public class ThemeListActivity extends BaseActivity<TalkPresenter> implements Ta
             @Override
             public void run() {
                 bannerHeight = mClTalkTop.getHeight();
+                bannerWidth = mClTalkTop.getWidth();
             }
         });
         mRvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -138,19 +146,23 @@ public class ThemeListActivity extends BaseActivity<TalkPresenter> implements Ta
     public void onScroll(int y) {
         ViewGroup.LayoutParams lp = mClTalkTop.getLayoutParams();
         lp.height = bannerHeight - y;
+
         if (lp.height < minHeight) {
             lp.height = minHeight;
         } else if (lp.height > bannerHeight) {
             lp.height = bannerHeight;
         }
-        if (blurBitmap == null) {
-            blurBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.cat);
-        }
 
+        float alpha = (lp.height - minHeight) * 1.0f / (bannerHeight - minHeight);
+        LogUtil.d("onScroll alpha = " + alpha);
+        if (blurBitmap == null) {
+            blurBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_theme_banner);
+        }
+        mTvDeepTalk.setAlpha(alpha);
         if (lp.height < bannerHeight) {
-            int radius = (int) (10 * ((bannerHeight - lp.height) * 1f / bannerHeight));
-            if (radius < 2) {
-                radius = 2;
+            int radius = (int) (20 * (1 - alpha));
+            if (radius < 4) {
+                radius = 4;
             }
             LogUtil.d("onScroll radius = " + radius);
             mIvTalkBanner.setImageBitmap(PaletteUtil.doBlur(blurBitmap, radius, true));
@@ -159,6 +171,16 @@ public class ThemeListActivity extends BaseActivity<TalkPresenter> implements Ta
         }
 
         mClTalkTop.setLayoutParams(lp);
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(mClTalkTop);
+
+//        constraintSet.setHorizontalBias(R.id.tv_deep_talk, 0.2f + 0.7f * alpha);
+        constraintSet.setVerticalBias(R.id.tv_deep_talk, 0.5f - 0.25f * alpha);
+
+        constraintSet.setHorizontalBias(R.id.tv_just_talk, 0.5f + 0.4f * alpha);
+        constraintSet.setVerticalBias(R.id.tv_just_talk, 0.5f + 0.1f * alpha);
+        constraintSet.applyTo(mClTalkTop);
+
     }
 
 

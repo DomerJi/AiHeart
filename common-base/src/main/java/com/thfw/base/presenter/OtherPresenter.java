@@ -9,6 +9,7 @@ import com.thfw.base.models.CommonProblemModel;
 import com.thfw.base.models.FeedBackModel;
 import com.thfw.base.models.HotCallModel;
 import com.thfw.base.models.VoiceInstructionModel;
+import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.OkHttpUtil;
@@ -37,7 +38,9 @@ public class OtherPresenter extends IPresenter<OtherPresenter.OtherUi> {
 
     public void onGetCommonProblem(int page) {
         Observable<HttpResult<List<CommonProblemModel>>> observable = OkHttpUtil.createService(OtherApi.class)
-                .getQuestionAnswer(NetParams.crete().add("page", page));
+                .getQuestionAnswer(NetParams.crete()
+                        .add("device_type", CommonParameter.getDeviceType())
+                        .add("page", page));
         OkHttpUtil.request(observable, getUI());
     }
 

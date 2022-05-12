@@ -153,9 +153,9 @@ public class PaletteUtil {
                 return (null);
             }
             // 缩小后高斯模糊更快
-            if (bitmap.getWidth() > 100) {
-                int lv = bitmap.getWidth() / 100;
-                bitmap = BitmapUtil.zoomBitmap(bitmap, bitmap.getWidth() / lv, bitmap.getHeight() / lv);
+            if (bitmap.getWidth() > 200) {
+                float lv = bitmap.getWidth() * 1f / 200;
+                bitmap = BitmapUtil.zoomBitmap(bitmap, (int) (bitmap.getWidth() / lv), (int) (bitmap.getHeight() / lv));
             }
 
             int w = bitmap.getWidth();
