@@ -23,4 +23,15 @@ public class WebSizeUtil {
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         webSettings.setTextZoom(sizeZoom);
     }
+
+    public static void setSizeByAgree(Context context, WebSettings webSettings) {
+        int screenDensity = context.getResources().getDisplayMetrics().densityDpi;
+        float lv = screenDensity * 1.0f / DisplayMetrics.DENSITY_MEDIUM;
+        int sizeZoom = (int) (lv * 100f);
+        LogUtil.d("WebSizeUtil", "screenDensity = " + screenDensity);
+        LogUtil.d("WebSizeUtil", "lv = " + lv);
+        LogUtil.d("WebSizeUtil", "sizeZoom = " + sizeZoom);
+        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+        webSettings.setTextZoom(sizeZoom);
+    }
 }

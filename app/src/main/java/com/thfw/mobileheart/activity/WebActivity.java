@@ -2,6 +2,7 @@ package com.thfw.mobileheart.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.just.agentweb.DefaultWebClient;
 import com.thfw.base.base.IPresenter;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.constants.AgreeOn;
+import com.thfw.mobileheart.util.WebSizeUtil;
 import com.thfw.ui.widget.TitleView;
 
 /**
@@ -111,6 +113,19 @@ public class WebActivity extends BaseActivity {
         // 支持缩放
         mAgentWeb.getWebCreator().getWebView().getSettings().setBuiltInZoomControls(true);
         mAgentWeb.getWebCreator().getWebView().getSettings().setSupportZoom(true);
+        // 针对协议放大字体
+        if (!TextUtils.isEmpty(url) && AgreeOn.isAgreeUrl(url)) {
+            WebSizeUtil.setSizeByAgree(mContext, mAgentWeb.getWebCreator().getWebView().getSettings());
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mAgentWeb.getWebCreator().getWebView().getLayoutParams();
+            lp.leftMargin = 26;
+            lp.rightMargin = 26;
+            lp.topMargin = 12;
+            lp.bottomMargin = 12;
+            mAgentWeb.getWebCreator().getWebView().setLayoutParams(lp);
+            // 支持缩放
+            mAgentWeb.getWebCreator().getWebView().getSettings().setBuiltInZoomControls(false);
+            mAgentWeb.getWebCreator().getWebView().getSettings().setSupportZoom(false);
+        }
 
         // 允许webview对文件的操作
         mAgentWeb.getWebCreator().getWebView().getSettings().setAllowFileAccess(true);
