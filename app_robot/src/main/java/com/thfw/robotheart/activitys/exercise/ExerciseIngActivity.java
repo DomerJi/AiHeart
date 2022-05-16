@@ -689,7 +689,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
             @Override
             public void onItemClick(List<DialogTalkModel.CheckRadioBean> list, int position) {
                 if (mIsAchieve) {
-                    startFinishAnim(new Random().nextBoolean());
+                    finish();
                     return;
                 }
                 DialogTalkModel.CheckRadioBean radioBean = list.get(position);

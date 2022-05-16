@@ -673,7 +673,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
             @Override
             public void onItemClick(List<DialogTalkModel.CheckRadioBean> list, int position) {
                 if (mIsAchieve) {
-                    startFinishAnim(new Random().nextBoolean());
+                    finish();
                     return;
                 }
                 DialogTalkModel.CheckRadioBean radioBean = list.get(position);
@@ -881,6 +881,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
                 count = 60;
                 mMainHandler.postDelayed(mStopRunnable, 1000);
             }
+
             // 录音60S后停止
             private TextView mStopHint;
             int count;

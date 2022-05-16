@@ -18,7 +18,7 @@
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/rl_send"
+        android:layout_above="@id/cl_select"
         android:layout_below="@id/titleView"
         app:srlEnableOverScrollDrag="true">
 
@@ -48,8 +48,8 @@
         android:id="@+id/rl_send"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/white"
         android:layout_alignParentBottom="true"
+        android:background="@color/white"
         tools:ignore="MissingConstraints"
         tools:layout_height="46dp">
 
@@ -140,6 +140,7 @@
         android:visibility="gone" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/rl_send">
