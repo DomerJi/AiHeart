@@ -47,6 +47,8 @@ public class ExerciseActivity extends BaseActivity<UserToolPresenter> implements
 
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
+        mRefreshLayout.setEnableRefresh(false);
+        mRefreshLayout.setEnableLoadMore(false);
         mRvList = (RecyclerView) findViewById(R.id.rv_exercise);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext));
 
