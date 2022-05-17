@@ -48,10 +48,10 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
-import com.thfw.mobileheart.activity.TestActivity;
 import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
 import com.thfw.mobileheart.activity.talk.TalkItemJumpHelper;
 import com.thfw.mobileheart.activity.talk.ThemeListActivity;
+import com.thfw.mobileheart.activity.test.TestingActivity;
 import com.thfw.mobileheart.adapter.ChatAdapter;
 import com.thfw.mobileheart.adapter.ChatSelectAdapter;
 import com.thfw.mobileheart.util.DialogFactory;
@@ -164,7 +164,6 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
         softInput();
         mClLizi = (ConstraintLayout) findViewById(R.id.cl_lizi);
         mIvLiziText = (ImageView) findViewById(R.id.iv_lizi_text);
-        mIvLiziText.setVisibility(View.VISIBLE);
         mTvSend.setOnClickListener(v -> {
             String input = mEtContent.getText().toString();
             sendData(new ChatEntity(ChatEntity.TYPE_TO, input));
@@ -206,6 +205,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
             }
         });
         initChatInput();
+
 
     }
 
@@ -318,7 +318,8 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
                     explosionField.explode(bitmaps, explosionField, 0, 1800);
 
                     int height = ScreenUtils.getScreenHeight(mContext);
-                    mIvLiziText.animate().translationY(height / 2 + mIvLiziText.getHeight() / 2)
+                    mIvLiziText.setAlpha(0.2f);
+                    mIvLiziText.animate().alpha(1f).translationY(height / 2 + mIvLiziText.getHeight() / 2)
                             .setInterpolator(new BounceInterpolator())
                             .setDuration(600).setStartDelay(800);
                 }
@@ -337,7 +338,8 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
                     mFallingView.beginDraw(newFallObjects);
 
                     int height = ScreenUtils.getScreenHeight(mContext);
-                    mIvLiziText.animate().translationY(height / 2 + mIvLiziText.getHeight() / 2)
+                    mIvLiziText.setAlpha(0.2f);
+                    mIvLiziText.animate().alpha(1f).translationY(height / 2 + mIvLiziText.getHeight() / 2)
                             .setInterpolator(new BounceInterpolator())
                             .setDuration(800).setStartDelay(800);
                     mFallingView.setFocusable(false);
@@ -363,7 +365,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
                     mMainHandler.postDelayed(this, 1000);
                 }
             }
-        }, 3000);
+        }, 2500);
 
 
     }
@@ -687,7 +689,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
                             handleResult = true;
                             switch (type) {
                                 case PageJumpUtils.JUMP_TEXT:
-                                    startActivityForResult(new Intent(mContext, TestActivity.class), type);
+                                    startActivityForResult(new Intent(mContext, TestingActivity.class), type);
                                     break;
                                 case PageJumpUtils.JUMP_MUSIC:
                                     startActivityForResult(new Intent(mContext, AudioHomeActivity.class), type);

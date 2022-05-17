@@ -171,7 +171,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.8"
             tools:ignore="MissingConstraints">
 
         </com.thfw.mobileheart.view.fall.FallingView>
@@ -184,38 +183,41 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.8" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-
-        <ImageView
-            android:id="@+id/iv_lizi_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="140dp"
-            android:layout_marginRight="140dp"
-            android:adjustViewBounds="true"
-            android:paddingTop="55dp"
-            android:src="@drawable/ic_finish_tool"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
 
         <TextView
             android:id="@+id/tv_finish_3s"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:layout_marginRight="80dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
             android:letterSpacing="0.2"
-            android:textColor="@color/text_green"
+            android:shadowColor="@color/black"
+            android:shadowDx="3"
+            android:shadowDy="3"
+            android:shadowRadius="8.0"
+            android:textColor="@color/white"
             android:textSize="@dimen/textSize_large"
             android:textStyle="bold"
+            android:visibility="visible"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="3秒后自动关闭" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+    <ImageView
+        android:id="@+id/iv_lizi_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-100dp"
+        android:adjustViewBounds="true"
+        android:alpha="0"
+        android:src="@drawable/ic_finish_tool"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="MissingConstraints" />
 
 </RelativeLayout>

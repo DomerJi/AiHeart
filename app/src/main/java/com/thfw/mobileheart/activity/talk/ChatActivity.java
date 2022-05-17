@@ -48,8 +48,8 @@ import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
-import com.thfw.mobileheart.activity.TestActivity;
 import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
+import com.thfw.mobileheart.activity.test.TestingActivity;
 import com.thfw.mobileheart.adapter.ChatAdapter;
 import com.thfw.mobileheart.adapter.ChatSelectAdapter;
 import com.thfw.mobileheart.constants.AnimFileName;
@@ -927,7 +927,7 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
                             handleResult = true;
                             switch (type) {
                                 case PageJumpUtils.JUMP_TEXT:
-                                    startActivityForResult(new Intent(mContext, TestActivity.class), type);
+                                    startActivityForResult(new Intent(mContext, TestingActivity.class), type);
                                     break;
                                 case PageJumpUtils.JUMP_MUSIC:
                                     startActivityForResult(new Intent(mContext, AudioHomeActivity.class), type);
