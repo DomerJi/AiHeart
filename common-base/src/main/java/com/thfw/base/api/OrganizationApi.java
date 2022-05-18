@@ -5,8 +5,11 @@ import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.net.HttpResult;
 
+import java.util.Map;
+
 import io.reactivex.Observable;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
@@ -33,7 +36,7 @@ public interface OrganizationApi {
      */
     @FormUrlEncoded
     @POST("get_organization_pwd")
-    Observable<HttpResult<OrganizationSelectedModel>> onGetJoinedList(@Field("id") String organizationId);
+    Observable<HttpResult<OrganizationSelectedModel>> onGetJoinedList(@FieldMap Map<String,Object> map);
 
 
     /**

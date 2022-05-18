@@ -1,5 +1,7 @@
 package com.thfw.base.presenter;
 
+import android.text.TextUtils;
+
 import com.thfw.base.api.OrganizationApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
@@ -8,6 +10,7 @@ import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.HttpResult;
+import com.thfw.base.net.NetParams;
 import com.thfw.base.net.OkHttpUtil;
 
 import io.reactivex.Observable;
@@ -34,8 +37,12 @@ public class OrganizationPresenter extends IPresenter<OrganizationPresenter.Orga
 
     public void onGetJoinedList() {
         String organizationId = CommonParameter.getOrganizationId();
+        NetParams netParams = NetParams.crete();
+        if (!TextUtils.isEmpty(organizationId)) {
+            netParams.add("id", netParams);
+        }
         Observable<HttpResult<OrganizationSelectedModel>> observable = OkHttpUtil.createService(OrganizationApi.class)
-                .onGetJoinedList(organizationId);
+                .onGetJoinedList(netParams);
         OkHttpUtil.request(observable, getUI());
 
     }
