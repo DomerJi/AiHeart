@@ -34,9 +34,25 @@ public class OrganizationPresenter extends IPresenter<OrganizationPresenter.Orga
 
     }
 
+    public void onGetOrganizationList(String newOrganizationId) {
+        String organizationId = CommonParameter.getOrganizationId();
+        if (!TextUtils.isEmpty(newOrganizationId)) {
+            organizationId = newOrganizationId;
+        }
+        Observable<HttpResult<OrganizationModel>> observable = OkHttpUtil.createService(OrganizationApi.class).onGetOrganizationList(organizationId);
+        OkHttpUtil.request(observable, getUI());
+
+    }
+
 
     public void onGetJoinedList() {
-        String organizationId = CommonParameter.getOrganizationId();
+        Observable<HttpResult<OrganizationSelectedModel>> observable = OkHttpUtil.createService(OrganizationApi.class)
+                .onGetJoinedList(NetParams.crete());
+        OkHttpUtil.request(observable, getUI());
+
+    }
+
+    public void onGetJoinedList(String organizationId) {
         NetParams netParams = NetParams.crete();
         if (!TextUtils.isEmpty(organizationId)) {
             netParams.add("id", netParams);

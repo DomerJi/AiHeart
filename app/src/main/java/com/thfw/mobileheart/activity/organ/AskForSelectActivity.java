@@ -77,6 +77,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
     private ArrayList<String> childIds;
     private androidx.constraintlayout.widget.ConstraintLayout mClRequest;
     private androidx.constraintlayout.widget.ConstraintLayout mClSelect;
+    private static String mScanOrganizationId;
 
     public static void startForResult(Context context, boolean isFirst) {
         ((Activity) context).startActivityForResult(new Intent(context, AskForSelectActivity.class)
@@ -95,6 +96,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
 
     @Override
     public void initView() {
+        mScanOrganizationId = "";
         mClRequest = (ConstraintLayout) findViewById(R.id.cl_request);
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mRivAvatar = (RoundedImageView) findViewById(R.id.riv_avatar);
@@ -157,9 +159,10 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
                 if (!EmptyUtil.isEmpty(params) && !TextUtils.isEmpty(params.get("i"))) {
                     String organizationId = params.get("i");
                     LogUtil.d(TAG, "codeData organizationId = " + organizationId);
-                    CommonParameter.setOrganizationId(organizationId);
+                    mScanOrganizationId = organizationId;
                     initSelectedList();
                 } else {
+                    mScanOrganizationId = "";
                     ToastUtil.show("无法识别该二维码！");
                 }
                 break;
@@ -288,7 +291,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
                     CommonParameter.setOrganizationModelPhone(data);
                     initSelectedList(mSelectedRequest, data.getOrganization());
                 }
-                mPresenter.onGetOrganizationList();
+                mPresenter.onGetOrganizationList(mScanOrganizationId);
             }
 
             @Override
@@ -297,7 +300,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
                     initDataList();
                 });
             }
-        }).onGetJoinedList();
+        }).onGetJoinedList(mScanOrganizationId);
     }
 
     private void initSelectedList(List<OrganizationSelectedModel.OrganizationBean> list, OrganizationSelectedModel.OrganizationBean bean) {
@@ -418,6 +421,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
 
     @Override
     public void onDestroy() {
+        mScanOrganizationId = "";
         if (mIsFirst) {
             UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
         }
@@ -459,7 +463,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
                     public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
                         tDialog.dismiss();
                         if (view.getId() == com.thfw.ui.R.id.tv_right) {
-                            CommonParameter.setOrganizationId(organizationId);
+                            mScanOrganizationId = organizationId;
                             AskForSelectActivity.startForResult(fragmentActivity, false);
                         }
                     }
@@ -468,4 +472,5 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
         }
 
     }
+
 }
