@@ -34,7 +34,7 @@ public class StudyListAdapter extends BaseAdapter<BookStudyItemModel, StudyListA
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull BookListHolder holder, int position) {
-        holder.mTvOrder.setText(String.valueOf(position + 1) + "、");
+        holder.mTvOrder.setText(String.valueOf(position + 1) + ". ");
         holder.mTvTitle.setText(mDataList.get(position).getTitle());
     }
 

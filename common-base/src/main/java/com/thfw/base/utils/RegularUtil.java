@@ -114,7 +114,7 @@ public class RegularUtil {
             return false;
         } else {
             // 限制长度
-            if (psw.length() < 6 || psw.length() > 16) {
+            if (psw.length() < 8 || psw.length() > 16) {
                 return false;
             }
             // matches():字符串是否在给定的正则表达式匹配

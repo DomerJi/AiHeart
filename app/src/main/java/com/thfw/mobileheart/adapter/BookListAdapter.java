@@ -34,7 +34,7 @@ public class BookListAdapter extends BaseAdapter<BookItemModel, BookListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull BookListHolder holder, int position) {
-        holder.mTvOrder.setText(String.valueOf(position + 1) + "、");
+        holder.mTvOrder.setText(String.valueOf(position + 1) + ". ");
         holder.mTvTitle.setText(mDataList.get(position).getTitle());
     }
 
