@@ -84,6 +84,9 @@ public class TaskFragment extends RobotBaseFragment<TaskPresenter> implements Ta
                 } else if (itemModel.getStatus() == 3) {
                     ToastUtil.show("已作废");
                     return;
+                } else if (itemModel.getStatus() == 4) {
+                    ToastUtil.show("任务开始时间：" + itemModel.getStartTime());
+                    return;
                 }
                 TaskDetailsActivity.startActivity(mContext, itemModel.getId());
             }

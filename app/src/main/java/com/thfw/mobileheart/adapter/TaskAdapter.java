@@ -50,7 +50,15 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
         holder.mTvStatus.setText(itemModel.getFinishCount() + "/" + itemModel.getCount());
         holder.mTvTitle.setText(itemModel.getTitle());
         holder.mTvType.setText(itemModel.getTaskTypeStr());
-        if (itemModel.getStatus() == 3) {
+        if (itemModel.getStatus() == 4) {
+            holder.mTvFlag.setVisibility(View.VISIBLE);
+            holder.mTvFlag.setText("未开始");
+            holder.mTvFlag.setBackgroundResource(R.drawable.yellow_radius_bg);
+            holder.mTvTitle.setTextColor(textDefaultColor);
+            holder.mTvType.setTextColor(textDefaultColor);
+            holder.mTvStatus.setTextColor(textDefaultColor);
+            holder.mTvTime.setTextColor(textDefaultColor);
+        } else if (itemModel.getStatus() == 3) {
             holder.mTvFlag.setVisibility(View.VISIBLE);
             holder.mTvFlag.setText("已作废");
             holder.mTvFlag.setBackgroundResource(R.drawable.yellow_radius_bg);
