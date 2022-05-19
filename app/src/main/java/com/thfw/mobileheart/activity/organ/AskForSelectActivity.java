@@ -229,6 +229,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
                 CommonParameter.setOrganizationSelected(mSelecteds);
                 UserManager.getInstance().getUser().setOrganList(mSelecteds);
                 UserManager.getInstance().notifyUserInfo();
+                CommonParameter.setOrganizationId(mScanOrganizationId);
                 LoadingDialog.hide();
                 ToastUtil.show("选择成功");
                 mIsFirst = false;
@@ -288,7 +289,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
             public void onSuccess(OrganizationSelectedModel data) {
                 if (data != null) {
                     mSelectedRequest = new ArrayList<>();
-                    CommonParameter.setOrganizationModelPhone(data);
+//                    CommonParameter.setOrganizationModelPhone(data);
                     initSelectedList(mSelectedRequest, data.getOrganization());
                 }
                 mPresenter.onGetOrganizationList(mScanOrganizationId);
