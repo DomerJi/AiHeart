@@ -141,7 +141,10 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
     public void onVisible(boolean isVisible) {
         super.onVisible(isVisible);
         if (isVisible) {
-            mEtMobile.setText(LoginActivity.INPUT_PHONE);
+            if (RegularUtil.isNumber(LoginActivity.INPUT_PHONE)
+                    && LoginActivity.INPUT_PHONE.startsWith("1")) {
+                mEtMobile.setText(LoginActivity.INPUT_PHONE);
+            }
         } else {
             LoginActivity.INPUT_PHONE = mEtMobile.getText().toString();
         }

@@ -19,7 +19,6 @@ import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.utils.LogUtil;
-import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
@@ -136,7 +135,7 @@ public class LoginPasswordFragment extends RobotBaseFragment<LoginPresenter> imp
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String phone = mEtMobile.getText().toString();
                 String password = mEtPassword.getText().toString();
-                boolean canLogin = RegularUtil.isPhone(phone) && !TextUtils.isEmpty(password) && password.length() >= 6;
+                boolean canLogin = (phone != null && phone.length() > 3) && !TextUtils.isEmpty(password) && password.length() >= 6;
                 mBtLogin.setEnabled(canLogin);
             }
         };

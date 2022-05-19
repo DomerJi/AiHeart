@@ -16,7 +16,6 @@ import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.utils.LogUtil;
-import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
@@ -83,7 +82,7 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String phone = mEtMobile.getText().toString();
                 String password = mEtPassword.getText().toString();
-                mBtLogin.setEnabled(RegularUtil.isPhone(phone) && (password != null && password.length() > 5));
+                mBtLogin.setEnabled((phone != null && phone.length() > 3) && (password != null && password.length() > 5));
             }
         };
         mEtPassword.addTextChangedListener(myTextWatcher);
