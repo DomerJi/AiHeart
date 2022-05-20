@@ -27,6 +27,8 @@ import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
+import com.thfw.ui.voice.tts.TtsHelper;
+import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.models.User;
@@ -119,6 +121,7 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
                     @Override
                     public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
                         if (view.getId() == R.id.tv_right) {
+                            TtsHelper.getInstance().start(new TtsModel("拜拜，下次见哦"), null);
                             UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
                             finish();
                         }
