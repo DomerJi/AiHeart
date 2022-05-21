@@ -103,7 +103,7 @@ public class TitleBarView extends LinearLayout {
                 mPbBatteryProgress.setProgressBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
                 mVBatteryHead.setBackgroundColor(Color.WHITE);
                 mTvProgress.setTextColor(Color.BLACK);
-                mIvBatteryIng.setColorFilter(getResources().getColor(R.color.colorRobotFore));
+                mIvBatteryIng.setColorFilter(Color.WHITE);
             }
 
             setBackgroundColor(colorBg);

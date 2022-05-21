@@ -10,10 +10,11 @@
 
     <RelativeLayout
         android:id="@+id/rl_connect"
-        android:layout_width="110dp"
-        android:layout_height="50dp"
+        android:layout_width="120dp"
+        android:layout_height="45dp"
         android:layout_gravity="right"
-        android:layout_margin="16dp">
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="26dp">
 
         <TextView
             android:id="@+id/tv_connect"
@@ -39,7 +40,7 @@
     <LinearLayout
         android:id="@+id/ll_user"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
         android:paddingLeft="16dp"
@@ -74,7 +75,7 @@
     <LinearLayout
         android:id="@+id/ll_pass"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
         android:paddingLeft="16dp"
@@ -87,7 +88,7 @@
             android:layout_marginRight="16dp"
             android:text="输入密码"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="@dimen/textSize_large" />
 
         <EditText
             android:id="@+id/et_pass"
@@ -100,8 +101,9 @@
             android:maxLines="1"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
+            android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="@dimen/textSize_large"
             tools:text="123456" />
 
     </LinearLayout>
