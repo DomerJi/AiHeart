@@ -54,7 +54,7 @@
         android:layout_marginRight="-6dp"
         android:visibility="visible"
         android:src="@mipmap/ic_bat_ing"
-        app:tint="@color/colorRobotFore"
+        app:tint="@color/titleBar_tint"
         android:foregroundTint="@color/white"
         android:backgroundTint="@color/white"
         android:drawableTint="@color/white"
@@ -84,7 +84,7 @@
             android:layout_height="6dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@color/colorRobotFore" />
+            android:background="@color/titleBar_tint" />
 
         <TextView
             android:id="@+id/tv_progress"

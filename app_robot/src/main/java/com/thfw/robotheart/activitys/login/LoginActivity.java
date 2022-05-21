@@ -10,6 +10,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.core.app.ActivityCompat;
@@ -35,11 +36,13 @@ import com.thfw.robotheart.activitys.me.InfoActivity;
 import com.thfw.robotheart.activitys.me.MeActivity;
 import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
+import com.thfw.robotheart.activitys.set.SettingActivity;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.fragments.login.LoginByFaceFragment;
 import com.thfw.robotheart.fragments.login.LoginMobileCodeFragment;
 import com.thfw.robotheart.fragments.login.LoginMobileFragment;
 import com.thfw.robotheart.fragments.login.LoginPasswordFragment;
+import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.ui.dialog.TDialog;
@@ -138,6 +141,15 @@ public class LoginActivity extends RobotBaseActivity {
     public void initView() {
         MeActivity.resetInitFaceState();
         type = getIntent().getIntExtra(KEY_DATA, BY_MOBILE);
+        // 机器人登录页面显示设置按钮
+        if (RobotUtil.isInstallRobot()) {
+            ImageView mIvSet = findViewById(R.id.iv_set);
+            mIvSet.setVisibility(View.VISIBLE);
+            mIvSet.setOnClickListener(v -> {
+                startActivity(new Intent(mContext, SettingActivity.class));
+            });
+        }
+
         findViewById(R.id.titleBarView).setOnClickListener(v -> {
             if (ClickCountUtils.click(10)) {
                 startActivity(new Intent(mContext, PrivateSetActivity.class));

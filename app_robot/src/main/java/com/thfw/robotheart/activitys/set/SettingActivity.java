@@ -26,6 +26,7 @@ import com.thfw.robotheart.fragments.sets.SetNetFragment;
 import com.thfw.robotheart.fragments.sets.SetSpeechFragment;
 import com.thfw.robotheart.fragments.sets.SetUpdateFragment;
 import com.thfw.robotheart.fragments.sets.SetVolumeFragment;
+import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
 
@@ -82,21 +83,35 @@ public class SettingActivity extends RobotBaseActivity {
         mTvSetDormant = (TextView) findViewById(R.id.tv_set_dormant);
         mTvSetUpdate = (TextView) findViewById(R.id.tv_set_update);
         mRlSetUpdate = (RelativeLayout) findViewById(R.id.rl_set_update);
-        mTabs = new View[]{mTvSetNet, mTvSetVolume, mTvSetSpeech, mTvSetLight, mTvSetBlue, mTvSetDormant, mRlSetUpdate};
     }
 
     @Override
     public void initData() {
 
         FragmentLoader mLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
-        mLoader.add(R.id.tv_set_net, new SetNetFragment());
+        if (RobotUtil.isInstallRobot()) {
+            mLoader.add(R.id.tv_set_net, new SetNetFragment());
+        } else {
+            mTvSetNet.setVisibility(View.GONE);
+        }
         mLoader.add(R.id.tv_set_volume, new SetVolumeFragment());
         mLoader.add(R.id.tv_set_speech, new SetSpeechFragment());
-        mLoader.add(R.id.tv_set_light, new SetLightFragment());
+
+        if (RobotUtil.isInstallRobot()) {
+            mLoader.add(R.id.tv_set_light, new SetLightFragment());
+        } else {
+            mTvSetLight.setVisibility(View.GONE);
+        }
         mLoader.add(R.id.tv_set_blue, new SetBlueFragment());
         mLoader.add(R.id.tv_set_dormant, new SetDormantFragment());
 //        mLoader.add(R.id.tv_set_shutdown, new SetShutdownFragment());
         mLoader.add(R.id.rl_set_update, new SetUpdateFragment());
+        if (RobotUtil.isInstallRobot()) {
+            mTabs = new View[]{mTvSetNet, mTvSetVolume, mTvSetSpeech, mTvSetLight, mTvSetBlue, mTvSetDormant, mRlSetUpdate};
+        } else {
+            mTabs = new View[]{mTvSetVolume, mTvSetSpeech, mTvSetBlue, mTvSetDormant, mRlSetUpdate};
+        }
+
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
 
