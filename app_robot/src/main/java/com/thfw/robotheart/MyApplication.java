@@ -28,6 +28,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.activitys.MainActivity;
 import com.thfw.robotheart.push.MyPreferences;
 import com.thfw.robotheart.push.helper.PushHelper;
+import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.ui.dialog.TDialog;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.commonsdk.utils.UMUtils;
@@ -131,12 +132,15 @@ public class MyApplication extends MultiDexApplication {
                     init();
                 }
             }).start();
-        } else {
-            init();
         }
+//        else {
+//            init();
+//        }
     }
 
     private void init() {
+
+        RobotUtil.longPressOffBtn();
         BuglyUtil.init("382fc62522");
         initSpeech();
         //是否同意隐私政策

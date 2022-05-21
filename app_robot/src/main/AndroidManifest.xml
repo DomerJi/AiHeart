@@ -54,8 +54,17 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BIND_JOB_SERVICE" />
+    <!-- 开机广播-->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-feature android:name="android.hardware.camera2.full" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
 
     <supports-screens
         android:anyDensity="true"
@@ -223,8 +232,8 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.login.LoginActivity"
-            android:screenOrientation="landscape"
             android:launchMode="singleTop"
+            android:screenOrientation="landscape"
             android:theme="@style/LoginTheme" />
         <activity
             android:name=".activitys.set.SettingActivity"
@@ -277,6 +286,18 @@
             android:launchMode="singleTask"
             android:screenOrientation="behind"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" /> <!-- 魅族 start -->
+
+        <!--开机广播-->
+        <receiver
+            android:name=".receiver.BootCompleteReceiver"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+
+        </receiver>
+
         <!-- push应用定义消息receiver声明 -->
         <receiver
             android:name=".push.mfr.MfrMzMessageReceiver"
