@@ -30,9 +30,17 @@ import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NetworkUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.Dormant;
 
 import org.jetbrains.annotations.NotNull;
+
+import static android.os.BatteryManager.BATTERY_STATUS_CHARGING;
+import static android.os.BatteryManager.BATTERY_STATUS_DISCHARGING;
+import static android.os.BatteryManager.BATTERY_STATUS_FULL;
+import static android.os.BatteryManager.BATTERY_STATUS_NOT_CHARGING;
+import static android.os.BatteryManager.BATTERY_STATUS_UNKNOWN;
+import static android.os.BatteryManager.EXTRA_STATUS;
 
 /**
  * Author:pengs
@@ -59,6 +67,7 @@ public class TitleBarView extends LinearLayout {
     private boolean colorFgWhite;
     private ImageView mIvTitleBarBlue;
     private RelativeLayout mRlBattery;
+    private ImageView mIvBatteryIng;
 
     public TitleBarView(@NonNull @NotNull Context context) {
         this(context, null);
@@ -84,7 +93,8 @@ public class TitleBarView extends LinearLayout {
                 mPbBatteryProgress.setProgressTintList(ColorStateList.valueOf(Color.BLACK));
                 mPbBatteryProgress.setProgressBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
                 mVBatteryHead.setBackgroundColor(Color.BLACK);
-                mTvProgress.setTextColor(Color.WHITE);
+                mTvProgress.setTextColor(Color.parseColor("#BBBBBB"));
+                mIvBatteryIng.setColorFilter(Color.BLACK);
             } else if (colorFgWhite) {
                 mIvTitleBarWifi.setColorFilter(Color.WHITE);
                 mIvTitleBarBlue.setColorFilter(Color.WHITE);
@@ -93,6 +103,7 @@ public class TitleBarView extends LinearLayout {
                 mPbBatteryProgress.setProgressBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
                 mVBatteryHead.setBackgroundColor(Color.WHITE);
                 mTvProgress.setTextColor(Color.BLACK);
+                mIvBatteryIng.setColorFilter(getResources().getColor(R.color.colorRobotFore));
             }
 
             setBackgroundColor(colorBg);
@@ -116,9 +127,18 @@ public class TitleBarView extends LinearLayout {
         inflate(mContext, R.layout.layout_titlebar_view, this);
 
         initView();
-        initReceiver();
+        if (RobotUtil.isInstallRobot()) {
+            initBatReceiver();
+        } else {
+            initReceiver();
+        }
         initTimeReceiver();
         initBlueReceiver();
+    }
+
+    // 机器人电量和 充电状态
+    private void initBatReceiver() {
+
     }
 
     private void initTimeReceiver() {
@@ -146,6 +166,7 @@ public class TitleBarView extends LinearLayout {
         mTvTitleBarTime = (TextView) findViewById(R.id.tv_titleBar_time);
         mFlBattery = (RelativeLayout) findViewById(R.id.rl_battery);
         mPbBatteryProgress = (ProgressBar) findViewById(R.id.pb_battery_progress);
+        mIvBatteryIng = (ImageView) findViewById(R.id.iv_battery_ing);
         mTvProgress = (TextView) findViewById(R.id.tv_progress);
         mVBatteryHead = findViewById(R.id.v_battery_head);
         if (level > 0) {
@@ -210,9 +231,27 @@ public class TitleBarView extends LinearLayout {
             mBatInfoReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
+
                     level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
                     LogUtil.d(TAG, "level = " + level);
                     updateBattery(level);
+                    int status = intent.getIntExtra(EXTRA_STATUS, BATTERY_STATUS_UNKNOWN);
+
+                    switch (status) {
+                        case BATTERY_STATUS_CHARGING:
+                            // 充电中
+                            mIvBatteryIng.setVisibility(VISIBLE);
+                            break;
+                        case BATTERY_STATUS_UNKNOWN:// 未知
+                        case BATTERY_STATUS_FULL:
+                            // 充满电
+                        case BATTERY_STATUS_NOT_CHARGING:
+                            // 未充电
+                        case BATTERY_STATUS_DISCHARGING:
+                            // 放电中
+                            mIvBatteryIng.setVisibility(GONE);
+                            break;
+                    }
                 }
             };
         }
