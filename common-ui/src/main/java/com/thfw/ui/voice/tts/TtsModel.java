@@ -11,6 +11,7 @@ public class TtsModel {
 
     public TtsType ttsType;
     public String text;
+    public boolean cache = true;
 
     public TtsModel(String text) {
         if (TextUtils.isEmpty(text)) {
@@ -20,6 +21,11 @@ public class TtsModel {
             this.text = this.text.replaceAll(" ", "");
         }
         this.ttsType = TtsType.READ_NORMAL;
+    }
+
+    public TtsModel setCache(boolean cache) {
+        this.cache = cache;
+        return this;
     }
 
     public TtsModel(String text, TtsType ttsType) {

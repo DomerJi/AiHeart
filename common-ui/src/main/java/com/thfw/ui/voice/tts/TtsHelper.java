@@ -3,6 +3,11 @@ package com.thfw.ui.voice.tts;
 import android.media.AudioManager;
 import android.os.Bundle;
 
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
@@ -13,6 +18,8 @@ import com.thfw.base.utils.InformantUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.ui.voice.VoiceType;
 import com.thfw.ui.voice.VoiceTypeManager;
+
+import java.io.File;
 
 /**
  * Author:pengs
@@ -36,6 +43,7 @@ public class TtsHelper implements ITtsFace {
 
     private TtsModel ttsModel;
     private SynthesizerListener currentSynthesizerListener;
+    private SimpleExoPlayer exoPlayer;
 
     private TtsHelper() {
         customSynthesizerListener = new CustomSynthesizerListener();
@@ -78,12 +86,8 @@ public class TtsHelper implements ITtsFace {
         mTts.setParameter(SpeechConstant.STREAM_TYPE, AudioManager.STREAM_MUSIC + "");
         // 设置播放合成音频打断音乐播放，默认为true
         mTts.setParameter(SpeechConstant.KEY_REQUEST_FOCUS, "true");
-
         // 设置音频保存路径，保存音频格式支持pcm、wav，设置路径为sd卡请注意WRITE_EXTERNAL_STORAGE权限
-//        mTts.setParameter(SpeechConstant.AUDIO_FORMAT, "wav");
-
-//        mTts.setParameter(SpeechConstant.TTS_AUDIO_PATH, ContextApp.get().getCacheDir().getAbsolutePath() + "/msc/tts.wav");
-
+        mTts.setParameter(SpeechConstant.AUDIO_FORMAT, "wav");
     }
 
 
@@ -133,6 +137,18 @@ public class TtsHelper implements ITtsFace {
 //        setTtsParam();
         VoiceTypeManager.getManager().setVoiceType(VoiceType.READ_START);
         LogUtil.d(TAG, "ttsModel.text = " + ttsModel.text);
+        if (ttsModel.cache) {
+            String cacheFile = getCacheFile(ttsModel.text);
+            if (new File(cacheFile).exists()) {
+                // 播放本地缓存
+                playCacheFile(cacheFile);
+                return true;
+            }
+            mTts.setParameter(SpeechConstant.AUDIO_FORMAT, "wav");
+            mTts.setParameter(SpeechConstant.TTS_AUDIO_PATH, cacheFile);
+        } else {
+            setTtsParam();
+        }
         if (ErrorCode.SUCCESS == mTts.startSpeaking(ttsModel.text, customSynthesizerListener)) {
             VoiceTypeManager.getManager().setVoiceType(VoiceType.READ_ING);
             return true;
@@ -153,18 +169,21 @@ public class TtsHelper implements ITtsFace {
         if (initialized()) {
             mTts.stopSpeaking();
         }
+        onExoRelease();
     }
 
     public void pause() {
         if (initialized()) {
             mTts.pauseSpeaking();
         }
+        onExoPause();
     }
 
     public void resume() {
         if (initialized()) {
             mTts.resumeSpeaking();
         }
+        onExoResume();
     }
 
     public static class SimpleSynthesizerListener implements SynthesizerListener {
@@ -260,6 +279,75 @@ public class TtsHelper implements ITtsFace {
                 currentSynthesizerListener.onEvent(i, i1, i2, bundle);
             }
         }
+    }
+
+
+    /**
+     * 播放本地缓存文件
+     *
+     * @param cacheFile
+     */
+    private void playCacheFile(String cacheFile) {
+        onExoRelease();
+        exoPlayer = new SimpleExoPlayer.Builder(ContextApp.get())
+                .setAudioAttributes(AudioAttributes.DEFAULT, true)
+                .build();
+        exoPlayer.addMediaItem(MediaItem.fromUri(cacheFile));
+        exoPlayer.prepare();
+        exoPlayer.play();
+        exoPlayer.addListener(new Player.Listener() {
+            @Override
+            public void onPlaybackStateChanged(int state) {
+                if (state == Player.STATE_ENDED) {
+                    LogUtil.i(TAG, "playCacheFile complete");
+                    if (currentSynthesizerListener != null) {
+                        currentSynthesizerListener.onCompleted(new SpeechError(0));
+                    }
+                }
+            }
+
+            @Override
+            public void onPlayerError(ExoPlaybackException error) {
+                LogUtil.i(TAG, "playCacheFile error");
+                if (currentSynthesizerListener != null) {
+                    currentSynthesizerListener.onEvent(0, 0, 0, null);
+                }
+            }
+        });
+        if (currentSynthesizerListener != null) {
+            currentSynthesizerListener.onSpeakBegin();
+        }
+        LogUtil.i(TAG, "playCacheFile start");
+    }
+
+    private void onExoRelease() {
+        if (exoPlayer != null) {
+            exoPlayer.release();
+            exoPlayer = null;
+        }
+    }
+
+    private void onExoResume() {
+        if (exoPlayer != null) {
+            exoPlayer.setPlayWhenReady(true);
+        }
+    }
+
+    private void onExoPause() {
+        if (exoPlayer != null) {
+            exoPlayer.setPlayWhenReady(false);
+        }
+    }
+
+    /**
+     * tts 缓存文件 根据文本生成【全路径文件名】
+     *
+     * @param ttsText
+     * @return
+     */
+    public String getCacheFile(String ttsText) {
+        String fileName = ttsText.hashCode() + "_" + InformantUtil.getInformant();
+        return ContextApp.get().getCacheDir().getAbsolutePath() + "/msc/" + fileName + ".wav";
     }
 
 

@@ -825,7 +825,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         if (chatEntity.isFrom()) {
             LogUtil.d(TAG, "ttsHandle.start chatEntity.isFrom()");
             TtsModel ttsModel = new TtsModel(chatEntity.getTalk());
-            mTtsQueue.add(ttsModel);
+            mTtsQueue.add(ttsModel.setCache(false));
             LogUtil.d(TAG, " ttsHandle mTtsQueue.add(ttsModel); text =  " + ttsModel.text + " ; = " + mTtsQueue.size());
             mTtsFinished = false;
             boolean ttsIng = TtsHelper.getInstance().isIng();
