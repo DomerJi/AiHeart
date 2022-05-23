@@ -50,57 +50,6 @@ public class ExerciseModel implements IModel {
         this.linkList = linkList;
     }
 
-    public static class LinkModel implements Serializable {
-
-        /**
-         * dialog_id : 2016
-         * title : 测试---工具包1
-         * status : 0
-         */
-
-        @SerializedName("dialog_id")
-        private int dialogId;
-        @SerializedName("title")
-        private String title;
-        @SerializedName("status")
-        private int status;
-        // used=true 弹框询问用户是否继续上一次训练
-        @SerializedName("used")
-        private boolean used;
-
-        public boolean isUsed() {
-            return used;
-        }
-
-        public void setUsed(boolean used) {
-            this.used = used;
-        }
-
-        public int getDialogId() {
-            return dialogId;
-        }
-
-        public void setDialogId(int dialogId) {
-            this.dialogId = dialogId;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public int getStatus() {
-            return status;
-        }
-
-        public void setStatus(int status) {
-            this.status = status;
-        }
-    }
-
     public String getDesc() {
         return TextUtils.isEmpty(desc) ? "暂无" : desc;
     }
@@ -151,5 +100,56 @@ public class ExerciseModel implements IModel {
 
     public void setHistoryCount(int historyCount) {
         this.historyCount = historyCount;
+    }
+
+    public static class LinkModel implements Serializable {
+
+        /**
+         * dialog_id : 2016
+         * title : 测试---工具包1
+         * status : 0
+         */
+
+        @SerializedName("dialog_id")
+        private int dialogId;
+        @SerializedName("title")
+        private String title;
+        @SerializedName("status")
+        private int status;
+        // used=true 弹框询问用户是否继续上一次训练
+        @SerializedName("used")
+        private boolean used;
+
+        public boolean isUsed() {
+            return used;
+        }
+
+        public void setUsed(boolean used) {
+            this.used = used;
+        }
+
+        public int getDialogId() {
+            return dialogId;
+        }
+
+        public void setDialogId(int dialogId) {
+            this.dialogId = dialogId;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
+        }
     }
 }

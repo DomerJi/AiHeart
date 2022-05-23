@@ -1,8 +1,5 @@
 package com.thfw.mobileheart.util;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import com.thfw.base.models.MoodLivelyModel;
 import com.thfw.base.models.MoodModel;
 import com.thfw.base.net.ResponeThrowable;
@@ -11,6 +8,7 @@ import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.FunctionType;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -26,6 +24,7 @@ public class MoodLivelyHelper {
 
     private static MoodLivelyModel model;
     private static List<MoodLivelyListener> livelyListeners = new ArrayList<>();
+    private static TimingHelper.WorkListener workListener;
 
     public static long getTodayActiveTime() {
         return model == null ? 0 : model.getTodayActiveTime();
@@ -50,7 +49,7 @@ public class MoodLivelyHelper {
 
     private synchronized static void change() {
         if (!EmptyUtil.isEmpty(livelyListeners)) {
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
+            HandlerUtil.getMainHandler().post(new Runnable() {
                 @Override
                 public void run() {
                     int size = livelyListeners.size();
@@ -98,10 +97,14 @@ public class MoodLivelyHelper {
                     model = data;
                     FunctionDurationUtil.setFunctionTime(FunctionType.FUNCTION_APP, model.getTodayActiveTime());
                     change();
+                    if (workListener != null) {
+                        TimingHelper.getInstance().removeWorkArriveListener(workListener);
+                    }
+                } else {
+                    initWorkListener();
+                    TimingHelper.getInstance().addWorkArriveListener(workListener);
                 }
-                if (workListener != null) {
-                    TimingHelper.getInstance().removeWorkArriveListener(workListener);
-                }
+
             }
 
             @Override
@@ -111,12 +114,6 @@ public class MoodLivelyHelper {
             }
         }).onGetMoodLivelyDetail();
     }
-
-    public interface MoodLivelyListener {
-        void onMoodLively(MoodLivelyModel data);
-    }
-
-    private static TimingHelper.WorkListener workListener;
 
     private static void initWorkListener() {
         if (workListener == null) {
@@ -134,5 +131,9 @@ public class MoodLivelyHelper {
                 }
             };
         }
+    }
+
+    public interface MoodLivelyListener {
+        void onMoodLively(MoodLivelyModel data);
     }
 }

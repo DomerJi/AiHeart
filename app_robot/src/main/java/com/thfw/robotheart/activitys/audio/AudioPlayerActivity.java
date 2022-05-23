@@ -631,6 +631,40 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         Log.d(TAG, "onLongPress: ");
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isTask) {
+            for (AudioEtcDetailModel.AudioItemModel itemModel : mAudios) {
+                if (itemModel.status != 1) {
+                    showAudioTaskStop();
+                    return;
+                }
+            }
+
+        }
+        super.onBackPressed();
+    }
+
+    private void showAudioTaskStop() {
+        DialogRobotFactory.createCustomDialog(AudioPlayerActivity.this, new DialogRobotFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvHint.setText("您尚未完成任务，确认退出？");
+                mTvLeft.setText("直接退出");
+                mTvRight.setText("继续完成");
+                mTvTitle.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+                if (view.getId() == R.id.tv_left) {
+                    finish();
+                }
+            }
+        });
+    }
+
     public class PlayerListener implements Player.Listener {
         private LoadingView mPbBar;
 
@@ -769,39 +803,5 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             }
 
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isTask) {
-            for (AudioEtcDetailModel.AudioItemModel itemModel : mAudios) {
-                if (itemModel.status != 1) {
-                    showAudioTaskStop();
-                    return;
-                }
-            }
-
-        }
-        super.onBackPressed();
-    }
-
-    private void showAudioTaskStop() {
-        DialogRobotFactory.createCustomDialog(AudioPlayerActivity.this, new DialogRobotFactory.OnViewCallBack() {
-            @Override
-            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-                mTvHint.setText("您尚未完成任务，确认退出？");
-                mTvLeft.setText("直接退出");
-                mTvRight.setText("继续完成");
-                mTvTitle.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                tDialog.dismiss();
-                if (view.getId() == R.id.tv_left) {
-                    finish();
-                }
-            }
-        });
     }
 }

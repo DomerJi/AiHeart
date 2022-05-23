@@ -8,6 +8,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.thfw.base.utils.HandlerUtil;
+
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -50,39 +52,28 @@ public class TimingHelper {
 
     }
 
-    public void notifyWork(WorkInt workInt) {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "workInt.arrive() = " + workInt.toString());
-                HashSet<WorkListener> workListeners = mWorkInts.get(workInt);
-                for (WorkListener workListener : workListeners) {
-                    workListener.onArrive();
-                }
-                // 非重复任务，去除
-                if (!workInt.isRepeat()) {
-                    removeWorkArriveListener(workInt);
-                }
-            }
-        });
-    }
-
-
-    public interface WorkListener {
-
-        void onArrive();
-
-        WorkInt workInt();
-    }
-
-    public static class Factory {
-        private static final TimingHelper instance = new TimingHelper();
-    }
-
     public static TimingHelper getInstance() {
         return Factory.instance;
     }
 
+    public void notifyWork(WorkInt workInt) {
+        HandlerUtil.getMainHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "workInt.arrive() = " + workInt.toString());
+                HashSet<WorkListener> workListeners = mWorkInts.get(workInt);
+                if (workListeners != null) {
+                    for (WorkListener workListener : workListeners) {
+                        workListener.onArrive();
+                    }
+                    // 非重复任务，去除
+                    if (!workInt.isRepeat()) {
+                        removeWorkArriveListener(workInt);
+                    }
+                }
+            }
+        });
+    }
 
     private void removeWorkInt(WorkInt workInt) {
         mWorkInts.remove(workInt);
@@ -119,6 +110,17 @@ public class TimingHelper {
         if (mWorkInts.containsKey(workInt)) {
             mWorkInts.remove(workInt);
         }
+    }
+
+    public interface WorkListener {
+
+        void onArrive();
+
+        WorkInt workInt();
+    }
+
+    public static class Factory {
+        private static final TimingHelper instance = new TimingHelper();
     }
 
 

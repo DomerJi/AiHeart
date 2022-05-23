@@ -1,7 +1,5 @@
 package com.thfw.robotheart.util;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -13,6 +11,7 @@ import com.thfw.base.presenter.TaskPresenter;
 import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.user.login.UserManager;
@@ -38,16 +37,15 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
     private static final String KEY_SYSTEM_FINAL = "msg.count.system_";
     private static String KEY_TASK;
     private static String KEY_SYSTEM;
-    private static int requestCount = 0;
     private int type = TYPE_ALL;
 
     private int numTask;
     private int numSystem;
+    private boolean isLogin;
     private List<OnCountChangeListener> onCountChangeListeners;
 
     private List<String> numTaskArray;
     private List<String> numSystemArray;
-    private boolean isLogin;
 
     private MsgCountManager() {
         onCountChangeListeners = new ArrayList<>();
@@ -86,6 +84,7 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
             KEY_SYSTEM = KEY_SYSTEM_FINAL;
             numTask = 0;
             numSystem = 0;
+
         }
 
         LogUtil.d(TAG, "KEY_TASK = " + KEY_TASK + " , KEY_SYSTEM = " + KEY_SYSTEM);
@@ -135,7 +134,9 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
 
     @Override
     public void onArrive() {
-        getMsgCount(this.type);
+        if (UserManager.getInstance().isLogin()) {
+            getMsgCount(this.type);
+        }
     }
 
     @Override
@@ -145,9 +146,15 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
 
     @Override
     public void onChanged(UserManager accountManager, User user) {
-        if (this.isLogin != UserManager.getInstance().isLogin()) {
-            init(UserManager.getInstance().isLogin());
-            onCountChange();
+        if (isLogin != accountManager.isNewLogin()) {
+            HandlerUtil.getMainHandler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isLogin = accountManager.isLogin();
+                    init(isLogin);
+                    onCountChange();
+                }
+            }, 1500);
         }
     }
 
@@ -192,7 +199,6 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
      */
     public void getMsgCount(int type) {
         this.type = type;
-        LogUtil.d(TAG, "getMsgCount() requestCount = " + requestCount);
         TimingHelper.getInstance().removeWorkArriveListener(MsgCountManager.this);
         new TaskPresenter<>(new TaskPresenter.TaskUi<MsgCountModel>() {
             @Override
@@ -202,7 +208,7 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
 
             @Override
             public void onSuccess(MsgCountModel data) {
-
+                TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND5_MSG_COUNT);
                 if (data != null) {
                     if (type == TYPE_ALL) {
                         numSystemArray = data.system_msg_list;
@@ -232,7 +238,7 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
         if (EmptyUtil.isEmpty(onCountChangeListeners)) {
             return;
         }
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        HandlerUtil.getMainHandler().post(new Runnable() {
             @Override
             public void run() {
                 for (OnCountChangeListener listener : onCountChangeListeners) {
@@ -248,7 +254,7 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
         if (EmptyUtil.isEmpty(onCountChangeListeners)) {
             return;
         }
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        HandlerUtil.getMainHandler().post(new Runnable() {
             @Override
             public void run() {
                 for (OnCountChangeListener listener : onCountChangeListeners) {
@@ -264,7 +270,7 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
         if (EmptyUtil.isEmpty(onCountChangeListeners)) {
             return;
         }
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        HandlerUtil.getMainHandler().post(new Runnable() {
             @Override
             public void run() {
                 for (OnCountChangeListener listener : onCountChangeListeners) {
@@ -294,7 +300,6 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
 
             @Override
             public void onFail(ResponeThrowable throwable) {
-                TimingHelper.getInstance().addWorkArriveListener(MsgCountManager.this);
             }
         }).onReadStated(msgId);
     }

@@ -35,6 +35,7 @@ import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -80,6 +81,8 @@ import java.util.List;
  */
 public class MainActivity extends BaseActivity implements Animator.AnimatorListener, MsgCountManager.OnCountChangeListener {
 
+    // 心情打卡今日第一次 记录
+    private static final String KEY_MOOD_HINT = "key.mood.first";
     private static MainActivity mainActivity;
     /**
      * 机构信息和用户信息初始化标识
@@ -89,16 +92,8 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private static boolean initUmeng;
     private static boolean initTts;
     private static boolean moodHint;
-    // 心情打卡今日第一次 记录
-    private static final String KEY_MOOD_HINT = "key.mood.first";
-
     // 登录动画是否显示，为了不频繁获取sp数据
     private static boolean showLoginAnim;
-
-    public static void setShowLoginAnim(boolean showLoginAnim) {
-        MainActivity.showLoginAnim = showLoginAnim;
-    }
-
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private androidx.constraintlayout.widget.ConstraintLayout mMainRoot;
     private androidx.constraintlayout.widget.ConstraintLayout mMainRoot2;
@@ -124,6 +119,10 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     };
     private boolean trueResume;
     private long exitTime = 0;
+
+    public static void setShowLoginAnim(boolean showLoginAnim) {
+        MainActivity.showLoginAnim = showLoginAnim;
+    }
 
     /**
      * 重新登录后重新获取用户相关信息
@@ -212,13 +211,6 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
 
         });
 
-        if (UserManager.getInstance().isTrueLogin()) {
-            // 已登录 初始化用户信息和机构信息
-            initUmeng();
-            initUserInfo();
-            initOrganization();
-        }
-        MsgCountManager.getInstance().addOnCountChangeListener(this);
     }
 
     @Override
@@ -330,6 +322,10 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             showSVGALogin();
             moodHintDialog();
             ttsWelcome();
+            // 已登录 初始化用户信息和机构信息
+            initUmeng();
+            initUserInfo();
+            initOrganization();
         }
     }
 
@@ -466,11 +462,17 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         return new UserObserver() {
             @Override
             public void onChanged(UserManager accountManager, User user) {
-                if (accountManager.isLogin()) {
-                    // 已登录 初始化用户信息和机构信息
-                    initUmeng();
-                    initUserInfo();
-                    initOrganization();
+                if (accountManager.isNewLogin()) {
+                    // 此时延迟两秒，是因为登录同时 activity 没有 resume 网络请求执行有误（在机器性能差的平台上）
+                    HandlerUtil.getMainHandler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 已登录 初始化用户信息和机构信息
+                            initUmeng();
+                            initUserInfo();
+                            initOrganization();
+                        }
+                    }, 2000);
                 }
             }
         };
@@ -558,6 +560,9 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         if (initUserInfo) {
             return;
         }
+
+        MsgCountManager.getInstance().addOnCountChangeListener(this);
+
         new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<User.UserInfo>() {
             @Override
             public LifecycleProvider getLifecycleProvider() {
@@ -649,6 +654,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
 
     @Override
     public void onDestroy() {
+        MsgCountManager.getInstance().removeOnCountChangeListener(this);
         super.onDestroy();
         mainActivity = null;
         resetInit();

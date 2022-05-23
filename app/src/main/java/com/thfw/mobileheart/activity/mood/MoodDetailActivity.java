@@ -112,6 +112,13 @@ public class MoodDetailActivity extends BaseActivity<MobilePresenter> implements
         context.startActivity(new Intent(context, MoodDetailActivity.class));
     }
 
+    //获取一个月天数
+    public static int getDaysOfMonth(long time) {
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        return calendar.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
+    }
+
     @Override
     public int getContentView() {
         return R.layout.activity_mood_detail;
@@ -255,7 +262,6 @@ public class MoodDetailActivity extends BaseActivity<MobilePresenter> implements
 
     }
 
-
     private void moveTo(int index) {
         if (index < 0 || index >= COUNT) {
             return;
@@ -359,14 +365,6 @@ public class MoodDetailActivity extends BaseActivity<MobilePresenter> implements
         initChart();
         moveTo(moveIndex);
     }
-
-    //获取一个月天数
-    public static int getDaysOfMonth(long time) {
-        java.util.Calendar calendar = java.util.Calendar.getInstance();
-        calendar.setTimeInMillis(time);
-        return calendar.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
-    }
-
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {

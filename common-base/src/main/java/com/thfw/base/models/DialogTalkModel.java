@@ -57,6 +57,7 @@ public class DialogTalkModel implements IModel {
     private List<CheckRadioBean> checkRadio;
 
     private ChatEntity checkEntity;
+    private long timeMills;
 
     public boolean hasCheckRadio() {
         return checkValue > 0 && !EmptyUtil.isEmpty(checkRadio) && getCheckRadio() != null;
@@ -77,8 +78,6 @@ public class DialogTalkModel implements IModel {
         }
         return checkEntity;
     }
-
-    private long timeMills;
 
     public long getTimeMills() {
         if (timeMills <= 0) {
@@ -183,6 +182,23 @@ public class DialogTalkModel implements IModel {
 
     public void setCheckRadio(List<CheckRadioBean> checkRadio) {
         this.checkRadio = checkRadio;
+    }
+
+    @Override
+    public String toString() {
+        return "DialogTalkModel{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", type=" + type +
+                ", question='" + question + '\'' +
+                ", dialogId=" + dialogId +
+                ", scene=" + scene +
+                ", checkValue=" + checkValue +
+                ", recommendInfo=" + recommendInfo +
+                ", createdTime='" + createdTime + '\'' +
+                ", updatedTime=" + updatedTime +
+                ", checkRadio=" + checkRadio +
+                '}';
     }
 
     public static class ArticleInfoBean implements IModel {
@@ -337,22 +353,5 @@ public class DialogTalkModel implements IModel {
                     ", href='" + href + '\'' +
                     '}';
         }
-    }
-
-    @Override
-    public String toString() {
-        return "DialogTalkModel{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", type=" + type +
-                ", question='" + question + '\'' +
-                ", dialogId=" + dialogId +
-                ", scene=" + scene +
-                ", checkValue=" + checkValue +
-                ", recommendInfo=" + recommendInfo +
-                ", createdTime='" + createdTime + '\'' +
-                ", updatedTime=" + updatedTime +
-                ", checkRadio=" + checkRadio +
-                '}';
     }
 }

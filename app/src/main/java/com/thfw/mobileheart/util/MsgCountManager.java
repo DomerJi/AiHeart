@@ -1,7 +1,5 @@
 package com.thfw.mobileheart.util;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -13,6 +11,7 @@ import com.thfw.base.presenter.TaskPresenter;
 import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.user.login.UserManager;
@@ -147,10 +146,15 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
 
     @Override
     public void onChanged(UserManager accountManager, User user) {
-        if (isLogin != accountManager.isLogin()) {
-            isLogin = accountManager.isLogin();
-            init(isLogin);
-            onCountChange();
+        if (isLogin != accountManager.isNewLogin()) {
+            HandlerUtil.getMainHandler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isLogin = accountManager.isLogin();
+                    init(isLogin);
+                    onCountChange();
+                }
+            }, 1500);
         }
     }
 
@@ -234,7 +238,7 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
         if (EmptyUtil.isEmpty(onCountChangeListeners)) {
             return;
         }
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        HandlerUtil.getMainHandler().post(new Runnable() {
             @Override
             public void run() {
                 for (OnCountChangeListener listener : onCountChangeListeners) {
@@ -250,7 +254,7 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
         if (EmptyUtil.isEmpty(onCountChangeListeners)) {
             return;
         }
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        HandlerUtil.getMainHandler().post(new Runnable() {
             @Override
             public void run() {
                 for (OnCountChangeListener listener : onCountChangeListeners) {
@@ -266,7 +270,7 @@ public class MsgCountManager extends UserObserver implements TimingHelper.WorkLi
         if (EmptyUtil.isEmpty(onCountChangeListeners)) {
             return;
         }
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        HandlerUtil.getMainHandler().post(new Runnable() {
             @Override
             public void run() {
                 for (OnCountChangeListener listener : onCountChangeListeners) {

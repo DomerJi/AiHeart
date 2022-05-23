@@ -94,9 +94,12 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
 
     @Override
     public void onMoodLively(MoodLivelyModel data) {
+        LogUtil.i("onMoodLively 01");
         if (getItemCount() > 2) {
             RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForLayoutPosition(2);
+            LogUtil.i("onMoodLively 02");
             if (viewHolder instanceof MadeHolder) {
+                LogUtil.i("onMoodLively 03");
                 ((MadeHolder) viewHolder).setMood(data);
                 ((MadeHolder) viewHolder).notifyTodayTime();
             }
@@ -139,7 +142,6 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             case HomeEntity.TYPE_SORT:
                 return new SortHolder(inflate(R.layout.item_home_sort_layout, parent));
             case HomeEntity.TYPE_CUSTOM_MADE:
-                MoodLivelyHelper.addListener(this);
                 MyApplication.getApp().addOnMinuteListener(this);
                 return new MadeHolder(inflate(R.layout.item_home_custommade_layout, parent));
             case HomeEntity.TYPE_HISTORY:// 去除
@@ -151,6 +153,14 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             default:
                 return new Body2Holder(inflate(R.layout.item_home_body2_layout, parent));
 
+        }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull @NotNull RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (holder instanceof MadeHolder) {
+            MoodLivelyHelper.addListener(this);
         }
     }
 
@@ -381,6 +391,8 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             if (mTvMoodValue == null || mRivEmoji == null) {
                 return;
             }
+
+            LogUtil.i("onMoodLively 04");
             if (UserManager.getInstance().isTrueLogin()) {
                 if (mood != null) {
                     if (mood.getUserMood() != null) {
@@ -390,7 +402,9 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                         mTvMoodValue.setText(mood.getUserMood().getName());
                     }
                     mTvSumActivityValue.setText(String.valueOf(mood.getLoginDays()));
+                    LogUtil.i("onMoodLively 06");
                 } else {
+                    LogUtil.i("onMoodLively 07");
                     mTvSumActivityValue.setText("");
                     if (!EmptyUtil.isEmpty(mContext)) {
                         GlideUtil.load(mContext, R.drawable.gray_cirlle_bg, mRivEmoji);
@@ -414,6 +428,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                     mTvTodayActivityValue.setText(FunctionDurationUtil
                             .getFunctionTimeHour(FunctionType.FUNCTION_APP));
                 }
+                LogUtil.i("onMoodLively 05");
             } else {
                 if (mTvTodayActivityValue != null) {
                     mTvTodayActivityValue.setText("");

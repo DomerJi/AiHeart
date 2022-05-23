@@ -15,15 +15,6 @@ public class ThemeTalkModel implements IModel {
 
     @SerializedName("m_item_type")
     private int itemType;
-
-    public void setItemType(int itemType) {
-        this.itemType = itemType;
-    }
-
-    public int getItemType() {
-        return itemType;
-    }
-
     /**
      * id : 459
      * title : 新兵常见困扰
@@ -42,6 +33,14 @@ public class ThemeTalkModel implements IModel {
     private int num;
     @SerializedName("collected")
     private int collected;
+
+    public int getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
 
     public int getId() {
         return id;

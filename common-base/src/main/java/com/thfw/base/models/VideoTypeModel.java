@@ -17,14 +17,13 @@ public class VideoTypeModel implements IModel {
 
     @SerializedName("root_type")
     public int rootType = 0;
+    @SerializedName("children")
+    public List<VideoTypeModel> list;
 
     public VideoTypeModel(String name, int id) {
         this.name = name;
         this.id = id;
     }
-
-    @SerializedName("children")
-    public List<VideoTypeModel> list;
 
     public List<VideoTypeModel> getList() {
         return list;

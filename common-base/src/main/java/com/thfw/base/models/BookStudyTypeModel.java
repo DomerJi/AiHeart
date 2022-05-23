@@ -17,6 +17,8 @@ public class BookStudyTypeModel implements IModel {
 
     @SerializedName("sort")
     public int sort;
+    @SerializedName("children")
+    public List<BookStudyTypeModel> list;
 
     public BookStudyTypeModel(String name, int id) {
         this.name = name;
@@ -25,9 +27,6 @@ public class BookStudyTypeModel implements IModel {
 
     public BookStudyTypeModel() {
     }
-
-    @SerializedName("children")
-    public List<BookStudyTypeModel> list;
 
     public List<BookStudyTypeModel> getList() {
         return list;

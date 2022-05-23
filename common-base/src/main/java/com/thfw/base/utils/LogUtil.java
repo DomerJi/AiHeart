@@ -11,12 +11,10 @@ import android.util.Log;
 public class LogUtil {
 
     private static final String TAG = "THFW_HEART";
-
-    private static boolean isLogEnabled = true;
-    private static String versionName = "1.0.0";
-
     // 用于存储日志的调试开关
     private static final String KEY_LOG_ENABLE = "key.log.enabled";
+    private static boolean isLogEnabled = true;
+    private static String versionName = "1.0.0";
 
     public static boolean switchLogEnable() {
         isLogEnabled = !isLogEnable();

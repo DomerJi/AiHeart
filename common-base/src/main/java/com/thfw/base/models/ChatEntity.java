@@ -32,15 +32,79 @@ public class ChatEntity implements IModel {
     public String talk;
     public String notPTalk;
     public long time = System.currentTimeMillis();
-
-    public boolean isTalkType() {
-        return type <= TYPE_RECOMMEND_AUDIO_ETC;
-    }
-
     /**
      * 0 加载 -1 失败 1成功
      */
     public int loading = 0;
+    private DialogTalkModel talkModel;
+
+    public ChatEntity() {
+
+    }
+
+    public ChatEntity(DialogTalkModel dialogTalkModel) {
+        this.talkModel = dialogTalkModel;
+        this.type = dialogTalkModel.getType();
+        this.talk = dialogTalkModel.getQuestion();
+        this.time = System.currentTimeMillis();
+    }
+
+    public ChatEntity(int type, DialogTalkModel dialogTalkModel) {
+        this.talkModel = dialogTalkModel;
+        this.type = type;
+        this.talk = dialogTalkModel.getQuestion();
+        this.time = System.currentTimeMillis();
+    }
+
+    public ChatEntity(int type, String talk) {
+        this.type = type;
+        this.talk = talk;
+        this.time = System.currentTimeMillis();
+    }
+
+    public static ChatEntity createTime() {
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_TIME;
+        chatEntity.time = System.currentTimeMillis();
+        chatEntity.talk = HourUtil.getYYMMDD_HHMMSS(chatEntity.time);
+        return chatEntity;
+    }
+
+    public static ChatEntity createHint(String hint) {
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_HINT;
+        chatEntity.time = System.currentTimeMillis();
+        chatEntity.talk = hint;
+        return chatEntity;
+    }
+
+    public static ChatEntity createJoinPage(String hint) {
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_JOIN_PAGE;
+        chatEntity.time = System.currentTimeMillis();
+        chatEntity.talk = hint;
+        return chatEntity;
+    }
+
+    public static ChatEntity createEmoji(String sentiment) {
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_EMOJI;
+        chatEntity.time = System.currentTimeMillis();
+        chatEntity.talk = sentiment;
+        return chatEntity;
+    }
+
+    public static ChatEntity createTime(long time) {
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_TIME;
+        chatEntity.time = time;
+        chatEntity.talk = HourUtil.getYYMMDD_HHMMSS(chatEntity.time);
+        return chatEntity;
+    }
+
+    public boolean isTalkType() {
+        return type <= TYPE_RECOMMEND_AUDIO_ETC;
+    }
 
     public void onError() {
         this.loading = -1;
@@ -81,82 +145,12 @@ public class ChatEntity implements IModel {
         return notPTalk;
     }
 
-
     public boolean isFrom() {
         return type == TYPE_FROM_NORMAL || type == TYPE_FROM_SELECT || type == TYPE_INPUT;
     }
 
-    private DialogTalkModel talkModel;
-
-
     public DialogTalkModel getTalkModel() {
         return talkModel;
-    }
-
-    public ChatEntity() {
-
-    }
-
-    public ChatEntity(DialogTalkModel dialogTalkModel) {
-        this.talkModel = dialogTalkModel;
-        this.type = dialogTalkModel.getType();
-        this.talk = dialogTalkModel.getQuestion();
-        this.time = System.currentTimeMillis();
-    }
-
-    public ChatEntity(int type, DialogTalkModel dialogTalkModel) {
-        this.talkModel = dialogTalkModel;
-        this.type = type;
-        this.talk = dialogTalkModel.getQuestion();
-        this.time = System.currentTimeMillis();
-    }
-
-
-    public ChatEntity(int type, String talk) {
-        this.type = type;
-        this.talk = talk;
-        this.time = System.currentTimeMillis();
-    }
-
-
-    public static ChatEntity createTime() {
-        ChatEntity chatEntity = new ChatEntity();
-        chatEntity.type = ChatEntity.TYPE_TIME;
-        chatEntity.time = System.currentTimeMillis();
-        chatEntity.talk = HourUtil.getYYMMDD_HHMMSS(chatEntity.time);
-        return chatEntity;
-    }
-
-    public static ChatEntity createHint(String hint) {
-        ChatEntity chatEntity = new ChatEntity();
-        chatEntity.type = ChatEntity.TYPE_HINT;
-        chatEntity.time = System.currentTimeMillis();
-        chatEntity.talk = hint;
-        return chatEntity;
-    }
-
-    public static ChatEntity createJoinPage(String hint) {
-        ChatEntity chatEntity = new ChatEntity();
-        chatEntity.type = ChatEntity.TYPE_JOIN_PAGE;
-        chatEntity.time = System.currentTimeMillis();
-        chatEntity.talk = hint;
-        return chatEntity;
-    }
-
-    public static ChatEntity createEmoji(String sentiment) {
-        ChatEntity chatEntity = new ChatEntity();
-        chatEntity.type = ChatEntity.TYPE_EMOJI;
-        chatEntity.time = System.currentTimeMillis();
-        chatEntity.talk = sentiment;
-        return chatEntity;
-    }
-
-    public static ChatEntity createTime(long time) {
-        ChatEntity chatEntity = new ChatEntity();
-        chatEntity.type = ChatEntity.TYPE_TIME;
-        chatEntity.time = time;
-        chatEntity.talk = HourUtil.getYYMMDD_HHMMSS(chatEntity.time);
-        return chatEntity;
     }
 
     public String getRecommendType() {

@@ -11,16 +11,12 @@ public class HourChangeHelper {
 
     ArrayList<HourChangeListener> hourChangeListeners;
 
-    public static class Factory {
-        private static HourChangeHelper helper = new HourChangeHelper();
+    private HourChangeHelper() {
+        hourChangeListeners = new ArrayList<>();
     }
 
     public static HourChangeHelper getInstance() {
         return Factory.helper;
-    }
-
-    private HourChangeHelper() {
-        hourChangeListeners = new ArrayList<>();
     }
 
     public void add(HourChangeListener listener) {
@@ -43,5 +39,9 @@ public class HourChangeHelper {
 
     public interface HourChangeListener {
         void hourChanged(int collectionId, int hour, int musicId);
+    }
+
+    public static class Factory {
+        private static HourChangeHelper helper = new HourChangeHelper();
     }
 }

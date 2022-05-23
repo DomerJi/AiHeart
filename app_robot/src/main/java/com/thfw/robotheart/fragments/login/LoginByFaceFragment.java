@@ -83,6 +83,14 @@ import okhttp3.Response;
 public class LoginByFaceFragment extends RobotBaseFragment implements CameraBridgeViewBase.CvCameraViewListener2 {
 
 
+    /**
+     * 检测器类型
+     */
+    public static final int JAVA_DETECTOR = 0;
+    public static final int NATIVE_DETECTOR = 1;
+    // 最大失败数量
+    private static final int FAIL_COUNT_MAX = 10;
+    private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
     private TextView mTvLoginByPassword;
     private LinearLayout mClBottom;
     private RoundedImageView mRivWechat;
@@ -95,7 +103,6 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     private ImageView mIvBorder;
     private ImageView mIvLine;
     private ObjectAnimator borderAnimation;
-
     private Mat mRgba; //图像容器
     private Mat mGray;
     private File mCascadeFile;
@@ -104,8 +111,6 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     private CascadeClassifier mJavaEyeDetector;
     private DetectionBasedTracker mNativeDetector;
     private DetectionBasedTracker mNativeEyeDetector;
-
-
     private TextView mTvLoginByFace;
     private TextView mTvLoginByMobile;
     private TextView mTvFaceHint;
@@ -116,14 +121,6 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     private Button mBtRetry;
     private ConstraintLayout mClFace;
     private Runnable changeFaceHintRunnable;
-    /**
-     * 检测器类型
-     */
-    public static final int JAVA_DETECTOR = 0;
-    public static final int NATIVE_DETECTOR = 1;
-    // 最大失败数量
-    private static final int FAIL_COUNT_MAX = 10;
-    private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
     // 动画扫描线上下标识
     private boolean mLineUpAnim = true;
     // true 录入人脸  false 人脸识别

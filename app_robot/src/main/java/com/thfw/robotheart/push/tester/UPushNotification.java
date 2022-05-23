@@ -1,10 +1,9 @@
 package com.thfw.robotheart.push.tester;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.widget.Toast;
 
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.robotheart.push.helper.PushConstants;
 import com.umeng.commonsdk.service.UMGlobalContext;
 import com.umeng.message.PushAgent;
@@ -78,7 +77,7 @@ public class UPushNotification {
                 }
             };
         }
-        new Handler(Looper.getMainLooper()).post(runnable);
+        HandlerUtil.getMainHandler().post(runnable);
     }
 
     private static String md5(String string) {

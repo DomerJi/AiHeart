@@ -3,8 +3,6 @@ package com.thfw.mobileheart.activity.mood;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -24,6 +22,7 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.MobilePresenter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
@@ -260,7 +259,7 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
                 MoodLivelyHelper.notifyMood(moodModel);
                 ToastUtil.showLong("心情打卡成功哦~");
                 if (formHome) {
-                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    HandlerUtil.getMainHandler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             if (EmptyUtil.isEmpty(StatusActivity.this)) {

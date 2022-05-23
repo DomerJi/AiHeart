@@ -40,10 +40,6 @@ public class ChartMarkerView extends MarkerView {
 
     private int maxHeight;
 
-    public void setMaxHeight(int maxHeight) {
-        this.maxHeight = maxHeight;
-    }
-
     /**
      * Constructor. Sets up the MarkerView with a custom layout resource.
      *
@@ -54,6 +50,10 @@ public class ChartMarkerView extends MarkerView {
         super(context, layoutResource);
         initView();
         setOffset(2, -35);
+    }
+
+    public void setMaxHeight(int maxHeight) {
+        this.maxHeight = maxHeight;
     }
 
     @Override

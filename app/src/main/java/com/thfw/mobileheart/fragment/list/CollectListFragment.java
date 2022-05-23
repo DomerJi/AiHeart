@@ -95,7 +95,7 @@ public class CollectListFragment extends BaseFragment<HistoryPresenter>
                         BookIdeoDetailActivity.startActivity(mContext, collectModel.id);
                         break;
                     case HistoryApi.TYPE_COLLECT_TOOL:
-                        ExerciseDetailActivity.startActivity(mContext,collectModel.id);
+                        ExerciseDetailActivity.startActivity(mContext, collectModel.id);
                         break;
                     case HistoryApi.TYPE_COLLECT_VIDEO:
                         VideoPlayActivity.startActivity(mContext, collectModel.id, false);

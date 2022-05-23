@@ -119,6 +119,14 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
         return mDataList.get(position).type;
     }
 
+    public int getmVideoId() {
+        return mVideoId;
+    }
+
+    public ImageView getmIvCollectTop() {
+        return mIvCollectTop;
+    }
+
     public class VideoDetailsHolder extends RecyclerView.ViewHolder {
 
         private RoundedImageView mRivBg;
@@ -226,14 +234,5 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
                 }
             }).addCollect(HistoryApi.TYPE_COLLECT_VIDEO, mVideoId);
         }
-    }
-
-
-    public int getmVideoId() {
-        return mVideoId;
-    }
-
-    public ImageView getmIvCollectTop() {
-        return mIvCollectTop;
     }
 }

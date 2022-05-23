@@ -27,13 +27,6 @@ public class CommonParameter {
     private static final String KEY_ORGANIZATION_SELECT = "key_organization_select";
     private static final String TEST_ID = "1";
 
-    public interface DeviceType {
-        String PAD = "pad";
-        String MOBILE = "phone";
-        String ROBOT = "robot";
-    }
-
-
     public static String getDeviceType() {
         switch (ContextApp.getDeviceType()) {
             case ContextApp.DeviceType.PAD:
@@ -61,6 +54,10 @@ public class CommonParameter {
         return TextUtils.isEmpty(id) ? "" : id;
     }
 
+    public static void setOrganizationId(String organizationId) {
+        SharePreferenceUtil.setString(KEY_ORGANIZATION_ID, organizationId);
+    }
+
     public static void setOrganizationModel(OrganizationSelectedModel model) {
         if (!CommonParameter.isValid()) {
             if (model.getOrganization() != null && model.getOrganization().getId() > 0) {
@@ -75,16 +72,8 @@ public class CommonParameter {
         }
     }
 
-    public static void setOrganizationId(String organizationId) {
-        SharePreferenceUtil.setString(KEY_ORGANIZATION_ID, organizationId);
-    }
-
     public static boolean isValid() {
         return !TextUtils.isEmpty(getOrganizationId());
-    }
-
-    public static void setOrganizationSelected(ArrayList<OrganizationModel.OrganizationBean> organizationBeans) {
-        SharePreferenceUtil.setString(KEY_ORGANIZATION_SELECT + CommonParameter.getOrganizationId(), GsonUtil.toJson(organizationBeans));
     }
 
     public static List<OrganizationModel.OrganizationBean> getOrganizationSelected() {
@@ -98,6 +87,16 @@ public class CommonParameter {
             return list;
         }
         return null;
+    }
+
+    public static void setOrganizationSelected(ArrayList<OrganizationModel.OrganizationBean> organizationBeans) {
+        SharePreferenceUtil.setString(KEY_ORGANIZATION_SELECT + CommonParameter.getOrganizationId(), GsonUtil.toJson(organizationBeans));
+    }
+
+    public interface DeviceType {
+        String PAD = "pad";
+        String MOBILE = "phone";
+        String ROBOT = "robot";
     }
 
 }

@@ -25,6 +25,7 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.MobilePresenter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
@@ -216,6 +217,15 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
         mRvHome.setItemAnimator(new DefaultItemAnimator());
         initList();
         mRvHome.setAdapter(mHomeAdapter);
+        HandlerUtil.getMainHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (EmptyUtil.isEmpty(HomeFragment.this)) {
+                    return;
+                }
+                MoodLivelyHelper.addListener(mHomeAdapter);
+            }
+        }, 1000);
         mRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull @NotNull RefreshLayout refreshLayout) {
@@ -351,8 +361,20 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
         return new UserObserver() {
             @Override
             public void onChanged(UserManager accountManager, User user) {
-                if (isLogin != accountManager.isTrueLogin()) {
-                    isLogin = accountManager.isTrueLogin();
+                postDelayedLogin();
+            }
+        };
+    }
+
+    private void postDelayedLogin() {
+        HandlerUtil.getMainHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (EmptyUtil.isEmpty(HomeFragment.this)) {
+                    return;
+                }
+                if (isLogin != UserManager.getInstance().isTrueLogin()) {
+                    isLogin = UserManager.getInstance().isTrueLogin();
                     if (isLogin) {
                         loadData(true);
                         MoodLivelyHelper.addListener(mHomeAdapter);
@@ -364,6 +386,6 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
                     }
                 }
             }
-        };
+        }, 1000);
     }
 }

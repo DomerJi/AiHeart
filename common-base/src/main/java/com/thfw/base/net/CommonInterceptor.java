@@ -19,6 +19,16 @@ import okhttp3.Response;
  */
 public class CommonInterceptor implements Interceptor {
 
+    private static OnTokenListener tokenListener;
+
+    public static void setTokenListener(OnTokenListener tokenListener) {
+        CommonInterceptor.tokenListener = tokenListener;
+    }
+
+    public static String getToken() {
+        return tokenListener != null ? tokenListener.getToken() : "token";
+    }
+
     @Override
     public synchronized Response intercept(Chain chain) throws IOException {
         Request request = rebuildRequest(chain.request());
@@ -45,17 +55,6 @@ public class CommonInterceptor implements Interceptor {
         }
 
         return requestBuilder.build();
-    }
-
-
-    public static void setTokenListener(OnTokenListener tokenListener) {
-        CommonInterceptor.tokenListener = tokenListener;
-    }
-
-    private static OnTokenListener tokenListener;
-
-    public static String getToken() {
-        return tokenListener != null ? tokenListener.getToken() : "token";
     }
 
     public interface OnTokenListener {

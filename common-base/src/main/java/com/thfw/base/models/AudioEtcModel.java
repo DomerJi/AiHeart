@@ -47,12 +47,12 @@ public class AudioEtcModel implements IModel {
     // 自动返回;
     private boolean autoFinished;
 
-    public void setAutoFinished(boolean autoFinished) {
-        this.autoFinished = autoFinished;
-    }
-
     public boolean isAutoFinished() {
         return autoFinished;
+    }
+
+    public void setAutoFinished(boolean autoFinished) {
+        this.autoFinished = autoFinished;
     }
 
     public int getLastMusicId() {
@@ -67,12 +67,12 @@ public class AudioEtcModel implements IModel {
         return listenHistorySize >= 0 ? listenHistorySize : 0;
     }
 
-    public int getLastHourIndex() {
-        return listenHistorySize > 0 ? listenHistorySize - 1 : 0;
-    }
-
     public void setListenHistorySize(int listenHistorySize) {
         this.listenHistorySize = listenHistorySize;
+    }
+
+    public int getLastHourIndex() {
+        return listenHistorySize > 0 ? listenHistorySize - 1 : 0;
     }
 
     public int getId() {

@@ -18,6 +18,12 @@ public class UserManager extends Observable {
     private static final String KEY_USER = "key.user";
     private User user = new User();
 
+    private boolean isNewLogin;
+
+    public boolean isNewLogin() {
+        return isNewLogin;
+    }
+
     private UserManager() {
         String json = SharePreferenceUtil.getString(KEY_USER, null);
         user = GsonUtil.fromJson(json, User.class);
@@ -68,7 +74,7 @@ public class UserManager extends Observable {
             return;
         }
         this.user = newUser;
-        notifyUserInfo();
+        notifyUserInfo(isTrueLogin());
     }
 
     /**
@@ -101,11 +107,12 @@ public class UserManager extends Observable {
     public void login() {
         if (user != null && user.getLoginStatus() != LoginStatus.LOGOUT_EXIT) {
             user.setLoginStatus(LoginStatus.LOGINED);
-            notifyUserInfo();
+            notifyUserInfo(isTrueLogin());
         }
     }
 
-    public void notifyUserInfo() {
+    private void notifyUserInfo(boolean isNewLogin) {
+        this.isNewLogin = isNewLogin;
         setChanged();
         String userJson = GsonUtil.toJson(user);
         notifyObservers(user);
@@ -113,6 +120,11 @@ public class UserManager extends Observable {
         if (user.getLoginStatus() == LoginStatus.LOGINED) {
             SharePreferenceUtil.setString(KEY_USER, userJson);
         }
+    }
+
+
+    public void notifyUserInfo() {
+        notifyUserInfo(false);
     }
 
 }

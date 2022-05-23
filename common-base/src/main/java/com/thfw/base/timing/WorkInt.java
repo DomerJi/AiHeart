@@ -35,10 +35,15 @@ public enum WorkInt {
 
     private int count;
 
+    WorkInt(int flag, int time, boolean repeat) {
+        this.flag = flag;
+        this.time = time;
+        this.repeat = repeat;
+    }
+
     public boolean isRepeat() {
         return repeat;
     }
-
 
     public int getFlag() {
         return flag;
@@ -66,12 +71,6 @@ public enum WorkInt {
 
     public void addCount() {
         count++;
-    }
-
-    WorkInt(int flag, int time, boolean repeat) {
-        this.flag = flag;
-        this.time = time;
-        this.repeat = repeat;
     }
 
     @Override

@@ -58,12 +58,12 @@ public class PushModel implements IModel {
         return taskType;
     }
 
-    public void setMsgId(String msgId) {
-        this.msgId = msgId;
-    }
-
     public String getMsgId() {
         return msgId;
+    }
+
+    public void setMsgId(String msgId) {
+        this.msgId = msgId;
     }
 
     public int getId() {

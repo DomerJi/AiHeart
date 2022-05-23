@@ -25,14 +25,12 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 public class AboutMeFragment extends RobotBaseFragment<OtherPresenter> implements OtherPresenter.OtherUi<AboutUsModel> {
 
+    private static final String KEY_ABOUT = "key.about.me";
     private TextView mTvHint;
     private TextView mTvVersion;
     private LinearLayout mLlCheckVersion;
     private TextView mTvCheckVersion;
     private TextView mTvCompanyAddress;
-
-
-    private static final String KEY_ABOUT = "key.about.me";
 
     @Override
     public int getContentView() {
@@ -79,11 +77,11 @@ public class AboutMeFragment extends RobotBaseFragment<OtherPresenter> implement
         SharePreferenceUtil.setString(KEY_ABOUT, GsonUtil.toJson(data));
         String hint = "<font color='#91dff3'>产品概述：</font>"
                 + data.getContent();
-        mTvHint.setText(HtmlCompat.fromHtml(hint,HtmlCompat.FROM_HTML_MODE_LEGACY));
+        mTvHint.setText(HtmlCompat.fromHtml(hint, HtmlCompat.FROM_HTML_MODE_LEGACY));
 
         String companyHttp = "<font color='#91dff3'>公司官网：</font>"
                 + data.getCompanyUrl();
-        mTvCompanyAddress.setText(HtmlCompat.fromHtml(companyHttp,HtmlCompat.FROM_HTML_MODE_LEGACY));
+        mTvCompanyAddress.setText(HtmlCompat.fromHtml(companyHttp, HtmlCompat.FROM_HTML_MODE_LEGACY));
 
     }
 

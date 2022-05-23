@@ -11,7 +11,6 @@ public class ResponeThrowable extends Throwable implements IResult {
     public String message;
 
 
-
     public ResponeThrowable(Throwable throwable, int code) {
         super(throwable);
         this.code = code;

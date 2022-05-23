@@ -42,7 +42,7 @@ public class TestListAdapter extends BaseAdapter<TestModel, TestListAdapter.Audi
         String mHour = "<font color='" + UIConfig.COLOR_HOUR + "'>" + model.getNum()
                 + "人</font>完成测试";
 
-        holder.mTvHour.setText(HtmlCompat.fromHtml(mHour,HtmlCompat.FROM_HTML_MODE_LEGACY));
+        holder.mTvHour.setText(HtmlCompat.fromHtml(mHour, HtmlCompat.FROM_HTML_MODE_LEGACY));
         holder.mTvTitle.setText(model.getTitle());
         GlideUtil.load(mContext, model.getPic(), holder.mRivImage);
 

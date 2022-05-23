@@ -51,6 +51,10 @@ public class TaskDetailModel implements IModel {
         return taskType;
     }
 
+    public void setTaskType(int taskType) {
+        this.taskType = taskType;
+    }
+
     public String getTaskTypeStr() {
         /**
          * 1-测评 2-音频 3-话术
@@ -64,10 +68,6 @@ public class TaskDetailModel implements IModel {
                 return "主题对话";
         }
         return "未知";
-    }
-
-    public void setTaskType(int taskType) {
-        this.taskType = taskType;
     }
 
     public int getCount() {

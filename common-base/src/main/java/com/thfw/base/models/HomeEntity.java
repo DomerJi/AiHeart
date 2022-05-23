@@ -27,13 +27,15 @@ public class HomeEntity {
     public String tabTitle;
 
     public MobileRecommendModel recommendModel;
+    public int body2Position = -1;
+
+    public HomeEntity() {
+    }
 
     public HomeEntity setMoodLivelyModel(MoodLivelyModel moodLivelyModel) {
         this.moodLivelyModel = moodLivelyModel;
         return this;
     }
-
-    public int body2Position = -1;
 
     public HomeEntity setBannerModels(List<BannerModel> bannerModels) {
         this.bannerModels.clear();
@@ -59,9 +61,6 @@ public class HomeEntity {
     public HomeEntity setRecommendModel(MobileRecommendModel recommendModel) {
         this.recommendModel = recommendModel;
         return this;
-    }
-
-    public HomeEntity() {
     }
 
     public static class BannerModel implements IModel {

@@ -23,15 +23,13 @@ public class VideoPlayListModel {
     public VideoModel.RecommendModel videoEtcModel;
     public VideoModel videoModel;
 
+    public VideoPlayListModel(int type) {
+        this.type = type;
+    }
+
     public VideoPlayListModel setHeadName(String headName) {
         this.headName = headName;
         return this;
-    }
-
-
-
-    public VideoPlayListModel(int type) {
-        this.type = type;
     }
 
 }

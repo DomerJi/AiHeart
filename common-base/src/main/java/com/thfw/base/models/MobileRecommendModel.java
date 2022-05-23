@@ -31,6 +31,10 @@ public class MobileRecommendModel implements IModel {
         return type;
     }
 
+    public void setType(int type) {
+        this.type = type;
+    }
+
     /**
      * type 1-测评 2-文章 3-音频  4-视频 6-思政文章 7-工具包
      *
@@ -54,10 +58,6 @@ public class MobileRecommendModel implements IModel {
                 return "练一练";
         }
         return "?一?";
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public int getContentId() {

@@ -82,6 +82,14 @@ import okhttp3.Response;
 public class LoginByFaceFragment extends BaseFragment implements CameraBridgeViewBase.CvCameraViewListener2 {
 
 
+    /**
+     * 检测器类型
+     */
+    public static final int JAVA_DETECTOR = 0;
+    public static final int NATIVE_DETECTOR = 1;
+    // 最大失败数量
+    private static final int FAIL_COUNT_MAX = 10;
+    private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
     private LinearLayout mLlLoginCenter;
     private TextView mTvLoginByPassword;
     private LinearLayout mClBottom;
@@ -95,7 +103,6 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     private ImageView mIvBorder;
     private ImageView mIvLine;
     private ObjectAnimator borderAnimation;
-
     private Mat mRgba; //图像容器
     private Mat mGray;
     private File mCascadeFile;
@@ -115,15 +122,6 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     private TextView mTvFaceFailHint;
     private ConstraintLayout mClFaceFail;
     private Button mBtRetry;
-
-    /**
-     * 检测器类型
-     */
-    public static final int JAVA_DETECTOR = 0;
-    public static final int NATIVE_DETECTOR = 1;
-    // 最大失败数量
-    private static final int FAIL_COUNT_MAX = 10;
-    private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
     // 动画扫描线上下标识
     private boolean mLineUpAnim = true;
     // true 录入人脸  false 人脸识别

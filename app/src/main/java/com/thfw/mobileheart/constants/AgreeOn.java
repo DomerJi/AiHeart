@@ -22,19 +22,19 @@ public enum AgreeOn {
         this.title = title;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
     public static boolean isAgreeUrl(String url) {
         if (AGREE_USER.getUrl().equals(url)
                 || AGREE_MSG.getUrl().equals(url)) {
             return true;
         }
         return false;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }

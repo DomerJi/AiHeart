@@ -25,12 +25,12 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
 
     private int type;
 
-    public void setType(int type) {
-        this.type = type;
-    }
-
     public TaskAdapter(List<TaskItemModel> dataList) {
         super(dataList);
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     @NonNull

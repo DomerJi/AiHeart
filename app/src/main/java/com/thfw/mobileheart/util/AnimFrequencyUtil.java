@@ -10,8 +10,8 @@ import com.thfw.mobileheart.constants.AnimFileName;
  */
 public class AnimFrequencyUtil {
 
-    public static int getAnimFrequency(){
-       return SharePreferenceUtil.getInt(AnimFileName.Frequency.KEY_FREQUENCY, 0);
+    public static int getAnimFrequency() {
+        return SharePreferenceUtil.getInt(AnimFileName.Frequency.KEY_FREQUENCY, 0);
     }
 
 

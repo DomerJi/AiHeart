@@ -46,9 +46,9 @@ public class AudioPresenter extends IPresenter<AudioPresenter.AudioUi> {
         OkHttpUtil.request(observable, getUI());
     }
 
-    public void addAudioHistory(int musicId,int collectId) {
+    public void addAudioHistory(int musicId, int collectId) {
         Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(AudioApi.class)
-                .addAudioHistory(musicId,collectId);
+                .addAudioHistory(musicId, collectId);
         OkHttpUtil.request(observable, getUI());
     }
 
@@ -57,7 +57,6 @@ public class AudioPresenter extends IPresenter<AudioPresenter.AudioUi> {
                 .getAudioLastHistory(NetParams.crete());
         OkHttpUtil.request(observable, getUI());
     }
-
 
 
     public interface AudioUi<T> extends UI<T> {

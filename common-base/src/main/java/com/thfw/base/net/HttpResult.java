@@ -28,7 +28,6 @@ public class HttpResult<T> implements IResult, IModel {
      * 12 => "未找到用户所在机构"
      */
     public static final int FAIL = 0;
-    private static final int CODE_SUCCESS = 1;
     public static final int FAIL_CODE = 2;
     public static final int FAIL_PASSWORD = 3;
     public static final int FAIL_PASSWORD_CODE = 4;
@@ -45,26 +44,26 @@ public class HttpResult<T> implements IResult, IModel {
     // 选择加入机构的时候，【您所在设备类型不能加入此机构】
     public static final int FAIL_DEVICE_NOT_JOIN_ORGAN_BY_AUTH = 15;
     public static final int FAIL_NO_ACCOUNT = 16;
-
-    public static boolean isOrganValid(int code) {
-        return code == FAIL_ROBOT_ID || code == FAIL_NO_ORGAN;
-    }
-
+    private static final int CODE_SUCCESS = 1;
     /**
      * 返回状态值
      * 0表示成功
      */
     private int code;
-
     /**
      * 返回结果提示
      */
     private String msg;
-
     /**
      * 返回结果数据
      */
     private T data;
+    @SerializedName("ext")
+    private Ext ext;
+
+    public static boolean isOrganValid(int code) {
+        return code == FAIL_ROBOT_ID || code == FAIL_NO_ORGAN;
+    }
 
     public T getData() {
         return data;
@@ -121,9 +120,6 @@ public class HttpResult<T> implements IResult, IModel {
         return code == CODE_SUCCESS;
     }
 
-    @SerializedName("ext")
-    private Ext ext;
-
     public Ext getExt() {
         return ext;
     }
@@ -141,6 +137,7 @@ public class HttpResult<T> implements IResult, IModel {
         // 表情
         @SerializedName("sentiment")
         private String sentiment;
+        private boolean achieve;
 
         public String getSentiment() {
             return sentiment;
@@ -161,8 +158,6 @@ public class HttpResult<T> implements IResult, IModel {
         public boolean isJumpTheme() {
             return "proPage".equals(turnPage);
         }
-
-        private boolean achieve;
 
         public boolean isAchieve() {
             return achieve;

@@ -30,7 +30,7 @@ public class BookTypeModel extends HashMap<String, String> implements IModel {
         return mList;
     }
 
-    public static class BookTypeImpModel implements IModel{
+    public static class BookTypeImpModel implements IModel {
         public String key;
         public String value;
         public int id;

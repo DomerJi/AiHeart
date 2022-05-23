@@ -49,8 +49,8 @@ public class TalkModel implements IModel {
         return title;
     }
 
-    public TalkModel setId(int id) {
-        this.id = id;
+    public TalkModel setTitle(String title) {
+        this.title = title;
         return this;
     }
 
@@ -58,18 +58,18 @@ public class TalkModel implements IModel {
         return id;
     }
 
-    public TalkModel setTitle(String title) {
-        this.title = title;
-        return this;
-    }
-
-    public TalkModel setCollected(boolean collected) {
-        this.collected = collected;
+    public TalkModel setId(int id) {
+        this.id = id;
         return this;
     }
 
     public boolean isCollected() {
         return collected;
+    }
+
+    public TalkModel setCollected(boolean collected) {
+        this.collected = collected;
+        return this;
     }
 
     public int getType() {

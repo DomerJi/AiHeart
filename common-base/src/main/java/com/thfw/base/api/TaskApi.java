@@ -57,8 +57,9 @@ public interface TaskApi {
 
     /**
      * 推送消息列表
-     *
+     * <p>
      * device_type msgType  page
+     *
      * @return
      */
     @FormUrlEncoded

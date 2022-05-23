@@ -8,6 +8,16 @@ import okhttp3.ResponseBody;
 
 public class FileUtil {
 
+    public static void deleteFile(String fileNanme) {
+        if (!TextUtils.isEmpty(fileNanme)) {
+            // 删除源文件
+            File file = new File(fileNanme);
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+    }
+
     public void saveFile(ResponseBody body) {
 //        state = DownloadTaskState.DOWNLOADING;
 //        byte[] buf = new byte[2048];
@@ -84,15 +94,5 @@ public class FileUtil {
 //                onCancel(url);
 //            }
 //        }
-    }
-
-    public static void deleteFile(String fileNanme) {
-        if (!TextUtils.isEmpty(fileNanme)) {
-            // 删除源文件
-            File file = new File(fileNanme);
-            if (file.exists()) {
-                file.delete();
-            }
-        }
     }
 }

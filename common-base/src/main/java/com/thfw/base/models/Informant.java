@@ -5,17 +5,16 @@ import java.util.List;
 
 public class Informant {
 
+    public String name;
+    public String vnc;
+    public String version;
+    public int code;
     private Informant(String name, String vnc, int code) {
         this.name = name;
         this.vnc = vnc;
 
         this.code = code;
     }
-
-    public String name;
-    public String vnc;
-    public String version;
-    public int code;
 
     public static List<Informant> getInformant() {
         List<Informant> informants = new ArrayList<>();

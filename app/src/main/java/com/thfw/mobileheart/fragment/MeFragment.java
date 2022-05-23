@@ -18,11 +18,13 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.MoodLivelyModel;
+import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.FunctionType;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
@@ -58,6 +60,8 @@ import org.jetbrains.annotations.NotNull;
 public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLivelyListener,
         MyApplication.OnMinuteListener {
 
+    public static final String KEY_INPUT_FACE = "key.input.face";
+    private static boolean initFaceState;
     private RoundedImageView mRivAvatar;
     private TextView mTvName;
     private TextView mTvStatus;
@@ -89,10 +93,6 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
     private LinearLayout mLlMeFace;
     private TextView mTvFaceSwitch;
     private ImageView mIvMoodStatus;
-
-
-    public static final String KEY_INPUT_FACE = "key.input.face";
-    private static boolean initFaceState;
 
     public static void resetInitFaceState() {
         initFaceState = false;
@@ -239,6 +239,14 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
             @Override
             public void onChanged(UserManager accountManager, User user) {
                 setUserMsg();
+                if (accountManager.isNewLogin()) {
+                    HandlerUtil.getMainHandler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            MoodLivelyHelper.addListener(MeFragment.this);
+                        }
+                    }, 1000);
+                }
             }
         };
     }
@@ -279,24 +287,31 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
             setInputState(inputState);
             return;
         }
-        new LoginPresenter(new LoginPresenter.LoginUi<CommonModel>() {
+        new LoginPresenter(new LoginPresenter.LoginUi<HttpResult<CommonModel>>() {
             @Override
             public LifecycleProvider getLifecycleProvider() {
                 return null;
             }
 
             @Override
-            public void onSuccess(CommonModel data) {
-                initFaceState = true;
-                SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), 1);
-                setInputState(1);
+            public void onSuccess(HttpResult<CommonModel> data) {
+                if (data.isSuccessful()) {
+                    initFaceState = true;
+                    SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), 1);
+                    setInputState(1);
+                } else {
+                    initFaceState = true;
+                    SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), 0);
+                    setInputState(0);
+                }
+
             }
 
             @Override
             public void onFail(ResponeThrowable throwable) {
-                initFaceState = true;
-                SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), 0);
-                setInputState(0);
+                initFaceState = false;
+                SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), -1);
+                setInputState(-1);
             }
         }).onIsFaceOpen();
     }

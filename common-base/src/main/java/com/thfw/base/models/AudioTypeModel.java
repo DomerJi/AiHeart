@@ -9,6 +9,9 @@ import com.thfw.base.base.IModel;
  */
 public class AudioTypeModel implements IModel {
 
+    private String name;
+    private int key;
+
     public AudioTypeModel() {
 
     }
@@ -18,16 +21,8 @@ public class AudioTypeModel implements IModel {
         this.key = key;
     }
 
-    private String name;
-
-    private int key;
-
     public String getName() {
         return name;
-    }
-
-    public void setKey(int key) {
-        this.key = key;
     }
 
     public void setName(String name) {
@@ -36,5 +31,9 @@ public class AudioTypeModel implements IModel {
 
     public int getKey() {
         return key;
+    }
+
+    public void setKey(int key) {
+        this.key = key;
     }
 }

@@ -43,7 +43,13 @@ public class TaskItemModel implements IModel {
     private int count;
     @SerializedName("finish_count")
     private int finishCount;
-
+    // start ================== 任务消息参数
+    @SerializedName("task_id")
+    private int taskId;
+    @SerializedName("read_status")
+    private int readStatus;
+    @SerializedName("turn_page")
+    private String turnPage;
 
     public String getCreateTime() {
         return createTime;
@@ -52,16 +58,6 @@ public class TaskItemModel implements IModel {
     public String getStartTime() {
         return startTime;
     }
-
-    // start ================== 任务消息参数
-    @SerializedName("task_id")
-    private int taskId;
-
-    @SerializedName("read_status")
-    private int readStatus;
-
-    @SerializedName("turn_page")
-    private String turnPage;
     // end ================== 任务消息参数
 
     public int getTaskId() {
@@ -128,12 +124,12 @@ public class TaskItemModel implements IModel {
         return deadline;
     }
 
-    public String getVisibleTime(int type) {
-        return type == 1 ? finishTime : deadline;
-    }
-
     public void setDeadline(String deadline) {
         this.deadline = deadline;
+    }
+
+    public String getVisibleTime(int type) {
+        return type == 1 ? finishTime : deadline;
     }
 
     public String getTitle() {

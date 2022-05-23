@@ -28,7 +28,6 @@ public class MoodLivelyModel implements Serializable {
     private MoodModel userMood;
 
 
-
     public int getLoginDays() {
         return loginDays;
     }

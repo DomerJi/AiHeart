@@ -11,6 +11,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.CommonModel;
+import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.utils.ClickCountUtils;
@@ -36,6 +37,8 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnCountChangeListener {
 
+    public static final String KEY_INPUT_FACE = "key.input.face";
+    private static boolean initFaceState;
     private TitleRobotView mTitleRobotView;
     private com.makeramen.roundedimageview.RoundedImageView mRivAvatar;
     private android.widget.TextView mTvNickname;
@@ -59,9 +62,6 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
     private RelativeLayout mRlReport;
     private TextView mTvMeMsgTitle;
     private TextView mTvDotCount;
-
-    public static final String KEY_INPUT_FACE = "key.input.face";
-    private static boolean initFaceState;
 
     public static void resetInitFaceState() {
         MeActivity.initFaceState = false;
@@ -213,24 +213,31 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
             setInputState(inputState);
             return;
         }
-        new LoginPresenter(new LoginPresenter.LoginUi<CommonModel>() {
+        new LoginPresenter(new LoginPresenter.LoginUi<HttpResult<CommonModel>>() {
             @Override
             public LifecycleProvider getLifecycleProvider() {
                 return null;
             }
 
             @Override
-            public void onSuccess(CommonModel data) {
-                initFaceState = true;
-                setInputState(1);
-                SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), 1);
+            public void onSuccess(HttpResult<CommonModel> data) {
+                if (data.isSuccessful()) {
+                    initFaceState = true;
+                    SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), 1);
+                    setInputState(1);
+                } else {
+                    initFaceState = true;
+                    SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), 0);
+                    setInputState(0);
+                }
+
             }
 
             @Override
             public void onFail(ResponeThrowable throwable) {
-                initFaceState = true;
-                SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), 0);
-                setInputState(0);
+                initFaceState = false;
+                SharePreferenceUtil.setInt(KEY_INPUT_FACE + UserManager.getInstance().getUID(), -1);
+                setInputState(-1);
             }
         }).onIsFaceOpen();
     }

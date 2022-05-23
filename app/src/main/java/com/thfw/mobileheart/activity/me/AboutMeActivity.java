@@ -28,13 +28,12 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 public class AboutMeActivity extends BaseActivity<OtherPresenter> implements OtherPresenter.OtherUi<AboutUsModel> {
 
+    private static final String KEY_ABOUT = "key.about.me";
     private TextView mTvHint;
     private TextView mTvVersion;
     private LinearLayout mLlCheckVersion;
     private TextView mTvCheckVersion;
     private TextView mTvCompanyAddress;
-
-    private static final String KEY_ABOUT = "key.about.me";
     private TextView mTvCopy;
 
     public static void startActivity(Context context) {

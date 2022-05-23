@@ -615,6 +615,43 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
         LogUtil.d(TAG, "onLongPress: ");
     }
 
+    @Override
+    public void onBackPressed() {
+        // 音频列表打开，点击返回，隐藏列表
+        if (mClContent != null && mClContent.getVisibility() == View.VISIBLE) {
+            audioLogcatue();
+        } else if (isTask) {
+            for (AudioEtcDetailModel.AudioItemModel itemModel : mAudios) {
+                if (itemModel.status != 1) {
+                    showAudioTaskStop();
+                    return;
+                }
+            }
+
+        }
+        super.onBackPressed();
+    }
+
+    private void showAudioTaskStop() {
+        DialogFactory.createCustomDialog(AudioPlayerActivity.this, new DialogFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvHint.setText("您尚未完成任务，确认退出？");
+                mTvLeft.setText("直接退出");
+                mTvRight.setText("继续完成");
+                mTvTitle.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+                if (view.getId() == R.id.tv_left) {
+                    finish();
+                }
+            }
+        });
+    }
+
     public class PlayerListener implements Player.Listener {
         private LoadingView mPbBar;
 
@@ -758,44 +795,6 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
             }
 
         }
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        // 音频列表打开，点击返回，隐藏列表
-        if (mClContent != null && mClContent.getVisibility() == View.VISIBLE) {
-            audioLogcatue();
-        } else if (isTask) {
-            for (AudioEtcDetailModel.AudioItemModel itemModel : mAudios) {
-                if (itemModel.status != 1) {
-                    showAudioTaskStop();
-                    return;
-                }
-            }
-
-        }
-        super.onBackPressed();
-    }
-
-    private void showAudioTaskStop() {
-        DialogFactory.createCustomDialog(AudioPlayerActivity.this, new DialogFactory.OnViewCallBack() {
-            @Override
-            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-                mTvHint.setText("您尚未完成任务，确认退出？");
-                mTvLeft.setText("直接退出");
-                mTvRight.setText("继续完成");
-                mTvTitle.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                tDialog.dismiss();
-                if (view.getId() == R.id.tv_left) {
-                    finish();
-                }
-            }
-        });
     }
 
 }

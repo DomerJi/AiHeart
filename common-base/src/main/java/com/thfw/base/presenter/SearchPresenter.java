@@ -4,7 +4,6 @@ import com.thfw.base.api.SearchApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
 import com.thfw.base.models.CommonModel;
-import com.thfw.base.models.SearchHistoryModel;
 import com.thfw.base.models.SearchResultModel;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;

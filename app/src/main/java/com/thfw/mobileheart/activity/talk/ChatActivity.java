@@ -443,6 +443,33 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         mTvPressSpeech.setOnTouchListener(new View.OnTouchListener() {
 
 
+            int count;
+            // 录音60S后停止
+            private TextView mStopHint;
+            Runnable mStopRunnable = new Runnable() {
+
+                @Override
+                public void run() {
+                    count--;
+                    if (count <= 10) {
+                        if (mStopHint != null) {
+                            mStopHint.setVisibility(View.VISIBLE);
+                            if (count <= 0) {
+                                mStopHint.setText("已停止录音");
+                                PolicyHelper.getInstance().end();
+                            } else {
+                                mStopHint.setText(count + "S后将停止录音");
+                            }
+                        }
+                    } else {
+                        mStopHint.setVisibility(View.INVISIBLE);
+                    }
+                    if (count > 0) {
+                        mMainHandler.postDelayed(mStopRunnable, 1000);
+                    }
+                }
+            };
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
@@ -532,32 +559,6 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
                 count = 60;
                 mMainHandler.postDelayed(mStopRunnable, 1000);
             }
-            // 录音60S后停止
-            private TextView mStopHint;
-            int count;
-            Runnable mStopRunnable = new Runnable() {
-
-                @Override
-                public void run() {
-                    count--;
-                    if (count <= 10) {
-                        if (mStopHint != null) {
-                            mStopHint.setVisibility(View.VISIBLE);
-                            if (count <= 0) {
-                                mStopHint.setText("已停止录音");
-                                PolicyHelper.getInstance().end();
-                            } else {
-                                mStopHint.setText(count + "S后将停止录音");
-                            }
-                        }
-                    } else {
-                        mStopHint.setVisibility(View.INVISIBLE);
-                    }
-                    if (count > 0) {
-                        mMainHandler.postDelayed(mStopRunnable, 1000);
-                    }
-                }
-            };
 
             private void closeVoiceControl() {
                 count = 0;

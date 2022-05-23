@@ -223,7 +223,7 @@
         </activity>
         <activity
             android:name=".activity.login.LoginActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.AudioSuspendActivity"

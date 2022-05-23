@@ -97,16 +97,20 @@ public class AudioEtcDetailModel implements IModel {
         @SerializedName("last_music_id")
         private int lastMusicId;
 
-        public void setLastMusicId(int lastMusicId) {
-            this.lastMusicId = lastMusicId;
-        }
-
         public int getLastMusicId() {
             return lastMusicId;
         }
 
+        public void setLastMusicId(int lastMusicId) {
+            this.lastMusicId = lastMusicId;
+        }
+
         public int getListenHistorySize() {
             return listenHistorySize > 0 ? listenHistorySize : 1;
+        }
+
+        public void setListenHistorySize(int listenHistorySize) {
+            this.listenHistorySize = listenHistorySize;
         }
 
         public int getLastHourIndex() {
@@ -233,10 +237,6 @@ public class AudioEtcDetailModel implements IModel {
             this.musicSize = musicSize;
         }
 
-        public void setListenHistorySize(int listenHistorySize) {
-            this.listenHistorySize = listenHistorySize;
-        }
-
         public int getCollected() {
             return collected;
         }
@@ -247,6 +247,7 @@ public class AudioEtcDetailModel implements IModel {
     }
 
     public static class AudioItemModel implements Serializable {
+        public int status = -1;
         /**
          * music_id : 1828
          * collection_id : 8
@@ -310,10 +311,6 @@ public class AudioEtcDetailModel implements IModel {
         private Object label;
         @SerializedName("num")
         private int num;
-
-        public int status = -1;
-
-
         @SerializedName("img")
         private String img;
 
@@ -323,22 +320,21 @@ public class AudioEtcDetailModel implements IModel {
         // 任务回执
         private boolean taskCallBack;
 
-        public void setTaskCallBack(boolean taskCallBack) {
-            this.taskCallBack = taskCallBack;
-        }
-
         public boolean isTaskCallBack() {
             return taskCallBack;
         }
 
-        public void setAutoFinished(boolean autoFinished) {
-            this.autoFinished = autoFinished;
+        public void setTaskCallBack(boolean taskCallBack) {
+            this.taskCallBack = taskCallBack;
         }
 
         public boolean isAutoFinished() {
             return autoFinished;
         }
 
+        public void setAutoFinished(boolean autoFinished) {
+            this.autoFinished = autoFinished;
+        }
 
         public int getMusicId() {
             return musicId;
@@ -388,12 +384,12 @@ public class AudioEtcDetailModel implements IModel {
             this.sfile = sfile;
         }
 
-        public void setImg(String img) {
-            this.img = img;
-        }
-
         public String getImg() {
             return img;
+        }
+
+        public void setImg(String img) {
+            this.img = img;
         }
 
         public String getSong() {

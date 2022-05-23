@@ -12,12 +12,32 @@ import java.io.Serializable;
  */
 public class MoodActiveModel implements Serializable {
 
-    public MoodActiveModel setTime(String time) {
-        this.time = time;
-        this.setTime = true;
-        return this;
-    }
-
+    @SerializedName("time")
+    public String time;
+    @SerializedName("active_time")
+    public long activeTime;
+    @SerializedName("testing_time")
+    public long testingTime;
+    @SerializedName("article_time")
+    public long articleTime;
+    @SerializedName("music_time")
+    public long musicTime;
+    @SerializedName("video_time")
+    public long videoTime;
+    @SerializedName("topic_dialog_time")
+    public long topicDialogTime;
+    @SerializedName("ideology_article_time")
+    public long ideologyArticleTime;
+    @SerializedName("tool_package_time")
+    public long toolPackageTime;
+    @SerializedName("hole_dialog_time")
+    public long holeDialogTime;
+    @SerializedName("mood_value")
+    public float moodValue;
+    @SerializedName("mood_tag")
+    public String moodName;
+    @SerializedName("mood_pic")
+    public String moodPic;
     /**
      * id : 5
      * user_id : 100010
@@ -39,40 +59,18 @@ public class MoodActiveModel implements Serializable {
     private long id;
     @SerializedName("user_id")
     private long userId;
-    @SerializedName("time")
-    public String time;
     private boolean setTime;
     private String timeMd;
-    @SerializedName("active_time")
-    public long activeTime;
-    @SerializedName("testing_time")
-    public long testingTime;
-    @SerializedName("article_time")
-    public long articleTime;
-    @SerializedName("music_time")
-    public long musicTime;
-    @SerializedName("video_time")
-    public long videoTime;
-    @SerializedName("topic_dialog_time")
-    public long topicDialogTime;
-    @SerializedName("ideology_article_time")
-    public long ideologyArticleTime;
-    @SerializedName("tool_package_time")
-    public long toolPackageTime;
-    @SerializedName("hole_dialog_time")
-    public long holeDialogTime;
-    @SerializedName("mood_value")
-    public float moodValue;
-
-    @SerializedName("mood_tag")
-    public String moodName;
-
-    @SerializedName("mood_pic")
-    public String moodPic;
-
+    private String mName;
 
     public String getTime() {
         return time;
+    }
+
+    public MoodActiveModel setTime(String time) {
+        this.time = time;
+        this.setTime = true;
+        return this;
     }
 
     public boolean isSetTime() {
@@ -93,8 +91,6 @@ public class MoodActiveModel implements Serializable {
     public String getMoodPic() {
         return moodPic;
     }
-
-    private String mName;
 
     public String getMoodName() {
         if (mName == null) {
@@ -190,17 +186,6 @@ public class MoodActiveModel implements Serializable {
         return new MoodImp(type, this);
     }
 
-    public static class MoodImp {
-        public CharType type;
-        public MoodActiveModel model;
-
-        public MoodImp(CharType type, MoodActiveModel model) {
-            this.type = type;
-            this.model = model;
-        }
-    }
-
-
     @Override
     public String toString() {
         return "MoodActiveModel{" +
@@ -222,5 +207,15 @@ public class MoodActiveModel implements Serializable {
                 ", moodPic='" + moodPic + '\'' +
                 ", mName='" + mName + '\'' +
                 '}';
+    }
+
+    public static class MoodImp {
+        public CharType type;
+        public MoodActiveModel model;
+
+        public MoodImp(CharType type, MoodActiveModel model) {
+            this.type = type;
+            this.model = model;
+        }
     }
 }

@@ -25,6 +25,7 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
@@ -264,7 +265,7 @@ public class SetBlueFragment extends RobotBaseFragment {
             if (mBleAdapter.getItemCount() == 0) {
                 mLoadingView.showLoadingNoText();
             }
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            HandlerUtil.getMainHandler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     syncScan();

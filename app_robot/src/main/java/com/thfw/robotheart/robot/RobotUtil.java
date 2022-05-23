@@ -21,39 +21,6 @@ public class RobotUtil {
     private static final String SHUTDOWN = "android.intent.action.ACTION_SHUTDOWN";
 
     public static int installRobot = -1;
-
-    /**
-     * @return 是否系统应用
-     */
-    public static boolean isSystemApp() {
-        return Util.isSystemApp(ContextApp.get().getPackageName());
-    }
-
-    /**
-     * 是否桌面1.0机器人
-     *
-     * @return
-     */
-    public static boolean isInstallRobot() {
-        if (installRobot == -1) {
-            installRobot = isSystemApp() ? 1 : 0;
-        }
-        return installRobot == 1;
-    }
-
-    /**
-     * 关机
-     *
-     * @return
-     */
-    public static boolean shutdown() {
-        if (isInstallRobot()) {
-            return CommandExecution.execCommand("reboot -p", true).result == 1;
-        } else {
-            return false;
-        }
-    }
-
     /**
      * 长按关机监听
      */
@@ -93,6 +60,38 @@ public class RobotUtil {
             }
         }
     };
+
+    /**
+     * @return 是否系统应用
+     */
+    public static boolean isSystemApp() {
+        return Util.isSystemApp(ContextApp.get().getPackageName());
+    }
+
+    /**
+     * 是否桌面1.0机器人
+     *
+     * @return
+     */
+    public static boolean isInstallRobot() {
+        if (installRobot == -1) {
+            installRobot = isSystemApp() ? 1 : 0;
+        }
+        return installRobot == 1;
+    }
+
+    /**
+     * 关机
+     *
+     * @return
+     */
+    public static boolean shutdown() {
+        if (isInstallRobot()) {
+            return CommandExecution.execCommand("reboot -p", true).result == 1;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * 长按关机按钮监听

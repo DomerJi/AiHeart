@@ -12,6 +12,12 @@ import java.util.List;
 public class VideoModel implements IModel {
 
     /**
+     * 视频测试数据
+     */
+    private static String videoUrl01 = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+    private static String videoUrl02 = "http://gslb.miaopai.com/stream/oxX3t3Vm5XPHKUeTS-zbXA__.mp4";
+    private static String videoUrl03 = "http://flv2.bn.netease.com/videolib3/1611/28/nNTov5571/SD/nNTov5571-mobile.mp4";
+    /**
      * id : 406
      * file : http://resource.soulbuddy.cn/public/uploads/video/storydepression.mp4
      * img : http://resource.soulbuddy.cn/public/uploads/videoPic/21011911060660064c9ed5ee7.jpg
@@ -36,57 +42,37 @@ public class VideoModel implements IModel {
     private int collected;
     @SerializedName("history_time")
     private String historyTime;
-
     @SerializedName("recommend_list")
     private List<RecommendModel> recommendModels;
+
+    public static List<VideoModel> getVideoUrl() {
+        List<VideoModel> videoModels = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            VideoModel videoModel = new VideoModel();
+            switch (i % 3) {
+                case 0:
+                    videoModel.title = "小兔子";
+                    videoModel.url = videoUrl01;
+                    break;
+                case 1:
+                    videoModel.title = "马云演讲";
+                    videoModel.url = videoUrl02;
+                    break;
+                default:
+                    videoModel.title = "海洋";
+                    videoModel.url = videoUrl03;
+                    break;
+            }
+
+            videoModels.add(videoModel);
+        }
+        return videoModels;
+
+    }
 
     public List<RecommendModel> getRecommendModels() {
         return recommendModels;
     }
-
-    public static class RecommendModel implements Serializable {
-
-        /**
-         * id : 872
-         * title : 看看你在亲密关系里的依恋类型？
-         * img : http://resource.soulbuddy.cn/public/uploads/videoPic/qmgxyllx.jpg
-         * pic : http://resource.soulbuddy.cn/public/uploads/videoPic/qmgxyllx.jpg
-         */
-
-        @SerializedName("id")
-        private int id;
-        @SerializedName("title")
-        private String title;
-        @SerializedName("img")
-        private String img;
-        @SerializedName("pic")
-        private String pic;
-
-        public String getTitle() {
-            return title;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public String getImg() {
-            return TextUtils.isEmpty(img) ? pic : img;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public void setImg(String img) {
-            this.img = img;
-        }
-    }
-
 
     public int getId() {
         return id;
@@ -159,36 +145,47 @@ public class VideoModel implements IModel {
         return title;
     }
 
-    /**
-     * 视频测试数据
-     */
-    private static String videoUrl01 = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
-    private static String videoUrl02 = "http://gslb.miaopai.com/stream/oxX3t3Vm5XPHKUeTS-zbXA__.mp4";
-    private static String videoUrl03 = "http://flv2.bn.netease.com/videolib3/1611/28/nNTov5571/SD/nNTov5571-mobile.mp4";
+    public static class RecommendModel implements Serializable {
 
-    public static List<VideoModel> getVideoUrl() {
-        List<VideoModel> videoModels = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            VideoModel videoModel = new VideoModel();
-            switch (i % 3) {
-                case 0:
-                    videoModel.title = "小兔子";
-                    videoModel.url = videoUrl01;
-                    break;
-                case 1:
-                    videoModel.title = "马云演讲";
-                    videoModel.url = videoUrl02;
-                    break;
-                default:
-                    videoModel.title = "海洋";
-                    videoModel.url = videoUrl03;
-                    break;
-            }
+        /**
+         * id : 872
+         * title : 看看你在亲密关系里的依恋类型？
+         * img : http://resource.soulbuddy.cn/public/uploads/videoPic/qmgxyllx.jpg
+         * pic : http://resource.soulbuddy.cn/public/uploads/videoPic/qmgxyllx.jpg
+         */
 
-            videoModels.add(videoModel);
+        @SerializedName("id")
+        private int id;
+        @SerializedName("title")
+        private String title;
+        @SerializedName("img")
+        private String img;
+        @SerializedName("pic")
+        private String pic;
+
+        public String getTitle() {
+            return title;
         }
-        return videoModels;
 
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getImg() {
+            return TextUtils.isEmpty(img) ? pic : img;
+        }
+
+        public void setImg(String img) {
+            this.img = img;
+        }
     }
 
 }

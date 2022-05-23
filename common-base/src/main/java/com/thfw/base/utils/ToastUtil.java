@@ -11,9 +11,9 @@ import androidx.annotation.StringRes;
  */
 public final class ToastUtil {
 
+    private static final int LIMIT = 1500;
     private static Context appContext;
     private static long showTime;
-    private static final int LIMIT = 1500;
 
     private ToastUtil() {
     }

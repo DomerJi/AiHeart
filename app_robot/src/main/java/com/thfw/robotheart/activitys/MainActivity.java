@@ -29,6 +29,7 @@ import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -270,12 +271,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
         if (UserManager.getInstance().isTrueLogin()) {
             setUserMessage(UserManager.getInstance().getUser());
-            // 已登录 初始化用户信息和机构信息
-            initUmeng();
-            initUserInfo();
-            initOrganization();
         }
-        MsgCountManager.getInstance().addOnCountChangeListener(this);
     }
 
     @Override
@@ -294,6 +290,11 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             // 检查版本更新
             mMainHandler.removeCallbacks(mCheckVersionRunnable);
             mMainHandler.postDelayed(mCheckVersionRunnable, isMeResumed2() ? 1000 : 2500);
+
+            // 已登录 初始化用户信息和机构信息
+            initUmeng();
+            initUserInfo();
+            initOrganization();
         }
 
     }
@@ -471,14 +472,20 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         return new UserObserver() {
             @Override
             public void onChanged(UserManager accountManager, User user) {
-                if (accountManager.isLogin()) {
-                    // 已登录 初始化用户信息和机构信息
-                    initUmeng();
-                    initUserInfo();
-                    initOrganization();
-                    setUserMessage(user);
-                }
 
+                if (accountManager.isNewLogin()) {
+                    // 此时延迟两秒，是因为登录同时 activity 没有 resume 网络请求执行有误（在机器性能差的平台上）
+                    HandlerUtil.getMainHandler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 已登录 初始化用户信息和机构信息
+                            initUmeng();
+                            initUserInfo();
+                            initOrganization();
+                        }
+                    }, 2000);
+                }
+                setUserMessage(user);
             }
         };
     }
@@ -561,6 +568,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
      */
     private void initUserInfo() {
         if (!initUserInfo) {
+            MsgCountManager.getInstance().addOnCountChangeListener(this);
             new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<User.UserInfo>() {
                 @Override
                 public LifecycleProvider getLifecycleProvider() {

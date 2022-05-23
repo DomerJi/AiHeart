@@ -232,7 +232,7 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.login.LoginActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape"
             android:theme="@style/LoginTheme" />
         <activity

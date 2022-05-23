@@ -12,14 +12,15 @@ public class MTestDetailAdapterModel {
 
     private int type;
     private TestDetailModel.HintBean hintBean;
+    private TestDetailModel testDetailModel;
+
+    public TestDetailModel.HintBean getHintBean() {
+        return hintBean;
+    }
 
     public MTestDetailAdapterModel setHintBean(TestDetailModel.HintBean hintBean) {
         this.hintBean = hintBean;
         return this;
-    }
-
-    public TestDetailModel.HintBean getHintBean() {
-        return hintBean;
     }
 
     public int getType() {
@@ -30,8 +31,6 @@ public class MTestDetailAdapterModel {
         this.type = type;
         return this;
     }
-
-    private TestDetailModel testDetailModel;
 
     public MTestDetailAdapterModel setDetailModel(TestDetailModel testDetailModel) {
         this.testDetailModel = testDetailModel;

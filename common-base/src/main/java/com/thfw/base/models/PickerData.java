@@ -16,18 +16,6 @@ public class PickerData implements IPickerViewData {
     private int type = -1;
     private boolean check;
 
-    public void setCheck(boolean check) {
-        this.check = check;
-    }
-
-    public boolean isCheck() {
-        return check;
-    }
-
-    public int getType() {
-        return type;
-    }
-
     public PickerData(String name) {
         this.name = name;
     }
@@ -35,6 +23,18 @@ public class PickerData implements IPickerViewData {
     public PickerData(String name, int type) {
         this.name = name;
         this.type = type;
+    }
+
+    public boolean isCheck() {
+        return check;
+    }
+
+    public void setCheck(boolean check) {
+        this.check = check;
+    }
+
+    public int getType() {
+        return type;
     }
 
     @Override

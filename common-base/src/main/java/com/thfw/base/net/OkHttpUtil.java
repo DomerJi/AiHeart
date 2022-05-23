@@ -53,6 +53,7 @@ public class OkHttpUtil {
             new HttpLoggingInterceptor(s -> {
                 LogUtil.i(TAG, s);
             });
+    private static BaseCodeListener mBaseCodeListener;
 
     public static synchronized <S> S createService(Class<S> serviceClass) {
         return createService(serviceClass, null);
@@ -81,7 +82,6 @@ public class OkHttpUtil {
         return retrofitBuilder.client(clientBuilder.build()).build()
                 .create(serviceClass);
     }
-
 
     private static <T> ObservableTransformer<T, T> transformerScheduler() {
         return new ObservableTransformer() {
@@ -177,7 +177,6 @@ public class OkHttpUtil {
         LogUtil.d("MultipartBody -> request ");
     }
 
-
     @SuppressLint("CheckResult")
     public static <T extends Object, U extends UI> void requestByHttpResult(Observable<HttpResult<T>> observable, U resultUI) {
         if (resultUI.getLifecycleProvider() != null) {
@@ -190,8 +189,6 @@ public class OkHttpUtil {
                     resultUI.onFail(ExceptionHandle.handleException(exception));
                 });
     }
-
-    private static BaseCodeListener mBaseCodeListener;
 
     public static void setBaseCodeListener(BaseCodeListener mBaseCodeListener) {
         OkHttpUtil.mBaseCodeListener = mBaseCodeListener;

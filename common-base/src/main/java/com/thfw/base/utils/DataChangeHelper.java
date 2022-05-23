@@ -14,20 +14,27 @@ public class DataChangeHelper {
 
     ArrayList<DataChangeListener> dataChangeListeners;
 
-    public static class Factory {
-        private static DataChangeHelper helper = new DataChangeHelper();
+    private DataChangeHelper() {
+        dataChangeListeners = new ArrayList<>();
     }
 
     public static DataChangeHelper getInstance() {
         return Factory.helper;
     }
 
-    public boolean isNoEmpty() {
-        return dataChangeListeners != null && !dataChangeListeners.isEmpty();
+    public static void collectChange(ImageView mIvCollect, int id) {
+        if (DataChangeHelper.getInstance().isNoEmpty()) {
+            if (mIvCollect != null && !mIvCollect.isSelected()) {
+                HashMap<String, Object> map = new HashMap<>();
+                map.put(DataChangeHelper.DataChangeListener.KEY_TYPE, DataChangeHelper.DataChangeListener.TYPE_COLLECT);
+                map.put(DataChangeHelper.DataChangeListener.KEY_ID, id);
+                DataChangeHelper.getInstance().notify(map);
+            }
+        }
     }
 
-    private DataChangeHelper() {
-        dataChangeListeners = new ArrayList<>();
+    public boolean isNoEmpty() {
+        return dataChangeListeners != null && !dataChangeListeners.isEmpty();
     }
 
     public void add(DataChangeListener listener) {
@@ -39,17 +46,6 @@ public class DataChangeHelper {
     public void remove(DataChangeListener listener) {
         if (dataChangeListeners.contains(listener)) {
             dataChangeListeners.remove(listener);
-        }
-    }
-
-    public static void collectChange(ImageView mIvCollect, int id) {
-        if (DataChangeHelper.getInstance().isNoEmpty()) {
-            if (mIvCollect != null && !mIvCollect.isSelected()) {
-                HashMap<String, Object> map = new HashMap<>();
-                map.put(DataChangeHelper.DataChangeListener.KEY_TYPE, DataChangeHelper.DataChangeListener.TYPE_COLLECT);
-                map.put(DataChangeHelper.DataChangeListener.KEY_ID, id);
-                DataChangeHelper.getInstance().notify(map);
-            }
         }
     }
 
@@ -68,5 +64,9 @@ public class DataChangeHelper {
         String KEY_CURRENT = "current";
 
         void onChanged(HashMap<String, Object> map);
+    }
+
+    public static class Factory {
+        private static DataChangeHelper helper = new DataChangeHelper();
     }
 }

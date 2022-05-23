@@ -1,8 +1,5 @@
 package com.thfw.robotheart.activitys.talk;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +11,7 @@ import com.thfw.base.models.ThemeTalkModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TalkPresenter;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.ThemeTalkAdapter;
@@ -73,7 +71,7 @@ public class ThemeTalkActivity extends RobotBaseActivity<TalkPresenter> implemen
                 if (!isMeResumed()) {
                     return;
                 }
-                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                HandlerUtil.getMainHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         if (isMeResumed()) {

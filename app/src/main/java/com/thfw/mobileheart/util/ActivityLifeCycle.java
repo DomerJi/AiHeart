@@ -88,6 +88,24 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
         return calendar.getTimeInMillis() / 1000 * 1000;
     }
 
+    public static String getKey(int type) {
+        return new StringBuilder().append(getTodayStartTime())
+                .append("_")
+                .append(UserManager.getInstance().getUID())
+                .append("_")
+                .append(type)
+                .toString();
+    }
+
+    public static String getYesterdayKey(int type) {
+        return new StringBuilder().append(getTodayStartTime() - HourUtil.LEN_DAY)
+                .append("_")
+                .append(UserManager.getInstance().getUID())
+                .append("_")
+                .append(type)
+                .toString();
+    }
+
     @Override
     public void onActivityCreated(Activity activity, Bundle bundle) {
         LogUtil.d(TAG, "onActivityCreated -> " + getActivityName(activity));
@@ -250,24 +268,6 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
 
     private void saveTodayPlayTime(long time) {
         saveTodayPlayTime(FunctionType.FUNCTION_APP, time);
-    }
-
-    public static String getKey(int type) {
-        return new StringBuilder().append(getTodayStartTime())
-                .append("_")
-                .append(UserManager.getInstance().getUID())
-                .append("_")
-                .append(type)
-                .toString();
-    }
-
-    public static String getYesterdayKey(int type) {
-        return new StringBuilder().append(getTodayStartTime() - HourUtil.LEN_DAY)
-                .append("_")
-                .append(UserManager.getInstance().getUID())
-                .append("_")
-                .append(type)
-                .toString();
     }
 
     /**

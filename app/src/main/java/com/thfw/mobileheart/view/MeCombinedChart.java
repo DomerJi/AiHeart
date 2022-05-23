@@ -1,4 +1,3 @@
-
 package com.thfw.mobileheart.view;
 
 import android.content.Context;

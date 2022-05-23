@@ -38,32 +38,6 @@ public class BitmapUtil {
     private static final String TAG = BitmapUtil.class.getSimpleName();
 
     /**
-     * bitmap转byte[]
-     *
-     * @param bm
-     * @return
-     */
-    public byte[] Bitmap2Bytes(Bitmap bm) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        return baos.toByteArray();
-    }
-
-    /**
-     * byte[]转bitmap
-     *
-     * @param b
-     * @return
-     */
-    public Bitmap Bytes2Bimap(byte[] b) {
-        if (b.length != 0) {
-            return BitmapFactory.decodeByteArray(b, 0, b.length);
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * bitmap的缩放
      *
      * @param bitmap
@@ -421,6 +395,32 @@ public class BitmapUtil {
         canvas.drawBitmap(bitmap, src, dst, paint); //以Mode.SRC_IN模式合并bitmap和已经draw了的Circle
 
         return output;
+    }
+
+    /**
+     * bitmap转byte[]
+     *
+     * @param bm
+     * @return
+     */
+    public byte[] Bitmap2Bytes(Bitmap bm) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        return baos.toByteArray();
+    }
+
+    /**
+     * byte[]转bitmap
+     *
+     * @param b
+     * @return
+     */
+    public Bitmap Bytes2Bimap(byte[] b) {
+        if (b.length != 0) {
+            return BitmapFactory.decodeByteArray(b, 0, b.length);
+        } else {
+            return null;
+        }
     }
 
 

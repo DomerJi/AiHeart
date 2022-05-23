@@ -58,6 +58,10 @@ public class PushMsgModel implements IModel {
         return type;
     }
 
+    public void setType(int type) {
+        this.type = type;
+    }
+
     public boolean isImportant() {
         switch (type) {
             case MsgType.TASK:
@@ -78,10 +82,6 @@ public class PushMsgModel implements IModel {
             default:
                 return false;
         }
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public int getId() {

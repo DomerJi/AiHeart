@@ -15,6 +15,8 @@ public class StatusEntity implements IModel {
 
     public int type;
     public String tag;
+    public int bodyPosition = -1;
+    public MoodModel moodModel;
 
     public StatusEntity setTag(String tag) {
         this.tag = tag;
@@ -26,12 +28,6 @@ public class StatusEntity implements IModel {
 
         return this;
     }
-
-    public int bodyPosition = -1;
-
-    public MoodModel moodModel;
-
-
 
     public StatusEntity setMoodModel(MoodModel moodModel) {
         this.moodModel = moodModel;

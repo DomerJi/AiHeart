@@ -18,13 +18,6 @@ public class HeartBoxEntity {
     public String content;
     public List<String> images = new ArrayList<>();
 
-    public String getTimeStr() {
-        if (timeStr == null) {
-            timeStr = formatDateTime(time);
-        }
-        return timeStr;
-    }
-
     /**
      * 格式化时间
      *
@@ -72,5 +65,12 @@ public class HeartBoxEntity {
                 return (now.get(Calendar.MONTH) + 1) + "月-" + current.get(Calendar.YEAR) + "年";
             }
         }
+    }
+
+    public String getTimeStr() {
+        if (timeStr == null) {
+            timeStr = formatDateTime(time);
+        }
+        return timeStr;
     }
 }

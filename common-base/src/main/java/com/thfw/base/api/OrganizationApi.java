@@ -36,7 +36,7 @@ public interface OrganizationApi {
      */
     @FormUrlEncoded
     @POST("get_organization_pwd")
-    Observable<HttpResult<OrganizationSelectedModel>> onGetJoinedList(@FieldMap Map<String,Object> map);
+    Observable<HttpResult<OrganizationSelectedModel>> onGetJoinedList(@FieldMap Map<String, Object> map);
 
 
     /**
