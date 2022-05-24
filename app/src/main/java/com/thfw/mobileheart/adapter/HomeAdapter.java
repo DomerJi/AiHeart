@@ -44,7 +44,7 @@ import com.thfw.mobileheart.util.MoodLivelyHelper;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.user.login.UserManager;
 import com.youth.banner.Banner;
-import com.youth.banner.indicator.CircleIndicator;
+import com.youth.banner.indicator.RectangleIndicator;
 import com.youth.banner.listener.OnBannerListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -464,7 +464,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         public BannerHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mBanner = itemView.findViewById(R.id.banner);
-            mBanner.setIndicator(new CircleIndicator(mContext));
+            mBanner.setIndicator(new RectangleIndicator(mContext));
             mBanner.setLoopTime(DELAY_TIME_BANNER);
         }
 
