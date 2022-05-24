@@ -367,7 +367,16 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                 mContext.startActivity(new Intent(mContext, HotPhoneActivity.class));
             });
             mClLeft.setOnClickListener(v -> {
-                ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
+                if (mContext instanceof FragmentActivity) {
+                    DialogFactory.createSvgaDialog((FragmentActivity) mContext,
+                            AnimFileName.TRANSITION_TALK,
+                            new DialogFactory.OnSVGACallBack() {
+                                @Override
+                                public void callBack(SVGAImageView svgaImageView) {
+                                    ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
+                                }
+                            });
+                }
             });
 
             mLlActive.setOnClickListener(v -> {

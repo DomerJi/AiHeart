@@ -64,6 +64,7 @@ import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.voice.PolicyHelper;
 import com.thfw.ui.voice.speech.SpeechHelper;
 import com.thfw.ui.widget.AnimBottomRelativeLayout;
+import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.SpeedLinearLayoutManager;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -117,6 +118,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
     private ImageView mIvControlPress;
     private TextView mTvControlHintSend;
     private boolean handleResult;
+    private LoadingView mLoadingView;
 
     public static void startActivity(Context context, int id, boolean used) {
         ((Activity) context).startActivityForResult(new Intent(context, ExerciseIngActivity.class)
@@ -138,6 +140,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
 
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
+        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
         mRvList.setLayoutManager(new SpeedLinearLayoutManager(mContext));
 
         mTvSend = (TextView) findViewById(R.id.tv_send);
@@ -544,12 +547,18 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
 
             @Override
             public void onSuccess(List<DialogTalkModel> data) {
+                mLoadingView.hide();
                 ExerciseIngActivity.this.onListDialog(data);
             }
 
             @Override
             public void onFail(ResponeThrowable throwable) {
-                ExerciseIngActivity.this.onFail(throwable);
+                LogUtil.d(TAG, "fail = " + throwable.getMessage());
+                if (mChatAdapter == null || mChatAdapter.getItemCount() == 0) {
+                    mLoadingView.showFail(v -> {
+                        joinDialog(continueValue);
+                    });
+                }
             }
         }).onJoinDialog(TalkApi.JOIN_TYPE_TOOL, mToolPackageId, continueValue);
 

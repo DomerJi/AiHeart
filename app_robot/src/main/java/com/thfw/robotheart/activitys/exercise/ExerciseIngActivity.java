@@ -62,6 +62,7 @@ import com.thfw.robotheart.view.fall.FallObject;
 import com.thfw.robotheart.view.fall.FallingView;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.SpeedLinearLayoutManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.yalantis.ucrop.util.ScreenUtils;
@@ -103,6 +104,10 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
     private SmartRefreshLayout mRefreshLayout;
     private int historyDialogId = -1;
     private boolean handleResult;
+    private FallingView mFallingView;
+    private ExplosionField mExplosionField;
+    private TextView mTvFinish3s;
+    private com.thfw.ui.widget.LoadingView mLoadingView;
 
 
     public static void startActivity(Context context, int id, boolean used) {
@@ -134,6 +139,8 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
         mRvSelect = (RecyclerView) findViewById(R.id.rv_select);
         mRefreshLayout = findViewById(R.id.refreshLayout);
         mRefreshLayout.setEnableLoadMore(false);
+
+        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
 
 
         // 设置布局管理器
@@ -228,6 +235,9 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
             mRlKeyword.setVisibility(View.GONE);
             showInput(mEtContent);
         });
+        mFallingView = (FallingView) findViewById(R.id.fallingView);
+        mExplosionField = (ExplosionField) findViewById(R.id.explosionField);
+        mTvFinish3s = (TextView) findViewById(R.id.tv_finish_3s);
     }
 
     /**
@@ -563,12 +573,18 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
 
             @Override
             public void onSuccess(List<DialogTalkModel> data) {
+                mLoadingView.hide();
                 ExerciseIngActivity.this.onListDialog(data);
             }
 
             @Override
             public void onFail(ResponeThrowable throwable) {
-                ExerciseIngActivity.this.onFail(throwable);
+                LogUtil.d(TAG, "fail = " + throwable.getMessage());
+                if (mChatAdapter == null || mChatAdapter.getItemCount() == 0) {
+                    mLoadingView.showFail(v -> {
+                        joinDialog(continueValue);
+                    });
+                }
             }
         }).onJoinDialog(TalkApi.JOIN_TYPE_TOOL, mToolPackageId, continueValue);
 

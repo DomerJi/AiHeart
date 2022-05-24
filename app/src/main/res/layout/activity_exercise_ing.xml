@@ -220,4 +220,10 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:ignore="MissingConstraints" />
 
+    <com.thfw.ui.widget.LoadingView
+        android:id="@+id/loadingView"
+        android:layout_below="@id/titleView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </RelativeLayout>

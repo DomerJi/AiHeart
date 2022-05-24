@@ -20,6 +20,7 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.presenter.UserToolPresenter;
 import com.thfw.base.utils.DataChangeHelper;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
@@ -181,9 +182,12 @@ public class ExerciseDetailsActivity extends RobotBaseActivity<UserToolPresenter
 
     @Override
     public void onFail(ResponeThrowable throwable) {
-        mLoadingView.showFail(v -> {
-            mPresenter.onGetInfo(mId);
-        });
+        LogUtil.e(TAG, throwable.getMessage());
+        if (mLogcateAdapter == null || mLogcateAdapter.getItemCount() == 0) {
+            mLoadingView.showFail(v -> {
+                mPresenter.onGetInfo(mId);
+            });
+        }
     }
 
     @Override

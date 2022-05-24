@@ -219,8 +219,10 @@ public class ExerciseDetailActivity extends BaseActivity<UserToolPresenter> impl
 
     @Override
     public void onFail(ResponeThrowable throwable) {
-        mLoadingView.showFail(v -> {
-            mPresenter.onGetInfo(mId);
-        });
+        if (mExerciseModel == null) {
+            mLoadingView.showFail(v -> {
+                mPresenter.onGetInfo(mId);
+            });
+        }
     }
 }
