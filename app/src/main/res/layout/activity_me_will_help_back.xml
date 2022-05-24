@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="26dp"
-        android:text="练习方式"
+        android:text="联系方式"
         android:textColor="@color/text_common"
         android:textSize="@dimen/textSize"
         app:layout_constraintLeft_toLeftOf="parent"

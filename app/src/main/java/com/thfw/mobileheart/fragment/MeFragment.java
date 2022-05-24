@@ -116,13 +116,16 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
         mTvMeLevel = (TextView) findViewById(R.id.tv_me_level);
         mTvMsgVersion = (TextView) findViewById(R.id.tv_massage_version);
         mTvStatus = (TextView) findViewById(R.id.tv_status);
-        mRivAvatar.setOnClickListener(v -> {
+        View.OnClickListener listener = v -> {
             if (UserManager.getInstance().isTrueLogin()) {
                 startActivity(new Intent(mContext, InfoActivity.class));
             } else {
                 LoginActivity.startActivity(mContext, LoginActivity.BY_MOBILE);
             }
-        });
+        };
+        mRivAvatar.setOnClickListener(listener);
+        mTvMeLevel.setOnClickListener(listener);
+        mTvName.setOnClickListener(listener);
 
         mMeMessage = (ConstraintLayout) findViewById(R.id.me_message);
         mLlStatus = (LinearLayout) findViewById(R.id.ll_status);
