@@ -9,7 +9,7 @@
         android:id="@+id/titleView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:trv_centerText="@string/me_select_avatar"
+        app:tv_centerText="@string/me_select_avatar"
         tools:ignore="MissingConstraints" />
 
 

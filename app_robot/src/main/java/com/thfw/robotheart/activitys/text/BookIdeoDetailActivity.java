@@ -240,7 +240,7 @@ public class BookIdeoDetailActivity extends RobotBaseActivity<BookPresenter> imp
                         // webview.goForward();// 前进
                         return true; // 已处理
                     } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        moveTaskToBack(true);
+                        finish();
                     }
                 }
                 return false;

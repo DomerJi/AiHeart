@@ -160,7 +160,7 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
                         // webview.goForward();// 前进
                         return true; // 已处理
                     } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        moveTaskToBack(true);
+                        finish();
                     }
                 }
                 return false;
