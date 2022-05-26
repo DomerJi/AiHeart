@@ -213,6 +213,19 @@ public class Util {
     }
 
     /**
+     * 英寸
+     *
+     * @param context
+     * @return
+     */
+    public static double screenInches(Context context) {
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        double x = Math.pow(dm.widthPixels / dm.xdpi, 2);
+        double y = Math.pow(dm.heightPixels / dm.ydpi, 2);
+        return Math.sqrt(x + y);
+    }
+
+    /**
      * 添加下划线
      *
      * @param textViews

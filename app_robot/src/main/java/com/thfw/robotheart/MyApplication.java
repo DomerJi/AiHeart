@@ -79,8 +79,16 @@ public class MyApplication extends MultiDexApplication {
         if (lv > 0) {
             return lv;
         }
-        int screenDensity = app.getResources().getDisplayMetrics().densityDpi;
+
+        DisplayMetrics dm = app.getResources().getDisplayMetrics();
+        int screenDensity = dm.densityDpi;
         lv = 1.0f * DisplayMetrics.DENSITY_XHIGH / screenDensity;
+        if (DisplayMetrics.DENSITY_XHIGH >= screenDensity) {
+            LogUtil.d("getFontScale01 lv = " + lv);
+            // 华为平板 6.25 = 2000/320
+            lv = lv * Math.max(dm.widthPixels, dm.heightPixels) * 1.0f / screenDensity / 6.25f;
+        }
+        LogUtil.d("getFontScale02 lv = " + lv);
         return lv;
     }
 

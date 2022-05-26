@@ -2,64 +2,34 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.thfw.robotheart"> <!-- 友盟 -->
-
-    <uses-sdk tools:overrideLibrary="com.huawei.hms.framework.common,
-        com.huawei.hms.framework.network.grs,
-        com.huawei.hmf.tasks,
-        com.huawei.agconnect.core,
-        com.huawei.hms.log,
-        com.huawei.hms.base.device,
-        com.huawei.hms.base.ui,
-        com.huawei.hms.stats,
-        com.huawei.hms.base.availableupdate,
-        com.huawei.android.hms.base,
-        com.huawei.android.hms.openid,
-        org.android.agoo.oppo,
-        com.vivo.push,
-        org.android.agoo.vivo,
-        org.android.agoo.meizu,
-        com.huawei.android.hms.push,
-        org.android.agoo.huawei,
-        com.pushsdk,
-        com.huawei.hms.hatool,
-        com.huawei.hms.framework.network.frameworkcompat" />
-    <!-- 录音/麦克风权限-->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <!-- 联网权限-->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <!-- wifi权限-->
+    <uses-sdk tools:overrideLibrary="com.huawei.hms.framework.common,         com.huawei.hms.framework.network.grs,         com.huawei.hmf.tasks,         com.huawei.agconnect.core,         com.huawei.hms.log,         com.huawei.hms.base.device,         com.huawei.hms.base.ui,         com.huawei.hms.stats,         com.huawei.hms.base.availableupdate,         com.huawei.android.hms.base,         com.huawei.android.hms.openid,         org.android.agoo.oppo,         com.vivo.push,         org.android.agoo.vivo,         org.android.agoo.meizu,         com.huawei.android.hms.push,         org.android.agoo.huawei,         com.pushsdk,         com.huawei.hms.hatool,         com.huawei.hms.framework.network.frameworkcompat" />
+    <!-- 录音/麦克风权限 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 联网权限 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- wifi权限 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <!-- 存储权限-->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 存储权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!-- 安装应用权限 -->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <!-- 静音音量-->
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <!-- 通知权限-->
-    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
-    <!-- 保持唤醒状态-->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!-- 修改系统配置-->
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <!-- 震动权限-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 安装应用权限 -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- 静音音量 -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> <!-- 通知权限 -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" /> <!-- 保持唤醒状态 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 修改系统配置 -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" /> <!-- 震动权限 -->
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <!-- 蓝牙权限-->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 蓝牙权限 -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.BIND_JOB_SERVICE" />
-    <!-- 开机广播-->
+    <uses-permission android:name="android.permission.BIND_JOB_SERVICE" /> <!-- 开机广播 -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-feature android:name="android.hardware.camera2.full" />
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <queries>
         <intent>
             <action android:name="android.intent.action.TTS_SERVICE" />
@@ -101,6 +71,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".port.PortTestActivity"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.me.SimpleTextActivity"
             android:screenOrientation="landscape" />
@@ -286,19 +259,14 @@
             android:launchMode="singleTask"
             android:screenOrientation="behind"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" /> <!-- 魅族 start -->
-
-        <!--开机广播-->
+        <!-- 开机广播 -->
         <receiver
             android:name=".receiver.BootCompleteReceiver"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-
-        </receiver>
-
-        <!-- push应用定义消息receiver声明 -->
+        </receiver> <!-- push应用定义消息receiver声明 -->
         <receiver
             android:name=".push.mfr.MfrMzMessageReceiver"
             android:exported="true">
