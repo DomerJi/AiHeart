@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.TestDetailModel;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +29,11 @@ public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, 
 
     public TestngAdapter(List<TestDetailModel.SubjectListBean> dataList) {
         super(dataList);
+        if (!EmptyUtil.isEmpty(dataList)) {
+            for (TestDetailModel.SubjectListBean bean : dataList) {
+                bean.resetSelectedIndex();
+            }
+        }
     }
 
     @NonNull

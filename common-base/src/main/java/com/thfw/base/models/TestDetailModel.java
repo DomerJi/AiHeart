@@ -472,6 +472,10 @@ public class TestDetailModel implements IModel {
             return selectedIndex;
         }
 
+        public void resetSelectedIndex(){
+            selectedIndex = -1;
+        }
+
         public void setSelectedIndex(int selectedIndex) {
             this.selectedIndex = selectedIndex;
         }

@@ -82,6 +82,7 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
     public void initView() {
         tvTitleView = findViewById(R.id.titleView);
         mRvCommend = findViewById(R.id.rv_recommend);
+        mRvCommend.setHasFixedSize(true);
         mRvCommend.setLayoutManager(new GridLayoutManager(mContext, 2));
 
         mTitleView = (TitleView) findViewById(R.id.titleView);
@@ -129,6 +130,7 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
                                 mPresenter.onGetResult(testResultModel.getResultId());
                             }
                         }
+                        findViewById(R.id.sv_view).scrollTo(0, 0);
                     }
                 })
                 .createAgentWeb()// 创建AgentWeb。
@@ -149,7 +151,7 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
 
 
         mAgentWeb.getWebCreator().getWebView().getSettings().setJavaScriptEnabled(true);
-        //  webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        mAgentWeb.getWebCreator().getWebView().setLayerType(View.LAYER_TYPE_NONE, null);
         // 优先使用网络
         mAgentWeb.getWebCreator().getWebView().getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         // 将图片调整到适合webview的大小
@@ -168,7 +170,6 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
         // 支持缩放
         mAgentWeb.getWebCreator().getWebView().getSettings().setBuiltInZoomControls(true);
         mAgentWeb.getWebCreator().getWebView().getSettings().setSupportZoom(true);
-
         // 允许webview对文件的操作
         mAgentWeb.getWebCreator().getWebView().getSettings().setAllowFileAccess(true);
         mAgentWeb.getWebCreator().getWebView().getSettings().setAllowFileAccessFromFileURLs(true);
@@ -224,11 +225,12 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
     }
 
     private void setRecommend() {
-        if (testResultModel == null) {
+        if (testResultModel == null || mRvCommend.getAdapter() != null) {
             return;
         }
         if (!EmptyUtil.isEmpty(testResultModel.getRecommendInfo())) {
             findViewById(R.id.tv_recommend_title).setVisibility(View.VISIBLE);
+            mRvCommend.setFocusable(false);
             mRvCommend.setVisibility(View.VISIBLE);
         }
         TestRecommendAdapter recommendAdapter = new TestRecommendAdapter(testResultModel.getRecommendInfo());

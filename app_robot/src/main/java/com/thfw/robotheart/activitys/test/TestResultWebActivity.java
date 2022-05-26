@@ -73,6 +73,7 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
     public void initView() {
         tvTitleView = findViewById(R.id.titleView);
         mRvCommend = findViewById(R.id.rv_recommend);
+        mRvCommend.setHasFixedSize(true);
         mRvCommend.setLayoutManager(new GridLayoutManager(mContext, 4));
 
     }
@@ -106,6 +107,7 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
                             } else {
                                 mPresenter.onGetResult(testResultModel.getResultId());
                             }
+                            findViewById(R.id.sv_view).scrollTo(0, 0);
                         }
                     }
                 })
@@ -127,7 +129,7 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
 
 
         mAgentWeb.getWebCreator().getWebView().getSettings().setJavaScriptEnabled(true);
-        //  webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        mAgentWeb.getWebCreator().getWebView().setLayerType(View.LAYER_TYPE_NONE, null);
         // 优先使用网络
         mAgentWeb.getWebCreator().getWebView().getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         // 将图片调整到适合webview的大小
@@ -202,11 +204,12 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
     }
 
     private void setRecommend() {
-        if (testResultModel == null) {
+        if (testResultModel == null || mRvCommend.getAdapter() != null) {
             return;
         }
         if (!EmptyUtil.isEmpty(testResultModel.getRecommendInfo())) {
             findViewById(R.id.tv_recommend_title).setVisibility(View.VISIBLE);
+            mRvCommend.setFocusable(false);
             mRvCommend.setVisibility(View.VISIBLE);
         }
         TestRecommendAdapter recommendAdapter = new TestRecommendAdapter(testResultModel.getRecommendInfo());

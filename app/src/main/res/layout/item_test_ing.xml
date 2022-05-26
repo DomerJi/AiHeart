@@ -74,7 +74,7 @@
         android:layout_marginRight="26dp"
         android:background="@drawable/bg_exerciseing_box_border"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/ll_page_footer"
+        app:layout_constraintHeight_max="400dp"
         app:layout_constraintTop_toBottomOf="@id/ll_title">
 
         <TextView
@@ -94,8 +94,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:overScrollMode="never"
-            android:paddingTop="6dp"
             android:paddingLeft="16dp"
+            android:paddingTop="6dp"
             android:paddingRight="16dp"
             android:paddingBottom="12dp" />
 
