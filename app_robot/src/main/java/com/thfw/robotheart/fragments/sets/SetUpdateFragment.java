@@ -66,7 +66,7 @@ public class SetUpdateFragment extends RobotBaseFragment {
         mRlClickUpdate.setOnClickListener(v -> {
             startActivity(new Intent(mContext, SystemAppActivity.class));
         });
-        mTvCurrentVersion.setText("v_" + Util.getAppVersion(mContext));
+        mTvCurrentVersion.setText(Util.getAppVersion(mContext));
         mTvOriginCode.setText(CommonParameter.getOrganizationId());
         mSwitchWifiUpdate.setChecked(SharePreferenceUtil.getBoolean(SET_AUTO_UPDATE_BOOLEAN, true));
         mSwitchWifiUpdate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
