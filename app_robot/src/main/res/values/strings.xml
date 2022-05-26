@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">强J密友(机器人版)</string>
+    <string name="app_name">AI咨询师</string>
 
     <string name="home">首页</string>
     <string name="test_nickname">许三多</string>
