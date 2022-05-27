@@ -92,6 +92,10 @@ public class SystemAppActivity extends BaseActivity {
 
         /*获取下载任务，初始化界面信息*/
         updateBtn(Beta.getStrategyTask());
+        if (Beta.getStrategyTask() != null
+                && Beta.getStrategyTask().getStatus() == DownloadTask.DOWNLOADING) {
+            mLlProgress.setVisibility(View.VISIBLE);
+        }
         /*获取策略信息，初始化界面信息*/
         version.setText(Beta.getUpgradeInfo().versionName);
         size.setText(toFileSizeM(Beta.getUpgradeInfo().fileSize + ""));
