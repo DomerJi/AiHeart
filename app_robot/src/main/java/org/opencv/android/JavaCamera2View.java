@@ -110,6 +110,10 @@ public class JavaCamera2View extends CameraBridgeViewBase {
             if (mCameraID != null) {
                 Log.i(LOGTAG, "Opening camera: " + mCameraID);
                 manager.openCamera(mCameraID, mStateCallback, mBackgroundHandler);
+            } else {
+                mCameraID = camList[0];
+                Log.i(LOGTAG, "else Opening camera: " + mCameraID);
+                manager.openCamera(mCameraID, mStateCallback, mBackgroundHandler);
             }
             return true;
         } catch (CameraAccessException e) {
