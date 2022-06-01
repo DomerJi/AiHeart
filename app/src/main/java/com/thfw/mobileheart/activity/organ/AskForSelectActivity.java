@@ -262,6 +262,9 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
             public void onSuccess(IModel data) {
                 CommonParameter.setOrganizationSelected(mSelecteds);
                 UserManager.getInstance().getUser().setOrganList(mSelecteds);
+                if (!EmptyUtil.isEmpty(mSelecteds)) {
+                    UPushAlias.setTag(mSelecteds.get(mSelecteds.size() - 1).getId());
+                }
                 UserManager.getInstance().notifyUserInfo();
                 CommonParameter.setOrganizationId(mScanOrganizationId);
                 LoadingDialog.hide();
@@ -380,9 +383,6 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
                 childIds.add(String.valueOf(bean.getId()));
             }
             initSelectedList2(mSelecteds, mOrganizationModel.getOrganization());
-            CommonParameter.setOrganizationSelected(mSelecteds);
-            UserManager.getInstance().getUser().setOrganList(mSelecteds);
-            UPushAlias.setTag(mSelecteds.get(mSelecteds.size() - 1).getId());
         } else {
             mSelecteds.add(mOrganizationModel.getOrganization());
         }
