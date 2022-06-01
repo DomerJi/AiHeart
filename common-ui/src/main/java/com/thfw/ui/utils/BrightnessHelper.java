@@ -54,9 +54,60 @@ public class BrightnessHelper {
     }
 
     /*
+     * 关闭自动调节亮度
+     */
+    public boolean isOnAutoBrightness() {
+        if (isSystemApp) {
+            try {
+                return Settings.System.getInt(resolver, Settings.System.SCREEN_BRIGHTNESS_MODE) == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
+            } catch (Settings.SettingNotFoundException e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /*
+     * 开启自动调节亮度
+     */
+    public void onAutoBrightness() {
+        try {
+            if (Settings.System.getInt(resolver, Settings.System.SCREEN_BRIGHTNESS_MODE) == Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL) {
+                Settings.System.putInt(resolver,
+                        Settings.System.SCREEN_BRIGHTNESS_MODE,
+                        Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
+            }
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
      * 获取系统亮度
      */
     public float getBrightness() {
+        return Settings.System.getInt(resolver, Settings.System.SCREEN_BRIGHTNESS, 255) / 255f;
+    }
+
+    /*
+     * 获取系统亮度
+     */
+    public float getAutoBrightness(Activity activity) {
+        float light = 0;
+        if (isOnAutoBrightness()) {
+            Window mWindow = activity.getWindow();
+            if (mWindow != null) {
+                light = mWindow.getAttributes().screenBrightness;
+                if (light > 0) {
+                    return light;
+                }
+            }
+            light = Settings.System.getFloat(resolver, "screen_auto_brightness_adj", 0f);
+            if (light > 0) {
+                return light;
+            }
+        }
         return Settings.System.getInt(resolver, Settings.System.SCREEN_BRIGHTNESS, 255) / 255f;
     }
 

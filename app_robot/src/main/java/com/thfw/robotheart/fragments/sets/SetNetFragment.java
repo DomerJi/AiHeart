@@ -10,7 +10,10 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -25,14 +28,16 @@ import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
 import com.thanosfisherman.wifiutils.wifiState.WifiStateListener;
-import com.thfw.base.ContextApp;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.adapter.WifiAdapter;
+import com.thfw.robotheart.util.WifiHelper;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -51,7 +56,9 @@ public class SetNetFragment extends RobotBaseFragment {
     private WifiAdapter wifiAdapter;
     private WifiManager mWifiManager;
     private Handler handler;
+    private ImageView mIvRescan;
 
+    List<ScanResult> newResults = new ArrayList<>();
 
     @Override
     public int getContentView() {
@@ -72,6 +79,7 @@ public class SetNetFragment extends RobotBaseFragment {
         mWifiList.setLayoutManager(new LinearLayoutManager(mContext));
         mPbLoading = (ProgressBar) findViewById(R.id.pb_loading);
         mTvHint = (TextView) findViewById(R.id.tv_hint);
+        mIvRescan = (ImageView) findViewById(R.id.iv_rescan);
         WifiUtils.enableLog(true);
         WifiUtils.forwardLog(new Logger() {
             @Override
@@ -84,64 +92,67 @@ public class SetNetFragment extends RobotBaseFragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 delayScanWifi();
                 if (isChecked) {
-                    WifiUtils.withContext(ContextApp.get()).enableWifi();
-                    WifiUtils.withContext(ContextApp.get()).enableWifi(new WifiStateListener() {
+                    WifiHelper.get().enableWifi();
+                    WifiHelper.get().enableWifi(new WifiStateListener() {
                         @Override
                         public void isSuccess(boolean isSuccess) {
+                            mIvRescan.setVisibility(isSuccess ? View.VISIBLE : View.GONE);
                             if (isSuccess) {
                                 onScanWifi();
                             } else {
                                 mSwitchWifi.setChecked(false);
                                 mPbLoading.setVisibility(View.GONE);
                                 mWifiList.setVisibility(View.GONE);
-                                WifiUtils.withContext(ContextApp.get()).disableWifi();
+                                WifiHelper.get().disableWifi();
                             }
                         }
                     });
                 } else {
+                    mIvRescan.clearAnimation();
                     mPbLoading.setVisibility(View.GONE);
                     mWifiList.setVisibility(View.GONE);
-                    WifiUtils.withContext(ContextApp.get()).disableWifi();
+                    WifiHelper.get().disableWifi();
                 }
+                mIvRescan.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             }
         });
         mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         boolean enabled = mWifiManager != null && mWifiManager.isWifiEnabled();
+        setWifiAdapter();
         Log.i(TAG, "isWifiEnabled =  " + enabled);
         mSwitchWifi.setChecked(enabled);
-    }
-
-    @Override
-    public void initData() {
-        onScanWifi();
-    }
-
-
-    private void onScanWifi() {
-        mPbLoading.setVisibility(View.VISIBLE);
-        mWifiList.setVisibility(View.VISIBLE);
-        mWifiList.setAdapter(new WifiAdapter(null));
-        WifiUtils.withContext(mContext).scanWifi(this::getScanResults).start();
-    }
-
-    private void getScanResults(@NonNull final List<ScanResult> results) {
-        mPbLoading.setVisibility(View.GONE);
-        if (results.isEmpty()) {
-            mTvHint.setVisibility(View.VISIBLE);
-            if (Util.isSystemApp(mContext.getPackageName())) {
-                mTvHint.setText("没有扫描到Wifi");
-            } else {
-                mTvHint.setText("App不是系统级的，没有办法扫描无线网络，请到本设备的设置中连接无线网络。");
+        mIvRescan.setVisibility(enabled ? View.VISIBLE : View.GONE);
+        mIvRescan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onScanWifi();
+                Log.i(TAG, "mIvRescan click ++++++++++++");
             }
+        });
+    }
+
+    private void reScanAnimStart() {
+        if (mIvRescan == null) {
             return;
         }
-        mTvHint.setVisibility(View.GONE);
-        wifiAdapter = new WifiAdapter(results);
+        mIvRescan.clearAnimation();
+        RotateAnimation rotateAnimation = new RotateAnimation(0, 1080,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(3000);
+        mIvRescan.startAnimation(rotateAnimation);
+    }
+
+    private void setWifiAdapter() {
+        wifiAdapter = new WifiAdapter(newResults);
+        wifiAdapter.setWifiManager(mWifiManager);
         wifiAdapter.setOnWifiItemListener(new WifiAdapter.OnWifiItemListener() {
             @Override
             public void onItemClick(ScanResult scanResult, String passType, int position) {
+
+                wifiAdapter.setSsidIng(null);
                 if (TextUtils.isEmpty(passType)) {
-                    WifiUtils.withContext(mContext)
+                    WifiHelper.get()
                             .connectWith(scanResult.SSID, "")
                             .setTimeout(10000).onConnectionResult(new ConnectionSuccessListener() {
                         @Override
@@ -163,8 +174,13 @@ public class SetNetFragment extends RobotBaseFragment {
                     if (configuration != null) {
                         Log.i(TAG, "已经有密码 - 开始连接");
                         // 连接配置好的指定ID的网络
+                        wifiAdapter.setSsidIng(scanResult);
+                        wifiAdapter.notifyDataSetChanged();
+                        mWifiManager.updateNetwork(configuration);
                         mWifiManager.enableNetwork(configuration.networkId,
                                 true);
+                        delayScanWifi();
+                        wifiAdapter.setSsidIng(null);
                         return;
                     }
 
@@ -184,6 +200,84 @@ public class SetNetFragment extends RobotBaseFragment {
             }
         });
         mWifiList.setAdapter(wifiAdapter);
+    }
+
+    @Override
+    public void initData() {
+        onScanWifi();
+    }
+
+
+    private void onScanWifi() {
+        mWifiList.setVisibility(View.VISIBLE);
+        if (mWifiList.getAdapter() == null || mWifiList.getAdapter().getItemCount() == 0) {
+            mPbLoading.setVisibility(View.VISIBLE);
+        } else {
+            reScanAnimStart();
+        }
+        WifiHelper.get().scanWifi(this::getScanResults).start();
+    }
+
+    /**
+     * 去除名称为空的wifi
+     *
+     * @param results
+     */
+    private void removeNullNameWifi(final List<ScanResult> results) {
+
+        if (results != null) {
+            Iterator<ScanResult> iterator = results.iterator();
+            while (iterator.hasNext()) {
+                ScanResult scanResult = iterator.next();
+                String ssid = null;
+                if (scanResult.SSID != null) {
+                    ssid = scanResult.SSID.trim().replaceAll(" ", "");
+                }
+                if (TextUtils.isEmpty(ssid)) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+
+    private void getScanResults(@NonNull final List<ScanResult> results) {
+//        removeNullNameWifi(results);
+        mPbLoading.setVisibility(View.GONE);
+        if (results.isEmpty()) {
+            mTvHint.setVisibility(View.VISIBLE);
+            if (Util.isSystemApp(mContext.getPackageName())) {
+                mTvHint.setText("没有扫描到Wifi");
+            } else {
+                mTvHint.setText("App不是系统级的，没有办法扫描无线网络，请到本设备的设置中连接无线网络。");
+            }
+            return;
+        }
+
+        newResults.clear();
+        int len = results.size();
+        for (int i = 0; i < len; i++) {
+            ScanResult scanResult = results.get(i);
+            boolean connected = WifiHelper.get().isWifiConnected(scanResult.SSID);
+            if (connected) {
+                newResults.add(0, scanResult);
+            } else {
+                if (Util.isSavePassWord(mWifiManager, scanResult.SSID)) {
+                    if (newResults.isEmpty()) {
+                        newResults.add(0, scanResult);
+                    } else {
+                        newResults.add(1, scanResult);
+                    }
+                } else {
+                    newResults.add(scanResult);
+                }
+            }
+        }
+
+        mTvHint.setVisibility(View.GONE);
+        if (wifiAdapter != null) {
+            wifiAdapter.notifyDataSetChanged();
+        }
         Log.i(TAG, "GOT SCAN RESULTS " + results);
     }
 
@@ -204,7 +298,6 @@ public class SetNetFragment extends RobotBaseFragment {
     private void delayScanWifi() {
         if (handler != null) {
             handler.removeCallbacksAndMessages(null);
-            handler = null;
         }
         if (mSwitchWifi == null || !mSwitchWifi.isChecked()) {
             return;
@@ -216,15 +309,16 @@ public class SetNetFragment extends RobotBaseFragment {
                 if (wifiAdapter != null) {
                     wifiAdapter.notifyDataSetChanged();
                 }
-                handler.sendEmptyMessageDelayed(0, 3000);
+                handler.sendEmptyMessageDelayed(0, 1500);
             }
         };
-        handler.sendEmptyMessageDelayed(0, 3000);
+        handler.sendEmptyMessageDelayed(0, 800);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        WifiHelper.release();
         if (handler != null) {
             handler.removeCallbacksAndMessages(null);
             handler = null;

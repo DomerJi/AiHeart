@@ -13,13 +13,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.thanosfisherman.wifiutils.WifiConnectorBuilder;
-import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
+import com.thfw.robotheart.util.WifiHelper;
 
 /**
  * wifi 输入密码
@@ -123,15 +123,16 @@ public class WifiInputFragment extends RobotBaseFragment {
      * 连接wifi
      */
     private void connect() {
+        hideInput();
         connectUi(true);
         String user = mEtUser.getText().toString();
         WifiConnectorBuilder.WifiSuccessListener successListener;
         if (!TextUtils.isEmpty(user)) {
-            successListener = WifiUtils.withContext(getContext().getApplicationContext())
+            successListener = WifiHelper.get()
                     .connectWith(user, scanResult.BSSID, mEtPass.getText().toString());
 
         } else {
-            successListener = WifiUtils.withContext(getContext().getApplicationContext())
+            successListener = WifiHelper.get()
                     .connectWith(scanResult.SSID, mEtPass.getText().toString());
         }
         successListener.setTimeout(10000)

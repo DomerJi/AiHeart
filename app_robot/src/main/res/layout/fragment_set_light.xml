@@ -28,6 +28,18 @@
             android:layout_alignParentBottom="true"
             android:background="@color/colorRobotFore" />
 
+        <TextView
+            android:id="@+id/tv_auto_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_toLeftOf="@id/switch_all_light"
+            android:text="已打开自动亮度调节"
+            android:textColor="@color/colorRobotFore"
+            android:textSize="@dimen/textSize_small" />
+
         <Switch
             android:id="@+id/switch_all_light"
             style="@style/switch_set_style"

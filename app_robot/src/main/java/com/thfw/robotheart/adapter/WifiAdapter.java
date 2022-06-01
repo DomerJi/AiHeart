@@ -1,7 +1,6 @@
 package com.thfw.robotheart.adapter;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -17,11 +16,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionSuccessListener;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.util.WifiHelper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,23 +32,30 @@ import java.util.List;
  */
 public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder> {
 
-    private Context mContext;
     private List<ScanResult> scanResults;
     private HashMap<String, Boolean> savePassWord;
     private WifiManager mWifiManager;
     private OnWifiItemListener onWifiItemListener;
+    private ScanResult ssidIng;
+
+    public void setSsidIng(ScanResult ssidIng) {
+        this.ssidIng = ssidIng;
+    }
 
     public WifiAdapter(List<ScanResult> scanResults) {
         super(scanResults);
         this.scanResults = scanResults;
         this.savePassWord = new HashMap<>();
+
+    }
+
+    public void setWifiManager(WifiManager mWifiManager) {
+        this.mWifiManager = mWifiManager;
     }
 
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        mContext = recyclerView.getContext();
-        mWifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
     }
 
     @NonNull
@@ -69,8 +75,18 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
         } else {
             holder.mIvLock.setVisibility(View.VISIBLE);
         }
-        boolean connected = WifiUtils.withContext(mContext.getApplicationContext()).isWifiConnected(scanResult.SSID);
-        holder.mTvConnectState.setVisibility(connected ? View.VISIBLE : View.INVISIBLE);
+        boolean connected = WifiHelper.get().isWifiConnected(scanResult.SSID);
+        if (connected) {
+            holder.mTvConnectState.setText("已连接");
+            holder.mTvConnectState.setVisibility(View.VISIBLE);
+        }
+        if (scanResult == ssidIng) {
+            holder.mTvConnectState.setText("连接中..");
+            holder.mTvConnectState.setVisibility(View.VISIBLE);
+        } else {
+            holder.mTvConnectState.setText("已连接");
+            holder.mTvConnectState.setVisibility(connected ? View.VISIBLE : View.INVISIBLE);
+        }
         holder.mTvName.setText(scanResult.SSID);
         savePassWord.put(scanResult.SSID, Util.isSavePassWord(mWifiManager, scanResult.SSID));
         Log.i("savePassWord", "savePassWord = " + savePassWord.get(scanResult.SSID));
@@ -90,21 +106,20 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
                         .setPositiveButton("是", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                WifiUtils.withContext(mContext.getApplicationContext())
-                                        .disconnect(new DisconnectionSuccessListener() {
-                                            @Override
-                                            public void success() {
-                                                notifyDataSetChanged();
-                                                Util.removeWifiBySsid(mWifiManager, scanResult.SSID);
-                                                Toast.makeText(mContext, "成功断开链接", Toast.LENGTH_SHORT).show();
-                                            }
+                                WifiHelper.get().disconnect(new DisconnectionSuccessListener() {
+                                    @Override
+                                    public void success() {
+                                        notifyDataSetChanged();
+                                        Util.removeWifiBySsid(mWifiManager, scanResult.SSID);
+                                        Toast.makeText(mContext, "成功断开链接", Toast.LENGTH_SHORT).show();
+                                    }
 
-                                            @Override
-                                            public void failed(@NonNull DisconnectionErrorCode errorCode) {
-                                                Toast.makeText(mContext, "断开链接失败: " + errorCode.toString(), Toast.LENGTH_SHORT).show();
-                                                notifyDataSetChanged();
-                                            }
-                                        });
+                                    @Override
+                                    public void failed(@NonNull DisconnectionErrorCode errorCode) {
+                                        Toast.makeText(mContext, "断开链接失败: " + errorCode.toString(), Toast.LENGTH_SHORT).show();
+                                        notifyDataSetChanged();
+                                    }
+                                });
                             }
                         }).setNegativeButton("否", new DialogInterface.OnClickListener() {
                     @Override
