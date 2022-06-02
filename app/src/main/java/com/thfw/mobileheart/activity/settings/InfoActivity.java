@@ -36,6 +36,7 @@ import com.thfw.base.models.HeadModel;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.models.PickerData;
+import com.thfw.base.models.PresetAvatarModel;
 import com.thfw.base.net.ApiHost;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.HttpResult;
@@ -77,6 +78,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -323,9 +325,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
                 findViewById(id).setVisibility(View.VISIBLE);
             }
             initOrganization();
-
         }
-
 
         // 设置布局管理器
         FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(mContext);
@@ -905,6 +905,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
     public void onSuccess(User.UserInfo userInfo) {
         UserManager.getInstance().getUser().setUserInfo(userInfo);
         setUserInfo(userInfo);
+        initDefaultAvatar();
     }
 
 
@@ -1043,6 +1044,60 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
                 initSelectedList(list, bean.getChildren());
             }
         }
+    }
+
+    private void initDefaultAvatar() {
+        if (!UserManager.getInstance().isLogin()) {
+            return;
+        }
+        if (!TextUtils.isEmpty(UserManager.getInstance().getUser().getAvatar())) {
+            return;
+        }
+        LogUtil.i(TAG, "initDefaultAvatar+++++++++++++++++++++++++");
+        new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<List<PresetAvatarModel>>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return InfoActivity.this;
+            }
+
+            @Override
+            public void onSuccess(List<PresetAvatarModel> data) {
+                if (!EmptyUtil.isEmpty(data)) {
+                    onUpdateInfoAvatar(data.get(new Random().nextInt(data.size())).getPic());
+                }
+                LogUtil.i(TAG, "initDefaultAvatar+++++++++++++++++++++++++onSuccess");
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                LogUtil.i(TAG, "initDefaultAvatar+++++++++++++++++++++++++onFail");
+            }
+        }).onPresetAvatarList();
+    }
+
+    public void onUpdateInfoAvatar(String value) {
+        LogUtil.i(TAG, "onUpdateInfoAvatar+++++++++++++++++++++++++");
+        new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<CommonModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return InfoActivity.this;
+            }
+
+            @Override
+            public void onSuccess(CommonModel data) {
+                UserManager.getInstance().getUser().getUserInfo().pic = value;
+                UserManager.getInstance().notifyUserInfo();
+                GlideUtil.load(mContext, value, mRivAvatar);
+                LogUtil.i(TAG, "onUpdateInfoAvatar+++++++++++++++++++++++++onSuccess");
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                LogUtil.i(TAG, "onUpdateInfoAvatar+++++++++++++++++++++++++onFail");
+            }
+        }).onUpdate(NetParams.crete()
+                .add("key", "pic")
+                .add("value", value));
     }
 
 }
