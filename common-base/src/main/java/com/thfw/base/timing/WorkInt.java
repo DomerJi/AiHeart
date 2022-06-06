@@ -7,7 +7,7 @@ package com.thfw.base.timing;
  */
 public enum WorkInt {
 
-    SLEEP(0, 1 * 60, false),
+    SLEEP(0, 1 * 60, true),
     LOGOUT(1, 1 * 60, false),
     TIME(2, 60, true),
     HINT(3, 20, true),

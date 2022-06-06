@@ -14,26 +14,29 @@ import java.util.List;
 import android_serialport_api.SerialPort;
 
 /**
- * @author 串口辅助工具类
+ * @author
+ *串口辅助工具类
  */
-public abstract class SerialHelper {
-    byte[] tempBuff = new byte[2048];
+public abstract class SerialHelper{
     private SerialPort mSerialPort;
     private OutputStream mOutputStream;
     private InputStream mInputStream;
     private ReadThread mReadThread;
     private SendThread mSendThread;
+
     private String sPort = "/dev/ttyS1";
     private int iBaudRate = 9600;
     private int parity = 0;
     private int dataBits = 8;
     private int stopBit = 1;
-    private boolean _isOpen = false;
-    private List<byte[]> _bLoopDataList = new ArrayList<>();
-    private int iDelay = 500;
 
+    byte[] tempBuff = new byte[2048];
+
+    private boolean _isOpen=false;
+    private List<byte[]> _bLoopDataList = new ArrayList<>();
+    private int iDelay=500;
     //----------------------------------------------------
-    public SerialHelper(String sPort, int iBaudRate, int parity, int dataBits, int stopBit) {
+    public SerialHelper(String sPort, int iBaudRate, int parity, int dataBits, int stopBit){
         this.sPort = sPort;
         this.iBaudRate = iBaudRate;
         this.parity = parity;
@@ -41,26 +44,24 @@ public abstract class SerialHelper {
         this.stopBit = stopBit;
     }
 
-    public SerialHelper(String sPort, int iBaudRate) {
+    public SerialHelper(String sPort, int iBaudRate){
         this.sPort = sPort;
         this.iBaudRate = iBaudRate;
     }
-
-    public SerialHelper() {
-        this("/dev/ttyS1", 9600);
+    public SerialHelper(){
+        this("/dev/ttyS1",9600);
     }
 
-    public SerialHelper(String sPort) {
-        this(sPort, 9600);
+    public SerialHelper(String sPort){
+        this(sPort,9600);
     }
 
-    public SerialHelper(String sPort, String sBaudRate) {
-        this(sPort, Integer.parseInt(sBaudRate));
+    public SerialHelper(String sPort, String sBaudRate){
+        this(sPort,Integer.parseInt(sBaudRate));
     }
-
     //----------------------------------------------------
-    public void open() throws SecurityException, IOException, InvalidParameterException {
-        mSerialPort = new SerialPort(new File(sPort), iBaudRate, parity, dataBits, stopBit, 0);
+    public void open() throws SecurityException, IOException,InvalidParameterException {
+        mSerialPort =  new SerialPort(new File(sPort), iBaudRate, parity, dataBits, stopBit, 0);
         mOutputStream = mSerialPort.getOutputStream();
         mInputStream = mSerialPort.getInputStream();
         mReadThread = new ReadThread();
@@ -71,170 +72,74 @@ public abstract class SerialHelper {
         _isOpen = true;
         Log.i("SerialPort", "open serial success: port:" + sPort + ", baudRate:" + iBaudRate + ", parity:" + parity + ", dataBits:" + dataBits + ", stopBit:" + stopBit);
     }
-
     //----------------------------------------------------
-    public void close() {
+    public void close(){
         if (mReadThread != null)
             mReadThread.interrupt();
         if (mSerialPort != null) {
             mSerialPort.close();
             mSerialPort = null;
         }
-        _isOpen = false;
+        _isOpen=false;
         Log.i("SerialPort", "close serial success: port:" + sPort);
     }
-
     //----------------------------------------------------
-    public void send(byte[] bOutArray) {
-        try {
+    public void send(byte[] bOutArray){
+        try
+        {
             mOutputStream.write(bOutArray);
             onSendDataReceived(bOutArray);
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
-
     //----------------------------------------------------
-    public void sendHex(String sHex) {
+    public void sendHex(String sHex){
         byte[] bOutArray = MathUtil.hexString2Bytes(sHex);
         send(bOutArray);
     }
-
     //----------------------------------------------------
-    public void sendTxt(String sTxt) {
-        byte[] bOutArray = sTxt.getBytes();
+    public void sendTxt(String sTxt){
+        byte[] bOutArray =sTxt.getBytes();
         send(bOutArray);
     }
-
-    //----------------------------------------------------
-    public int getBaudRate() {
-        return iBaudRate;
-    }
-
-    public boolean setBaudRate(int iBaud) {
-        if (_isOpen) {
-            return false;
-        } else {
-            iBaudRate = iBaud;
-            return true;
-        }
-    }
-
-    public boolean setBaudRate(String sBaud) {
-        int iBaud = Integer.parseInt(sBaud);
-        return setBaudRate(iBaud);
-    }
-
-    //----------------------------------------------------
-    public String getPort() {
-        return sPort;
-    }
-
-    public boolean setPort(String sPort) {
-        if (_isOpen) {
-            return false;
-        } else {
-            this.sPort = sPort;
-            return true;
-        }
-    }
-
-    //----------------------------------------------------
-    public boolean isOpen() {
-        return _isOpen;
-    }
-
-    public List<byte[]> getbLoopDataList() {
-        return _bLoopDataList;
-    }
-
-    //----------------------------------------------------
-    public void setbLoopDataList(List<byte[]> loopDataList) {
-        _bLoopDataList = loopDataList;
-    }
-
-    public void clearLoopDataList() {
-        _bLoopDataList.clear();
-    }
-
-    //----------------------------------------------------
-    public void addbLoopData(byte[] bLoopData) {
-        this._bLoopDataList.add(bLoopData);
-    }
-
-    //----------------------------------------------------
-    public void addTxtLoopData(String sTxt) {
-        this._bLoopDataList.add(sTxt.getBytes());
-    }
-
-    //----------------------------------------------------
-    public void addHexLoopData(String sHex) {
-        this._bLoopDataList.add(MathUtil.hexString2Bytes(sHex));
-    }
-
-    //----------------------------------------------------
-    public int getiDelay() {
-        return iDelay;
-    }
-
-    //----------------------------------------------------
-    public void setiDelay(int iDelay) {
-        this.iDelay = iDelay;
-    }
-
-    //----------------------------------------------------
-    public void startSend() {
-        if (mSendThread != null) {
-            mSendThread.setResume();
-        }
-    }
-
-    //----------------------------------------------------
-    public void stopSend() {
-        if (mSendThread != null) {
-            mSendThread.setSuspendFlag();
-        }
-    }
-
-    //----------------------------------------------------
-    protected abstract void onDataReceived(byte[] buff);
-
-    protected abstract void onSendDataReceived(byte[] buff);
-
     //----------------------------------------------------
     private class ReadThread extends Thread {
         @Override
         public void run() {
             super.run();
-            while (!isInterrupted()) {
-                try {
+            while(!isInterrupted()) {
+                try
+                {
                     if (mInputStream == null) return;
                     int size = mInputStream.read(tempBuff);
-                    if (size > 0) {
+                    if (size > 0){
                         onDataReceived(Arrays.copyOfRange(tempBuff, 0, size));
                     }
-                    try {
+                    try
+                    {
                         Thread.sleep(10);//延时10ms
-                    } catch (InterruptedException e) {
+                    } catch (InterruptedException e)
+                    {
                         e.printStackTrace();
                     }
-                } catch (Throwable e) {
+                } catch (Throwable e)
+                {
                     e.printStackTrace();
                     return;
                 }
             }
         }
     }
-
     //----------------------------------------------------
-    private class SendThread extends Thread {
+    private class SendThread extends Thread{
         public boolean suspendFlag = true;// 控制线程的执行
-
         @Override
         public void run() {
             super.run();
             int loopIndex = 0;
-            while (!isInterrupted()) {
+            while(!isInterrupted()) {
                 synchronized (this) {
                     while (suspendFlag) {
                         try {
@@ -245,7 +150,7 @@ public abstract class SerialHelper {
                     }
                 }
                 try {
-                    if (loopIndex >= _bLoopDataList.size()) {
+                    if(loopIndex >= _bLoopDataList.size()){
                         loopIndex = 0;
                     }
                     send(_bLoopDataList.get(loopIndex++));
@@ -267,4 +172,95 @@ public abstract class SerialHelper {
             notify();
         }
     }
+    //----------------------------------------------------
+    public int getBaudRate()
+    {
+        return iBaudRate;
+    }
+    public boolean setBaudRate(int iBaud)
+    {
+        if (_isOpen)
+        {
+            return false;
+        } else
+        {
+            iBaudRate = iBaud;
+            return true;
+        }
+    }
+    public boolean setBaudRate(String sBaud)
+    {
+        int iBaud = Integer.parseInt(sBaud);
+        return setBaudRate(iBaud);
+    }
+    //----------------------------------------------------
+    public String getPort()
+    {
+        return sPort;
+    }
+    public boolean setPort(String sPort)
+    {
+        if (_isOpen)
+        {
+            return false;
+        } else
+        {
+            this.sPort = sPort;
+            return true;
+        }
+    }
+    //----------------------------------------------------
+    public boolean isOpen()
+    {
+        return _isOpen;
+    }
+    //----------------------------------------------------
+    public void setbLoopDataList(List<byte[]> loopDataList) {
+        _bLoopDataList = loopDataList;
+    }
+    public List<byte[]> getbLoopDataList() {
+        return _bLoopDataList;
+    }
+    public void clearLoopDataList(){
+        _bLoopDataList.clear();
+    }
+    //----------------------------------------------------
+    public void addbLoopData(byte[] bLoopData) {
+        this._bLoopDataList.add(bLoopData);
+    }
+    //----------------------------------------------------
+    public void addTxtLoopData(String sTxt){
+        this._bLoopDataList.add(sTxt.getBytes());
+    }
+    //----------------------------------------------------
+    public void addHexLoopData(String sHex){
+        this._bLoopDataList.add(MathUtil.hexString2Bytes(sHex));
+    }
+    //----------------------------------------------------
+    public int getiDelay()
+    {
+        return iDelay;
+    }
+    //----------------------------------------------------
+    public void setiDelay(int iDelay)
+    {
+        this.iDelay = iDelay;
+    }
+    //----------------------------------------------------
+    public void startSend() {
+        if (mSendThread != null)
+        {
+            mSendThread.setResume();
+        }
+    }
+    //----------------------------------------------------
+    public void stopSend() {
+        if (mSendThread != null)
+        {
+            mSendThread.setSuspendFlag();
+        }
+    }
+    //----------------------------------------------------
+    protected abstract void onDataReceived(byte[] buff);
+    protected abstract void onSendDataReceived(byte[] buff);
 }

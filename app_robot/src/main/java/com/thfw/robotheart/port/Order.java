@@ -25,38 +25,40 @@ import java.util.TreeMap;
 public class Order {
 
 
-    // 上报所有状态信息
-    public static final int UP_STATE = 128; // 0x80
-    // 上报电量
-    public static final int UP_ELECTRICITY_STATE = 129; // 0x81
-    // 上报按键转态
-    public static final int UP_BUTTON_STATE = 130; // 0x82
-    // 上报红外接近状态
-    public static final int UP_RED_ULTRA_STATE = 131; // 0x83
-    // 上报舵机角度
-    public static final int UP_RSERVO_STATE = 132; // 0x84
-    // 上报适配器状态
-    public static final int UP_ADAPTER_STATE = 133; // 0x85
-    // 所有状态信息查询
-    public static final int DOWN_STATE = 160; // 0xA0
-    // 舵机控制
-    public static final int DOWN_SERVO_STATE = 161; // 0xA1
-    // 指示灯控制
-    public static final int DOWN_LAMP_STATE = 162; // 0xA2
-    // 红外检测控制
-    public static final int DOWN_RED_ULTRA_STATE = 163; // 0xA3
-    // 工厂模式控制
-    public static final int DOWN_FACTORY_STATE = 164; // 0xA4
-    // 舵机上电、断电
-    public static final int DOWN_ELECTRICITY_STATE = 165; // 0xA5
     public static HashMap<Integer, Order> orderMap;
-    public static List<KeyValue> values;
+
+    public static HashMap<Integer, Order> getOrderMap() {
+        if (orderMap == null) {
+            orderMap = new HashMap<>();
+            // 1,2,2,(1,1,1,1),1,1,(4,4,4)
+            orderMap.put(UP_STATE, new Order(UP_STATE, 1, 2, 2, 1, 1, 1, 1, 1, 1, 4, 4, 4));
+            orderMap.put(UP_ELECTRICITY_STATE, new Order(UP_ELECTRICITY_STATE, 2));
+            orderMap.put(UP_BUTTON_STATE, new Order(UP_BUTTON_STATE, 1, 1));
+            orderMap.put(UP_RED_ULTRA_STATE, new Order(UP_RED_ULTRA_STATE, 1));
+            orderMap.put(UP_RSERVO_STATE, new Order(UP_RSERVO_STATE, 1, 4));
+            orderMap.put(UP_ADAPTER_STATE, new Order(UP_ADAPTER_STATE, 1));
+
+            orderMap.put(DOWN_STATE, new Order(DOWN_STATE, 1));
+            orderMap.put(DOWN_SERVO_STATE, new Order(DOWN_SERVO_STATE, 1, 4, 4));
+            orderMap.put(DOWN_LAMP_STATE, new Order(DOWN_LAMP_STATE, 1, 1));
+            orderMap.put(DOWN_RED_ULTRA_STATE, new Order(DOWN_RED_ULTRA_STATE, 1));
+            orderMap.put(DOWN_FACTORY_STATE, new Order(DOWN_FACTORY_STATE, 1));
+            orderMap.put(DOWN_ELECTRICITY_STATE, new Order(DOWN_ELECTRICITY_STATE, 1));
+
+
+        }
+        return orderMap;
+    }
+
+    private int cmd;
     public String cmdTitle;
     public int[] paramsLens;
     public Option[] options;
     public int len;
-    private int cmd;
 
+    public void setOptions(Option[] options) {
+        this.options = options;
+    }
 
     public Order(int cmd, int... paramsLens) {
         this.cmd = cmd;
@@ -77,7 +79,8 @@ public class Order {
                         .add("电压", 1)
                         .add("按键", 2)
                         .add("红外", 3)
-                        .add("舵机", 4);
+                        .add("舵机", 4)
+                        .add("适配器", 5);
                 options[1] = new Option("故障位")
                         .add("待定0", 0);
 
@@ -205,7 +208,8 @@ public class Order {
                         .add("电压", 1)
                         .add("按键", 2)
                         .add("红外", 3)
-                        .add("舵机角度", 4);
+                        .add("舵机角度", 4)
+                        .add("适配器", 5);
                 break;
             case DOWN_SERVO_STATE:
                 info = "舵机控制(9字节)";
@@ -268,28 +272,7 @@ public class Order {
         this.cmdTitle += info;
     }
 
-    public static HashMap<Integer, Order> getOrderMap() {
-        if (orderMap == null) {
-            orderMap = new HashMap<>();
-            // 1,2,2,(1,1,1,1),1,1,(4,4,4)
-            orderMap.put(UP_STATE, new Order(UP_STATE, 1, 2, 2, 1, 1, 1, 1, 1, 1, 4, 4, 4));
-            orderMap.put(UP_ELECTRICITY_STATE, new Order(UP_ELECTRICITY_STATE, 2));
-            orderMap.put(UP_BUTTON_STATE, new Order(UP_BUTTON_STATE, 1, 1));
-            orderMap.put(UP_RED_ULTRA_STATE, new Order(UP_RED_ULTRA_STATE, 1));
-            orderMap.put(UP_RSERVO_STATE, new Order(UP_RSERVO_STATE, 1, 4));
-            orderMap.put(UP_ADAPTER_STATE, new Order(UP_ADAPTER_STATE, 1));
-
-            orderMap.put(DOWN_STATE, new Order(DOWN_STATE, 1));
-            orderMap.put(DOWN_SERVO_STATE, new Order(DOWN_SERVO_STATE, 1, 4, 4));
-            orderMap.put(DOWN_LAMP_STATE, new Order(DOWN_LAMP_STATE, 1, 1));
-            orderMap.put(DOWN_RED_ULTRA_STATE, new Order(DOWN_RED_ULTRA_STATE, 1));
-            orderMap.put(DOWN_FACTORY_STATE, new Order(DOWN_FACTORY_STATE, 1));
-            orderMap.put(DOWN_ELECTRICITY_STATE, new Order(DOWN_ELECTRICITY_STATE, 1));
-
-
-        }
-        return orderMap;
-    }
+    public static List<KeyValue> values;
 
     public static List<KeyValue> getValues() {
         if (values == null) {
@@ -309,10 +292,6 @@ public class Order {
             });
         }
         return values;
-    }
-
-    public void setOptions(Option[] options) {
-        this.options = options;
     }
 
     public static class Option {
@@ -346,6 +325,33 @@ public class Order {
         public int key;
         public String value;
     }
+
+    // 上报所有状态信息
+    public static final int UP_STATE = 128; // 0x80
+    // 上报电量
+    public static final int UP_ELECTRICITY_STATE = 129; // 0x81
+    // 上报按键转态
+    public static final int UP_BUTTON_STATE = 130; // 0x82
+    // 上报红外接近状态
+    public static final int UP_RED_ULTRA_STATE = 131; // 0x83
+    // 上报舵机角度
+    public static final int UP_RSERVO_STATE = 132; // 0x84
+    // 上报适配器状态
+    public static final int UP_ADAPTER_STATE = 133; // 0x85
+
+
+    // 所有状态信息查询
+    public static final int DOWN_STATE = 160; // 0xA0
+    // 舵机控制
+    public static final int DOWN_SERVO_STATE = 161; // 0xA1
+    // 指示灯控制
+    public static final int DOWN_LAMP_STATE = 162; // 0xA2
+    // 红外检测控制
+    public static final int DOWN_RED_ULTRA_STATE = 163; // 0xA3
+    // 工厂模式控制
+    public static final int DOWN_FACTORY_STATE = 164; // 0xA4
+    // 舵机上电、断电
+    public static final int DOWN_ELECTRICITY_STATE = 165; // 0xA5
 
 
 }

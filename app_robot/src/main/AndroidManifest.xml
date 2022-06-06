@@ -72,8 +72,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".port.PortTestActivity"
-            android:screenOrientation="landscape" />
+            android:name=".port.ShakeNodActivity"
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name=".activitys.me.SimpleTextActivity"
             android:screenOrientation="landscape" />

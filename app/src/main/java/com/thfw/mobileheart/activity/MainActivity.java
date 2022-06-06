@@ -348,6 +348,14 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         }
         if (SharePreferenceUtil.getBoolean(LoginActivity.KEY_LOGIN_BEGIN, true)) {
             LogUtil.d(TAG, "showSVGALogin start");
+            try {
+                if (mLlHome != null) {
+                    mLlHome.performClick();
+                }
+            } catch (Exception e) {
+                LogUtil.d(TAG, "mLlHome.performClick() -> catch");
+            }
+
             DialogFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_WELCOM, new DialogFactory.OnSVGACallBack() {
                 @Override
                 public void callBack(SVGAImageView svgaImageView) {

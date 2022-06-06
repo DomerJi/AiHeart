@@ -26,10 +26,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.thfw.base.timing.TimingHelper;
+import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NetworkUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.port.SerialManager;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.Dormant;
 
@@ -127,21 +130,53 @@ public class TitleBarView extends LinearLayout {
         inflate(mContext, R.layout.layout_titlebar_view, this);
 
         initView();
-        if (RobotUtil.isInstallRobot()) {
+        // todo 正式策略应该是机器人
+        if (RobotUtil.isSystemApp()) {
             initBatReceiver();
         } else {
             initReceiver();
+            initTimeReceiver();
         }
-        initTimeReceiver();
         initBlueReceiver();
     }
 
+
+    private SerialManager.ElectricityListener mElectricityListener;
+    private TimingHelper.WorkListener mWorkListener;
+
     // 机器人电量和 充电状态
     private void initBatReceiver() {
+        if (mElectricityListener == null) {
+            mElectricityListener = (percent, charge) -> {
+                level = percent;
+                updateBattery(level);
+                // 充电中
+                mIvBatteryIng.setVisibility(charge == 1 ? VISIBLE : GONE);
+            };
+        }
+        SerialManager.getInstance().addEleListener(mElectricityListener);
+        // todo 机器人时间广播无效，故用此方法
+        if (mWorkListener == null) {
+            mWorkListener = new TimingHelper.WorkListener() {
+                @Override
+                public void onArrive() {
+                    LogUtil.i(TAG, "SLEEP time +++ ");
+                    mTvTitleBarTime.setText(HourUtil.getHHMM(System.currentTimeMillis()));
+                    Dormant.addMinute(mContext);
+                    SerialManager.getInstance().queryCharge();
+                }
 
+                @Override
+                public WorkInt workInt() {
+                    return WorkInt.SLEEP;
+                }
+            };
+        }
+        TimingHelper.getInstance().addWorkArriveListener(mWorkListener);
     }
 
     private void initTimeReceiver() {
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
         filter.addAction(Intent.ACTION_TIME_CHANGED);
@@ -188,6 +223,12 @@ public class TitleBarView extends LinearLayout {
 
 
     private void updateBattery(int level) {
+        if (level > 100) {
+            level = 100;
+        }
+        if (level < 0) {
+            level = 0;
+        }
         mPbBatteryProgress.setProgress(level);
         mTvProgress.setText(level + "%");
     }
@@ -222,6 +263,12 @@ public class TitleBarView extends LinearLayout {
         }
         if (mBluecastReceiver != null) {
             mContext.unregisterReceiver(this.mBluecastReceiver);
+        }
+        if (mElectricityListener != null) {
+            SerialManager.getInstance().removeEleListener(mElectricityListener);
+        }
+        if (mWorkListener != null) {
+            TimingHelper.getInstance().removeWorkArriveListener(mWorkListener);
         }
     }
 

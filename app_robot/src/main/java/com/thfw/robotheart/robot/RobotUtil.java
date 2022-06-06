@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 
 import com.thfw.base.ContextApp;
 import com.thfw.base.utils.LogUtil;
@@ -69,13 +70,23 @@ public class RobotUtil {
     }
 
     /**
+     * 第一个桌面机器人
+     *
+     * @return
+     */
+    public static boolean isBuildMsg() {
+        return "TH-ROBOT".equals(Build.PRODUCT) || "TH-RK3399".equals(Build.DEVICE)
+                || "RK3399-TH".equals(Build.MODEL) || "ROCKCHIP-TH".equals(Build.BRAND);
+    }
+
+    /**
      * 是否桌面1.0机器人
      *
      * @return
      */
     public static boolean isInstallRobot() {
         if (installRobot == -1) {
-            installRobot = isSystemApp() ? 1 : 0;
+            installRobot = isSystemApp() && isBuildMsg() ? 1 : 0;
         }
         return installRobot == 1;
     }

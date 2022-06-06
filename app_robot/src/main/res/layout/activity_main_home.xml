@@ -684,7 +684,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="串口Demo"
-        android:visibility="gone"
+        android:visibility="visible"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

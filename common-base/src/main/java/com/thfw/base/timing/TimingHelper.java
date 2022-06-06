@@ -24,7 +24,7 @@ public class TimingHelper {
     private static final String TAG = TimingHelper.class.getSimpleName();
     private Handler mHandler;
     private HashMap<WorkInt, HashSet<WorkListener>> mWorkInts;
-
+    private static final String S_COUNT = "handleMessage count ==========================="
 
     private TimingHelper() {
         mWorkInts = new HashMap<>();
@@ -32,7 +32,7 @@ public class TimingHelper {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
-                Log.d(TAG, "handleMessage count ===========================");
+                Log.d(TAG, S_COUNT);
                 if (!mWorkInts.isEmpty()) {
                     for (WorkInt workInt : mWorkInts.keySet()) {
                         workInt.addCount();
@@ -43,7 +43,7 @@ public class TimingHelper {
                     }
                     if (!mWorkInts.isEmpty()) {
                         removeMessages(0);
-                        sendEmptyMessageDelayed(0, 1000);
+                        sendEmptyMessageDelayed(0, 999);
                     }
                 }
 

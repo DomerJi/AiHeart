@@ -11,6 +11,7 @@ import androidx.room.Room;
 import com.iflytek.cloud.Setting;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
+import com.pl.sphelper.SPHelper;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -107,6 +108,7 @@ public class MyApplication extends MultiDexApplication {
         ContextApp.setDeviceType(ContextApp.DeviceType.ROBOT);
         ToastUtil.init(this);
         TDialog.init(this);
+        SPHelper.init(app);
         LogUtil.setLogEnabled(LogUtil.isLogEnable());
         initAtThread();
     }
