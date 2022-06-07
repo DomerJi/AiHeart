@@ -27,6 +27,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
 
     private int shakeZero = ConstantUtil.DEFAULT_INT;
     private int nodZero = ConstantUtil.DEFAULT_INT;
+    private int rotateZero = ConstantUtil.DEFAULT_INT;
     private SerialHelper serialHelper;
 
 
@@ -53,7 +54,8 @@ public class ShakeNodActivity extends RobotBaseActivity {
     public void initData() {
         shakeZero = SPHelper.getInt(ConstantUtil.Key.SHAKE_ZERO);
         nodZero = SPHelper.getInt(ConstantUtil.Key.NOD_ZERO);
-        mTvProvider.setText("共享信息：\n摇头零位：" + shakeZero + "  点头零位：" + nodZero);
+        rotateZero = SPHelper.getInt(ConstantUtil.Key.ROTATE_ZERO);
+        mTvProvider.setText("共享信息：\n摇头零位：" + shakeZero + "  点头零位：" + nodZero + "  转身零位：" + rotateZero);
         mTvProvider.setText(mTvProvider.getText().toString()
                 + "\nisSystemApp：" + RobotUtil.isSystemApp() + "  isBuildMsg：" + RobotUtil.isBuildMsg());
         mTvProvider.setText(mTvProvider.getText().toString()

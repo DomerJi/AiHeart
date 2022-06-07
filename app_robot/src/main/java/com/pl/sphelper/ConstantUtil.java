@@ -42,6 +42,8 @@ public class ConstantUtil {
         public static final String SHAKE_ZERO = "snake_zero";
         // 点头舵机 零位
         public static final String NOD_ZERO = "nod_zero";
+        // 转身舵机 零位
+        public static final String ROTATE_ZERO = "rotate_zero";
         // 摇头舵机【左】极限位
         public static final String SHAKE_LEFT_MAX = "shake_left_max";
         // 摇头舵机【右】极限位

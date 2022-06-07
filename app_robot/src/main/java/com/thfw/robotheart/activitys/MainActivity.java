@@ -50,7 +50,6 @@ import com.thfw.robotheart.activitys.text.BookStudyActivity;
 import com.thfw.robotheart.activitys.video.VideoHomeActivity;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.port.SerialManager;
-import com.thfw.robotheart.port.ShakeNodActivity;
 import com.thfw.robotheart.push.MyPreferences;
 import com.thfw.robotheart.push.helper.PushHelper;
 import com.thfw.robotheart.push.tester.UPushAlias;
@@ -195,10 +194,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 }
             }
         });
-        findViewById(R.id.bt_port).setOnClickListener(v -> {
-            startActivity(new Intent(mContext, ShakeNodActivity.class));
-        });
-
         mTitleBarView = (TitleBarView) findViewById(R.id.titleBarView);
         mWeekView = (WeekView) findViewById(R.id.weekView);
         mRivAvatar = (RoundedImageView) findViewById(R.id.riv_avatar);

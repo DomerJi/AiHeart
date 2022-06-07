@@ -19,6 +19,7 @@ import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.robotheart.BuildConfig;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.sets.SetBlueFragment;
@@ -35,7 +36,7 @@ import com.thfw.robotheart.view.TitleRobotView;
 public class SettingActivity extends RobotBaseActivity {
 
     // 展示所有页面 测试使用
-    public static final boolean TEST = true;
+    public static final boolean TEST = BuildConfig.DEBUG;
     private com.thfw.robotheart.view.TitleBarView mTitleBarView;
     private TitleRobotView mTitleRobotView;
     private android.widget.FrameLayout mFlContent;

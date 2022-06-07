@@ -1,5 +1,7 @@
 package com.thfw.robotheart.activitys.me;
 
+import android.content.Intent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,6 +14,8 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.port.ShakeNodActivity;
+import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.view.TitleRobotView;
 
 public class PrivateSetActivity extends RobotBaseActivity {
@@ -19,6 +23,7 @@ public class PrivateSetActivity extends RobotBaseActivity {
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private android.widget.EditText mEtOrganzitionId;
     private android.widget.LinearLayout mLlTranAnim;
+    private android.widget.LinearLayout mLlRobotAction;
     private android.widget.TextView mTvTranAnimFrequency;
     private LinearLayout mLlPushTest;
 
@@ -44,6 +49,7 @@ public class PrivateSetActivity extends RobotBaseActivity {
         mEtOrganzitionId = (EditText) findViewById(R.id.et_organzition_id);
         mEtOrganzitionId.setText(CommonParameter.getOrganizationId());
         mLlTranAnim = (LinearLayout) findViewById(R.id.ll_tran_anim);
+        mLlRobotAction = (LinearLayout) findViewById(R.id.ll_robot_action);
         mTvTranAnimFrequency = (TextView) findViewById(R.id.tv_tran_anim_frequency);
         mLlTranAnim.setOnClickListener(v -> {
             setAnimFrequency();
@@ -51,6 +57,12 @@ public class PrivateSetActivity extends RobotBaseActivity {
             LogUtil.d(TAG, "mLlTranAnim++++++++++++++++++++++++++++++++++++++++" + getAnimFrequencyStr());
         });
         mTvTranAnimFrequency.setText(getAnimFrequencyStr());
+        if (LogUtil.isLogEnable() || RobotUtil.isInstallRobot()) {
+            mLlRobotAction.setVisibility(View.VISIBLE);
+            mLlRobotAction.setOnClickListener(v -> {
+                startActivity(new Intent(mContext, ShakeNodActivity.class));
+            });
+        }
     }
 
     private void setAnimFrequency() {
