@@ -66,7 +66,7 @@ public class RobotUtil {
      * @return 是否系统应用
      */
     public static boolean isSystemApp() {
-        return Util.isSystemApp(ContextApp.get().getPackageName());
+        return Util.isSystemApp(ContextApp.get().getPackageName()) || isBuildMsg();
     }
 
     /**
@@ -86,7 +86,7 @@ public class RobotUtil {
      */
     public static boolean isInstallRobot() {
         if (installRobot == -1) {
-            installRobot = isSystemApp() && isBuildMsg() ? 1 : 0;
+            installRobot = isBuildMsg() ? 1 : 0;
         }
         return installRobot == 1;
     }

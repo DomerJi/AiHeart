@@ -41,7 +41,7 @@
                 android:id="@+id/iv_chat"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/home_tab_icon_chat_height"
-                android:src="@mipmap/ic_home_ai" />
+                android:src="@mipmap/ic_launcher_round" />
 
 
         </LinearLayout>
