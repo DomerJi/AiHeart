@@ -1,5 +1,6 @@
 package com.thfw.robotheart.robot;
 
+import android.app.AlarmManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -77,6 +78,21 @@ public class RobotUtil {
     public static boolean isBuildMsg() {
         return "TH-ROBOT".equals(Build.PRODUCT) || "TH-RK3399".equals(Build.DEVICE)
                 || "RK3399-TH".equals(Build.MODEL) || "ROCKCHIP-TH".equals(Build.BRAND);
+    }
+
+    /**
+     * 设置系统时区
+     */
+    public static void setTimeZone(Context context, String timeZone) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setTimeZone(timeZone);
+    }
+
+    /**
+     * 设置系统时区
+     */
+    public static void setTimeZoneChina(Context context) {
+        setTimeZone(context, "Asia/Shanghai");
     }
 
     /**

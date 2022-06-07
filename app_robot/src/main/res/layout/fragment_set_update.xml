@@ -9,7 +9,7 @@
     <RelativeLayout
         android:id="@+id/rl_click_update"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/set_top_bar_height"
         android:layout_marginLeft="26dp"
         android:layout_marginRight="26dp">
 
@@ -71,7 +71,7 @@
     <RelativeLayout
         android:id="@+id/rl_wifi_update"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/set_top_bar_height"
         android:layout_marginLeft="26dp"
         android:layout_marginRight="26dp">
 
@@ -107,7 +107,7 @@
     <RelativeLayout
         android:id="@+id/rl_current_update"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/set_top_bar_height"
         android:layout_marginLeft="26dp"
         android:layout_marginRight="26dp">
 
@@ -145,7 +145,7 @@
     <RelativeLayout
         android:id="@+id/rl_origin_code"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/set_top_bar_height"
         android:layout_marginLeft="26dp"
         android:layout_marginRight="26dp">
 

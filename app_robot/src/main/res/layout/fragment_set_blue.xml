@@ -9,7 +9,7 @@
     <RelativeLayout
         android:id="@+id/rl_blue"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/set_top_bar_height"
         android:layout_marginLeft="26dp"
         android:layout_marginRight="26dp">
 
@@ -51,9 +51,8 @@
     <RelativeLayout
         android:id="@+id/rl_me_device"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/set_top_bar_height"
         android:layout_marginLeft="26dp"
-        android:layout_marginTop="8dp"
         android:layout_marginRight="26dp"
         app:layout_constraintTop_toBottomOf="@id/rl_blue">
 
