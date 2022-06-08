@@ -19,7 +19,6 @@ import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
-import com.thfw.robotheart.BuildConfig;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.sets.SetBlueFragment;
@@ -35,8 +34,6 @@ import com.thfw.robotheart.view.TitleRobotView;
 
 public class SettingActivity extends RobotBaseActivity {
 
-    // 展示所有页面 测试使用
-    public static final boolean TEST = BuildConfig.DEBUG;
     private com.thfw.robotheart.view.TitleBarView mTitleBarView;
     private TitleRobotView mTitleRobotView;
     private android.widget.FrameLayout mFlContent;
@@ -93,7 +90,7 @@ public class SettingActivity extends RobotBaseActivity {
     public void initData() {
 
         FragmentLoader mLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
-        if (TEST || RobotUtil.isSystemApp()) {
+        if (LogUtil.isLogEnable() || RobotUtil.isSystemApp()) {
             mLoader.add(R.id.tv_set_net, new SetNetFragment());
         } else {
             mTvSetNet.setVisibility(View.GONE);
@@ -101,7 +98,7 @@ public class SettingActivity extends RobotBaseActivity {
         mLoader.add(R.id.tv_set_volume, new SetVolumeFragment());
         mLoader.add(R.id.tv_set_speech, new SetSpeechFragment());
 
-        if (TEST || RobotUtil.isSystemApp()) {
+        if (LogUtil.isLogEnable() || RobotUtil.isSystemApp()) {
             mLoader.add(R.id.tv_set_light, new SetLightFragment());
         } else {
             mTvSetLight.setVisibility(View.GONE);
@@ -110,7 +107,7 @@ public class SettingActivity extends RobotBaseActivity {
         mLoader.add(R.id.tv_set_dormant, new SetDormantFragment());
 //        mLoader.add(R.id.tv_set_shutdown, new SetShutdownFragment());
         mLoader.add(R.id.rl_set_update, new SetUpdateFragment());
-        if (TEST || RobotUtil.isSystemApp()) {
+        if (LogUtil.isLogEnable() || RobotUtil.isSystemApp()) {
             mTabs = new View[]{mTvSetNet, mTvSetVolume, mTvSetSpeech, mTvSetLight, mTvSetBlue, mTvSetDormant, mRlSetUpdate};
         } else {
             mTabs = new View[]{mTvSetVolume, mTvSetSpeech, mTvSetBlue, mTvSetDormant, mRlSetUpdate};

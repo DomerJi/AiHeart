@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
-import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.activitys.set.DormantActivity;
+import com.thfw.robotheart.robot.RobotUtil;
 
 /**
  * 休眠控制
@@ -82,7 +82,10 @@ public class Dormant {
             if (isCanShutdown()) {
                 // todo 睡眠超时，关机或退出登录
                 LogUtil.d(TAG_DORMANT, "addMinute 【关机】！！！睡眠超时，关机或退出登录");
-                ToastUtil.show("【关机】！！！睡眠超时，关机或退出登录");
+                if (RobotUtil.isInstallRobot()) {
+                    RobotUtil.shutdown();
+                    LogUtil.d(TAG_DORMANT, "isInstallRobot true 【关机】");
+                }
             }
             return;
         }
@@ -105,6 +108,10 @@ public class Dormant {
 
     public static boolean isCanShutdown() {
         return SLEEP_TIME >= SLEEP_TIME_COUNT;
+    }
+
+    public static int getShutDownDuration() {
+        return SLEEP_TIME_COUNT - SLEEP_TIME;
     }
 
     public static void setMinuteChangeListener(MinuteChangeListener minuteChangeListener) {

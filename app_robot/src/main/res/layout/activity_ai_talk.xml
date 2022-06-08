@@ -32,15 +32,19 @@
             android:id="@+id/ll_talk_history"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
+            android:layout_marginLeft="8dp"
             android:gravity="center_vertical"
-            android:padding="8dp"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="6dp"
+            android:paddingBottom="8dp"
             app:layout_constraintLeft_toLeftOf="parent">
 
             <ImageView
                 android:id="@+id/iv_talk_switch"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:padding="1.5dp"
                 android:src="@mipmap/ic_history_new" />
 
             <TextView
@@ -58,20 +62,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:padding="8dp"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="6dp"
+            android:paddingBottom="8dp"
             app:layout_constraintLeft_toRightOf="@id/ll_talk_history">
 
             <ImageView
                 android:id="@+id/iv_volume_switch"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/ic_volume_switch_selector"
                 app:tint="@color/colorRobotFore" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
+                android:layout_marginLeft="2dp"
                 android:text="语音播报"
                 android:textColor="@color/colorRobotFore"
                 android:textSize="@dimen/textSize_small" />

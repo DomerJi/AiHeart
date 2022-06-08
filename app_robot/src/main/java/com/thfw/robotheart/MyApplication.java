@@ -143,9 +143,6 @@ public class MyApplication extends MultiDexApplication {
                 }
             }).start();
         }
-//        else {
-//            init();
-//        }
     }
 
     private void init() {

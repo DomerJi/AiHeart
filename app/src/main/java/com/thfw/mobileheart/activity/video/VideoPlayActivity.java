@@ -53,6 +53,7 @@ import com.thfw.base.utils.NetworkUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
+import com.thfw.mobileheart.activity.talk.TalkItemJumpHelper;
 import com.thfw.mobileheart.adapter.VideoPlayListAdapter;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
 import com.thfw.ui.utils.BrightnessHelper;
@@ -78,7 +79,8 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
 
 
     public static final String KEY_PLAY_POSITION = "key.position";
-    public static final String KEY_AUTO_FINISH = "key.position";
+    public static final String KEY_AUTO_FINISH = "key.auto.finish";
+    public static final String KEY_FROM_TYPE = "key.from.type";
     private PlayerView mMPlayerView;
     private ProgressBar mPbBottom;
     private TextView mTvTitle;
@@ -98,6 +100,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     private ImageView mExoNext;
     private ArrayList<VideoModel.RecommendModel> mVideoList;
     private boolean autoFinished;
+    private int fromType;
     private int mPlayPosition;
     private LoadingView mLoadingView;
     private VideoPlayListAdapter mVideoPlayListAdapter;
@@ -138,6 +141,20 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
                 .putExtra(KEY_DATA, videoId)
                 .putExtra(KEY_AUTO_FINISH, autoFinished), ChatEntity.TYPE_RECOMMEND_VIDEO);
     }
+
+    /**
+     * @param context
+     * @param videoId
+     * @param autoFinished 自动关闭
+     * @param fromType     来自哪里 如果是工具包禁止相关推荐
+     */
+    public static void startActivity(Context context, int videoId, boolean autoFinished, int fromType) {
+        ((Activity) context).startActivityForResult(new Intent(context, VideoPlayActivity.class)
+                .putExtra(KEY_DATA, videoId)
+                .putExtra(KEY_AUTO_FINISH, autoFinished)
+                .putExtra(KEY_PLAY_POSITION, fromType), ChatEntity.TYPE_RECOMMEND_VIDEO);
+    }
+
 
     @Override
     public int getContentView() {
@@ -207,6 +224,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     @Override
     public void initData() {
         autoFinished = getIntent().getBooleanExtra(KEY_AUTO_FINISH, false);
+        fromType = getIntent().getIntExtra(KEY_FROM_TYPE, -1);
         mVideoId = getIntent().getIntExtra(KEY_DATA, -1);
         if (mVideoId <= 0) {
             ToastUtil.show("参数错误");
@@ -239,6 +257,15 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
                     recommendModel.setTitle(mVideoModel.title);
                     recommendModel.setImg(mVideoModel.getImg());
                     mVideoList.add(recommendModel);
+                    if (fromType == TalkItemJumpHelper.FromType.TOOL) {
+                        return;
+                    }
+                } else {
+                    if (fromType == TalkItemJumpHelper.FromType.TOOL) {
+                        mVideoList.add(recommendModels.get(listHasPosition));
+                        mPlayPosition = 0;
+                        return;
+                    }
                 }
                 mVideoList.addAll(recommendModels);
 

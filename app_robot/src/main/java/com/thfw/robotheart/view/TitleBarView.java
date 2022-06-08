@@ -131,7 +131,7 @@ public class TitleBarView extends LinearLayout {
 
         initView();
         // todo 正式策略应该是机器人
-        if (RobotUtil.isSystemApp()) {
+        if (RobotUtil.isInstallRobot()) {
             initBatReceiver();
         } else {
             initReceiver();

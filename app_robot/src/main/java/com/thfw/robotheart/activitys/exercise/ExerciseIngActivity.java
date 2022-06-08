@@ -193,7 +193,7 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
 
         mChatAdapter.setRecommendListener((type, recommendInfoBean, position) -> {
             handleResult = mChatAdapter.getItemCount() < position + 5;
-            TalkItemJumpHelper.onItemClick(mContext, type, recommendInfoBean);
+            TalkItemJumpHelper.onItemClick(mContext, type, recommendInfoBean, TalkItemJumpHelper.FromType.TOOL);
         });
 
         mTitleRobotView.getIvBack().setOnClickListener(v -> {

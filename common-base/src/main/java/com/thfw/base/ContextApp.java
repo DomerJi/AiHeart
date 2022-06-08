@@ -56,9 +56,13 @@ public final class ContextApp {
         int PAD = 2;
 
         /**
-         * 机器人
+         * 机器人(台面)
          */
         int ROBOT = 3;
+
+        /**
+         * 第三方（4a,4b,4c,4d....）
+         */
 
     }
 }

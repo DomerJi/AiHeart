@@ -119,7 +119,7 @@ public class BrightnessHelper {
                 , adjustBrightnessNumber(newBrightness));
     }
 
-    //设置当前APP的亮度
+    // 设置当前APP的亮度
     public void setBrightness(float brightnessPercent, Activity activity) {
         if (isSystemApp) {
             setSystemBrightness((int) (brightnessPercent * 255));
@@ -129,5 +129,13 @@ public class BrightnessHelper {
             layoutParams.screenBrightness = brightnessPercent;
             window.setAttributes(layoutParams);
         }
+    }
+
+    // 设置当前Activity的亮度
+    public static void setActivityBrightness(float brightnessPercent, Activity activity) {
+        Window window = activity.getWindow();
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        layoutParams.screenBrightness = brightnessPercent;
+        window.setAttributes(layoutParams);
     }
 }

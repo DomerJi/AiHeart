@@ -168,8 +168,6 @@ public class MyApplication extends MultiDexApplication {
         TDialog.init(this);
         LogUtil.setLogEnabled(LogUtil.isLogEnable());
         initAtThread();
-        registerActivityLifecycleCallbacks(activityLifeCycle);
-        initTimeReceiver();
     }
 
     private void initSpeech() {
@@ -201,12 +199,12 @@ public class MyApplication extends MultiDexApplication {
                     init();
                 }
             }).start();
-        } else {
-            init();
         }
     }
 
     private void init() {
+        registerActivityLifecycleCallbacks(activityLifeCycle);
+        initTimeReceiver();
         BuglyUtil.init("36df997c6c");
         initSpeech();
         //是否同意隐私政策

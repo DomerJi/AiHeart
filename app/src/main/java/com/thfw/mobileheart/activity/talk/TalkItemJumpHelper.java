@@ -20,7 +20,18 @@ import com.thfw.mobileheart.activity.video.VideoPlayActivity;
  */
 public class TalkItemJumpHelper {
 
+
+    public interface FromType {
+        int TOOL = 1;
+        int AI_CHAT = 2;
+    }
+
     public static void onItemClick(Context mContext, int type, DialogTalkModel.RecommendInfoBean recommendInfoBean) {
+        onItemClick(mContext, type, recommendInfoBean, FromType.AI_CHAT);
+    }
+
+    public static void onItemClick(Context mContext, int type, DialogTalkModel.RecommendInfoBean recommendInfoBean, int fromType) {
+
         switch (type) {
             case ChatEntity.TYPE_RECOMMEND_TEXT:
                 if (recommendInfoBean.getId() < 1000000) {

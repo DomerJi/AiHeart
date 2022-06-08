@@ -14,14 +14,17 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.port.SerialManager;
+import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.Dormant;
 import com.thfw.robotheart.util.SVGAHelper;
+import com.thfw.ui.utils.BrightnessHelper;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.voice.wakeup.WakeupHelper;
 
-public class DormantActivity extends RobotBaseActivity implements Dormant.MinuteChangeListener {
+public class DormantActivity extends RobotBaseActivity implements Dormant.MinuteChangeListener, SerialManager.ElectricityListener {
 
     private SVGAImageView mIvAnim;
     private android.widget.TextView mTvTime;
@@ -42,6 +45,7 @@ public class DormantActivity extends RobotBaseActivity implements Dormant.Minute
     };
 
     private int testIndex = 0;
+    private int originCharge = -1;
 
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, DormantActivity.class));
@@ -60,11 +64,12 @@ public class DormantActivity extends RobotBaseActivity implements Dormant.Minute
 
     @Override
     public void initView() {
-
+        // 降低亮度，节约电量
+        BrightnessHelper.setActivityBrightness(0.08f, this);
         mIvAnim = (SVGAImageView) findViewById(R.id.iv_anim);
         mTvTime = (TextView) findViewById(R.id.tv_time);
         mOriginalText = mTvTime.getText().toString();
-
+        SerialManager.getInstance().addEleListener(this);
 //        testEmojiLoop(mEmojiFileNames[testIndex]);
 
         onStartDormant();
@@ -182,17 +187,30 @@ public class DormantActivity extends RobotBaseActivity implements Dormant.Minute
         }
         TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND3);
         Dormant.setMinuteChangeListener(null);
+        SerialManager.getInstance().removeEleListener(this);
         super.onDestroy();
     }
 
     @Override
     public void onChange() {
-        mTvTime.setText(mOriginalText + "（已休眠" + Dormant.getSleepTime() + "分钟）");
+        if (RobotUtil.isInstallRobot()) {
+            mTvTime.setText(mOriginalText + "（已休眠" + Dormant.getSleepTime() + "分钟，" + Dormant.getShutDownDuration() + "分钟后关机）");
+        } else {
+            mTvTime.setText(mOriginalText + "（已休眠" + Dormant.getSleepTime() + "分钟）");
+        }
     }
 
     @Override
     public void onBackPressed() {
         onWakeUp(WakeUpType.CLICK);
+    }
+
+    @Override
+    public void onCharge(int percent, int charge) {
+        if (originCharge == 1 && charge == 0) {
+            onWakeUp(WakeUpType.SWIM);
+        }
+        originCharge = charge;
     }
 
     public static class WakeUpType {

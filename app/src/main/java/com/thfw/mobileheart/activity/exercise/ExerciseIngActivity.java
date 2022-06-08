@@ -199,7 +199,7 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
 
         mChatAdapter.setRecommendListener((type, recommendInfoBean, position) -> {
             handleResult = mChatAdapter.getItemCount() < position + 5;
-            TalkItemJumpHelper.onItemClick(mContext, type, recommendInfoBean);
+            TalkItemJumpHelper.onItemClick(mContext, type, recommendInfoBean, TalkItemJumpHelper.FromType.TOOL);
         });
 
         mTitleView.getIvBack().setOnClickListener(v -> {

@@ -54,6 +54,7 @@ import com.thfw.base.utils.NetworkUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
+import com.thfw.robotheart.activitys.talk.TalkItemJumpHelper;
 import com.thfw.robotheart.adapter.VideoItemAdapter;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.util.ExoPlayerFactory;
@@ -80,7 +81,8 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
 
 
     public static final String KEY_PLAY_POSITION = "key.position";
-    public static final String KEY_AUTO_FINISH = "key.position";
+    public static final String KEY_AUTO_FINISH = "key.auto.finish";
+    public static final String KEY_FROM_TYPE = "key.from.type";
     private ImageView mIvBg;
     private PlayerView mMPlayerView;
     private ProgressBar mPbBottom;
@@ -120,6 +122,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     private ImageView mIvCollect;
     private ConstraintLayout mClHint;
     private boolean autoFinished;
+    private int fromType;
     private VideoItemAdapter videoItemAdapter;
     private VideoGestureHelper ly_VG;
     private ShowChangeLayout scl;
@@ -151,6 +154,19 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         ((Activity) context).startActivityForResult(new Intent(context, VideoPlayerActivity.class)
                 .putExtra(KEY_DATA, videoId)
                 .putExtra(KEY_AUTO_FINISH, autoFinished), ChatEntity.TYPE_RECOMMEND_VIDEO);
+    }
+
+    /**
+     * @param context
+     * @param videoId
+     * @param autoFinished 自动关闭
+     * @param fromType     来自哪里 如果是工具包禁止相关推荐
+     */
+    public static void startActivity(Context context, int videoId, boolean autoFinished, int fromType) {
+        ((Activity) context).startActivityForResult(new Intent(context, VideoPlayerActivity.class)
+                .putExtra(KEY_DATA, videoId)
+                .putExtra(KEY_AUTO_FINISH, autoFinished)
+                .putExtra(KEY_FROM_TYPE, fromType), ChatEntity.TYPE_RECOMMEND_VIDEO);
     }
 
     @Override
@@ -275,6 +291,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
                         break;
                     }
                 }
+
                 if (listHasPosition == -1) {
                     listHasPosition = 0;
                     mPlayPosition = listHasPosition;
@@ -283,7 +300,17 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
                     recommendModel.setTitle(mVideoModel.title);
                     recommendModel.setImg(mVideoModel.getImg());
                     mVideoList.add(recommendModel);
+                    if (fromType == TalkItemJumpHelper.FromType.TOOL) {
+                        return;
+                    }
+                } else {
+                    if (fromType == TalkItemJumpHelper.FromType.TOOL) {
+                        mVideoList.add(recommendModels.get(listHasPosition));
+                        mPlayPosition = 0;
+                        return;
+                    }
                 }
+
                 mVideoList.addAll(recommendModels);
 
             }
@@ -323,6 +350,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     @Override
     public void initData() {
         autoFinished = getIntent().getBooleanExtra(KEY_AUTO_FINISH, false);
+        fromType = getIntent().getIntExtra(KEY_FROM_TYPE, -1);
         mVideoId = getIntent().getIntExtra(KEY_DATA, -1);
         if (mVideoId <= 0) {
             ToastUtil.show("参数错误");
