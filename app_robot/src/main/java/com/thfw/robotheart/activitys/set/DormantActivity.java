@@ -70,6 +70,7 @@ public class DormantActivity extends RobotBaseActivity implements Dormant.Minute
         mTvTime = (TextView) findViewById(R.id.tv_time);
         mOriginalText = mTvTime.getText().toString();
         SerialManager.getInstance().addEleListener(this);
+
 //        testEmojiLoop(mEmojiFileNames[testIndex]);
 
         onStartDormant();
@@ -176,8 +177,9 @@ public class DormantActivity extends RobotBaseActivity implements Dormant.Minute
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
+        boolean flag = super.dispatchTouchEvent(event);
         onWakeUp(WakeUpType.CLICK);
-        return super.dispatchTouchEvent(event);
+        return flag;
     }
 
     @Override

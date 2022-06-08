@@ -22,11 +22,16 @@
             android:textColor="@color/white"
             android:textSize="@dimen/textSize_large" />
 
-        <com.thfw.ui.widget.LoadingView
-            android:id="@+id/loadingView"
+        <ImageView
+            android:id="@+id/iv_rescan"
             android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_toLeftOf="@id/switch_blue" />
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/switch_blue"
+            android:padding="12dp"
+            android:src="@drawable/ic_refresh"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
 
         <Switch
@@ -98,19 +103,26 @@
 
     </RelativeLayout>
 
-    <com.thfw.robotheart.view.CustomRefreshLayout
-        android:id="@+id/customRefreshLayout"
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:indeterminateTint="@color/colorRobotFore"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_me_device" />
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvBlue"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rl_me_device">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvBlue"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </com.thfw.robotheart.view.CustomRefreshLayout>
+        app:layout_constraintTop_toBottomOf="@id/rl_me_device" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

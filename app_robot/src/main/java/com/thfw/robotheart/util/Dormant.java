@@ -26,6 +26,7 @@ public class Dormant {
      */
     private static final int SLEEP_TIME_COUNT = 10;
     private static final String TAG_DORMANT = "DORMANT_TIME";
+    private static final String TAG_RESET = "reset +++++++++++++++++++++++++";
 
     private static int MINUTE_FREE = 0;
 
@@ -43,10 +44,9 @@ public class Dormant {
 
     public static void reset() {
         if (MINUTE_FREE == 0 && SLEEP_TIME == 0) {
-//            LogUtil.d(TAG_DORMANT, "reset MINUTE_FREE == 0 && SLEEP_TIME == 0");
             return;
         }
-        LogUtil.d(TAG_DORMANT, "reset +++++++++++++++++++++++++");
+        LogUtil.d(TAG_DORMANT, TAG_RESET);
         MINUTE_FREE = 0;
         SLEEP_TIME = 0;
 

@@ -5,8 +5,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -21,8 +25,6 @@ import com.clj.fastble.callback.BleGattCallback;
 import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
-import com.scwang.smart.refresh.layout.api.RefreshLayout;
-import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.utils.HandlerUtil;
@@ -31,10 +33,6 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.adapter.BleAdapter;
-import com.thfw.robotheart.view.CustomRefreshLayout;
-import com.thfw.ui.widget.LoadingView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,17 +47,16 @@ public class SetBlueFragment extends RobotBaseFragment {
     private RelativeLayout mRlBlue;
     private Switch mSwitchBlue;
     private ImageView mIvNameArrowRight;
-    private CustomRefreshLayout mCustomRefreshLayout;
     private RecyclerView mRvBlue;
     private boolean initScanRule;
     private BleAdapter mBleAdapter;
     private RelativeLayout mRlMeDevice;
     private TextView mTvMeBleName;
-    private LoadingView mLoadingView;
     public BleScanCallback mBleScanCallback = new BleScanCallback() {
         @Override
         public void onScanFinished(List<BleDevice> scanResultList) {
-            mLoadingView.hide();
+            mPbLoading.setVisibility(View.GONE);
+            mIvRescan.clearAnimation();
             if (!mSwitchBlue.isChecked()) {
                 return;
             }
@@ -71,7 +68,6 @@ public class SetBlueFragment extends RobotBaseFragment {
             }
             LogUtil.d(TAG, "bleDevices.size() -> " + bleDevices.size());
             mBleAdapter.setDataListNotify(bleDevices);
-            mCustomRefreshLayout.finishRefresh();
         }
 
         @Override
@@ -80,10 +76,15 @@ public class SetBlueFragment extends RobotBaseFragment {
                 return;
             }
             if (success) {
-                mLoadingView.showLoadingNoText();
+                if (mBleAdapter.getItemCount() == 0) {
+                    mPbLoading.setVisibility(View.VISIBLE);
+                } else {
+                    mPbLoading.setVisibility(View.GONE);
+                    reScanAnimStart();
+                }
             } else {
-                mLoadingView.hide();
-                mCustomRefreshLayout.finishRefresh();
+                mPbLoading.setVisibility(View.GONE);
+                mIvRescan.clearAnimation();
             }
         }
 
@@ -118,6 +119,8 @@ public class SetBlueFragment extends RobotBaseFragment {
             mBleAdapter.addDataNotify(bleDevice);
         }
     };
+    private ImageView mIvRescan;
+    private ProgressBar mPbLoading;
 
     @Override
     public void onActivityCreated(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -152,28 +155,46 @@ public class SetBlueFragment extends RobotBaseFragment {
         mRlBlue = (RelativeLayout) findViewById(R.id.rl_blue);
         mSwitchBlue = (Switch) findViewById(R.id.switch_blue);
         mIvNameArrowRight = (ImageView) findViewById(R.id.iv_name_arrow_right);
-        mCustomRefreshLayout = (CustomRefreshLayout) findViewById(R.id.customRefreshLayout);
         mRvBlue = (RecyclerView) findViewById(R.id.rvBlue);
         mRvBlue.setLayoutManager(new LinearLayoutManager(mContext));
 
         mRlMeDevice = (RelativeLayout) findViewById(R.id.rl_me_device);
         mTvMeBleName = (TextView) findViewById(R.id.tv_me_ble_name);
+        mIvRescan = (ImageView) findViewById(R.id.iv_rescan);
 
-        mLoadingView = (LoadingView) findViewById(R.id.loadingView);
-        mLoadingView.showLoadingNoText();
+        mPbLoading = (ProgressBar) findViewById(R.id.pb_loading);
+    }
+
+
+    private void reScanAnimStart() {
+        if (mIvRescan == null) {
+            return;
+        }
+        mIvRescan.setVisibility(View.VISIBLE);
+        mIvRescan.clearAnimation();
+        RotateAnimation rotateAnimation = new RotateAnimation(0, 1800,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(5000);
+        mIvRescan.startAnimation(rotateAnimation);
     }
 
     @Override
     public void initData() {
 
         initAdapter();
-
+        mIvRescan.setOnClickListener(v -> {
+            syncScan();
+        });
         mSwitchBlue.setChecked(BleManager.getInstance().isBlueEnable());
         initBlue();
+
         if (BleManager.getInstance().isBlueEnable()) {
+            mIvRescan.setVisibility(View.VISIBLE);
             BleManager.getInstance().scan(mBleScanCallback);
         } else {
-            mLoadingView.hide();
+            mIvRescan.setVisibility(View.GONE);
+            mIvRescan.clearAnimation();
         }
 
         mTvMeBleName.setText(BleManager.getInstance().getBluetoothAdapter().getName());
@@ -188,21 +209,14 @@ public class SetBlueFragment extends RobotBaseFragment {
                     BleManager.getInstance().disableBluetooth();
                     BleManager.getInstance().cancelScan();
                     mBleAdapter.setDataListNotify(null);
-                    mLoadingView.hide();
+                    mIvRescan.setVisibility(View.GONE);
+                    mIvRescan.clearAnimation();
                 }
             }
         });
     }
 
     private void initAdapter() {
-        mCustomRefreshLayout.setEnableRefresh(true);
-        mCustomRefreshLayout.setEnableLoadMore(false);
-        mCustomRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
-                syncScan();
-            }
-        });
         mBleAdapter = new BleAdapter(null);
         mRvBlue.setAdapter(mBleAdapter);
         mBleAdapter.setOnRvItemListener(new OnRvItemListener<BleDevice>() {
@@ -255,7 +269,7 @@ public class SetBlueFragment extends RobotBaseFragment {
 
     private void syncScan() {
         if (!mSwitchBlue.isChecked()) {
-            mLoadingView.hide();
+            mIvRescan.clearAnimation();
             return;
         }
 
@@ -263,7 +277,10 @@ public class SetBlueFragment extends RobotBaseFragment {
             BleManager.getInstance().scan(mBleScanCallback);
         } else {
             if (mBleAdapter.getItemCount() == 0) {
-                mLoadingView.showLoadingNoText();
+                mPbLoading.setVisibility(View.VISIBLE);
+            } else {
+                reScanAnimStart();
+                mPbLoading.setVisibility(View.GONE);
             }
             HandlerUtil.getMainHandler().postDelayed(new Runnable() {
                 @Override

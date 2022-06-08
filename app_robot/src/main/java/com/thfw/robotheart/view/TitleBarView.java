@@ -72,6 +72,10 @@ public class TitleBarView extends LinearLayout {
     private RelativeLayout mRlBattery;
     private ImageView mIvBatteryIng;
 
+
+    private SerialManager.ElectricityListener mElectricityListener;
+    private TimingHelper.WorkListener mWorkListener;
+
     public TitleBarView(@NonNull @NotNull Context context) {
         this(context, null);
     }
@@ -114,11 +118,6 @@ public class TitleBarView extends LinearLayout {
 
     }
 
-    @Override
-    public void setVisibility(int visibility) {
-        super.setVisibility(visibility);
-        init();
-    }
 
     private void init() {
 
@@ -128,24 +127,21 @@ public class TitleBarView extends LinearLayout {
         }
         setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
         inflate(mContext, R.layout.layout_titlebar_view, this);
-
         initView();
+
         // todo 正式策略应该是机器人
         if (RobotUtil.isInstallRobot()) {
-            initBatReceiver();
+            initBatAndTimeReceiverRobot();
         } else {
-            initReceiver();
+            initBatReceiver();
             initTimeReceiver();
         }
+        initWifiReceiver();
         initBlueReceiver();
     }
 
-
-    private SerialManager.ElectricityListener mElectricityListener;
-    private TimingHelper.WorkListener mWorkListener;
-
     // 机器人电量和 充电状态
-    private void initBatReceiver() {
+    private void initBatAndTimeReceiverRobot() {
         if (mElectricityListener == null) {
             mElectricityListener = (percent, charge) -> {
                 level = percent;
@@ -176,7 +172,7 @@ public class TitleBarView extends LinearLayout {
     }
 
     private void initTimeReceiver() {
-
+        createTimeReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
         filter.addAction(Intent.ACTION_TIME_CHANGED);
@@ -185,8 +181,22 @@ public class TitleBarView extends LinearLayout {
         //广播的注册，其中Intent.ACTION_TIME_CHANGED代表时间设置变化的时候会发出该广播
     }
 
-    private void initBlueReceiver() {
+    private void initBatReceiver() {
+        createBatReceiver();
+        getContext().registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+    }
 
+    private void initWifiReceiver() {
+        createWifiReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        getContext().registerReceiver(mWifiStateReceiver, filter);
+    }
+
+    private void initBlueReceiver() {
+        createBlueReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
@@ -233,21 +243,6 @@ public class TitleBarView extends LinearLayout {
         mTvProgress.setText(level + "%");
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (this.mBatInfoReceiver != null) {
-            mContext.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        }
-
-        if (mWifiStateReceiver != null) {
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-            filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-            mContext.registerReceiver(mWifiStateReceiver, filter);
-        }
-    }
 
     @Override
     protected void onDetachedFromWindow() {
@@ -272,7 +267,7 @@ public class TitleBarView extends LinearLayout {
         }
     }
 
-    private void initReceiver() {
+    private void createBatReceiver() {
 
         if (mBatInfoReceiver == null) {
             mBatInfoReceiver = new BroadcastReceiver() {
@@ -302,6 +297,10 @@ public class TitleBarView extends LinearLayout {
                 }
             };
         }
+    }
+
+    private void createWifiReceiver() {
+
 
         if (mWifiStateReceiver == null) {
             mWifiStateReceiver = new BroadcastReceiver() {
@@ -311,6 +310,9 @@ public class TitleBarView extends LinearLayout {
                 }
             };
         }
+    }
+
+    private void createTimeReceiver() {
 
         if (broadcastReceiver == null) {
             broadcastReceiver = new BroadcastReceiver() {
@@ -326,6 +328,9 @@ public class TitleBarView extends LinearLayout {
                 }
             };
         }
+    }
+
+    private void createBlueReceiver() {
 
         if (mBluecastReceiver == null) {
             mBluecastReceiver = new BroadcastReceiver() {
