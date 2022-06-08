@@ -177,13 +177,13 @@ public class TitleBarView extends LinearLayout {
         filter.addAction(Intent.ACTION_TIME_TICK);
         filter.addAction(Intent.ACTION_TIME_CHANGED);
         filter.addAction(Intent.ACTION_DATE_CHANGED);
-        getContext().registerReceiver(broadcastReceiver, filter);
+        mContext.registerReceiver(broadcastReceiver, filter);
         //广播的注册，其中Intent.ACTION_TIME_CHANGED代表时间设置变化的时候会发出该广播
     }
 
     private void initBatReceiver() {
         createBatReceiver();
-        getContext().registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        mContext.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
     private void initWifiReceiver() {
@@ -192,7 +192,7 @@ public class TitleBarView extends LinearLayout {
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        getContext().registerReceiver(mWifiStateReceiver, filter);
+        mContext.registerReceiver(mWifiStateReceiver, filter);
     }
 
     private void initBlueReceiver() {
@@ -203,7 +203,7 @@ public class TitleBarView extends LinearLayout {
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         filter.addAction("android.bluetooth.BluetoothAdapter.STATE_OFF");
         filter.addAction("android.bluetooth.BluetoothAdapter.STATE_ON");
-        getContext().registerReceiver(mBluecastReceiver, filter);
+        mContext.registerReceiver(mBluecastReceiver, filter);
     }
 
     private void initView() {
