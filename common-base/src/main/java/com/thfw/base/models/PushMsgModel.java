@@ -165,7 +165,8 @@ public class PushMsgModel implements IModel {
     public PushModel toPushModel() {
         PushModel pushModel = new PushModel();
         pushModel.setMsgId(msgId);
-        pushModel.setContent(String.valueOf(id));
+        pushModel.setContentId(String.valueOf(id));
+        pushModel.setContent(content);
         pushModel.setMsgType(type);
         pushModel.setTitle(title);
         pushModel.setContent(title);
