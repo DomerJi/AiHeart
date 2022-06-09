@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.util.SparseIntArray;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -796,5 +797,27 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
 
         }
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MEDIA_NEXT) {
+            // 下一首按键
+        } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
+            // 上一首按键
+        } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
+            // 播放/暂停按键
+            if (player != null) {
+                if (player.isPlaying()) {
+                    player.pause();
+                } else {
+                    player.play();
+                }
+                return true;
+            }
+        }
+        // 还可以添加更多按键操作，可以参阅 KeyEvent 类
+        return super.onKeyDown(keyCode, event);
+    }
+
 
 }

@@ -99,7 +99,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
             }
 
             int order = Order.DOWN_SERVO_STATE;
-            SerialManager.getInstance().send(order, new int[]{new Random().nextInt(1800), 2000});
+            SerialManager.getInstance().send(order, new int[]{3, new Random().nextInt(1800), 2000});
         });
 
         init();
