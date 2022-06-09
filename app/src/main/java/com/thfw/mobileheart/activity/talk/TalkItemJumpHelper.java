@@ -21,11 +21,6 @@ import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 public class TalkItemJumpHelper {
 
 
-    public interface FromType {
-        int TOOL = 1;
-        int AI_CHAT = 2;
-    }
-
     public static void onItemClick(Context mContext, int type, DialogTalkModel.RecommendInfoBean recommendInfoBean) {
         onItemClick(mContext, type, recommendInfoBean, FromType.AI_CHAT);
     }
@@ -43,7 +38,7 @@ public class TalkItemJumpHelper {
                 }
                 break;
             case ChatEntity.TYPE_RECOMMEND_VIDEO:
-                VideoPlayActivity.startActivity(mContext, recommendInfoBean.getId(), true);
+                VideoPlayActivity.startActivity(mContext, recommendInfoBean.getId(), true, fromType);
                 break;
             case ChatEntity.TYPE_RECOMMEND_AUDIO:
                 AudioEtcDetailModel.AudioItemModel audioItemModel = new AudioEtcDetailModel.AudioItemModel();
@@ -70,5 +65,10 @@ public class TalkItemJumpHelper {
                 ToastUtil.show("未处理该类型跳转 ->" + type);
                 break;
         }
+    }
+
+    public interface FromType {
+        int TOOL = 1;
+        int AI_CHAT = 2;
     }
 }

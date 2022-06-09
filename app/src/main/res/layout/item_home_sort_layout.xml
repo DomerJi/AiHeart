@@ -1,86 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:background="@color/white">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="2dp"
-        android:paddingBottom="6dp"
-        android:weightSum="4"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_tab_01"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@mipmap/ic_sort_talk_bg"
+        app:layout_constraintBottom_toBottomOf="@id/ll_line_02"
+        app:layout_constraintDimensionRatio="W,357:605"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ll_line_01"
         tools:ignore="MissingConstraints">
 
-        <RelativeLayout
-            android:id="@+id/rl_tab_01"
-            android:layout_width="0dp"
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1">
+            android:text="主题对话"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_large"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.15" />
 
-            <ImageView
-                android:id="@+id/iv_tab_01"
-                android:layout_width="@dimen/home_sort_icon_height"
-                android:layout_height="@dimen/home_sort_icon_height"
-                android:layout_centerHorizontal="true"
-                android:src="@mipmap/ic_sort_talk" />
 
+        <androidx.cardview.widget.CardView
+            android:layout_width="50dp"
+            android:layout_height="17dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.36">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/iv_tab_01"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/home_sort_text_icon_margin"
-                android:text="@string/sort_type_talk"
-                android:textSize="@dimen/home_sort_text_size" />
+                android:layout_gravity="center"
+                android:drawableRight="@mipmap/ic_sort_talk_arrow"
+                android:drawablePadding="2dp"
+                android:text="聊一聊"
+                android:textColor="#00A6DC"
+                android:textSize="10sp" />
+
+        </androidx.cardview.widget.CardView>
 
 
-        </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <RelativeLayout
-            android:id="@+id/rl_tab_02"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/iv_tab_02"
-                android:layout_width="@dimen/home_sort_icon_height"
-                android:layout_height="@dimen/home_sort_icon_height"
-                android:layout_centerHorizontal="true"
-                android:src="@mipmap/ic_sort_what" />
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:src="@mipmap/ic_sort_talk_people"
+        app:layout_constraintBottom_toTopOf="@id/v_gray_line"
+        app:layout_constraintLeft_toLeftOf="@id/cl_tab_01"
+        app:layout_constraintRight_toRightOf="@id/cl_tab_01"
+        tools:ignore="MissingConstraints" />
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/iv_tab_02"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/home_sort_text_icon_margin"
-                android:text="@string/sort_type_what"
-                android:textSize="@dimen/home_sort_text_size" />
+    <LinearLayout
+        android:id="@+id/ll_line_01"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:weightSum="3"
+        app:layout_constraintLeft_toRightOf="@id/cl_tab_01"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
 
-
-        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rl_tab_03"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <ImageView
                 android:id="@+id/iv_tab_03"
                 android:layout_width="@dimen/home_sort_icon_height"
                 android:layout_height="@dimen/home_sort_icon_height"
                 android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/home_sort_icon_margin_bottom"
                 android:src="@mipmap/ic_sort_test" />
 
 
@@ -101,13 +123,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <ImageView
                 android:id="@+id/iv_tab_04"
                 android:layout_width="@dimen/home_sort_icon_height"
                 android:layout_height="@dimen/home_sort_icon_height"
                 android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/home_sort_icon_margin_bottom"
                 android:src="@mipmap/ic_sort_exercise" />
 
 
@@ -128,13 +153,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <ImageView
                 android:id="@+id/iv_tab_05"
                 android:layout_width="@dimen/home_sort_icon_height"
                 android:layout_height="@dimen/home_sort_icon_height"
                 android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/home_sort_icon_margin_bottom"
                 android:src="@mipmap/ic_sort_listen" />
 
 
@@ -153,11 +181,14 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/ll_line_02"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingTop="2dp"
-        android:paddingBottom="8dp"
-        android:weightSum="4"
+        android:layout_marginTop="8dp"
+        android:weightSum="3"
+        app:layout_constraintLeft_toRightOf="@id/cl_tab_01"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_line_01"
         tools:ignore="MissingConstraints">
 
 
@@ -166,13 +197,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <ImageView
                 android:id="@+id/iv_tab_06"
                 android:layout_width="@dimen/home_sort_icon_height"
                 android:layout_height="@dimen/home_sort_icon_height"
                 android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/home_sort_icon_margin_bottom"
                 android:src="@mipmap/ic_sort_see" />
 
 
@@ -193,13 +227,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <ImageView
                 android:id="@+id/iv_tab_07"
                 android:layout_width="@dimen/home_sort_icon_height"
                 android:layout_height="@dimen/home_sort_icon_height"
                 android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/home_sort_icon_margin_bottom"
                 android:src="@mipmap/ic_sort_read" />
 
 
@@ -221,13 +258,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <ImageView
                 android:id="@+id/iv_tab_08"
                 android:layout_width="@dimen/home_sort_icon_height"
                 android:layout_height="@dimen/home_sort_icon_height"
                 android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/home_sort_icon_margin_bottom"
                 android:src="@mipmap/ic_sort_study" />
 
 
@@ -246,9 +286,13 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/v_gray_line"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="@color/page_background_gray" />
+        android:layout_marginTop="8dp"
+        android:background="@color/page_background_gray"
+        app:layout_constraintTop_toBottomOf="@id/ll_line_02"
+        tools:ignore="MissingConstraints" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

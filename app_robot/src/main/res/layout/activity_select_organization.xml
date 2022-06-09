@@ -33,9 +33,9 @@
             android:id="@+id/tv_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="许三多"
             android:textColor="@color/text_yellow"
-            android:textSize="@dimen/textSize_large" />
+            android:textSize="@dimen/textSize_large"
+            tools:text="许三多" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -49,10 +49,12 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_selected"
         android:layout_width="0dp"
-        android:layout_height="42dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="26dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="26dp"
+        android:maxHeight="100dp"
+        android:minHeight="42dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_welcome" />

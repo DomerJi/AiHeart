@@ -150,8 +150,8 @@
                     <TextView
                         android:id="@+id/tv_nickname"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:gravity="right"
                         android:hint="@string/info_hint_no_input"
                         android:textColor="@color/white"
@@ -257,9 +257,11 @@
                         android:layout_weight="1"
                         android:gravity="right"
                         android:hint="@string/info_hint_no_select"
+                        android:paddingLeft="12dp"
                         android:textColor="@color/white"
                         android:textColorHint="@color/white_50"
-                        android:textSize="@dimen/textSize" />
+                        android:textSize="@dimen/textSize"
+                        tools:text="@string/test_team" />
 
 
                     <ImageView

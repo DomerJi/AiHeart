@@ -152,7 +152,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
         ((Activity) context).startActivityForResult(new Intent(context, VideoPlayActivity.class)
                 .putExtra(KEY_DATA, videoId)
                 .putExtra(KEY_AUTO_FINISH, autoFinished)
-                .putExtra(KEY_PLAY_POSITION, fromType), ChatEntity.TYPE_RECOMMEND_VIDEO);
+                .putExtra(KEY_FROM_TYPE, fromType), ChatEntity.TYPE_RECOMMEND_VIDEO);
     }
 
 

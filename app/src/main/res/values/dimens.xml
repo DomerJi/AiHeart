@@ -5,9 +5,10 @@
     <dimen name="home_tab_icon_height">20dp</dimen>
     <dimen name="home_tab_icon_chat_height">40dp</dimen>
 
-    <dimen name="home_sort_icon_height">65dp</dimen>
+    <dimen name="home_sort_icon_height">42dp</dimen>
+    <dimen name="home_sort_icon_margin_bottom">8dp</dimen>
     <dimen name="home_sort_text_size">13sp</dimen>
-    <dimen name="home_sort_text_icon_margin">-3dp</dimen>
+    <dimen name="home_sort_text_icon_margin">0dp</dimen>
 
     <dimen name="home_hint_dot">6dp</dimen>
     <dimen name="home_hint_dot_radius">3dp</dimen>

@@ -256,6 +256,7 @@
                         android:layout_weight="1"
                         android:gravity="right"
                         android:hint="@string/info_hint_no_select"
+                        android:paddingLeft="12dp"
                         android:textColor="@color/text_common"
                         android:textColorHint="@color/text_content"
                         android:textSize="@dimen/textSize" />

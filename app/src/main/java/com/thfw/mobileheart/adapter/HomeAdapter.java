@@ -288,7 +288,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                 @Override
                 public void onClick(View v) {
                     if (sparseArray.size() == 0) {
-                        sparseArray.put(R.id.rl_tab_01, AnimFileName.TRANSITION_THEME);
+                        sparseArray.put(R.id.cl_tab_01, AnimFileName.TRANSITION_THEME);
                         sparseArray.put(R.id.rl_tab_03, AnimFileName.TRANSITION_TEST);
                         sparseArray.put(R.id.rl_tab_04, AnimFileName.TRANSITION_TOOL);
                         sparseArray.put(R.id.rl_tab_05, AnimFileName.TRANSITION_AUDIO);
@@ -302,7 +302,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                                 @Override
                                 public void callBack(SVGAImageView svgaImageView) {
                                     switch (v.getId()) {
-                                        case R.id.rl_tab_01:
+                                        case R.id.cl_tab_01:
                                             ThemeListActivity.startActivity(mContext);
                                             break;
                                         case R.id.rl_tab_03:
@@ -330,8 +330,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                 }
             };
 
-            itemView.findViewById(R.id.rl_tab_01).setOnClickListener(clickViewListener);
-            itemView.findViewById(R.id.rl_tab_02).setOnClickListener(clickViewListener);
+            itemView.findViewById(R.id.cl_tab_01).setOnClickListener(clickViewListener);
             itemView.findViewById(R.id.rl_tab_03).setOnClickListener(clickViewListener);
             itemView.findViewById(R.id.rl_tab_04).setOnClickListener(clickViewListener);
             itemView.findViewById(R.id.rl_tab_05).setOnClickListener(clickViewListener);
@@ -358,7 +357,6 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         private ConstraintLayout mRootHotline;
         private TextView mTvTitle;
         private TextView mTvContent;
-        private LinearLayout mLlMore;
 
         public MadeHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -462,7 +460,6 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             mRootHotline = (ConstraintLayout) itemView.findViewById(R.id.root_hotline);
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             mTvContent = (TextView) itemView.findViewById(R.id.tv_content);
-            mLlMore = (LinearLayout) itemView.findViewById(R.id.ll_more);
         }
     }
 

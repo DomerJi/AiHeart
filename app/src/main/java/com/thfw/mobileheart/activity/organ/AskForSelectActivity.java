@@ -425,7 +425,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
         mRvSelectChildren.setAdapter(mOrganSelectChildrenAdapter);
 
         mOranSelectedAdapter.getOnRvItemListener().onItemClick(mSelecteds, mSelecteds.size() - 1);
-
+        mRvSelected.scrollToPosition(mSelecteds.size() - 1);
     }
 
     private void notifySelectedOrganization() {

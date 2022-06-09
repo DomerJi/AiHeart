@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
@@ -62,9 +63,10 @@ public class SetBlueFragment extends RobotBaseFragment {
             }
             List<BleDevice> bleDevices = new ArrayList<>();
             for (BleDevice bleDevice : scanResultList) {
-                if (bleDevice.getName() != null) {
-                    bleDevices.add(bleDevice);
+                if (TextUtils.isEmpty(bleDevice.getName())) {
+                    continue;
                 }
+                bleDevices.add(bleDevice);
             }
             LogUtil.d(TAG, "bleDevices.size() -> " + bleDevices.size());
             mBleAdapter.setDataListNotify(bleDevices);
@@ -93,6 +95,9 @@ public class SetBlueFragment extends RobotBaseFragment {
             if (!mSwitchBlue.isChecked()) {
                 return;
             }
+            if (TextUtils.isEmpty(bleDevice.getName())) {
+                return;
+            }
             if (mBleAdapter.getDataList() != null) {
                 for (BleDevice device : mBleAdapter.getDataList()) {
                     if (device.getMac().equals(bleDevice.getMac())) {
@@ -107,6 +112,9 @@ public class SetBlueFragment extends RobotBaseFragment {
         public void onLeScan(BleDevice bleDevice) {
             super.onLeScan(bleDevice);
             if (!mSwitchBlue.isChecked()) {
+                return;
+            }
+            if (TextUtils.isEmpty(bleDevice.getName())) {
                 return;
             }
             if (mBleAdapter.getDataList() != null) {
@@ -133,8 +141,8 @@ public class SetBlueFragment extends RobotBaseFragment {
         BleManager.getInstance().init(getActivity().getApplication());
         BleManager.getInstance()
                 .enableLog(true)
-                .setReConnectCount(1, 5000)
-                .setOperateTimeout(5000);
+                .setReConnectCount(5, 1000)
+                .setOperateTimeout(10000);
     }
 
     @Override
@@ -204,6 +212,7 @@ public class SetBlueFragment extends RobotBaseFragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     BleManager.getInstance().enableBluetooth();
+                    mIvRescan.setVisibility(View.VISIBLE);
                     syncScan();
                 } else {
                     BleManager.getInstance().disableBluetooth();
@@ -274,6 +283,7 @@ public class SetBlueFragment extends RobotBaseFragment {
         }
 
         if (BleManager.getInstance().isBlueEnable()) {
+            BleManager.getInstance().cancelScan();
             BleManager.getInstance().scan(mBleScanCallback);
         } else {
             if (mBleAdapter.getItemCount() == 0) {

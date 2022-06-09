@@ -41,13 +41,16 @@
 
     <LinearLayout
         android:id="@+id/ll_riv"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="16dp"
+        android:paddingRight="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.35"
         tools:ignore="MissingConstraints">
 
         <RelativeLayout
@@ -90,13 +93,14 @@
 
         <TextView
             android:id="@+id/tv_institution"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:maxLength="30"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:textColor="@color/colorRobotFore"
             android:textSize="@dimen/textSize_small_2"
-            tools:text="七连五班" />
+            tools:text="@string/test_team" />
 
     </LinearLayout>
 
