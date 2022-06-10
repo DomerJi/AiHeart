@@ -66,4 +66,18 @@
         app:layout_constraintTop_toBottomOf="@id/bt_nod"
         tools:ignore="MissingConstraints" />
 
+
+    <Button
+        android:id="@+id/bt_shutdown"
+        android:layout_width="120dp"
+        android:layout_height="42dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/common_green_selector"
+        android:text="关机"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize"
+        app:layout_constraintTop_toBottomOf="@id/bt_rotate"
+        tools:ignore="MissingConstraints" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

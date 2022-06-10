@@ -6,10 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.os.PowerManager;
 
 import com.thfw.base.ContextApp;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
+
+import java.lang.reflect.Method;
 
 /**
  * Author:pengs
@@ -113,11 +117,48 @@ public class RobotUtil {
      * @return
      */
     public static boolean shutdown() {
-        if (isInstallRobot()) {
-            return CommandExecution.execCommand("reboot -p", true).result == 1;
-        } else {
-            return false;
+//        if (isInstallRobot()) {
+        ToastUtil.show("关机1");
+        return CommandExecution.execCommand("reboot -p", true).result == 1;
+//        } else {
+//            return false;
+//        }
+    }
+
+
+    public static void shutdownByActivity(Context context) {
+        String action = "com.android.internal.intent.action.REQUEST_SHUTDOWN";
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
+            action = "android.intent.action.ACTION_REQUEST_SHUTDOWN";
         }
+
+        Intent shutdown = new Intent(action);
+        shutdown.putExtra("android.intent.extra.KEY_CONFIRM", false);
+        shutdown.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        try {
+            context.startActivity(shutdown);
+            ToastUtil.show("broadcast->shutdown SSSS");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastUtil.show("broadcast->shutdown eEEE");
+        }
+    }
+
+
+    public static void shutdownByInvoke() {
+        try {
+            PowerManager pManager = (PowerManager) ContextApp.get().getSystemService(Context.POWER_SERVICE);
+            if (pManager != null) {
+                Method method = pManager.getClass().getMethod("shutdown", boolean.class, String.class, boolean.class);
+                method.invoke(pManager, false, null, false);
+                ToastUtil.show("broadcast->shutdown001");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastUtil.show("broadcast->shutdown002");
+        }
+
     }
 
     /**

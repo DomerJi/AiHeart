@@ -26,6 +26,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
     private int shakeZero = ConstantUtil.DEFAULT_INT;
     private int nodZero = ConstantUtil.DEFAULT_INT;
     private int rotateZero = ConstantUtil.DEFAULT_INT;
+    private Button mBtShutdown;
 
 
     @Override
@@ -45,6 +46,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
         mBtShake = (Button) findViewById(R.id.bt_shake);
         mBtNod = (Button) findViewById(R.id.bt_nod);
         mBtRotate = (Button) findViewById(R.id.bt_rotate);
+        mBtShutdown = (Button) findViewById(R.id.bt_shutdown);
     }
 
     @Override
@@ -101,7 +103,11 @@ public class ShakeNodActivity extends RobotBaseActivity {
             int order = Order.DOWN_SERVO_STATE;
             SerialManager.getInstance().send(order, new int[]{3, new Random().nextInt(1800), 2000});
         });
-
+        mBtShutdown.setOnClickListener(v -> {
+//            RobotUtil.shutdownByBroadcast(mContext);
+//            RobotUtil.shutdownByActivity(mContext);
+            RobotUtil.shutdownByInvoke();
+        });
         init();
     }
 
