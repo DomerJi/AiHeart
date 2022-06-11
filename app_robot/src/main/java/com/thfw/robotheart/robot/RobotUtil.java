@@ -8,10 +8,17 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.PowerManager;
 
+import androidx.fragment.app.FragmentActivity;
+
+import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.ContextApp;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
+import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.util.DialogRobotFactory;
+import com.thfw.ui.voice.tts.TtsHelper;
+import com.thfw.ui.voice.tts.TtsModel;
 
 import java.lang.reflect.Method;
 
@@ -111,18 +118,28 @@ public class RobotUtil {
         return installRobot == 1;
     }
 
+    public static void shutdown(FragmentActivity fragmentActivity) {
+        TtsHelper.getInstance().start(new TtsModel("拜拜,下次见哦"), null);
+        DialogRobotFactory.createFullSvgaDialog(fragmentActivity, AnimFileName.EMOJI_GUANJI, new DialogRobotFactory.OnSVGACallBack() {
+            @Override
+            public void callBack(SVGAImageView svgaImageView) {
+                shutdown();
+            }
+        });
+    }
+
     /**
      * 关机
      *
      * @return
      */
     public static boolean shutdown() {
-//        if (isInstallRobot()) {
-        ToastUtil.show("关机1");
-        return CommandExecution.execCommand("reboot -p", true).result == 1;
-//        } else {
-//            return false;
-//        }
+        if (isInstallRobot()) {
+            LogUtil.i(TAG, "shutdown() -> 关机");
+            return CommandExecution.execCommand("reboot -p", true).result == 1;
+        } else {
+            return false;
+        }
     }
 
 

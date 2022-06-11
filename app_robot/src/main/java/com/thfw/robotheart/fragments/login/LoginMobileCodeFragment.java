@@ -22,8 +22,6 @@ import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.ui.dialog.LoadingDialog;
-import com.thfw.ui.voice.tts.TtsHelper;
-import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.InputBoxSquareView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -169,7 +167,9 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
     @Override
     public void onSuccess(TokenModel data) {
         LoadingDialog.hide();
-        LoginActivity.login(getActivity(), data, phone);
+        if (!LoginActivity.login(getActivity(), data, phone)) {
+            LoginActivity.onLoginFail(getActivity());
+        }
     }
 
     @Override
@@ -178,8 +178,10 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
         ToastUtil.show(throwable.getMessage());
         if (HttpResult.isOrganValid(throwable.code)) {
             LoginActivity.showOrganIdNoValid(getActivity());
+        } else {
+            LoginActivity.onLoginFail(getActivity());
         }
-        TtsHelper.getInstance().start(new TtsModel("请重新登录哦"), null);
+
     }
 
     @Override

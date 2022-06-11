@@ -11,6 +11,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.DialogRobotFactory;
+import com.thfw.robotheart.util.Dormant;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 
@@ -21,9 +22,17 @@ import com.thfw.ui.voice.tts.TtsModel;
  */
 public class BootCompleteReceiver extends BroadcastReceiver {
     private static final String TAG = BootCompleteReceiver.class.getSimpleName();
-    private static final String ACTION_BOOT = "android.intent.action.BOOT_COMPLETED";
 
     private static long bootCompleteTime;
+    private static ShutDownCallback shutDownCallback;
+
+    public static void setShutDownCallback(ShutDownCallback shutDownCallback) {
+        BootCompleteReceiver.shutDownCallback = shutDownCallback;
+    }
+
+    public interface ShutDownCallback {
+        void shutDown();
+    }
 
     public static boolean isBootComplete() {
         if (bootCompleteTime == 0) {
@@ -53,9 +62,16 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (ACTION_BOOT.equals(intent.getAction())) {
+        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             LogUtil.e(TAG, "开机广播 ++++++++++++++++++++++++++++++++++++++++++++");
             bootCompleteTime = System.currentTimeMillis();
+        } else if (Intent.ACTION_SHUTDOWN.equals(intent.getAction())) {
+            LogUtil.e(TAG, "关机广播 ++++++++++++++++++++++++++++++++++++++++++++");
+            if (!Dormant.isCanShutdown()) {
+                if (shutDownCallback != null) {
+                    shutDownCallback.shutDown();
+                }
+            }
         }
 
     }

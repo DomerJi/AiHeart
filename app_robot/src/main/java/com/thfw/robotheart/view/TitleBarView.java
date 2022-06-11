@@ -26,15 +26,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NetworkUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.RobotBaseActivity;
+import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.port.SerialManager;
 import com.thfw.robotheart.robot.RobotUtil;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.Dormant;
+import com.thfw.ui.voice.tts.TtsHelper;
+import com.thfw.ui.voice.tts.TtsModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -72,9 +79,13 @@ public class TitleBarView extends LinearLayout {
     private RelativeLayout mRlBattery;
     private ImageView mIvBatteryIng;
 
+    public static int getLevel() {
+        return level;
+    }
 
     private SerialManager.ElectricityListener mElectricityListener;
     private TimingHelper.WorkListener mWorkListener;
+    private int oldCharge = -1;
 
     public TitleBarView(@NonNull @NotNull Context context) {
         this(context, null);
@@ -148,6 +159,11 @@ public class TitleBarView extends LinearLayout {
                 updateBattery(level);
                 // 充电中
                 mIvBatteryIng.setVisibility(charge == 1 ? VISIBLE : GONE);
+
+                if (oldCharge == 1 && charge == 0) {
+                    robotNoCharge(mContext);
+                }
+                oldCharge = charge;
             };
         }
         SerialManager.getInstance().addEleListener(mElectricityListener);
@@ -169,6 +185,21 @@ public class TitleBarView extends LinearLayout {
             };
         }
         TimingHelper.getInstance().addWorkArriveListener(mWorkListener);
+    }
+
+    public static void robotNoCharge(Context mContext) {
+        if (!Dormant.isCanDormant() && mContext instanceof RobotBaseActivity) {
+            RobotBaseActivity baseActivity = (RobotBaseActivity) mContext;
+            if (!EmptyUtil.isEmpty(baseActivity) && baseActivity.isMeResumed()) {
+                TtsHelper.getInstance().start(new TtsModel("请尽快把我放到固定位置哦"), null);
+                DialogRobotFactory.createFullSvgaDialog(baseActivity, AnimFileName.EMOJI_XUANYUN, new DialogRobotFactory.OnSVGACallBack() {
+                    @Override
+                    public void callBack(SVGAImageView svgaImageView) {
+                        LogUtil.i(TAG, "眩晕");
+                    }
+                });
+            }
+        }
     }
 
     private void initTimeReceiver() {
@@ -280,18 +311,22 @@ public class TitleBarView extends LinearLayout {
                     int status = intent.getIntExtra(EXTRA_STATUS, BATTERY_STATUS_UNKNOWN);
 
                     switch (status) {
+                        case BATTERY_STATUS_FULL:
+                            // 充满电
                         case BATTERY_STATUS_CHARGING:
                             // 充电中
                             mIvBatteryIng.setVisibility(VISIBLE);
                             break;
-                        case BATTERY_STATUS_UNKNOWN:// 未知
-                        case BATTERY_STATUS_FULL:
-                            // 充满电
+                        case BATTERY_STATUS_UNKNOWN:
+                            // 未知
                         case BATTERY_STATUS_NOT_CHARGING:
                             // 未充电
                         case BATTERY_STATUS_DISCHARGING:
                             // 放电中
-                            mIvBatteryIng.setVisibility(GONE);
+                            if (mIvBatteryIng.getVisibility() == VISIBLE) {
+                                mIvBatteryIng.setVisibility(GONE);
+                                robotNoCharge(mContext);
+                            }
                             break;
                     }
                 }

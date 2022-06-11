@@ -1,5 +1,7 @@
 package com.thfw.robotheart.constants;
 
+import com.thfw.robotheart.port.ActionParams;
+
 import java.util.HashMap;
 
 /**
@@ -40,6 +42,7 @@ public class AnimFileName {
     public static final String EMOJI_WELCOM = "emoji_welcom.svga";
     public static final String EMOJI_XIUMIAN = "emoji_xiumian.svga";
     public static final String EMOJI_XUANYUN = "emoji_xuanyun.svga";
+    public static final String EMOJI_GUANJI = "emoji_guanji.svga";
 
     /**
      * 人物形象
@@ -126,6 +129,11 @@ public class AnimFileName {
             mNameHintMap.put(TRANSITION_BOOK, "学点心理学，惊艳所有人，\n一起学习吧~");
             mNameHintMap.put(TRANSITION_IDEO, "提升思想境界和认知维度，\n从根上解决心理问题~");
             mNameHintMap.put(TRANSITION_TOOL, "小密准备了专业心理训练工具，\n一起见证心灵的成长吧~");
+            mNameHintMap.put(EMOJI_GUANJI, "即将关机");
+            mNameHintMap.put(EMOJI_SHIWANG, "失望");
+            mNameHintMap.put(EMOJI_CHUMO, "害羞");
+            mNameHintMap.put(EMOJI_XUANYUN, "眩晕");
+            mNameHintMap.put(EMOJI_WELCOM, "欢迎您");
         }
     }
 
@@ -146,6 +154,75 @@ public class AnimFileName {
             }
         }
         return null;
+    }
+
+    public static RobotOutPutInfo getRobotOutPutInfo(String animFile) {
+        if (mNameEmojiMap == null) {
+            initEmojiMap();
+        }
+        switch (animFile) {
+            case TALK_WANGYIN: {
+                return new RobotOutPutInfo("上瘾容易戒瘾难", ActionParams.getNormalNod());
+            }
+            case TALK_XINGFENG: {
+                return new RobotOutPutInfo("有什么好事分享一下呀", ActionParams.getNormalRotate());
+            }
+            case TALK_MANZU: {
+                return new RobotOutPutInfo("咿呀咿呀哟", ActionParams.getNormalRotate());
+            }
+            case TALK_QINGSONG: {
+                return new RobotOutPutInfo("呐，小心心给你", ActionParams.getNormalNod());
+            }
+            case TALK_PINGJING: {
+                return new RobotOutPutInfo("我很冷静~", ActionParams.getNormalNod());
+            }
+            case TALK_ZENGHENG: {
+                return new RobotOutPutInfo("这很难受吧", ActionParams.getNormalShake());
+            }
+            case TALK_SHILIAN: {
+                return new RobotOutPutInfo("抱抱你你值得更好的", null);
+            }
+            case TALK_SHIMIAN: {
+                return new RobotOutPutInfo("睡不好太烦躁！", null);
+            }
+            case TALK_JINZHANG: {
+                return new RobotOutPutInfo("深呼吸 平常心哦", null);
+            }
+            case TALK_BALING: {
+                return new RobotOutPutInfo("保护好自己哦", null);
+            }
+            case TALK_MIMANG: {
+                return new RobotOutPutInfo("思考ing", null);
+            }
+            case TALK_FANZAO: {
+                return new RobotOutPutInfo("深呼吸哦", null);
+            }
+            case TALK_NANGUO: {
+                return new RobotOutPutInfo("抱抱你", null);
+            }
+            case TALK_YIYU: {
+                return new RobotOutPutInfo("会过去的", null);
+            }
+        }
+        return null;
+    }
+
+    public static class RobotOutPutInfo {
+        public String tts;
+        public ActionParams actionParams;
+
+        public RobotOutPutInfo(String tts, ActionParams actionParams) {
+            this.tts = tts;
+            this.actionParams = actionParams;
+        }
+
+        @Override
+        public String toString() {
+            return "RobotOutPutInfo{" +
+                    "tts='" + tts + '\'' +
+                    ", actionParams=" + actionParams.toString() +
+                    '}';
+        }
     }
 
     /**

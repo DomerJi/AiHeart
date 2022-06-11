@@ -127,6 +127,64 @@ public class DialogRobotFactory {
      * @param onViewCallBack
      * @return
      */
+    public static void createFullSvgaDialog(FragmentActivity activity, String svgaAssets, final OnSVGACallBack onViewCallBack) {
+        String hint = AnimFileName.getHint(svgaAssets);
+        mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
+                .setLayoutRes(com.thfw.robotheart.R.layout.dialog_full_svga_layout)
+                .setDialogAnimationRes(R.style.animate_dialog_fade)
+                .setScreenWidthAspect(activity, 1.0f)
+                .setScreenHeightAspect(activity, 1.0f)
+                .setDimAmount(0.9f)
+                // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
+                .setOnBindViewListener(viewHolder -> {
+                    SVGAParser parser = new SVGAParser(activity);
+                    SVGAImageView svgaImageView = viewHolder.getView(com.thfw.robotheart.R.id.svga_dialog);
+                    if (!TextUtils.isEmpty(hint)) {
+                        TextView mTvHint = viewHolder.getView(com.thfw.robotheart.R.id.tv_hint);
+                        mTvHint.setText(hint);
+                    }
+                    // The third parameter is a default parameter, which is null by default. If this method is set, the audio parsing and playback will not be processed internally. The audio File instance will be sent back to the developer through PlayCallback, and the developer will control the audio playback and playback. stop
+                    parser.decodeFromAssets(svgaAssets, new SVGAParser.ParseCompletion() {
+                        @Override
+                        public void onComplete(@NotNull SVGAVideoEntity svgaVideoEntity) {
+                            SVGADrawable drawable = new SVGADrawable(svgaVideoEntity);
+                            svgaImageView.setImageDrawable(drawable);
+                            svgaImageView.startAnimation();
+                        }
+
+                        @Override
+                        public void onError() {
+                        }
+                    }, null);
+
+                    svgaImageView.setCallback(new SimpleSVGACallBack() {
+
+                        @Override
+                        public void onFinished() {
+                            LogUtil.d(TAG, "onFinished");
+                            if (svgaImageView.getCallback() == null) {
+                                return;
+                            }
+                            svgaImageView.setCallback(null);
+                            onViewCallBack.callBack(svgaImageView);
+                            svgaImageView.clear();
+                            if (mSvgaTDialog != null) {
+                                mSvgaTDialog.dismiss();
+                                mSvgaTDialog = null;
+                            }
+                        }
+                    });
+                })
+                .setOnViewClickListener(onViewCallBack).create().show();
+    }
+
+    /**
+     * svga dialog
+     *
+     * @param activity
+     * @param onViewCallBack
+     * @return
+     */
     public static void createSvgaDialog(FragmentActivity activity, String svgaAssets, final OnSVGACallBack onViewCallBack) {
         long currentTimeMillis = System.currentTimeMillis();
         // 过场动画出现频率

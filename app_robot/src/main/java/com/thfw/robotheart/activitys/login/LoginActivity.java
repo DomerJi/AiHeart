@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.luck.picture.lib.tools.PictureFileUtils;
+import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.ContextApp;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.TokenModel;
@@ -37,16 +38,20 @@ import com.thfw.robotheart.activitys.me.MeActivity;
 import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
 import com.thfw.robotheart.activitys.set.SettingActivity;
+import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.fragments.login.LoginByFaceFragment;
 import com.thfw.robotheart.fragments.login.LoginMobileCodeFragment;
 import com.thfw.robotheart.fragments.login.LoginMobileFragment;
 import com.thfw.robotheart.fragments.login.LoginPasswordFragment;
+import com.thfw.robotheart.receiver.BootCompleteReceiver;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.voice.tts.TtsHelper;
+import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.models.User;
@@ -179,6 +184,7 @@ public class LoginActivity extends RobotBaseActivity {
                 onBackPressed();
             });
         } else {
+            BootCompleteReceiver.checkBootCompleteAnim(this);
             MainActivity.setShowLoginAnim(true);
             SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN, true);
             SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN_TTS, true);
@@ -327,5 +333,19 @@ public class LoginActivity extends RobotBaseActivity {
         if (!CommonParameter.isValid() && checkPermissionsNoRequest()) {
             showOrganIdNoValid(LoginActivity.this);
         }
+    }
+
+
+    public static void onLoginFail(FragmentActivity activity) {
+        if (EmptyUtil.isEmpty(activity)) {
+            return;
+        }
+        DialogRobotFactory.createFullSvgaDialog(activity, AnimFileName.EMOJI_SHIWANG, new DialogRobotFactory.OnSVGACallBack() {
+            @Override
+            public void callBack(SVGAImageView svgaImageView) {
+
+            }
+        });
+        TtsHelper.getInstance().start(new TtsModel("请重新登录哦"), null);
     }
 }

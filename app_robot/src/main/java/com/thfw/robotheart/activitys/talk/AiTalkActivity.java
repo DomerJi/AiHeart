@@ -53,6 +53,7 @@ import com.thfw.robotheart.activitys.test.TestActivity;
 import com.thfw.robotheart.adapter.ChatAdapter;
 import com.thfw.robotheart.adapter.ChatSelectAdapter;
 import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.port.SerialManager;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.PageJumpUtils;
 import com.thfw.robotheart.util.SVGAHelper;
@@ -772,10 +773,8 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 if (model.getExt().isEnterDeepDialog()) {
                     sendData(ChatEntity.createJoinPage("欢迎进入深度疏导主题对话"));
                 }
-                if (model.getExt().isSentiment()
-                        && AnimFileName.getTalkEmojiBySentiment(model.getExt().getSentiment()) != null) {
-                    sendData(ChatEntity.createEmoji(model.getExt().getSentiment()));
-                }
+                // 表情处理
+                emojiHandle(model);
             }
             if (data != null) {
                 // 再见
@@ -792,6 +791,31 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             }
         }
 
+    }
+
+    /**
+     * 添加表情到adapter
+     * 机器人播报文案和动作
+     *
+     * @param model
+     */
+    private void emojiHandle(HttpResult<List<DialogTalkModel>> model) {
+        if (model.getExt().isSentiment()
+                && AnimFileName.getTalkEmojiBySentiment(model.getExt().getSentiment()) != null) {
+            sendData(ChatEntity.createEmoji(model.getExt().getSentiment()));
+
+            AnimFileName.RobotOutPutInfo outPutInfo = AnimFileName
+                    .getRobotOutPutInfo(AnimFileName.getTalkEmojiBySentiment(model.getExt().getSentiment()));
+            LogUtil.i(TAG, "outPutInfo -> " + outPutInfo.toString());
+            if (outPutInfo != null) {
+                if (outPutInfo.actionParams != null) {
+                    SerialManager.getInstance().startAction(outPutInfo.actionParams);
+                }
+                if (outPutInfo.tts != null) {
+                    TtsHelper.getInstance().start(new TtsModel(outPutInfo.tts), null);
+                }
+            }
+        }
     }
 
     @Override

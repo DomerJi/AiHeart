@@ -9,6 +9,7 @@ import com.thfw.robotheart.robot.RobotUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -22,6 +23,7 @@ public class SerialManager {
     SerialHelper serialHelper;
 
     ArrayList<ElectricityListener> electricityListeners = new ArrayList<>();
+    ArrayList<RobotTouchListener> touchListeners = new ArrayList<>();
     LinkedList<String> mWaitOrder = new LinkedList<>();
     private static final int ELECTRICITY_MAX = 8000;
     private static final int ELECTRICITY_MIN = 7000;
@@ -82,6 +84,82 @@ public class SerialManager {
         }
     }
 
+    public void startAction(ActionParams actionParams) {
+        if (actionParams == null) {
+            LogUtil.e(TAG, "actionParams -> null");
+        } else {
+            LogUtil.i(TAG, "actionParams -> " + actionParams.toString());
+        }
+        if (!actionParams.canUse()) {
+            LogUtil.i(TAG, "未校准 参数不可用 ：" + actionParams.canUse());
+            return;
+        }
+        if (!SerialManager.getInstance().isOpen()) {
+            LogUtil.i(TAG, "串口未开启");
+            return;
+        }
+
+        int order = Order.DOWN_SERVO_STATE;
+        int controlOrder = actionParams.getControlOrder();
+        int[] params;
+
+        if (actionParams.getRunnable() != null) {
+            actionParams.getHandler().removeCallbacks(actionParams.getRunnable());
+        }
+
+        /**
+         * 旋转
+         */
+        if (controlOrder == ActionParams.ControlOrder.ROTATE) {
+            if (!actionParams.nextRotate()) {
+                LogUtil.i(TAG, "actionParams.nextRotate() false 01");
+                return;
+            }
+            params = new int[]{controlOrder, actionParams.getAngle(), actionParams.getTimeMs()};
+            actionParams.nextRotateIndex();
+            LogUtil.d(TAG, "params -> " + Arrays.toString(params));
+            SerialManager.getInstance().sendNow(order, params);
+            if (actionParams.nextRotate()) {
+                actionParams.setRunnable(() -> {
+                    if (actionParams.nextRotate()) {
+                        startAction(actionParams);
+                    }
+                });
+                actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + 100);
+            } else {
+                LogUtil.i(TAG, "actionParams.nextRotate() false 02");
+            }
+        } else {
+            int time = actionParams.getTimeMs();
+            int centerPoint = actionParams.getCenterPoint();
+            int left = actionParams.getLeft();
+            int right = actionParams.getRight();
+            if (actionParams.getRunCount() == actionParams.getRepeatCount()) {
+                // 右
+                params = new int[]{controlOrder, centerPoint + right, time / 2};
+            } else if (actionParams.getRunCount() == -1) {
+                // 归零
+                actionParams.reverseRight();
+                params = new int[]{controlOrder, centerPoint, time / 2};
+            } else {
+                // 左or右
+                actionParams.reverseRight();
+                params = new int[]{controlOrder, actionParams.isRight() ? centerPoint + right : centerPoint - left, time};
+            }
+            LogUtil.d(TAG, "params -> " + Arrays.toString(params));
+            SerialManager.getInstance().sendNow(order, params);
+            if (actionParams.getRunCount() > -1) {
+                actionParams.setRunnable(() -> {
+                    actionParams.runCountChange();
+                    startAction(actionParams);
+                });
+                actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + 100);
+            }
+        }
+
+
+    }
+
     private void onDataReceived(String hexData) {
         SerialPortUtil.setParseDataListener(((order, bytes) -> {
             switch (order) {
@@ -120,6 +198,12 @@ public class SerialManager {
                         }
                     }
                     break;
+                // 按键序号 + 按键状态
+                case Order.UP_BUTTON_STATE:
+                    if (bytes.length == 2) {
+                        onTouch(bytes[0], bytes[1]);
+                    }
+                    break;
             }
         }));
         SerialPortUtil.parseOrder(hexData);
@@ -150,6 +234,14 @@ public class SerialManager {
 
     public synchronized boolean send(int order, int... params) {
         return send(SerialPortUtil.getSendData(order, params));
+    }
+
+    public synchronized boolean sendNow(int order, int... params) {
+        if (isOpen()) {
+            serialHelper.sendHex(SerialPortUtil.getSendData(order, params));
+            return true;
+        }
+        return false;
     }
 
     public synchronized boolean send(String hex) {
@@ -188,6 +280,17 @@ public class SerialManager {
         }
     }
 
+    /**
+     * @param code 右边的是0 胸前的是1 左边的是2 后面的是3
+     * @param down 1按下 0抬起
+     */
+    public void onTouch(int code, int down) {
+        LogUtil.i(TAG, "code = " + code + " ;");
+        for (RobotTouchListener listener : touchListeners) {
+            listener.onTouch(code, down);
+        }
+    }
+
     public synchronized void addEleListener(ElectricityListener listener) {
         if (listener != null) {
             listener.onCharge(percent, charge);
@@ -205,9 +308,30 @@ public class SerialManager {
         }
     }
 
+    public synchronized void addRobotTouchListener(RobotTouchListener listener) {
+        if (listener != null) {
+            if (!touchListeners.contains(listener)) {
+                touchListeners.add(listener);
+            }
+        }
+    }
+
+    public synchronized void removeRobotTouchListener(RobotTouchListener listener) {
+        if (listener != null) {
+            if (touchListeners.contains(listener)) {
+                touchListeners.remove(listener);
+            }
+        }
+    }
+
     public interface ElectricityListener {
         void onCharge(int percent, int charge);
     }
+
+    public interface RobotTouchListener {
+        void onTouch(int code, int down);
+    }
+
 
     public void release() {
         if (serialHelper != null) {

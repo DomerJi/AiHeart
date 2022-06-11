@@ -9,6 +9,8 @@ import android.view.MotionEvent;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.MyApplication;
+import com.thfw.robotheart.receiver.BootCompleteReceiver;
+import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.Dormant;
 import com.thfw.ui.base.IBaseActivity;
 
@@ -32,6 +34,23 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
         } else {
             super.attachBaseContext(newBase);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // todo 关机动画
+        BootCompleteReceiver.setShutDownCallback(() -> {
+            if (isMeResumed()) {
+                RobotUtil.shutdown(this);
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        BootCompleteReceiver.setShutDownCallback(null);
     }
 
     @Override

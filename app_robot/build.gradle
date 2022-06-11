@@ -8,8 +8,8 @@ android {
         applicationId "com.thfw.robotheart"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 38
-        versionName "2.0.0.1.7"
+        versionCode 39
+        versionName "2.0.0.1.8"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

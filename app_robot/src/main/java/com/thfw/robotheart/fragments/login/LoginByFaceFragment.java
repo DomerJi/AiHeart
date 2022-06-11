@@ -728,8 +728,16 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                                     LogUtil.d(TAG, "人脸【登录】成功---------------------------------");
                                 } else {
                                     showFaceFail("刷脸登录失败，原因：" + MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login) + "");
+                                    LoginActivity.onLoginFail(getActivity());
                                 }
                             } else {
+                                if (result != null) {
+                                    if (HttpResult.isOrganValid(result.getCode())) {
+                                        LoginActivity.showOrganIdNoValid(getActivity());
+                                    } else {
+                                        ToastUtil.showLong(result.getMsg());
+                                    }
+                                }
                                 LogUtil.d(TAG, "人脸【登录】失败--------------------------------- failCount = " + failCount);
                                 failCount++;
                                 frameHandleIng = false;

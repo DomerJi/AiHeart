@@ -53,6 +53,7 @@ import com.thfw.robotheart.port.SerialManager;
 import com.thfw.robotheart.push.MyPreferences;
 import com.thfw.robotheart.push.helper.PushHelper;
 import com.thfw.robotheart.push.tester.UPushAlias;
+import com.thfw.robotheart.receiver.BootCompleteReceiver;
 import com.thfw.robotheart.service.AutoUpdateService;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.MsgCountManager;
@@ -299,6 +300,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             initUmeng();
             initUserInfo();
             initOrganization();
+            BootCompleteReceiver.checkBootCompleteAnim(this);
         }
 
     }

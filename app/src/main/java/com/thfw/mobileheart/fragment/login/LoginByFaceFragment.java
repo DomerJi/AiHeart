@@ -750,6 +750,9 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
                                     showFaceFail("刷脸登录失败，原因：" + MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login) + "");
                                 }
                             } else {
+                                if (result != null) {
+                                    ToastUtil.showLong(result.getMsg());
+                                }
                                 LogUtil.d(TAG, "人脸【登录】失败--------------------------------- failCount = " + failCount);
                                 failCount++;
                                 frameHandleIng = false;
