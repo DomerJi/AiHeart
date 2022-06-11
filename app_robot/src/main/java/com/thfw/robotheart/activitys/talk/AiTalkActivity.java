@@ -769,6 +769,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         }
         if (model != null) {
             List<DialogTalkModel> data = model.getData();
+            mTtsQueue.clear();
             if (model.getExt() != null) {
                 if (model.getExt().isEnterDeepDialog()) {
                     sendData(ChatEntity.createJoinPage("欢迎进入深度疏导主题对话"));
@@ -786,7 +787,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 mSceneError = -1;
                 mNetParamsError = null;
                 mHelper.setTalks(data);
-                mTtsQueue.clear();
                 onTalkEngine();
             }
         }
@@ -812,7 +812,8 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                     SerialManager.getInstance().startAction(outPutInfo.actionParams);
                 }
                 if (outPutInfo.tts != null) {
-                    TtsHelper.getInstance().start(new TtsModel(outPutInfo.tts), null);
+                    TtsHelper.getInstance().stop();
+                    mTtsQueue.add(new TtsModel(outPutInfo.tts));
                 }
             }
         }

@@ -78,6 +78,7 @@ public class TitleBarView extends LinearLayout {
     private ImageView mIvTitleBarBlue;
     private RelativeLayout mRlBattery;
     private ImageView mIvBatteryIng;
+    private static boolean mIvBatteryIngVisible = false;
 
     public static int getLevel() {
         return level;
@@ -214,6 +215,7 @@ public class TitleBarView extends LinearLayout {
 
     private void initBatReceiver() {
         createBatReceiver();
+        mIvBatteryIng.setVisibility(mIvBatteryIngVisible ? VISIBLE : GONE);
         mContext.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
@@ -316,6 +318,7 @@ public class TitleBarView extends LinearLayout {
                         case BATTERY_STATUS_CHARGING:
                             // 充电中
                             mIvBatteryIng.setVisibility(VISIBLE);
+                            mIvBatteryIngVisible = true;
                             break;
                         case BATTERY_STATUS_UNKNOWN:
                             // 未知
@@ -323,10 +326,9 @@ public class TitleBarView extends LinearLayout {
                             // 未充电
                         case BATTERY_STATUS_DISCHARGING:
                             // 放电中
-                            if (mIvBatteryIng.getVisibility() == VISIBLE) {
-                                mIvBatteryIng.setVisibility(GONE);
-                                robotNoCharge(mContext);
-                            }
+                            mIvBatteryIng.setVisibility(GONE);
+                            mIvBatteryIngVisible = false;
+                            robotNoCharge(mContext);
                             break;
                     }
                 }
