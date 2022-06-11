@@ -326,9 +326,11 @@ public class TitleBarView extends LinearLayout {
                             // 未充电
                         case BATTERY_STATUS_DISCHARGING:
                             // 放电中
-                            mIvBatteryIng.setVisibility(GONE);
                             mIvBatteryIngVisible = false;
-                            robotNoCharge(mContext);
+                            if (mIvBatteryIng.getVisibility() == VISIBLE) {
+                                mIvBatteryIng.setVisibility(GONE);
+                                robotNoCharge(mContext);
+                            }
                             break;
                     }
                 }
