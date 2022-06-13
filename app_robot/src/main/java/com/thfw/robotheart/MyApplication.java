@@ -109,7 +109,7 @@ public class MyApplication extends MultiDexApplication {
         ToastUtil.init(this);
         TDialog.init(this);
         SPHelper.init(app);
-        LogUtil.setLogEnabled(LogUtil.isLogEnable());
+        LogUtil.setLogEnabled(LogUtil.isLogSpEnable());
         initAtThread();
     }
 

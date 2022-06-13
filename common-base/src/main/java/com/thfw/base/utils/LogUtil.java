@@ -17,16 +17,16 @@ public class LogUtil {
     private static String versionName = "1.0.0";
 
     public static boolean switchLogEnable() {
-        isLogEnabled = !isLogEnable();
+        isLogEnabled = !isLogSpEnable();
         SharePreferenceUtil.setBoolean(KEY_LOG_ENABLE, isLogEnabled);
         return isLogEnabled;
     }
 
-    public static boolean isLogEnable() {
+    public static boolean isLogSpEnable() {
         return SharePreferenceUtil.getBoolean(KEY_LOG_ENABLE, false);
     }
 
-    private static boolean isLogEnabled() {
+    public static boolean isLogEnabled() {
         return isLogEnabled;
     }
 

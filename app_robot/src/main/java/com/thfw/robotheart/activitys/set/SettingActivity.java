@@ -90,7 +90,7 @@ public class SettingActivity extends RobotBaseActivity {
     public void initData() {
 
         FragmentLoader mLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
-        if (LogUtil.isLogEnable() || RobotUtil.isSystemApp()) {
+        if (LogUtil.isLogEnabled() || RobotUtil.isSystemApp()) {
             mLoader.add(R.id.tv_set_net, new SetNetFragment());
         } else {
             mTvSetNet.setVisibility(View.GONE);
@@ -98,7 +98,7 @@ public class SettingActivity extends RobotBaseActivity {
         mLoader.add(R.id.tv_set_volume, new SetVolumeFragment());
         mLoader.add(R.id.tv_set_speech, new SetSpeechFragment());
 
-        if (LogUtil.isLogEnable() || RobotUtil.isSystemApp()) {
+        if (LogUtil.isLogEnabled() || RobotUtil.isSystemApp()) {
             mLoader.add(R.id.tv_set_light, new SetLightFragment());
         } else {
             mTvSetLight.setVisibility(View.GONE);
@@ -107,7 +107,7 @@ public class SettingActivity extends RobotBaseActivity {
         mLoader.add(R.id.tv_set_dormant, new SetDormantFragment());
 //        mLoader.add(R.id.tv_set_shutdown, new SetShutdownFragment());
         mLoader.add(R.id.rl_set_update, new SetUpdateFragment());
-        if (LogUtil.isLogEnable() || RobotUtil.isSystemApp()) {
+        if (LogUtil.isLogEnabled() || RobotUtil.isSystemApp()) {
             mTabs = new View[]{mTvSetNet, mTvSetVolume, mTvSetSpeech, mTvSetLight, mTvSetBlue, mTvSetDormant, mRlSetUpdate};
         } else {
             mTabs = new View[]{mTvSetVolume, mTvSetSpeech, mTvSetBlue, mTvSetDormant, mRlSetUpdate};

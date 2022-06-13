@@ -57,7 +57,7 @@ public class PrivateSetActivity extends RobotBaseActivity {
             LogUtil.d(TAG, "mLlTranAnim++++++++++++++++++++++++++++++++++++++++" + getAnimFrequencyStr());
         });
         mTvTranAnimFrequency.setText(getAnimFrequencyStr());
-        if (LogUtil.isLogEnable() || RobotUtil.isInstallRobot()) {
+        if (LogUtil.isLogEnabled() || RobotUtil.isInstallRobot()) {
             mLlRobotAction.setVisibility(View.VISIBLE);
             mLlRobotAction.setOnClickListener(v -> {
                 startActivity(new Intent(mContext, ShakeNodActivity.class));

@@ -284,7 +284,7 @@ public class ActivityLifeCycle implements Application.ActivityLifecycleCallbacks
         long todayTime = FunctionDurationUtil.getFunctionTime(type);
         FunctionDurationUtil.setFunctionTime(type, todayTime + time);
 
-        if (LogUtil.isLogEnable()) {
+        if (LogUtil.isLogEnabled()) {
             LogUtil.d(TAG, "today : todayTime : " + todayTime + " ; time : " + time);
             LogUtil.d(TAG, "【" + FunctionDurationUtil.getFunctionName(type) + "】今日累计时长:"
                     + FunctionDurationUtil.getFunctionTimeHour(type) + "分钟");

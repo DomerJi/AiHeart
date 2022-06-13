@@ -97,7 +97,7 @@ public class MeWillHelpBackActivity extends BaseActivity {
             }
         });
 
-        if (LogUtil.isLogEnable()) {
+        if (LogUtil.isLogEnabled()) {
             mTitleView.setRightText("历史反馈");
             mTitleView.setRightOnClickListener(new View.OnClickListener() {
                 @Override

@@ -83,6 +83,7 @@ public class SetPasswordCodeFragment extends RobotBaseFragment<LoginPresenter>
             });
             mBtGetCode.setOnClickListener(v -> {
                 sendCode();
+                hideInput();
                 mBtGetCode.setEnabled(false);
                 secondCount = 60;
                 TimingHelper.getInstance().addWorkArriveListener(this);
