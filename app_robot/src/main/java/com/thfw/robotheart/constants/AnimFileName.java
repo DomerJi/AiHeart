@@ -73,7 +73,7 @@ public class AnimFileName {
     // 首页随机
     public static final int HOME_IP_ANIM_TIME = 4000;
     // 出场动画
-    public static String TRANSITION_WELCOM = "login_welcom.svga";
+    public static final String TRANSITION_WELCOM = "login_welcom.svga";
     private static HashMap<String, String> mNameHintMap;
     private static HashMap<String, String> mNameEmojiMap;
 
@@ -129,11 +129,12 @@ public class AnimFileName {
             mNameHintMap.put(TRANSITION_BOOK, "学点心理学，惊艳所有人，\n一起学习吧~");
             mNameHintMap.put(TRANSITION_IDEO, "提升思想境界和认知维度，\n从根上解决心理问题~");
             mNameHintMap.put(TRANSITION_TOOL, "小密准备了专业心理训练工具，\n一起见证心灵的成长吧~");
-            mNameHintMap.put(EMOJI_GUANJI, "即将关机");
-            mNameHintMap.put(EMOJI_SHIWANG, "失望");
+            mNameHintMap.put(EMOJI_GUANJI, "[关机]即将关机");
+            mNameHintMap.put(EMOJI_SHIWANG, "[失望]请重新登录哦");
             mNameHintMap.put(EMOJI_CHUMO, "害羞");
-            mNameHintMap.put(EMOJI_XUANYUN, "眩晕");
-            mNameHintMap.put(EMOJI_WELCOM, "欢迎您");
+            mNameHintMap.put(EMOJI_XUANYUN, "[眩晕]请尽快把我放到固定位置哦");
+            mNameHintMap.put(EMOJI_WELCOM, "欢迎");
+            mNameHintMap.put(EMOJI_KAIJI, "[开机]你好，我是小密，给你最贴心的心理服务");
         }
     }
 

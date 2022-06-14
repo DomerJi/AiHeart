@@ -272,15 +272,19 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         });
 
         if (UserManager.getInstance().isTrueLogin()) {
+            BootCompleteReceiver.checkBootCompleteAnim(this);
             setUserMessage(UserManager.getInstance().getUser());
+        } else {
+            // 未登录进入登录页面
+            LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
         }
+
+        SerialManager.getInstance().queryCharge();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        SerialManager.getInstance().queryCharge();
 
         if (!UserManager.getInstance().isTrueLogin()) {
             // 未登录进入登录页面
@@ -300,7 +304,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             initUmeng();
             initUserInfo();
             initOrganization();
-            BootCompleteReceiver.checkBootCompleteAnim(this);
         }
 
     }

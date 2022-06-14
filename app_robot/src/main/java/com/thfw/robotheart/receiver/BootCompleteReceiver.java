@@ -7,13 +7,15 @@ import android.content.Intent;
 import androidx.fragment.app.FragmentActivity;
 
 import com.opensource.svgaplayer.SVGAImageView;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.robotheart.constants.AnimFileName;
-import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.Dormant;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Author:pengs
@@ -24,7 +26,15 @@ public class BootCompleteReceiver extends BroadcastReceiver {
     private static final String TAG = BootCompleteReceiver.class.getSimpleName();
 
     private static long bootCompleteTime;
+    /**
+     * 1秒=1000毫秒
+     * 1毫秒=1000微秒
+     * 1微秒=1000纳秒
+     */
+    private static final long ONE_NS_TIME = 1000 * 1000 * 1000;
+    private static final long JVM_MIN_BOOTP_TIME = 20 * ONE_NS_TIME;
     private static ShutDownCallback shutDownCallback;
+    private static WeakReference<FragmentActivity> mFragmentActivity;
 
     public static void setShutDownCallback(ShutDownCallback shutDownCallback) {
         BootCompleteReceiver.shutDownCallback = shutDownCallback;
@@ -47,9 +57,25 @@ public class BootCompleteReceiver extends BroadcastReceiver {
      * @param fragmentActivity
      */
     public static void checkBootCompleteAnim(FragmentActivity fragmentActivity) {
-        if (isBootComplete() && RobotUtil.isInstallRobot()) {
-            bootCompleteTime = 0;
-            DialogRobotFactory.createSvgaDialog(fragmentActivity, AnimFileName.TRANSITION_WELCOM, new DialogRobotFactory.OnSVGACallBack() {
+        mFragmentActivity = new WeakReference<>(fragmentActivity);
+        if (bootCompleteTime == -1) {
+            return;
+        }
+        bootCompleteTime = -1;
+        if (EmptyUtil.isEmpty(fragmentActivity)) {
+            return;
+        }
+        LogUtil.i(TAG, "checkBootCompleteAnim S -> " + (System.nanoTime() / ONE_NS_TIME));
+        if (System.nanoTime() < JVM_MIN_BOOTP_TIME) {
+            DialogRobotFactory.createFullSvgaDialog(fragmentActivity, AnimFileName.EMOJI_KAIJI, new DialogRobotFactory.OnSVGACallBack() {
+                @Override
+                public void callBack(SVGAImageView svgaImageView) {
+                    LogUtil.i(TAG, "checkBootCompleteAnim svga complete");
+                }
+            });
+            TtsHelper.getInstance().start(new TtsModel("你好，我是小密，给你最贴心的心理服务"), null);
+        } else if (isBootComplete()) {
+            DialogRobotFactory.createFullSvgaDialog(fragmentActivity, AnimFileName.EMOJI_KAIJI, new DialogRobotFactory.OnSVGACallBack() {
                 @Override
                 public void callBack(SVGAImageView svgaImageView) {
                     LogUtil.i(TAG, "checkBootCompleteAnim svga complete");
@@ -57,14 +83,19 @@ public class BootCompleteReceiver extends BroadcastReceiver {
             });
             TtsHelper.getInstance().start(new TtsModel("你好，我是小密，给你最贴心的心理服务"), null);
         }
-
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             LogUtil.e(TAG, "开机广播 ++++++++++++++++++++++++++++++++++++++++++++");
-            bootCompleteTime = System.currentTimeMillis();
+            if (bootCompleteTime == 0) {
+                bootCompleteTime = System.currentTimeMillis();
+                if (mFragmentActivity != null && mFragmentActivity.get() != null) {
+                    checkBootCompleteAnim(mFragmentActivity.get());
+                }
+            }
+
         } else if (Intent.ACTION_SHUTDOWN.equals(intent.getAction())) {
             LogUtil.e(TAG, "关机广播 ++++++++++++++++++++++++++++++++++++++++++++");
             if (!Dormant.isCanShutdown()) {
