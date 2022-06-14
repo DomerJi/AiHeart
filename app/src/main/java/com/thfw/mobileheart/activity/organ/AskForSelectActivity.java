@@ -106,6 +106,10 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
             if (EmptyUtil.isEmpty(paramsStr)) {
                 return params;
             }
+            if (paramsStr.startsWith("?")) {
+                paramsStr = paramsStr.substring(1);
+            }
+            LogUtil.d("parseCode", "paramsStr2 = " + paramsStr);
             // 3b86e89d01dafe17【3b86e89d01dafe17】
             String paramsHttp = AESUtils.decryptBase64(paramsStr, "3b86e89d01dafe17");
             LogUtil.d("parseCode", "paramsHttp = " + paramsHttp);
