@@ -18,6 +18,7 @@ public class PermissionUtil {
         permissionInfo.put(Manifest.permission.CAMERA, "【相机】 - 方便您使用刷脸登录，扫码功能");
         permissionInfo.put(Manifest.permission.RECORD_AUDIO, "【麦克风】 - 语音转文字，倾听您的指令");
         permissionInfo.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, "【存储】 - 访问相册完善您的个人信息");
+        permissionInfo.put(Manifest.permission.BLUETOOTH, "【蓝牙】 - 连接蓝牙耳机");
 
         String location = "【位置信息】 - 为您展示wifi打开情况";
         permissionInfo.put(Manifest.permission.ACCESS_COARSE_LOCATION, location);

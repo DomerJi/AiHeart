@@ -22,6 +22,7 @@ public class UIConfig {
     // 录音 存储 摄像头
     public static String[] NEEDED_PERMISSION = new String[]{Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.BLUETOOTH,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             // wifi状态，每个页面的 wifi 图标
             Manifest.permission.ACCESS_COARSE_LOCATION,

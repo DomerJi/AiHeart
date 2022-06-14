@@ -4,7 +4,6 @@ import android.Manifest;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
@@ -33,6 +32,9 @@ import java.util.List;
  */
 public class BleAdapter extends BaseAdapter<BleDevice, BleAdapter.BleHolder> {
 
+    private int white80;
+    private int themeColor;
+
     public BleAdapter(List<BleDevice> dataList) {
         super(dataList);
     }
@@ -42,6 +44,13 @@ public class BleAdapter extends BaseAdapter<BleDevice, BleAdapter.BleHolder> {
     @Override
     public BleHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         return new BleHolder(inflate(R.layout.item_ble_device, parent));
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull @NotNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        themeColor = mContext.getResources().getColor(R.color.colorRobotFore);
+        white80 = mContext.getResources().getColor(R.color.white_80);
     }
 
     @Override
@@ -64,28 +73,28 @@ public class BleAdapter extends BaseAdapter<BleDevice, BleAdapter.BleHolder> {
         if (TextUtils.isEmpty(name)) {
             name = bleDevice.getMac();
         }
-        holder.mTvDeviceName.setText(name);
+        holder.mTvDeviceName.setText(name + "：" + bleDevice.getMac());
         int connetState = BleManager.getInstance().getConnectState(bleDevice);
         switch (connetState) {
             case BluetoothProfile.STATE_DISCONNECTED:
                 holder.mTvState.setText("未连接");
-                holder.mTvState.setTextColor(Color.BLUE);
+                holder.mTvState.setTextColor(white80);
                 break;
             case BluetoothProfile.STATE_DISCONNECTING:
                 holder.mTvState.setText("断开中");
-                holder.mTvState.setTextColor(Color.BLUE);
+                holder.mTvState.setTextColor(white80);
                 break;
             case BluetoothProfile.STATE_CONNECTING:
                 holder.mTvState.setText("连接中");
-                holder.mTvState.setTextColor(Color.WHITE);
+                holder.mTvState.setTextColor(themeColor);
                 break;
             case BluetoothProfile.STATE_CONNECTED:
                 holder.mTvState.setText("已连接");
-                holder.mTvState.setTextColor(Color.WHITE);
+                holder.mTvState.setTextColor(themeColor);
                 break;
             default:
                 holder.mTvState.setText("未连接");
-                holder.mTvState.setTextColor(Color.BLUE);
+                holder.mTvState.setTextColor(white80);
                 break;
         }
 

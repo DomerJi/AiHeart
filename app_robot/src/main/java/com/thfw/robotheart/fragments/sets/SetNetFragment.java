@@ -212,6 +212,7 @@ public class SetNetFragment extends RobotBaseFragment {
         mWifiList.setVisibility(View.VISIBLE);
         if (mWifiList.getAdapter() == null || mWifiList.getAdapter().getItemCount() == 0) {
             mPbLoading.setVisibility(View.VISIBLE);
+            mTvHint.setVisibility(View.GONE);
         } else {
             reScanAnimStart();
         }
@@ -245,11 +246,9 @@ public class SetNetFragment extends RobotBaseFragment {
 //        removeNullNameWifi(results);
         mPbLoading.setVisibility(View.GONE);
         if (results.isEmpty()) {
-            mTvHint.setVisibility(View.VISIBLE);
-            if (Util.isSystemApp(mContext.getPackageName())) {
+            if (wifiAdapter != null && wifiAdapter.getItemCount() == 0) {
+                mTvHint.setVisibility(View.VISIBLE);
                 mTvHint.setText("没有扫描到Wifi");
-            } else {
-                mTvHint.setText("App不是系统级的，没有办法扫描无线网络，请到本设备的设置中连接无线网络。");
             }
             return;
         }

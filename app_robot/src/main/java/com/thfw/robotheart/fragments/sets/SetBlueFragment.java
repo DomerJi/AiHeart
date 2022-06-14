@@ -11,7 +11,6 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -26,6 +25,7 @@ import com.clj.fastble.callback.BleGattCallback;
 import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
+import com.clj.fastble.scan.BleScanRuleConfig;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.utils.HandlerUtil;
@@ -34,6 +34,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.adapter.BleAdapter;
+import com.thfw.ui.dialog.LoadingDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,6 @@ public class SetBlueFragment extends RobotBaseFragment {
     public BleScanCallback mBleScanCallback = new BleScanCallback() {
         @Override
         public void onScanFinished(List<BleDevice> scanResultList) {
-            mPbLoading.setVisibility(View.GONE);
             mIvRescan.clearAnimation();
             if (!mSwitchBlue.isChecked()) {
                 return;
@@ -70,6 +70,12 @@ public class SetBlueFragment extends RobotBaseFragment {
             }
             LogUtil.d(TAG, "bleDevices.size() -> " + bleDevices.size());
             mBleAdapter.setDataListNotify(bleDevices);
+            if (mBleAdapter.getItemCount() == 0) {
+                mTvScaningHint.setVisibility(View.VISIBLE);
+                mTvScaningHint.setText("没有搜索到蓝牙设备");
+            } else {
+                mTvScaningHint.setVisibility(View.GONE);
+            }
         }
 
         @Override
@@ -78,15 +84,15 @@ public class SetBlueFragment extends RobotBaseFragment {
                 return;
             }
             if (success) {
-                if (mBleAdapter.getItemCount() == 0) {
-                    mPbLoading.setVisibility(View.VISIBLE);
-                } else {
-                    mPbLoading.setVisibility(View.GONE);
-                    reScanAnimStart();
-                }
+                reScanAnimStart();
             } else {
-                mPbLoading.setVisibility(View.GONE);
                 mIvRescan.clearAnimation();
+            }
+            if (mBleAdapter.getItemCount() == 0) {
+                mTvScaningHint.setVisibility(View.VISIBLE);
+                mTvScaningHint.setText("正在搜索");
+            } else {
+                mTvScaningHint.setVisibility(View.GONE);
             }
         }
 
@@ -106,6 +112,12 @@ public class SetBlueFragment extends RobotBaseFragment {
                 }
             }
             mBleAdapter.addDataNotify(bleDevice);
+            if (mBleAdapter.getItemCount() == 0) {
+                mTvScaningHint.setVisibility(View.VISIBLE);
+                mTvScaningHint.setText("正在搜索");
+            } else {
+                mTvScaningHint.setVisibility(View.GONE);
+            }
         }
 
         @Override
@@ -125,24 +137,20 @@ public class SetBlueFragment extends RobotBaseFragment {
                 }
             }
             mBleAdapter.addDataNotify(bleDevice);
+            if (mBleAdapter.getItemCount() == 0) {
+                mTvScaningHint.setVisibility(View.VISIBLE);
+                mTvScaningHint.setText("正在搜索");
+            } else {
+                mTvScaningHint.setVisibility(View.GONE);
+            }
         }
     };
+    private TextView mTvScaningHint;
     private ImageView mIvRescan;
-    private ProgressBar mPbLoading;
 
     @Override
     public void onActivityCreated(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        BleManager.getInstance().init(getActivity().getApplication());
-        BleManager.getInstance()
-                .enableLog(true)
-                .setReConnectCount(5, 1000)
-                .setOperateTimeout(10000);
     }
 
     @Override
@@ -153,6 +161,12 @@ public class SetBlueFragment extends RobotBaseFragment {
     @Override
     public IPresenter onCreatePresenter() {
         return null;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initBlue();
     }
 
     @Override
@@ -170,7 +184,7 @@ public class SetBlueFragment extends RobotBaseFragment {
         mTvMeBleName = (TextView) findViewById(R.id.tv_me_ble_name);
         mIvRescan = (ImageView) findViewById(R.id.iv_rescan);
 
-        mPbLoading = (ProgressBar) findViewById(R.id.pb_loading);
+        mTvScaningHint = (TextView) findViewById(R.id.tv_scaning_hint);
     }
 
 
@@ -180,10 +194,11 @@ public class SetBlueFragment extends RobotBaseFragment {
         }
         mIvRescan.setVisibility(View.VISIBLE);
         mIvRescan.clearAnimation();
-        RotateAnimation rotateAnimation = new RotateAnimation(0, 1800,
+        RotateAnimation rotateAnimation = new RotateAnimation(0, 360,
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f);
-        rotateAnimation.setDuration(5000);
+        rotateAnimation.setDuration(1000);
+        rotateAnimation.setRepeatCount(20);
         mIvRescan.startAnimation(rotateAnimation);
     }
 
@@ -195,7 +210,6 @@ public class SetBlueFragment extends RobotBaseFragment {
             syncScan();
         });
         mSwitchBlue.setChecked(BleManager.getInstance().isBlueEnable());
-        initBlue();
 
         if (BleManager.getInstance().isBlueEnable()) {
             mIvRescan.setVisibility(View.VISIBLE);
@@ -234,46 +248,63 @@ public class SetBlueFragment extends RobotBaseFragment {
                 BleDevice bleDevice = list.get(position);
                 if (BleManager.getInstance().isConnected(bleDevice)) {
                     ToastUtil.show("已连接");
+                    mBleAdapter.notifyDataSetChanged();
                 } else {
                     LogUtil.d(TAG, "connect ==========================");
-                    BleManager.getInstance().connect(bleDevice, new BleGattCallback() {
-                        Handler handler = new Handler(Looper.getMainLooper()) {
-                            @Override
-                            public void handleMessage(@NonNull Message msg) {
-                                super.handleMessage(msg);
-
-                                LogUtil.d(TAG, "handleMessage ====================== msg.what = " + msg.what);
-                                mBleAdapter.notifyDataSetChanged();
-                            }
-                        };
-
-                        @Override
-                        public void onStartConnect() {
-                            handler.sendEmptyMessageDelayed(1, 300);
-                            LogUtil.d(TAG, "onStartConnect ==========================");
-                        }
-
-                        @Override
-                        public void onConnectFail(BleDevice bleDevice, BleException exception) {
-                            handler.sendEmptyMessageDelayed(1, 300);
-                            LogUtil.d(TAG, "onConnectFail ==========================");
-                        }
-
-                        @Override
-                        public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
-                            handler.sendEmptyMessageDelayed(1, 300);
-                            LogUtil.d(TAG, "onConnectSuccess ==========================");
-                        }
-
-                        @Override
-                        public void onDisConnected(boolean isActiveDisConnected, BleDevice device, BluetoothGatt gatt, int status) {
-                            handler.sendEmptyMessageDelayed(1, 300);
-                            LogUtil.d(TAG, "onDisConnected ==========================");
-                        }
-                    });
+                    onBleConnect(bleDevice);
                 }
             }
         });
+    }
+
+    private void onBleConnect(BleDevice bleDevice) {
+        Handler handler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+
+                LogUtil.d(TAG, "handleMessage ====================== msg.what = " + msg.what);
+                mBleAdapter.notifyDataSetChanged();
+            }
+        };
+        BleManager.getInstance().connect(bleDevice, new BleGattCallback() {
+
+            @Override
+            public void onStartConnect() {
+                LoadingDialog.show(getActivity(), "正在连接\n"
+                        + bleDevice.getName());
+                handler.sendEmptyMessageDelayed(1, 100);
+                LogUtil.d(TAG, "onStartConnect ==========================");
+            }
+
+            @Override
+            public void onConnectFail(BleDevice bleDevice, BleException exception) {
+                LoadingDialog.hide();
+                handler.sendEmptyMessageDelayed(1, 100);
+                LogUtil.d(TAG, "onConnectFail ==========================");
+                ToastUtil.showLong("连接失败");
+            }
+
+            @Override
+            public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
+                LoadingDialog.hide();
+                handler.sendEmptyMessageDelayed(1, 100);
+                ToastUtil.showLong("连接成功");
+                LogUtil.d(TAG, "onConnectSuccess ==========================");
+                // 搜索指定 Characteristic UUID，并 Write
+//                searchSpecifiedCharacteristicUuid(bleDevice, WRITE_CHARACTERISTIC_UUID);
+            }
+
+            @Override
+            public void onDisConnected(boolean isActiveDisConnected, BleDevice device, BluetoothGatt gatt, int status) {
+                LoadingDialog.hide();
+                handler.sendEmptyMessageDelayed(1, 100);
+                LogUtil.d(TAG, "onDisConnected ==========================");
+                ToastUtil.showLong("断开连接");
+            }
+        });
+
+        handler.sendEmptyMessageDelayed(1, 200);
     }
 
     private void syncScan() {
@@ -286,12 +317,7 @@ public class SetBlueFragment extends RobotBaseFragment {
             BleManager.getInstance().cancelScan();
             BleManager.getInstance().scan(mBleScanCallback);
         } else {
-            if (mBleAdapter.getItemCount() == 0) {
-                mPbLoading.setVisibility(View.VISIBLE);
-            } else {
-                reScanAnimStart();
-                mPbLoading.setVisibility(View.GONE);
-            }
+            reScanAnimStart();
             HandlerUtil.getMainHandler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -306,14 +332,24 @@ public class SetBlueFragment extends RobotBaseFragment {
             return;
         }
         initScanRule = true;
-//        BleScanRuleConfig scanRuleConfig = new BleScanRuleConfig.Builder()
+
+        BleManager.getInstance().init(getActivity().getApplication());
+        BleManager.getInstance()
+                .enableLog(true)
+                .setReConnectCount(1, 5000)
+                .setConnectOverTime(20000)
+                .setOperateTimeout(5000);
+
+        BleScanRuleConfig scanRuleConfig = new BleScanRuleConfig.Builder()
 //                .setServiceUuids(serviceUuids)      // 只扫描指定的服务的设备，可选
 //                .setDeviceName(true, names)         // 只扫描指定广播名的设备，可选
 //                .setDeviceMac(mac)                  // 只扫描指定mac的设备，可选
-//                .setAutoConnect(false)      // 连接时的autoConnect参数，可选，默认false
-//                .setScanTimeOut(5000)              // 扫描超时时间，可选，默认10秒
-//                .build();
-//        BleManager.getInstance().initScanRule(scanRuleConfig);
+                .setAutoConnect(true)      // 连接时的autoConnect参数，可选，默认false
+                .setScanTimeOut(5000)              // 扫描超时时间，可选，默认10秒
+                .build();
+        BleManager.getInstance().initScanRule(scanRuleConfig);
+
+
     }
 
 }

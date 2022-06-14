@@ -103,20 +103,6 @@
 
     </RelativeLayout>
 
-
-    <ProgressBar
-        android:id="@+id/pb_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:indeterminateTint="@color/colorRobotFore"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rl_me_device" />
-
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvBlue"
         android:layout_width="match_parent"
@@ -124,5 +110,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rl_me_device" />
 
+    <TextView
+        android:id="@+id/tv_scaning_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="正在搜索"
+        android:textColor="@color/colorRobotFore"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_me_device"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
