@@ -122,10 +122,15 @@ public class SpeechHelper implements ISpeechFace {
     @Override
     public boolean start() {
         prepare();
-        VoiceTypeManager.getManager().setVoiceType(VoiceType.ACCEPT_START);
-        if (ErrorCode.SUCCESS == mIat.startListening(mListener)) {
-            VoiceTypeManager.getManager().setVoiceType(VoiceType.ACCEPT_ING);
-            return true;
+        if (initialized()) {
+            VoiceTypeManager.getManager().setVoiceType(VoiceType.ACCEPT_START);
+            if (ErrorCode.SUCCESS == mIat.startListening(mListener)) {
+                VoiceTypeManager.getManager().setVoiceType(VoiceType.ACCEPT_ING);
+                return true;
+            } else {
+                VoiceTypeManager.getManager().setVoiceType(VoiceType.ACCEPT_STOP);
+                return false;
+            }
         } else {
             VoiceTypeManager.getManager().setVoiceType(VoiceType.ACCEPT_STOP);
             return false;

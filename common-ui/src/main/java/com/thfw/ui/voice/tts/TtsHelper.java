@@ -134,6 +134,10 @@ public class TtsHelper implements ITtsFace {
             return false;
         }
         prepare();
+        if (!initialized()) {
+            LogUtil.e(TAG, "mTts not is null");
+            return false;
+        }
 //        setTtsParam();
         VoiceTypeManager.getManager().setVoiceType(VoiceType.READ_START);
         LogUtil.d(TAG, "ttsModel.text = " + ttsModel.text);

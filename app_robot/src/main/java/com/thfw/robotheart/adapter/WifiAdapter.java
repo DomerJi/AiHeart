@@ -1,7 +1,5 @@
 package com.thfw.robotheart.adapter;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
@@ -14,13 +12,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionSuccessListener;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.WifiHelper;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -102,32 +104,36 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
         }
         holder.itemView.setOnClickListener(v -> {
             if (connected) {
-                new AlertDialog.Builder(mContext).setTitle("忘记网络").setMessage("是否忘记此网络")
-                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                WifiHelper.get().disconnect(new DisconnectionSuccessListener() {
-                                    @Override
-                                    public void success() {
-                                        notifyDataSetChanged();
-                                        Util.removeWifiBySsid(mWifiManager, scanResult.SSID);
-                                        Toast.makeText(mContext, "成功断开链接", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    @Override
-                                    public void failed(@NonNull DisconnectionErrorCode errorCode) {
-                                        Toast.makeText(mContext, "断开链接失败: " + errorCode.toString(), Toast.LENGTH_SHORT).show();
-                                        notifyDataSetChanged();
-                                    }
-                                });
-                            }
-                        }).setNegativeButton("否", new DialogInterface.OnClickListener() {
+                DialogRobotFactory.createCustomDialog((FragmentActivity) mContext, new DialogRobotFactory.OnViewCallBack() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                    public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                        mTvTitle.setText("忘记网络");
+                        mTvHint.setText("是否忘记此网络");
+                        mTvRight.setText("是");
+                        mTvLeft.setText("否");
                     }
-                }).create().show();
 
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                        tDialog.dismiss();
+                        if (view.getId() == R.id.tv_right) {
+                            WifiHelper.get().disconnect(new DisconnectionSuccessListener() {
+                                @Override
+                                public void success() {
+                                    notifyDataSetChanged();
+                                    Util.removeWifiBySsid(mWifiManager, scanResult.SSID);
+                                    Toast.makeText(mContext, "成功断开链接", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void failed(@NonNull DisconnectionErrorCode errorCode) {
+                                    Toast.makeText(mContext, "断开链接失败: " + errorCode.toString(), Toast.LENGTH_SHORT).show();
+                                    notifyDataSetChanged();
+                                }
+                            });
+                        }
+                    }
+                });
                 return;
             }
             if (onWifiItemListener != null) {

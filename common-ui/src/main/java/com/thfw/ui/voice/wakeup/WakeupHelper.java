@@ -119,10 +119,15 @@ public class WakeupHelper implements IWakeUpFace {
     @Override
     public boolean start() {
         prepare();
-        VoiceTypeManager.getManager().setVoiceType(VoiceType.WAKE_UP_START);
-        if (ErrorCode.SUCCESS == mIvw.startListening(wakeuperListener)) {
-            VoiceTypeManager.getManager().setVoiceType(VoiceType.WAKE_UP_ING);
-            return true;
+        if (initialized()) {
+            VoiceTypeManager.getManager().setVoiceType(VoiceType.WAKE_UP_START);
+            if (ErrorCode.SUCCESS == mIvw.startListening(wakeuperListener)) {
+                VoiceTypeManager.getManager().setVoiceType(VoiceType.WAKE_UP_ING);
+                return true;
+            } else {
+                VoiceTypeManager.getManager().setVoiceType(VoiceType.WAKE_UP_STOP);
+                return false;
+            }
         } else {
             VoiceTypeManager.getManager().setVoiceType(VoiceType.WAKE_UP_STOP);
             return false;
