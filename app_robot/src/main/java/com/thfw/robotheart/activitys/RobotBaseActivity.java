@@ -28,7 +28,7 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
             final Resources res = newBase.getResources();
             final Configuration config = res.getConfiguration();
             // 1 设置正常字体大小的倍数
-            config.fontScale = MyApplication.getApp().getFontScale();
+            config.fontScale = MyApplication.getFontScale();
             final Context newContext = newBase.createConfigurationContext(config);
             super.attachBaseContext(newContext);
         } else {

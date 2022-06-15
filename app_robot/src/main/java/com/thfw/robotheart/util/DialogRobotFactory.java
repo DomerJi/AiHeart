@@ -1,6 +1,7 @@
 package com.thfw.robotheart.util;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -38,6 +39,7 @@ import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.adapter.BaseAdapter;
 import com.thfw.robotheart.adapter.DialogLikeAdapter;
 import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.ui.R;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
@@ -141,6 +143,11 @@ public class DialogRobotFactory {
                     SVGAImageView svgaImageView = viewHolder.getView(com.thfw.robotheart.R.id.svga_dialog);
                     if (!TextUtils.isEmpty(hint)) {
                         TextView mTvHint = viewHolder.getView(com.thfw.robotheart.R.id.tv_hint);
+                        Util.dipToPx(12, mTvHint.getContext());
+                        // 部分设备底部导航遮挡文字问题
+                        if (RobotUtil.isInstallRobot() || Build.DEVICE.contains("3399")) {
+                            mTvHint.setPadding(0, 0, 0, Util.dipToPx(48, mTvHint.getContext()));
+                        }
                         mTvHint.setText(hint);
                     }
                     // The third parameter is a default parameter, which is null by default. If this method is set, the audio parsing and playback will not be processed internally. The audio File instance will be sent back to the developer through PlayCallback, and the developer will control the audio playback and playback. stop
