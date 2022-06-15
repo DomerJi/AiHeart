@@ -124,7 +124,8 @@ public abstract class BaseDialogFragment extends DialogFragment {
             //设置宽高
             WindowManager.LayoutParams layoutParams = window.getAttributes();
             if (getDialogWidth() > 0) {
-                layoutParams.width = getDialogWidth();
+                layoutParams.width = getDialogWidth() == getScreenWidth(getContext())
+                        ? WindowManager.LayoutParams.MATCH_PARENT : getDialogWidth();
             } else {
                 layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
             }

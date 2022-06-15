@@ -35,6 +35,7 @@ import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.Util;
+import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.adapter.BaseAdapter;
 import com.thfw.robotheart.adapter.DialogLikeAdapter;
@@ -446,7 +447,7 @@ public class DialogRobotFactory {
             mContext) {
         LinearLayout picker = (LinearLayout) optionsPickerView.findViewById(R.id.optionspicker);
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) picker.getLayoutParams();
-        layoutParams.height = Util.dipToPx(260, mContext);
+        layoutParams.height = Util.dipToPx(235 * MyApplication.getFontScale(), mContext);
         picker.setLayoutParams(layoutParams);
         optionsPickerView.findViewById(R.id.rv_topbar).setBackgroundResource(R.drawable.bg_top_radius_theme_dialog);
 
@@ -455,7 +456,7 @@ public class DialogRobotFactory {
     private static void setOptionPickerView(TimePickerView optionsPickerView, Context mContext) {
         LinearLayout picker = (LinearLayout) optionsPickerView.findViewById(R.id.timepicker);
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) picker.getLayoutParams();
-        layoutParams.height = Util.dipToPx(260, mContext);
+        layoutParams.height = Util.dipToPx(260 * MyApplication.getFontScale(), mContext);
         picker.setLayoutParams(layoutParams);
         optionsPickerView.findViewById(R.id.rv_topbar).setBackgroundResource(R.drawable.bg_top_radius_theme_dialog);
 

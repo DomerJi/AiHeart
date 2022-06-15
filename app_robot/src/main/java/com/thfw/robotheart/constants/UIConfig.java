@@ -11,10 +11,10 @@ import com.thfw.robotheart.R;
  * Describe:Todo
  */
 public class UIConfig {
-    public static final int LEFT_TAB_MAX_TEXTSIZE = 22;
-    public static final int LEFT_TAB_MIN_TEXTSIZE = 18;
+    public static final int LEFT_TAB_MAX_TEXTSIZE = 20;
+    public static final int LEFT_TAB_MIN_TEXTSIZE = 17;
     public static final int LEFT_TAB_CHILD_MAX_TEXTSIZE = 20;
-    public static final int LEFT_TAB_CHILD_MIN_TEXTSIZE = 18;
+    public static final int LEFT_TAB_CHILD_MIN_TEXTSIZE = 17;
     public static final String COLOR_HOUR = "#FD9D56";
     public static final String COLOR_GRREN = "#00A871";
     public static final String COLLECTED = "已收藏";
@@ -22,7 +22,6 @@ public class UIConfig {
     // 录音 存储 摄像头
     public static String[] NEEDED_PERMISSION = new String[]{Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.BLUETOOTH,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             // wifi状态，每个页面的 wifi 图标
             Manifest.permission.ACCESS_COARSE_LOCATION,

@@ -22,8 +22,8 @@
         tools:ignore="MissingConstraints" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="42sp"
+        android:layout_height="42sp"
         android:src="@mipmap/ic_item_play"
         app:layout_constraintBottom_toBottomOf="@id/riv_etc_bg"
         app:layout_constraintLeft_toLeftOf="@id/riv_etc_bg"

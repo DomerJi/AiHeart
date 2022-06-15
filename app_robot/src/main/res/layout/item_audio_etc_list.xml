@@ -22,8 +22,8 @@
         tools:ignore="MissingConstraints" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="42sp"
+        android:layout_height="42sp"
         android:src="@mipmap/ic_item_play"
         app:layout_constraintBottom_toBottomOf="@id/riv_etc_bg"
         app:layout_constraintLeft_toLeftOf="@id/riv_etc_bg"
@@ -34,14 +34,16 @@
     <TextView
         android:id="@+id/tv_hour"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/card_image_bottom_bg_height"
+        android:layout_height="0dp"
         android:background="@drawable/card_image_bottom_black_bg"
         android:gravity="right|center_vertical"
         android:paddingRight="@dimen/card_image_bottom_padding"
         android:text="@string/title"
         android:textColor="@drawable/common_left_tab_textcolor_selector"
         android:textSize="@dimen/card_image_bottom_textSize"
-        app:layout_constraintBottom_toBottomOf="@id/riv_etc_bg" />
+        app:layout_constraintBottom_toBottomOf="@id/riv_etc_bg"
+        app:layout_constraintHeight_max="@dimen/card_image_bottom_bg_height"
+        app:layout_constraintHeight_percent="0.2" />
 
     <TextView
         android:id="@+id/tv_title"
