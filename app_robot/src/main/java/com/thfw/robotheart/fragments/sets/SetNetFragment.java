@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -113,7 +114,6 @@ public class SetNetFragment extends RobotBaseFragment {
                     mWifiList.setVisibility(View.GONE);
                     WifiHelper.get().disableWifi();
                 }
-                mIvRescan.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             }
         });
         mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
@@ -140,6 +140,7 @@ public class SetNetFragment extends RobotBaseFragment {
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f);
         rotateAnimation.setDuration(3000);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
         mIvRescan.startAnimation(rotateAnimation);
     }
 

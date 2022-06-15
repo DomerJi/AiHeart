@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -198,6 +199,7 @@ public class SetBlueFragment extends RobotBaseFragment {
                 Animation.RELATIVE_TO_SELF, 0.5f);
         rotateAnimation.setDuration(1000);
         rotateAnimation.setRepeatCount(20);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
         mIvRescan.startAnimation(rotateAnimation);
     }
 
@@ -316,7 +318,6 @@ public class SetBlueFragment extends RobotBaseFragment {
             BleManager.getInstance().cancelScan();
             BleManager.getInstance().scan(mBleScanCallback);
         } else {
-            reScanAnimStart();
             HandlerUtil.getMainHandler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
