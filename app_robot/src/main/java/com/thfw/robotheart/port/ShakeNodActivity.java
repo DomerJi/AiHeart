@@ -70,7 +70,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
         mBtShutdown.setOnClickListener(v -> {
 //            RobotUtil.shutdownByBroadcast(mContext);
 //            RobotUtil.shutdownByActivity(mContext);
-            RobotUtil.shutdownByInvoke();
+            RobotUtil.shutdown();
         });
     }
 

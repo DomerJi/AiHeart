@@ -7,6 +7,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.utils.Util;
+import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +45,8 @@ public class AzQuickAdapter extends BaseAdapter<String, AzQuickAdapter.AzHolder>
         public AzHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvAz = itemView.findViewById(R.id.tv_az);
+            int padding = (int) (MyApplication.getFontScale() * Util.dipToPx(4, mContext));
+            mTvAz.setPadding(padding, padding, padding, padding);
         }
     }
 }

@@ -307,6 +307,7 @@ public class TtsHelper implements ITtsFace {
                     if (currentSynthesizerListener != null) {
                         currentSynthesizerListener.onCompleted(new SpeechError(0));
                     }
+                    onExoPause();
                 }
             }
 
@@ -316,6 +317,7 @@ public class TtsHelper implements ITtsFace {
                 if (currentSynthesizerListener != null) {
                     currentSynthesizerListener.onEvent(0, 0, 0, null);
                 }
+                onExoPause();
             }
         });
         if (currentSynthesizerListener != null) {
