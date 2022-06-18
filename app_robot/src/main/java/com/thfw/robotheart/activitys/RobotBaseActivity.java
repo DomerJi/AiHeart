@@ -42,7 +42,7 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
         // todo 关机动画
         BootCompleteReceiver.setShutDownCallback(() -> {
             if (isMeResumed()) {
-                RobotUtil.shutdown(this);
+                RobotUtil.shutdownByDialog(this);
             }
         });
     }

@@ -239,7 +239,7 @@ public class DormantActivity extends RobotBaseActivity
         SVGAHelper.playSVGA(mIvAnim, SVGAHelper.SVGAModel.create(AnimFileName.EMOJI_GUANJI).setLoopCount(1), new DialogRobotFactory.SimpleSVGACallBack() {
             @Override
             public void onFinished() {
-                if (!RobotUtil.shutdown()) {
+                if (!RobotUtil.shutdownByActivity(mContext)) {
                     onStartDormant();
                 } else {
                     LogUtil.d(TAG, "shutDown -> isInstallRobot true 【关机成功】");

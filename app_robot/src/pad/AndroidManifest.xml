@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.thfw.robotheart"
-    android:sharedUserId="android.uid.system">
+    package="com.thfw.robotheart">
 
     <!--    android:sharedUserId="android.uid.system"-->
 
@@ -15,40 +14,26 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 设置时区 -->
-    <uses-permission
-        android:name="android.permission.SET_TIME_ZONE"
-        tools:ignore="ProtectedPermissions" /> <!-- 关机权限 -->
-    <uses-permission
-        android:name="android.permission.SHUTDOWN"
-        tools:ignore="ProtectedPermissions" /> <!-- 存储权限 -->
+    <uses-permission android:name="android.permission.SET_TIME_ZONE" /> <!-- 关机权限 -->
+    <uses-permission android:name="android.permission.SHUTDOWN" /> <!-- 存储权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 安装应用权限 -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- 静音音量 -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> <!-- 通知权限 -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" /> <!-- 保持唤醒状态 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 修改系统配置 -->
-    <uses-permission
-        android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ProtectedPermissions" /> <!-- 震动权限 -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" /> <!-- 震动权限 -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CAMERA" /> <!-- 蓝牙权限 -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission
-        android:name="android.permission.BIND_JOB_SERVICE"
-        tools:ignore="ProtectedPermissions" /> <!-- 开机广播 -->
+    <uses-permission android:name="android.permission.BIND_JOB_SERVICE" /> <!-- 开机广播 -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission
-        android:name="android.permission.INSTALL_PACKAGES"
-        tools:ignore="ProtectedPermissions" /> <!-- 静默安装 -->
 
     <uses-feature android:name="android.hardware.camera2.full" />
-    <uses-feature
-        android:name="android.hardware.bluetooth_le"
-        android:required="true" />
-
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <queries>
@@ -94,7 +79,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".port.ShakeNodActivity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name=".activitys.me.SimpleTextActivity"
             android:screenOrientation="landscape" />
@@ -329,12 +314,10 @@
             android:exported="true" />
         <service
             android:name="com.xiaomi.mipush.sdk.MessageHandleService"
-            android:exported="false"
-            tools:ignore="MissingClass" />
+            android:exported="false" />
         <service
             android:name="com.xiaomi.push.service.XMPushService"
-            android:exported="false"
-            tools:ignore="MissingClass" />
+            android:exported="false" />
 
         <receiver
             android:name="org.android.agoo.vivo.PushMessageReceiverImpl"

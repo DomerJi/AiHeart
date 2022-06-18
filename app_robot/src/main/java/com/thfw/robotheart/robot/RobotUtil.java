@@ -6,21 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
-import android.os.PowerManager;
 
 import androidx.fragment.app.FragmentActivity;
 
 import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.ContextApp;
 import com.thfw.base.utils.LogUtil;
-import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
-
-import java.lang.reflect.Method;
 
 /**
  * Author:pengs
@@ -118,12 +114,12 @@ public class RobotUtil {
         return installRobot == 1;
     }
 
-    public static void shutdown(FragmentActivity fragmentActivity) {
+    public static void shutdownByDialog(FragmentActivity fragmentActivity) {
         TtsHelper.getInstance().start(new TtsModel("拜拜,下次见哦"), null);
         DialogRobotFactory.createFullSvgaDialog(fragmentActivity, AnimFileName.EMOJI_GUANJI, new DialogRobotFactory.OnSVGACallBack() {
             @Override
             public void callBack(SVGAImageView svgaImageView) {
-                shutdown();
+                shutdownByActivity(fragmentActivity);
             }
         });
     }
@@ -133,17 +129,17 @@ public class RobotUtil {
      *
      * @return
      */
-    public static boolean shutdown() {
+    public static boolean shutdownShell() {
         if (isInstallRobot()) {
             LogUtil.i(TAG, "shutdown() -> 关机");
-            return CommandExecution.execCommand("reboot -p", true).result == 1;
+            return CommandExecution.execCommand("reboot -p", false).result == 1;
         } else {
             return false;
         }
     }
 
 
-    public static void shutdownByActivity(Context context) {
+    public static boolean shutdownByActivity(Context context) {
         String action = "com.android.internal.intent.action.REQUEST_SHUTDOWN";
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
             action = "android.intent.action.ACTION_REQUEST_SHUTDOWN";
@@ -155,27 +151,12 @@ public class RobotUtil {
 
         try {
             context.startActivity(shutdown);
-            ToastUtil.show("broadcast->shutdown SSSS");
+            LogUtil.d("broadcast->shutdown SSSS");
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
-            ToastUtil.show("broadcast->shutdown eEEE");
+            LogUtil.d("broadcast->shutdown EEEE");
+            return false;
         }
-    }
-
-
-    public static void shutdownByInvoke() {
-        try {
-            PowerManager pManager = (PowerManager) ContextApp.get().getSystemService(Context.POWER_SERVICE);
-            if (pManager != null) {
-                Method method = pManager.getClass().getMethod("shutdown", boolean.class, String.class, boolean.class);
-                method.invoke(pManager, false, null, false);
-                ToastUtil.show("broadcast->shutdown001");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            ToastUtil.show("broadcast->shutdown002");
-        }
-
     }
 
     /**

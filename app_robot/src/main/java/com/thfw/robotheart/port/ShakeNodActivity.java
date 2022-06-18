@@ -67,10 +67,12 @@ public class ShakeNodActivity extends RobotBaseActivity {
             SerialManager.getInstance().startAction(ActionParams.getNormalRotate(45, -180, 90, -360));
         });
 
+        /**
+         * 两种方法都可行。一种没有关机提示（shutdownShell） 一种有 RobotUtil.shutdownByActivity(mContext);
+         */
         mBtShutdown.setOnClickListener(v -> {
-//            RobotUtil.shutdownByBroadcast(mContext);
-//            RobotUtil.shutdownByActivity(mContext);
-            RobotUtil.shutdown();
+            RobotUtil.shutdownByActivity(mContext);
+//            RobotUtil.shutdownShell();
         });
     }
 
