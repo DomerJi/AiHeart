@@ -148,7 +148,11 @@ public class MyApplication extends MultiDexApplication {
     private void init() {
 
         RobotUtil.longPressOffBtn();
-        BuglyUtil.init("382fc62522");
+        if (RobotUtil.isInstallRobot()) {
+            BuglyUtil.init("382fc62522");
+        } else {
+            BuglyUtil.init("d24e28638f");
+        }
         initSpeech();
         //是否同意隐私政策
         boolean agreed = MyPreferences.getInstance(this).hasAgreePrivacyAgreement();

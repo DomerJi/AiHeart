@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.thfw.robotheart.pad",
+  "variantName": "mainRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "versionCode": 43,
+      "versionName": "2.0.0.23-pad",
+      "outputFile": "QjmyPad_43_2.0.0.23-pad_mainRelease.apk"
+    }
+  ]
+}

@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!-- 机器人软件的 【桌面机器人】 版本 -->
+<!-- 此版本版本为系统签名，普通设备无法安装。 -->
+<!-- 因为增加了 android:sharedUserId="android.uid.system" -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.thfw.robotheart"
-    android:sharedUserId="android.uid.system">
+    package="com.thfw.robotheart">
 
     <!--    android:sharedUserId="android.uid.system"-->
 
