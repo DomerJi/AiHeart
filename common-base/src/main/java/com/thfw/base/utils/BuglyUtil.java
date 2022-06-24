@@ -24,6 +24,7 @@ public class BuglyUtil {
         Beta.autoCheckUpgrade = false;//自动检查更新开关 true表示初始化时自动检查升级; false表示不会自动检查升级,需要手动调用Beta.checkUpgrade()方法;
         Beta.autoInit = true;//自动初始化开关
         Beta.initDelay = 1 * 1000;
+        Beta.enableHotfix = false;// 升级SDK默认是开启热更新能力的，如果你不需要使用热更新，可以将这个接口设置为false。
         // 设置升级检查周期为60s(默认检查周期为0s)，60s内SDK不重复向后台请求策略);
         Beta.upgradeCheckPeriod = 5 * 60 * 1000;
         Beta.upgradeListener = new UpgradeListener() {

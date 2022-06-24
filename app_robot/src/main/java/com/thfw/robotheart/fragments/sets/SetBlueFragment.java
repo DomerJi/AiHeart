@@ -212,7 +212,9 @@ public class SetBlueFragment extends RobotBaseFragment {
             syncScan();
         });
         mSwitchBlue.setChecked(BleManager.getInstance().isBlueEnable());
-
+        if(!mSwitchBlue.isChecked()){
+            mTvScaningHint.setText("蓝牙已关闭");
+        }
         if (BleManager.getInstance().isBlueEnable()) {
             mIvRescan.setVisibility(View.VISIBLE);
             BleManager.getInstance().scan(mBleScanCallback);
@@ -230,12 +232,18 @@ public class SetBlueFragment extends RobotBaseFragment {
                     BleManager.getInstance().enableBluetooth();
                     mIvRescan.setVisibility(View.VISIBLE);
                     syncScan();
+                    mTvScaningHint.setText("正在搜索");
                 } else {
                     BleManager.getInstance().disableBluetooth();
-                    BleManager.getInstance().cancelScan();
+                    try {
+                        BleManager.getInstance().cancelScan();
+                    } catch (Exception e) {
+                        LogUtil.e(TAG, "BleManager.getInstance().cancelScan()2 e = " + e.getMessage());
+                    }
                     mBleAdapter.setDataListNotify(null);
                     mIvRescan.setVisibility(View.GONE);
                     mIvRescan.clearAnimation();
+                    mTvScaningHint.setText("蓝牙已关闭");
                 }
             }
         });
@@ -316,8 +324,13 @@ public class SetBlueFragment extends RobotBaseFragment {
         }
 
         if (BleManager.getInstance().isBlueEnable()) {
-            BleManager.getInstance().cancelScan();
-            BleManager.getInstance().scan(mBleScanCallback);
+            try {
+                BleManager.getInstance().cancelScan();
+            } catch (Exception e) {
+                LogUtil.e(TAG, "BleManager.getInstance().cancelScan() e = " + e.getMessage());
+            } finally {
+                BleManager.getInstance().scan(mBleScanCallback);
+            }
         } else {
             HandlerUtil.getMainHandler().postDelayed(new Runnable() {
                 @Override

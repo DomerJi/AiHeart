@@ -30,6 +30,7 @@ import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
 import com.thanosfisherman.wifiutils.wifiState.WifiStateListener;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
@@ -114,6 +115,11 @@ public class SetNetFragment extends RobotBaseFragment {
                     mWifiList.setVisibility(View.GONE);
                     WifiHelper.get().disableWifi();
                 }
+                HandlerUtil.getMainHandler().postDelayed(() -> {
+                    boolean enabled = mWifiManager != null && mWifiManager.isWifiEnabled();
+                    mSwitchWifi.setChecked(enabled);
+                }, 300);
+
             }
         });
         mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
