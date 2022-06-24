@@ -3,8 +3,11 @@ package com.thfw.robotheart.port;
 import android.os.Handler;
 import android.util.Log;
 
+import com.pl.sphelper.ConstantUtil;
+import com.pl.sphelper.SPHelper;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.robot.RobotUtil;
 
 import java.io.IOException;
@@ -52,7 +55,39 @@ public class SerialManager {
                 instance = new SerialManager();
             }
         }
+        // 先上电
+        instance.sendNow(Order.DOWN_ELECTRICITY_STATE, 1);
         return instance;
+    }
+
+    /**
+     * 全部归零
+     */
+    public void allToZero() {
+        queryServoState(new ServoStateListener() {
+            @Override
+            public void onState(int[] angle) {
+                int nodZero = SPHelper.getInt(ConstantUtil.Key.NOD_ZERO);
+                if (nodZero != ConstantUtil.DEFAULT_INT) {
+                    if (Math.abs(angle[0] - nodZero) > 30) {
+                        send(ActionParams.ControlOrder.NOD, nodZero, Math.abs(angle[0] - nodZero) * 30);
+                    }
+                }
+                int shakeZero = SPHelper.getInt(ConstantUtil.Key.SHAKE_ZERO);
+                if (shakeZero != ConstantUtil.DEFAULT_INT) {
+                    if (Math.abs(angle[1] - shakeZero) > 30) {
+                        send(ActionParams.ControlOrder.SHAKE, shakeZero, Math.abs(angle[0] - shakeZero) * 30);
+                    }
+                }
+                int rotateZero = SPHelper.getInt(ConstantUtil.Key.ROTATE_ZERO);
+                if (rotateZero != ConstantUtil.DEFAULT_INT) {
+                    if (Math.abs(angle[2] - rotateZero) > 90) {
+                        send(ActionParams.ControlOrder.ROTATE, rotateZero, Math.abs(angle[2] - rotateZero) * 30);
+                    }
+                }
+            }
+        });
+
     }
 
     private int open(String selectPort, int selectBaud) {
@@ -101,7 +136,7 @@ public class SerialManager {
 
         int order = Order.DOWN_SERVO_STATE;
         int controlOrder = actionParams.getControlOrder();
-        int[] params;
+
 
         if (actionParams.getRunnable() != null) {
             actionParams.getHandler().removeCallbacks(actionParams.getRunnable());
@@ -115,25 +150,33 @@ public class SerialManager {
                 LogUtil.i(TAG, "actionParams.nextRotate() false 01");
                 return;
             }
-            params = new int[]{controlOrder, actionParams.getAngle(), actionParams.getTimeMs()};
-            actionParams.nextRotateIndex();
-            LogUtil.d(TAG, "params -> " + Arrays.toString(params));
-            SerialManager.getInstance().sendNow(order, params);
-            if (actionParams.nextRotate()) {
-                actionParams.setRunnable(() -> {
+            queryServoState(new ServoStateListener() {
+                @Override
+                public void onState(int[] angle) {
+                    int[] params = new int[]{controlOrder, angle[2] + actionParams.getAngle(), actionParams.getTimeMs()};
+                    actionParams.nextRotateIndex();
+                    LogUtil.d(TAG, "params -> " + Arrays.toString(params));
+                    SerialManager.getInstance().sendNow(order, params);
+                    ToastUtil.show(Arrays.toString(params));
                     if (actionParams.nextRotate()) {
-                        startAction(actionParams);
+                        actionParams.setRunnable(() -> {
+                            if (actionParams.nextRotate()) {
+                                startAction(actionParams);
+                            }
+                        });
+                        actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + 160);
+                    } else {
+                        LogUtil.i(TAG, "actionParams.nextRotate() false 02");
                     }
-                });
-                actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + 100);
-            } else {
-                LogUtil.i(TAG, "actionParams.nextRotate() false 02");
-            }
+                }
+            });
+
         } else {
             int time = actionParams.getTimeMs();
             int centerPoint = actionParams.getCenterPoint();
             int left = actionParams.getLeft();
             int right = actionParams.getRight();
+            int[] params;
             if (actionParams.getRunCount() == actionParams.getRepeatCount()) {
                 // 右
                 params = new int[]{controlOrder, centerPoint + right, time / 2};
@@ -153,7 +196,7 @@ public class SerialManager {
                     actionParams.runCountChange();
                     startAction(actionParams);
                 });
-                actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + 100);
+                actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + 160);
             }
         }
 
@@ -184,6 +227,17 @@ public class SerialManager {
                                     charge = bytes[2];
                                     onCharge();
                                 }
+                            }
+                            // 查询舵机角度 1，2，4，4，4 状态|故障位|1号舵机|2号舵机|3号舵机
+                            // 点头 摇头 转身
+                        case 4:
+                            if (bytes.length == 5) {
+                                new Handler().postDelayed(() -> {
+                                    if (servoStateListener != null) {
+                                        servoStateListener.onState(new int[]{bytes[2], bytes[3], bytes[4]});
+                                    }
+                                    servoStateListener = null;
+                                }, 160);
                             }
                             break;
                     }
@@ -230,6 +284,14 @@ public class SerialManager {
         }
         send(Order.DOWN_STATE, 1);
 
+    }
+
+    public void queryServoState(ServoStateListener servoStateListener) {
+        this.servoStateListener = servoStateListener;
+        sendNow(Order.DOWN_STATE, 4);
+        new Handler().postDelayed(() -> {
+            SerialManager.this.servoStateListener = null;
+        }, 300);
     }
 
     public synchronized boolean send(int order, int... params) {
@@ -281,7 +343,7 @@ public class SerialManager {
     }
 
     /**
-     * @param code 右边的是0 胸前的是1 左边的是2 后面的是3
+     * @param code 右边的是0 胸前的是1 左边的是2 后面的是3 头顶是4
      * @param down 1按下 0抬起
      */
     public void onTouch(int code, int down) {
@@ -324,12 +386,18 @@ public class SerialManager {
         }
     }
 
+    public ServoStateListener servoStateListener;
+
     public interface ElectricityListener {
         void onCharge(int percent, int charge);
     }
 
     public interface RobotTouchListener {
         void onTouch(int code, int down);
+    }
+
+    public interface ServoStateListener {
+        void onState(int[] angle);
     }
 
 

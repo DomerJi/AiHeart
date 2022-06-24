@@ -64,7 +64,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
 
 
         mBtRotate.setOnClickListener(v -> {
-            SerialManager.getInstance().startAction(ActionParams.getNormalRotate(45, -180, 90, -360));
+            SerialManager.getInstance().startAction(ActionParams.getNormalRotate(45, -90, 45));
         });
 
         /**

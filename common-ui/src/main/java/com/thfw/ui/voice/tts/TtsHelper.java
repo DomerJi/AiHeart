@@ -36,6 +36,9 @@ public class TtsHelper implements ITtsFace {
     // 超长文本 分词设置4000个汉字/8192字节数
     private final static int TTS_BYTE_SIZE = 4000;
 
+
+    public static final String WELCOME_TTS = "你好，我是小密，给你最贴心的心理服务";
+
     private SpeechSynthesizer mTts;
     private CustomSynthesizerListener customSynthesizerListener;
 
@@ -146,6 +149,9 @@ public class TtsHelper implements ITtsFace {
             if (new File(cacheFile).exists()) {
                 // 播放本地缓存
                 playCacheFile(cacheFile);
+                return true;
+            } else if (WELCOME_TTS.equals(ttsModel.text)) {
+                playCacheFile(getAssetsFile(ttsModel.text));
                 return true;
             }
             mTts.setParameter(SpeechConstant.AUDIO_FORMAT, "wav");
@@ -354,6 +360,11 @@ public class TtsHelper implements ITtsFace {
     public String getCacheFile(String ttsText) {
         String fileName = ttsText.hashCode() + "_" + InformantUtil.getInformant();
         return ContextApp.get().getCacheDir().getAbsolutePath() + "/msc/" + fileName + ".wav";
+    }
+
+    public String getAssetsFile(String ttsText) {
+        String fileName = ttsText.hashCode() + "_" + InformantUtil.getInformant();
+        return "file:///android_asset/" + fileName + ".wav";
     }
 
 

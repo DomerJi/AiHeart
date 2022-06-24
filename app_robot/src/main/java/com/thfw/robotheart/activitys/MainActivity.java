@@ -195,6 +195,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 }
             }
         });
+        initTouchRobot();
         mTitleBarView = (TitleBarView) findViewById(R.id.titleBarView);
         mWeekView = (WeekView) findViewById(R.id.weekView);
         mRivAvatar = (RoundedImageView) findViewById(R.id.riv_avatar);
@@ -280,6 +281,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         }
 
         SerialManager.getInstance().queryCharge();
+        SerialManager.getInstance().allToZero();
     }
 
     @Override

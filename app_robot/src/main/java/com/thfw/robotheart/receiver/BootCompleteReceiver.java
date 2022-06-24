@@ -17,6 +17,8 @@ import com.thfw.ui.voice.tts.TtsModel;
 
 import java.lang.ref.WeakReference;
 
+import static com.thfw.ui.voice.tts.TtsHelper.WELCOME_TTS;
+
 /**
  * Author:pengs
  * Date: 2022/5/21 10:01
@@ -73,7 +75,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
                     LogUtil.i(TAG, "checkBootCompleteAnim svga complete");
                 }
             });
-            TtsHelper.getInstance().start(new TtsModel("你好，我是小密，给你最贴心的心理服务"), null);
+            TtsHelper.getInstance().start(new TtsModel(WELCOME_TTS), null);
         } else if (isBootComplete()) {
             DialogRobotFactory.createFullSvgaDialog(fragmentActivity, AnimFileName.EMOJI_KAIJI, new DialogRobotFactory.OnSVGACallBack() {
                 @Override
@@ -81,7 +83,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
                     LogUtil.i(TAG, "checkBootCompleteAnim svga complete");
                 }
             });
-            TtsHelper.getInstance().start(new TtsModel("你好，我是小密，给你最贴心的心理服务"), null);
+            TtsHelper.getInstance().start(new TtsModel(WELCOME_TTS), null);
         }
     }
 

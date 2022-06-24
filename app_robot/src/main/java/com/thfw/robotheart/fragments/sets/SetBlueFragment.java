@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -63,9 +64,9 @@ public class SetBlueFragment extends RobotBaseFragment {
             }
             List<BleDevice> bleDevices = new ArrayList<>();
             for (BleDevice bleDevice : scanResultList) {
-//                if (TextUtils.isEmpty(bleDevice.getName())) {
-//                    continue;
-//                }
+                if (TextUtils.isEmpty(bleDevice.getName())) {
+                    continue;
+                }
                 bleDevices.add(bleDevice);
             }
             LogUtil.d(TAG, "bleDevices.size() -> " + bleDevices.size());
@@ -101,9 +102,9 @@ public class SetBlueFragment extends RobotBaseFragment {
             if (!mSwitchBlue.isChecked()) {
                 return;
             }
-//            if (TextUtils.isEmpty(bleDevice.getName())) {
-//                return;
-//            }
+            if (TextUtils.isEmpty(bleDevice.getName())) {
+                return;
+            }
             if (mBleAdapter.getDataList() != null) {
                 for (BleDevice device : mBleAdapter.getDataList()) {
                     if (device.getMac().equals(bleDevice.getMac())) {
@@ -126,9 +127,9 @@ public class SetBlueFragment extends RobotBaseFragment {
             if (!mSwitchBlue.isChecked()) {
                 return;
             }
-//            if (TextUtils.isEmpty(bleDevice.getName())) {
-//                return;
-//            }
+            if (TextUtils.isEmpty(bleDevice.getName())) {
+                return;
+            }
             if (mBleAdapter.getDataList() != null) {
                 for (BleDevice device : mBleAdapter.getDataList()) {
                     if (device.getMac().equals(bleDevice.getMac())) {

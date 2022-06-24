@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
+import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.activitys.set.DormantActivity;
 
 /**
@@ -70,6 +71,10 @@ public class Dormant {
         if (ExoPlayerFactory.isPlaying()) {
             reset();
             LogUtil.d(TAG_DORMANT, "addMinute isPlaying = true");
+            return;
+        }
+        if (!MyApplication.ifForeground()) {
+            LogUtil.d(TAG_DORMANT, "addMinute ifForeground = false");
             return;
         }
         if (isCanDormant()) {

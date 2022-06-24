@@ -1,6 +1,7 @@
 package com.thfw.base.utils;
 
 import android.content.Context;
+import android.os.Looper;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
@@ -29,22 +30,51 @@ public final class ToastUtil {
     public static void show(CharSequence charSequence) {
         if (System.currentTimeMillis() - showTime > LIMIT) {
             showTime = System.currentTimeMillis();
-            Toast.makeText(appContext, charSequence, Toast.LENGTH_SHORT).show();
+            if (isMainThread()) {
+                Toast.makeText(appContext, charSequence, Toast.LENGTH_SHORT).show();
+            } else {
+                showOnMainThread(charSequence, Toast.LENGTH_SHORT);
+            }
         }
     }
 
     public static void show(@StringRes int resId) {
         if (System.currentTimeMillis() - showTime > LIMIT) {
             showTime = System.currentTimeMillis();
-            Toast.makeText(appContext, resId, Toast.LENGTH_SHORT).show();
+            if (isMainThread()) {
+                Toast.makeText(appContext, resId, Toast.LENGTH_SHORT).show();
+            } else {
+                showOnMainThread(resId, Toast.LENGTH_SHORT);
+            }
         }
     }
 
     public static void showLong(CharSequence charSequence) {
         if (System.currentTimeMillis() - showTime > LIMIT) {
             showTime = System.currentTimeMillis();
-            Toast.makeText(appContext, charSequence, Toast.LENGTH_LONG).show();
+            if (isMainThread()) {
+                Toast.makeText(appContext, charSequence, Toast.LENGTH_LONG).show();
+            } else {
+                showOnMainThread(charSequence, Toast.LENGTH_LONG);
+            }
         }
     }
+
+    private static void showOnMainThread(CharSequence key, int time) {
+        HandlerUtil.getMainHandler().post(() -> {
+            Toast.makeText(appContext, key, time).show();
+        });
+    }
+
+    private static void showOnMainThread(int key, int time) {
+        HandlerUtil.getMainHandler().post(() -> {
+            Toast.makeText(appContext, key, time).show();
+        });
+    }
+
+    public static boolean isMainThread() {
+        return Looper.getMainLooper().getThread() == Thread.currentThread();
+    }
+
 
 }

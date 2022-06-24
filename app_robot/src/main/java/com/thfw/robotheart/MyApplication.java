@@ -3,8 +3,11 @@ package com.thfw.robotheart;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.DisplayMetrics;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.multidex.MultiDexApplication;
 import androidx.room.Room;
 
@@ -146,7 +149,7 @@ public class MyApplication extends MultiDexApplication {
     }
 
     private void init() {
-
+        registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
         RobotUtil.longPressOffBtn();
         if (RobotUtil.isInstallRobot()) {
             BuglyUtil.init("382fc62522");
@@ -159,6 +162,48 @@ public class MyApplication extends MultiDexApplication {
         if (agreed) {
             PushHelper.init(getApplicationContext());
         }
+    }
+
+    private static int startedActivityCount;
+    private static ActivityLifecycleCallbacks activityLifecycleCallbacks = new ActivityLifecycleCallbacks() {
+        @Override
+        public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+
+        }
+
+        @Override
+        public void onActivityStarted(@NonNull Activity activity) {
+            startedActivityCount++;
+        }
+
+        @Override
+        public void onActivityResumed(@NonNull Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityPaused(@NonNull Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityStopped(@NonNull Activity activity) {
+            startedActivityCount--;
+        }
+
+        @Override
+        public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+
+        }
+
+        @Override
+        public void onActivityDestroyed(@NonNull Activity activity) {
+
+        }
+    };
+
+    public static boolean ifForeground() {
+        return startedActivityCount > 0;
     }
 
 }

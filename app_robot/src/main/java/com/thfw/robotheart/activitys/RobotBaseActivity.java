@@ -7,10 +7,15 @@ import android.os.Build;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.MyApplication;
+import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.port.SerialManager;
 import com.thfw.robotheart.receiver.BootCompleteReceiver;
 import com.thfw.robotheart.robot.RobotUtil;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.Dormant;
 import com.thfw.ui.base.IBaseActivity;
 
@@ -20,6 +25,30 @@ import com.thfw.ui.base.IBaseActivity;
  * Describe:Todo
  */
 public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActivity<T> {
+
+    static SerialManager.RobotTouchListener robotTouchListener;
+
+    protected void initTouchRobot() {
+        if (robotTouchListener == null) {
+            robotTouchListener = new SerialManager.RobotTouchListener() {
+                @Override
+                public void onTouch(int code, int down) {
+                    if (EmptyUtil.isEmpty(RobotBaseActivity.this) && isMeResumed()) {
+                        DialogRobotFactory.createFullSvgaDialog(RobotBaseActivity.this,
+                                AnimFileName.EMOJI_XUANYUN, new DialogRobotFactory.OnSVGACallBack() {
+                                    @Override
+                                    public void callBack(SVGAImageView svgaImageView) {
+
+                                    }
+                                });
+                    }
+                }
+            };
+            SerialManager.getInstance().addRobotTouchListener(robotTouchListener);
+        }
+
+    }
+
 
     //重写字体缩放比例  api>25
     @Override
@@ -67,19 +96,11 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // 机器人顶部触摸
+        if (keyCode == KeyEvent.KEYCODE_MENU && event.getRepeatCount() == 0) {
+            SerialManager.getInstance().onTouch(4, 1);
+        }
         Dormant.reset();
         return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        Dormant.reset();
-        return super.onKeyUp(keyCode, event);
-    }
-
-    @Override
-    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        Dormant.reset();
-        return super.onKeyLongPress(keyCode, event);
     }
 }

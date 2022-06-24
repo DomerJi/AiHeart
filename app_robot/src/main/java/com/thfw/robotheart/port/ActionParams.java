@@ -66,9 +66,13 @@ public class ActionParams {
                 .setOneRotateTimeMs(30);
     }
 
+    /**
+     * 仅限转身调用
+     *
+     * @return
+     */
     public int getAngle() {
-        int angle = angles[anglesIndex] * 30;
-        return angle;
+        return angles[anglesIndex] * 30;
     }
 
     public void nextRotateIndex() {

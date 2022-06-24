@@ -269,9 +269,10 @@ public class TitleBarView extends LinearLayout {
         if (level > 100) {
             level = 100;
         }
-        if (level < 0) {
-            level = 0;
+        if (level < 1) {
+            level = 1;
         }
+        TitleBarView.level = level;
         mPbBatteryProgress.setProgress(level);
         mTvProgress.setText(level + "%");
     }

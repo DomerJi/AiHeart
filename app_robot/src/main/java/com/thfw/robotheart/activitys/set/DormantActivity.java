@@ -271,6 +271,7 @@ public class DormantActivity extends RobotBaseActivity
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         LogUtil.i(TAG, "keyCode = " + keyCode);
+
         return super.onKeyDown(keyCode, event);
     }
 
