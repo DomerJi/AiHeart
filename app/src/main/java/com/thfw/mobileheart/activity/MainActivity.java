@@ -97,6 +97,8 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private androidx.constraintlayout.widget.ConstraintLayout mMainRoot;
     private androidx.constraintlayout.widget.ConstraintLayout mMainRoot2;
+    private View mSplash2;
+    private View mSplash3;
     private android.widget.LinearLayout mLlHome;
     private android.widget.ImageView mIvHome;
     private android.widget.TextView mTvHome;
@@ -182,6 +184,8 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         });
         mMainRoot = (ConstraintLayout) findViewById(R.id.main_root);
         mMainRoot2 = (ConstraintLayout) findViewById(R.id.main_root2);
+        mSplash3 = findViewById(R.id.v_splash3);
+        mSplash2 = findViewById(R.id.i_splash2);
 
         mLlHome = (LinearLayout) findViewById(R.id.ll_home);
         mIvHome = (ImageView) findViewById(R.id.iv_home);
@@ -291,19 +295,33 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                         return;
                     }
 
-                    mMainRoot2.setAlpha(0f);
-                    mMainRoot2.setVisibility(View.VISIBLE);
-                    mMainRoot2.animate().alpha(1f).setDuration(400).setListener(new SimpleAnimatorListener() {
-
+                    // 淡入
+                    mSplash3.setAlpha(0f);
+                    mSplash3.setVisibility(View.VISIBLE);
+                    mSplash3.animate().alpha(1f).setDuration(300).setListener(new SimpleAnimatorListener() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             if (EmptyUtil.isEmpty(MainActivity.this)) {
                                 return;
                             }
-                            getWindow().setBackgroundDrawableResource(R.drawable.page_gray_radius);
-                            mMainRoot.setBackgroundColor(Color.TRANSPARENT);
-                            onMeResume();
+                            mMainRoot2.setAlpha(0f);
+                            mMainRoot2.setVisibility(View.VISIBLE);
+                            mMainRoot2.animate().alpha(1f).setDuration(400).setListener(new SimpleAnimatorListener() {
+
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    if (EmptyUtil.isEmpty(MainActivity.this)) {
+                                        return;
+                                    }
+                                    getWindow().setBackgroundDrawableResource(R.drawable.page_gray_radius);
+                                    mMainRoot.setBackgroundColor(Color.TRANSPARENT);
+                                    mSplash3.setVisibility(View.GONE);
+                                    mSplash2.setVisibility(View.GONE);
+                                    onMeResume();
+                                }
+                            }).setStartDelay(1200);
                         }
+
                     }).setStartDelay(1200);
                 }
 

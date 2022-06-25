@@ -5,9 +5,20 @@
     android:id="@+id/main_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/splash2"
     android:visibility="invisible"
     tools:visibility="visible">
+
+    <include
+        android:id="@+id/i_splash2"
+        layout="@layout/page_splash_2" />
+
+    <View
+        android:id="@+id/v_splash3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/splash2"
+        android:visibility="invisible"
+        tools:ignore="MissingConstraints" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -176,7 +187,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/divider_2px"
             android:background="@color/page_background_gray"
-            app:layout_constraintBottom_toTopOf="@id/ll_home"/>
+            app:layout_constraintBottom_toTopOf="@id/ll_home" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

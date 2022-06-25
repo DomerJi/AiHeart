@@ -90,6 +90,22 @@ public class SerialManager {
 
     }
 
+    /**
+     * 是否充电中
+     * @return
+     */
+    public boolean isCharging() {
+        return charge == 1;
+    }
+
+    /**
+     * 是否不在充电中
+     * @return
+     */
+    public boolean isNoCharging() {
+        return charge == 0;
+    }
+
     private int open(String selectPort, int selectBaud) {
         serialHelper = new SerialHelper(selectPort, selectBaud) {
             @Override

@@ -266,15 +266,38 @@ public class TitleBarView extends LinearLayout {
 
 
     private void updateBattery(int level) {
+
+        if (SerialManager.getInstance().isNoCharging()) {
+            if (level < 1) {
+                RobotUtil.shutdownByActivity(mContext);
+            } else if (TitleBarView.level > 10 && level <= 10) {
+                lowBatteryHint();
+            }
+        }
         if (level > 100) {
             level = 100;
-        }
-        if (level < 1) {
+        } else if (level < 1) {
             level = 1;
         }
         TitleBarView.level = level;
         mPbBatteryProgress.setProgress(level);
         mTvProgress.setText(level + "%");
+    }
+
+    private void lowBatteryHint() {
+        if (mContext instanceof RobotBaseActivity) {
+            RobotBaseActivity baseActivity = (RobotBaseActivity) mContext;
+            if (!EmptyUtil.isEmpty(baseActivity) && baseActivity.isMeResumed()) {
+                DialogRobotFactory.createFullSvgaDialog(baseActivity, AnimFileName.EMOJI_XUANYUN, new DialogRobotFactory.OnSVGACallBack() {
+                    @Override
+                    public void callBack(SVGAImageView svgaImageView) {
+                        LogUtil.i(TAG, "眩晕");
+                    }
+                });
+                TtsHelper.getInstance().start(new TtsModel("电池电量底，为防止自动关机，请为我充电"), null);
+            }
+        }
+
     }
 
 
