@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+
+import androidx.annotation.Nullable;
 
 import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.base.IPresenter;
@@ -26,31 +29,27 @@ import com.thfw.ui.voice.tts.TtsModel;
  * Date: 2021/11/15 10:20
  * Describe:Todo
  */
-public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActivity<T> {
+public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActivity<T> implements SerialManager.RobotTouchListener {
 
-    static SerialManager.RobotTouchListener robotTouchListener;
+    @Override
+    public void onTouch(int code, int down) {
+        if (!EmptyUtil.isEmpty(RobotBaseActivity.this) && isMeResumed()) {
+            DialogRobotFactory.createFullSvgaDialog(RobotBaseActivity.this,
+                    AnimFileName.EMOJI_CHUMO, new DialogRobotFactory.OnSVGACallBack() {
+                        @Override
+                        public void callBack(SVGAImageView svgaImageView) {
 
-    protected void initTouchRobot() {
-        if (robotTouchListener == null) {
-            robotTouchListener = new SerialManager.RobotTouchListener() {
-                @Override
-                public void onTouch(int code, int down) {
-                    if (!EmptyUtil.isEmpty(RobotBaseActivity.this) && isMeResumed()) {
-                        DialogRobotFactory.createFullSvgaDialog(RobotBaseActivity.this,
-                                AnimFileName.EMOJI_CHUMO, new DialogRobotFactory.OnSVGACallBack() {
-                                    @Override
-                                    public void callBack(SVGAImageView svgaImageView) {
-
-                                    }
-                                });
-                        TtsHelper.getInstance().start(new TtsModel("您好"), null);
-                    }
-                }
-            };
+                        }
+                    });
+            TtsHelper.getInstance().start(new TtsModel("您好"), null);
         }
-        SerialManager.getInstance().addRobotTouchListener(robotTouchListener);
     }
 
+    @Override
+    protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        SerialManager.getInstance().addRobotTouchListener(this);
+    }
 
     //重写字体缩放比例  api>25
     @Override
@@ -76,18 +75,12 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
                 RobotUtil.shutdownByDialog(this);
             }
         });
-        initTouchRobot();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        SerialManager.getInstance().removeRobotTouchListener(robotTouchListener);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        SerialManager.getInstance().removeRobotTouchListener(this);
         BootCompleteReceiver.setShutDownCallback(null);
     }
 
