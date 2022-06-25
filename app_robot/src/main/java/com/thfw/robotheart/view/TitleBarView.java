@@ -156,8 +156,7 @@ public class TitleBarView extends LinearLayout {
     private void initBatAndTimeReceiverRobot() {
         if (mElectricityListener == null) {
             mElectricityListener = (percent, charge) -> {
-                level = percent;
-                updateBattery(level);
+                updateBattery(percent);
                 // 充电中
                 mIvBatteryIng.setVisibility(charge == 1 ? VISIBLE : GONE);
 
@@ -280,7 +279,8 @@ public class TitleBarView extends LinearLayout {
             level = 1;
         }
         TitleBarView.level = level;
-        mPbBatteryProgress.setProgress(level);
+        // 值太小看不到进度
+        mPbBatteryProgress.setProgress(level < 20 ? 20 : level);
         mTvProgress.setText(level + "%");
     }
 

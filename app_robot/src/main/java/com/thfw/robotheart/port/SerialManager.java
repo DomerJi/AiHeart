@@ -23,6 +23,7 @@ import java.util.LinkedList;
 public class SerialManager {
     private static SerialManager instance;
     private static final String TAG = SerialManager.class.getSimpleName();
+    private static final int DELAY_TIME = 500;
     SerialHelper serialHelper;
 
     ArrayList<ElectricityListener> electricityListeners = new ArrayList<>();
@@ -53,10 +54,11 @@ public class SerialManager {
         if (instance == null) {
             synchronized (SerialManager.class) {
                 instance = new SerialManager();
+                // 先上电
+                instance.send(Order.DOWN_ELECTRICITY_STATE, 0);
+                instance.send(Order.DOWN_ELECTRICITY_STATE, 1);
             }
         }
-        // 先上电
-        instance.sendNow(Order.DOWN_ELECTRICITY_STATE, 1);
         return instance;
     }
 
@@ -92,6 +94,7 @@ public class SerialManager {
 
     /**
      * 是否充电中
+     *
      * @return
      */
     public boolean isCharging() {
@@ -100,6 +103,7 @@ public class SerialManager {
 
     /**
      * 是否不在充电中
+     *
      * @return
      */
     public boolean isNoCharging() {
@@ -180,7 +184,7 @@ public class SerialManager {
                                 startAction(actionParams);
                             }
                         });
-                        actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + 160);
+                        actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + DELAY_TIME);
                     } else {
                         LogUtil.i(TAG, "actionParams.nextRotate() false 02");
                     }
@@ -212,7 +216,7 @@ public class SerialManager {
                     actionParams.runCountChange();
                     startAction(actionParams);
                 });
-                actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + 160);
+                actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + DELAY_TIME);
             }
         }
 
@@ -248,12 +252,9 @@ public class SerialManager {
                             // 点头 摇头 转身
                         case 4:
                             if (bytes.length == 5) {
-                                new Handler().postDelayed(() -> {
-                                    if (servoStateListener != null) {
-                                        servoStateListener.onState(new int[]{bytes[2], bytes[3], bytes[4]});
-                                    }
-                                    servoStateListener = null;
-                                }, 160);
+                                if (servoStateListener != null) {
+                                    servoStateListener.onState(new int[]{bytes[2], bytes[3], bytes[4]});
+                                }
                             }
                             break;
                     }
@@ -303,11 +304,15 @@ public class SerialManager {
     }
 
     public void queryServoState(ServoStateListener servoStateListener) {
-        this.servoStateListener = servoStateListener;
-        sendNow(Order.DOWN_STATE, 4);
-        new Handler().postDelayed(() -> {
-            SerialManager.this.servoStateListener = null;
-        }, 300);
+        if (this.servoStateListener != null) {
+            this.servoStateListener = servoStateListener;
+            sendNow(Order.DOWN_STATE, 4);
+            new Handler().postDelayed(() -> {
+                SerialManager.this.servoStateListener = null;
+            }, 3000);
+        } else {
+            LogUtil.d(TAG, "queryServoState not null");
+        }
     }
 
     public synchronized boolean send(int order, int... params) {

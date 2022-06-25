@@ -146,14 +146,6 @@ public class LoginActivity extends RobotBaseActivity {
     public void initView() {
         MeActivity.resetInitFaceState();
         type = getIntent().getIntExtra(KEY_DATA, BY_MOBILE);
-        // 机器人登录页面显示设置按钮
-        if (RobotUtil.isInstallRobot()) {
-            ImageView mIvSet = findViewById(R.id.iv_set);
-            mIvSet.setVisibility(View.VISIBLE);
-            mIvSet.setOnClickListener(v -> {
-                startActivity(new Intent(mContext, SettingActivity.class));
-            });
-        }
 
         findViewById(R.id.titleBarView).setOnClickListener(v -> {
             if (ClickCountUtils.click(10)) {
@@ -188,6 +180,14 @@ public class LoginActivity extends RobotBaseActivity {
             MainActivity.setShowLoginAnim(true);
             SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN, true);
             SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN_TTS, true);
+            // 机器人登录页面显示设置按钮
+            if (RobotUtil.isInstallRobot()) {
+                ImageView mIvSet = findViewById(R.id.iv_set);
+                mIvSet.setVisibility(View.VISIBLE);
+                mIvSet.setOnClickListener(v -> {
+                    startActivity(new Intent(mContext, SettingActivity.class));
+                });
+            }
         }
     }
 

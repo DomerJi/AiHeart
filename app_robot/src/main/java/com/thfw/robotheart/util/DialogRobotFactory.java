@@ -132,6 +132,10 @@ public class DialogRobotFactory {
      */
     public static void createFullSvgaDialog(FragmentActivity activity, String svgaAssets, final OnSVGACallBack onViewCallBack) {
         String hint = AnimFileName.getHint(svgaAssets);
+        if (mSvgaTDialog != null) {
+            mSvgaTDialog.dismiss();
+            mSvgaTDialog = null;
+        }
         mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(com.thfw.robotheart.R.layout.dialog_full_svga_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
@@ -216,7 +220,10 @@ public class DialogRobotFactory {
         String hint = AnimFileName.getHint(svgaAssets);
         // 语音播放
         TtsHelper.getInstance().start(new TtsModel(hint), null);
-
+        if (mSvgaTDialog != null) {
+            mSvgaTDialog.dismiss();
+            mSvgaTDialog = null;
+        }
         mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(com.thfw.robotheart.R.layout.dialog_svga_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)

@@ -212,7 +212,7 @@ public class SetBlueFragment extends RobotBaseFragment {
             syncScan();
         });
         mSwitchBlue.setChecked(BleManager.getInstance().isBlueEnable());
-        if(!mSwitchBlue.isChecked()){
+        if (!mSwitchBlue.isChecked()) {
             mTvScaningHint.setText("蓝牙已关闭");
         }
         if (BleManager.getInstance().isBlueEnable()) {
@@ -244,6 +244,7 @@ public class SetBlueFragment extends RobotBaseFragment {
                     mIvRescan.setVisibility(View.GONE);
                     mIvRescan.clearAnimation();
                     mTvScaningHint.setText("蓝牙已关闭");
+                    mTvScaningHint.setVisibility(View.VISIBLE);
                 }
             }
         });

@@ -18,6 +18,8 @@ import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.Dormant;
 import com.thfw.ui.base.IBaseActivity;
+import com.thfw.ui.voice.tts.TtsHelper;
+import com.thfw.ui.voice.tts.TtsModel;
 
 /**
  * Author:pengs
@@ -33,20 +35,20 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
             robotTouchListener = new SerialManager.RobotTouchListener() {
                 @Override
                 public void onTouch(int code, int down) {
-                    if (EmptyUtil.isEmpty(RobotBaseActivity.this) && isMeResumed()) {
+                    if (!EmptyUtil.isEmpty(RobotBaseActivity.this) && isMeResumed()) {
                         DialogRobotFactory.createFullSvgaDialog(RobotBaseActivity.this,
-                                AnimFileName.EMOJI_XUANYUN, new DialogRobotFactory.OnSVGACallBack() {
+                                AnimFileName.EMOJI_CHUMO, new DialogRobotFactory.OnSVGACallBack() {
                                     @Override
                                     public void callBack(SVGAImageView svgaImageView) {
 
                                     }
                                 });
+                        TtsHelper.getInstance().start(new TtsModel("您好"), null);
                     }
                 }
             };
-            SerialManager.getInstance().addRobotTouchListener(robotTouchListener);
         }
-
+        SerialManager.getInstance().addRobotTouchListener(robotTouchListener);
     }
 
 
@@ -74,6 +76,13 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
                 RobotUtil.shutdownByDialog(this);
             }
         });
+        initTouchRobot();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SerialManager.getInstance().removeRobotTouchListener(robotTouchListener);
     }
 
     @Override
