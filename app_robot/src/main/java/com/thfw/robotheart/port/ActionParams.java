@@ -16,6 +16,9 @@ import java.util.Arrays;
  */
 public class ActionParams {
 
+    public static final int ONE_ANGLE_TIME = 30;
+    public static final int ONE_ANGLE_TIME_10 = ONE_ANGLE_TIME / 10;
+
     /**
      * leftNod = 140;
      * rightNod = 260;
@@ -51,19 +54,19 @@ public class ActionParams {
 
     // =========================  旋转相关【开始】  ==============================
     // 时间旋转 一共360度 没 一度 需要时间
-    private int oneRotateTimeMs = 30;
+    private int oneRotateTimeMs = ONE_ANGLE_TIME;
     private int[] angles;
     private int anglesIndex = 0;
 
     public static ActionParams getNormalRotate(int... angles) {
         if (EmptyUtil.isEmpty(angles)) {
             return new ActionParams(ControlOrder.ROTATE)
-                    .setAngles(-23, 23)
-                    .setOneRotateTimeMs(30);
+                    .setAngles(30, -60, 30)
+                    .setOneRotateTimeMs(ONE_ANGLE_TIME);
         }
         return new ActionParams(ControlOrder.ROTATE)
                 .setAngles(angles)
-                .setOneRotateTimeMs(30);
+                .setOneRotateTimeMs(ONE_ANGLE_TIME);
     }
 
     /**
@@ -194,9 +197,11 @@ public class ActionParams {
     }
 
     public int getTimeMs() {
-        if (controlOrder == ControlOrder.ROTATE) {
-            return Math.abs(angles[anglesIndex]) * oneRotateTimeMs;
+        switch (controlOrder) {
+            case ControlOrder.ROTATE:
+                return Math.abs(angles[anglesIndex]) * oneRotateTimeMs;
         }
+
         return timeMs;
     }
 

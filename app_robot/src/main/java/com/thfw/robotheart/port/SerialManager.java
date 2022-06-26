@@ -22,8 +22,9 @@ import java.util.LinkedList;
  */
 public class SerialManager {
     private static SerialManager instance;
+    private boolean upElectricity;
     private static final String TAG = SerialManager.class.getSimpleName();
-    private static final int DELAY_TIME = 500;
+    private static final int DELAY_TIME = 200;
     SerialHelper serialHelper;
 
     ArrayList<ElectricityListener> electricityListeners = new ArrayList<>();
@@ -36,6 +37,10 @@ public class SerialManager {
     private int charge = -1;
 
     private SerialManager() {
+        initPort();
+    }
+
+    private void initPort() {
         if (RobotUtil.isInstallRobot()) {
             electricity = -1;
             percent = -1;
@@ -54,12 +59,40 @@ public class SerialManager {
         if (instance == null) {
             synchronized (SerialManager.class) {
                 instance = new SerialManager();
-                // 先上电
-                instance.send(Order.DOWN_ELECTRICITY_STATE, 0);
-                instance.send(Order.DOWN_ELECTRICITY_STATE, 1);
             }
         }
+        if (RobotUtil.isInstallRobot()) {
+            if (!instance.isOpen()) {
+                if (instance.serialHelper != null) {
+                    instance.serialHelper.close();
+                    instance.serialHelper = null;
+                }
+                instance.upElectricity = false;
+                instance.initPort();
+            }
+            instance.upElectricity();
+        }
         return instance;
+    }
+
+    /**
+     * 上电
+     */
+    private void upElectricity() {
+        if (!instance.upElectricity) {
+            upElectricityNow();
+        }
+    }
+
+    /**
+     * 强制上电
+     */
+    public void upElectricityNow() {
+        if (instance.isOpen()) {
+            instance.upElectricity = true;
+            // 先上电
+            instance.sendNow(Order.DOWN_ELECTRICITY_STATE, 1);
+        }
     }
 
     /**
@@ -149,7 +182,7 @@ public class SerialManager {
             LogUtil.i(TAG, "未校准 参数不可用 ：" + actionParams.canUse());
             return;
         }
-        if (!SerialManager.getInstance().isOpen()) {
+        if (!isOpen()) {
             LogUtil.i(TAG, "串口未开启");
             return;
         }
@@ -177,14 +210,15 @@ public class SerialManager {
                     actionParams.nextRotateIndex();
                     LogUtil.d(TAG, "params -> " + Arrays.toString(params));
                     SerialManager.getInstance().sendNow(order, params);
-                    ToastUtil.show(Arrays.toString(params));
+                    ToastUtil.show("2 -> " + angle[2] + "_" + Arrays.toString(params));
+
                     if (actionParams.nextRotate()) {
                         actionParams.setRunnable(() -> {
                             if (actionParams.nextRotate()) {
                                 startAction(actionParams);
                             }
                         });
-                        actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + DELAY_TIME);
+                        actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + (DELAY_TIME / 2));
                     } else {
                         LogUtil.i(TAG, "actionParams.nextRotate() false 02");
                     }
@@ -192,19 +226,21 @@ public class SerialManager {
             });
 
         } else {
-            int time = actionParams.getTimeMs();
             int centerPoint = actionParams.getCenterPoint();
             int left = actionParams.getLeft();
             int right = actionParams.getRight();
             int[] params;
             if (actionParams.getRunCount() == actionParams.getRepeatCount()) {
+                int time = right * ActionParams.ONE_ANGLE_TIME_10;
                 // 右
-                params = new int[]{controlOrder, centerPoint + right, time / 2};
+                params = new int[]{controlOrder, centerPoint + right, time};
             } else if (actionParams.getRunCount() == -1) {
+                int time = left * ActionParams.ONE_ANGLE_TIME_10;
                 // 归零
                 actionParams.reverseRight();
-                params = new int[]{controlOrder, centerPoint, time / 2};
+                params = new int[]{controlOrder, centerPoint, time};
             } else {
+                int time = (left + right) * ActionParams.ONE_ANGLE_TIME_10;
                 // 左or右
                 actionParams.reverseRight();
                 params = new int[]{controlOrder, actionParams.isRight() ? centerPoint + right : centerPoint - left, time};
@@ -255,6 +291,7 @@ public class SerialManager {
                                 if (servoStateListener != null) {
                                     servoStateListener.onState(new int[]{bytes[2], bytes[3], bytes[4]});
                                 }
+                                servoStateListener = null;
                             }
                             break;
                     }
@@ -281,7 +318,13 @@ public class SerialManager {
     }
 
     public boolean isOpen() {
-        return serialHelper != null && serialHelper.isOpen();
+        boolean isOpen = serialHelper != null && serialHelper.isOpen();
+        if (RobotUtil.isInstallRobot()) {
+            if (!isOpen) {
+                ToastUtil.show("port not open");
+            }
+        }
+        return isOpen;
     }
 
     /**
@@ -304,7 +347,7 @@ public class SerialManager {
     }
 
     public void queryServoState(ServoStateListener servoStateListener) {
-        if (this.servoStateListener != null) {
+        if (this.servoStateListener == null) {
             this.servoStateListener = servoStateListener;
             sendNow(Order.DOWN_STATE, 4);
             new Handler().postDelayed(() -> {
@@ -423,9 +466,13 @@ public class SerialManager {
 
 
     public void release() {
+        electricityListeners.clear();
+        touchListeners.clear();
+        mWaitOrder.clear();
         if (serialHelper != null) {
             serialHelper.close();
         }
+        instance = null;
     }
 
 }
