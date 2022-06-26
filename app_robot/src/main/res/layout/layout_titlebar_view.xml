@@ -50,16 +50,16 @@
     <ImageView
         android:id="@+id/iv_battery_ing"
         android:layout_width="wrap_content"
-        android:adjustViewBounds="true"
+        android:layout_height="16dp"
         android:layout_marginRight="-6dp"
-        android:visibility="visible"
-        android:src="@mipmap/ic_bat_ing"
-        app:tint="@color/titleBar_tint"
-        android:foregroundTint="@color/white"
+        android:adjustViewBounds="true"
         android:backgroundTint="@color/white"
         android:drawableTint="@color/white"
+        android:foregroundTint="@color/white"
+        android:src="@mipmap/ic_bat_ing"
         android:textColor="@color/white"
-        android:layout_height="16dp"/>
+        android:visibility="visible"
+        app:tint="@color/titleBar_tint" />
 
     <RelativeLayout
         android:id="@+id/rl_battery"
@@ -91,9 +91,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="16%"
             android:textColor="@color/white"
-            android:textSize="8sp" />
+            android:textSize="8dp"
+            tools:text="100%" />
 
 
     </RelativeLayout>

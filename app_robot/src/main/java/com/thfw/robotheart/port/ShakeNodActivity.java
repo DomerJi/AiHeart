@@ -22,6 +22,9 @@ public class ShakeNodActivity extends RobotBaseActivity {
     private int nodZero = ConstantUtil.DEFAULT_INT;
     private int rotateZero = ConstantUtil.DEFAULT_INT;
     private Button mBtShutdown;
+    private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
+    private Button mBtHideBar;
+    private Button mBtShowBar;
 
 
     @Override
@@ -41,6 +44,8 @@ public class ShakeNodActivity extends RobotBaseActivity {
         mBtNod = (Button) findViewById(R.id.bt_nod);
         mBtRotate = (Button) findViewById(R.id.bt_rotate);
         mBtShutdown = (Button) findViewById(R.id.bt_shutdown);
+        mBtHideBar = (Button) findViewById(R.id.bt_hide_bar);
+        mBtShowBar = (Button) findViewById(R.id.bt_show_bar);
     }
 
     @Override
@@ -73,6 +78,14 @@ public class ShakeNodActivity extends RobotBaseActivity {
         mBtShutdown.setOnClickListener(v -> {
             RobotUtil.shutdownByActivity(mContext);
 //            RobotUtil.shutdownShell();
+        });
+
+        mBtHideBar.setOnClickListener(v -> {
+            RobotUtil.showBar();
+        });
+
+        mBtShowBar.setOnClickListener(v -> {
+            RobotUtil.showBar();
         });
     }
 
