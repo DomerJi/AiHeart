@@ -26,6 +26,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
     private Button mBtHideBar;
     private Button mBtShowBar;
     private Button mBtUpElectricity;
+    private Button mBtAllAction;
 
 
     @Override
@@ -48,6 +49,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
         mBtHideBar = (Button) findViewById(R.id.bt_hide_bar);
         mBtShowBar = (Button) findViewById(R.id.bt_show_bar);
         mBtUpElectricity = (Button) findViewById(R.id.bt_up_electricity);
+        mBtAllAction = (Button) findViewById(R.id.bt_all_action);
     }
 
     @Override
@@ -92,6 +94,14 @@ public class ShakeNodActivity extends RobotBaseActivity {
         mBtUpElectricity.setOnClickListener(v -> {
             SerialManager.getInstance().upElectricityNow();
         });
+
+        mBtAllAction.setOnClickListener(v -> {
+            mBtShake.performClick();
+            mBtNod.performClick();
+            mBtRotate.performClick();
+        });
+
+
     }
 
 

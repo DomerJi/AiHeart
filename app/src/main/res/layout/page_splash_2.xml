@@ -10,10 +10,8 @@
         android:id="@+id/iv_china_flag"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="-2dp"
         android:adjustViewBounds="true"
         android:src="@mipmap/ic_china_flag"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintWidth_percent="0.9"
         tools:ignore="MissingConstraints" />
 
@@ -36,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
+        android:src="@mipmap/ic_china_people"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="MissingConstraints" />
 

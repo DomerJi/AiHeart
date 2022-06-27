@@ -319,13 +319,24 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                                     mSplash2.setVisibility(View.GONE);
                                     onMeResume();
                                 }
-                            }).setStartDelay(1200);
+                            }).setStartDelay(1300);
+
+                            // 未登录，提前跳转，防止出现首页
+                            if (!UserManager.getInstance().isTrueLogin()) {
+                                HandlerUtil.getMainHandler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+                                    }
+                                }, 1100);
+                            }
+
                         }
 
-                    }).setStartDelay(1200);
+                    }).setStartDelay(1300);
                 }
 
-            }).setStartDelay(700);
+            }).setStartDelay(800);
 
         }
     }
