@@ -102,10 +102,11 @@ public class SerialManager {
         queryServoState(new ServoStateListener() {
             @Override
             public void onState(int[] angle) {
-                int nodZero = SPHelper.getInt(ConstantUtil.Key.NOD_ZERO);
-                if (nodZero != ConstantUtil.DEFAULT_INT) {
-                    if (Math.abs(angle[0] - nodZero) > 30) {
-                        send(ActionParams.ControlOrder.NOD, nodZero, Math.abs(angle[0] - nodZero) * 30);
+                ActionParams actionParams = new ActionParams(ActionParams.ControlOrder.NOD);
+                if (actionParams.canUse()) {
+                    if (Math.abs(angle[0] - actionParams.getCenterPoint()) > 30) {
+                        send(ActionParams.ControlOrder.NOD, actionParams.getCenterPoint(),
+                                Math.abs(angle[0] - actionParams.getCenterPoint()) * 30);
                     }
                 }
                 int shakeZero = SPHelper.getInt(ConstantUtil.Key.SHAKE_ZERO);
