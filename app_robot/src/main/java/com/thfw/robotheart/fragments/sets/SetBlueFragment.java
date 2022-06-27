@@ -61,6 +61,11 @@ public class SetBlueFragment extends RobotBaseFragment {
             if (!mSwitchBlue.isChecked()) {
                 return;
             }
+            if (BleManager.getInstance().getAllConnectedDevice() != null) {
+                int size = BleManager.getInstance().getAllConnectedDevice().size();
+                ToastUtil.show("all connect size = " + size);
+            }
+            scanResultList.addAll(BleManager.getInstance().getAllConnectedDevice());
             List<BleDevice> bleDevices = new ArrayList<>();
             for (BleDevice bleDevice : scanResultList) {
 //                if (TextUtils.isEmpty(bleDevice.getName())) {
@@ -151,6 +156,7 @@ public class SetBlueFragment extends RobotBaseFragment {
     @Override
     public void onActivityCreated(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initBlue();
     }
 
     @Override
@@ -163,11 +169,6 @@ public class SetBlueFragment extends RobotBaseFragment {
         return null;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initBlue();
-    }
 
     @Override
     public void initView() {

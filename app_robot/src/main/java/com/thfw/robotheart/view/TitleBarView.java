@@ -61,7 +61,7 @@ public class TitleBarView extends LinearLayout {
 
 
     private static final String TAG = TitleBarView.class.getSimpleName();
-    private static volatile int level;
+    private static volatile int level = 100;
     private ImageView mIvTitleBarWifi;
     private TextView mTvTitleBarTime;
     private RelativeLayout mFlBattery;

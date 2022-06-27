@@ -21,9 +21,11 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:src="@mipmap/ic_china_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_china_flag"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.22"
         app:layout_constraintWidth_max="100dp"
         app:layout_constraintWidth_percent="0.2"
         tools:ignore="MissingConstraints" />
@@ -67,7 +69,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.1"
+        app:layout_constraintVertical_bias="0.15"
         tools:ignore="MissingConstraints" />
 
     <TextView

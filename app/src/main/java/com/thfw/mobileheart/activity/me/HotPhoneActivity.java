@@ -8,11 +8,14 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.common.reflect.TypeToken;
 import com.thfw.base.models.HotCallModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.OtherPresenter;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.AzQuickAdapter;
@@ -21,6 +24,7 @@ import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,6 +38,8 @@ public class HotPhoneActivity extends BaseActivity<OtherPresenter> implements Ot
     private List<String> mAzList;
     private TextView mTvCenterAz;
     private List<HotCallModel> hotCallModels;
+
+    private static final String KEY_CACHE_HOT = "key.cache.hot";
 
     private Handler mMainHandler = new Handler();
     private LoadingView mLoadingView;
@@ -63,6 +69,13 @@ public class HotPhoneActivity extends BaseActivity<OtherPresenter> implements Ot
 
     @Override
     public void initData() {
+        Type type = new TypeToken<List<HotCallModel>>() {
+        }.getType();
+        List<HotCallModel> cacheModel = SharePreferenceUtil.getObject(KEY_CACHE_HOT, type);
+        if (!EmptyUtil.isEmpty(cacheModel)) {
+            mLoadingView.hide();
+            onSuccess(cacheModel);
+        }
         mPresenter.onGetHotPhoneList();
         mRvAcQuick.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -138,10 +151,13 @@ public class HotPhoneActivity extends BaseActivity<OtherPresenter> implements Ot
     @Override
     public void onSuccess(List<HotCallModel> data) {
         if (EmptyUtil.isEmpty(data)) {
-            mLoadingView.showEmpty();
+            if (mRvList == null || mRvList.getAdapter() == null
+                    || mRvList.getAdapter().getItemCount() == 0) {
+                mLoadingView.showEmpty();
+            }
             return;
         }
-
+        SharePreferenceUtil.setString(KEY_CACHE_HOT, GsonUtil.toJson(data));
         mLoadingView.hide();
 
         hotCallModels = new ArrayList<>();
