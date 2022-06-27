@@ -84,6 +84,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     // 心情打卡今日第一次 记录
     private static final String KEY_MOOD_HINT = "key.mood.first";
     private static MainActivity mainActivity;
+    private boolean loginToed;
     /**
      * 机构信息和用户信息初始化标识
      */
@@ -326,6 +327,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                                 HandlerUtil.getMainHandler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
+                                        loginToed = true;
                                         LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
                                     }
                                 }, 1100);
@@ -344,7 +346,10 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private void onMeResume() {
         trueResume = true;
         if (!UserManager.getInstance().isTrueLogin()) {
-            LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+            if (!loginToed) {
+                LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+            }
+            loginToed = false;
         } else {
             mMainHandler.removeCallbacks(checkVersionRunnable);
             mMainHandler.postDelayed(checkVersionRunnable, isMeResumed2() ? 1000 : 2500);
