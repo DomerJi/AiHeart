@@ -400,11 +400,14 @@ public class SerialManager {
     }
 
     public void onCharge() {
-        percent = (int) ((electricity - ELECTRICITY_MIN) * 100f / (ELECTRICITY_MAX - ELECTRICITY_MIN));
+        if (electricity != -1) {
+            percent = (int) ((electricity - ELECTRICITY_MIN) * 100f / (ELECTRICITY_MAX - ELECTRICITY_MIN));
+        }
         LogUtil.i(TAG, "percent = " + percent + " ; charge = " + charge);
         for (ElectricityListener listener : electricityListeners) {
             listener.onCharge(percent, charge);
         }
+
     }
 
     /**

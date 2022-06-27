@@ -265,12 +265,13 @@ public class TitleBarView extends LinearLayout {
 
 
     private void updateBattery(int level) {
-
-        if (SerialManager.getInstance().isNoCharging()) {
-            if (level < 1) {
-                RobotUtil.shutdownByActivity(mContext);
-            } else if (TitleBarView.level > 10 && level <= 10) {
-                lowBatteryHint();
+        if (RobotUtil.isInstallRobot()) {
+            if (SerialManager.getInstance().isNoCharging()) {
+                if (level < 0) {
+                    RobotUtil.shutdownByActivity(mContext);
+                } else if (TitleBarView.level > 10 && level <= 10) {
+                    lowBatteryHint();
+                }
             }
         }
         if (level > 100) {
