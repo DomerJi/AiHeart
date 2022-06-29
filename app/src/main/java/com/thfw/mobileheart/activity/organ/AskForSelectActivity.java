@@ -267,10 +267,13 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
                 CommonParameter.setOrganizationSelected(mSelecteds);
                 UserManager.getInstance().getUser().setOrganList(mSelecteds);
                 if (!EmptyUtil.isEmpty(mSelecteds)) {
+                    UserManager.getInstance().getUser().setOrganization(mSelecteds.get(mSelecteds.size() - 1).getId());
                     UPushAlias.setTag(mSelecteds.get(mSelecteds.size() - 1).getId());
                 }
                 UserManager.getInstance().notifyUserInfo();
-                CommonParameter.setOrganizationId(mScanOrganizationId);
+                if (!TextUtils.isEmpty(mScanOrganizationId)) {
+                    CommonParameter.setOrganizationId(mScanOrganizationId);
+                }
                 LoadingDialog.hide();
                 ToastUtil.show("选择成功");
                 mIsFirst = false;

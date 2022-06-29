@@ -14,6 +14,7 @@
         android:layout_marginRight="26dp">
 
         <TextView
+            android:id="@+id/tv_device_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -21,6 +22,21 @@
             android:text="蓝牙"
             android:textColor="@color/white"
             android:textSize="@dimen/textSize_large" />
+
+        <CheckBox
+            android:id="@+id/cb_show_null_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:layout_toRightOf="@id/tv_device_name"
+            android:buttonTint="@color/colorRobotFore"
+            android:foregroundTint="@color/white"
+            android:gravity="center_vertical"
+            android:text="显示没有名称的设备"
+            android:textColor="@color/colorRobotFore"
+            android:textSize="12dp" />
+
 
         <ImageView
             android:id="@+id/iv_rescan"
@@ -75,9 +91,12 @@
             android:id="@+id/tv_me_ble_name"
             style="@style/switch_set_style"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/iv_name_arrow_right"
+            android:gravity="right|center_vertical"
+            android:maxLines="1"
+            android:minWidth="60dp"
             android:textColor="@color/white"
             android:textSize="@dimen/textSize"
             tools:ignore="DuplicateIds"

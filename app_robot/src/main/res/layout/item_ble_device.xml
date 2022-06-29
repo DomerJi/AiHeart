@@ -1,21 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/set_top_bar_height"
     android:layout_marginLeft="26dp"
     android:layout_marginRight="26dp">
 
-
     <TextView
         android:id="@+id/tv_device_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
         android:textColor="@color/white"
         android:textSize="@dimen/textSize"
+        app:layout_constraintBottom_toTopOf="@id/tv_device_mac"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:ignore="MissingConstraints"
         tools:text="设备名称" />
+
+    <ImageView
+        android:id="@+id/iv_audio_device"
+        android:layout_width="24sp"
+        android:layout_height="24sp"
+        android:src="@drawable/ic_round_music_note_24"
+        app:layout_constraintBottom_toBottomOf="@id/tv_device_name"
+        app:layout_constraintLeft_toRightOf="@id/tv_device_name"
+        app:layout_constraintTop_toTopOf="@id/tv_device_name" />
+
+    <TextView
+        android:id="@+id/tv_device_mac"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:textColor="@color/colorRobotFore"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_device_name"
+        tools:ignore="MissingConstraints"
+        tools:text="mac:" />
 
 
     <TextView
@@ -23,19 +47,38 @@
         style="@style/switch_set_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="8dp"
         android:textColor="@color/white"
         android:textSize="@dimen/textSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="DuplicateIds"
         tools:text="123" />
+
+
+    <TextView
+        android:id="@+id/tv_bind"
+        style="@style/switch_set_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:text="已保存"
+        android:textColor="@color/colorRobotFore"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_device_name"
+        app:layout_constraintBottom_toBottomOf="@id/tv_device_name"
+        app:layout_constraintLeft_toRightOf="@id/iv_audio_device"
+        app:layout_constraintTop_toTopOf="@id/tv_device_name"
+        app:layout_goneMarginLeft="8dp"
+        tools:ignore="DuplicateIds" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_1px"
-        android:layout_alignParentBottom="true"
-        android:background="@color/set_divider" />
+        android:background="@color/set_divider"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

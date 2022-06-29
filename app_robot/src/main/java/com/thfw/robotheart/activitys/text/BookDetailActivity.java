@@ -308,6 +308,7 @@ public class BookDetailActivity extends RobotBaseActivity<BookPresenter> impleme
 
     @Override
     public void onFail(ResponeThrowable throwable) {
+        ToastUtil.show(throwable.toString());
         mLoadingView.showFail(v -> {
             initData();
         });

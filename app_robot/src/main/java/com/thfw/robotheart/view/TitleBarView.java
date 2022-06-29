@@ -233,6 +233,7 @@ public class TitleBarView extends LinearLayout {
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+
         filter.addAction("android.bluetooth.BluetoothAdapter.STATE_OFF");
         filter.addAction("android.bluetooth.BluetoothAdapter.STATE_ON");
         mContext.registerReceiver(mBluecastReceiver, filter);
@@ -371,6 +372,9 @@ public class TitleBarView extends LinearLayout {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     mIvTitleBarWifi.setVisibility(NetworkUtil.isWifiConnected(mContext) ? VISIBLE : GONE);
+                    if (mIvTitleBarWifi.getVisibility() == VISIBLE) {
+                        mTvTitleBarTime.setText(HourUtil.getHHMM(System.currentTimeMillis()));
+                    }
                 }
             };
         }

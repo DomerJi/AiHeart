@@ -2,27 +2,24 @@ package com.thfw.robotheart.adapter;
 
 import android.Manifest;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothProfile;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.clj.fastble.BleManager;
-import com.clj.fastble.data.BleDevice;
 import com.thfw.robotheart.R;
-import com.thfw.robotheart.util.BleUtil;
+import com.thfw.robotheart.robot.BleDevice;
+import com.thfw.robotheart.robot.BleManager;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -54,74 +51,57 @@ public class BleAdapter extends BaseAdapter<BleDevice, BleAdapter.BleHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull @NotNull BleAdapter.BleHolder holder, int position) {
+    public void onBindViewHolder(@NonNull @NotNull BleHolder holder, int position) {
         BleDevice bleDevice = mDataList.get(position);
         String name = bleDevice.getName();
         if (TextUtils.isEmpty(name)) {
-            name = BleUtil.parseAdertisedData(bleDevice.getScanRecord()).getName();
-        }
-
-        if (TextUtils.isEmpty(name)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                // 验证是否许可权限
-                if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED) {
+            // 验证是否许可权限
+            if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     name = bleDevice.getDevice().getAlias();
                 }
             }
         }
 
         if (TextUtils.isEmpty(name)) {
-            name = bleDevice.getMac();
+            name = "unknown";
         }
-        holder.mTvDeviceName.setText(name + "：" + bleDevice.getMac());
-        int connetState = BleManager.getInstance().getConnectState(bleDevice);
-        switch (connetState) {
-            case BluetoothProfile.STATE_DISCONNECTED:
-                holder.mTvState.setText("未连接");
-                holder.mTvState.setTextColor(white80);
+        switch (bleDevice.getDevice().getBondState()) {
+            case BluetoothDevice.BOND_BONDED:
+                holder.mTvBind.setText("已保存");
+                holder.mTvBind.setVisibility(View.VISIBLE);
                 break;
-            case BluetoothProfile.STATE_DISCONNECTING:
-                holder.mTvState.setText("断开中");
-                holder.mTvState.setTextColor(white80);
-                break;
-            case BluetoothProfile.STATE_CONNECTING:
-                holder.mTvState.setText("连接中");
-                holder.mTvState.setTextColor(themeColor);
-                break;
-            case BluetoothProfile.STATE_CONNECTED:
-                holder.mTvState.setText("已连接");
-                holder.mTvState.setTextColor(themeColor);
+            case BluetoothDevice.BOND_BONDING:
+                holder.mTvBind.setText("配对中...");
+                holder.mTvBind.setVisibility(View.VISIBLE);
                 break;
             default:
-                holder.mTvState.setText("未连接");
-                holder.mTvState.setTextColor(white80);
+                holder.mTvBind.setVisibility(View.GONE);
                 break;
         }
 
-    }
-
-    private String getAliasName(BluetoothDevice device) {
-        String deviceAlias = device.getName();
-
-        try {
-            Method method = device.getClass().getMethod("getAliasName");
-            if (method != null) {
-                deviceAlias = (String) method.invoke(device);
-            }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        holder.mTvDeviceName.setText(name);
+        holder.mTvDeviceMac.setText("地址：" + bleDevice.getMac());
+        if (BleManager.getInstance().isConnected(bleDevice.getDevice())) {
+            holder.mTvState.setText("已连接");
+            holder.mTvState.setTextColor(themeColor);
+        } else {
+            holder.mTvState.setText("未连接");
+            holder.mTvState.setTextColor(white80);
         }
-        return deviceAlias;
+        holder.mIvAudioDevice.setVisibility(BleManager.getInstance()
+                .isAudioBlue(bleDevice.getDevice())
+                ? View.VISIBLE : View.GONE);
     }
+
 
     public class BleHolder extends RecyclerView.ViewHolder {
 
         private TextView mTvState;
         private TextView mTvDeviceName;
+        private TextView mTvDeviceMac;
+        private ImageView mIvAudioDevice;
+        private TextView mTvBind;
 
         public BleHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -136,6 +116,10 @@ public class BleAdapter extends BaseAdapter<BleDevice, BleAdapter.BleHolder> {
         private void initView(View itemView) {
             mTvState = (TextView) itemView.findViewById(R.id.tv_state);
             mTvDeviceName = (TextView) itemView.findViewById(R.id.tv_device_name);
+            mTvDeviceMac = (TextView) itemView.findViewById(R.id.tv_device_mac);
+            mIvAudioDevice = (ImageView) itemView.findViewById(R.id.iv_audio_device);
+            mTvBind = (TextView) itemView.findViewById(R.id.tv_bind);
         }
     }
+
 }

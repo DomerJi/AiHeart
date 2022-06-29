@@ -87,7 +87,8 @@ public class EditInfoActivity extends RobotBaseActivity {
         NICKNAME(0, "填写昵称", 2, 15),
         NAME(1, "填写真实姓名", 2, 15),
         CLASSES(2, "填写部门", 2, 15),
-        PHONE_NUMBER(3, "填写手机号", 11, 11);
+        PHONE_NUMBER(3, "填写手机号", 11, 11),
+        BLUE_NAME(4, "修改蓝牙名称", 2, 10);
 
         private int type;
         private int textSizeMin;

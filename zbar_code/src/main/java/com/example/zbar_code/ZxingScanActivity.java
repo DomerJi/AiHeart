@@ -2,8 +2,11 @@ package com.example.zbar_code;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -23,8 +26,11 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.tools.ToastUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
+import cn.bingoogolapple.qrcode.core.BGAQRCodeUtil;
 import cn.bingoogolapple.qrcode.core.QRCodeView;
 import cn.bingoogolapple.qrcode.zxing.QRCodeDecoder;
 import cn.bingoogolapple.qrcode.zxing.ZXingView;
@@ -190,17 +196,46 @@ public class ZxingScanActivity extends AppCompatActivity implements QRCodeView.D
                 .forResult(new OnResultCallbackListener<LocalMedia>() {
                     @Override
                     public void onResult(List<LocalMedia> result) {
-                        Log.e(TAG, "onResult = " + result.size());
-                        String avatarUrl = result.get(0).getOriginalPath();
-                        Log.e(TAG, "avatarUrl = " + avatarUrl + "_" + result.get(0).toString());
-                        String qRCodeStr = QRCodeDecoder.syncDecodeQRCode(avatarUrl);
-                        Log.e(TAG, "qRCodeStr = " + qRCodeStr);
-                        if (TextUtils.isEmpty(qRCodeStr)) {
-                            ToastUtils.s(ZxingScanActivity.this, "没有检测到二维码");
-                        } else {
-                            onScanQRCodeSuccess(qRCodeStr);
-                        }
+                        Log.e(TAG, "onResult.size = " + result.size());
+                        Log.e(TAG, "onResult = " + result.get(0).toString());
+                        String avatarUrl = result.get(0).getRealPath();
+                        Log.e(TAG, "avatarUrl = " + avatarUrl);
 
+                        Bitmap bitmap = BGAQRCodeUtil.getDecodeAbleBitmap(avatarUrl);
+                        Log.e(TAG, "bitmap = " + bitmap);
+                        if (bitmap != null) {
+                            String url = QRCodeDecoder.syncDecodeQRCode(bitmap);
+                            Log.e(TAG, "bitmap2 url = " + url + "jsp");
+                            if (!TextUtils.isEmpty(url)) {
+                                onScanQRCodeSuccess(url);
+                            } else {
+                                ToastUtils.s(ZxingScanActivity.this, "没有检测到二维码");
+                            }
+                            return;
+                        }
+                        InputStream imageStream = null;
+                        try {
+                            Uri uri = Uri.parse(result.get(0).getPath());
+                            imageStream = getContentResolver().openInputStream(uri);
+                            Bitmap bitmap2 = BitmapFactory.decodeStream(imageStream);
+                            Log.e(TAG, "bitmap2 = " + bitmap2);
+                            String url = QRCodeDecoder.syncDecodeQRCode(bitmap2);
+                            Log.e(TAG, "bitmap2 url = " + url + "jsp");
+                            if (!TextUtils.isEmpty(url)) {
+                                onScanQRCodeSuccess(url);
+                            } else {
+                                ToastUtils.s(ZxingScanActivity.this, "没有检测到二维码");
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "bitmap2 ee = " + e.getMessage());
+                        } finally {
+                            if (imageStream != null) {
+                                try {
+                                    imageStream.close();
+                                } catch (IOException e) {
+                                }
+                            }
+                        }
                     }
 
                     @Override

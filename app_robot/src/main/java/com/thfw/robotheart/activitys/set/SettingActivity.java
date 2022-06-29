@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.thfw.base.base.IPresenter;
@@ -49,6 +50,7 @@ public class SettingActivity extends RobotBaseActivity {
 
     private Fragment mFragment;
     private RelativeLayout mRlSetUpdate;
+    private FragmentLoader mLoader;
 
     @Override
     public int getContentView() {
@@ -89,7 +91,7 @@ public class SettingActivity extends RobotBaseActivity {
     @Override
     public void initData() {
 
-        FragmentLoader mLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
+        mLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
         if (LogUtil.isLogEnabled() || RobotUtil.isSystemApp()) {
             mLoader.add(R.id.tv_set_net, new SetNetFragment());
         } else {
@@ -184,4 +186,11 @@ public class SettingActivity extends RobotBaseActivity {
         BuglyUtil.requestNewVersion(null);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (mLoader != null && mLoader.getCurrentFragment() != null) {
+            mLoader.getCurrentFragment().onActivityResult(requestCode, resultCode, data);
+        }
+    }
 }
