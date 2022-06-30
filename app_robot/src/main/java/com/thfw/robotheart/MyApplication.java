@@ -153,6 +153,7 @@ public class MyApplication extends MultiDexApplication {
         RobotUtil.longPressOffBtn();
         if (RobotUtil.isInstallRobot()) {
             BuglyUtil.init("382fc62522");
+            RobotUtil.hookWebView();
         } else {
             BuglyUtil.init("d24e28638f");
         }

@@ -22,7 +22,7 @@
         android:layout_marginRight="8dp"
         android:text="9:00"
         android:textColor="@color/titleBar_tint"
-        android:textSize="16sp" />
+        android:textSize="16dp" />
 
     <ImageView
         android:id="@+id/iv_titleBar_blue"

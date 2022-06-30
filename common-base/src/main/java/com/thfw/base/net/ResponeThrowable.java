@@ -48,6 +48,7 @@ public class ResponeThrowable extends Throwable implements IResult {
     public String toString() {
         return "ResponeThrowable{" +
                 "code=" + code +
+                "detailMessage" + super.getMessage() +
                 ", message='" + message + '\'' +
                 '}';
     }
