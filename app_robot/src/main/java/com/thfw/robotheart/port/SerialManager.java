@@ -260,7 +260,7 @@ public class SerialManager implements SensorEventListener {
                     if (actionParams.nextRotate()) {
                         actionParams.setRunnable(() -> {
                             if (actionParams.nextRotate()) {
-                                mRunningActionParams.remove(controlOrder);
+                                mRunningActionParams.remove(actionParams.getControlOrder());
                                 startAction(actionParams);
                             }
                         });
@@ -295,7 +295,7 @@ public class SerialManager implements SensorEventListener {
             SerialManager.getInstance().sendNow(order, params);
             if (actionParams.getRunCount() > -1) {
                 actionParams.setRunnable(() -> {
-                    mRunningActionParams.remove(controlOrder);
+                    mRunningActionParams.remove(actionParams.getControlOrder());
                     actionParams.runCountChange();
                     startAction(actionParams);
                 });
