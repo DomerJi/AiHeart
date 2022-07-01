@@ -199,17 +199,21 @@ public class TitleBarView extends LinearLayout {
     }
 
     public static void robotNoCharge(Context mContext) {
-        if (!Dormant.isCanDormant() && mContext instanceof RobotBaseActivity) {
-            RobotBaseActivity baseActivity = (RobotBaseActivity) mContext;
-            if (!EmptyUtil.isEmpty(baseActivity) && baseActivity.isMeResumed()) {
-                DialogRobotFactory.createFullSvgaDialog(baseActivity, AnimFileName.EMOJI_XUANYUN, new DialogRobotFactory.OnSVGACallBack() {
-                    @Override
-                    public void callBack(SVGAImageView svgaImageView) {
-                        LogUtil.i(TAG, "眩晕");
-                    }
-                });
-                TtsHelper.getInstance().start(new TtsModel("请尽快把我放到固定位置哦"), null);
+        try {
+            if (!Dormant.isCanDormant() && mContext instanceof RobotBaseActivity) {
+                RobotBaseActivity baseActivity = (RobotBaseActivity) mContext;
+                if (!EmptyUtil.isEmpty(baseActivity) && baseActivity.isMeResumed()) {
+                    DialogRobotFactory.createFullSvgaDialog(baseActivity, AnimFileName.EMOJI_XUANYUN, new DialogRobotFactory.OnSVGACallBack() {
+                        @Override
+                        public void callBack(SVGAImageView svgaImageView) {
+                            LogUtil.i(TAG, "眩晕");
+                        }
+                    });
+                    TtsHelper.getInstance().start(new TtsModel("请尽快把我放到固定位置哦"), null);
+                }
             }
+        } catch (Exception e) {
+            LogUtil.d(TAG, "robotNoCharge e = " + e.getMessage());
         }
     }
 

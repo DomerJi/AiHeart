@@ -514,8 +514,13 @@ public class BleManager {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (!isDisConnect && currentBluetoothDevice != null) {
-                        unpairDevice(currentBluetoothDevice);
+                    if (currentBluetoothDevice != null) {
+                        if (isConnected(currentBluetoothDevice)) {
+                            unpairDevice(currentBluetoothDevice);
+                        }
+                        if (!isDisConnect) {
+                            unpairDevice(currentBluetoothDevice);
+                        }
                     }
                     Log.d(TAG, "isDisConnect:" + (isDisConnect ? "断开通话成功" : "断开通话失败") + currentBluetoothDevice.getName());
                 } else if (profile == BluetoothProfile.A2DP) {

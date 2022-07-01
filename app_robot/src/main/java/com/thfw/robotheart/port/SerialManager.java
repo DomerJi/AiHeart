@@ -12,6 +12,7 @@ import com.pl.sphelper.ConstantUtil;
 import com.pl.sphelper.SPHelper;
 import com.thfw.base.ContextApp;
 import com.thfw.base.utils.HandlerUtil;
+import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.robot.RobotUtil;
@@ -55,6 +56,7 @@ public class SerialManager implements SensorEventListener {
     private float y;
     private float z;
     private int horizontalFlag = -1;
+    private static long lastSensorTime;
 
     private SerialManager() {
         initPort();
@@ -79,7 +81,7 @@ public class SerialManager implements SensorEventListener {
             sensorManager = (SensorManager) ContextApp.get().getSystemService(Context.SENSOR_SERVICE);
             if (sensorManager != null) {
                 sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-                sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+                sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
             }
         }
 
@@ -213,7 +215,7 @@ public class SerialManager implements SensorEventListener {
         } else if (!isOpen()) {
             LogUtil.i(TAG, "串口未开启");
             return;
-        } else if (isNoHorizontal()) {
+        } else if (horizontalFlag == 1) {
             LogUtil.i(TAG, "请放好机器人");
             ToastUtil.show("请放好机器人");
             return;
@@ -537,17 +539,18 @@ public class SerialManager implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         // 传感器返回的数据
-        x = event.values[0];
-        y = event.values[1];
-        z = event.values[2];
+        float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
         StringBuffer buffer = new StringBuffer();
         buffer.append("X：").append(String.format("%.2f", x)).append("\n");
         buffer.append("Y：").append(String.format("%.2f", y)).append("\n");
-        buffer.append("Z：").append(String.format("%.2f", z)).append("\n");
-        int horizontal = isNoHorizontal() ? 1 : 0;
+        buffer.append("Z：").append(String.format("%.2f", z));
+        int horizontal = isNoHorizontal(x, y, z) ? 1 : 0;
         if (horizontalFlag != horizontal) {
             horizontalFlag = horizontal;
-            if (horizontalFlag == 1) {
+            if (horizontalFlag == 1 && System.currentTimeMillis() - lastSensorTime > HourUtil.LEN_5_MINUTE) {
+                lastSensorTime = System.currentTimeMillis();
                 onSensor(horizontalFlag);
             }
             ToastUtil.show(buffer.toString());
@@ -555,13 +558,16 @@ public class SerialManager implements SensorEventListener {
     }
 
 
-    public boolean isNoHorizontal() {
-        return x > 0.1 || y > 0.1 || z > 0.1;
+    public boolean isNoHorizontal(float x, float y, float z) {
+        boolean horizontal = Math.abs(this.y - y) > 0.5 || Math.abs(this.x - x) > 0.5 || Math.abs(this.z - z) > 0.5;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        return horizontal;
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 
 }
