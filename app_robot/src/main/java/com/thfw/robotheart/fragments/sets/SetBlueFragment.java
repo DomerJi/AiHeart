@@ -1,9 +1,6 @@
 package com.thfw.robotheart.fragments.sets;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothHeadset;
-import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,6 +34,10 @@ import com.thfw.robotheart.adapter.BleAdapter;
 import com.thfw.robotheart.robot.BleDevice;
 import com.thfw.robotheart.robot.BleManager;
 import com.thfw.robotheart.robot.BleScanCallback;
+import com.thfw.robotheart.robot.IBtConnectCallBack;
+import com.thfw.robotheart.util.DialogRobotFactory;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,7 +72,7 @@ public class SetBlueFragment extends RobotBaseFragment {
 
     public BleScanCallback mBleScanCallback = new BleScanCallback() {
         @Override
-        public void onScanFinished(List<BleDevice> scanResultList) {
+        public void onScanFinished() {
             mIvRescan.clearAnimation();
             if (!mSwitchBlue.isChecked()) {
                 return;
@@ -81,6 +82,13 @@ public class SetBlueFragment extends RobotBaseFragment {
                 mTvScaningHint.setText("没有搜索到蓝牙设备");
             } else {
                 mTvScaningHint.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void onBondStateChanged(BluetoothDevice bluetoothDevice) {
+            if (mBleAdapter != null) {
+                mBleAdapter.notifyItem(bluetoothDevice);
             }
         }
 
@@ -166,35 +174,29 @@ public class SetBlueFragment extends RobotBaseFragment {
         Collections.sort(scanResultList, new Comparator<BleDevice>() {
             @Override
             public int compare(BleDevice o1, BleDevice o2) {
-                if (bindDevice != null) {
-                    if (bindDevice.getAddress().contains(o1.getMac())) {
-                        return -1;
-                    }
-                }
-                if (BleManager.getInstance().isAudioBlue(o1.getDevice())) {
+                if (bindDevice != null && bindDevice.getAddress().contains(o1.getMac())) {
+                    return -1;
+                } else if (BleManager.getInstance().isAudioBlue(o1.getDevice())) {
                     if (BleManager.getInstance().isAudioBlue(o2.getDevice())) {
-                        return o1.getRssi() > o2.getRssi() ? -1 : o1.getRssi() == o2.getRssi() ? 0 : 1;
+                        return 0;
+                    } else if (bindDevice != null && bindDevice.getAddress().contains(o2.getMac())) {
+                        return 1;
                     } else {
                         return -1;
                     }
                 } else {
-
                     if (TextUtils.isEmpty(o1.getName())) {
                         if (TextUtils.isEmpty(o2.getName())) {
-                            return o1.getRssi() > o2.getRssi() ? -1 : o1.getRssi() == o2.getRssi() ? 0 : 1;
+                            return 0;
                         } else {
                             return 1;
                         }
+                    } else if (TextUtils.isEmpty(o2.getName())) {
+                        return -1;
                     } else {
-                        if (TextUtils.isEmpty(o2.getName())) {
-                            return -1;
-                        } else {
-                            return o1.getRssi() > o2.getRssi() ? -1 : o1.getRssi() == o2.getRssi() ? 0 : 1;
-                        }
+                        return 0;
                     }
                 }
-
-
             }
         });
     }
@@ -312,12 +314,14 @@ public class SetBlueFragment extends RobotBaseFragment {
                         BleManager.getInstance().newCancelScan();
                     } catch (Exception e) {
                         LogUtil.e(TAG, "BleManager.getInstance().cancelScan()2 e = " + e.getMessage());
+                    } finally {
+                        scanResultList.clear();
+                        mBleAdapter.notifyDataSetChanged();
+                        mIvRescan.setVisibility(View.GONE);
+                        mIvRescan.clearAnimation();
+                        mTvScaningHint.setText("蓝牙已关闭");
+                        mTvScaningHint.setVisibility(View.VISIBLE);
                     }
-                    mBleAdapter.setDataListNotify(null);
-                    mIvRescan.setVisibility(View.GONE);
-                    mIvRescan.clearAnimation();
-                    mTvScaningHint.setText("蓝牙已关闭");
-                    mTvScaningHint.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -326,6 +330,19 @@ public class SetBlueFragment extends RobotBaseFragment {
     private void initAdapter() {
         mBleAdapter = new BleAdapter(scanResultList);
         mRvBlue.setAdapter(mBleAdapter);
+        mBleAdapter.setOnBlueLongClickListener(new BleAdapter.OnBlueLongClickListener() {
+            @Override
+            public void onLongCLick(List<BleDevice> list, int position) {
+                if (position < 0 || position >= list.size()) {
+                    return;
+                }
+                BleDevice bleDevice = list.get(position);
+                if (bleDevice.getDevice().getBondState() != BluetoothDevice.BOND_BONDED) {
+                    return;
+                }
+                unpairDeviceOrUnDisconnect(bleDevice);
+            }
+        });
         mBleAdapter.setOnRvItemListener(new OnRvItemListener<BleDevice>() {
             @Override
             public void onItemClick(List<BleDevice> list, int position) {
@@ -333,58 +350,67 @@ public class SetBlueFragment extends RobotBaseFragment {
                     return;
                 }
                 BleDevice bleDevice = list.get(position);
-                if (BleManager.getInstance().isConnected(bleDevice.getDevice())) {
-                    ToastUtil.show("取消配对");
-                    BleManager.getInstance().unpairDevice(bleDevice.getDevice());
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mBleAdapter != null) {
-                                mBleAdapter.notifyDataSetChanged();
-                            }
-                            if (BleManager.getInstance().getPairBLEAndConnectBLE() != null) {
-                                mHandler.postDelayed(this, 1500);
-                            }
-                        }
-                    }, 1000);
-                } else {
+                if (!BleManager.getInstance().isConnected(bleDevice.getDevice())) {
                     LogUtil.d(TAG, "connect ==========================");
                     BleManager.getInstance().newCancelScan();
-                    onBleConnect(bleDevice);
+                    if (!bleDevice.isAnim()) {
+                        bleDevice.beginConnect();
+                        if (mBleAdapter != null) {
+                            mBleAdapter.notifyItem(bleDevice.getDevice());
+                        }
+                        BleManager.getInstance().connectBluetoothA2DP(mContext, bleDevice.getDevice(), new IBtConnectCallBack() {
+                            @Override
+                            public void onSuccess() {
+                                bleDevice.endConnect();
+                                if (mBleAdapter != null) {
+                                    mBleAdapter.notifyItem(bleDevice.getDevice());
+                                }
+                            }
+
+                            @Override
+                            public void onFail() {
+                                bleDevice.endConnect();
+                                if (mBleAdapter != null) {
+                                    mBleAdapter.notifyItem(bleDevice.getDevice());
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    unpairDeviceOrUnDisconnect(bleDevice);
                 }
             }
         });
     }
 
-    private void onBleConnect(BleDevice bleDevice) {
-//        if (bleDevice.getDevice().getBondState() == BluetoothDevice.BOND_BONDED) {
-//            ToastUtil.show("BOND_BONDED");
-//            bleDevice.getDevice().connectGatt(mContext, false, new BluetoothGattCallback() {
-//                @Override
-//                public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-//                    super.onConnectionStateChange(gatt, status, newState);
-//                    LogUtil.d(TAG, "newState -> " + newState);
-//                    if (mBleAdapter != null) {
-//                        mBleAdapter.notifyDataSetChanged();
-//                    }
-//                }
-//            });
-//            return;
-//        }
-        ToastUtil.show("BOND_UN_BONDED");
-        BleManager.getInstance().connectDevice(bleDevice.getDevice());
-        mHandler.postDelayed(new Runnable() {
+    private void unpairDeviceOrUnDisconnect(BleDevice bleDevice) {
+        DialogRobotFactory.createCustomDialog(getActivity(), new DialogRobotFactory.OnViewCallBack() {
             @Override
-            public void run() {
-                if (mBleAdapter != null) {
-                    mBleAdapter.notifyDataSetChanged();
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvTitle.setText("提示");
+                if (BleManager.getInstance().isConnected(bleDevice.getDevice())) {
+                    mTvHint.setText("确定要断开与 ”" + bleDevice.getVisibleName() + "“的连接吗?");
+                } else {
+                    mTvHint.setText("确定要取消与 ”" + bleDevice.getVisibleName() + "“的配对吗?");
                 }
-                if (BleManager.getInstance().getPairBLEAndConnectBLE() == null) {
-                    mHandler.postDelayed(this, 1500);
+                mTvLeft.setText("取消");
+                mTvRight.setText("确定");
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+                if (view.getId() == R.id.tv_right) {
+                    // 已连接 断开连接
+                    if (BleManager.getInstance().isConnected(bleDevice.getDevice())) {
+                        BleManager.getInstance().disconnect(mContext, bleDevice.getDevice());
+                        // 未连接 取消配对
+                    } else {
+                        BleManager.getInstance().unpairDevice(bleDevice.getDevice());
+                    }
                 }
             }
-        }, 1000);
-
+        });
     }
 
     private void syncScan() {
@@ -411,8 +437,6 @@ public class SetBlueFragment extends RobotBaseFragment {
         }
     }
 
-    BluetoothHeadset bluetoothHeadset;
-
     private void initBlue() {
         if (initScanRule) {
             return;
@@ -420,34 +444,6 @@ public class SetBlueFragment extends RobotBaseFragment {
         initScanRule = true;
 
         BleManager.getInstance().init(getActivity().getApplication());
-
-
-        // Get the default adapter
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        BluetoothProfile.ServiceListener profileListener = new BluetoothProfile.ServiceListener() {
-            public void onServiceConnected(int profile, BluetoothProfile proxy) {
-                if (profile == BluetoothProfile.HEADSET) {
-                    LogUtil.d(TAG, "onServiceConnected profile = " + profile);
-                    bluetoothHeadset = (BluetoothHeadset) proxy;
-                }
-            }
-
-            public void onServiceDisconnected(int profile) {
-                LogUtil.d(TAG, "onServiceDisconnected profile = " + profile);
-                if (profile == BluetoothProfile.HEADSET) {
-                    bluetoothHeadset = null;
-                }
-            }
-        };
-
-        // Establish connection to the proxy.
-        bluetoothAdapter.getProfileProxy(mContext, profileListener, BluetoothProfile.HEADSET);
-
-        // ... call functions on bluetoothHeadset
-
-        // Close proxy connection after use.
-//        bluetoothAdapter.closeProfileProxy(bluetoothHeadset);
     }
 
     @Override
@@ -460,7 +456,8 @@ public class SetBlueFragment extends RobotBaseFragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode,
+                                 @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && requestCode == EditInfoActivity.EditType.BLUE_NAME.getType()) {
             String blueName = data.getStringExtra(EditInfoActivity.KEY_RESULT);

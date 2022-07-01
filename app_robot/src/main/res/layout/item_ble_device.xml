@@ -5,7 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/set_top_bar_height"
     android:layout_marginLeft="26dp"
-    android:layout_marginRight="26dp">
+    android:layout_marginRight="26dp"
+    android:background="@drawable/blue_bonding_selector">
+
+
+    <View
+        android:id="@+id/v_bonding_anim"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/blue_bonding_anim"
+        app:layout_constraintWidth_percent="0.25"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/tv_device_name"
@@ -15,6 +25,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/textSize"
         app:layout_constraintBottom_toTopOf="@id/tv_device_mac"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         tools:ignore="MissingConstraints"
@@ -37,6 +48,7 @@
         android:textColor="@color/colorRobotFore"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_device_name"
         tools:ignore="MissingConstraints"
         tools:text="mac:" />
@@ -48,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="16dp"
         android:textColor="@color/white"
         android:textSize="@dimen/textSize"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -37,6 +37,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.port.SerialManager;
+import com.thfw.robotheart.robot.BleManager;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.Dormant;
@@ -140,7 +141,7 @@ public class TitleBarView extends LinearLayout {
         setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
         inflate(mContext, R.layout.layout_titlebar_view, this);
         initView();
-
+        notifyBlueIconState();
         // todo 正式策略应该是机器人
         if (RobotUtil.isInstallRobot()) {
             initBatAndTimeReceiverRobot();
@@ -155,15 +156,25 @@ public class TitleBarView extends LinearLayout {
     // 机器人电量和 充电状态
     private void initBatAndTimeReceiverRobot() {
         if (mElectricityListener == null) {
-            mElectricityListener = (percent, charge) -> {
-                updateBattery(percent);
-                // 充电中
-                mIvBatteryIng.setVisibility(charge == 1 ? VISIBLE : GONE);
+            mElectricityListener = new SerialManager.ElectricityListener() {
+                @Override
+                public void onCharge(int percent, int charge) {
+                    updateBattery(percent);
+                    // 充电中
+                    mIvBatteryIng.setVisibility(charge == 1 ? VISIBLE : GONE);
 
-                if (oldCharge == 1 && charge == 0) {
-                    robotNoCharge(mContext);
+                    if (oldCharge == 1 && charge == 0) {
+                        robotNoCharge(mContext);
+                    }
+                    oldCharge = charge;
                 }
-                oldCharge = charge;
+
+                @Override
+                public void onSensor(int sensor) {
+                    if (sensor == 1) {
+                        robotNoCharge(mContext);
+                    }
+                }
             };
         }
         SerialManager.getInstance().addEleListener(mElectricityListener);
@@ -202,6 +213,7 @@ public class TitleBarView extends LinearLayout {
         }
     }
 
+
     private void initTimeReceiver() {
         createTimeReceiver();
         IntentFilter filter = new IntentFilter();
@@ -233,7 +245,9 @@ public class TitleBarView extends LinearLayout {
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        filter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         filter.addAction("android.bluetooth.BluetoothAdapter.STATE_OFF");
         filter.addAction("android.bluetooth.BluetoothAdapter.STATE_ON");
         mContext.registerReceiver(mBluecastReceiver, filter);
@@ -254,13 +268,11 @@ public class TitleBarView extends LinearLayout {
         mIvTitleBarWifi.setVisibility(NetworkUtil.isWifiConnected(mContext) ? VISIBLE : GONE);
         mIvTitleBarBlue = (ImageView) findViewById(R.id.iv_titleBar_blue);
         mRlBattery = (RelativeLayout) findViewById(R.id.rl_battery);
-
+        /**
+         * 蓝牙
+         */
         BluetoothAdapter blueadapter = BluetoothAdapter.getDefaultAdapter();
-        boolean blueOpen = false;
-        //支持蓝牙模块
-        if (blueadapter != null) {
-            blueOpen = blueadapter.isEnabled();
-        }
+        boolean blueOpen = blueadapter != null && blueadapter.isEnabled();
         mIvTitleBarBlue.setVisibility(blueOpen ? VISIBLE : GONE);
     }
 
@@ -406,15 +418,16 @@ public class TitleBarView extends LinearLayout {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     String action = intent.getAction();
-                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     switch (action) {
+                        case BluetoothDevice.ACTION_BOND_STATE_CHANGED:
+                        case BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED:
                         case BluetoothDevice.ACTION_ACL_CONNECTED:
-//                            Toast.makeText(context , "蓝牙设备:" + device.getName() + "已链接", Toast.LENGTH_SHORT).show();
-                            break;
+                        case BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED:
                         case BluetoothDevice.ACTION_ACL_DISCONNECTED:
-//                            Toast.makeText(context , "蓝牙设备:" + device.getName() + "已断开", Toast.LENGTH_SHORT).show();
+                            notifyBlueIconState();
                             break;
                         case BluetoothAdapter.ACTION_STATE_CHANGED:
+                            notifyBlueIconState();
                             int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
                             switch (blueState) {
                                 case BluetoothAdapter.STATE_OFF:
@@ -428,6 +441,16 @@ public class TitleBarView extends LinearLayout {
                     }
                 }
             };
+        }
+    }
+
+    private void notifyBlueIconState() {
+        if (mIvTitleBarBlue != null) {
+            if (BleManager.getInstance().isConnected()) {
+                mIvTitleBarBlue.setImageResource(R.drawable.ic_baseline_bluetooth_connected_24);
+            } else {
+                mIvTitleBarBlue.setImageResource(R.drawable.ic_baseline_bluetooth_24);
+            }
         }
     }
 

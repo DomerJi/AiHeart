@@ -1,10 +1,11 @@
 package com.thfw.robotheart.robot;
 
 
-import java.util.List;
+import android.bluetooth.BluetoothDevice;
 
 public abstract class BleScanCallback implements BleScanPresenterImp {
 
-    public abstract void onScanFinished(List<BleDevice> scanResultList);
+    public abstract void onScanFinished();
+    public abstract void onBondStateChanged(BluetoothDevice device);
 
 }

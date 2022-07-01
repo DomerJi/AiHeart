@@ -239,7 +239,7 @@ public class DormantActivity extends RobotBaseActivity
         SVGAHelper.playSVGA(mIvAnim, SVGAHelper.SVGAModel.create(AnimFileName.EMOJI_GUANJI).setLoopCount(1), new DialogRobotFactory.SimpleSVGACallBack() {
             @Override
             public void onFinished() {
-                if (!RobotUtil.shutdownByActivity(mContext)) {
+                if (!RobotUtil.shutdownShell()) {
                     onStartDormant();
                 } else {
                     LogUtil.d(TAG, "shutDown -> isInstallRobot true 【关机成功】");
@@ -259,6 +259,13 @@ public class DormantActivity extends RobotBaseActivity
             onWakeUp(WakeUpType.SWIM);
         }
         originCharge = charge;
+    }
+
+    @Override
+    public void onSensor(int sensor) {
+        if (sensor == 1) {
+            onWakeUp(WakeUpType.SWIM);
+        }
     }
 
     @Override

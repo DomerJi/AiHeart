@@ -1,10 +1,16 @@
 package com.thfw.robotheart.port;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.Log;
 
 import com.pl.sphelper.ConstantUtil;
 import com.pl.sphelper.SPHelper;
+import com.thfw.base.ContextApp;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -13,6 +19,7 @@ import com.thfw.robotheart.robot.RobotUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
@@ -20,21 +27,34 @@ import java.util.LinkedList;
  * Date: 2022/6/6 13:13
  * Describe:Todo
  */
-public class SerialManager {
+public class SerialManager implements SensorEventListener {
+
+    /**
+     * 陀螺仪
+     */
+    private SensorManager sensorManager;
+    private Sensor sensor;
+
     private static SerialManager instance;
     private boolean upElectricity;
     private static final String TAG = SerialManager.class.getSimpleName();
-    private static final int DELAY_TIME = 200;
-    SerialHelper serialHelper;
+    private static final int DELAY_TIME = 100;
+    private SerialHelper serialHelper;
 
-    ArrayList<ElectricityListener> electricityListeners = new ArrayList<>();
-    ArrayList<RobotTouchListener> touchListeners = new ArrayList<>();
-    LinkedList<String> mWaitOrder = new LinkedList<>();
+    private ArrayList<ElectricityListener> electricityListeners = new ArrayList<>();
+    private ArrayList<RobotTouchListener> touchListeners = new ArrayList<>();
+    private LinkedList<String> mWaitOrder = new LinkedList<>();
+    private HashMap<Integer, ActionParams> mRunningActionParams = new HashMap<>();
+
     private static final int ELECTRICITY_MAX = 8000;
     private static final int ELECTRICITY_MIN = 7000;
     private int electricity = -1;
     private int percent = 100;
     private int charge = -1;
+    private float x;
+    private float y;
+    private float z;
+    private int horizontalFlag = -1;
 
     private SerialManager() {
         initPort();
@@ -42,9 +62,13 @@ public class SerialManager {
 
     private void initPort() {
         if (RobotUtil.isInstallRobot()) {
+            x = 0;
+            y = 0;
+            z = 0;
             electricity = -1;
             percent = 100;
             charge = -1;
+            horizontalFlag = -1;
             try {
                 Log.d(TAG, "open =====================1111111111111111111");
                 int openStatus = open(SerialPortUtil.PORT_NAME, SerialPortUtil.IBAUDTATE);
@@ -52,7 +76,13 @@ public class SerialManager {
             } catch (Exception e) {
                 Log.d(TAG, "open =====================444444444444444444=" + e.getMessage());
             }
+            sensorManager = (SensorManager) ContextApp.get().getSystemService(Context.SENSOR_SERVICE);
+            if (sensorManager != null) {
+                sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+                sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+            }
         }
+
     }
 
     public static SerialManager getInstance() {
@@ -176,26 +206,29 @@ public class SerialManager {
     public void startAction(ActionParams actionParams) {
         if (actionParams == null) {
             LogUtil.e(TAG, "actionParams -> null");
-        } else {
-            LogUtil.i(TAG, "actionParams -> " + actionParams.toString());
-        }
-        if (!actionParams.canUse()) {
+            return;
+        } else if (!actionParams.canUse()) {
             LogUtil.i(TAG, "未校准 参数不可用 ：" + actionParams.canUse());
             return;
-        }
-        if (!isOpen()) {
+        } else if (!isOpen()) {
             LogUtil.i(TAG, "串口未开启");
             return;
+        } else if (isNoHorizontal()) {
+            LogUtil.i(TAG, "请放好机器人");
+            ToastUtil.show("请放好机器人");
+            return;
         }
-
+        LogUtil.i(TAG, "actionParams -> " + actionParams.toString());
         int order = Order.DOWN_SERVO_STATE;
         int controlOrder = actionParams.getControlOrder();
-
-
+        if (mRunningActionParams.containsKey(controlOrder)) {
+            LogUtil.i(TAG, "正在执行该动作");
+            return;
+        }
+        mRunningActionParams.put(controlOrder, actionParams);
         if (actionParams.getRunnable() != null) {
             actionParams.getHandler().removeCallbacks(actionParams.getRunnable());
         }
-
         /**
          * 旋转
          */
@@ -216,11 +249,15 @@ public class SerialManager {
                     if (actionParams.nextRotate()) {
                         actionParams.setRunnable(() -> {
                             if (actionParams.nextRotate()) {
+                                mRunningActionParams.remove(controlOrder);
                                 startAction(actionParams);
                             }
                         });
                         actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + (DELAY_TIME / 2));
                     } else {
+                        actionParams.getHandler().postDelayed(() -> {
+                            mRunningActionParams.remove(controlOrder);
+                        }, params[2] + DELAY_TIME);
                         LogUtil.i(TAG, "actionParams.nextRotate() false 02");
                     }
                 }
@@ -250,10 +287,15 @@ public class SerialManager {
             SerialManager.getInstance().sendNow(order, params);
             if (actionParams.getRunCount() > -1) {
                 actionParams.setRunnable(() -> {
+                    mRunningActionParams.remove(controlOrder);
                     actionParams.runCountChange();
                     startAction(actionParams);
                 });
                 actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + DELAY_TIME);
+            } else {
+                actionParams.getHandler().postDelayed(() -> {
+                    mRunningActionParams.remove(controlOrder);
+                }, params[2] + DELAY_TIME);
             }
         }
 
@@ -407,7 +449,13 @@ public class SerialManager {
         for (ElectricityListener listener : electricityListeners) {
             listener.onCharge(percent, charge);
         }
+    }
 
+    public void onSensor(int sensor) {
+        LogUtil.i(TAG, "sensor = " + sensor + " ;");
+        for (ElectricityListener listener : electricityListeners) {
+            listener.onSensor(sensor);
+        }
     }
 
     /**
@@ -456,8 +504,11 @@ public class SerialManager {
 
     public ServoStateListener servoStateListener;
 
+    // sensor == 1 是 没有水平
     public interface ElectricityListener {
         void onCharge(int percent, int charge);
+
+        void onSensor(int sensor);
     }
 
     public interface RobotTouchListener {
@@ -466,10 +517,14 @@ public class SerialManager {
 
     public interface ServoStateListener {
         void onState(int[] angle);
+
     }
 
 
     public void release() {
+        if (sensorManager != null && sensor != null) {
+            sensorManager.unregisterListener(this, sensor);
+        }
         electricityListeners.clear();
         touchListeners.clear();
         mWaitOrder.clear();
@@ -477,6 +532,36 @@ public class SerialManager {
             serialHelper.close();
         }
         instance = null;
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        // 传感器返回的数据
+        x = event.values[0];
+        y = event.values[1];
+        z = event.values[2];
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("X：").append(String.format("%.2f", x)).append("\n");
+        buffer.append("Y：").append(String.format("%.2f", y)).append("\n");
+        buffer.append("Z：").append(String.format("%.2f", z)).append("\n");
+        int horizontal = isNoHorizontal() ? 1 : 0;
+        if (horizontalFlag != horizontal) {
+            horizontalFlag = horizontal;
+            if (horizontalFlag == 1) {
+                onSensor(horizontalFlag);
+            }
+            ToastUtil.show(buffer.toString());
+        }
+    }
+
+
+    public boolean isNoHorizontal() {
+        return x > 0.1 || y > 0.1 || z > 0.1;
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 
 }

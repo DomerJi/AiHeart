@@ -79,8 +79,8 @@ public class ShakeNodActivity extends RobotBaseActivity {
          * 两种方法都可行。一种没有关机提示（shutdownShell） 一种有 RobotUtil.shutdownByActivity(mContext);
          */
         mBtShutdown.setOnClickListener(v -> {
-            RobotUtil.shutdownByActivity(mContext);
-//            RobotUtil.shutdownShell();
+//            RobotUtil.shutdownByActivity(mContext);
+            RobotUtil.shutdownShell();
         });
 
         mBtHideBar.setOnClickListener(v -> {

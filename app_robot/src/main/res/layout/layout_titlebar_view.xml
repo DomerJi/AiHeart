@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="36dp"
-    android:background="@color/titlebar_background"
     android:gravity="right|center_vertical"
-    tools:background="@color/titlebar_background"
     tools:parentTag="android.widget.LinearLayout">
 
     <Space

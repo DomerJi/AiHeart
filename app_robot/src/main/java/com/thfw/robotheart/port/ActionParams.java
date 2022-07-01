@@ -19,6 +19,7 @@ public class ActionParams {
     public static final int ONE_ANGLE_TIME = 30;
     public static final int ONE_ANGLE_TIME_10 = ONE_ANGLE_TIME / 10;
 
+
     /**
      * leftNod = 140;
      * rightNod = 260;
@@ -99,14 +100,13 @@ public class ActionParams {
         return this;
     }
 
-
     // =========================  旋转相关【结束】  ==============================
 
 
     /**
      * 先从右开始
      */
-    private boolean beginRight = true;
+    private boolean beginRight;
     private Handler mHandler;
     private Runnable mRunnable;
 
