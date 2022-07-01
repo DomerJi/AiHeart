@@ -217,7 +217,9 @@ public class SerialManager implements SensorEventListener {
             return;
         } else if (horizontalFlag == 1) {
             LogUtil.i(TAG, "请放好机器人");
-            ToastUtil.show("请放好机器人");
+            if (LogUtil.isLogEnabled()) {
+                ToastUtil.show("请放好机器人");
+            }
             return;
         }
         LogUtil.i(TAG, "actionParams -> " + actionParams.toString());
@@ -225,9 +227,18 @@ public class SerialManager implements SensorEventListener {
         int controlOrder = actionParams.getControlOrder();
         if (mRunningActionParams.containsKey(controlOrder)) {
             LogUtil.i(TAG, "正在执行该动作");
+            if (LogUtil.isLogEnabled()) {
+                ToastUtil.show("正在执行该动作");
+            }
             return;
         }
         mRunningActionParams.put(controlOrder, actionParams);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mRunningActionParams.remove(controlOrder);
+            }
+        }, 3000);
         if (actionParams.getRunnable() != null) {
             actionParams.getHandler().removeCallbacks(actionParams.getRunnable());
         }
@@ -246,12 +257,14 @@ public class SerialManager implements SensorEventListener {
                     actionParams.nextRotateIndex();
                     LogUtil.d(TAG, "params -> " + Arrays.toString(params));
                     SerialManager.getInstance().sendNow(order, params);
-                    ToastUtil.show("2 -> " + angle[2] + "_" + Arrays.toString(params));
+                    if (LogUtil.isLogEnabled()) {
+                        ToastUtil.show("2 -> " + angle[2] + "_" + Arrays.toString(params));
+                    }
 
                     if (actionParams.nextRotate()) {
                         actionParams.setRunnable(() -> {
+                            mRunningActionParams.remove(controlOrder);
                             if (actionParams.nextRotate()) {
-                                mRunningActionParams.remove(controlOrder);
                                 startAction(actionParams);
                             }
                         });
@@ -365,7 +378,7 @@ public class SerialManager implements SensorEventListener {
     public boolean isOpen() {
         boolean isOpen = serialHelper != null && serialHelper.isOpen();
         if (RobotUtil.isInstallRobot()) {
-            if (!isOpen) {
+            if (LogUtil.isLogEnabled() && !isOpen) {
                 ToastUtil.show("port not open");
             }
         }
@@ -551,8 +564,15 @@ public class SerialManager implements SensorEventListener {
             horizontalFlag = horizontal;
             if (horizontalFlag == 1 && System.currentTimeMillis() - lastSensorTime > HourUtil.LEN_5_MINUTE) {
                 lastSensorTime = System.currentTimeMillis();
-                onSensor(horizontalFlag);
+                HandlerUtil.getMainHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        onSensor(horizontalFlag);
+                    }
+                });
             }
+        }
+        if (LogUtil.isLogEnabled()) {
             ToastUtil.show(buffer.toString());
         }
     }
