@@ -226,13 +226,13 @@ public class SerialManager implements SensorEventListener {
         int order = Order.DOWN_SERVO_STATE;
         int controlOrder = actionParams.getControlOrder();
         if (mRunningActionParams.containsKey(controlOrder)) {
-            if (System.currentTimeMillis() - mRunningActionParams.get(controlOrder) < 5000) {
+            if (System.currentTimeMillis() - mRunningActionParams.get(controlOrder) < 3000) {
                 LogUtil.i(TAG, "正在执行该动作");
                 if (LogUtil.isLogEnabled()) {
                     ToastUtil.show("正在执行该动作");
                 }
+                return;
             }
-            return;
         }
         mRunningActionParams.put(controlOrder, System.currentTimeMillis());
         if (actionParams.getRunnable() != null) {
