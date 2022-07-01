@@ -318,8 +318,7 @@ public class BleManager {
 
     public boolean isConnected(BluetoothDevice bluetoothDevice) {
         BluetoothDevice bindDevice = getPairBLEAndConnectBLE();
-        boolean pair = bindDevice != null && bluetoothDevice != null && bindDevice.getAddress().equals(bluetoothDevice.getAddress());
-        return pair;
+        return bindDevice != null && bluetoothDevice != null && bindDevice.getAddress().equals(bluetoothDevice.getAddress());
     }
 
     public static BluetoothDevice getPairBLEAndConnectBLE() {
@@ -497,7 +496,7 @@ public class BleManager {
 
         @Override
         public void onServiceDisconnected(int profile) {
-
+            noDisconnectUnPair(true);
         }
 
         @Override
@@ -514,14 +513,7 @@ public class BleManager {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (currentBluetoothDevice != null) {
-                        if (isConnected(currentBluetoothDevice)) {
-                            unpairDevice(currentBluetoothDevice);
-                        }
-                        if (!isDisConnect) {
-                            unpairDevice(currentBluetoothDevice);
-                        }
-                    }
+                    noDisconnectUnPair(isDisConnect);
                     Log.d(TAG, "isDisConnect:" + (isDisConnect ? "断开通话成功" : "断开通话失败") + currentBluetoothDevice.getName());
                 } else if (profile == BluetoothProfile.A2DP) {
                     // 使用A2DP的协议断开蓝牙设备（使用了反射技术调用断开的方法）
@@ -534,8 +526,8 @@ public class BleManager {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    noDisconnectUnPair(isDisConnect);
                     Log.d(TAG, "isDisConnect:" + (isDisConnect ? "断开音频成功" : "断开音频失败") + currentBluetoothDevice.getName());
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -544,4 +536,20 @@ public class BleManager {
 
     };
 
+    /**
+     * todo 断不开取消配对
+     */
+    private void noDisconnectUnPair(boolean isDisConnect) {
+        if (currentBluetoothDevice != null) {
+            if (isConnected(currentBluetoothDevice)) {
+                unpairDevice(currentBluetoothDevice);
+            }
+            if (!isDisConnect) {
+                unpairDevice(currentBluetoothDevice);
+            }
+            if (scanCallback == null) {
+                scanCallback.onBondStateChanged(currentBluetoothDevice);
+            }
+        }
+    }
 }
