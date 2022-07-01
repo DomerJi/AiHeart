@@ -45,7 +45,7 @@ public class SerialManager implements SensorEventListener {
     private ArrayList<ElectricityListener> electricityListeners = new ArrayList<>();
     private ArrayList<RobotTouchListener> touchListeners = new ArrayList<>();
     private LinkedList<String> mWaitOrder = new LinkedList<>();
-    private HashMap<Integer, ActionParams> mRunningActionParams = new HashMap<>();
+    private HashMap<Integer, Long> mRunningActionParams = new HashMap<>();
 
     private static final int ELECTRICITY_MAX = 8000;
     private static final int ELECTRICITY_MIN = 7000;
@@ -226,19 +226,15 @@ public class SerialManager implements SensorEventListener {
         int order = Order.DOWN_SERVO_STATE;
         int controlOrder = actionParams.getControlOrder();
         if (mRunningActionParams.containsKey(controlOrder)) {
-            LogUtil.i(TAG, "正在执行该动作");
-            if (LogUtil.isLogEnabled()) {
-                ToastUtil.show("正在执行该动作");
+            if (System.currentTimeMillis() - mRunningActionParams.get(controlOrder) < 5000) {
+                LogUtil.i(TAG, "正在执行该动作");
+                if (LogUtil.isLogEnabled()) {
+                    ToastUtil.show("正在执行该动作");
+                }
             }
             return;
         }
-        mRunningActionParams.put(controlOrder, actionParams);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mRunningActionParams.remove(controlOrder);
-            }
-        }, 3000);
+        mRunningActionParams.put(controlOrder, System.currentTimeMillis());
         if (actionParams.getRunnable() != null) {
             actionParams.getHandler().removeCallbacks(actionParams.getRunnable());
         }
@@ -263,16 +259,13 @@ public class SerialManager implements SensorEventListener {
 
                     if (actionParams.nextRotate()) {
                         actionParams.setRunnable(() -> {
-                            mRunningActionParams.remove(controlOrder);
                             if (actionParams.nextRotate()) {
+                                mRunningActionParams.remove(controlOrder);
                                 startAction(actionParams);
                             }
                         });
                         actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + (DELAY_TIME / 2));
                     } else {
-                        actionParams.getHandler().postDelayed(() -> {
-                            mRunningActionParams.remove(controlOrder);
-                        }, params[2] + DELAY_TIME);
                         LogUtil.i(TAG, "actionParams.nextRotate() false 02");
                     }
                 }
@@ -307,10 +300,6 @@ public class SerialManager implements SensorEventListener {
                     startAction(actionParams);
                 });
                 actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + DELAY_TIME);
-            } else {
-                actionParams.getHandler().postDelayed(() -> {
-                    mRunningActionParams.remove(controlOrder);
-                }, params[2] + DELAY_TIME);
             }
         }
 
