@@ -541,15 +541,20 @@ public class BleManager {
      */
     private void noDisconnectUnPair(boolean isDisConnect) {
         if (currentBluetoothDevice != null) {
-            if (isConnected(currentBluetoothDevice)) {
-                unpairDevice(currentBluetoothDevice);
-            }
             if (!isDisConnect) {
                 unpairDevice(currentBluetoothDevice);
             }
-            if (scanCallback == null) {
+            if (scanCallback != null) {
                 scanCallback.onBondStateChanged(currentBluetoothDevice);
             }
+            HandlerUtil.getMainHandler().postDelayed(() -> {
+                if (isConnected(currentBluetoothDevice)) {
+                    unpairDevice(currentBluetoothDevice);
+                }
+                if (scanCallback != null) {
+                    scanCallback.onBondStateChanged(currentBluetoothDevice);
+                }
+            }, 2000);
         }
     }
 }
