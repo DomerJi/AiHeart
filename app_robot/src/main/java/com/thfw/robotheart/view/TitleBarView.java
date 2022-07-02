@@ -170,7 +170,7 @@ public class TitleBarView extends LinearLayout {
                 }
 
                 @Override
-                public void onSensor(int sensor) {
+                public void onSensor(int sensor, double azimuth, double pitch, double roll) {
                     if (sensor == 1) {
                         robotNoCharge(mContext);
                     }

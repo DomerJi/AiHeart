@@ -7,6 +7,9 @@ import android.widget.TextView;
 import com.pl.sphelper.ConstantUtil;
 import com.pl.sphelper.SPHelper;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.utils.HourUtil;
+import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.robot.RobotUtil;
@@ -27,6 +30,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
     private Button mBtShowBar;
     private Button mBtUpElectricity;
     private Button mBtAllAction;
+    private TextView mTvSensorMsg;
 
 
     @Override
@@ -104,5 +108,63 @@ public class ShakeNodActivity extends RobotBaseActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (LogUtil.isLogEnabled()) {
+            SerialManager.getInstance().addEleListener(getEleListener());
+        }
+    }
 
+
+    SerialManager.ElectricityListener electricityListener;
+
+    private SerialManager.ElectricityListener getEleListener() {
+        if (electricityListener == null) {
+            electricityListener = new SerialManager.ElectricityListener() {
+
+
+                @Override
+                public void onCharge(int percent, int charge) {
+
+                }
+
+                @Override
+                public void onSensor(int sensor, double azimuth, double pitch, double roll) {
+                    if (ToastUtil.isMainThread()) {
+                        printSensor(sensor, azimuth, pitch, roll);
+                    } else {
+                        runOnUiThread(() -> {
+                            printSensor(sensor, azimuth, pitch, roll);
+                        });
+                    }
+                }
+            };
+        }
+        return electricityListener;
+    }
+
+    private void printSensor(int sensor, double azimuth, double pitch, double roll) {
+        if (mTvSensorMsg == null) {
+            mTvSensorMsg = findViewById(R.id.tv_sensor_msg);
+        }
+        if (mTvSensorMsg != null) {
+            mTvSensorMsg.setText("Azimuth 方位角 ：" + azimuth
+                    + "\n(0 - 359) 0=North, 90=East, 180=South, 270=West"
+                    + "\nPitch  倾斜角 ：" + pitch
+                    + "\n(-90 to 90)"
+                    + "\nRoll  旋转角 ：" + roll
+                    + "\n(-180 to 180)"
+                    + "\n sensor ：" + sensor
+                    + "\n 时间 ：" + HourUtil.getYYMMDD_HHMMSS(System.currentTimeMillis()));
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (electricityListener != null) {
+            SerialManager.getInstance().removeEleListener(electricityListener);
+        }
+    }
 }

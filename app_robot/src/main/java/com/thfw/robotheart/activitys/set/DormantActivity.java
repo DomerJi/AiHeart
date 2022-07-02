@@ -262,7 +262,7 @@ public class DormantActivity extends RobotBaseActivity
     }
 
     @Override
-    public void onSensor(int sensor) {
+    public void onSensor(int sensor, double azimuth, double pitch, double roll) {
         if (sensor == 1) {
             onWakeUp(WakeUpType.SWIM);
         }
