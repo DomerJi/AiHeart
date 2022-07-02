@@ -14,6 +14,8 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.robot.RobotUtil;
 
+import java.util.Arrays;
+
 public class ShakeNodActivity extends RobotBaseActivity {
 
     private android.widget.TextView mTvProvider;
@@ -156,6 +158,8 @@ public class ShakeNodActivity extends RobotBaseActivity {
                     + "\nRoll  旋转角 ：" + roll
                     + "\n(-180 to 180)"
                     + "\n sensor ：" + sensor
+                    + "\n angle ：" + Arrays.toString(SerialManager.getInstance().getAngle())
+                    + "\n angle2 ：" + Arrays.toString(SerialManager.getInstance().getAngle2())
                     + "\n 时间 ：" + HourUtil.getYYMMDD_HHMMSS(System.currentTimeMillis()));
         }
     }

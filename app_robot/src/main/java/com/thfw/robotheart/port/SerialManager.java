@@ -38,6 +38,12 @@ public class SerialManager {
     private Sensor magneticSensor, accelerometerSensor;
     private float[] values, r, gravity, geomagnetic;
 
+    // 将纳秒转化为秒
+    private static final float NS2S = 1.0f / 1000000000.0f;
+    private float timestamp;
+    private float angle[] = new float[3];
+    private float angle2[] = new float[3];
+
     private static SerialManager instance;
     private boolean upElectricity;
     private static final String TAG = SerialManager.class.getSimpleName();
@@ -56,6 +62,7 @@ public class SerialManager {
     private int charge = -1;
     private int horizontalFlag = -1;
     private static long lastSensorTime;
+    private Sensor orientationSensor;
 
     private SerialManager() {
         initPort();
@@ -75,23 +82,33 @@ public class SerialManager {
                 Log.d(TAG, "open =====================444444444444444444=" + e.getMessage());
             }
 
-            //获取SensorManager
-            manager = (SensorManager) ContextApp.get().getSystemService(Context.SENSOR_SERVICE);
-            listener = new MySensorEventListener();
-            //获取Sensor
-            magneticSensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-            accelerometerSensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            //初始化数组
-            values = new float[3];//用来保存最终的结果
-            gravity = new float[3];//用来保存加速度传感器的值
-            r = new float[9];//
-            geomagnetic = new float[3];//用来保存地磁传感器的值
-
-            manager.registerListener(listener, magneticSensor, SensorManager.SENSOR_DELAY_NORMAL);
-            manager.registerListener(listener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
-
+            initSensor();
+        } else {
+            if (LogUtil.isLogEnabled()) {
+                initSensor();
+            }
         }
 
+
+    }
+
+    private void initSensor() {
+        // 获取SensorManager
+        manager = (SensorManager) ContextApp.get().getSystemService(Context.SENSOR_SERVICE);
+        listener = new MySensorEventListener();
+        // 获取Sensor
+        magneticSensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        accelerometerSensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        orientationSensor = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        // 初始化数组
+        values = new float[3];//用来保存最终的结果
+        gravity = new float[3];//用来保存加速度传感器的值
+        r = new float[9];
+        geomagnetic = new float[3];//用来保存地磁传感器的值
+
+        manager.registerListener(listener, magneticSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        manager.registerListener(listener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        manager.registerListener(listener, orientationSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
 
@@ -99,13 +116,21 @@ public class SerialManager {
 
         @Override
         public void onSensorChanged(SensorEvent event) {
-            if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-                geomagnetic = event.values;
+            LogUtil.d("onSensorChanged", "type = " + event.sensor.getType()
+                    + "_" + Arrays.toString(event.values));
+            switch (event.sensor.getType()) {
+                case Sensor.TYPE_MAGNETIC_FIELD:
+                    geomagnetic = event.values;
+                    break;
+                case Sensor.TYPE_ACCELEROMETER:
+                    gravity = event.values;
+                    getValue();
+                    break;
+                case Sensor.TYPE_GYROSCOPE:
+                    getValue2(event);
+                    break;
             }
-            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                gravity = event.values;
-                getValue();
-            }
+
         }
 
         @Override
@@ -560,11 +585,16 @@ public class SerialManager {
 
 
     public void release() {
-        if (manager != null && magneticSensor != null) {
-            manager.unregisterListener(listener, magneticSensor);
-        }
-        if (manager != null && accelerometerSensor != null) {
-            manager.unregisterListener(listener, accelerometerSensor);
+        if (manager != null) {
+            if (magneticSensor != null) {
+                manager.unregisterListener(listener, magneticSensor);
+            }
+            if (accelerometerSensor != null) {
+                manager.unregisterListener(listener, accelerometerSensor);
+            }
+            if (orientationSensor != null) {
+                manager.unregisterListener(listener, orientationSensor);
+            }
         }
         electricityListeners.clear();
         touchListeners.clear();
@@ -575,7 +605,39 @@ public class SerialManager {
         instance = null;
     }
 
-    public void getValue() {
+    /**
+     * 陀螺仪
+     *
+     * @param event
+     */
+    private void getValue2(SensorEvent event) {
+        // 从 x、y、z 轴的正向位置观看处于原始方位的设备，如果设备逆时针旋转，将会收到正值；否则，为负值
+        if (timestamp != 0) {
+            // 得到两次检测到手机旋转的时间差（纳秒），并将其转化为秒
+            final double dT = (event.timestamp - timestamp) * NS2S;
+            // 将手机在各个轴上的旋转角度相加，即可得到当前位置相对于初始位置的旋转弧度
+            angle[0] += event.values[0] * dT;
+            angle[1] += event.values[1] * dT;
+            angle[2] += event.values[2] * dT;
+
+            // 将弧度转化为角度
+            float anglex = (float) Math.toDegrees(angle[0]);
+            float angley = (float) Math.toDegrees(angle[1]);
+            float anglez = (float) Math.toDegrees(angle[2]);
+            angle2[0] = anglex;
+            angle2[1] = angley;
+            angle2[2] = anglez;
+            LogUtil.d("anglex------------>" + anglex);
+            LogUtil.d("angley------------>" + angley);
+            LogUtil.d("anglez------------>" + anglez);
+            LogUtil.d("gyroscopeSensor.getMinDelay()----------->" +
+                    orientationSensor.getMinDelay());
+        }
+        // 将当前时间赋值给 timestamp
+        timestamp = event.timestamp;
+    }
+
+    private void getValue() {
         // r从这里返回
         SensorManager.getRotationMatrix(r, null, gravity, geomagnetic);
         //values从这里返回
@@ -606,6 +668,21 @@ public class SerialManager {
         }
     }
 
+    public float[] getGeomagnetic() {
+        return geomagnetic;
+    }
+
+    public float[] getGravity() {
+        return gravity;
+    }
+
+    public float[] getAngle() {
+        return angle;
+    }
+
+    public float[] getAngle2() {
+        return angle2;
+    }
 
     public boolean isNoHorizontal(double azimuth, double pitch, double roll) {
         return Math.abs(pitch) > 5 || Math.abs(roll) > 5;
