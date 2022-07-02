@@ -54,9 +54,6 @@ public class SerialManager {
     private int electricity = -1;
     private int percent = 100;
     private int charge = -1;
-    private float x;
-    private float y;
-    private float z;
     private int horizontalFlag = -1;
     private static long lastSensorTime;
 
@@ -66,9 +63,6 @@ public class SerialManager {
 
     private void initPort() {
         if (RobotUtil.isInstallRobot()) {
-            x = 0;
-            y = 0;
-            z = 0;
             electricity = -1;
             percent = 100;
             charge = -1;
