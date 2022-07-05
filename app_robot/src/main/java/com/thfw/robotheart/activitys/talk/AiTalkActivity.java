@@ -219,7 +219,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             mReadAfterSpeech = mSwitchAfter.isChecked();
             PolicyHelper.getInstance().setSwitchReadAfter(mReadAfterSpeech);
             SharePreferenceUtil.setBoolean(KEY_ROBOT_SPEECH_READ, mReadAfterSpeech);
-            readAfterSpeech();
+            readAfterSpeech(true);
         });
 
 
@@ -869,6 +869,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     }
 
     private void readAfterSpeech() {
+        readAfterSpeech(false);
+    }
+
+    private void readAfterSpeech(boolean formUser) {
         if (mReadAfterSpeech && mSwitchAfter.getVisibility() == View.VISIBLE) {
             if (PolicyHelper.getInstance().isRequestIng()) {
                 PolicyHelper.getInstance().end();
@@ -887,18 +891,19 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 }
             }
         } else {
-            if (mIvTalkModel.isSelected()) {
-                mTtsQueue.clear();
-                TtsHelper.getInstance().stop();
-                PolicyHelper.getInstance().startSpeech();
-                mStvText.show();
-            } else {
-                mStvText.hide();
+            if (formUser) {
+                if (mIvTalkModel.isSelected()) {
+                    mTtsQueue.clear();
+                    TtsHelper.getInstance().stop();
+                    PolicyHelper.getInstance().startSpeech();
+                    mStvText.show();
+                } else {
+                    mStvText.hide();
+                }
+                if (mStvText != null) {
+                    mStvText.setSpeechTextHint("倾听中···");
+                }
             }
-            if (mStvText != null) {
-                mStvText.setSpeechTextHint("倾听中···");
-            }
-
         }
     }
 
