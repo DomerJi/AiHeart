@@ -16,7 +16,7 @@
         android:paddingTop="2dp"
         android:paddingBottom="4dp"
         android:textColor="@color/colorRobotFore"
-        android:textColorHint="@color/white_40"
+        android:textColorHint="@color/white_60"
         android:textSize="@dimen/textSize_small"
         app:layout_constraintBottom_toTopOf="@id/waveHeader"
         app:layout_constraintLeft_toLeftOf="parent"

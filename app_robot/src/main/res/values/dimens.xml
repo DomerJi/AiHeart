@@ -70,6 +70,7 @@
     <dimen name="navigation_left_width">160dp</dimen>
     <dimen name="navigation_bottom_height">100dp</dimen>
     <dimen name="switch_min_width">85dp</dimen>
+    <dimen name="switch_min_width_small">35dp</dimen>
     <dimen name="robot_video_small_width">650dp</dimen>
 
     <dimen name="login_edit_height">54dp</dimen>

@@ -27,7 +27,8 @@ public class SpeechHelper implements ISpeechFace {
 
 
     private static final String TAG = SpeechHelper.class.getSimpleName();
-    private static final long VAD_EOS = 1600;// 语音后端点（说完后1.6秒无语音结束对话）
+    private static final long VAD_EOS = 1800;// 语音后端点（说完后1.8秒无语音结束对话）
+    private static final long VAD_EOS_2 = 2400;// 语音后端点（说完后2.4秒无语音结束对话）
     private static final long VAD_BOS = 6000;// 语音前端点（开始后6秒无语音结束对话）
     private StringBuilder mSpeechResult;
 
@@ -124,6 +125,9 @@ public class SpeechHelper implements ISpeechFace {
         prepare();
         if (initialized()) {
             VoiceTypeManager.getManager().setVoiceType(VoiceType.ACCEPT_START);
+            // 设置语音后端点:后端点静音检测时间，即用户停止说话多长时间内即认为不再输入， 自动停止录音
+            mIat.setParameter(SpeechConstant.VAD_EOS, String.valueOf(PolicyHelper
+                    .getInstance().isSwitchReadAfter() ? VAD_EOS_2 : VAD_EOS));
             if (ErrorCode.SUCCESS == mIat.startListening(mListener)) {
                 VoiceTypeManager.getManager().setVoiceType(VoiceType.ACCEPT_ING);
                 return true;

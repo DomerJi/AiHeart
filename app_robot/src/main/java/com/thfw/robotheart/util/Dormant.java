@@ -6,6 +6,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.activitys.set.DormantActivity;
+import com.thfw.ui.voice.speech.SpeechHelper;
 
 /**
  * 休眠控制
@@ -68,7 +69,7 @@ public class Dormant {
             reset();
             return;
         }
-        if (ExoPlayerFactory.isPlaying()) {
+        if (ExoPlayerFactory.isPlaying() || SpeechHelper.getInstance().isIng()) {
             reset();
             LogUtil.d(TAG_DORMANT, "addMinute isPlaying = true");
             return;

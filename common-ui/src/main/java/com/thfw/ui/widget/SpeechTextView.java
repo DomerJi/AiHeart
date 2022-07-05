@@ -2,6 +2,7 @@ package com.thfw.ui.widget;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
@@ -22,6 +23,7 @@ public class SpeechTextView extends ConstraintLayout {
 
     private TextView mTvSpeechText;
     private MultiWaveHeader mWaveHeader;
+    private int colorTheme;
 
     public SpeechTextView(Context context) {
         this(context, null);
@@ -37,6 +39,7 @@ public class SpeechTextView extends ConstraintLayout {
     }
 
     private void init(Context context) {
+        colorTheme = Color.parseColor("#91dff3");
         View.inflate(context, R.layout.layout_speech_text_view, this);
         mTvSpeechText = (TextView) findViewById(R.id.tv_speech_text);
         mWaveHeader = (MultiWaveHeader) findViewById(R.id.waveHeader);
@@ -53,6 +56,23 @@ public class SpeechTextView extends ConstraintLayout {
             mTvSpeechText.setText(text);
         }
     }
+
+    public void setSpeechTextHint(String hintText) {
+        if (hintText != null && hintText.contains("倾听")) {
+//            stopAnim();
+            mWaveHeader.setVelocity(55);
+            mWaveHeader.setStartColor(Color.CYAN);
+        } else {
+//            startAnim();
+            mWaveHeader.setVelocity(25);
+            mWaveHeader.setStartColor(Color.GREEN);
+
+        }
+        if (mTvSpeechText != null) {
+            mTvSpeechText.setHint(hintText);
+        }
+    }
+
 
     public void append(String text) {
         if (mTvSpeechText != null) {
@@ -129,6 +149,18 @@ public class SpeechTextView extends ConstraintLayout {
 
             }
         }).start();
+    }
+
+    public void stopAnim() {
+        if (mWaveHeader != null && mWaveHeader.isRunning()) {
+            mWaveHeader.stop();
+        }
+    }
+
+    public void startAnim() {
+        if (mWaveHeader != null && !mWaveHeader.isRunning()) {
+            mWaveHeader.start();
+        }
     }
 
     public boolean isShow() {

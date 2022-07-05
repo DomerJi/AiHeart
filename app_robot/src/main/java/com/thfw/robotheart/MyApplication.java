@@ -166,6 +166,7 @@ public class MyApplication extends MultiDexApplication {
     }
 
     private static int startedActivityCount;
+    private static int foregroundFlag = -1;
     private static ActivityLifecycleCallbacks activityLifecycleCallbacks = new ActivityLifecycleCallbacks() {
         @Override
         public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
@@ -175,11 +176,11 @@ public class MyApplication extends MultiDexApplication {
         @Override
         public void onActivityStarted(@NonNull Activity activity) {
             startedActivityCount++;
+            onForeground();
         }
 
         @Override
         public void onActivityResumed(@NonNull Activity activity) {
-
         }
 
         @Override
@@ -190,6 +191,7 @@ public class MyApplication extends MultiDexApplication {
         @Override
         public void onActivityStopped(@NonNull Activity activity) {
             startedActivityCount--;
+            onForeground();
         }
 
         @Override
@@ -202,6 +204,22 @@ public class MyApplication extends MultiDexApplication {
 
         }
     };
+
+    public static void onForeground() {
+        int flag = ifForeground() ? 1 : 0;
+        if (foregroundFlag != flag) {
+            foregroundFlag = flag;
+            if (RobotUtil.isInstallRobot()) {
+                if (foregroundFlag == 1) {
+                    RobotUtil.closeBar(getApp());
+                    LogUtil.d("onForeground = " + 1);
+                } else {
+                    RobotUtil.showBar(getApp());
+                    LogUtil.d("onForeground = " + 0);
+                }
+            }
+        }
+    }
 
     public static boolean ifForeground() {
         return startedActivityCount > 0;

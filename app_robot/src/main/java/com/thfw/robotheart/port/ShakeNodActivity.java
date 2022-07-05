@@ -90,11 +90,11 @@ public class ShakeNodActivity extends RobotBaseActivity {
         });
 
         mBtHideBar.setOnClickListener(v -> {
-            RobotUtil.showBar();
+            RobotUtil.closeBar(mContext);
         });
 
         mBtShowBar.setOnClickListener(v -> {
-            RobotUtil.showBar();
+            RobotUtil.showBar(mContext);
         });
 
         mBtUpElectricity.setOnClickListener(v -> {

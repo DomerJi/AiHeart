@@ -46,6 +46,15 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="switch_set_style_small" parent="Widget.AppCompat.CompoundButton.Switch">
+
+        <item name="android:switchMinWidth">@dimen/switch_min_width_small</item>
+        <item name="android:thumb">@drawable/switch_blue_thumb_small</item>
+        <item name="android:track">@drawable/switch_set_track</item>
+        <item name="android:textOff">关</item>
+        <item name="android:textOn">开</item>
+    </style>
+
     <style name="LoadingProgressBar">
         <item name="android:indeterminateOnly">false</item>
         <item name="android:indeterminateDrawable">@anim/loading_anim</item>

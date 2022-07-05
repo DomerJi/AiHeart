@@ -167,6 +167,26 @@
 
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
+    <Switch
+        android:id="@+id/switch_read_after"
+        style="@style/switch_set_style_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/colorRobotFore"
+        android:checked="true"
+        android:gravity="center_vertical"
+        android:paddingLeft="12dp"
+        android:paddingTop="8dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="8dp"
+        android:text="播完再听  "
+        android:textColor="@color/colorRobotFore"
+        android:textSize="10dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/rl_send"
+        tools:ignore="MissingConstraints"
+        tools:visibility="visible" />
+
     <RelativeLayout
         android:id="@+id/rl_send"
         android:layout_width="0dp"

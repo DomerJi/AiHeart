@@ -171,7 +171,7 @@ public class TtsHelper implements ITtsFace {
 
     @Override
     public boolean isIng() {
-        return initialized() && mTts.isSpeaking();
+        return (initialized() && mTts.isSpeaking()) || (exoPlayer != null && exoPlayer.isPlaying());
     }
 
     @Override

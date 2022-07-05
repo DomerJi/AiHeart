@@ -16,18 +16,36 @@ import com.thfw.ui.voice.tts.TtsHelper;
  */
 public class PolicyHelper {
     private static final String TAG = PolicyHelper.class.getSimpleName();
-
-    private static class Builder {
-        private static PolicyHelper policyHelper = new PolicyHelper();
-    }
+    private static PolicyHelper policyHelper;
 
     private int wakeType;
+    private boolean switchReadAfter;
+    private boolean requestIng;
+
+    public void setRequestIng(boolean requestIng) {
+        this.requestIng = requestIng;
+        if (this.requestIng) {
+            synchronized (PolicyHelper.class) {
+                if (SpeechHelper.getInstance().isIng()) {
+                    SpeechHelper.getInstance().stop();
+                }
+            }
+        }
+    }
+
+    public boolean isRequestIng() {
+        return requestIng;
+    }
+
+    public void setSwitchReadAfter(boolean switchReadAfter) {
+        this.switchReadAfter = switchReadAfter;
+    }
 
     private Handler handler;
 
 
     private PolicyHelper() {
-        handler = new Handler(Looper.getMainLooper()) {
+        handler = new Handler(Looper.myLooper()) {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
@@ -37,18 +55,31 @@ public class PolicyHelper {
         this.wakeType = WakeType.NULL;
     }
 
+
     private void sendCheckMsg() {
         handler.removeCallbacksAndMessages(null);
-        handler.sendEmptyMessageDelayed(0, 100);
+        handler.sendEmptyMessageDelayed(0, 120);
     }
 
     public static PolicyHelper getInstance() {
-        return Builder.policyHelper;
+        if (policyHelper == null) {
+            synchronized (PolicyHelper.class) {
+                if (policyHelper == null) {
+                    policyHelper = new PolicyHelper();
+                }
+            }
+        }
+        return policyHelper;
     }
 
     public boolean isSpeechMode() {
         return this.wakeType == WakeType.SPEECH;
     }
+
+    public boolean isSwitchReadAfter() {
+        return isSpeechMode() && switchReadAfter;
+    }
+
 
     public boolean isPressMode() {
         return this.wakeType == WakeType.PRESS;
@@ -56,22 +87,32 @@ public class PolicyHelper {
 
 
     public void checkState() {
+
         switch (this.wakeType) {
             case WakeType.SPEECH:
             case WakeType.PRESS:
-                if (!SpeechHelper.getInstance().isIng()) {
-                    if (TtsHelper.getInstance().isIng()) {
-                        TtsHelper.getInstance().stop();
+                synchronized (PolicyHelper.class) {
+                    if (requestIng) {
+                        if (SpeechHelper.getInstance().isIng()) {
+                            SpeechHelper.getInstance().stop();
+                        }
+                    } else {
+                        if (!SpeechHelper.getInstance().isIng()) {
+                            if (TtsHelper.getInstance().isIng()) {
+                                TtsHelper.getInstance().stop();
+                            }
+                            SpeechHelper.getInstance().start();
+                        }
                     }
-                    SpeechHelper.getInstance().start();
+                    sendCheckMsg();
                 }
-                sendCheckMsg();
                 break;
             case WakeType.WAKEUPER:
                 sendCheckMsg();
                 break;
             default:
                 break;
+
         }
 
     }
@@ -104,4 +145,6 @@ public class PolicyHelper {
         SpeechHelper.getInstance().stop();
         wakeType = WakeType.NULL;
     }
+
+
 }

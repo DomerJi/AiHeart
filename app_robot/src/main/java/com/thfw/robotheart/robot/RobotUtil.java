@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
@@ -23,8 +24,6 @@ import com.thfw.ui.voice.tts.TtsModel;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Author:pengs
@@ -185,19 +184,10 @@ public class RobotUtil {
     /**
      * 显示导航栏
      */
-    public static void showBar() {
+    public static void showBar(Context mContext) {
         try {
-            String command;
-            command = "LD_LIBRARY_PATH=/vendor/lib:/system/lib am startservice -n com.android.systemui/.SystemUIService";
-            ArrayList<String> envlist = new ArrayList<String>();
-            Map<String, String> env = System.getenv();
-            for (String envName : env.keySet()) {
-                envlist.add(envName + "=" + env.get(envName));
-            }
-            String[] envp = envlist.toArray(new String[0]);
-            Process proc = Runtime.getRuntime().exec(
-                    new String[]{"su", "-c", command}, envp);
-            proc.waitFor();
+            Settings.System.putInt(mContext.getContentResolver(), "nav_bar_mode", 0);
+            ToastUtil.show("nav_bar_mode = 0");
         } catch (Exception e) {
             LogUtil.d(TAG, e.getMessage());
             ToastUtil.show(e.getMessage());
@@ -207,19 +197,10 @@ public class RobotUtil {
     /**
      * 关闭Android导航栏，实现全屏
      */
-    public static void closeBar() {
+    public static void closeBar(Context mContext) {
         try {
-            String command;
-            command = "LD_LIBRARY_PATH=/vendor/lib:/system/lib service call activity 42 s16 com.android.systemui";
-            ArrayList<String> envlist = new ArrayList<String>();
-            Map<String, String> env = System.getenv();
-            for (String envName : env.keySet()) {
-                envlist.add(envName + "=" + env.get(envName));
-            }
-            String[] envp = envlist.toArray(new String[0]);
-            Process proc = Runtime.getRuntime().exec(
-                    new String[]{"su", "-c", command}, envp);
-            proc.waitFor();
+            Settings.System.putInt(mContext.getContentResolver(), "nav_bar_mode", 1);
+            ToastUtil.show("nav_bar_mode = 1");
         } catch (Exception ex) {
             LogUtil.d(TAG, ex.getMessage());
             ToastUtil.show(ex.getMessage());
