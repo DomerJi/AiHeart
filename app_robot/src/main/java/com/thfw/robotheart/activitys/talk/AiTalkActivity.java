@@ -310,17 +310,19 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     private void volumeSwitch(boolean fromUser) {
 
+
         if (fromUser) {
             SharePreferenceUtil.setBoolean(KEY_ROBOT_SPEECH, !mIvVolumeSwitch.isSelected());
         }
-        if (mReadAfterSpeech) {
-            return;
-        }
-        if (!mIvVolumeSwitch.isSelected() && PolicyHelper.getInstance().isSpeechMode()) {
+
+        if (!isReadAfterSpeech() && !mIvVolumeSwitch.isSelected() && PolicyHelper.getInstance().isSpeechMode()) {
             ToastUtil.show("正在倾听，无法打开");
             return;
         }
         mIvVolumeSwitch.setSelected(!mIvVolumeSwitch.isSelected());
+        if (isReadAfterSpeech()) {
+            return;
+        }
         if (mIvVolumeSwitch.isSelected()) {
             if (mTtsFinished) {
                 startAnimFaceType(FACE_TYPE_FREE);
@@ -350,6 +352,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             TtsHelper.getInstance().stop();
             mTtsQueue.clear();
         }
+    }
+
+    private boolean isReadAfterSpeech() {
+        return mIvTalkModel.isSelected() && mSwitchAfter.getVisibility() == View.VISIBLE && mReadAfterSpeech;
     }
 
     private void startAnimFaceType(int type) {
@@ -533,7 +539,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                     mStvText.show();
                 } else {
                     // 播完再听 播放tts不消失
-                    if (mReadAfterSpeech && mIvTalkModel.isSelected()) {
+                    if (isReadAfterSpeech()) {
                     } else {
                         mStvText.hide();
                         mSwitchAfter.setVisibility(View.GONE);
@@ -873,7 +879,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     }
 
     private void readAfterSpeech(boolean formUser) {
-        if (mReadAfterSpeech && mSwitchAfter.getVisibility() == View.VISIBLE) {
+        if (isReadAfterSpeech()) {
             if (PolicyHelper.getInstance().isRequestIng()) {
                 PolicyHelper.getInstance().end();
                 if (mStvText != null) {
@@ -924,7 +930,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     private void ttsHandle(ChatEntity chatEntity) {
         LogUtil.d(TAG, "ttsHandle.start");
-        if (!mReadAfterSpeech && !mIvVolumeSwitch.isSelected()) {
+        if (!isReadAfterSpeech() && (!mIvVolumeSwitch.isSelected() || mIvTalkModel.isSelected())) {
             LogUtil.d(TAG, "ttsHandle.start isSelected false");
             return;
         }
@@ -1201,7 +1207,8 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
         ttsPauseIng = TtsHelper.getInstance().isIng();
         if (ttsPauseIng) {
-            TtsHelper.getInstance().pause();
+            mTtsQueue.clear();
+            TtsHelper.getInstance().stop();
         }
         mHitAnim.pause();
     }
@@ -1209,18 +1216,16 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (mPauseStvTextShow) {
-            mStvText.show();
-            if (currentSelect) {
-                PolicyHelper.getInstance().startSpeech();
-            } else {
-                PolicyHelper.getInstance().end();
+        if (isMeResumed2()) {
+            if (mPauseStvTextShow) {
+                mStvText.show();
+                if (currentSelect) {
+                    PolicyHelper.getInstance().startSpeech();
+                } else {
+                    PolicyHelper.getInstance().end();
+                }
             }
-        }
-
-        if (ttsPauseIng) {
-            TtsHelper.getInstance().resume();
+            readAfterSpeech();
         }
         mHitAnim.resume();
     }

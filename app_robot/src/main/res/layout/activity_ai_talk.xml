@@ -272,8 +272,9 @@
             android:visibility="invisible">
 
             <ImageView
-                android:layout_width="60dp"
-                android:layout_height="match_parent"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_centerVertical="true"
                 android:adjustViewBounds="true"
                 android:background="@drawable/keyword_round_bg"
                 android:padding="12dp"
