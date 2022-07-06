@@ -66,4 +66,9 @@ public interface AudioApi {
     Observable<HttpResult<AudioLastEtcModel>> getAudioLastHistory(@FieldMap Map<String, Object> params);
 
 
+    @FormUrlEncoded
+    @POST("music/get_play_path")
+    Observable<HttpResult<String>> getAudioPath(@FieldMap Map<String, Object> params);
+
+
 }

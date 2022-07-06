@@ -204,8 +204,9 @@ public class AnimFileName {
             case TALK_YIYU: {
                 return new RobotOutPutInfo("会过去的", null);
             }
+            default:
+                return null;
         }
-        return null;
     }
 
     public static class RobotOutPutInfo {
@@ -221,7 +222,7 @@ public class AnimFileName {
         public String toString() {
             return "RobotOutPutInfo{" +
                     "tts='" + tts + '\'' +
-                    ", actionParams=" + actionParams.toString() +
+                    ", actionParams=" + (actionParams != null ? actionParams.toString() : "null") +
                     '}';
         }
     }

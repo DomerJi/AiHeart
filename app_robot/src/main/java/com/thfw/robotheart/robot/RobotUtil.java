@@ -14,7 +14,6 @@ import androidx.fragment.app.FragmentActivity;
 import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.ContextApp;
 import com.thfw.base.utils.LogUtil;
-import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.util.DialogRobotFactory;
@@ -187,10 +186,8 @@ public class RobotUtil {
     public static void showBar(Context mContext) {
         try {
             Settings.System.putInt(mContext.getContentResolver(), "nav_bar_mode", 0);
-            ToastUtil.show("nav_bar_mode = 0");
         } catch (Exception e) {
             LogUtil.d(TAG, e.getMessage());
-            ToastUtil.show(e.getMessage());
         }
     }
 
@@ -200,10 +197,8 @@ public class RobotUtil {
     public static void closeBar(Context mContext) {
         try {
             Settings.System.putInt(mContext.getContentResolver(), "nav_bar_mode", 1);
-            ToastUtil.show("nav_bar_mode = 1");
         } catch (Exception ex) {
             LogUtil.d(TAG, ex.getMessage());
-            ToastUtil.show(ex.getMessage());
         }
     }
 

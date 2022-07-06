@@ -32,6 +32,8 @@ public class VideoModel implements IModel {
     private int id;
     @SerializedName("file")
     private String url;
+    @SerializedName("m3u8")
+    private String m3u8;
     @SerializedName("img")
     private String img;
     @SerializedName("des")
@@ -84,6 +86,10 @@ public class VideoModel implements IModel {
 
     public String getUrl() {
         return url;
+    }
+
+    public String getM3u8(){
+        return m3u8;
     }
 
     public void setUrl(String url) {

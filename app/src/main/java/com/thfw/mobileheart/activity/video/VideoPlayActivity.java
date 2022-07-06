@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.media.AudioManager;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -57,6 +56,7 @@ import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.talk.TalkItemJumpHelper;
 import com.thfw.mobileheart.adapter.VideoPlayListAdapter;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
+import com.thfw.ui.base.AVResource;
 import com.thfw.ui.utils.BrightnessHelper;
 import com.thfw.ui.utils.VideoGestureHelper;
 import com.thfw.ui.widget.LoadingView;
@@ -443,7 +443,8 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
         mTvTitle.setText(mVideoModel.title);
         setVideoList();
         setListAdapter();
-        mExoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(mVideoModel.getUrl())));
+//        mExoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(mVideoModel.getUrl())));
+        AVResource.setSource(mExoPlayer, mVideoModel);
         mExoPlayer.prepare();
         // 先获取本地播放断电记录
         positionMs = VideoHistoryHelper.getPosition(mVideoModel.getId());

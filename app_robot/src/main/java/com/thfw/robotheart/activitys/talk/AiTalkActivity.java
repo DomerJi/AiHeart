@@ -811,6 +811,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     @Override
     public void onSuccess(HttpResult<List<DialogTalkModel>> model) {
+        PolicyHelper.getInstance().setRequestIng(false);
         if (!mLoadingView.isHide()) {
             mLoadingView.hide();
             mRefreshLayout.setEnableRefresh(true);
@@ -835,9 +836,12 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 mSceneError = -1;
                 mNetParamsError = null;
                 mHelper.setTalks(data);
-                PolicyHelper.getInstance().setRequestIng(false);
                 onTalkEngine();
+            } else {
+                readAfterSpeech();
             }
+        } else {
+            readAfterSpeech();
         }
 
     }
@@ -849,20 +853,21 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
      * @param model
      */
     private void emojiHandle(HttpResult<List<DialogTalkModel>> model) {
-        if (model.getExt().isSentiment()
-                && AnimFileName.getTalkEmojiBySentiment(model.getExt().getSentiment()) != null) {
-            sendData(ChatEntity.createEmoji(model.getExt().getSentiment()));
-
-            AnimFileName.RobotOutPutInfo outPutInfo = AnimFileName
-                    .getRobotOutPutInfo(AnimFileName.getTalkEmojiBySentiment(model.getExt().getSentiment()));
-            LogUtil.i(TAG, "outPutInfo -> " + outPutInfo.toString());
-            if (outPutInfo != null) {
-                if (outPutInfo.actionParams != null) {
-                    SerialManager.getInstance().startAction(outPutInfo.actionParams);
-                }
-                if (outPutInfo.tts != null) {
-                    TtsHelper.getInstance().stop();
-                    mTtsQueue.add(new TtsModel(outPutInfo.tts));
+        if (model.getExt().isSentiment()) {
+            String sentiment = model.getExt().getSentiment();
+            sendData(ChatEntity.createEmoji(sentiment));
+            String sentimentEmoji = AnimFileName.getTalkEmojiBySentiment(sentiment);
+            if (!TextUtils.isEmpty(sentimentEmoji)) {
+                AnimFileName.RobotOutPutInfo outPutInfo = AnimFileName.getRobotOutPutInfo(sentimentEmoji);
+                if (outPutInfo != null) {
+                    LogUtil.i(TAG, "outPutInfo -> " + outPutInfo.toString());
+                    if (outPutInfo.actionParams != null) {
+                        SerialManager.getInstance().startAction(outPutInfo.actionParams);
+                    }
+                    if (outPutInfo.tts != null) {
+                        TtsHelper.getInstance().stop();
+                        mTtsQueue.add(new TtsModel(outPutInfo.tts));
+                    }
                 }
             }
         }
@@ -1120,8 +1125,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     @Override
     public void onFail(ResponeThrowable throwable) {
-        LogUtil.d(TAG, "onFail = " + throwable.getMessage());
+        LogUtil.d(TAG, "onFail = " + throwable.toString());
         PolicyHelper.getInstance().setRequestIng(false);
+        readAfterSpeech();
         if (mChatAdapter != null && mChatAdapter.getItemCount() == 0) {
             mLoadingView.showFail(v -> {
                 mScene = talkModel.getType() == 3 ? 1 : 2;

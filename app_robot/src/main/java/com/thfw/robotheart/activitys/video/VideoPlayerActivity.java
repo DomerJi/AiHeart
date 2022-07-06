@@ -6,7 +6,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -60,6 +59,7 @@ import com.thfw.robotheart.adapter.VideoItemAdapter;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.util.ExoPlayerFactory;
 import com.thfw.robotheart.view.TitleBarView;
+import com.thfw.ui.base.AVResource;
 import com.thfw.ui.utils.BrightnessHelper;
 import com.thfw.ui.utils.VideoGestureHelper;
 import com.thfw.ui.widget.LoadingView;
@@ -265,7 +265,8 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         mTvTitle.setText(mVideoModel.getTitle());
         mTvVideoContent.setText("简介：" + mVideoModel.getDes());
         mIvCollect.setSelected(mVideoModel.getCollected() == 1);
-        mExoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(mVideoModel.getUrl())));
+//        mExoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(mVideoModel.getUrl())));
+        AVResource.setSource(mExoPlayer, mVideoModel);
         mExoPlayer.prepare();
         // 先获取本地播放断电记录
         positionMs = VideoHistoryHelper.getPosition(mVideoModel.getId());

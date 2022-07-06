@@ -58,6 +58,17 @@ public class AudioPresenter extends IPresenter<AudioPresenter.AudioUi> {
         OkHttpUtil.request(observable, getUI());
     }
 
+    /**
+     * 根据音频id获取地址(有效期地址)
+     *
+     * @param id
+     */
+    public void getAudioPath(int id) {
+        Observable<HttpResult<String>> observable = OkHttpUtil.createService(AudioApi.class)
+                .getAudioPath(NetParams.crete().add("id", id));
+        OkHttpUtil.request(observable, getUI());
+    }
+
 
     public interface AudioUi<T> extends UI<T> {
 

@@ -70,7 +70,6 @@ public class ExoPlayerFactory {
                     .build();
             DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(mContext, mDefaultBandwidthMeter,
                     new DefaultHttpDataSourceFactory(UIConfig.getUserAgent(), null, 15000, 15000, true));
-
             switch (type) {
                 case EXO_AUDIO:
 
@@ -94,5 +93,14 @@ public class ExoPlayerFactory {
                     break;
             }
         }
+    }
+
+    public static DefaultDataSourceFactory getFactory(Context mContext) {
+        DefaultBandwidthMeter mDefaultBandwidthMeter = new DefaultBandwidthMeter
+                .Builder(mContext)
+                .build();
+        DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(mContext, mDefaultBandwidthMeter,
+                new DefaultHttpDataSourceFactory(UIConfig.getUserAgent(), null, 15000, 15000, true));
+        return upstreamFactory;
     }
 }
