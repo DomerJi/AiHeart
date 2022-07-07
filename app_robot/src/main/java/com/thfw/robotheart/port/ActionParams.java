@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class ActionParams {
 
     public static final int ONE_ANGLE_TIME = 30;
-    public static final int ONE_ANGLE_TIME_10 = ONE_ANGLE_TIME / 10;
+    public static final int ONE_ANGLE_TIME_10 = ONE_ANGLE_TIME / 15;
 
 
     /**
