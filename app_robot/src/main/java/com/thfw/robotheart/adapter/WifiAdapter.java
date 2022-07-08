@@ -102,38 +102,19 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
             holder.mIvLock.setImageResource(R.mipmap.ic_wifi_local_off);
             holder.mTvPass.setVisibility(View.GONE);
         }
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (savePassWord.get(scanResult.SSID)) {
+                    forget(scanResult);
+                    return true;
+                }
+                return false;
+            }
+        });
         holder.itemView.setOnClickListener(v -> {
-            if (connected) {
-                DialogRobotFactory.createCustomDialog((FragmentActivity) mContext, new DialogRobotFactory.OnViewCallBack() {
-                    @Override
-                    public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-                        mTvTitle.setText("忘记网络");
-                        mTvHint.setText("是否忘记此网络");
-                        mTvRight.setText("是");
-                        mTvLeft.setText("否");
-                    }
-
-                    @Override
-                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                        tDialog.dismiss();
-                        if (view.getId() == R.id.tv_right) {
-                            WifiHelper.get().disconnect(new DisconnectionSuccessListener() {
-                                @Override
-                                public void success() {
-                                    notifyDataSetChanged();
-                                    Util.removeWifiBySsid(mWifiManager, scanResult.SSID);
-                                    Toast.makeText(mContext, "成功断开链接", Toast.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void failed(@NonNull DisconnectionErrorCode errorCode) {
-                                    Toast.makeText(mContext, "断开链接失败: " + errorCode.toString(), Toast.LENGTH_SHORT).show();
-                                    notifyDataSetChanged();
-                                }
-                            });
-                        }
-                    }
-                });
+            if (savePassWord.get(scanResult.SSID)) {
+                forget(scanResult);
                 return;
             }
             if (onWifiItemListener != null) {
@@ -141,6 +122,39 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
             }
         });
 
+    }
+
+    private void forget(ScanResult scanResult) {
+        DialogRobotFactory.createCustomDialog((FragmentActivity) mContext, new DialogRobotFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvTitle.setText("忘记网络");
+                mTvHint.setText("是否忘记此网络");
+                mTvRight.setText("是");
+                mTvLeft.setText("否");
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+                if (view.getId() == R.id.tv_right) {
+                    WifiHelper.get().disconnect(new DisconnectionSuccessListener() {
+                        @Override
+                        public void success() {
+                            notifyDataSetChanged();
+                            Util.removeWifiBySsid(mWifiManager, scanResult.SSID);
+                            Toast.makeText(mContext, "成功断开链接", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void failed(@NonNull DisconnectionErrorCode errorCode) {
+                            Toast.makeText(mContext, "断开链接失败: " + errorCode.toString(), Toast.LENGTH_SHORT).show();
+                            notifyDataSetChanged();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     /**

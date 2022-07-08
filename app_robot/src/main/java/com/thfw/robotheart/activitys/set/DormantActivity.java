@@ -14,7 +14,9 @@ import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.constants.AnimFileName;
@@ -262,9 +264,15 @@ public class DormantActivity extends RobotBaseActivity
     }
 
     @Override
-    public void onSensor(int sensor, double azimuth, double pitch, double roll) {
-        if (sensor == 1) {
-            onWakeUp(WakeUpType.SWIM);
+    public void onSensor(int sensor) {
+        if (ToastUtil.isMainThread()) {
+            if (sensor == 1) {
+                onWakeUp(WakeUpType.SWIM);
+            }
+        } else {
+            HandlerUtil.getMainHandler().post(() -> {
+                onWakeUp(WakeUpType.SWIM);
+            });
         }
     }
 

@@ -132,12 +132,12 @@ public class ShakeNodActivity extends RobotBaseActivity {
                 }
 
                 @Override
-                public void onSensor(int sensor, double azimuth, double pitch, double roll) {
+                public void onSensor(int sensor) {
                     if (ToastUtil.isMainThread()) {
-                        printSensor(sensor, azimuth, pitch, roll);
+                        printSensor(sensor);
                     } else {
                         runOnUiThread(() -> {
-                            printSensor(sensor, azimuth, pitch, roll);
+                            printSensor(sensor);
                         });
                     }
                 }
@@ -146,21 +146,15 @@ public class ShakeNodActivity extends RobotBaseActivity {
         return electricityListener;
     }
 
-    private void printSensor(int sensor, double azimuth, double pitch, double roll) {
+    private void printSensor(int sensor) {
         if (mTvSensorMsg == null) {
             mTvSensorMsg = findViewById(R.id.tv_sensor_msg);
         }
         if (mTvSensorMsg != null) {
-            mTvSensorMsg.setText("Azimuth 方位角 ：" + azimuth
-                    + "\n(0 - 359) 0=North, 90=East, 180=South, 270=West"
-                    + "\nPitch  倾斜角 ：" + pitch
-                    + "\n(-90 to 90)"
-                    + "\nRoll  旋转角 ：" + roll
-                    + "\n(-180 to 180)"
-                    + "\n sensor ：" + sensor
-                    + "\n angle ：" + Arrays.toString(SerialManager.getInstance().getAngle())
-                    + "\n angle2 ：" + Arrays.toString(SerialManager.getInstance().getAngle2())
-                    + "\n 时间 ：" + HourUtil.getYYMMDD_HHMMSS(System.currentTimeMillis()));
+            mTvSensorMsg.setText(
+                    "sensor ：" + sensor
+                            + "\ngravity ：" + Arrays.toString(SerialManager.getInstance().getGravity())
+                            + "\n时间 ：" + HourUtil.getYYMMDD_HHMMSS(System.currentTimeMillis()));
         }
     }
 

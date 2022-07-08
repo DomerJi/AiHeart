@@ -14,9 +14,9 @@
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingLeft="16dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
+            android:background="@drawable/ripple"
+            android:paddingLeft="22dp"
+            android:paddingRight="18dp"
             android:src="@drawable/navigation_back_black_selector"
             app:tint="@color/colorRobotFore"
             tools:ignore="MissingConstraints" />

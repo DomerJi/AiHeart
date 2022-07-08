@@ -30,9 +30,11 @@ import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NetworkUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.constants.AnimFileName;
@@ -170,9 +172,15 @@ public class TitleBarView extends LinearLayout {
                 }
 
                 @Override
-                public void onSensor(int sensor, double azimuth, double pitch, double roll) {
+                public void onSensor(int sensor) {
                     if (sensor == 1) {
-                        robotNoCharge(mContext);
+                        if (ToastUtil.isMainThread()) {
+                            robotNoCharge(mContext);
+                        } else {
+                            HandlerUtil.getMainHandler().post(() -> {
+                                robotNoCharge(mContext);
+                            });
+                        }
                     }
                 }
             };

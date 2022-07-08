@@ -45,4 +45,5 @@ dependencies {
 //    api 'com.scwang.wave:MultiWaveHeader:1.0.0'
     //androidx
     api 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
+    implementation files('lib\\TarsosDSP-Android-2.4-bin.jar')
 }
