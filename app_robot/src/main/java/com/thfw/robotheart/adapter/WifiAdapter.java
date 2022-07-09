@@ -113,7 +113,7 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
             }
         });
         holder.itemView.setOnClickListener(v -> {
-            if (savePassWord.get(scanResult.SSID)) {
+            if (WifiHelper.get().isWifiConnected(scanResult.SSID)) {
                 forget(scanResult);
                 return;
             }

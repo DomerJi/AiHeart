@@ -172,8 +172,8 @@ public class TitleBarView extends LinearLayout {
                 }
 
                 @Override
-                public void onSensor(int sensor) {
-                    if (sensor == 1) {
+                public void onSensor(int sensor, boolean showTip) {
+                    if (sensor == 1 && showTip) {
                         if (ToastUtil.isMainThread()) {
                             robotNoCharge(mContext);
                         } else {

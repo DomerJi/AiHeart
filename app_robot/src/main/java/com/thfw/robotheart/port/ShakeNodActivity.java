@@ -7,14 +7,13 @@ import android.widget.TextView;
 import com.pl.sphelper.ConstantUtil;
 import com.pl.sphelper.SPHelper;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.robot.RobotUtil;
-
-import java.util.Arrays;
 
 public class ShakeNodActivity extends RobotBaseActivity {
 
@@ -132,7 +131,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
                 }
 
                 @Override
-                public void onSensor(int sensor) {
+                public void onSensor(int sensor, boolean showTip) {
                     if (ToastUtil.isMainThread()) {
                         printSensor(sensor);
                     } else {
@@ -151,10 +150,16 @@ public class ShakeNodActivity extends RobotBaseActivity {
             mTvSensorMsg = findViewById(R.id.tv_sensor_msg);
         }
         if (mTvSensorMsg != null) {
+            float[] gravity = SerialManager.getInstance().getGravity();
+            if (EmptyUtil.isEmpty(gravity)) {
+                return;
+            }
+            String gravityStr = String.format("x = %.2f ; y = %.2f ; z = %.2f ;", gravity[0], gravity[1], gravity[2]);
             mTvSensorMsg.setText(
                     "sensor ：" + sensor
-                            + "\ngravity ：" + Arrays.toString(SerialManager.getInstance().getGravity())
-                            + "\n时间 ：" + HourUtil.getYYMMDD_HHMMSS(System.currentTimeMillis()));
+                            + "\ngravity ：" + gravityStr
+                            + "\nisNoAction ：" + SerialManager.getInstance().isNoAction()
+                            + "\ntime ：" + HourUtil.getYYMMDD_HHMMSS(System.currentTimeMillis()));
         }
     }
 

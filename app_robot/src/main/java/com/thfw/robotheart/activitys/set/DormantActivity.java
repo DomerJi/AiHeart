@@ -264,15 +264,17 @@ public class DormantActivity extends RobotBaseActivity
     }
 
     @Override
-    public void onSensor(int sensor) {
-        if (ToastUtil.isMainThread()) {
-            if (sensor == 1) {
-                onWakeUp(WakeUpType.SWIM);
+    public void onSensor(int sensor, boolean showTip) {
+        if (sensor == 1 && showTip) {
+            if (!Dormant.isCanShutdown()) {
+                if (ToastUtil.isMainThread()) {
+                    onWakeUp(WakeUpType.SWIM);
+                } else {
+                    HandlerUtil.getMainHandler().post(() -> {
+                        onWakeUp(WakeUpType.SWIM);
+                    });
+                }
             }
-        } else {
-            HandlerUtil.getMainHandler().post(() -> {
-                onWakeUp(WakeUpType.SWIM);
-            });
         }
     }
 

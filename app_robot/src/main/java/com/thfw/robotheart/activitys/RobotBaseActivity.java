@@ -100,7 +100,7 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (RobotUtil.isInstallRobot()) {
             // 机器人顶部触摸
-            if (keyCode == KeyEvent.KEYCODE_MENU && event.getRepeatCount() == 0) {
+            if (keyCode == KeyEvent.KEYCODE_F1 && event.getRepeatCount() == 0) {
                 SerialManager.getInstance().onTouch(4, 1);
             }
         }

@@ -144,15 +144,17 @@
 
     <TextView
         android:id="@+id/tv_sensor_msg"
-        android:layout_width="wrap_content"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="noting"
         android:textColor="@color/colorRobotFore"
         android:textSize="12sp"
-        android:text="nothing"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleRobotView"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:text="gravity：x = -0.03 ; x = -0.03 ; x = -0.03 ;" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

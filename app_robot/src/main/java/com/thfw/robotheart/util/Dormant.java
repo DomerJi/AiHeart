@@ -25,7 +25,7 @@ public class Dormant {
     /**
      * 休眠后，【N分钟】未唤醒进入关机或退出登录
      */
-    private static final int SLEEP_TIME_COUNT = 10;
+    private static final int SLEEP_TIME_COUNT = 30;
     private static final String TAG_DORMANT = "DORMANT_TIME";
     private static final String TAG_RESET = "reset +++++++++++++++++++++++++";
 

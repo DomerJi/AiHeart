@@ -11,6 +11,7 @@ import android.util.Log;
 import com.pl.sphelper.ConstantUtil;
 import com.pl.sphelper.SPHelper;
 import com.thfw.base.ContextApp;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
@@ -36,14 +37,16 @@ public class SerialManager {
     private SensorManager manager;
     private MySensorEventListener listener;
     private Sensor accelerometerSensor;
-    private float[] gravity;
+    private Sensor gyroscopeSensor;
+    private boolean actionNoFinished;
+    private float[] gravity = new float[3];
     // 加速度偏差值
     private static final int SENSOR_FLOAT_MIN = 1;
     private static final int SENSOR_FLOAT_MAX = 10 - SENSOR_FLOAT_MIN;
     private static SerialManager instance;
     private boolean upElectricity;
     private static final String TAG = SerialManager.class.getSimpleName();
-    private static final int DELAY_TIME = 100;
+    private static final int DELAY_TIME = 140;
     private SerialHelper serialHelper;
 
     private ArrayList<ElectricityListener> electricityListeners = new ArrayList<>();
@@ -57,7 +60,13 @@ public class SerialManager {
     private int percent = 100;
     private int charge = -1;
     private int horizontalFlag = -1;
+    private long horizontalFlagContinueTime = -1;
     private static long lastSensorTime;
+    private static long queryMvTime;
+
+    private Handler handler = new Handler();
+    // 舵机查询延时
+    private Runnable runnable;
 
     private SerialManager() {
         initPort();
@@ -78,12 +87,12 @@ public class SerialManager {
             }
             HandlerUtil.getMainHandler().postDelayed(() -> {
                 initSensor();
-            }, 5000);
+            }, 2000);
         } else {
             if (LogUtil.isLogEnabled()) {
                 HandlerUtil.getMainHandler().postDelayed(() -> {
                     initSensor();
-                }, 5000);
+                }, 2000);
             }
         }
 
@@ -91,14 +100,18 @@ public class SerialManager {
     }
 
     private void initSensor() {
-        // 获取SensorManager
-        manager = (SensorManager) ContextApp.get().getSystemService(Context.SENSOR_SERVICE);
-        listener = new MySensorEventListener();
-        // 获取Sensor
-        accelerometerSensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        gravity = new float[3];// 用来保存加速度传感器的值
+        if (manager == null) {
+            // 获取SensorManager
+            manager = (SensorManager) ContextApp.get().getSystemService(Context.SENSOR_SERVICE);
+            listener = new MySensorEventListener();
+            // 获取Sensor
+            accelerometerSensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            gyroscopeSensor = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+            gravity = new float[3];// 用来保存加速度传感器的值
 
-        manager.registerListener(listener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            manager.registerListener(listener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            manager.registerListener(listener, gyroscopeSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
 
@@ -159,6 +172,9 @@ public class SerialManager {
     private void upElectricity() {
         if (!instance.upElectricity) {
             upElectricityNow();
+            if (manager == null) {
+                instance.initSensor();
+            }
         }
     }
 
@@ -261,7 +277,7 @@ public class SerialManager {
         } else if (!isOpen()) {
             LogUtil.i(TAG, "串口未开启");
             return;
-        } else if (horizontalFlag == 1) {
+        } else if (isNoAction() && !actionNoFinished) {
             LogUtil.i(TAG, "请放平机器人后再试");
             ToastUtil.show("请放平机器人后再试");
             return;
@@ -290,32 +306,33 @@ public class SerialManager {
                 LogUtil.i(TAG, "actionParams.nextRotate() false 01");
                 return;
             }
-            queryServoState(new ServoStateListener() {
-                @Override
-                public void onState(int[] angle) {
-                    int[] params = new int[]{controlOrder, angle[2] + actionParams.getAngle(), actionParams.getTimeMs()};
-                    actionParams.nextRotateIndex();
-                    LogUtil.d(TAG, "转身：params -> " + Arrays.toString(params));
-                    SerialManager.getInstance().sendNow(order, params);
-                    if (LogUtil.isLogEnabled()) {
-                        ToastUtil.show("转身： -> " + angle[2] + "_" + Arrays.toString(params));
-                    }
+            actionNoFinished = false;
+            queryServoState((angle) -> {
+                actionNoFinished = true;
+                int[] params = new int[]{controlOrder, angle[2] + actionParams.getAngle(), actionParams.getTimeMs()};
+                actionParams.nextRotateIndex();
+                LogUtil.d(TAG, "转身：params -> " + Arrays.toString(params));
+                SerialManager.getInstance().sendNow(order, params);
+                if (LogUtil.isLogEnabled()) {
+                    ToastUtil.show("转身： -> " + angle[2] + "_" + Arrays.toString(params));
+                }
 
-                    if (actionParams.nextRotate()) {
-                        actionParams.setRunnable(() -> {
-                            if (actionParams.nextRotate()) {
-                                mRunningActionParams.remove(actionParams.getControlOrder());
-                                startAction(actionParams);
-                            }
-                        });
-                        actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + (DELAY_TIME / 2));
-                    } else {
-                        LogUtil.i(TAG, "actionParams.nextRotate() false 02");
-                    }
+                if (actionParams.nextRotate()) {
+                    actionParams.setRunnable(() -> {
+                        if (actionParams.nextRotate()) {
+                            mRunningActionParams.remove(actionParams.getControlOrder());
+                            startAction(actionParams);
+                        }
+                    });
+                    actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + (DELAY_TIME / 2));
+                } else {
+                    actionNoFinished = false;
+                    LogUtil.i(TAG, "actionParams.nextRotate() false 02");
                 }
             });
 
         } else {
+            actionNoFinished = true;
             int centerPoint = actionParams.getCenterPoint();
             int left = actionParams.getLeft();
             int right = actionParams.getRight();
@@ -344,6 +361,9 @@ public class SerialManager {
                     startAction(actionParams);
                 });
                 actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + DELAY_TIME);
+            } else {
+                actionNoFinished = false;
+                LogUtil.i(TAG, "actionParams.getRunCount() false 02");
             }
         }
 
@@ -382,6 +402,7 @@ public class SerialManager {
                                 if (servoStateListener != null) {
                                     servoStateListener.onState(new int[]{bytes[2], bytes[3], bytes[4]});
                                 }
+                                handler.removeCallbacks(runnable);
                                 servoStateListener = null;
                             }
                             break;
@@ -433,20 +454,28 @@ public class SerialManager {
         if (charge == -1) {
             send(Order.DOWN_STATE, 5);
         }
-        send(Order.DOWN_STATE, 1);
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - queryMvTime > HourUtil.LEN_SECOND) {
+            queryMvTime = currentTime;
+            send(Order.DOWN_STATE, 1);
+        }
 
     }
 
     public void queryServoState(ServoStateListener servoStateListener) {
+        if (runnable == null) {
+            runnable = () -> {
+                SerialManager.this.servoStateListener = null;
+            };
+        }
         if (this.servoStateListener == null) {
             this.servoStateListener = servoStateListener;
             sendNow(Order.DOWN_STATE, 4);
-            new Handler().postDelayed(() -> {
-                SerialManager.this.servoStateListener = null;
-            }, 3000);
         } else {
             LogUtil.d(TAG, "queryServoState not null");
         }
+        handler.removeCallbacks(runnable);
+        handler.postDelayed(runnable, 3000);
     }
 
     public synchronized boolean send(int order, int... params) {
@@ -478,13 +507,10 @@ public class SerialManager {
         String hex = mWaitOrder.getFirst();
         serialHelper.sendHex(hex);
         Log.d(TAG, "send -> hex：" + hex);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mWaitOrder.removeFirst();
-                if (!mWaitOrder.isEmpty()) {
-                    sendDelayed();
-                }
+        handler.postDelayed(() -> {
+            mWaitOrder.removeFirst();
+            if (!mWaitOrder.isEmpty()) {
+                sendDelayed();
             }
         }, 1000);
     }
@@ -504,10 +530,10 @@ public class SerialManager {
      *
      * @param sensor
      */
-    public void onSensor(int sensor) {
+    public void onSensor(int sensor, boolean showTip) {
         LogUtil.i(TAG, "sensor = " + sensor);
         for (ElectricityListener listener : electricityListeners) {
-            listener.onSensor(sensor);
+            listener.onSensor(sensor, showTip);
         }
     }
 
@@ -562,7 +588,7 @@ public class SerialManager {
 
         void onCharge(int percent, int charge);
 
-        void onSensor(int sensor);
+        void onSensor(int sensor, boolean showTip);
     }
 
     public interface RobotTouchListener {
@@ -580,7 +606,12 @@ public class SerialManager {
             if (accelerometerSensor != null) {
                 manager.unregisterListener(listener, accelerometerSensor);
             }
+            if (gyroscopeSensor != null) {
+                manager.unregisterListener(listener, gyroscopeSensor);
+            }
+            manager = null;
         }
+        handler.removeCallbacksAndMessages(null);
         electricityListeners.clear();
         touchListeners.clear();
         mWaitOrder.clear();
@@ -592,17 +623,32 @@ public class SerialManager {
 
 
     private void getValue(SensorEvent event) {
+        if (event == null || EmptyUtil.isEmpty(event.values)) {
+            return;
+        }
         gravity = event.values;
         final int horizontal = isNoHorizontal(event.values[0], event.values[1], event.values[2]) ? 1 : 0;
+
+
         if (horizontalFlag != horizontal) {
             horizontalFlag = horizontal;
+            horizontalFlagContinueTime = System.currentTimeMillis();
             if (horizontalFlag == 1 && System.currentTimeMillis() - lastSensorTime > HourUtil.LEN_MINUTE) {
-                lastSensorTime = System.currentTimeMillis();
-                onSensor(horizontal);
+                if (RobotUtil.isInstallRobot()) {
+                    lastSensorTime = System.currentTimeMillis();
+                    HandlerUtil.getMainHandler().postDelayed(() -> {
+                        if (isNoAction()) {
+                            lastSensorTime = System.currentTimeMillis();
+                            onSensor(horizontal, true);
+                        } else {
+                            lastSensorTime = lastSensorTime - HourUtil.LEN_MINUTE;
+                        }
+                    }, 1200);
+                }
             }
         }
         if (LogUtil.isLogEnabled()) {
-            onSensor(horizontal);
+            onSensor(horizontal, false);
         }
     }
 
@@ -610,6 +656,15 @@ public class SerialManager {
         return gravity;
     }
 
+    /**
+     * 是否不可以进行动作，机器人不在水平下，且持续时间超过1S
+     *
+     * @return
+     */
+    public boolean isNoAction() {
+        return horizontalFlag == 1 && horizontalFlagContinueTime != -1
+                && System.currentTimeMillis() - horizontalFlagContinueTime > 500;
+    }
 
     public boolean isNoHorizontal(double x, double y, double z) {
         return Math.abs(x) > SENSOR_FLOAT_MIN
