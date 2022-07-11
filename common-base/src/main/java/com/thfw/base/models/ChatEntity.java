@@ -140,6 +140,9 @@ public class ChatEntity implements IModel {
                 if (notPTalk.endsWith("</p>")) {
                     notPTalk = notPTalk.substring(0, notPTalk.length() - "</p>".length());
                 }
+
+                notPTalk = notPTalk.replaceAll("<p>", "<br>");
+                notPTalk = notPTalk.replaceAll("</p>", "<br>");
             }
         }
         return notPTalk;
