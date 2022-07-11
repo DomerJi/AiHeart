@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,18 +38,40 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
 
     private List<ScanResult> scanResults;
     private HashMap<String, Boolean> savePassWord;
+    private HashMap<String, Boolean> saveAnim;
     private WifiManager mWifiManager;
     private OnWifiItemListener onWifiItemListener;
-    private ScanResult ssidIng;
+    private String ssId;
+    private TranslateAnimation translateAnimation;
 
-    public void setSsidIng(ScanResult ssidIng) {
-        this.ssidIng = ssidIng;
+    public void notifySsId(String ssId) {
+        if (!TextUtils.isEmpty(ssId)) {
+            if (mDataList != null) {
+                int size = mDataList.size();
+                for (int position = 0; position < size; position++) {
+                    if (ssId.equals(mDataList.get(position).SSID)) {
+                        notifyItemChanged(position);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void setSsId(String ssId) {
+        this.ssId = ssId;
+        if (TextUtils.isEmpty(ssId)) {
+            notifyDataSetChanged();
+        } else {
+            notifySsId(ssId);
+        }
     }
 
     public WifiAdapter(List<ScanResult> scanResults) {
         super(scanResults);
         this.scanResults = scanResults;
         this.savePassWord = new HashMap<>();
+        this.saveAnim = new HashMap<>();
 
     }
 
@@ -81,12 +105,17 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
         if (connected) {
             holder.mTvConnectState.setText("已连接");
             holder.mTvConnectState.setVisibility(View.VISIBLE);
-        }
-        if (scanResult == ssidIng) {
+            stopAnimBonding(holder, scanResult);
+            holder.itemView.setSelected(true);
+        } else if (!TextUtils.isEmpty(ssId) && ssId.equals(scanResult.SSID)) {
             holder.mTvConnectState.setText("连接中..");
+            startAnimBonding(holder, scanResult);
             holder.mTvConnectState.setVisibility(View.VISIBLE);
+            holder.itemView.setSelected(false);
         } else {
-            holder.mTvConnectState.setText("已连接");
+            holder.itemView.setSelected(false);
+            stopAnimBonding(holder, scanResult);
+            holder.mTvConnectState.setText("未连接");
             holder.mTvConnectState.setVisibility(connected ? View.VISIBLE : View.INVISIBLE);
         }
         holder.mTvName.setText(scanResult.SSID);
@@ -124,6 +153,41 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
 
     }
 
+    public void stopAnimBonding(WifiHolder holder, ScanResult scanResult) {
+        holder.mVBondingAnim.setVisibility(View.GONE);
+        saveAnim.put(scanResult.SSID, false);
+        if (holder.mVBondingAnim.getAnimation() != null) {
+            holder.mVBondingAnim.getAnimation().cancel();
+            holder.mVBondingAnim.clearAnimation();
+        }
+
+    }
+
+    public void startAnimBonding(WifiHolder holder, ScanResult scanResult) {
+        Log.e("startAnimBonding", "jspjspjsp=========================================2222");
+        if (holder.itemView.getWidth() < 1) {
+            holder.itemView.postDelayed(() -> {
+                startAnimBonding(holder, scanResult);
+            }, 100);
+            return;
+        }
+        Log.e("startAnimBonding", "jspjspjsp========================================1111=");
+        View view = holder.mVBondingAnim;
+        view.setVisibility(View.VISIBLE);
+        if (saveAnim.get(scanResult.SSID) && view.getAnimation() != null) {
+            return;
+        }
+        if (translateAnimation == null) {
+            translateAnimation = new TranslateAnimation(0 - view.getWidth(), holder.itemView.getWidth() + view.getWidth(), 0, 0);
+            translateAnimation.setDuration(1500);
+            translateAnimation.setRepeatCount(100);
+            translateAnimation.setInterpolator(new DecelerateInterpolator());
+        }
+        view.startAnimation(translateAnimation);
+        Log.e("startAnimBonding", "jspjspjsp=========================================");
+        saveAnim.put(scanResult.SSID, true);
+    }
+
     private void forget(ScanResult scanResult) {
         DialogRobotFactory.createCustomDialog((FragmentActivity) mContext, new DialogRobotFactory.OnViewCallBack() {
             @Override
@@ -138,12 +202,17 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
             public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
                 tDialog.dismiss();
                 if (view.getId() == R.id.tv_right) {
+                    if (!WifiHelper.get().isWifiConnected(scanResult.SSID)) {
+                        Util.removeWifiBySsid(mWifiManager, scanResult.SSID);
+                        notifyDataSetChanged();
+                        return;
+                    }
                     WifiHelper.get().disconnect(new DisconnectionSuccessListener() {
                         @Override
                         public void success() {
-                            notifyDataSetChanged();
                             Util.removeWifiBySsid(mWifiManager, scanResult.SSID);
                             Toast.makeText(mContext, "成功断开链接", Toast.LENGTH_SHORT).show();
+                            notifyDataSetChanged();
                         }
 
                         @Override
@@ -160,7 +229,7 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
     /**
      * 获取wifi加密方式
      */
-    public String getEncrypt(WifiManager mWifiManager, ScanResult scanResult) {
+    public static String getEncrypt(WifiManager mWifiManager, ScanResult scanResult) {
         if (mWifiManager != null) {
             String capabilities = scanResult.capabilities;
             if (!TextUtils.isEmpty(capabilities)) {
@@ -201,6 +270,7 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
         private ImageView mIvLock;
         private ImageView mIvLevel;
         private TextView mTvPass;
+        private View mVBondingAnim;
 
         public WifiHolder(@NonNull View itemView) {
             super(itemView);
@@ -213,6 +283,7 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
             mIvLock = (ImageView) itemView.findViewById(R.id.iv_lock);
             mIvLevel = (ImageView) itemView.findViewById(R.id.iv_level);
             mTvPass = (TextView) itemView.findViewById(R.id.tv_pass);
+            mVBondingAnim = itemView.findViewById(R.id.v_bonding_anim);
         }
     }
 }

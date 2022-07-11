@@ -115,7 +115,7 @@ public class WakeupHelper implements IWakeUpFace {
 //        mIvw.setParameter(SpeechConstant.IVW_AUDIO_PATH, ContextApp.get().getCacheDir().getAbsolutePath() + "/msc/ivw.wav");
 //        mIvw.setParameter(SpeechConstant.AUDIO_FORMAT, "wav");
         // 如有需要，设置 NOTIFY_RECORD_DATA 以实时通过 onEvent 返回录音音频流字节
-        mIvw.setParameter(SpeechConstant.NOTIFY_RECORD_DATA, "1");
+//        mIvw.setParameter(SpeechConstant.NOTIFY_RECORD_DATA, "1");
     }
 
 

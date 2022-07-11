@@ -1,12 +1,18 @@
 package com.thfw.robotheart.fragments.sets;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -28,15 +34,22 @@ import com.thanosfisherman.wifiutils.Logger;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
+import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionErrorCode;
+import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionSuccessListener;
 import com.thanosfisherman.wifiutils.wifiState.WifiStateListener;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
+import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.NetworkUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.adapter.WifiAdapter;
 import com.thfw.robotheart.util.WifiHelper;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -60,7 +73,11 @@ public class SetNetFragment extends RobotBaseFragment {
     private Handler handler;
     private ImageView mIvRescan;
 
-    List<ScanResult> newResults = new ArrayList<>();
+    private List<ScanResult> newResults = new ArrayList<>();
+    private BroadcastReceiver mWifiStateReceiver;
+    private ArrayList<NetworkInfo.DetailedState> mWifiStateList = new ArrayList<>();
+    private ScanResult startScanResult;
+    private String startSSID;
 
     @Override
     public int getContentView() {
@@ -92,7 +109,6 @@ public class SetNetFragment extends RobotBaseFragment {
         mSwitchWifi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                delayScanWifi();
                 if (isChecked) {
                     WifiHelper.get().enableWifi();
                     WifiHelper.get().enableWifi(new WifiStateListener() {
@@ -118,7 +134,7 @@ public class SetNetFragment extends RobotBaseFragment {
                 HandlerUtil.getMainHandler().postDelayed(() -> {
                     boolean enabled = mWifiManager != null && mWifiManager.isWifiEnabled();
                     mSwitchWifi.setChecked(enabled);
-                }, 300);
+                }, 800);
 
             }
         });
@@ -135,6 +151,83 @@ public class SetNetFragment extends RobotBaseFragment {
                 Log.i(TAG, "mIvRescan click ++++++++++++");
             }
         });
+        registerWifi();
+        delayScanWifi();
+    }
+
+    private void registerWifi() {
+        createWifiReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        mContext.registerReceiver(mWifiStateReceiver, filter);
+    }
+
+    private void createWifiReceiver() {
+
+
+        if (mWifiStateReceiver == null) {
+            mWifiStateReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (intent != null) {
+                        LogUtil.d(TAG, "action = " + intent.getAction());
+                    } else {
+                        return;
+                    }
+                    if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+                        Parcelable parcelableExtra = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+                        if (null != parcelableExtra) {
+                            NetworkInfo networkInfo = (NetworkInfo) parcelableExtra;
+                            NetworkInfo.State state = networkInfo.getState();
+                            NetworkInfo.DetailedState detailedState = networkInfo.getDetailedState();
+                            String extra = networkInfo.getExtraInfo();
+                            if (extra != null) {
+                                extra = extra.replaceAll("\"", "");
+
+                            }
+                            LogUtil.d(TAG, "startSSID = " + startSSID + " ; extra = " + extra);
+                            if (startSSID != null && startSSID.equals(extra)) {
+                                mWifiStateList.add(detailedState);
+                                if (state == NetworkInfo.State.CONNECTING) {
+                                    wifiAdapter.setSsId(startSSID);
+                                } else {
+                                    wifiAdapter.setSsId(null);
+                                }
+                                if (detailedState == NetworkInfo.DetailedState.DISCONNECTED) {
+                                    for (NetworkInfo.DetailedState detailedState1 : mWifiStateList) {
+                                        if (detailedState1 == NetworkInfo.DetailedState.CONNECTING) {
+                                            Util.removeWifiBySsid(mWifiManager, startScanResult.SSID);
+                                            ToastUtil.show("密码错误,请重新输入");
+                                            String capabilities = WifiAdapter.getEncrypt(mWifiManager, startScanResult);
+                                            openInputPass(startScanResult, capabilities, 0);
+                                            break;
+                                        }
+                                    }
+                                    startSSID = null;
+                                    wifiAdapter.setSsId(null);
+                                } else if (detailedState == NetworkInfo.DetailedState.CONNECTED) {
+                                    startSSID = null;
+                                    wifiAdapter.setSsId(null);
+                                }
+                            } else {
+                                wifiAdapter.notifySsId(extra);
+                            }
+                            LogUtil.d(TAG, "networkInfo = " + networkInfo.toString());
+                            // 当然，这边可以更精确的确定状态
+                            boolean isConnected = (state == NetworkInfo.State.CONNECTED);
+                            LogUtil.d(TAG, "isConnected" + isConnected);
+                        }
+                        if (NetworkUtil.isWifiConnected(mContext)) {
+                            if (wifiAdapter != null) {
+                                wifiAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                }
+            };
+        }
     }
 
     private void reScanAnimStart() {
@@ -156,11 +249,9 @@ public class SetNetFragment extends RobotBaseFragment {
         wifiAdapter.setOnWifiItemListener(new WifiAdapter.OnWifiItemListener() {
             @Override
             public void onItemClick(ScanResult scanResult, String passType, int position) {
-
-                wifiAdapter.setSsidIng(null);
                 if (TextUtils.isEmpty(passType)) {
                     WifiHelper.get()
-                            .connectWith(scanResult.SSID, "")
+                            .connectWith(scanResult.SSID, scanResult.BSSID, "")
                             .setTimeout(10000).onConnectionResult(new ConnectionSuccessListener() {
                         @Override
                         public void success() {
@@ -176,37 +267,66 @@ public class SetNetFragment extends RobotBaseFragment {
                     return;
                     // 已经有密码
                 } else if (Util.isSavePassWord(mWifiManager, scanResult.SSID)) {
+
                     Log.i(TAG, "已经有密码");
                     WifiConfiguration configuration = Util.getConfig(mWifiManager, scanResult.SSID);
                     if (configuration != null) {
-                        Log.i(TAG, "已经有密码 - 开始连接");
-                        // 连接配置好的指定ID的网络
-                        wifiAdapter.setSsidIng(scanResult);
-                        wifiAdapter.notifyDataSetChanged();
-                        mWifiManager.updateNetwork(configuration);
-                        mWifiManager.enableNetwork(configuration.networkId,
-                                true);
-                        delayScanWifi();
-                        wifiAdapter.setSsidIng(null);
+
+                        if (WifiHelper.get().isWifiConnected()) {
+                            startScanResult = scanResult;
+                            startSSID = startScanResult.SSID;
+                            wifiAdapter.setSsId(startSSID);
+                            mWifiStateList.clear();
+                            WifiHelper.get().disconnect(new DisconnectionSuccessListener() {
+                                @Override
+                                public void success() {
+                                    savePassReConnect(scanResult, configuration);
+                                }
+
+                                @Override
+                                public void failed(@NonNull @NotNull DisconnectionErrorCode errorCode) {
+                                    savePassReConnect(scanResult, configuration);
+                                }
+                            });
+                        } else {
+                            savePassReConnect(scanResult, configuration);
+                        }
                         return;
                     }
+                }
+                startScanResult = null;
+                startSSID = null;
+                openInputPass(scanResult, passType, position);
 
-                }
-                if (mWifiInputFragment != null) {
-                    return;
-                }
-                mWifiInputFragment = new WifiInputFragment(scanResult, passType, position);
-                mWifiInputFragment.setCompleteInputListener(new WifiInputFragment.OnCompleteInputListener() {
-                    @Override
-                    public void onComplete() {
-                        removeFragment();
-                    }
-                });
-                getParentFragmentManager().beginTransaction()
-                        .add(R.id.fl_input_pass, mWifiInputFragment).commit();
             }
         });
         mWifiList.setAdapter(wifiAdapter);
+    }
+
+    private void savePassReConnect(ScanResult scanResult, WifiConfiguration configuration) {
+        Log.i(TAG, "已经有密码 - 开始连接");
+        startScanResult = scanResult;
+        startSSID = startScanResult.SSID;
+        wifiAdapter.setSsId(startSSID);
+        mWifiStateList.clear();
+        mWifiManager.updateNetwork(configuration);
+        mWifiManager.enableNetwork(configuration.networkId,
+                true);
+    }
+
+    private void openInputPass(ScanResult scanResult, String passType, int position) {
+        if (mWifiInputFragment != null) {
+            return;
+        }
+        mWifiInputFragment = new WifiInputFragment(scanResult, passType, position);
+        mWifiInputFragment.setCompleteInputListener(new WifiInputFragment.OnCompleteInputListener() {
+            @Override
+            public void onComplete() {
+                removeFragment();
+            }
+        });
+        getParentFragmentManager().beginTransaction()
+                .add(R.id.fl_input_pass, mWifiInputFragment).commit();
     }
 
     @Override
@@ -288,6 +408,7 @@ public class SetNetFragment extends RobotBaseFragment {
     }
 
     public void removeFragment() {
+        hideInput();
         if (mWifiInputFragment != null) {
             getParentFragmentManager().beginTransaction().remove(mWifiInputFragment).commit();
             mWifiInputFragment = null;
@@ -308,17 +429,30 @@ public class SetNetFragment extends RobotBaseFragment {
         if (mSwitchWifi == null || !mSwitchWifi.isChecked()) {
             return;
         }
-        handler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                super.handleMessage(msg);
-                if (wifiAdapter != null) {
-                    wifiAdapter.notifyDataSetChanged();
+        if (handler == null) {
+            handler = new Handler(Looper.getMainLooper()) {
+                @Override
+                public void handleMessage(@NonNull Message msg) {
+                    super.handleMessage(msg);
+                    if (!EmptyUtil.isEmpty(getActivity())) {
+                        if (wifiAdapter != null && WifiHelper.get().isWifiConnected()) {
+                            wifiAdapter.notifyDataSetChanged();
+                        }
+                        LogUtil.d(TAG, "handleMessage ====================== ");
+                        handler.sendEmptyMessageDelayed(0, 2000);
+                    }
                 }
-                handler.sendEmptyMessageDelayed(0, 1500);
-            }
-        };
-        handler.sendEmptyMessageDelayed(0, 800);
+            };
+        }
+        handler.sendEmptyMessageDelayed(0, 1500);
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mWifiStateReceiver != null) {
+            mContext.unregisterReceiver(mWifiStateReceiver);
+        }
+        super.onDestroyView();
     }
 
     @Override
