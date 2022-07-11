@@ -63,6 +63,7 @@ import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.ui.voice.wakeup.WakeupHelper;
 import com.thfw.ui.widget.MyRobotSearchView;
 import com.thfw.ui.widget.WeekView;
 import com.thfw.user.login.LoginStatus;
@@ -305,6 +306,22 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             initUmeng();
             initUserInfo();
             initOrganization();
+        }
+
+        WakeupHelper.getInstance().setWakeUpListener(new WakeupHelper.OnWakeUpListener() {
+            @Override
+            public void onWakeup() {
+                ToastUtil.show("WakeUp");
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+
+        if (!WakeupHelper.getInstance().isIng()) {
+            WakeupHelper.getInstance().start();
         }
 
     }

@@ -148,7 +148,6 @@ public class DialogRobotFactory {
                     SVGAImageView svgaImageView = viewHolder.getView(com.thfw.robotheart.R.id.svga_dialog);
                     if (!TextUtils.isEmpty(hint)) {
                         TextView mTvHint = viewHolder.getView(com.thfw.robotheart.R.id.tv_hint);
-                        Util.dipToPx(12, mTvHint.getContext());
                         // 部分设备底部导航遮挡文字问题
                         if (RobotUtil.isInstallRobot() || Build.DEVICE.contains("3399")) {
                             mTvHint.setPadding(0, 0, 0, Util.dipToPx(48, mTvHint.getContext()));

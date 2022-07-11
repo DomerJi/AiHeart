@@ -1,13 +1,19 @@
 package com.thfw.ui.voice.wakeup;
 
 
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
+import com.iflytek.cloud.SpeechEvent;
 import com.iflytek.cloud.VoiceWakeuper;
 import com.iflytek.cloud.WakeuperListener;
 import com.iflytek.cloud.WakeuperResult;
@@ -16,6 +22,10 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.ui.voice.VoiceType;
 import com.thfw.ui.voice.VoiceTypeManager;
 import com.thfw.ui.voice.tts.TtsHelper;
+
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Author:pengs
@@ -36,6 +46,7 @@ public class WakeupHelper implements IWakeUpFace {
     private static final String IVW_SST_ONESHOT = "oneshot";
     private VoiceWakeuper mIvw;
     private static WakeupHelper wakeupHelper;
+    private MediaExtractor mex;
 
     public static WakeupHelper getInstance() {
         if (wakeupHelper == null) {
@@ -104,7 +115,7 @@ public class WakeupHelper implements IWakeUpFace {
 //        mIvw.setParameter(SpeechConstant.IVW_AUDIO_PATH, ContextApp.get().getCacheDir().getAbsolutePath() + "/msc/ivw.wav");
 //        mIvw.setParameter(SpeechConstant.AUDIO_FORMAT, "wav");
         // 如有需要，设置 NOTIFY_RECORD_DATA 以实时通过 onEvent 返回录音音频流字节
-//        mIvw.setParameter( SpeechConstant.NOTIFY_RECORD_DATA, "1" );
+        mIvw.setParameter(SpeechConstant.NOTIFY_RECORD_DATA, "1");
     }
 
 
@@ -184,12 +195,114 @@ public class WakeupHelper implements IWakeUpFace {
 
         @Override
         public void onEvent(int i, int i1, int i2, Bundle bundle) {
-
+            switch (i) {
+                case SpeechEvent.EVENT_RECORD_DATA:
+                    byte[] recordBytes = bundle.getByteArray(SpeechEvent.KEY_EVENT_RECORD_DATA);
+                    if (recordBytes == null) {
+                        return;
+                    }
+                    parseRecordData(recordBytes);
+                    break;
+            }
         }
 
         @Override
         public void onVolumeChanged(int i) {
 
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void parseRecordData(byte[] recordBytes) {
+
+
+        long v = 0;
+
+        long tv = 0;
+
+        // 将 data 内容取出，进行平方和运算
+
+        for (int i = 0; i < recordBytes.length; i += 2) {
+
+            tv = recordBytes[i + 1] * 128 + recordBytes[i];
+            tv *= tv;
+            v += tv;
+
+        }
+
+        // 平方和除以数据总长度，得到音量大小。
+        double mean = v / (double) recordBytes.length;
+        double volume = 10 * Math.log10(mean * 2);
+
+//        Log.d(TAG, "volume = " + volume + " ; len = " + recordBytes.length);
+// L.i(context, "上传录音状态TTT：" + up)
+        if (mex == null) {
+            mex = new MediaExtractor();
+        }
+//        ContextApp.get().getCacheDir().getAbsolutePath() + "/msc/" + fileName + ".wav"
+        try {
+//            FileInputStream in = new FileInputStream(fileName);
+//            FileDescriptor descriptor = in.getFD();
+            FileOutputStream out = new FileOutputStream(FileDescriptor.out);
+            out.write(recordBytes);
+            out.flush();
+
+            FileDescriptor fileDescriptor = out.getFD();
+            out.close();
+
+            if (fileDescriptor != null) {
+
+                Log.d(TAG, "getSampleRate: getFD() != null");
+                Log.d(TAG, "getSampleRate: getFD() fileDescriptor.valid != " + fileDescriptor.valid());
+//                mex.setDataSource(TtsHelper.getInstance().getCacheFile("小密准备了专业心理测试，\n帮你更好的了解当下的心态哦~"));
+                mex.setDataSource(fileDescriptor);
+            }
+
+
+        } catch (IOException e) {
+            Log.d(TAG, "setDataSource: e:" + e.getLocalizedMessage());
+        }
+
+//        try {
+
+//            mex.setDataSource(new MediaDataSource() {
+//                @Override
+//                public int readAt(long position, byte[] buffer, int offset, int size) {
+////                    buffer = recordBytes;
+//                    System.arraycopy(recordBytes, 0, buffer, 0, recordBytes.length);
+//                    return recordBytes.length;
+//                }
+//
+//                @Override
+//                public long getSize() {
+//                    return recordBytes.length;
+//                }
+//
+//                @Override
+//                public void close() {
+//                }
+//            });
+//        } catch (IOException ioException) {
+//
+//        }
+        try {
+            MediaFormat mf = mex.getTrackFormat(0);
+            if (mf != null) {
+                Log.d(TAG, "getSampleRate: mf: mf != null");
+            }
+//            int bitRate = mf.getInteger(MediaFormat.KEY_BIT_RATE);//比特率
+//            Log.d(TAG, "getSampleRate: bitRate:" + bitRate);
+
+            int sampleRate = mf.getInteger(MediaFormat.KEY_SAMPLE_RATE);//采样率
+            Log.d(TAG, "getSampleRate: sampleRate:" + sampleRate);
+
+            int channelCount = mf.getInteger(MediaFormat.KEY_CHANNEL_COUNT);//通道数
+            Log.d(TAG, "getSampleRate: channelCount:" + channelCount);
+
+//            int digit = bitRate * 8 / (sampleRate * channelCount);//采样位
+//            Log.d(TAG, "getSampleRate: digit:" + digit);
+        } catch (Exception e) {
+            Log.d(TAG, "getSampleRate: e:" + e.getLocalizedMessage());
         }
     }
 }
