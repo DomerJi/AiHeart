@@ -17,6 +17,7 @@ import com.thfw.ui.voice.tts.TtsHelper;
 public class PolicyHelper {
     private static final String TAG = PolicyHelper.class.getSimpleName();
     private static PolicyHelper policyHelper;
+    private static final int MILLIS = 150;
 
     private int wakeType;
     private boolean switchReadAfter;
@@ -55,10 +56,13 @@ public class PolicyHelper {
         this.wakeType = WakeType.NULL;
     }
 
+    private void sendCheckMsg(int millis) {
+        handler.removeCallbacksAndMessages(null);
+        handler.sendEmptyMessageDelayed(0, millis);
+    }
 
     private void sendCheckMsg() {
-        handler.removeCallbacksAndMessages(null);
-        handler.sendEmptyMessageDelayed(0, 120);
+        sendCheckMsg(MILLIS);
     }
 
     public static PolicyHelper getInstance() {
@@ -96,15 +100,23 @@ public class PolicyHelper {
                         if (SpeechHelper.getInstance().isIng()) {
                             SpeechHelper.getInstance().stop();
                         }
+                        sendCheckMsg(1000);
                     } else {
                         if (!SpeechHelper.getInstance().isIng()) {
                             if (TtsHelper.getInstance().isIng()) {
                                 TtsHelper.getInstance().stop();
                             }
-                            SpeechHelper.getInstance().start();
+                            if (!SpeechHelper.getInstance().start()) {
+                                SpeechHelper.getInstance().destroy();
+                                sendCheckMsg(5000);
+                            } else {
+                                sendCheckMsg();
+                            }
+                        } else {
+                            sendCheckMsg(500);
                         }
                     }
-                    sendCheckMsg();
+
                 }
                 break;
             case WakeType.WAKEUPER:
@@ -126,24 +138,31 @@ public class PolicyHelper {
     }
 
     public void startSpeech() {
-        if (wakeType != WakeType.SPEECH) {
-            wakeType = WakeType.SPEECH;
-            SpeechHelper.getInstance().clearCacheText();
-            sendCheckMsg();
+        synchronized (PolicyHelper.class) {
+            if (wakeType != WakeType.SPEECH) {
+                wakeType = WakeType.SPEECH;
+                SpeechHelper.getInstance().clearCacheText();
+                sendCheckMsg();
+            }
         }
     }
 
     public void startPressed() {
-        if (wakeType != WakeType.PRESS) {
-            wakeType = WakeType.PRESS;
-            SpeechHelper.getInstance().clearCacheText();
-            sendCheckMsg();
+        synchronized (PolicyHelper.class) {
+            if (wakeType != WakeType.PRESS) {
+                wakeType = WakeType.PRESS;
+                SpeechHelper.getInstance().clearCacheText();
+                sendCheckMsg();
+            }
         }
     }
 
     public void end() {
-        SpeechHelper.getInstance().stop();
-        wakeType = WakeType.NULL;
+        synchronized (PolicyHelper.class) {
+            wakeType = WakeType.NULL;
+            SpeechHelper.getInstance().stop();
+            SpeechHelper.getInstance().destroy();
+        }
     }
 
 

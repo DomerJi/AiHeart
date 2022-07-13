@@ -1,5 +1,6 @@
 package com.thfw.mobileheart.activity.settings;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +31,7 @@ public class SetPasswordOriginActivity extends BaseActivity<LoginPresenter> impl
     private EditText mEtNewPassword;
     private EditText mEtNewPassword01;
     private android.widget.TextView mTvHint;
+    private TextView mTvForgetPassword2;
 
     @Override
     public int getContentView() {
@@ -47,6 +49,7 @@ public class SetPasswordOriginActivity extends BaseActivity<LoginPresenter> impl
         mEtPasswordOrigin = (EditText) findViewById(R.id.et_password);
         mEtPasswordNew = (EditText) findViewById(R.id.et_new_password);
         mEtPasswordNewConfirm = (EditText) findViewById(R.id.et_new_password01);
+        mTvForgetPassword2 = (TextView) findViewById(R.id.tv_forget_password2);
         mBtSubmit = (Button) findViewById(R.id.bt_submit);
         mTitleView = (TitleView) findViewById(R.id.titleView);
         mTvHint = (TextView) findViewById(R.id.tv_hint);
@@ -95,6 +98,11 @@ public class SetPasswordOriginActivity extends BaseActivity<LoginPresenter> impl
         });
         mEtPasswordNewConfirm.setOnFocusChangeListener((v, hasFocus) -> {
             mEtPasswordNewConfirm.setBackgroundResource(hasFocus ? R.drawable.et_underline_selected : R.drawable.et_underline_un_selected);
+        });
+
+        mTvForgetPassword2.setOnClickListener(v -> {
+            finish();
+            startActivity(new Intent(mContext, SetPasswordFirstActivity.class));
         });
 
     }

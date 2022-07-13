@@ -8,6 +8,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.login.SetPasswordCodeFragment;
+import com.thfw.robotheart.fragments.login.SetPasswordFirstFragment;
 import com.thfw.robotheart.fragments.login.SetPasswordOriginFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
@@ -20,6 +21,7 @@ public class SetPasswordActivity extends RobotBaseActivity {
 
     public static final int SET_CODE = 0;
     public static final int SET_ORIGIN = 1;
+    public static final int SET_FIRST = 2;
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private android.widget.FrameLayout mFlContent;
     private FragmentLoader mFragmentLoader;
@@ -54,6 +56,7 @@ public class SetPasswordActivity extends RobotBaseActivity {
         mFragmentLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
         mFragmentLoader.add(SET_CODE, new SetPasswordCodeFragment());
         mFragmentLoader.add(SET_ORIGIN, new SetPasswordOriginFragment());
+        mFragmentLoader.add(SET_FIRST, new SetPasswordFirstFragment());
         mFragmentLoader.load(type);
     }
 

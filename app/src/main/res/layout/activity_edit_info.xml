@@ -49,4 +49,18 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/et_input" />
 
+
+    <TextView
+        android:id="@+id/tv_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="姓名全拼用于生成系统账号，确定后不可更改"
+        android:textColor="@color/text_yellow"
+        android:textSize="@dimen/textSize_small"
+        app:layout_constraintTop_toBottomOf="@id/et_input"
+        tools:ignore="MissingConstraints" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

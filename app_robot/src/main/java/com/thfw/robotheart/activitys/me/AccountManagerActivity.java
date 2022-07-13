@@ -2,6 +2,7 @@ package com.thfw.robotheart.activitys.me;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -144,7 +145,12 @@ public class AccountManagerActivity extends RobotBaseActivity {
         if (userInfo != null) {
             mTvUserId.setText(String.valueOf(userInfo.id));
             mTvUserPhone.setText(userInfo.mobile);
-            mTvUserName.setText(userInfo.trueName);
+            // 系统账号
+            if (!TextUtils.isEmpty(userInfo.account)) {
+                mTvUserName.setText(userInfo.account);
+            } else {
+                mTvUserName.setText("暂无");
+            }
             mTvUserNickname.setText(userInfo.userName);
         }
     }

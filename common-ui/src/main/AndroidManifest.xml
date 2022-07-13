@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.thfw.ui">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application>
         <activity android:name="com.thfw.ui.com.thfw.mobileheart.activity.BaseActivity"></activity>
     </application>

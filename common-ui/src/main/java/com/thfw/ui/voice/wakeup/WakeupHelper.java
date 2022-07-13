@@ -154,6 +154,8 @@ public class WakeupHelper implements IWakeUpFace {
     public void stop() {
         if (initialized()) {
             mIvw.stopListening();
+            mIvw.destroy();
+            mIvw = null;
         }
 
         VoiceTypeManager.getManager().setVoiceType(VoiceType.WAKE_UP_STOP);

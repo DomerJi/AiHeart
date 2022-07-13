@@ -3,6 +3,7 @@ package com.thfw.base.presenter;
 import com.thfw.base.api.UserInfoApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.UI;
+import com.thfw.base.models.AccountPinyinModel;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.PresetAvatarModel;
 import com.thfw.base.net.HttpResult;
@@ -35,6 +36,12 @@ public class UserInfoPresenter extends IPresenter<UserInfoPresenter.UserInfoUi> 
     public void onUpdate(NetParams netParams) {
         Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(UserInfoApi.class)
                 .onUserUpdate(netParams);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    public void onUpdateAccount(NetParams netParams) {
+        Observable<HttpResult<AccountPinyinModel>> observable = OkHttpUtil.createService(UserInfoApi.class)
+                .onUserUpdateAccount(netParams);
         OkHttpUtil.request(observable, getUI());
     }
 

@@ -10,6 +10,7 @@ import com.thfw.base.models.SystemDetailModel;
 import com.thfw.base.models.TaskDetailModel;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.base.models.TaskMusicEtcModel;
+import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
@@ -153,6 +154,17 @@ public class TaskPresenter<T> extends IPresenter<TaskPresenter.TaskUi> {
     public void getPushModel(NetParams netParams) {
         Observable<HttpResult<SystemDetailModel>> observable = OkHttpUtil.createService(TaskApi.class)
                 .getPushModel(netParams);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    /**
+     * 推送消息详情详情
+     *
+     * @param netParams 推送友盟返回的msg_id字段 id
+     */
+    public void getUrgedMsg(NetParams netParams) {
+        Observable<HttpResult<UrgedMsgModel>> observable = OkHttpUtil.createService(TaskApi.class)
+                .getUrgedMsg(netParams);
         OkHttpUtil.request(observable, getUI());
     }
 

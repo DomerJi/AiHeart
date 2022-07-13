@@ -226,6 +226,58 @@
                     android:background="@color/divider" />
 
                 <LinearLayout
+                    android:id="@+id/ll_name_pinyin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/info_name_pinyin"
+                        android:textColor="@color/text_common"
+                        android:textSize="@dimen/textSize" />
+
+                    <TextView
+                        android:id="@+id/tv_star_01_pinyin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="★"
+                        android:textColor="@color/text_red"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/tv_name_pinyin"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:hint="@string/info_hint_no_input"
+                        android:textColor="@color/text_common"
+                        android:textColorHint="@color/text_content"
+                        android:textSize="@dimen/textSize" />
+
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:src="@drawable/ic_arrow_right" />
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/v_pinyin_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_2px"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@color/divider" />
+
+                <LinearLayout
                     android:id="@+id/ll_team"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -7,6 +7,7 @@ import com.thfw.base.models.SystemDetailModel;
 import com.thfw.base.models.TaskDetailModel;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.base.models.TaskMusicEtcModel;
+import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.net.HttpResult;
 
 import java.util.List;
@@ -110,6 +111,14 @@ public interface TaskApi {
     @FormUrlEncoded
     @POST("get_push_msg_by_msg_id")
     Observable<HttpResult<SystemDetailModel>> getPushModel(@FieldMap Map<String, Object> params);
+
+    /**
+     * 催促消息查询
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("urged_msg")
+    Observable<HttpResult<UrgedMsgModel>> getUrgedMsg(@FieldMap Map<String, Object> params);
 
 
 }

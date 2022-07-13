@@ -28,6 +28,8 @@ public class AccountSafeActivity extends BaseActivity {
     private LinearLayout mLlUserId;
     private TextView mTvUserIdValue;
     private TextView mTvPhone;
+    private LinearLayout mLlUserAccount;
+    private TextView mTvUserAccountValue;
 
     @Override
     public int getContentView() {
@@ -67,6 +69,10 @@ public class AccountSafeActivity extends BaseActivity {
         });
 
 
+        mLlUserAccount = (LinearLayout) findViewById(R.id.ll_user_account);
+        mTvUserAccountValue = (TextView) findViewById(R.id.tv_user_account_value);
+
+
     }
 
     @Override
@@ -75,6 +81,16 @@ public class AccountSafeActivity extends BaseActivity {
         String mobile = UserManager.getInstance().getUser().getMobile();
         if (!TextUtils.isEmpty(mobile)) {
             mTvPhone.setText(mobile);
+        }
+
+        String account = null;
+        if (UserManager.getInstance().getUser().getUserInfo() != null) {
+            account = UserManager.getInstance().getUser().getUserInfo().account;
+        }
+        if (!TextUtils.isEmpty(account)) {
+            mTvUserAccountValue.setText(account);
+        } else {
+            mTvUserAccountValue.setText("暂无");
         }
     }
 

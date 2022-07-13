@@ -1,6 +1,8 @@
 package com.thfw.mobileheart.util;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Vibrator;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -28,7 +30,9 @@ import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.thfw.base.models.AreaModel;
 import com.thfw.base.models.PickerData;
+import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
@@ -41,6 +45,7 @@ import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnBindViewListener;
 import com.thfw.ui.dialog.listener.OnViewClickListener;
+import com.thfw.ui.utils.DragViewUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.InputBoxView;
@@ -50,17 +55,28 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Calendar;
 import java.util.List;
 
+import static android.content.Context.VIBRATOR_SERVICE;
+import static com.thfw.ui.utils.UrgeUtil.URGE_DELAY_TIME;
+
 /**
  * 弹框工厂
  */
 public class DialogFactory {
 
     private static final float WIDTH_ASPECT = 0.7f;
+    private static final float WIDTH_ASPECT_2 = 0.92f;
     private static final String TAG = "DialogFactory";
     private static TDialog mSvgaTDialog;
     private static Runnable mMinuteRunnable;
     private static TextView mTvTime;
     private static int minute;
+    private static long currentTimeMillis;
+    private static TDialog urgedDialog;
+    private static Runnable urgedDialogRunnable;
+
+    public static TDialog getUrgedDialog() {
+        return urgedDialog;
+    }
 
     public static TDialog getSvgaTDialog() {
         return mSvgaTDialog;
@@ -94,6 +110,65 @@ public class DialogFactory {
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
                 })
                 .setOnViewClickListener(onViewCallBack).create().show();
+    }
+
+    public static TDialog createUrgedDialog(FragmentActivity activity, UrgedMsgModel model, OnUrgedBack onUrgedBack) {
+        final View[] view = new View[1];
+        if (urgedDialog != null) {
+            urgedDialog.dismiss();
+        }
+        urgedDialog = new TDialog.Builder(activity.getSupportFragmentManager())
+                .setLayoutRes(R.layout.dialog_urged_top_layout)
+                .setDialogAnimationRes(R.style.animate_dialog_top)
+                .setScreenWidthAspect(activity, WIDTH_ASPECT_2)
+                .setGravity(Gravity.TOP)
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        urgedDialog = null;
+                        if (urgedDialogRunnable != null) {
+                            HandlerUtil.getMainHandler().removeCallbacks(urgedDialogRunnable);
+                        }
+                        urgedDialogRunnable = null;
+                    }
+                })
+                .setNotFocusable(true)
+                .addOnClickListener(R.id.cv_bg)
+                .setOnBindViewListener(viewHolder -> {
+                    view[0] = viewHolder.getView(R.id.cv_bg);
+                    TextView textView = viewHolder.getView(R.id.tv_hint);
+                    textView.setText(model.getContent());
+                    Vibrator vibrator = (Vibrator) activity.getApplicationContext().getSystemService(VIBRATOR_SERVICE);
+                    if (vibrator != null) {
+                        vibrator.vibrate(200);
+                    }
+                }).create().show();
+        HandlerUtil.getMainHandler().postDelayed(() -> {
+            if (view[0] != null) {
+                DragViewUtil.registerDragAction(view[0], urgedDialog, v -> {
+                    onUrgedBack.onClick(view[0], model);
+                    Vibrator vibrator = (Vibrator) activity.getApplicationContext().getSystemService(VIBRATOR_SERVICE);
+                    if (vibrator != null) {
+                        vibrator.vibrate(120);
+                    }
+                    HandlerUtil.getMainHandler().postDelayed(() -> {
+                        if (urgedDialog != null) {
+                            urgedDialog.dismiss();
+                        }
+                    }, 500);
+                });
+            }
+        }, 200);
+        if (urgedDialogRunnable != null) {
+            HandlerUtil.getMainHandler().removeCallbacks(urgedDialogRunnable);
+        }
+        urgedDialogRunnable = () -> {
+            if (urgedDialog != null) {
+                urgedDialog.dismiss();
+            }
+        };
+        HandlerUtil.getMainHandler().postDelayed(urgedDialogRunnable, URGE_DELAY_TIME);
+        return urgedDialog;
     }
 
 
@@ -154,7 +229,11 @@ public class DialogFactory {
      * @return
      */
     public static void createSvgaDialog(FragmentActivity activity, String svgaAssets, final OnSVGACallBack onViewCallBack) {
-        long currentTimeMillis = System.currentTimeMillis();
+        long time = System.currentTimeMillis();
+        if (time - currentTimeMillis < 800) {
+            return;
+        }
+        currentTimeMillis = time;
         // 过场动画出现频率
         if (svgaAssets.startsWith("transition_") && AnimFrequencyUtil.getAnimFrequency() != AnimFileName.Frequency.EVERY_TIME) {
             int animFrequency = AnimFrequencyUtil.getAnimFrequency();
@@ -182,6 +261,20 @@ public class DialogFactory {
                 .setDialogAnimationRes(com.thfw.ui.R.style.animate_dialog_fade)
                 .setScreenWidthAspect(activity, 1.0f)
                 .setScreenHeightAspect(activity, 1.0f)
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (mTvTime != null && mMinuteRunnable != null) {
+                            mTvTime.removeCallbacks(mMinuteRunnable);
+                            mTvTime = null;
+                            mMinuteRunnable = null;
+                        }
+                        if (mSvgaTDialog != null) {
+                            mSvgaTDialog.dismiss();
+                            mSvgaTDialog = null;
+                        }
+                    }
+                })
                 .setDimAmount(0.6f)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
@@ -219,7 +312,6 @@ public class DialogFactory {
                         viewHolder.getView(R.id.tv_jump).setVisibility(View.INVISIBLE);
                         viewHolder.getView(R.id.tv_hint).setVisibility(View.INVISIBLE);
                     }
-                    long time = System.currentTimeMillis();
                     LogUtil.d(TAG, "Time start = " + time);
                     // The third parameter is a default parameter, which is null by default. If this method is set, the audio parsing and playback will not be processed internally. The audio File instance will be sent back to the developer through PlayCallback, and the developer will control the audio playback and playback. stop
                     parser.decodeFromAssets(svgaAssets, new SVGAParser.ParseCompletion() {
@@ -278,11 +370,14 @@ public class DialogFactory {
      * @param onViewCallBack
      * @return
      */
-    public static TDialog createMoodSignInDialog(FragmentActivity activity, OnViewClickListener onViewCallBack) {
+    public static TDialog createMoodSignInDialog(FragmentActivity activity,
+                                                 DialogInterface.OnDismissListener onDismissListener,
+                                                 OnViewClickListener onViewCallBack) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_mood_sign_in_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
                 .setScreenWidthAspect(activity, WIDTH_ASPECT)
+                .setOnDismissListener(onDismissListener)
                 .addOnClickListener(R.id.bt_go, R.id.iv_close)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
@@ -580,6 +675,11 @@ public class DialogFactory {
 
     public interface OnViewCallBack extends OnViewClickListener {
         void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical);
+    }
+
+    public interface OnUrgedBack {
+
+        void onClick(View view, UrgedMsgModel urgedMsgModel);
     }
 
     public interface OnViewThreeCallBack extends OnViewClickListener {

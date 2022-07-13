@@ -64,7 +64,10 @@ public class WifiInputFragment extends RobotBaseFragment {
 
     @Override
     public void initView() {
-
+        // 防止触发wifi列表点击等事件
+        findViewById(R.id.ll_root).setOnClickListener(v -> {
+            // nothing
+        });
         mTvConnect = (TextView) findViewById(R.id.tv_connect);
         mLlUser = (LinearLayout) findViewById(R.id.ll_user);
         mEtUser = (EditText) findViewById(R.id.et_user);

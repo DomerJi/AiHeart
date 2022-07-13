@@ -53,6 +53,7 @@ public class TController<A extends TBaseAdapter> implements Parcelable, Serializ
     private View dialogView;
     private DialogInterface.OnDismissListener onDismissListener;
     private DialogInterface.OnKeyListener onKeyListener;
+    private boolean notFocusable;
 
     //////////////////////////////////////////Parcelable持久化//////////////////////////////////////////////////////
     public TController() {
@@ -67,6 +68,7 @@ public class TController<A extends TBaseAdapter> implements Parcelable, Serializ
         tag = in.readString();
         ids = in.createIntArray();
         isCancelableOutside = in.readByte() != 0;
+        notFocusable = in.readByte() != 0;
         orientation = in.readInt();
     }
 
@@ -86,6 +88,7 @@ public class TController<A extends TBaseAdapter> implements Parcelable, Serializ
         dest.writeString(tag);
         dest.writeIntArray(ids);
         dest.writeByte((byte) (isCancelableOutside ? 1 : 0));
+        dest.writeByte((byte) (notFocusable ? 1 : 0));
         dest.writeInt(orientation);
     }
 
@@ -130,6 +133,14 @@ public class TController<A extends TBaseAdapter> implements Parcelable, Serializ
 
     public int[] getIds() {
         return ids;
+    }
+
+    public boolean isNotFocusable() {
+        return notFocusable;
+    }
+
+    public void setNotFocusable(boolean notFocusable) {
+        this.notFocusable = notFocusable;
     }
 
     public boolean isCancelableOutside() {
@@ -193,6 +204,7 @@ public class TController<A extends TBaseAdapter> implements Parcelable, Serializ
         public String mTag = "TDialog";
         public int[] ids;
         public boolean mIsCancelableOutside = true;
+        public boolean notFocusable = false;
         public OnViewClickListener mOnViewClickListener;
         public OnBindViewListener bindViewListener;
         public int mDialogAnimationRes = 0;//弹窗动画
@@ -231,6 +243,7 @@ public class TController<A extends TBaseAdapter> implements Parcelable, Serializ
             tController.onDismissListener = mOnDismissListener;
             tController.dialogAnimationRes = mDialogAnimationRes;
             tController.onKeyListener = mKeyListener;
+            tController.notFocusable = notFocusable;
 
             if (adapter != null) {
                 tController.setAdapter(adapter);

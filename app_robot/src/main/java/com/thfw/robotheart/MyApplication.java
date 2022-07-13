@@ -92,6 +92,9 @@ public class MyApplication extends MultiDexApplication {
             // 华为平板 6.25 = 2000/320
             lv = lv * Math.max(dm.widthPixels, dm.heightPixels) * 1.0f / screenDensity / 6.25f;
         }
+        if (lv > 1.2) {
+            lv = 1.2f;
+        }
         LogUtil.d("getFontScale02 lv = " + lv);
         return lv;
     }

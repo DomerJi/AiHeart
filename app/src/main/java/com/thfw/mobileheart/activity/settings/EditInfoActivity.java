@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -54,6 +55,9 @@ public class EditInfoActivity extends BaseActivity {
         EditTextUtil.setEditTextInhibitInputSpace(mEtInput);
         mBtConfirm = (Button) findViewById(R.id.bt_confirm);
         mEtInput.setMaxEms(tempEditType.textSizeMax);
+        if (editType == null || editType.type != 4) {
+            findViewById(R.id.tv_hint).setVisibility(View.GONE);
+        }
         mBtConfirm.setEnabled(false);
         mEtInput.addTextChangedListener(new MyTextWatcher() {
             @Override
@@ -86,6 +90,7 @@ public class EditInfoActivity extends BaseActivity {
 
         NICKNAME(0, "填写昵称", 2, 15),
         NAME(1, "填写真实姓名", 2, 15),
+        NAME_PINYIN(4, "填写姓名全拼", 4, 30),
         CLASSES(2, "填写部门", 2, 15),
         PHONE_NUMBER(3, "填写手机号", 11, 11);
 

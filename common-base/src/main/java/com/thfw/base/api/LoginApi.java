@@ -85,6 +85,20 @@ public interface LoginApi {
     Observable<HttpResult<CommonModel>> onSetPassword(@FieldMap Map<String, Object> params);
 
     /**
+     * [密码重置]
+     * phone_number 手机号
+     * verification_code 验证码
+     * type 1 验证码 2 新旧密码
+     * password 新密码 旧密码
+     * old_password
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("changePassword")
+    Observable<HttpResult<CommonModel>> onSetPasswordFirst(@FieldMap Map<String, Object> params);
+
+    /**
      * [验证码-手机验证码验证]
      *
      * @return

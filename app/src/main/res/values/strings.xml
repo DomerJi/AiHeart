@@ -68,6 +68,7 @@
     <string name="safe_mobile">手机号码</string>
     <string name="safe_wechat">微信号</string>
     <string name="safe_user_id">用户ID</string>
+    <string name="safe_user_account">系统账号</string>
     <string name="safe_bind">去绑定</string>
     <string name="safe_QQ">QQ</string>
     <string name="safe_password">登录密码</string>
@@ -77,6 +78,7 @@
     <string name="info_avatar">头像</string>
     <string name="info_nickname">昵称</string>
     <string name="info_name">真实姓名</string>
+    <string name="info_name_pinyin">姓名全拼</string>
     <string name="info_team">所属组织</string>
     <string name="info_user_id">用户ID</string>
     <string name="info_birthday">出生年月</string>

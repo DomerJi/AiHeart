@@ -74,6 +74,9 @@
             android:name=".activity.settings.SetPasswordOriginActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activity.settings.SetPasswordFirstActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity.test.TestReportActivity"
             android:screenOrientation="portrait" />
         <activity

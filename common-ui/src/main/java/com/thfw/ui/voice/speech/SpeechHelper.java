@@ -161,6 +161,13 @@ public class SpeechHelper implements ISpeechFace {
         VoiceTypeManager.getManager().setVoiceType(VoiceType.ACCEPT_STOP);
     }
 
+    public void destroy() {
+        if (initialized()) {
+            mIat.destroy();
+            mIat = null;
+        }
+    }
+
     public class CustomRecognizerListener implements RecognizerListener {
 
         @Override
@@ -203,6 +210,7 @@ public class SpeechHelper implements ISpeechFace {
 
         @Override
         public void onError(SpeechError speechError) {
+
             LogUtil.i(TAG, "onError -> speechError = " + speechError.getErrorDescription());
             isRestart();
             checkIngState();

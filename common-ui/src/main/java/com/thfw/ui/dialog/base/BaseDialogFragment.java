@@ -105,6 +105,15 @@ public abstract class BaseDialogFragment extends DialogFragment {
         if (dialog.getWindow() != null && getDialogAnimationRes() > 0) {
             dialog.getWindow().setWindowAnimations(getDialogAnimationRes());
         }
+        if (isNotFocusable() && dialog.getWindow() != null) {
+            Window window = dialog.getWindow();
+            WindowManager.LayoutParams layoutParams = window.getAttributes();
+            // 核心代码是这个属性。
+            layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+            window.setAttributes(layoutParams);
+            window.setDimAmount(0f);
+            dialog.setCanceledOnTouchOutside(false);
+        }
         if (getOnKeyListener() != null) {
             dialog.setOnKeyListener(getOnKeyListener());
         }
@@ -171,6 +180,10 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
     protected boolean isCancelableOutside() {
         return true;
+    }
+
+    protected boolean isNotFocusable() {
+        return false;
     }
 
     //获取弹窗显示动画,子类实现

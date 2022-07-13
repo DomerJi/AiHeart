@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -29,6 +30,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.AccountPinyinModel;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.HeadModel;
 import com.thfw.base.models.OrganizationModel;
@@ -49,11 +51,13 @@ import com.thfw.base.utils.FileUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.PinYinUtil;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.login.BindPhoneActivity;
+import com.thfw.robotheart.activitys.login.SetPasswordActivity;
 import com.thfw.robotheart.adapter.BaseAdapter;
 import com.thfw.robotheart.adapter.DialogLikeAdapter;
 import com.thfw.robotheart.adapter.InfoLikeAdapter;
@@ -131,6 +135,28 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
     private boolean mFirstInputMsg;
     private android.widget.Button mBtConfirm;
     private PopupWindow mPopWindow;
+    private android.widget.RelativeLayout mClRoot;
+    private TextView mTvStar00;
+    private TextView mTvStar01;
+    private LinearLayout mLlNamePinyin;
+    private TextView mTvStar01Pinyin;
+    private TextView mTvNamePinyin;
+    private View mVPinyinLine;
+    private TextView mTvStar02;
+    private TextView mTvStar03;
+    private TextView mTvStar04;
+    private TextView mTvStar05;
+    private TextView mTvStar06;
+    private TextView mTvStar07;
+    private TextView mTvStar08;
+    private TextView mTvStar09;
+    private TextView mTvStar10;
+    private TextView mTvStar11;
+    private TextView mTvStar12;
+    private TextView mTvStar13;
+    private TextView mTvStar14;
+    private TextView mTvStar15;
+    private TextView mTvStar16;
 
     public static void startActivityFirst(Context context) {
         context.startActivity(new Intent(context, InfoActivity.class).putExtra(KEY_DATA, true));
@@ -207,6 +233,28 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
 
 
         mBtConfirm = (Button) findViewById(R.id.bt_confirm);
+        mClRoot = (RelativeLayout) findViewById(R.id.cl_root);
+        mTvStar00 = (TextView) findViewById(R.id.tv_star_00);
+        mTvStar01 = (TextView) findViewById(R.id.tv_star_01);
+        mLlNamePinyin = (LinearLayout) findViewById(R.id.ll_name_pinyin);
+        mTvStar01Pinyin = (TextView) findViewById(R.id.tv_star_01_pinyin);
+        mTvNamePinyin = (TextView) findViewById(R.id.tv_name_pinyin);
+        mVPinyinLine = (View) findViewById(R.id.v_pinyin_line);
+        mTvStar02 = (TextView) findViewById(R.id.tv_star_02);
+        mTvStar03 = (TextView) findViewById(R.id.tv_star_03);
+        mTvStar04 = (TextView) findViewById(R.id.tv_star_04);
+        mTvStar05 = (TextView) findViewById(R.id.tv_star_05);
+        mTvStar06 = (TextView) findViewById(R.id.tv_star_06);
+        mTvStar07 = (TextView) findViewById(R.id.tv_star_07);
+        mTvStar08 = (TextView) findViewById(R.id.tv_star_08);
+        mTvStar09 = (TextView) findViewById(R.id.tv_star_09);
+        mTvStar10 = (TextView) findViewById(R.id.tv_star_10);
+        mTvStar11 = (TextView) findViewById(R.id.tv_star_11);
+        mTvStar12 = (TextView) findViewById(R.id.tv_star_12);
+        mTvStar13 = (TextView) findViewById(R.id.tv_star_13);
+        mTvStar14 = (TextView) findViewById(R.id.tv_star_14);
+        mTvStar15 = (TextView) findViewById(R.id.tv_star_15);
+        mTvStar16 = (TextView) findViewById(R.id.tv_star_16);
     }
 
     private boolean inputFinish() {
@@ -218,6 +266,11 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
 
         if (isTextEmpty(mTvName)) {
             ToastUtil.show("未填写真实姓名");
+            return false;
+        }
+
+        if (isTextEmpty(mTvNamePinyin)) {
+            ToastUtil.show("未填写姓名全拼");
             return false;
         }
 
@@ -311,6 +364,7 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
                 if (inputFinish()) {
                     mFirstInputMsg = false;
                     UserManager.getInstance().login();
+                    SetPasswordActivity.startActivity(mContext, SetPasswordActivity.SET_FIRST);
                     finish();
                 }
             });
@@ -391,6 +445,21 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
         // 姓名
         mLlName.setOnClickListener(v -> {
             EditInfoActivity.startActivity(mContext, EditInfoActivity.EditType.NAME, mTvName.getText().toString());
+        });
+        // 姓名全拼
+        mLlNamePinyin.setOnClickListener(v -> {
+            String name = mTvName.getText().toString();
+            String namePinyin = "";
+            if (!TextUtils.isEmpty(name)) {
+                namePinyin = PinYinUtil.getPinYin(name);
+            }
+            if (TextUtils.isEmpty(namePinyin)) {
+                namePinyin = "";
+            } else {
+                namePinyin = namePinyin.replaceAll(" ", "");
+            }
+
+            EditInfoActivity.startActivity(mContext, EditInfoActivity.EditType.NAME_PINYIN, namePinyin);
         });
         // 昵称
         mLlNickname.setOnClickListener(v -> {
@@ -869,6 +938,11 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
                 UserManager.getInstance().getUser().getUserInfo().mobile = phoneNumber;
                 UserManager.getInstance().notifyUserInfo();
                 break;
+            case 5:
+                String accountPinyin = data.getStringExtra(EditInfoActivity.KEY_RESULT);
+                mTvNamePinyin.setText(accountPinyin);
+                onUpdateInfoAccount("account", accountPinyin);
+                break;
             case 2:
                 String className = data.getStringExtra(EditInfoActivity.KEY_RESULT);
                 mTvClass.setText(className);
@@ -908,6 +982,12 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
         if (userInfo == null) {
             return;
         }
+
+        if (!TextUtils.isEmpty(userInfo.account)) {
+            mLlNamePinyin.setVisibility(View.GONE);
+            mVPinyinLine.setVisibility(View.GONE);
+        }
+
         // 兴趣爱好
         if (!EmptyUtil.isEmpty(userInfo.hobby)) {
             mHobby.clear();
@@ -989,6 +1069,38 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
                 .add("key", key)
                 .add("value", value));
     }
+
+    public void onUpdateInfoAccount(String key, Object value) {
+
+        LoadingDialog.show(this, "保存中...");
+        new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<AccountPinyinModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return InfoActivity.this;
+            }
+
+            @Override
+            public void onSuccess(AccountPinyinModel data) {
+                mTvNamePinyin.setText(String.valueOf(value));
+                mLlNamePinyin.setEnabled(false);
+                mLlNamePinyin.setAlpha(0.5f);
+                UserManager.getInstance().getUser().getUserInfo().account = data.getAccount();
+                UserManager.getInstance().notifyUserInfo();
+                LoadingDialog.hide();
+                ToastUtil.show("保存成功");
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                LoadingDialog.hide();
+                mTvNamePinyin.setText("");
+
+            }
+        }).onUpdateAccount(NetParams.crete()
+                .add("key", key)
+                .add("value", value));
+    }
+
 
     @Override
     public void onFail(ResponeThrowable throwable) {

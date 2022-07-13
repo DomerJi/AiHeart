@@ -22,7 +22,12 @@ public class MsgType {
     public static final int SYSTEM = 12;
     public static final int BOOK = 13;
     public static final int IDEO_BOOK = 14;
-    public static final int SIGN_ONE_YEAR = 15;// 注册满一年
+
+    public static final int URGE_HANDLE = 15;// 手动催促
+    public static final int URGE_HOUR_24 = 16;// 倒计时 24小时
+    public static final int URGE_HOUR_12 = 17;// 倒计时 12小时
+
+    public static final int SIGN_ONE_YEAR = 20;// todo注册满一年
 
 
     /**
@@ -61,6 +66,16 @@ public class MsgType {
 
     public static boolean isRobotMsg(int msgType) {
         return MOOD != msgType;
+    }
+
+    /**
+     * 是否催促消息
+     *
+     * @param msgType
+     * @return
+     */
+    public static boolean isUrge(int msgType) {
+        return msgType == URGE_HANDLE || msgType == URGE_HOUR_12 || msgType == URGE_HOUR_24;
     }
 
 }

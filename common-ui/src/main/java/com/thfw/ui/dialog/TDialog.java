@@ -132,6 +132,11 @@ public class TDialog extends BaseDialogFragment {
     }
 
     @Override
+    protected boolean isNotFocusable() {
+        return tController.isNotFocusable();
+    }
+
+    @Override
     public int getDialogWidth() {
         return tController.getWidth();
     }
@@ -277,6 +282,17 @@ public class TDialog extends BaseDialogFragment {
         }
 
         /**
+         * 不拦截点击事件
+         *
+         * @return
+         */
+        public Builder setNotFocusable(boolean notFocusable) {
+            params.notFocusable = notFocusable;
+            setDimAmount(0f);
+            return this;
+        }
+
+        /**
          * 弹窗dismiss时监听回调方法
          *
          * @param dismissListener
@@ -386,13 +402,18 @@ public class TDialog extends BaseDialogFragment {
                 params.mDialogAnimationRes = 0;
             }
             if (params.mDimAmount <= 0) {
-                LogUtil.i("setDefalutParams -> mDimAmount");
-                params.mDimAmount = DIMAMOUNT;
+                if (!params.notFocusable) {
+                    LogUtil.i("setDefalutParams -> mDimAmount");
+                    params.mDimAmount = DIMAMOUNT;
+                }
             }
             if (params.mWidth <= 0 && appContext != null) {
                 LogUtil.i("setDefalutParams -> WIDTHASPECT");
                 setScreenWidthAspect(appContext, WIDTHASPECT);
             }
         }
+
     }
+
+
 }

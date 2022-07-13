@@ -60,6 +60,12 @@
         <item name="android:windowExitAnimation">@anim/exit_right</item>
     </style>
 
+    <!-- 右侧弹出-->
+    <style name="animate_dialog_top">
+        <item name="android:windowEnterAnimation">@anim/enter_top</item>
+        <item name="android:windowExitAnimation">@anim/exit_top</item>
+    </style>
+
 
     <style name="tallerBarStyle" parent="@android:style/Widget.SeekBar" >
         <item name="android:indeterminateOnly">false</item>
@@ -70,6 +76,14 @@
     </style>
 
 
+    <style name="dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 
 
 </resources>

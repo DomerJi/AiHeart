@@ -10,9 +10,9 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 43,
-      "versionName": "2.0.0.23-pad",
-      "outputFile": "QjmyPad_43_2.0.0.23-pad_mainRelease.apk"
+      "versionCode": 100,
+      "versionName": "2.0.1-pad",
+      "outputFile": "QjmyPad_100_2.0.1-pad_mainRelease.apk"
     }
   ]
 }

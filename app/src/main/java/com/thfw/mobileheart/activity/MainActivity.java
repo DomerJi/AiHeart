@@ -25,11 +25,14 @@ import com.thfw.base.models.MoodLivelyModel;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.models.TalkModel;
+import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.net.BaseCodeListener;
 import com.thfw.base.net.CommonParameter;
+import com.thfw.base.net.NetParams;
 import com.thfw.base.net.OkHttpUtil;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.OrganizationPresenter;
+import com.thfw.base.presenter.TaskPresenter;
 import com.thfw.base.presenter.UserInfoPresenter;
 import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
@@ -61,6 +64,7 @@ import com.thfw.mobileheart.view.SimpleAnimatorListener;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnViewClickListener;
+import com.thfw.ui.utils.UrgeUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.user.login.LoginStatus;
@@ -72,6 +76,7 @@ import com.umeng.message.PushAgent;
 import com.umeng.message.api.UPushRegisterCallback;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -89,6 +94,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
      * 机构信息和用户信息初始化标识
      */
     private static boolean initUserInfo;
+    private static int initUrgedMsg = -1;
     private static boolean initOrganization;
     private static boolean initUmeng;
     private static boolean initTts;
@@ -122,6 +128,8 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     };
     private boolean trueResume;
     private long exitTime = 0;
+    private UrgedMsgModel mUrgedMsgModel;
+    private TDialog moodSignInDialog;
 
     public static void setShowLoginAnim(boolean showLoginAnim) {
         MainActivity.showLoginAnim = showLoginAnim;
@@ -136,6 +144,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         initUmeng = false;
         moodHint = false;
         initTts = false;
+        initUrgedMsg = -1;
     }
 
     private static boolean hasAgreedAgreement() {
@@ -256,7 +265,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     mTvMsgVersion.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
                     if (hasNewVersion) {
                         // 防止和欢迎动画重叠
-                        if (DialogFactory.getSvgaTDialog() == null) {
+                        if (DialogFactory.getSvgaTDialog() == null && moodSignInDialog == null) {
                             AutoUpdateService.startUpdate(mContext);
                         }
                     }
@@ -360,7 +369,46 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             initUmeng();
             initUserInfo();
             initOrganization();
+            initUrgedMsg();
         }
+    }
+
+    /**
+     * 催促弹窗
+     */
+    private void initUrgedMsg() {
+        if (initUrgedMsg != -1) {
+            onUrgedDialog();
+            return;
+        }
+        new TaskPresenter<>(new TaskPresenter.TaskUi<UrgedMsgModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return MainActivity.this;
+            }
+
+            @Override
+            public void onSuccess(UrgedMsgModel data) {
+                initUrgedMsg = 1;
+                mUrgedMsgModel = data;
+                onUrgedDialog();
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                initUrgedMsg = 0;
+            }
+        }).getUrgedMsg(NetParams.crete());
+    }
+
+    private void onUrgedDialog() {
+        if (mUrgedMsgModel == null || !mUrgedMsgModel.isDisplay() || moodSignInDialog != null) {
+            return;
+        }
+        HashMap<Integer, Object> map = new HashMap<>();
+        map.put(UrgeUtil.URGE_OBJ, mUrgedMsgModel);
+        mUrgedMsgModel.setDisplay(0);
+        UrgeUtil.notify(map);
     }
 
     @Override
@@ -410,19 +458,15 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         if (moodHint) {
             return;
         }
-        moodHint = SharePreferenceUtil.getBoolean(KEY_MOOD_HINT
-                + ActivityLifeCycle.getTodayStartTime()
+        moodHint = SharePreferenceUtil.getBoolean(KEY_MOOD_HINT + ActivityLifeCycle.getTodayStartTime()
                 + UserManager.getInstance().getUID(), false);
         if (moodHint) {
             return;
         }
         if (DialogFactory.getSvgaTDialog() != null) {
-            mMainHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (isMeResumed()) {
-                        moodHintDialog();
-                    }
+            mMainHandler.postDelayed(() -> {
+                if (isMeResumed()) {
+                    moodHintDialog();
                 }
             }, 6000);
             return;
@@ -431,19 +475,27 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             @Override
             public void onMoodLively(MoodLivelyModel data) {
                 if (data != null && data.getUserMood() == null) {
-                    DialogFactory.createMoodSignInDialog(MainActivity.this, new OnViewClickListener() {
-                        @Override
-                        public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                            tDialog.dismiss();
-                            if (view.getId() == R.id.bt_go) {
-                                StatusActivity.startActivity(mContext, true);
-                            }
-                        }
-                    });
+                    moodSignInDialog = DialogFactory.createMoodSignInDialog(MainActivity.this,
+                            dialog -> {
+                                if (moodSignInDialog != null) {
+                                    moodSignInDialog.dismiss();
+                                    moodSignInDialog = null;
+                                }
+                            }, new OnViewClickListener() {
+                                @Override
+                                public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                                    tDialog.dismiss();
+                                    moodSignInDialog = null;
+                                    if (view.getId() == R.id.bt_go) {
+                                        StatusActivity.startActivity(mContext, true);
+                                    } else {
+                                        onUrgedDialog();
+                                    }
+                                }
+                            });
                 }
                 moodHint = true;
-                SharePreferenceUtil.setBoolean(KEY_MOOD_HINT
-                        + ActivityLifeCycle.getTodayStartTime()
+                SharePreferenceUtil.setBoolean(KEY_MOOD_HINT + ActivityLifeCycle.getTodayStartTime()
                         + UserManager.getInstance().getUID(), moodHint);
                 MoodLivelyHelper.removeListener(this);
             }

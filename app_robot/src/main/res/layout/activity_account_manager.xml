@@ -113,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:padding="8dp"
-                    android:text="真实姓名"
+                    android:text="系统账号"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textSize_large" />
 

@@ -38,6 +38,7 @@ public class SetPasswordOriginFragment extends RobotBaseFragment<LoginPresenter>
     private TextView mTv03;
     private EditText mEtPasswordNewConfirm;
     private TextView mTvForgetPassword;
+    private TextView mTvForgetPassword2;
     private Button mBtSubmit;
 
     @Override
@@ -60,6 +61,7 @@ public class SetPasswordOriginFragment extends RobotBaseFragment<LoginPresenter>
         mTv03 = (TextView) findViewById(R.id.tv_03);
         mEtPasswordNewConfirm = (EditText) findViewById(R.id.et_password_new_confirm);
         mTvForgetPassword = (TextView) findViewById(R.id.tv_forget_password);
+        mTvForgetPassword2 = (TextView) findViewById(R.id.tv_forget_password2);
         mBtSubmit = (Button) findViewById(R.id.bt_submit);
 
 
@@ -80,6 +82,11 @@ public class SetPasswordOriginFragment extends RobotBaseFragment<LoginPresenter>
                     ToastUtil.show("您未绑定手机号,无法通过此方式设置/找回密码");
                 }
             }
+        });
+
+        mTvForgetPassword2.setOnClickListener(v -> {
+            FragmentLoader fragmentLoader = ((SetPasswordActivity) getActivity()).getFragmentLoader();
+            fragmentLoader.load(SetPasswordActivity.SET_FIRST);
         });
 
         MyTextWatcher myTextWatcher = new MyTextWatcher() {

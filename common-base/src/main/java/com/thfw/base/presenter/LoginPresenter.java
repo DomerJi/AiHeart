@@ -109,6 +109,25 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
     }
 
     /**
+     * [重置密码] 第一次登录重置
+     *
+     * @param password
+     */
+    public void setPasswordByFirst(String password) {
+        /**
+         * @Field("phone_number") String phoneNumber,
+         * @Field("verification_code") String code,
+         * @Field("type") int type,
+         *  @Field("old_password") String oldPassword,
+         *  @Field("password") String password
+         */
+        NetParams netParams = NetParams.crete()
+                .add("password", password);
+        Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(LoginApi.class).onSetPasswordFirst(netParams);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    /**
      * [发送验证码]
      * phone_number 手机号
      * type 登录使用-1 修改密码-2 绑定手机号-3

@@ -15,8 +15,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.mobileheart.activity.task.MeTaskActivity;
 import com.thfw.mobileheart.util.DialogFactory;
+import com.thfw.ui.utils.UrgeUtil;
 import com.thfw.ui.R;
 import com.thfw.ui.base.IBaseActivity;
 import com.thfw.ui.dialog.TDialog;
@@ -33,6 +36,35 @@ public abstract class BaseActivity<T extends IPresenter> extends IBaseActivity<T
 
     public boolean isMainThread() {
         return Thread.currentThread() == Looper.getMainLooper().getThread();
+    }
+
+    public void showUrgedDialog() {
+        DialogFactory.createUrgedDialog(this, new UrgedMsgModel(), new DialogFactory.OnUrgedBack() {
+            @Override
+            public void onClick(View view, UrgedMsgModel urgedMsgModel) {
+                MeTaskActivity.startActivity(view.getContext());
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        UrgeUtil.setListener(map -> {
+            if (DialogFactory.getUrgedDialog() != null) {
+                return;
+            }
+            showUrgedDialog();
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        UrgeUtil.setListener(null);
+        if (DialogFactory.getUrgedDialog() != null) {
+            DialogFactory.getUrgedDialog().dismiss();
+        }
     }
 
     /**

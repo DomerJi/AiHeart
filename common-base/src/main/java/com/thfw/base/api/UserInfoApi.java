@@ -1,5 +1,6 @@
 package com.thfw.base.api;
 
+import com.thfw.base.models.AccountPinyinModel;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.PresetAvatarModel;
 import com.thfw.base.net.HttpResult;
@@ -38,6 +39,15 @@ public interface UserInfoApi {
     @FormUrlEncoded
     @POST("user/update")
     Observable<HttpResult<CommonModel>> onUserUpdate(@FieldMap Map<String, Object> params);
+
+    /**
+     * [修改个人信息2]
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("user/update")
+    Observable<HttpResult<AccountPinyinModel>> onUserUpdateAccount(@FieldMap Map<String, Object> params);
 
     /**
      * [预置头像库]

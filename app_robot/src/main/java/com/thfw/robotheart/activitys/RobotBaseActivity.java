@@ -1,19 +1,23 @@
 package com.thfw.robotheart.activitys;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 
 import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.MyApplication;
+import com.thfw.robotheart.activitys.task.TaskActivity;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.port.SerialManager;
 import com.thfw.robotheart.receiver.BootCompleteReceiver;
@@ -21,6 +25,7 @@ import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.Dormant;
 import com.thfw.ui.base.IBaseActivity;
+import com.thfw.ui.utils.UrgeUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 
@@ -66,6 +71,15 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
         }
     }
 
+    public void showUrgedDialog() {
+        DialogRobotFactory.createUrgedDialog(this, new UrgedMsgModel(), new DialogRobotFactory.OnUrgedBack() {
+            @Override
+            public void onClick(View view, UrgedMsgModel urgedMsgModel) {
+                startActivity(new Intent(mContext, TaskActivity.class));
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -75,6 +89,21 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
                 RobotUtil.shutdownByDialog(this);
             }
         });
+        UrgeUtil.setListener(map -> {
+            if (DialogRobotFactory.getUrgedDialog() != null) {
+                return;
+            }
+            showUrgedDialog();
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (DialogRobotFactory.getUrgedDialog() != null) {
+            DialogRobotFactory.getUrgedDialog().dismiss();
+        }
+        UrgeUtil.setListener(null);
     }
 
     @Override

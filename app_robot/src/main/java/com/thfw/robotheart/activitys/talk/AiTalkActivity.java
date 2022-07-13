@@ -585,6 +585,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                             mIvTalkModel.setSelected(currentSelect);
                         }
                         if (currentSelect) {
+                            PolicyHelper.getInstance().setRequestIng(false);
                             PolicyHelper.getInstance().startSpeech();
                             if (mReadAfterSpeech) {
                                 if (PolicyHelper.getInstance().isSpeechMode()) {
@@ -593,11 +594,13 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                                     mSwitchAfter.setVisibility(View.GONE);
                                 }
                             }
+                            readAfterSpeech();
                         } else {
                             PolicyHelper.getInstance().end();
                             LogUtil.d(TAG, "chooseOption ACTION_UP Pressed End ++++++++++++++++");
                             chooseOption(mStvText.getText(), true);
                             mStvText.setSpeechText("");
+                            mStvText.hide();
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
@@ -1239,9 +1242,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         PolicyHelper.getInstance().end();
         TtsHelper.getInstance().stop();
+        super.onDestroy();
     }
 
     public class Helper {

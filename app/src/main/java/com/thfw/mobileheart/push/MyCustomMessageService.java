@@ -10,10 +10,12 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.thfw.base.base.MsgType;
 import com.thfw.base.models.PushMsgModel;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.util.MsgCountManager;
+import com.thfw.ui.utils.UrgeUtil;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UTrack;
 import com.umeng.message.UmengMessageHandler;
@@ -25,6 +27,8 @@ import com.umeng.message.entity.UMessage;
 import org.android.agoo.common.AgooConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 /**
  * 自定义接收并处理友盟推送消息的服务类
@@ -97,7 +101,13 @@ public class MyCustomMessageService extends UmengMessageService {
                                 MsgCountManager.getInstance().addNumSystem();
                             }
                         }
-                        handleCustomNotificationMessage(pushMsgModel, message);
+                        // 催促消息不发送 Notification 在通知栏
+                        if (MsgType.isUrge(msgType)) {
+                            UrgeUtil.notify(new HashMap<>());
+                        } else {
+                            handleCustomNotificationMessage(pushMsgModel, message);
+                        }
+
                     }
                 }
                 Log.i(TAG, "pushMsgModel：" + pushMsgModel.toString());

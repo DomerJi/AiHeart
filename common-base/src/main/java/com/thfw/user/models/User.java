@@ -64,6 +64,8 @@ public class User implements IUser, IUserInfo {
 
         @SerializedName("user_name")
         public String userName;
+        @SerializedName("account")
+        public String account;
         @SerializedName("pic")
         public String pic;
         @SerializedName("true_name")
@@ -125,6 +127,7 @@ public class User implements IUser, IUserInfo {
         }
         return organStr;
     }
+
 
     public Object getVisibleAvatar() {
         if (TextUtils.isEmpty(getAvatar())) {

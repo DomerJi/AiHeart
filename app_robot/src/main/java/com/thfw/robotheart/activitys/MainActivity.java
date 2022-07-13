@@ -18,11 +18,14 @@ import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.models.TalkModel;
+import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.net.BaseCodeListener;
 import com.thfw.base.net.CommonParameter;
+import com.thfw.base.net.NetParams;
 import com.thfw.base.net.OkHttpUtil;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.OrganizationPresenter;
+import com.thfw.base.presenter.TaskPresenter;
 import com.thfw.base.presenter.UserInfoPresenter;
 import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
@@ -61,6 +64,7 @@ import com.thfw.robotheart.util.SVGAHelper;
 import com.thfw.robotheart.view.HomeIpTextView;
 import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.utils.GlideUtil;
+import com.thfw.ui.utils.UrgeUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.MyRobotSearchView;
@@ -74,6 +78,7 @@ import com.umeng.message.PushAgent;
 import com.umeng.message.api.UPushRegisterCallback;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -88,6 +93,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private static boolean initOrganization;
     private static boolean initUmeng;
     private static boolean initTts;
+    private static int initUrgedMsg = -1;
     // 登录动画是否显示，为了不频繁获取sp数据
     private static boolean showLoginAnim;
     private com.thfw.robotheart.view.TitleBarView mTitleBarView;
@@ -122,6 +128,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     // 身体和脸部动画
     private SVGAImageView mSvgaBody;
     private SVGAImageView mSvgaFace;
+    private UrgedMsgModel mUrgedMsgModel;
     // 气泡文案动画
     private com.thfw.robotheart.view.HomeIpTextView mHitAnim;
 
@@ -163,6 +170,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         initOrganization = false;
         initUmeng = false;
         initTts = false;
+        initUrgedMsg = -1;
     }
 
     private static boolean hasAgreedAgreement() {
@@ -305,6 +313,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             initUmeng();
             initUserInfo();
             initOrganization();
+            initUrgedMsg();
         }
 
 //        WakeupHelper.getInstance().setWakeUpListener(new WakeupHelper.OnWakeUpListener() {
@@ -704,5 +713,43 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
     @Override
     public void onReadAll(int type) {
+    }
+
+    /**
+     * 催促弹窗
+     */
+    private void initUrgedMsg() {
+        if (initUrgedMsg != -1) {
+            onUrgedDialog();
+            return;
+        }
+        new TaskPresenter<>(new TaskPresenter.TaskUi<UrgedMsgModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return MainActivity.this;
+            }
+
+            @Override
+            public void onSuccess(UrgedMsgModel data) {
+                initUrgedMsg = 1;
+                mUrgedMsgModel = data;
+                onUrgedDialog();
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                initUrgedMsg = 0;
+            }
+        }).getUrgedMsg(NetParams.crete());
+    }
+
+    private void onUrgedDialog() {
+        if (mUrgedMsgModel == null || !mUrgedMsgModel.isDisplay()) {
+            return;
+        }
+        HashMap<Integer, Object> map = new HashMap<>();
+        map.put(UrgeUtil.URGE_OBJ, mUrgedMsgModel);
+        mUrgedMsgModel.setDisplay(0);
+        UrgeUtil.notify(map);
     }
 }
