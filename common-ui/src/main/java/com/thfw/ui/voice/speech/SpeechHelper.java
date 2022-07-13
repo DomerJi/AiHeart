@@ -9,6 +9,7 @@ import com.iflytek.cloud.RecognizerListener;
 import com.iflytek.cloud.RecognizerResult;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
+import com.iflytek.cloud.SpeechEvent;
 import com.iflytek.cloud.SpeechRecognizer;
 import com.thfw.base.ContextApp;
 import com.thfw.base.utils.LogUtil;
@@ -219,7 +220,9 @@ public class SpeechHelper implements ISpeechFace {
         @Override
         public void onEvent(int i, int i1, int i2, Bundle bundle) {
             LogUtil.i(TAG, "onError -> i = " + i);
-            isRestart();
+            if (SpeechEvent.EVENT_RECORD_STOP == i) {
+                isRestart();
+            }
             checkIngState();
         }
     }

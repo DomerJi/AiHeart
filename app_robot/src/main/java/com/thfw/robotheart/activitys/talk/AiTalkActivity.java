@@ -332,6 +332,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 startAnimFaceType(FACE_TYPE_FREE);
                 return;
             }
+            mTtsQueue.clear();
             List<ChatEntity> chatEntities = mChatAdapter.getDataList();
             List<ChatEntity> ttsEntitys = new ArrayList<>();
             for (int i = chatEntities.size() - 1; i >= 0; i--) {
@@ -499,10 +500,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             mRlKeyword.setVisibility(View.GONE);
             showInput(mEtContent);
         });
-        mIvTalkModel.setOnClickListener(v -> {
-            mIvTalkModel.setSelected(!mIvTalkModel.isSelected());
-        });
-
         PolicyHelper.getInstance().setResultListener(new SpeechHelper.ResultListener() {
             boolean showOriginVolume = false;
 
@@ -541,7 +538,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                     // 播完再听 播放tts不消失
                     if (isReadAfterSpeech()) {
                     } else {
-                        mStvText.hide();
+                        if (!PolicyHelper.getInstance().isPressMode()) {
+                            mStvText.hide();
+                        }
                         mSwitchAfter.setVisibility(View.GONE);
                     }
 
@@ -560,13 +559,31 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
         mIvTalkModel.setOnTouchListener(new View.OnTouchListener() {
 
+            Runnable touchRunnable;
+
+            private void onTouchDelay() {
+                final View.OnTouchListener onTouchListener = this;
+                mIvTalkModel.setOnTouchListener(null);
+                if (touchRunnable != null) {
+                    mIvTalkModel.removeCallbacks(touchRunnable);
+                }
+                touchRunnable = () -> {
+                    mIvTalkModel.setOnTouchListener(onTouchListener);
+                    touchRunnable = null;
+                };
+                mIvTalkModel.postDelayed(touchRunnable, 500);
+            }
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
                 switch (event.getAction()) {
-
                     case MotionEvent.ACTION_DOWN:
+                        // 防止点击过块
+                        if (System.currentTimeMillis() - downTime < 500) {
+                            onTouchDelay();
+                            return true;
+                        }
                         downTime = System.currentTimeMillis();
                         mIvTalkModel.setSelected(true);
                         if (!SpeechHelper.getInstance().isIng()) {
@@ -585,20 +602,24 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                             mIvTalkModel.setSelected(currentSelect);
                         }
                         if (currentSelect) {
-                            PolicyHelper.getInstance().setRequestIng(false);
                             PolicyHelper.getInstance().startSpeech();
+                            if (mStvText != null) {
+                                mStvText.setSpeechTextHint("倾听中···");
+                            }
                             if (mReadAfterSpeech) {
                                 if (PolicyHelper.getInstance().isSpeechMode()) {
                                     mSwitchAfter.setVisibility(View.VISIBLE);
                                 } else {
                                     mSwitchAfter.setVisibility(View.GONE);
                                 }
+                            } else {
+                                mSwitchAfter.setVisibility(View.GONE);
                             }
-                            readAfterSpeech();
                         } else {
-                            PolicyHelper.getInstance().end();
                             LogUtil.d(TAG, "chooseOption ACTION_UP Pressed End ++++++++++++++++");
+                            PolicyHelper.getInstance().end();
                             chooseOption(mStvText.getText(), true);
+                            mSwitchAfter.setVisibility(View.GONE);
                             mStvText.setSpeechText("");
                             mStvText.hide();
                         }
@@ -1230,6 +1251,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 mStvText.show();
                 if (currentSelect) {
                     PolicyHelper.getInstance().startSpeech();
+                    if (mStvText != null) {
+                        mStvText.setSpeechTextHint("倾听中···");
+                    }
                 } else {
                     PolicyHelper.getInstance().end();
                 }

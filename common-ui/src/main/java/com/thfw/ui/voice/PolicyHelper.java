@@ -138,9 +138,13 @@ public class PolicyHelper {
     }
 
     public void startSpeech() {
+        if (TtsHelper.getInstance().isIng()) {
+            TtsHelper.getInstance().stop();
+        }
         synchronized (PolicyHelper.class) {
             if (wakeType != WakeType.SPEECH) {
                 wakeType = WakeType.SPEECH;
+                setRequestIng(false);
                 SpeechHelper.getInstance().clearCacheText();
                 sendCheckMsg();
             }
@@ -148,6 +152,9 @@ public class PolicyHelper {
     }
 
     public void startPressed() {
+        if (TtsHelper.getInstance().isIng()) {
+            TtsHelper.getInstance().stop();
+        }
         synchronized (PolicyHelper.class) {
             if (wakeType != WakeType.PRESS) {
                 wakeType = WakeType.PRESS;
@@ -160,6 +167,7 @@ public class PolicyHelper {
     public void end() {
         synchronized (PolicyHelper.class) {
             wakeType = WakeType.NULL;
+            handler.removeCallbacksAndMessages(null);
             SpeechHelper.getInstance().stop();
             SpeechHelper.getInstance().destroy();
         }

@@ -182,6 +182,14 @@ public class TtsHelper implements ITtsFace {
         onExoRelease();
     }
 
+    public void destroy() {
+        if (initialized()) {
+            mTts.destroy();
+            mTts = null;
+        }
+        onExoRelease();
+    }
+
     public void pause() {
         if (initialized()) {
             mTts.pauseSpeaking();
@@ -336,6 +344,9 @@ public class TtsHelper implements ITtsFace {
         if (exoPlayer != null) {
             exoPlayer.release();
             exoPlayer = null;
+            if (currentSynthesizerListener != null) {
+                currentSynthesizerListener.onCompleted(new SpeechError(0));
+            }
         }
     }
 
