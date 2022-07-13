@@ -30,7 +30,7 @@ public class SpeechHelper implements ISpeechFace {
     private static final String TAG = SpeechHelper.class.getSimpleName();
     private static final long VAD_EOS = 1800;// 语音后端点（说完后1.8秒无语音结束对话）
     private static final long VAD_EOS_2 = 2400;// 语音后端点（说完后2.4秒无语音结束对话）
-    private static final long VAD_BOS = 6000;// 语音前端点（开始后6秒无语音结束对话）
+    private static final long VAD_BOS = 10000;// 语音前端点（开始后6秒无语音结束对话）
     private StringBuilder mSpeechResult;
 
     private SpeechRecognizer mIat;
