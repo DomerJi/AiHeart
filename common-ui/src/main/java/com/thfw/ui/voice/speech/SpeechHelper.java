@@ -228,7 +228,7 @@ public class SpeechHelper implements ISpeechFace {
     }
 
     private void isRestart() {
-        if ((PolicyHelper.getInstance().isSpeechMode()
+        if (((PolicyHelper.getInstance().isSpeechMode() && !PolicyHelper.getInstance().isRequestIng())
                 || PolicyHelper.getInstance().isPressMode())
                 && !isIng()) {
             start();

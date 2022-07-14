@@ -57,7 +57,7 @@ public class PolicyHelper {
     }
 
     private void sendCheckMsg(int millis) {
-        handler.removeCallbacksAndMessages(null);
+        handler.removeMessages(0);
         handler.sendEmptyMessageDelayed(0, millis);
     }
 
@@ -138,28 +138,32 @@ public class PolicyHelper {
     }
 
     public void startSpeech() {
-        if (TtsHelper.getInstance().isIng()) {
-            TtsHelper.getInstance().stop();
-        }
-        synchronized (PolicyHelper.class) {
-            if (wakeType != WakeType.SPEECH) {
-                wakeType = WakeType.SPEECH;
-                setRequestIng(false);
-                SpeechHelper.getInstance().clearCacheText();
-                sendCheckMsg();
+        if (wakeType != WakeType.SPEECH) {
+            if (TtsHelper.getInstance().isIng()) {
+                TtsHelper.getInstance().stop();
+            }
+            synchronized (PolicyHelper.class) {
+                if (wakeType != WakeType.SPEECH) {
+                    wakeType = WakeType.SPEECH;
+                    setRequestIng(false);
+                    SpeechHelper.getInstance().clearCacheText();
+                    sendCheckMsg();
+                }
             }
         }
     }
 
     public void startPressed() {
-        if (TtsHelper.getInstance().isIng()) {
-            TtsHelper.getInstance().stop();
-        }
-        synchronized (PolicyHelper.class) {
-            if (wakeType != WakeType.PRESS) {
-                wakeType = WakeType.PRESS;
-                SpeechHelper.getInstance().clearCacheText();
-                sendCheckMsg();
+        if (wakeType != WakeType.PRESS) {
+            if (TtsHelper.getInstance().isIng()) {
+                TtsHelper.getInstance().stop();
+            }
+            synchronized (PolicyHelper.class) {
+                if (wakeType != WakeType.PRESS) {
+                    wakeType = WakeType.PRESS;
+                    SpeechHelper.getInstance().clearCacheText();
+                    sendCheckMsg();
+                }
             }
         }
     }

@@ -1248,15 +1248,20 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         super.onResume();
         if (isMeResumed2()) {
             if (mPauseStvTextShow) {
-                mStvText.show();
                 if (currentSelect) {
+                    mStvText.show();
                     PolicyHelper.getInstance().startSpeech();
+                    startAnimFaceType(FACE_TYPE_LISTEN);
                     if (mStvText != null) {
                         mStvText.setSpeechTextHint("倾听中···");
                     }
                 } else {
+                    mStvText.hide();
                     PolicyHelper.getInstance().end();
                 }
+            } else {
+                mStvText.hide();
+                PolicyHelper.getInstance().end();
             }
             readAfterSpeech();
         }
