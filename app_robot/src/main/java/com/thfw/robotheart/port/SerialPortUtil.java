@@ -211,6 +211,11 @@ public class SerialPortUtil {
         Log.d(TAG, "parseOrder - len -> " + len);
 
         byte[] newBytes = Arrays.copyOfRange(bytes, 3, bytes.length);
+        if (newBytes == null || newBytes.length == 0) {
+            // 处理数据
+            onHandleOrder(order, new int[]{});
+            return;
+        }
         if (order == Order.UP_STATE) {
             int msgType = newBytes[0];
             // 电池电压&电量 按键 红外 适配器状态 舵机角度
