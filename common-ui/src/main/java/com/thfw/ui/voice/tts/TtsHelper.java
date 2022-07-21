@@ -14,8 +14,10 @@ import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechSynthesizer;
 import com.iflytek.cloud.SynthesizerListener;
 import com.thfw.base.ContextApp;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.InformantUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.ui.voice.VoiceType;
 import com.thfw.ui.voice.VoiceTypeManager;
 
@@ -96,12 +98,21 @@ public class TtsHelper implements ITtsFace {
 
     @Override
     public void init() {
-        mTts = SpeechSynthesizer.createSynthesizer(ContextApp.get(), code -> {
-            LogUtil.d(TAG, "InitListener init() code = " + code);
-            if (code != ErrorCode.SUCCESS) {
-                LogUtil.d(TAG, "InitListener init() Fail ");
+        if (mTts == null) {
+            synchronized (TtsHelper.class) {
+                if (mTts == null) {
+                    mTts = SpeechSynthesizer.getSynthesizer();
+                }
+                if (mTts == null) {
+                    mTts = SpeechSynthesizer.createSynthesizer(ContextApp.get(), code -> {
+                        LogUtil.d(TAG, "InitListener init() code = " + code);
+                        if (code != ErrorCode.SUCCESS) {
+                            LogUtil.d(TAG, "InitListener init() Fail ");
+                        }
+                    });
+                }
             }
-        });
+        }
         setTtsParam();
     }
 
@@ -306,6 +317,12 @@ public class TtsHelper implements ITtsFace {
      * @param cacheFile
      */
     private void playCacheFile(String cacheFile) {
+        if (!ToastUtil.isMainThread()) {
+            HandlerUtil.getMainHandler().post(() -> {
+                playCacheFile(cacheFile);
+            });
+            return;
+        }
         onExoRelease();
         exoPlayer = new SimpleExoPlayer.Builder(ContextApp.get())
                 .setAudioAttributes(AudioAttributes.DEFAULT, true)

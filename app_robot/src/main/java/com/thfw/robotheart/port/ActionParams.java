@@ -207,7 +207,7 @@ public class ActionParams {
 
     public ActionParams(int controlOrder) {
         this.controlOrder = controlOrder;
-        mHandler = new Handler(Looper.myLooper());
+        mHandler = new Handler(Looper.getMainLooper());
         beginRight = true;
         switch (controlOrder) {
             case ControlOrder.NOD:

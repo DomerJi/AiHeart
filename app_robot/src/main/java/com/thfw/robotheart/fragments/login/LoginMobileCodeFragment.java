@@ -21,6 +21,7 @@ import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.constants.AgreeOn;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.InputBoxSquareView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -178,6 +179,8 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
         ToastUtil.show(throwable.getMessage());
         if (HttpResult.isOrganValid(throwable.code)) {
             LoginActivity.showOrganIdNoValid(getActivity());
+        } else if (HttpResult.isServerTimeNoValid(throwable.code)) {
+            DialogRobotFactory.createSimple(getActivity(), throwable.getMessage());
         } else {
             LoginActivity.onLoginFail(getActivity());
         }

@@ -6,7 +6,6 @@ package com.thfw.base.net;
  * Describe:Todo
  */
 public interface BaseCodeListener {
-    int LOGOUT = -1;
 
-    void onCode(int code);
+    void onCode(int code, String msg);
 }

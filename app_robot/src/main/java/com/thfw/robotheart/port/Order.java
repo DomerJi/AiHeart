@@ -30,9 +30,15 @@ public class Order {
     public static HashMap<Integer, Order> getOrderMap() {
         if (orderMap == null) {
             orderMap = new HashMap<>();
-            // 1,2,2,(1,1,1,1),1,1,(4,4,4)
-            orderMap.put(UP_STATE, new Order(UP_STATE, 1, 2, 2, 1, 1, 1, 1, 1, 1, 4, 4, 4));
-            orderMap.put(UP_ELECTRICITY_STATE, new Order(UP_ELECTRICITY_STATE, 2));
+            /**
+             * 数据类型 故障位 电池电压&电量 按键 红外 适配器状态 舵机角度
+             * 1B     2B     2B    1B  4B   1B   1B       12B
+             */
+            // 1,2,2,1,(1,1,1,1),1,1,(4,4,4)
+            orderMap.put(UP_STATE, new Order(UP_STATE, 1, 2, 2, 1,
+                    1, 1, 1, 1, // 4个按键
+                    1, 1, 4, 4, 4));
+            orderMap.put(UP_ELECTRICITY_STATE, new Order(UP_ELECTRICITY_STATE, 2, 1));
             orderMap.put(UP_BUTTON_STATE, new Order(UP_BUTTON_STATE, 1, 1));
             orderMap.put(UP_RED_ULTRA_STATE, new Order(UP_RED_ULTRA_STATE, 1));
             orderMap.put(UP_RSERVO_STATE, new Order(UP_RSERVO_STATE, 1, 4));
@@ -90,28 +96,34 @@ public class Order {
                         .add("7271mv", 7271)
                         .add("9000mv", 9000);
 
-                options[3] = new Option("按键一")
+                options[3] = new Option("电池电量")
+                        .add("10", 10)
+                        .add("20", 20)
+                        .add("50", 50)
+                        .add("100", 100);
+
+                options[4] = new Option("按键一")
                         .add("按下1", 1)
                         .add("未知0", 0);
-                options[4] = new Option("按键二")
+                options[5] = new Option("按键二")
                         .add("按下1", 1)
                         .add("未知0", 0);
-                options[5] = new Option("按键三")
+                options[6] = new Option("按键三")
                         .add("按下1", 1)
                         .add("未知0", 0);
-                options[6] = new Option("按键四")
+                options[7] = new Option("按键四")
                         .add("按下1", 1)
                         .add("未知0", 0);
 
-                options[7] = new Option("红外状态")
+                options[8] = new Option("红外状态")
                         .add("有人接近", 1)
                         .add("无人接近", 0);
 
-                options[8] = new Option("适配器状态")
+                options[9] = new Option("适配器状态")
                         .add("充电", 1)
                         .add("未充电", 0);
 
-                options[9] = new Option("舵机一")
+                options[10] = new Option("舵机一")
                         .add("-700(-70度)", -700)
                         .add("-500(-50度)", -500)
                         .add("-300(-30度)", -300)
@@ -123,7 +135,7 @@ public class Order {
                         .add("500(50度)", 500)
                         .add("700(70度)", 700);
 
-                options[10] = new Option("舵机二")
+                options[11] = new Option("舵机二")
                         .add("-700(-70度)", -700)
                         .add("-500(-50度)", -500)
                         .add("-300(-30度)", -300)
@@ -135,7 +147,7 @@ public class Order {
                         .add("500(50度)", 500)
                         .add("700(70度)", 700);
 
-                options[11] = new Option("舵机三")
+                options[12] = new Option("舵机三")
                         .add("-700(-70度)", -700)
                         .add("-500(-50度)", -500)
                         .add("-300(-30度)", -300)
@@ -148,12 +160,17 @@ public class Order {
                         .add("700(70度)", 700);
                 break;
             case UP_ELECTRICITY_STATE:
-                info = "上报电池电压(2字节)";
+                info = "上报电池电压&电量(2字节+1字节)";
                 options[0] = new Option("电池电压")
                         .add("1000mv", 1000)
                         .add("3000mv", 3000)
                         .add("7271mv", 7271)
                         .add("9000mv", 9000);
+                options[1] = new Option("电池电量")
+                        .add("10", 10)
+                        .add("20", 20)
+                        .add("50", 50)
+                        .add("100", 100);
                 break;
             case UP_BUTTON_STATE:
                 info = " 上报按键状态(2字节)";
@@ -205,7 +222,7 @@ public class Order {
                 info = "状态信息查询(1字节)";
                 options[0] = new Option("信息序号")
                         .add("所有信息", 0)
-                        .add("电压", 1)
+                        .add("电压&电量", 1)
                         .add("按键", 2)
                         .add("红外", 3)
                         .add("舵机角度", 4)
@@ -217,6 +234,7 @@ public class Order {
                         .add("序号1", 1)
                         .add("序号2", 2)
                         .add("序号3", 3);
+
                 options[1] = new Option("转动角度")
                         .add("-700(-70度)", -700)
                         .add("-500(-50度)", -500)
@@ -328,7 +346,7 @@ public class Order {
 
     // 上报所有状态信息
     public static final int UP_STATE = 128; // 0x80
-    // 上报电量
+    // 上报电压&电量
     public static final int UP_ELECTRICITY_STATE = 129; // 0x81
     // 上报按键转态
     public static final int UP_BUTTON_STATE = 130; // 0x82

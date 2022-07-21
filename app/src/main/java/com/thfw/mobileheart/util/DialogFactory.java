@@ -38,6 +38,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.adapter.BaseAdapter;
 import com.thfw.mobileheart.adapter.DialogLikeAdapter;
 import com.thfw.mobileheart.constants.AnimFileName;
@@ -49,6 +50,8 @@ import com.thfw.ui.utils.DragViewUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.InputBoxView;
+import com.thfw.user.login.LoginStatus;
+import com.thfw.user.login.UserManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -111,6 +114,45 @@ public class DialogFactory {
                 })
                 .setOnViewClickListener(onViewCallBack).create().show();
     }
+
+    /**
+     * 服务不可用弹框
+     *
+     * @param activity
+     * @param onViewCallBack
+     * @return
+     */
+    public static TDialog createServerStopDialog(FragmentActivity activity, OnViewCallBack onViewCallBack) {
+        return new TDialog.Builder(activity.getSupportFragmentManager())
+                .setLayoutRes(com.thfw.ui.R.layout.dialog_custom_layout)
+                .setDialogAnimationRes(com.thfw.ui.R.style.animate_dialog_fade)
+                .addOnClickListener(com.thfw.ui.R.id.tv_left, com.thfw.ui.R.id.tv_right)
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (UserManager.getInstance().isTrueLogin()) {
+                            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+                            LoginActivity.startActivity(activity, LoginActivity.BY_PASSWORD);
+                        }
+                    }
+                })
+                .setScreenWidthAspect(activity, WIDTH_ASPECT)
+                .setCancelableOutside(false)
+                // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
+                .setOnBindViewListener(viewHolder -> {
+                    TextView mTvTitle = viewHolder.getView(com.thfw.ui.R.id.tv_title);
+                    mTvTitle.setVisibility(View.GONE);
+                    TextView mTvHint = viewHolder.getView(com.thfw.ui.R.id.tv_hint);
+                    TextView mTvLeft = viewHolder.getView(com.thfw.ui.R.id.tv_left);
+                    TextView mTvRight = viewHolder.getView(com.thfw.ui.R.id.tv_right);
+                    View mVLineVertical = viewHolder.getView(com.thfw.ui.R.id.vline_vertical);
+                    mVLineVertical.setVisibility(View.GONE);
+                    mTvLeft.setVisibility(View.GONE);
+                    onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
+                })
+                .setOnViewClickListener(onViewCallBack).create().show();
+    }
+
 
     public static TDialog createUrgedDialog(FragmentActivity activity, UrgedMsgModel model, OnUrgedBack onUrgedBack) {
         final View[] view = new View[1];
@@ -373,16 +415,22 @@ public class DialogFactory {
     public static TDialog createMoodSignInDialog(FragmentActivity activity,
                                                  DialogInterface.OnDismissListener onDismissListener,
                                                  OnViewClickListener onViewCallBack) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
+        mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_mood_sign_in_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
                 .setScreenWidthAspect(activity, WIDTH_ASPECT)
-                .setOnDismissListener(onDismissListener)
+                .setOnDismissListener((dialogInterface) -> {
+                    if (onDismissListener != null) {
+                        onDismissListener.onDismiss(dialogInterface);
+                    }
+                    mSvgaTDialog = null;
+                })
                 .addOnClickListener(R.id.bt_go, R.id.iv_close)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                 })
                 .setOnViewClickListener(onViewCallBack).create().show();
+        return mSvgaTDialog;
     }
 
     public static void createAddressBirthDay(Context mContext, ViewGroup

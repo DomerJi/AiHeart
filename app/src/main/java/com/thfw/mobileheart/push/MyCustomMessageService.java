@@ -16,6 +16,7 @@ import com.thfw.base.utils.GsonUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.util.MsgCountManager;
 import com.thfw.ui.utils.UrgeUtil;
+import com.thfw.user.login.UserManager;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UTrack;
 import com.umeng.message.UmengMessageHandler;
@@ -103,7 +104,9 @@ public class MyCustomMessageService extends UmengMessageService {
                         }
                         // 催促消息不发送 Notification 在通知栏
                         if (MsgType.isUrge(msgType)) {
-                            UrgeUtil.notify(new HashMap<>());
+                            if (UserManager.getInstance().isTrueLogin()) {
+                                UrgeUtil.notify(new HashMap<>());
+                            }
                         } else {
                             handleCustomNotificationMessage(pushMsgModel, message);
                         }

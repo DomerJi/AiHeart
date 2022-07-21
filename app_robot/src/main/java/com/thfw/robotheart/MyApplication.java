@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.multidex.MultiDexApplication;
 import androidx.room.Room;
 
-import com.iflytek.cloud.Setting;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
 import com.pl.sphelper.SPHelper;
@@ -34,6 +33,7 @@ import com.thfw.robotheart.push.MyPreferences;
 import com.thfw.robotheart.push.helper.PushHelper;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.voice.wakeup.WakeupHelper;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.commonsdk.utils.UMUtils;
 
@@ -131,7 +131,6 @@ public class MyApplication extends MultiDexApplication {
         // 设置使用v5+
         param.append(SpeechConstant.ENGINE_MODE + "=" + SpeechConstant.MODE_MSC);
         SpeechUtility.createUtility(app, param.toString());
-        Setting.setShowLog(true);
     }
 
     private void initAtThread() {
@@ -155,6 +154,7 @@ public class MyApplication extends MultiDexApplication {
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
         RobotUtil.longPressOffBtn();
         if (RobotUtil.isInstallRobot()) {
+            WakeupHelper.initCae(app);
             BuglyUtil.init("382fc62522");
             RobotUtil.hookWebView();
         } else {

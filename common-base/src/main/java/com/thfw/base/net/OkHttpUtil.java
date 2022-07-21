@@ -113,13 +113,18 @@ public class OkHttpUtil {
         if (httpResult.isSuccessful()) {
             return true;
         } else {
-            if (httpResult.getCode() == HttpResult.FAIL_TOKEN) {
-                // token 失效
-                LogUtil.d(TAG, "OkHttpUtil.mBaseCodeListener.onCode(BaseCodeListener.LOGOUT)");
-                if (OkHttpUtil.mBaseCodeListener != null) {
-                    OkHttpUtil.mBaseCodeListener.onCode(BaseCodeListener.LOGOUT);
-                }
+            int code = httpResult.getCode();
+            switch (code) {
+                case HttpResult.FAIL_TOKEN:
+                case HttpResult.SERVICE_TIME_NO_START:
+                case HttpResult.SERVICE_TIME_ALREADY_END:
 
+                    // token 失效
+                    LogUtil.d(TAG, "OkHttpUtil.mBaseCodeListener.onCode(" + code + ")");
+                    if (OkHttpUtil.mBaseCodeListener != null) {
+                        OkHttpUtil.mBaseCodeListener.onCode(code, httpResult.getMsg());
+                    }
+                    break;
             }
         }
         return true;

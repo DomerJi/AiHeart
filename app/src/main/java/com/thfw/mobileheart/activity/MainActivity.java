@@ -26,8 +26,8 @@ import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.UrgedMsgModel;
-import com.thfw.base.net.BaseCodeListener;
 import com.thfw.base.net.CommonParameter;
+import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.OkHttpUtil;
 import com.thfw.base.net.ResponeThrowable;
@@ -129,7 +129,6 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private boolean trueResume;
     private long exitTime = 0;
     private UrgedMsgModel mUrgedMsgModel;
-    private TDialog moodSignInDialog;
 
     public static void setShowLoginAnim(boolean showLoginAnim) {
         MainActivity.showLoginAnim = showLoginAnim;
@@ -179,17 +178,42 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     @Override
     public void initView() {
         mainActivity = this;
-        OkHttpUtil.setBaseCodeListener(code -> {
-            if (code == BaseCodeListener.LOGOUT) {
-                if (UserManager.getInstance().isTrueLogin()) {
-                    ToastUtil.show(R.string.token_not_valid);
-                    UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
-                    if (isMeResumed()) {
-                        LoginActivity.startActivity(mContext, LoginActivity.BY_OTHER);
-                    } else {
-                        MyApplication.goAppHome((Activity) mContext);
+        OkHttpUtil.setBaseCodeListener((code, msg) -> {
+            switch (code) {
+                case HttpResult.FAIL_TOKEN:
+                    if (UserManager.getInstance().isTrueLogin()) {
+                        ToastUtil.show(com.thfw.ui.R.string.token_not_valid);
+                        UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+                        if (isMeResumed()) {
+                            LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+                        } else {
+                            MyApplication.goAppHome((Activity) mContext);
+                        }
                     }
-                }
+                    break;
+                case HttpResult.SERVICE_TIME_NO_START:
+                case HttpResult.SERVICE_TIME_ALREADY_END:
+                    if (!UserManager.getInstance().isTrueLogin()) {
+                        return;
+                    }
+                    DialogFactory.createServerStopDialog(MainActivity.this, new DialogFactory.OnViewCallBack() {
+                        @Override
+                        public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                            mTvHint.setText(msg);
+                        }
+
+                        @Override
+                        public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+                            if (isMeResumed()) {
+                                LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+                            } else {
+                                MyApplication.goAppHome((Activity) mContext);
+                            }
+                            tDialog.dismiss();
+                        }
+                    });
+                    break;
             }
         });
         mMainRoot = (ConstraintLayout) findViewById(R.id.main_root);
@@ -265,7 +289,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     mTvMsgVersion.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
                     if (hasNewVersion) {
                         // 防止和欢迎动画重叠
-                        if (DialogFactory.getSvgaTDialog() == null && moodSignInDialog == null) {
+                        if (DialogFactory.getSvgaTDialog() == null) {
                             AutoUpdateService.startUpdate(mContext);
                         }
                     }
@@ -402,7 +426,10 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     }
 
     private void onUrgedDialog() {
-        if (mUrgedMsgModel == null || !mUrgedMsgModel.isDisplay() || moodSignInDialog != null) {
+        // 在 欢迎动画和心情打卡后 执行动画
+        if (mUrgedMsgModel == null || !mUrgedMsgModel.isDisplay()
+                || DialogFactory.getSvgaTDialog() != null
+                || !moodHint) {
             return;
         }
         HashMap<Integer, Object> map = new HashMap<>();
@@ -444,6 +471,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     LogUtil.d(TAG, "showSVGALogin end");
                     SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN, false);
                     showLoginAnim = false;
+                    onUrgedDialog();
                 }
             });
         } else {
@@ -475,21 +503,19 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             @Override
             public void onMoodLively(MoodLivelyModel data) {
                 if (data != null && data.getUserMood() == null) {
-                    moodSignInDialog = DialogFactory.createMoodSignInDialog(MainActivity.this,
+                    DialogFactory.createMoodSignInDialog(MainActivity.this,
                             dialog -> {
-                                if (moodSignInDialog != null) {
-                                    moodSignInDialog.dismiss();
-                                    moodSignInDialog = null;
-                                }
+                                mMainHandler.postDelayed(() -> {
+                                    if (isMeResumed()) {
+                                        onUrgedDialog();
+                                    }
+                                }, 500);
                             }, new OnViewClickListener() {
                                 @Override
                                 public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
                                     tDialog.dismiss();
-                                    moodSignInDialog = null;
                                     if (view.getId() == R.id.bt_go) {
                                         StatusActivity.startActivity(mContext, true);
-                                    } else {
-                                        onUrgedDialog();
                                     }
                                 }
                             });

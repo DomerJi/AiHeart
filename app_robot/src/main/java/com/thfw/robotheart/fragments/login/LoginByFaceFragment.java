@@ -48,6 +48,7 @@ import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.activitys.me.MeActivity;
 import com.thfw.robotheart.constants.AgreeOn;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.Dormant;
 import com.thfw.user.login.UserManager;
 
@@ -734,6 +735,8 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                                 if (result != null) {
                                     if (HttpResult.isOrganValid(result.getCode())) {
                                         LoginActivity.showOrganIdNoValid(getActivity());
+                                    } else if (HttpResult.isServerTimeNoValid(result.getCode())) {
+                                        DialogRobotFactory.createSimple(getActivity(), result.getMsg());
                                     } else {
                                         ToastUtil.showLong(result.getMsg());
                                     }

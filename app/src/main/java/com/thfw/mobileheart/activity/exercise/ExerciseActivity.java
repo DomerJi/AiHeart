@@ -88,8 +88,10 @@ public class ExerciseActivity extends BaseActivity<UserToolPresenter> implements
 
     @Override
     public void onFail(ResponeThrowable throwable) {
-        mLoadingView.showFail(v -> {
-            mPresenter.onGetList();
-        });
+        if (mExerciseAdapter == null || mExerciseAdapter.getItemCount() == 0) {
+            mLoadingView.showFail(v -> {
+                mPresenter.onGetList();
+            });
+        }
     }
 }

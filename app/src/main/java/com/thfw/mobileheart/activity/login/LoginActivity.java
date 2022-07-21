@@ -24,6 +24,7 @@ import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.PermissionUtil;
+import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.MyApplication;
@@ -74,7 +75,7 @@ public class LoginActivity extends BaseActivity {
         if (data != null && !TextUtils.isEmpty(data.token)) {
             User user = new User();
             user.setToken(data.token);
-            if (!TextUtils.isEmpty(mobile)) {
+            if (RegularUtil.isPhone(mobile)) {
                 user.setMobile(mobile);
             }
             user.setSetUserInfo(data.isSetUserInfo());

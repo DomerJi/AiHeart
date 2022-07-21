@@ -82,8 +82,10 @@ public class ExerciseActivity extends RobotBaseActivity<UserToolPresenter> imple
 
     @Override
     public void onFail(ResponeThrowable throwable) {
-        mLoadingView.showFail(v -> {
-            mPresenter.onGetList();
-        });
+        if (mExerciseAdapter == null || mExerciseAdapter.getItemCount() == 0) {
+            mLoadingView.showFail(v -> {
+                mPresenter.onGetList();
+            });
+        }
     }
 }

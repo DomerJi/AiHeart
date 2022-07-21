@@ -14,6 +14,7 @@ import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -65,6 +66,7 @@ public class DormantActivity extends RobotBaseActivity
     private BroadcastReceiver mBatInfoReceiver;
     private int level;
     private boolean chargeIng;
+    private static DormantActivity dormantActivity;
 
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, DormantActivity.class));
@@ -83,6 +85,7 @@ public class DormantActivity extends RobotBaseActivity
 
     @Override
     public void initView() {
+        dormantActivity = this;
         // 降低亮度，节约电量
         BrightnessHelper.setActivityBrightness(0.08f, this);
         mIvAnim = (SVGAImageView) findViewById(R.id.iv_anim);
@@ -98,7 +101,13 @@ public class DormantActivity extends RobotBaseActivity
 //        testEmojiLoop(mEmojiFileNames[testIndex]);
 
         onStartDormant();
-        onStartWakeupListener();
+    }
+
+    public static void onWakeup() {
+        Dormant.reset();
+        if (!EmptyUtil.isEmpty(dormantActivity)) {
+            dormantActivity.onWakeUp(WakeUpType.CLICK);
+        }
     }
 
 
@@ -122,8 +131,15 @@ public class DormantActivity extends RobotBaseActivity
     private void onStartWakeupListener() {
         WakeupHelper.getInstance().setWakeUpListener(new WakeupHelper.OnWakeUpListener() {
             @Override
-            public void onWakeup() {
-                onWakeUp(WakeUpType.VOICE);
+            public void onWakeup(int angle, int beam) {
+                if (ToastUtil.isMainThread()) {
+                    onWakeUp(WakeUpType.VOICE);
+                } else {
+                    runOnUiThread(() -> {
+                        onWakeUp(WakeUpType.VOICE);
+                    });
+                }
+                RobotUtil.wakeup(angle, beam);
             }
 
             @Override
@@ -208,6 +224,18 @@ public class DormantActivity extends RobotBaseActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        onStartWakeupListener();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        WakeupHelper.getInstance().stop();
+    }
+
+    @Override
     public void onDestroy() {
         if (mIvAnim != null) {
             mIvAnim.clear();
@@ -216,10 +244,10 @@ public class DormantActivity extends RobotBaseActivity
         Dormant.setMinuteChangeListener(null);
         SerialManager.getInstance().removeEleListener(this);
         SerialManager.getInstance().removeRobotTouchListener(this);
-        WakeupHelper.getInstance().stop();
         if (mBatInfoReceiver != null) {
             unregisterReceiver(mBatInfoReceiver);
         }
+        dormantActivity = null;
         super.onDestroy();
     }
 

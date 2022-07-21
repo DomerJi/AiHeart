@@ -19,8 +19,8 @@ import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.UrgedMsgModel;
-import com.thfw.base.net.BaseCodeListener;
 import com.thfw.base.net.CommonParameter;
+import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.OkHttpUtil;
 import com.thfw.base.net.ResponeThrowable;
@@ -57,16 +57,20 @@ import com.thfw.robotheart.push.MyPreferences;
 import com.thfw.robotheart.push.helper.PushHelper;
 import com.thfw.robotheart.push.tester.UPushAlias;
 import com.thfw.robotheart.receiver.BootCompleteReceiver;
+import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.service.AutoUpdateService;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.MsgCountManager;
 import com.thfw.robotheart.util.SVGAHelper;
 import com.thfw.robotheart.view.HomeIpTextView;
 import com.thfw.robotheart.view.TitleBarView;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.utils.UrgeUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.ui.voice.wakeup.WakeupHelper;
 import com.thfw.ui.widget.MyRobotSearchView;
 import com.thfw.ui.widget.WeekView;
 import com.thfw.user.login.LoginStatus;
@@ -189,18 +193,42 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
     @Override
     public void initView() {
-        OkHttpUtil.setBaseCodeListener(code -> {
-            if (code == BaseCodeListener.LOGOUT) {
-                if (UserManager.getInstance().isTrueLogin()) {
-                    ToastUtil.show(com.thfw.ui.R.string.token_not_valid);
-                    UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
-                    if (isMeResumed()) {
-                        LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
-                    } else {
-                        MyApplication.goAppHome((Activity) mContext);
+        OkHttpUtil.setBaseCodeListener((code, msg) -> {
+            switch (code) {
+                case HttpResult.FAIL_TOKEN:
+                    if (UserManager.getInstance().isTrueLogin()) {
+                        ToastUtil.show(com.thfw.ui.R.string.token_not_valid);
+                        UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+                        if (isMeResumed()) {
+                            LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+                        } else {
+                            MyApplication.goAppHome((Activity) mContext);
+                        }
                     }
+                    break;
+                case HttpResult.SERVICE_TIME_NO_START:
+                case HttpResult.SERVICE_TIME_ALREADY_END:
+                    if (!UserManager.getInstance().isTrueLogin()) {
+                        return;
+                    }
+                    DialogRobotFactory.createServerStopDialog(MainActivity.this, new DialogRobotFactory.OnViewCallBack() {
+                        @Override
+                        public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                            mTvHint.setText(msg);
+                        }
 
-                }
+                        @Override
+                        public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+                            if (isMeResumed()) {
+                                LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+                            } else {
+                                MyApplication.goAppHome((Activity) mContext);
+                            }
+                            tDialog.dismiss();
+                        }
+                    });
+                    break;
             }
         });
         mTitleBarView = (TitleBarView) findViewById(R.id.titleBarView);
@@ -314,24 +342,33 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             initUserInfo();
             initOrganization();
             initUrgedMsg();
+            wakeup();
         }
 
-//        WakeupHelper.getInstance().setWakeUpListener(new WakeupHelper.OnWakeUpListener() {
-//            @Override
-//            public void onWakeup() {
-//                ToastUtil.show("WakeUp");
-//            }
-//
-//            @Override
-//            public void onError() {
-//
-//            }
-//        });
-//
-//        if (!WakeupHelper.getInstance().isIng()) {
-//            WakeupHelper.getInstance().start();
-//        }
+    }
 
+
+    /**
+     * 测试
+     */
+    private void wakeup() {
+        if (RobotUtil.isInstallRobot()) {
+            if (WakeupHelper.getInstance().isIng()) {
+                return;
+            }
+            WakeupHelper.getInstance().setWakeUpListener(new WakeupHelper.OnWakeUpListener() {
+                @Override
+                public void onWakeup(int angle, int beam) {
+                    RobotUtil.wakeup(angle, beam);
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
+            WakeupHelper.getInstance().start();
+        }
     }
 
     /**
@@ -360,6 +397,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                     LogUtil.d(TAG, "showSVGALogin end");
                     SharePreferenceUtil.setBoolean(LoginActivity.KEY_LOGIN_BEGIN, false);
                     showLoginAnim = false;
+                    onUrgedDialog();
                 }
             });
         }
@@ -368,6 +406,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
+        if (RobotUtil.isInstallRobot() && WakeupHelper.getInstance().isIng()) {
+            WakeupHelper.getInstance().stop();
+        }
         animResume(false);
         mMainHandler.removeCallbacks(mCheckVersionRunnable);
     }
@@ -744,7 +785,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     }
 
     private void onUrgedDialog() {
-        if (mUrgedMsgModel == null || !mUrgedMsgModel.isDisplay()) {
+        if (mUrgedMsgModel == null || !mUrgedMsgModel.isDisplay() ||
+                DialogRobotFactory.getSvgaTDialog() != null) {
             return;
         }
         HashMap<Integer, Object> map = new HashMap<>();

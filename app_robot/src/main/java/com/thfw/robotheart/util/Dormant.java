@@ -103,6 +103,13 @@ public class Dormant {
         }
     }
 
+    public static void toDormant(Context context) {
+        MINUTE_FREE = SharePreferenceUtil.getInt(KEY_DORMANT_MINUTE, MINUTE_FREE_COUNT) + 1;
+        // todo 休眠或待机进入低功耗
+        LogUtil.d(TAG_DORMANT, "addMinute 【休眠】！！！休眠或待机进入低功耗");
+        DormantActivity.startActivity(context);
+    }
+
     public static boolean isCanDormant() {
         return MINUTE_FREE > SharePreferenceUtil.getInt(KEY_DORMANT_MINUTE, MINUTE_FREE_COUNT);
     }

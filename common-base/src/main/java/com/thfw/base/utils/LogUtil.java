@@ -3,6 +3,8 @@ package com.thfw.base.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.iflytek.cloud.Setting;
+
 
 /**
  * Created by jishuaipeng on 2021-04-26.
@@ -19,6 +21,7 @@ public class LogUtil {
     public static boolean switchLogEnable() {
         isLogEnabled = !isLogSpEnable();
         SharePreferenceUtil.setBoolean(KEY_LOG_ENABLE, isLogEnabled);
+        Setting.setShowLog(isLogEnabled);
         return isLogEnabled;
     }
 
@@ -32,6 +35,7 @@ public class LogUtil {
 
     public static void setLogEnabled(boolean logEnabled) {
         isLogEnabled = logEnabled;
+        Setting.setShowLog(isLogEnabled);
     }
 
     /**

@@ -43,6 +43,7 @@ import com.thfw.robotheart.robot.BleManager;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.Dormant;
+import com.thfw.ui.voice.speech.SpeechHelper;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 
@@ -217,6 +218,9 @@ public class TitleBarView extends LinearLayout {
                             LogUtil.i(TAG, "眩晕");
                         }
                     });
+                    if (TtsHelper.getInstance().isIng() || SpeechHelper.getInstance().isIng()) {
+                        return;
+                    }
                     TtsHelper.getInstance().start(new TtsModel("请尽快把我放到固定位置哦"), null);
                 }
             }
@@ -320,6 +324,9 @@ public class TitleBarView extends LinearLayout {
                         LogUtil.i(TAG, "眩晕");
                     }
                 });
+                if (TtsHelper.getInstance().isIng() || SpeechHelper.getInstance().isIng()) {
+                    return;
+                }
                 TtsHelper.getInstance().start(new TtsModel("电池电量底，为防止自动关机，请为我充电"), null);
             }
         }

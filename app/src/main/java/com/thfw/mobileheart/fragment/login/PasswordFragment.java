@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.models.TokenModel;
+import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.utils.LogUtil;
@@ -23,6 +24,7 @@ import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.activity.login.ForgetPasswordActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
+import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.utils.EditTextUtil;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -170,6 +172,10 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
     @Override
     public void onFail(ResponeThrowable throwable) {
         LoadingDialog.hide();
-        ToastUtil.show(throwable.getMessage());
+        if (HttpResult.isServerTimeNoValid(throwable.code)) {
+            DialogFactory.createSimple(getActivity(), throwable.getMessage());
+        } else {
+            ToastUtil.show(throwable.getMessage());
+        }
     }
 }

@@ -17,6 +17,7 @@ import com.thfw.base.utils.GsonUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.util.MsgCountManager;
 import com.thfw.ui.utils.UrgeUtil;
+import com.thfw.user.login.UserManager;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UTrack;
 import com.umeng.message.UmengMessageHandler;
@@ -116,7 +117,9 @@ public class MyCustomMessageService extends UmengMessageService {
                         }
                         // 催促消息
                         if (MsgType.isUrge(msgType)) {
-                            UrgeUtil.notify(new HashMap<>());
+                            if (UserManager.getInstance().isTrueLogin()) {
+                                UrgeUtil.notify(new HashMap<>());
+                            }
                         } else {
                             handleCustomNotificationMessage(pushMsgModel, message);
                         }

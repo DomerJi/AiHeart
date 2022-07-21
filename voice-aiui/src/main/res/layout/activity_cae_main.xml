@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:padding="10dip" >
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dip"
+        android:layout_marginBottom="2dip"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dip"
+            android:layout_gravity="center"
+            android:text="CAE+AIUI"
+            android:textColor="#fff"
+            android:textSize="30sp" />
+
+    </FrameLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="fill_parent"
+        android:layout_height="200sp"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical">
+        <TextView
+            android:id="@+id/res_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="top|left"
+            android:textColor="#fff"
+            android:paddingBottom="40dip"
+            android:textSize="20sp" />
+    </ScrollView>
+
+    <Button
+        android:id="@+id/init_sdk"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="初始化"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/btnRec"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="开始录音"
+        android:textSize="30sp"/>
+
+    <Button
+        android:id="@+id/btnStop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="停止录音"
+        android:textSize="30sp"/>
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="保存音频"
+        android:visibility="visible"
+        android:textSize="30sp"/>
+    <Button
+        android:id="@+id/writeTest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="写音频测试"
+        android:visibility="visible"
+        android:textSize="30sp"/>
+
+</LinearLayout>

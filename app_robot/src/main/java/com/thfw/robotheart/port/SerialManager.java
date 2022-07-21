@@ -31,6 +31,9 @@ import java.util.LinkedList;
  */
 public class SerialManager {
 
+
+    private static final String TAG = SerialManager.class.getSimpleName();
+
     /**
      * 陀螺仪
      */
@@ -45,7 +48,6 @@ public class SerialManager {
     private static final int SENSOR_FLOAT_MAX = 10 - SENSOR_FLOAT_MIN;
     private static SerialManager instance;
     private boolean upElectricity;
-    private static final String TAG = SerialManager.class.getSimpleName();
     private static final int DELAY_TIME = 140;
     private SerialHelper serialHelper;
 
@@ -84,19 +86,10 @@ public class SerialManager {
                 Log.d(TAG, "open =====================openStatus = " + openStatus);
             } catch (Exception e) {
                 Log.d(TAG, "open =====================444444444444444444=" + e.getMessage());
-            }
-            HandlerUtil.getMainHandler().postDelayed(() -> {
+            } finally {
                 initSensor();
-            }, 2000);
-        } else {
-            if (LogUtil.isLogEnabled()) {
-                HandlerUtil.getMainHandler().postDelayed(() -> {
-                    initSensor();
-                }, 2000);
             }
         }
-
-
     }
 
     private void initSensor() {
@@ -109,8 +102,22 @@ public class SerialManager {
             gyroscopeSensor = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
             gravity = new float[3];// 用来保存加速度传感器的值
 
-            manager.registerListener(listener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
-            manager.registerListener(listener, gyroscopeSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            boolean register01 = manager.registerListener(listener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            boolean register02 = manager.registerListener(listener, gyroscopeSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+            LogUtil.d(TAG, "accelerometerSensor register = " + register01);
+            LogUtil.d(TAG, "gyroscopeSensor register = " + register02);
+            if (!register01) {
+                if (manager != null) {
+                    if (accelerometerSensor != null) {
+                        manager.unregisterListener(listener, accelerometerSensor);
+                    }
+                    if (gyroscopeSensor != null) {
+                        manager.unregisterListener(listener, gyroscopeSensor);
+                    }
+                    manager = null;
+                }
+            }
         }
     }
 
@@ -119,10 +126,8 @@ public class SerialManager {
 
         @Override
         public void onSensorChanged(SensorEvent event) {
-            if (LogUtil.isLogEnabled()) {
-                LogUtil.d("onSensorChanged", "type = " + event.sensor.getType()
-                        + "_" + Arrays.toString(event.values));
-            }
+
+//            LogUtil.d("onSensorChanged", "type = " + event.sensor.getType() + "_" + Arrays.toString(event.values));
 
             switch (event.sensor.getType()) {
                 // 地磁
@@ -141,7 +146,6 @@ public class SerialManager {
 
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
         }
     }
 
@@ -149,7 +153,9 @@ public class SerialManager {
     public static SerialManager getInstance() {
         if (instance == null) {
             synchronized (SerialManager.class) {
-                instance = new SerialManager();
+                if (instance == null) {
+                    instance = new SerialManager();
+                }
             }
         }
         if (RobotUtil.isInstallRobot()) {
@@ -162,6 +168,9 @@ public class SerialManager {
                 instance.initPort();
             }
             instance.upElectricity();
+            if (instance.manager == null) {
+                instance.initSensor();
+            }
         }
         return instance;
     }
@@ -172,9 +181,6 @@ public class SerialManager {
     private void upElectricity() {
         if (!instance.upElectricity) {
             upElectricityNow();
-            if (manager == null) {
-                instance.initSensor();
-            }
         }
     }
 
@@ -378,9 +384,16 @@ public class SerialManager {
                     // 状态 0所有 1电压 2按键 3红外 4舵机 5适配器
                     int type = bytes[0];
                     switch (type) {
-                        // 查询电压 1，2，1 状态|故障位|电压
+                        // 查询电压 1，2，1 状态|故障位|电压|电量
                         case 1:
-                            if (bytes.length == 3) {
+                            if (bytes.length == 4) {
+                                // 电量百分比
+                                if (electricity != bytes[3]) {
+                                    electricity = bytes[3];
+                                    onCharge2();
+                                }
+                            } else if (bytes.length == 3) {
+                                // 电压计算方法不准【过时】
                                 if (electricity != bytes[2]) {
                                     electricity = bytes[2];
                                     onCharge();
@@ -392,7 +405,7 @@ public class SerialManager {
                             if (bytes.length == 3) {
                                 if (charge != bytes[2]) {
                                     charge = bytes[2];
-                                    onCharge();
+                                    onCharge2();
                                 }
                             }
                             // 查询舵机角度 1，2，4，4，4 状态|故障位|1号舵机|2号舵机|3号舵机
@@ -414,7 +427,7 @@ public class SerialManager {
                     if (bytes.length == 1) {
                         if (charge != bytes[0]) {
                             charge = bytes[0];
-                            onCharge();
+                            onCharge2();
                         }
                     }
                     break;
@@ -490,6 +503,14 @@ public class SerialManager {
         return false;
     }
 
+    public synchronized boolean sendText(String text) {
+        if (isOpen()) {
+            serialHelper.sendTxt(text);
+            return true;
+        }
+        return false;
+    }
+
     public synchronized boolean send(String hex) {
         if (isOpen()) {
             if (mWaitOrder.isEmpty()) {
@@ -515,6 +536,19 @@ public class SerialManager {
         }, 1000);
     }
 
+    public void onCharge2() {
+        if (electricity == -1) {
+            percent = 100;
+        } else {
+            percent = electricity;
+        }
+        LogUtil.i(TAG, "percent2 = " + percent + " ; charge = " + charge);
+        for (ElectricityListener listener : electricityListeners) {
+            listener.onCharge(percent, charge);
+        }
+    }
+
+    @Deprecated
     public void onCharge() {
         if (electricity != -1) {
             percent = (int) ((electricity - ELECTRICITY_MIN) * 100f / (ELECTRICITY_MAX - ELECTRICITY_MIN));

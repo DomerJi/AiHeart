@@ -40,6 +40,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.MyApplication;
+import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.adapter.BaseAdapter;
 import com.thfw.robotheart.adapter.DialogLikeAdapter;
@@ -54,6 +55,8 @@ import com.thfw.ui.utils.DragViewUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.InputBoxView;
+import com.thfw.user.login.LoginStatus;
+import com.thfw.user.login.UserManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -69,10 +72,10 @@ import static com.thfw.ui.utils.UrgeUtil.URGE_DELAY_TIME;
 public class DialogRobotFactory {
 
     private static final String TAG = DialogRobotFactory.class.getSimpleName();
+    private static final float WIDTH_ASPECT_2 = 0.6f;
     private static TDialog mSvgaTDialog;
     private static TextView mTvTime;
     private static int minute;
-    private static final float WIDTH_ASPECT_2 = 0.6f;
     private static Runnable mMinuteRunnable;
     private static long currentTimeMillis;
 
@@ -82,6 +85,10 @@ public class DialogRobotFactory {
 
     public static TDialog getUrgedDialog() {
         return urgedDialog;
+    }
+
+    public static TDialog getSvgaTDialog() {
+        return mSvgaTDialog;
     }
 
     public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack) {
@@ -109,6 +116,44 @@ public class DialogRobotFactory {
                     TextView mTvLeft = viewHolder.getView(R.id.tv_left);
                     TextView mTvRight = viewHolder.getView(R.id.tv_right);
                     View mVLineVertical = viewHolder.getView(R.id.vline_vertical);
+                    onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
+                })
+                .setOnViewClickListener(onViewCallBack).create().show();
+    }
+
+    /**
+     * 服务不可用弹框
+     *
+     * @param activity
+     * @param onViewCallBack
+     * @return
+     */
+    public static TDialog createServerStopDialog(FragmentActivity activity, OnViewCallBack onViewCallBack) {
+        return new TDialog.Builder(activity.getSupportFragmentManager())
+                .setLayoutRes(R.layout.dialog_custom_layout)
+                .setDialogAnimationRes(R.style.animate_dialog_fade)
+                .addOnClickListener(R.id.tv_left, R.id.tv_right)
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (UserManager.getInstance().isTrueLogin()) {
+                            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+                            LoginActivity.startActivity(activity, LoginActivity.BY_PASSWORD);
+                        }
+                    }
+                })
+                .setScreenWidthAspect(activity, 0.4f)
+                .setCancelableOutside(false)
+                // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
+                .setOnBindViewListener(viewHolder -> {
+                    TextView mTvTitle = viewHolder.getView(R.id.tv_title);
+                    mTvTitle.setVisibility(View.GONE);
+                    TextView mTvHint = viewHolder.getView(R.id.tv_hint);
+                    TextView mTvLeft = viewHolder.getView(R.id.tv_left);
+                    TextView mTvRight = viewHolder.getView(R.id.tv_right);
+                    View mVLineVertical = viewHolder.getView(R.id.vline_vertical);
+                    mVLineVertical.setVisibility(View.GONE);
+                    mTvLeft.setVisibility(View.GONE);
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
                 })
                 .setOnViewClickListener(onViewCallBack).create().show();

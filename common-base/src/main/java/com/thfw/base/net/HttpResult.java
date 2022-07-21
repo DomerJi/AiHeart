@@ -28,6 +28,7 @@ public class HttpResult<T> implements IResult, IModel {
      * 12 => "未找到用户所在机构"
      */
     public static final int FAIL = 0;
+    private static final int CODE_SUCCESS = 1;
     public static final int FAIL_CODE = 2;
     public static final int FAIL_PASSWORD = 3;
     public static final int FAIL_PASSWORD_CODE = 4;
@@ -44,7 +45,21 @@ public class HttpResult<T> implements IResult, IModel {
     // 选择加入机构的时候，【您所在设备类型不能加入此机构】
     public static final int FAIL_DEVICE_NOT_JOIN_ORGAN_BY_AUTH = 15;
     public static final int FAIL_NO_ACCOUNT = 16;
-    private static final int CODE_SUCCESS = 1;
+    // 您所在的机构，购买的服务开始时间为：202X-XX-XX XX:XX:XX。请耐心等待或联系所在机构管理员（登录返回）
+    public static final int SERVICE_TIME_NO_START_BY_LOGIN = 17;
+    // 已达到机构使用人数上限，请联系所在机构管理员
+    public static final int SERVICE_PEOPLE_MAX = 18;
+    // 您所在的机构服务已过期，请联系所在机构管理员（登录返回）
+    public static final int SERVICE_TIME_ALREADY_END_BY_LOGIN = 19;
+    // 您所在的机构，购买的服务开始时间为：202X-XX-XX XX:XX:XX。请耐心等待或联系所在机构管理员
+    public static final int SERVICE_TIME_NO_START = 20;
+    // 您所在的机构服务已过期，请联系所在机构管理员(token验证)
+    public static final int SERVICE_TIME_ALREADY_END = 21;
+    // 您所在的机构，购买的服务开始时间为：202X-XX-XX XX:XX:XX。请耐心等待或联系所在机构管理员
+    public static final int SERVICE_TIME_NO_START_BY_JOIN = 22;
+    // 您所在的机构服务已过期，请联系所在机构管理员(token验证)
+    public static final int SERVICE_TIME_ALREADY_END_BY_JOIN = 23;
+
     /**
      * 返回状态值
      * 0表示成功
@@ -65,6 +80,10 @@ public class HttpResult<T> implements IResult, IModel {
         return code == FAIL_ROBOT_ID || code == FAIL_NO_ORGAN;
     }
 
+    public static boolean isServerTimeNoValid(int code) {
+        return code == SERVICE_TIME_ALREADY_END_BY_LOGIN || code == SERVICE_TIME_NO_START_BY_LOGIN;
+    }
+
     public T getData() {
         return data;
     }
@@ -76,6 +95,11 @@ public class HttpResult<T> implements IResult, IModel {
 
     @Override
     public String getMsg() {
+        String tempMsg = getMsg(code);
+        return tempMsg == null ? msg : tempMsg;
+    }
+
+    public static String getMsg(int code) {
         switch (code) {
             case FAIL:
                 return "请求失败";
@@ -84,7 +108,8 @@ public class HttpResult<T> implements IResult, IModel {
             case FAIL_CODE:
                 return "验证码错误";
             case FAIL_PASSWORD:
-                return "密码错误";
+//                return "密码错误";
+                return "账号或密码错误";
             case FAIL_PASSWORD_CODE:
                 return "请输入密码或验证码";
             case FAIL_TOKEN:
@@ -108,11 +133,27 @@ public class HttpResult<T> implements IResult, IModel {
             case FAIL_USER_NO_FOUNT:
                 return "用户未找到";
             case FAIL_DEVICE_NOT_JOIN_ORGAN_BY_AUTH:
-                return "您所在设备类型不能加入此机构";
+//                return "您所在设备类型不能加入此机构";
+                return "您未购买该设备服务，请联系所在机构管理员";
             case FAIL_NO_ACCOUNT:
-                return "账号不存在，请创建账号";
+//                return "账号不存在，请创建账号";
+                return "账号或密码错误";
+            case SERVICE_PEOPLE_MAX:
+                return "已达到机构使用人数上限，请联系所在机构管理员";
+            case SERVICE_TIME_ALREADY_END_BY_LOGIN:
+                return "您所在的机构服务已过期，请联系所在机构管理员";
+            case SERVICE_TIME_ALREADY_END:
+                return "您所在的机构服务已过期，请联系所在机构管理员";
+            case SERVICE_TIME_ALREADY_END_BY_JOIN:
+                return "该机构服务已过期，请联系所在机构管理员";
+//            case SERVICE_TIME_NO_START_BY_JOIN:
+//                return "该机构，购买的服务开始时间为：202X-XX-XX XX:XX:XX。请耐心等待或联系所在机构管理员";
+//            case SERVICE_TIME_NO_START_BY_LOGIN:
+//                return "所在的机构，购买的服务开始时间为：202X-XX-XX XX:XX:XX。请耐心等待或联系所在机构管理员";
+//            case SERVICE_TIME_NO_START:
+//                return "您所在的机构，购买的服务开始时间为：202X-XX-XX XX:XX:XX。请耐心等待或联系所在机构管理员";
         }
-        return msg;
+        return null;
     }
 
     @Override

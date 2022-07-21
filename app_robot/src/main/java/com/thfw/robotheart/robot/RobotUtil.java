@@ -14,12 +14,18 @@ import androidx.fragment.app.FragmentActivity;
 import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.ContextApp;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.port.ActionParams;
+import com.thfw.robotheart.port.SerialManager;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -271,6 +277,62 @@ public class RobotUtil {
             Log.w(TAG, e);
         }
 
+    }
+
+    /**
+     * 获取CPU序列号
+     *
+     * @return CPU序列号(16位)
+     * 读取失败为"0000000000000000"
+     */
+    public static String getCPUSerial() {
+
+        String str = "", strCPU = "", cpuAddress = "0000000000000000";
+
+        try {
+            // 读取CPU信息
+            Process pp = Runtime.getRuntime().exec("cat /proc/cpuinfo");
+            InputStreamReader ir = new InputStreamReader(pp.getInputStream());
+            LineNumberReader input = new LineNumberReader(ir);
+            // 查找CPU序列号
+            for (int i = 1; i < 100; i++) {
+                str = input.readLine();
+                if (str != null) {
+                    // 查找到序列号所在行
+                    if (str.indexOf("Serial") > -1) {
+                        // 提取序列号
+                        strCPU = str.substring(str.indexOf(":") + 1, str.length());
+                        // 去空格
+                        cpuAddress = strCPU.trim();
+                        break;
+                    }
+                } else {
+                    //文件结尾
+                    break;
+                }
+            }
+        } catch (IOException ex) {
+            //赋予默认值
+            ex.printStackTrace();
+        }
+        return cpuAddress;
+    }
+
+    public static void wakeup(int angle, int beam) {
+        if (RobotUtil.isInstallRobot() && angle != -1) {
+            int actionAngle = 0;
+            if (angle != 90) {
+                actionAngle = angle < 90 ? -(90 - angle) : angle - 90;
+            } else {
+                return;
+            }
+            if (LogUtil.isLogEnabled()) {
+                ToastUtil.show("actionAngle：" + actionAngle
+                        + " ; angle：" + angle + " ; beam：" + beam);
+            }
+            SerialManager.getInstance().startAction(ActionParams.getNormalRotate(actionAngle));
+
+        }
     }
 
 

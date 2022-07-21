@@ -16,7 +16,7 @@
     <string name="info_hint_please_select">请选择</string>
 
 
-    <string name="this_device_no_auth_login">您没有权限登录此设备，详情请咨询管理员。</string>
+    <string name="this_device_no_auth_login">您未购买该设备服务，请联系所在机构管理员</string>
 
     <string name="title">Title</string>
     <string name="reset">重置</string>

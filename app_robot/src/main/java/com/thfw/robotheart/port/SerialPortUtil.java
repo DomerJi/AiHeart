@@ -200,7 +200,7 @@ public class SerialPortUtil {
         int order = Integer.parseInt(orderHex, 16);
         Log.d(TAG, "parseOrder - order -> " + order);
         Order mOrder = Order.getOrderMap().get(order);
-        if (mOrder == null) {
+        if (mOrder == null || bytes.length <= 1) {
             // 处理数据
             onHandleOrder(order, new int[]{});
             return;
@@ -213,21 +213,23 @@ public class SerialPortUtil {
         byte[] newBytes = Arrays.copyOfRange(bytes, 3, bytes.length);
         if (order == Order.UP_STATE) {
             int msgType = newBytes[0];
+            // 电池电压&电量 按键 红外 适配器状态 舵机角度
+            //  2B    1B  4B   1B   1B       12B
             Log.d(TAG, "parseOrder - msgType -> " + msgType);
             switch (msgType) {
-                case 1:
-                    mOrder.paramsLens = new int[]{1, 2, 2};
+                case 1:// 电压&电量
+                    mOrder.paramsLens = new int[]{1, 2, 2, 1};
                     break;
-                case 2:
+                case 2:// 4个按键
                     mOrder.paramsLens = new int[]{1, 2, 1, 1, 1, 1};
                     break;
-                case 3:
+                case 3:// 红外
                     mOrder.paramsLens = new int[]{1, 2, 1};
                     break;
-                case 4:
+                case 4:// 舵机角度
                     mOrder.paramsLens = new int[]{1, 2, 4, 4, 4};
                     break;
-                case 5:
+                case 5:// 适配器状态
                     mOrder.paramsLens = new int[]{1, 2, 1};
                     break;
             }

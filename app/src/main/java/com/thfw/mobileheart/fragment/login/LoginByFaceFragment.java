@@ -48,6 +48,7 @@ import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.fragment.MeFragment;
+import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.user.login.UserManager;
 
 import org.opencv.android.CameraBridgeViewBase;
@@ -751,7 +752,11 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
                                 }
                             } else {
                                 if (result != null) {
-                                    ToastUtil.showLong(result.getMsg());
+                                    if (HttpResult.isServerTimeNoValid(result.getCode())) {
+                                        DialogFactory.createSimple(getActivity(), result.getMsg());
+                                    } else {
+                                        ToastUtil.showLong(result.getMsg());
+                                    }
                                 }
                                 LogUtil.d(TAG, "人脸【登录】失败--------------------------------- failCount = " + failCount);
                                 failCount++;

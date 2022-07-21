@@ -29,6 +29,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':common-base')
+    api project(':voice-aiui')
     api 'com.drakeet.multitype:multitype:4.2.0'
     api 'androidx.appcompat:appcompat:' + rootProject.ext.appcompat
     api 'androidx.constraintlayout:constraintlayout:' + rootProject.ext.constraintlayout

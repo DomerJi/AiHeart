@@ -26,6 +26,7 @@ import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.Dormant;
 import com.thfw.ui.base.IBaseActivity;
 import com.thfw.ui.utils.UrgeUtil;
+import com.thfw.ui.voice.speech.SpeechHelper;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 
@@ -46,6 +47,9 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
 
                         }
                     });
+            if (TtsHelper.getInstance().isIng() || SpeechHelper.getInstance().isIng()) {
+                return;
+            }
             TtsHelper.getInstance().start(new TtsModel("您好"), null);
         }
     }

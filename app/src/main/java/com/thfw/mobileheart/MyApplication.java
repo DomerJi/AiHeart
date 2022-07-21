@@ -12,7 +12,6 @@ import android.util.DisplayMetrics;
 import androidx.multidex.MultiDexApplication;
 import androidx.room.Room;
 
-import com.iflytek.cloud.Setting;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
@@ -182,7 +181,6 @@ public class MyApplication extends MultiDexApplication {
         // 设置使用v5+
         param.append(SpeechConstant.ENGINE_MODE + "=" + SpeechConstant.MODE_MSC);
         SpeechUtility.createUtility(app, param.toString());
-        Setting.setShowLog(true);
     }
 
     private void initAtThread() {
