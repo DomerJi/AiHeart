@@ -19,6 +19,12 @@ public class RegularUtil {
     // 数字
     public static final String REGEX_NUMBER = "^[0-9]*$";
 
+    // 数字和字母
+    public static final String REGEX_NUMBER_ABC = "^[a-z0-9A-Z]*$";
+
+    // 字母
+    public static final String REGEX_ABC = "^[a-zA-Z]*$";
+
     //汉字
     public static final String REGEX_TRUENAME = "^[\\u4e00-\\u9fa5]*$";
 

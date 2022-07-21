@@ -52,7 +52,11 @@ public class EditInfoActivity extends BaseActivity {
         mTitleRobotView = (TitleView) findViewById(R.id.titleRobotView);
         mTitleRobotView.setCenterText(editType.title);
         mEtInput = (EditText) findViewById(R.id.et_input);
-        EditTextUtil.setEditTextInhibitInputSpace(mEtInput);
+        if (editType != null && editType.type == EditType.NAME_PINYIN.type) {
+            EditTextUtil.setEditTextOnlyAbc(mEtInput);
+        } else {
+            EditTextUtil.setEditTextInhibitInputSpace(mEtInput);
+        }
         mBtConfirm = (Button) findViewById(R.id.bt_confirm);
         mEtInput.setMaxEms(tempEditType.textSizeMax);
         if (editType == null || editType.type != 4) {
