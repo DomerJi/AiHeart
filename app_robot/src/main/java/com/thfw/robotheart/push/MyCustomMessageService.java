@@ -94,33 +94,34 @@ public class MyCustomMessageService extends UmengMessageService {
                         pushMsgModel.setTitle(title);
                         pushMsgModel.setContent(content);
                         pushMsgModel.setTurnPage(turnPage);
-                        if (msgType == 1) {
-                            if (!MsgCountManager.getInstance().hasTaskMsgId(msg_id)) {
-                                MsgCountManager.getInstance().addNumTask();
-                            }
-                        } else {
-                            // 机器人只处理机器人的消息
-                            if (ContextApp.getDeviceType() == ContextApp.DeviceType.ROBOT
-                                    && MsgType.isRobotMsg(msgType)) {
-                                if (!MsgCountManager.getInstance().hasSystemMsgId(msg_id)) {
-                                    MsgCountManager.getInstance().addNumSystem();
-                                }
-                            } else {
-                                // 非机器人只处理非机器人的消息，
-                                if (MsgType.isMobileMsg(msgType)) {
-                                    if (!MsgCountManager.getInstance().hasSystemMsgId(msg_id)) {
-                                        MsgCountManager.getInstance().addNumSystem();
-                                    }
-                                }
-                            }
 
-                        }
                         // 催促消息
                         if (MsgType.isUrge(msgType)) {
                             if (UserManager.getInstance().isTrueLogin()) {
                                 UrgeUtil.notify(new HashMap<>());
                             }
                         } else {
+                            if (msgType == 1) {
+                                if (!MsgCountManager.getInstance().hasTaskMsgId(msg_id)) {
+                                    MsgCountManager.getInstance().addNumTask();
+                                }
+                            } else {
+                                // 机器人只处理机器人的消息
+                                if (ContextApp.getDeviceType() == ContextApp.DeviceType.ROBOT
+                                        && MsgType.isRobotMsg(msgType)) {
+                                    if (!MsgCountManager.getInstance().hasSystemMsgId(msg_id)) {
+                                        MsgCountManager.getInstance().addNumSystem();
+                                    }
+                                } else {
+                                    // 非机器人只处理非机器人的消息，
+                                    if (MsgType.isMobileMsg(msgType)) {
+                                        if (!MsgCountManager.getInstance().hasSystemMsgId(msg_id)) {
+                                            MsgCountManager.getInstance().addNumSystem();
+                                        }
+                                    }
+                                }
+
+                            }
                             handleCustomNotificationMessage(pushMsgModel, message);
                         }
                     }

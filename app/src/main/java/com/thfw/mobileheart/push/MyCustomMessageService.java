@@ -93,21 +93,22 @@ public class MyCustomMessageService extends UmengMessageService {
                         pushMsgModel.setTitle(title);
                         pushMsgModel.setContent(content);
                         pushMsgModel.setTurnPage(turnPage);
-                        if (msgType == 1) {
-                            if (!MsgCountManager.getInstance().hasTaskMsgId(msg_id)) {
-                                MsgCountManager.getInstance().addNumTask();
-                            }
-                        } else {
-                            if (!MsgCountManager.getInstance().hasSystemMsgId(msg_id)) {
-                                MsgCountManager.getInstance().addNumSystem();
-                            }
-                        }
+
                         // 催促消息不发送 Notification 在通知栏
                         if (MsgType.isUrge(msgType)) {
                             if (UserManager.getInstance().isTrueLogin()) {
                                 UrgeUtil.notify(new HashMap<>());
                             }
                         } else {
+                            if (msgType == 1) {
+                                if (!MsgCountManager.getInstance().hasTaskMsgId(msg_id)) {
+                                    MsgCountManager.getInstance().addNumTask();
+                                }
+                            } else {
+                                if (!MsgCountManager.getInstance().hasSystemMsgId(msg_id)) {
+                                    MsgCountManager.getInstance().addNumSystem();
+                                }
+                            }
                             handleCustomNotificationMessage(pushMsgModel, message);
                         }
 
