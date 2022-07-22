@@ -124,6 +124,9 @@ public class PolicyHelper {
                 sendCheckMsg();
                 break;
             default:
+                if (SpeechHelper.getInstance().isIng()) {
+                    SpeechHelper.getInstance().stop();
+                }
                 break;
 
         }
@@ -172,7 +175,7 @@ public class PolicyHelper {
     public void end() {
         synchronized (PolicyHelper.class) {
             wakeType = WakeType.NULL;
-            handler.removeCallbacksAndMessages(null);
+            handler.removeMessages(0);
             SpeechHelper.getInstance().stop();
             SpeechHelper.getInstance().destroy();
         }

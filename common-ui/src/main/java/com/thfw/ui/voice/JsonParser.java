@@ -16,6 +16,11 @@ import java.util.HashMap;
 public class JsonParser {
     private static HashMap<String, String> mIatResults = new HashMap<>();
 
+    public static void clearText() {
+        mIatResults.clear();
+    }
+
+
     // 读取动态修正返回结果示例代码
     public static String printResult(RecognizerResult results, boolean isLast) {
         String text = JsonParser.parseIatResult(results.getResultString());

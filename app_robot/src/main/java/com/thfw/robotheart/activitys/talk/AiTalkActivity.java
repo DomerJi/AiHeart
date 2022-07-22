@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -75,7 +74,6 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -87,9 +85,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     private static final int FACE_TYPE_SPEECH = 1; // 说话
     private static final int FACE_TYPE_LISTEN = 2; // 倾听
     private static final int FACE_TYPE_TOUCH = 3; // 触摸
+    // 非倾听模式下
     private static String KEY_ROBOT_SPEECH;
+    // 倾听模式下
     private static String KEY_ROBOT_SPEECH_READ;
-    private static String KEY_ROBOT_SPEECH_READ_AFTER;
     long downTime;
     boolean currentSelect = false;
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
@@ -138,8 +137,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     private TalkModel talkModel;
     private boolean handleResult;
     // 读完再说
-    private boolean mReadAfterSpeech = false;
-    private Switch mSwitchAfter;
+    private TextView mTvVolumeSwitch;
+    private boolean mSpeechMode;
+    private boolean mReadAfterSpeech;
 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, AiTalkActivity.class).putExtra(KEY_DATA, talkModel));
@@ -159,10 +159,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     public void initView() {
         KEY_ROBOT_SPEECH = "key.robot_speech" + UserManager.getInstance().getUID();
         KEY_ROBOT_SPEECH_READ = "key.robot_speech_read" + UserManager.getInstance().getUID();
-        KEY_ROBOT_SPEECH_READ_AFTER = "key.robot_speech_read_after" + UserManager.getInstance().getUID();
         mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
         mClAnim = (ConstraintLayout) findViewById(R.id.cl_anim);
         mLoadingView = findViewById(R.id.loadingView);
+        mTvVolumeSwitch = findViewById(R.id.tv_volume_switch);
         mRefreshLayout = findViewById(R.id.refreshLayout);
         mRefreshLayout.setEnableRefresh(false);
         mRefreshLayout.setEnableLoadMore(false);
@@ -214,16 +214,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         });
 
         mReadAfterSpeech = SharePreferenceUtil.getBoolean(KEY_ROBOT_SPEECH_READ, false);
-        mSwitchAfter = findViewById(R.id.switch_read_after);
-        mSwitchAfter.setChecked(mReadAfterSpeech);
         PolicyHelper.getInstance().setSwitchReadAfter(mReadAfterSpeech);
-        mSwitchAfter.setOnClickListener(v -> {
-            mReadAfterSpeech = mSwitchAfter.isChecked();
-            PolicyHelper.getInstance().setSwitchReadAfter(mReadAfterSpeech);
-            SharePreferenceUtil.setBoolean(KEY_ROBOT_SPEECH_READ, mReadAfterSpeech);
-            readAfterSpeech(true);
-        });
-
 
         // 历史记录
         mLlTalkHistory.setOnClickListener(v -> {
@@ -309,57 +300,45 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         }
     }
 
-
     private void volumeSwitch(boolean fromUser) {
-
-
+        LogUtil.i(TAG, "fromUser -----------------------------------------------------");
+        // 用户点击取反
         if (fromUser) {
-            SharePreferenceUtil.setBoolean(KEY_ROBOT_SPEECH, !mIvVolumeSwitch.isSelected());
-        }
-
-        if (fromUser && !isReadAfterSpeech() && !mIvVolumeSwitch.isSelected() && PolicyHelper.getInstance().isSpeechMode()) {
-            ToastUtil.show("正在倾听，无法打开");
-            return;
-        }
-
-        if (isReadAfterSpeech()) {
-            return;
-        }
-        mIvVolumeSwitch.setSelected(!mIvVolumeSwitch.isSelected());
-        if (mIvVolumeSwitch.isSelected()) {
-            if (mTtsFinished) {
-                startAnimFaceType(FACE_TYPE_FREE);
-                return;
-            }
-            if (EmptyUtil.isEmpty(mChatAdapter.getDataList())) {
-                startAnimFaceType(FACE_TYPE_FREE);
-                return;
-            }
-            mTtsQueue.clear();
-            List<ChatEntity> chatEntities = mChatAdapter.getDataList();
-            List<ChatEntity> ttsEntitys = new ArrayList<>();
-            for (int i = chatEntities.size() - 1; i >= 0; i--) {
-                ChatEntity chatEntity = chatEntities.get(i);
-                if (chatEntity.isFrom()) {
-                    ttsEntitys.add(chatEntity);
-                } else {
-                    break;
-                }
-            }
-            Collections.reverse(ttsEntitys);
-            LogUtil.d(TAG, "ttsEntitys.size = " + ttsEntitys.size());
-            for (ChatEntity chatEntity : ttsEntitys) {
-                ttsHandle(chatEntity);
+            mIvVolumeSwitch.setSelected(!mIvVolumeSwitch.isSelected());
+            if (mIvTalkModel.isSelected() && mSpeechMode) {
+                SharePreferenceUtil.setBoolean(KEY_ROBOT_SPEECH_READ, mIvVolumeSwitch.isSelected());
+            } else {
+                SharePreferenceUtil.setBoolean(KEY_ROBOT_SPEECH, mIvVolumeSwitch.isSelected());
             }
         } else {
-            startAnimFaceType(FACE_TYPE_FREE);
-            TtsHelper.getInstance().stop();
-            mTtsQueue.clear();
+            if (mIvTalkModel.isSelected() && mSpeechMode) {
+                mIvVolumeSwitch.setSelected(SharePreferenceUtil.getBoolean(KEY_ROBOT_SPEECH_READ, true));
+            } else {
+                mIvVolumeSwitch.setSelected(SharePreferenceUtil.getBoolean(KEY_ROBOT_SPEECH, true));
+            }
         }
+
+        if (!mIvVolumeSwitch.isSelected()) {
+            LogUtil.i("TtsHelper.getInstance().stop");
+            mTtsQueue.clear();
+            TtsHelper.getInstance().stop();
+            startAnimFaceType(FACE_TYPE_FREE);
+        }
+        if (mIvTalkModel.isSelected() && mSpeechMode) {
+            mReadAfterSpeech = mIvVolumeSwitch.isSelected();
+            PolicyHelper.getInstance().setSwitchReadAfter(mReadAfterSpeech);
+        }
+
+        readAfterSpeech(fromUser);
     }
 
+    /**
+     * 是否开启了语音和倾听交互模式
+     *
+     * @return
+     */
     private boolean isReadAfterSpeech() {
-        return mIvTalkModel.isSelected() && mSwitchAfter.getVisibility() == View.VISIBLE && mReadAfterSpeech;
+        return mIvTalkModel.isSelected() && mReadAfterSpeech;
     }
 
     private void startAnimFaceType(int type) {
@@ -506,14 +485,12 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             showInput(mEtContent);
         });
         PolicyHelper.getInstance().setResultListener(new SpeechHelper.ResultListener() {
-            boolean showOriginVolume = false;
 
             @Override
             public void onResult(String result, boolean append, boolean end) {
                 if (!mStvText.isShow()) {
                     return;
                 }
-
                 // 未选中，不处理字符
                 if (!mIvTalkModel.isSelected()) {
                     return;
@@ -528,36 +505,17 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             public void onIng(boolean ing) {
                 LogUtil.d(TAG, "ing =================================== " + ing);
                 if (ing) {
-                    if (PolicyHelper.getInstance().isSpeechMode()) {
-                        mSwitchAfter.setVisibility(View.VISIBLE);
-                    } else {
-                        mSwitchAfter.setVisibility(View.GONE);
-                    }
-                    showOriginVolume = mIvVolumeSwitch.isSelected();
-                    if (mIvVolumeSwitch.isSelected()) {
-                        volumeSwitch(false);
-                    }
                     startAnimFaceType(FACE_TYPE_LISTEN);
                     mStvText.show();
                 } else {
                     // 播完再听 播放tts不消失
-                    if (isReadAfterSpeech()) {
-                    } else {
+                    if (!isReadAfterSpeech()) {
                         if (!(PolicyHelper.getInstance().isSpeechMode()
                                 || PolicyHelper.getInstance().isPressMode())) {
                             mStvText.hide();
-                            mSwitchAfter.setVisibility(View.GONE);
                         }
                     }
-
-                    if (showOriginVolume) {
-                        if (!mIvVolumeSwitch.isSelected()) {
-                            volumeSwitch(false);
-                        }
-                    } else {
-                        startAnimFaceType(FACE_TYPE_FREE);
-                    }
-
+                    startAnimFaceType(FACE_TYPE_FREE);
                 }
             }
         });
@@ -592,50 +550,43 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                         }
                         downTime = System.currentTimeMillis();
                         mIvTalkModel.setSelected(true);
-                        if (!SpeechHelper.getInstance().isIng()) {
-                            if (!currentSelect) {
-                                PolicyHelper.getInstance().startPressed();
-                            } else {
-                                PolicyHelper.getInstance().startSpeech();
-                            }
+                        // 开始倾听
+                        mTtsQueue.clear();
+                        TtsHelper.getInstance().stop();
+                        startAnimFaceType(FACE_TYPE_LISTEN);
+                        mStvText.show();
+                        if (mStvText != null) {
+                            mStvText.setSpeechTextHint("倾听中···");
+                        }
+                        if (!currentSelect) {
+                            PolicyHelper.getInstance().startPressed();
+                        } else {
+                            PolicyHelper.getInstance().startSpeech();
                         }
                         break;
                     case MotionEvent.ACTION_UP:
                         if (System.currentTimeMillis() - downTime < 300) {
                             currentSelect = !currentSelect;
-                            mIvTalkModel.setSelected(currentSelect);
-                        } else {
-                            mIvTalkModel.setSelected(currentSelect);
                         }
                         if (currentSelect) {
                             PolicyHelper.getInstance().startSpeech();
                             if (mStvText != null) {
                                 mStvText.setSpeechTextHint("倾听中···");
                             }
-                            if (mReadAfterSpeech) {
-                                if (PolicyHelper.getInstance().isSpeechMode()) {
-                                    mSwitchAfter.setVisibility(View.VISIBLE);
-                                } else {
-                                    mSwitchAfter.setVisibility(View.GONE);
-                                }
-                            } else {
-                                mSwitchAfter.setVisibility(View.GONE);
-                            }
                         } else {
                             LogUtil.d(TAG, "chooseOption ACTION_UP Pressed End ++++++++++++++++");
                             PolicyHelper.getInstance().end();
                             chooseOption(mStvText.getText(), true);
-                            mSwitchAfter.setVisibility(View.GONE);
-                            mStvText.setSpeechText("");
                             mStvText.hide();
                         }
+                        onTalkModel(currentSelect);
                         break;
                     case MotionEvent.ACTION_MOVE:
                         if (!currentSelect) {
                             PolicyHelper.getInstance().startPressed();
+                            LogUtil.d(TAG, "mRlVoice - ing " + SpeechHelper.getInstance().isIng());
                         }
                         mIvTalkModel.setSelected(true);
-                        LogUtil.d(TAG, "mRlVoice - ing " + SpeechHelper.getInstance().isIng());
                         break;
                 }
                 LogUtil.d(TAG, "mRlVoice - mIvTalkModel.isSelected() " + mIvTalkModel.isSelected());
@@ -644,6 +595,22 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         });
 
 
+    }
+
+    private void onTalkModel(boolean selected) {
+        if (mIvTalkModel.isSelected() != selected) {
+            mIvTalkModel.setSelected(selected);
+        }
+        if (mIvTalkModel.isSelected() && PolicyHelper.getInstance().isSpeechMode()) {
+            mIvVolumeSwitch.setColorFilter(getResources().getColor(R.color.text_yellow));
+            mTvVolumeSwitch.setTextColor(getResources().getColor(R.color.text_yellow));
+            mSpeechMode = true;
+        } else {
+            mIvVolumeSwitch.setColorFilter(getResources().getColor(R.color.colorRobotFore));
+            mTvVolumeSwitch.setTextColor(getResources().getColor(R.color.colorRobotFore));
+            mSpeechMode = false;
+        }
+        volumeSwitch(false);
     }
 
     /**
@@ -914,13 +881,15 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     }
 
     private void readAfterSpeech(boolean formUser) {
+        // 开启了语音和倾听交互模式
         if (isReadAfterSpeech()) {
+            mStvText.show();
             if (PolicyHelper.getInstance().isRequestIng()) {
                 PolicyHelper.getInstance().end();
                 if (mStvText != null) {
                     mStvText.setSpeechTextHint("···");
                 }
-            } else if (FACE_TYPE_SPEECH == mFaceType || TtsHelper.getInstance().isIng()) {
+            } else if (mFaceType == FACE_TYPE_SPEECH || TtsHelper.getInstance().isIng()) {
                 PolicyHelper.getInstance().end();
                 if (mStvText != null) {
                     mStvText.setSpeechTextHint("播报中···");
@@ -932,18 +901,23 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 }
             }
         } else {
+            // 用户点击判断是否开始和结束录音
             if (formUser) {
                 if (mIvTalkModel.isSelected()) {
                     mTtsQueue.clear();
                     TtsHelper.getInstance().stop();
                     PolicyHelper.getInstance().startSpeech();
-                    mStvText.show();
                 } else {
-                    mStvText.hide();
+                    PolicyHelper.getInstance().end();
                 }
-                if (mStvText != null) {
-                    mStvText.setSpeechTextHint("倾听中···");
+            } else {
+                // 松开后 停止录音
+                if (!mIvTalkModel.isSelected() || !mSpeechMode) {
+                    PolicyHelper.getInstance().end();
                 }
+            }
+            if (mStvText != null) {
+                mStvText.setSpeechTextHint("倾听中···");
             }
         }
     }
@@ -988,7 +962,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                         if (!isMeResumed() || EmptyUtil.isEmpty(AiTalkActivity.this)) {
                             return;
                         }
-                        LogUtil.d(TAG, "ttsHandle  ing=  " + ing);
+                        LogUtil.d(TAG, "ttsHandle  ing =  " + ing);
                         if (!ing) {
                             ttsHandle();
                         }

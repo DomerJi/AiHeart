@@ -261,6 +261,7 @@ public class TtsHelper implements ITtsFace {
 
         @Override
         public void onSpeakBegin() {
+            onExoRelease();
             if (currentSynthesizerListener != null) {
                 currentSynthesizerListener.onSpeakBegin();
             }
@@ -296,6 +297,7 @@ public class TtsHelper implements ITtsFace {
 
         @Override
         public void onCompleted(SpeechError speechError) {
+            onExoRelease();
             if (currentSynthesizerListener != null) {
                 currentSynthesizerListener.onCompleted(speechError);
             }
@@ -334,21 +336,21 @@ public class TtsHelper implements ITtsFace {
             @Override
             public void onPlaybackStateChanged(int state) {
                 if (state == Player.STATE_ENDED) {
+                    onExoRelease();
                     LogUtil.i(TAG, "playCacheFile complete");
                     if (currentSynthesizerListener != null) {
                         currentSynthesizerListener.onCompleted(new SpeechError(0));
                     }
-                    onExoPause();
                 }
             }
 
             @Override
             public void onPlayerError(ExoPlaybackException error) {
                 LogUtil.i(TAG, "playCacheFile error");
+                onExoRelease();
                 if (currentSynthesizerListener != null) {
                     currentSynthesizerListener.onEvent(0, 0, 0, null);
                 }
-                onExoPause();
             }
         });
         if (currentSynthesizerListener != null) {
@@ -361,9 +363,6 @@ public class TtsHelper implements ITtsFace {
         if (exoPlayer != null) {
             exoPlayer.release();
             exoPlayer = null;
-            if (currentSynthesizerListener != null) {
-                currentSynthesizerListener.onCompleted(new SpeechError(0));
-            }
         }
     }
 
