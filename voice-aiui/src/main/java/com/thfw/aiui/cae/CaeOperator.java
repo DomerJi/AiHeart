@@ -2,6 +2,7 @@ package com.thfw.aiui.cae;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import com.iflytek.iflyos.cae.CAE;
 import com.iflytek.iflyos.cae.ICAEListener;
@@ -139,11 +140,16 @@ public class CaeOperator {
 
     // 资源文件拷贝
     public static void portingFile(Context context) {
-
-        copyAssetFolder(context, "resources", String.format("%s/resources", mWorkDir));
         mAlsaRawFileUtil = new FileUtil(mAlsaRawAudioDir);
         mAlsaRecFileUtil = new FileUtil(mAlsaRecAudioDir);
         mCaeOutPutFileUtil = new FileUtil(mCaeWriteAudioDir);
+        File file = new File(mWorkDir + "/resources/xiaomixiaomi_800_317.bin");
+        File file2 = new File(mWorkDir + "/resources/vtn.ini");
+        if (file != null && file.exists() && file2 != null && file2.exists()) {
+            Log.d(TAG, "--------------- resources exists ----------------");
+            return;
+        }
+        copyAssetFolder(context, "resources", String.format("%s/resources", mWorkDir));
 
     }
 
