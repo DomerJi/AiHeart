@@ -197,6 +197,7 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.me.InfoActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.login.SetPasswordActivity"

@@ -161,6 +161,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.settings.InfoActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.settings.SettingActivity"

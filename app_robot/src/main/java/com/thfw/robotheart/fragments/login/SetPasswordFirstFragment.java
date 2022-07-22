@@ -32,7 +32,7 @@ public class SetPasswordFirstFragment extends RobotBaseFragment<LoginPresenter> 
 
     @Override
     public int getContentView() {
-        return R.layout.fragment_set_password_origin;
+        return R.layout.fragment_set_password_first;
     }
 
     @Override
