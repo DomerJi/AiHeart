@@ -67,17 +67,24 @@ public class SpeechHelper implements ISpeechFace {
     @Override
     public void init() {
         LogUtil.i(TAG, "init start");
-        // 初始化识别无 UI 识别对象
-        mIat = SpeechRecognizer.createRecognizer(ContextApp.get(), new InitListener() {
-            @Override
-            public void onInit(int code) {
-                LogUtil.d(TAG, "init code = " + code);
-                if (code != ErrorCode.SUCCESS) {
-                    LogUtil.d(TAG, "init fail");
+        mIat = SpeechRecognizer.getRecognizer();
+        if (mIat == null) {
+            synchronized (SpeechHelper.class) {
+                if (mIat == null) {
+                    // 初始化识别无 UI 识别对象
+                    mIat = SpeechRecognizer.createRecognizer(ContextApp.get(), new InitListener() {
+                        @Override
+                        public void onInit(int code) {
+                            LogUtil.d(TAG, "init code = " + code);
+                            if (code != ErrorCode.SUCCESS) {
+                                LogUtil.d(TAG, "init fail");
+                            }
+                        }
+                    });
+                    setSpeechParam();
                 }
             }
-        });
-        setSpeechParam();
+        }
     }
 
 
@@ -214,14 +221,15 @@ public class SpeechHelper implements ISpeechFace {
         @Override
         public void onError(SpeechError speechError) {
 
-            LogUtil.i(TAG, "onError -> speechError = " + speechError.getErrorDescription());
+            LogUtil.i(TAG, "onError -> speechError = " + speechError.getErrorDescription()
+                    + " code = " + speechError.getErrorCode());
             isRestart();
             checkIngState();
         }
 
         @Override
         public void onEvent(int i, int i1, int i2, Bundle bundle) {
-            LogUtil.i(TAG, "onError -> i = " + i);
+            LogUtil.i(TAG, "onEvent -> i = " + i);
             if (SpeechEvent.EVENT_RECORD_STOP == i) {
                 isRestart();
             }
@@ -230,7 +238,7 @@ public class SpeechHelper implements ISpeechFace {
     }
 
     private void isRestart() {
-        if ((PolicyHelper.getInstance().isSpeechMode()
+        if (((PolicyHelper.getInstance().isSpeechMode() && !PolicyHelper.getInstance().isRequestIng())
                 || PolicyHelper.getInstance().isPressMode())
                 && !isIng()) {
             start();

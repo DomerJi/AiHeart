@@ -76,6 +76,7 @@
                 app:tint="@color/colorRobotFore" />
 
             <TextView
+                android:id="@+id/tv_volume_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"

@@ -6,6 +6,7 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
+import com.thfw.base.utils.LogUtil;
 import com.thfw.ui.voice.speech.SpeechHelper;
 import com.thfw.ui.voice.tts.TtsHelper;
 
@@ -25,6 +26,7 @@ public class PolicyHelper {
 
     public void setRequestIng(boolean requestIng) {
         this.requestIng = requestIng;
+        LogUtil.i(TAG, "requestIng = " + requestIng);
         if (this.requestIng) {
             synchronized (PolicyHelper.class) {
                 if (SpeechHelper.getInstance().isIng()) {
@@ -107,7 +109,6 @@ public class PolicyHelper {
                                 TtsHelper.getInstance().stop();
                             }
                             if (!SpeechHelper.getInstance().start()) {
-                                SpeechHelper.getInstance().destroy();
                                 sendCheckMsg(5000);
                             } else {
                                 sendCheckMsg();
