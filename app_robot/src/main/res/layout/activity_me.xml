@@ -34,16 +34,19 @@
 
     <TextView
         android:id="@+id/tv_nickname"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/test_nickname"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
         android:textColor="@color/colorRobotFore"
         android:textSize="@dimen/textSize_robot_title"
         app:layout_constraintBottom_toTopOf="@id/fl_team"
         app:layout_constraintLeft_toLeftOf="@id/riv_avatar"
         app:layout_constraintRight_toRightOf="@id/riv_avatar"
-        app:layout_constraintTop_toBottomOf="@id/riv_avatar" />
+        app:layout_constraintTop_toBottomOf="@id/riv_avatar"
+        tools:text="@string/bigText2" />
 
 
     <FrameLayout
