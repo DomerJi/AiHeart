@@ -59,6 +59,8 @@ public class CollectActivity extends BaseActivity {
 
     @Override
     public void initData() {
+
+        mViewPager.setOffscreenPageLimit(tabs.length);
         //添加tab
         for (int i = 0; i < tabs.length; i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(tabs[i]));

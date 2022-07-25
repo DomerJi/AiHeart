@@ -3,6 +3,7 @@ package com.thfw.mobileheart.activity.read;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +27,8 @@ import com.thfw.mobileheart.view.LastTextView;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -102,6 +105,7 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
 
     private void setAdapter(List<BookStudyTypeModel> cacheModel) {
         int size = cacheModel.size();
+        mViewPager.setOffscreenPageLimit(size);
         //添加tab
         for (int i = 0; i < size; i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(cacheModel.get(i).name));
@@ -113,7 +117,6 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
             tabFragmentList.add(studyListFragment);
 
         }
-
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -137,6 +140,18 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
             @Override
             public Fragment getItem(int position) {
                 return tabFragmentList.get(position);
+            }
+
+            @NonNull
+            @NotNull
+            @Override
+            public Object instantiateItem(@NonNull @NotNull ViewGroup container, int position) {
+                return super.instantiateItem(container, position);
+            }
+
+            @Override
+            public void destroyItem(@NonNull @NotNull ViewGroup container, int position, @NonNull @NotNull Object object) {
+                super.destroyItem(container, position, object);
             }
 
             @Override

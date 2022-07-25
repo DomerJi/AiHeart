@@ -219,6 +219,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
                         @Override
                         public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                            if (!UserManager.getInstance().isTrueLogin()) {
+                                return;
+                            }
                             UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
                             if (isMeResumed()) {
                                 LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);

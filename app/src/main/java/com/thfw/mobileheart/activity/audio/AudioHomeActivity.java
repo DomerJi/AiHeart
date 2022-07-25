@@ -100,6 +100,7 @@ public class AudioHomeActivity extends BaseActivity<AudioPresenter> implements A
 
     private void setViewPager(List<AudioTypeModel> audioTypeModels) {
         int size = audioTypeModels.size();
+        mViewPager.setOffscreenPageLimit(size);
         // 添加tab
         for (int i = 0; i < size; i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(audioTypeModels.get(i).getName()));

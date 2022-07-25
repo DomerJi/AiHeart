@@ -106,6 +106,7 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
 
     private void setAdapter(List<VideoTypeModel> cacheModel) {
         int size = cacheModel.size();
+        mViewPager.setOffscreenPageLimit(size);
         //添加tab
         for (int i = 0; i < size; i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(cacheModel.get(i).name));

@@ -100,6 +100,7 @@ public class ReadHomeActivity extends BaseActivity<BookPresenter> implements Boo
 
     private void setViewPager(List<BookTypeModel.BookTypeImpModel> bookTypeImpModels) {
         int size = bookTypeImpModels.size();
+        mViewPager.setOffscreenPageLimit(size);
         // 添加tab
         for (int i = 0; i < size; i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(bookTypeImpModels.get(i).value));

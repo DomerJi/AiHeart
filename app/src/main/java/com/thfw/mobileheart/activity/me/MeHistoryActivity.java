@@ -61,12 +61,13 @@ public class MeHistoryActivity extends BaseActivity {
 
     @Override
     public void initData() {
+
+        mViewPager.setOffscreenPageLimit(tabs.length);
         //添加tab
         for (int i = 0; i < tabs.length; i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(tabs[i]));
             tabFragmentList.add(new HistoryListFragment(types[i]));
         }
-
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             @NonNull
             @Override
