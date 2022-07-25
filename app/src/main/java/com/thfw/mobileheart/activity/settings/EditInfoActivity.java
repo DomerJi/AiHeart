@@ -54,6 +54,10 @@ public class EditInfoActivity extends BaseActivity {
         mEtInput = (EditText) findViewById(R.id.et_input);
         if (editType != null && editType.type == EditType.NAME_PINYIN.type) {
             EditTextUtil.setEditTextOnlyAbc(mEtInput);
+        } else if (editType != null && editType.type == EditType.NAME.type) {
+            EditTextUtil.setEditTextOnlyAbcAndChina(mEtInput);
+        } else if (editType != null && editType.type == EditType.NICKNAME.type) {
+            EditTextUtil.setEditTextOnlyAbc123AndChina(mEtInput);
         } else {
             EditTextUtil.setEditTextInhibitInputSpace(mEtInput);
         }

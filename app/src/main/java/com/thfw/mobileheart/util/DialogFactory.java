@@ -440,7 +440,7 @@ public class DialogFactory {
         Calendar startDate = Calendar.getInstance();
         startDate.set(selectedDate.get(Calendar.YEAR) - 120, 0, 1);
         Calendar endDate = Calendar.getInstance();
-        endDate.set(selectedDate.get(Calendar.YEAR), selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DAY_OF_MONTH));
+        endDate.set(selectedDate.get(Calendar.YEAR) - 5, selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DAY_OF_MONTH));
         TimePickerBuilder builder = new TimePickerBuilder(mContext, optionsSelectListener).setDecorView(decorView)
                 .setTitleText("选择年月日")//标题文字
                 .setTitleSize(17)//标题文字大小

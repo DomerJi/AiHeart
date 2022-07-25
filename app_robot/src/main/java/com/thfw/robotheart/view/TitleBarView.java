@@ -127,6 +127,8 @@ public class TitleBarView extends LinearLayout {
                 mVBatteryHead.setBackgroundColor(Color.WHITE);
                 mTvProgress.setTextColor(Color.BLACK);
                 mIvBatteryIng.setColorFilter(Color.WHITE);
+            } else {
+                mIvTitleBarWifi.setColorFilter(getResources().getColor(R.color.colorRobotFore));
             }
 
             setBackgroundColor(colorBg);

@@ -533,6 +533,17 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
             DialogFactory.createAddressBirthDay(mContext, findViewById(R.id.cl_root), new OnTimeSelectListener() {
                 @Override
                 public void onTimeSelect(Date date, View v) {
+                    if (mFirstInputMsg) {
+                        String birthday = mTvBirthday.getText().toString();
+                        if (!TextUtils.isEmpty(birthday)) {
+                            long birthdayTime = HourUtil.getYYMMDDbyLong(birthday);
+                            if (date.getTime() > birthdayTime) {
+                                ToastUtil.show("入职(伍)时间不能大于出生时间");
+                                return;
+                            }
+                        }
+                    }
+
                     mTvJoinJTime.setText(HourUtil.getYYMMDD(date));
                     onUpdateInfo("join_time", mTvJoinJTime.getText().toString());
                 }

@@ -30,6 +30,7 @@ public class RegularUtil {
 
     //汉字
     public static final String REGEX_TRUENAME_ABC = "^[a-zA-Z\\u4e00-\\u9fa5]*$";
+    public static final String REGEX_TRUENAME_ABC123 = "^[a-z0-9A-Z\\u4e00-\\u9fa5]*$";
 
     //银行卡
     public static final String BANKNUMBER = "^([0-9]{16}|[0-9]{19})$";
