@@ -627,7 +627,8 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
                         List<PickerData> pickerDatas = baseAdapter.getDataList();
                         List<PickerData> checkedDatas = new ArrayList<>();
                         for (PickerData data : pickerDatas) {
-                            if (data.getType() == -1 && !StringUtil.isSpace(data.getPickerViewText())) {
+                            if (data.getType() == -1 && !StringUtil.isSpace(data.getPickerViewText())
+                                    && data.getPickerViewText().trim().length() >= 2) {
                                 mHobby.add(data.getPickerViewText());
                                 checkedDatas.add(data);
                             }
@@ -693,7 +694,8 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
                         List<PickerData> pickerDatas = baseAdapter.getDataList();
                         List<PickerData> checkedDatas = new ArrayList<>();
                         for (PickerData data : pickerDatas) {
-                            if (data.getType() == -1 && !StringUtil.isSpace(data.getPickerViewText())) {
+                            if (data.getType() == -1 && !StringUtil.isSpace(data.getPickerViewText())
+                                    && data.getPickerViewText().trim().length() >= 2) {
                                 checkedDatas.add(data);
                             }
                             if (data.getType() != -1 && data.isCheck()) {
@@ -759,7 +761,8 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
                         List<PickerData> pickerDatas = baseAdapter.getDataList();
                         List<PickerData> checkedDatas = new ArrayList<>();
                         for (PickerData data : pickerDatas) {
-                            if (data.getType() == -1 && !StringUtil.isSpace(data.getPickerViewText())) {
+                            if (data.getType() == -1 && !StringUtil.isSpace(data.getPickerViewText())
+                                    && data.getPickerViewText().trim().length() >= 2) {
                                 mSupport.add(data.getPickerViewText());
                                 checkedDatas.add(data);
                             }

@@ -69,7 +69,7 @@ public class DialogLikeAdapter extends BaseAdapter<PickerData, DialogLikeAdapter
                     holder.mTvName.setVisibility(View.GONE);
                     holder.mEtName.setVisibility(View.VISIBLE);
                     holder.mEtName.setText(pickerData.getPickerViewText());
-                    EditTextUtil.setEditTextInhibitInputSpeChatAndSpace(holder.mEtName);
+                    EditTextUtil.setEditTextOnlyAbcAndChina(holder.mEtName);
                     holder.mEtName.addTextChangedListener(new MyTextWatcher() {
                         @Override
                         public void onTextChanged(CharSequence s, int start, int before, int count) {
