@@ -587,6 +587,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
      */
     private void initOrganization() {
         if (!initOrganization) {
+            if (!UserManager.getInstance().isLogin()) {
+                return;
+            }
             new OrganizationPresenter(new OrganizationPresenter.OrganizationUi<OrganizationSelectedModel>() {
 
                 @Override
@@ -647,6 +650,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
      */
     private void initUserInfo() {
         if (!initUserInfo) {
+            if (!UserManager.getInstance().isLogin()) {
+                return;
+            }
             MsgCountManager.getInstance().addOnCountChangeListener(this);
             new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<User.UserInfo>() {
                 @Override

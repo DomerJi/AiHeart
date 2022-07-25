@@ -608,7 +608,9 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         if (initOrganization) {
             return;
         }
-
+        if (!UserManager.getInstance().isLogin()) {
+            return;
+        }
         new OrganizationPresenter(new OrganizationPresenter.OrganizationUi<OrganizationSelectedModel>() {
 
             @Override
@@ -683,7 +685,9 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         if (initUserInfo) {
             return;
         }
-
+        if (!UserManager.getInstance().isLogin()) {
+            return;
+        }
         MsgCountManager.getInstance().addOnCountChangeListener(this);
 
         new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<User.UserInfo>() {
