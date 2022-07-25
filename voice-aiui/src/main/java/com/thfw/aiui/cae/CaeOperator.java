@@ -145,7 +145,8 @@ public class CaeOperator {
         mCaeOutPutFileUtil = new FileUtil(mCaeWriteAudioDir);
         File file = new File(mWorkDir + "/resources/xiaomixiaomi_800_317.bin");
         File file2 = new File(mWorkDir + "/resources/vtn.ini");
-        if (file != null && file.exists() && file2 != null && file2.exists()) {
+        if (file != null && file.exists() && file.length() > 100
+                && file2 != null && file2.exists() && file2.length() > 100) {
             Log.d(TAG, "--------------- resources exists ----------------");
             return;
         }

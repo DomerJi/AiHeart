@@ -85,15 +85,21 @@
 
                 <TextView
                     android:id="@+id/tv_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="12dp"
+                    android:autoSizeMaxTextSize="@dimen/textSize_large"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxWidth="140dp"
+                    android:maxLines="2"
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
                     android:textSize="@dimen/textSize_large"
                     app:layout_constraintBottom_toTopOf="@id/ll_status"
                     app:layout_constraintLeft_toRightOf="@id/riv_avatar"
                     app:layout_constraintTop_toTopOf="@id/riv_avatar"
+                    android:minWidth="140dp"
                     tools:hint="点击登录" />
 
                 <LinearLayout
@@ -147,6 +153,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
+                        android:autoSizeMaxTextSize="@dimen/textSize_product"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeTextType="uniform"
                         android:ellipsize="end"
                         android:maxLines="2"
                         android:textColor="@color/white"
