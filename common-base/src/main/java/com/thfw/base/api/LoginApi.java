@@ -95,7 +95,7 @@ public interface LoginApi {
      * @return
      */
     @FormUrlEncoded
-    @POST("changePassword")
+    @POST("user/changePassword")
     Observable<HttpResult<CommonModel>> onSetPasswordFirst(@FieldMap Map<String, Object> params);
 
     /**

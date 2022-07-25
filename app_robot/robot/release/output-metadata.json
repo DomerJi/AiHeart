@@ -10,9 +10,9 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 183,
-      "versionName": "2.0.6",
-      "outputFile": "QjmyPad_183_2.0.6_robotRelease.apk"
+      "versionCode": 184,
+      "versionName": "2.0.6.1",
+      "outputFile": "QjmyPad_184_2.0.6.1_robotRelease.apk"
     }
   ]
 }
