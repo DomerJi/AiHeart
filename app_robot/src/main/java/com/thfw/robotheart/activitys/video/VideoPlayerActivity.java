@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -52,11 +53,13 @@ import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NetworkUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.talk.TalkItemJumpHelper;
 import com.thfw.robotheart.adapter.VideoItemAdapter;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.ExoPlayerFactory;
 import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.base.AVResource;
@@ -186,6 +189,13 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         mIvBg = (ImageView) findViewById(R.id.iv_bg);
         mMPlayerView = (PlayerView) findViewById(R.id.mPlayerView);
         mPbBottom = (ProgressBar) findViewById(R.id.pb_bottom);
+        // 机器人上进度条高度小于5dp 会闪烁（莫名其妙）
+        if (RobotUtil.isInstallRobot()) {
+            ViewGroup.LayoutParams layoutParams = mPbBottom.getLayoutParams();
+            layoutParams.height = Util.dipToPx(5, mContext);
+            findViewById(R.id.v_pb_bottom_black).setVisibility(VISIBLE);
+            mPbBottom.setLayoutParams(layoutParams);
+        }
         mTvTitle = (TextView) findViewById(R.id.tv_video_top_title);
         mExoPlay = findViewById(R.id.exo_play);
         mVideoLayout = findViewById(R.id.video_play_constranint);
