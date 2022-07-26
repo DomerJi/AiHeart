@@ -1,5 +1,7 @@
 package com.thfw.robotheart.util;
 
+import android.text.TextUtils;
+
 import com.opensource.svgaplayer.SVGADrawable;
 import com.opensource.svgaplayer.SVGAImageView;
 import com.opensource.svgaplayer.SVGAParser;
@@ -19,6 +21,9 @@ public class SVGAHelper {
     private static final String TAG = SVGAHelper.class.getSimpleName();
 
     public static void playSVGA(SVGAImageView svgaImageView, SVGAModel svgaModel, DialogRobotFactory.SimpleSVGACallBack simpleSVGACallBack) {
+        if (svgaImageView == null || svgaModel == null || TextUtils.isEmpty(svgaModel.fileName)) {
+            return;
+        }
         if (svgaImageView.isAnimating()) {
             svgaImageView.setCallback(null);
             svgaImageView.stopAnimation(true);
