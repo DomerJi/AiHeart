@@ -12,6 +12,7 @@ import com.thfw.base.models.TestDetailModel;
 import com.thfw.base.models.TestResultModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TestPresenter;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
@@ -73,20 +74,20 @@ public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements
 
             @Override
             public void onItemClick(List<TestDetailModel.SubjectListBean> list, int position) {
-                mVpList.removeCallbacks(runnable);
+                if (runnable != null) {
+                    HandlerUtil.getMainHandler().removeCallbacks(runnable);
+                }
+                if (list.get(position).getSelectedIndex() == -1) {
+                    return;
+                }
                 // 结果
                 if (mVpList.getCurrentItem() == mTestIngAdapter.getItemCount() - 1) {
                     submit();
                 } else {
-                    if (runnable == null) {
-                        runnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                mVpList.setCurrentItem(mVpList.getCurrentItem() + 1, false);
-                            }
-                        };
-                    }
-                    mVpList.postDelayed(runnable, 300);
+                    runnable = () -> {
+                        mVpList.setCurrentItem(mVpList.getCurrentItem() + 1, false);
+                    };
+                    HandlerUtil.getMainHandler().postDelayed(runnable, 300);
                 }
             }
         });

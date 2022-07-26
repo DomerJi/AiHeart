@@ -23,6 +23,7 @@ import com.thfw.base.models.TestResultModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TestPresenter;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
@@ -102,12 +103,15 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
                     public void onPageFinished(WebView view, String url) {
                         super.onPageFinished(view, url);
                         if (testResultModel != null) {
-                            if (testResultModel.getRecommendInfo() != null) {
-                                setRecommend();
-                            } else {
-                                mPresenter.onGetResult(testResultModel.getResultId());
-                            }
                             findViewById(R.id.sv_view).scrollTo(0, 0);
+                            // 解决 推荐内容 先出现闪烁的问题
+                            HandlerUtil.getMainHandler().postDelayed(() -> {
+                                if (testResultModel.getRecommendInfo() != null) {
+                                    setRecommend();
+                                } else {
+                                    mPresenter.onGetResult(testResultModel.getResultId());
+                                }
+                            }, 500);
                         }
                     }
                 })
@@ -204,6 +208,7 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
     }
 
     private void setRecommend() {
+
         if (testResultModel == null || mRvCommend.getAdapter() != null) {
             return;
         }

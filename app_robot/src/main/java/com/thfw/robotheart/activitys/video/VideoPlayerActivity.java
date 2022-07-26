@@ -594,7 +594,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
                 handler.removeCallbacksAndMessages(null);
                 handler = null;
             }
-            handler = new Handler(Looper.myLooper()) {
+            handler = new Handler(Looper.getMainLooper()) {
 
                 @Override
                 public void handleMessage(@NonNull Message msg) {

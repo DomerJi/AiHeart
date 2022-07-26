@@ -1,6 +1,7 @@
 package com.thfw.base.models;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
 import com.thfw.base.base.IModel;
@@ -472,7 +473,7 @@ public class TestDetailModel implements IModel {
             return selectedIndex;
         }
 
-        public void resetSelectedIndex(){
+        public void resetSelectedIndex() {
             selectedIndex = -1;
         }
 
@@ -485,7 +486,14 @@ public class TestDetailModel implements IModel {
         }
 
         public SubjectListBean getSelected() {
-            return optionArray.get(selectedIndex);
+            if (selectedIndex >= 0 && selectedIndex < optionArray.size()) {
+                return optionArray.get(selectedIndex);
+            } else {
+                // todo 兜底
+                Log.e("jsp", "-------------- optionArray.get(0) ---------------");
+                return optionArray.get(0);
+            }
+
         }
 
         public int getId() {
@@ -541,6 +549,7 @@ public class TestDetailModel implements IModel {
 
         public String title;
         public String des;
+
         public HintBean(String title, String des) {
             this.title = title;
             this.des = des;

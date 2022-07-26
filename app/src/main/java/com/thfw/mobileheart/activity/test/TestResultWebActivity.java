@@ -25,6 +25,7 @@ import com.thfw.base.models.TestResultModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TestPresenter;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
@@ -124,13 +125,16 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
                     public void onPageFinished(WebView view, String url) {
                         super.onPageFinished(view, url);
                         if (testResultModel != null) {
-                            if (testResultModel.getRecommendInfo() != null) {
-                                setRecommend();
-                            } else {
-                                mPresenter.onGetResult(testResultModel.getResultId());
-                            }
+                            findViewById(R.id.sv_view).scrollTo(0, 0);
+                            // 解决 推荐内容 先出现闪烁的问题
+                            HandlerUtil.getMainHandler().postDelayed(() -> {
+                                if (testResultModel.getRecommendInfo() != null) {
+                                    setRecommend();
+                                } else {
+                                    mPresenter.onGetResult(testResultModel.getResultId());
+                                }
+                            }, 500);
                         }
-                        findViewById(R.id.sv_view).scrollTo(0, 0);
                     }
                 })
                 .createAgentWeb()// 创建AgentWeb。
