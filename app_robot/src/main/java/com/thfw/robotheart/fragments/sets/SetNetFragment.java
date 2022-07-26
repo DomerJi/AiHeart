@@ -133,7 +133,9 @@ public class SetNetFragment extends RobotBaseFragment {
                 }
                 HandlerUtil.getMainHandler().postDelayed(() -> {
                     boolean enabled = mWifiManager != null && mWifiManager.isWifiEnabled();
-                    mSwitchWifi.setChecked(enabled);
+                    if (mSwitchWifi != null) {
+                        mSwitchWifi.setChecked(enabled);
+                    }
                 }, 800);
 
             }

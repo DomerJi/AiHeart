@@ -214,6 +214,19 @@ public class DialogFactory {
     }
 
 
+    private static void dismissSVGA() {
+        if (mSvgaTDialog != null) {
+            try {
+                mSvgaTDialog.dismiss();
+            } catch (Exception e) {
+                LogUtil.i(TAG, "mSvgaTDialog.dismiss() e = " + e.getMessage());
+            } finally {
+                mSvgaTDialog = null;
+            }
+        }
+    }
+
+
     /**
      * 简单提示
      *
@@ -297,7 +310,7 @@ public class DialogFactory {
         String hint = AnimFileName.getHint(svgaAssets);
         // 语音播放
         TtsHelper.getInstance().start(new TtsModel(hint), null);
-
+        dismissSVGA();
         mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(R.layout.dialog_svga_layout)
                 .setDialogAnimationRes(com.thfw.ui.R.style.animate_dialog_fade)
@@ -311,10 +324,7 @@ public class DialogFactory {
                             mTvTime = null;
                             mMinuteRunnable = null;
                         }
-                        if (mSvgaTDialog != null) {
-                            mSvgaTDialog.dismiss();
-                            mSvgaTDialog = null;
-                        }
+                        dismissSVGA();
                     }
                 })
                 .setDimAmount(0.6f)
@@ -395,10 +405,7 @@ public class DialogFactory {
                                 mTvTime = null;
                                 mMinuteRunnable = null;
                             }
-                            if (mSvgaTDialog != null) {
-                                mSvgaTDialog.dismiss();
-                                mSvgaTDialog = null;
-                            }
+                            dismissSVGA();
                         }
                     });
                 })

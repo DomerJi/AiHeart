@@ -82,8 +82,10 @@ public class SetLightFragment extends RobotBaseFragment {
                     ToastUtil.show("不支持自动亮度调节");
                 }
                 HandlerUtil.getMainHandler().postDelayed(() -> {
-                    mSwitchAllLight.setChecked(!mBrightnessHelper.isOnAutoBrightness());
-                    setPageState();
+                    if (mSwitchAllLight != null) {
+                        mSwitchAllLight.setChecked(!mBrightnessHelper.isOnAutoBrightness());
+                        setPageState();
+                    }
                 }, 800);
             }
         });

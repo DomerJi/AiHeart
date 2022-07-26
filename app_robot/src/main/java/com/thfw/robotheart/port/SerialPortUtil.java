@@ -194,7 +194,10 @@ public class SerialPortUtil {
         }
         data = data.replace(HEAD_STR, "");
         byte[] bytes = SerialDataUtils.HexToByteArr2(data);
-
+        if (bytes == null || bytes.length == 0) {
+            Log.d(TAG, "parseOrder - data -> 数据不合法 22");
+            return;
+        }
         String orderHex = SerialDataUtils.Byte2Hex(Byte.valueOf(bytes[0]));
         Log.d(TAG, "parseOrder - orderHex -> " + orderHex);
         int order = Integer.parseInt(orderHex, 16);

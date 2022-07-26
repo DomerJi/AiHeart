@@ -255,10 +255,7 @@ public class DialogRobotFactory {
      */
     public static void createFullSvgaDialog(FragmentActivity activity, String svgaAssets, final OnSVGACallBack onViewCallBack) {
         String hint = AnimFileName.getHint(svgaAssets);
-        if (mSvgaTDialog != null) {
-            mSvgaTDialog.dismiss();
-            mSvgaTDialog = null;
-        }
+        dismissSVGA();
         mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(com.thfw.robotheart.R.layout.dialog_full_svga_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
@@ -302,14 +299,23 @@ public class DialogRobotFactory {
                             svgaImageView.setCallback(null);
                             onViewCallBack.callBack(svgaImageView);
                             svgaImageView.clear();
-                            if (mSvgaTDialog != null) {
-                                mSvgaTDialog.dismiss();
-                                mSvgaTDialog = null;
-                            }
+                            dismissSVGA();
                         }
                     });
                 })
                 .setOnViewClickListener(onViewCallBack).create().show();
+    }
+
+    private static void dismissSVGA() {
+        if (mSvgaTDialog != null) {
+            try {
+                mSvgaTDialog.dismiss();
+            } catch (Exception e) {
+                LogUtil.i(TAG, "mSvgaTDialog.dismiss() e = " + e.getMessage());
+            } finally {
+                mSvgaTDialog = null;
+            }
+        }
     }
 
     /**
@@ -346,10 +352,7 @@ public class DialogRobotFactory {
         String hint = AnimFileName.getHint(svgaAssets);
         // 语音播放
         TtsHelper.getInstance().start(new TtsModel(hint), null);
-        if (mSvgaTDialog != null) {
-            mSvgaTDialog.dismiss();
-            mSvgaTDialog = null;
-        }
+        dismissSVGA();
         mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(com.thfw.robotheart.R.layout.dialog_svga_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
@@ -433,10 +436,7 @@ public class DialogRobotFactory {
                                 mTvTime = null;
                                 mMinuteRunnable = null;
                             }
-                            if (mSvgaTDialog != null) {
-                                mSvgaTDialog.dismiss();
-                                mSvgaTDialog = null;
-                            }
+                            dismissSVGA();
                         }
                     });
                 })
