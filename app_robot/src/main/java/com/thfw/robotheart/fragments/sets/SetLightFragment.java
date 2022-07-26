@@ -3,6 +3,7 @@ package com.thfw.robotheart.fragments.sets;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
@@ -67,19 +69,23 @@ public class SetLightFragment extends RobotBaseFragment {
         mBrightnessHelper = new BrightnessHelper(mContext);
 
         mSwitchAllLight.setChecked(!mBrightnessHelper.isOnAutoBrightness());
-        mSwitchAllLight.setOnClickListener(v -> {
-            boolean isChecked = mSwitchAllLight.isChecked();
-            if (Util.isSystemApp(mContext.getPackageName())) {
-                if (isChecked) {
-                    mBrightnessHelper.offAutoBrightness();
+        mSwitchAllLight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (Util.isSystemApp(mContext.getPackageName())) {
+                    if (isChecked) {
+                        mBrightnessHelper.offAutoBrightness();
+                    } else {
+                        mBrightnessHelper.onAutoBrightness();
+                    }
                 } else {
-                    mBrightnessHelper.onAutoBrightness();
+                    ToastUtil.show("不支持自动亮度调节");
                 }
-            } else {
-                ToastUtil.show("不支持自动亮度调节");
+                HandlerUtil.getMainHandler().postDelayed(() -> {
+                    mSwitchAllLight.setChecked(!mBrightnessHelper.isOnAutoBrightness());
+                    setPageState();
+                }, 800);
             }
-            mSwitchAllLight.setChecked(!mBrightnessHelper.isOnAutoBrightness());
-            setPageState();
         });
 
         setPageState();

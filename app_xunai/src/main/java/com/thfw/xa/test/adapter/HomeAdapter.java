@@ -44,6 +44,11 @@ public class HomeAdapter extends BaseAdapter<String, HomeAdapter.HomeHolder> {
         public HomeHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvTitle = itemView.findViewById(R.id.tv_title);
+            itemView.setOnClickListener(v -> {
+                if (mOnRvItemListener != null) {
+                    mOnRvItemListener.onItemClick(mDataList, getBindingAdapterPosition());
+                }
+            });
         }
     }
 }
