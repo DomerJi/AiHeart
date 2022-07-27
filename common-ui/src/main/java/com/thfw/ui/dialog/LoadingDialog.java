@@ -84,7 +84,13 @@ public class LoadingDialog {
 
     public static void hide() {
         if (tDialog != null) {
-            tDialog.dismiss();
+            try {
+                tDialog.dismissAllowingStateLoss();
+            } catch (Exception e) {
+            } finally {
+                tDialog = null;
+            }
+
         }
         if (handler != null) {
             handler.removeCallbacksAndMessages(null);

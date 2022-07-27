@@ -129,12 +129,17 @@ public class AnimFileName {
             mNameHintMap.put(TRANSITION_BOOK, "学点心理学，惊艳所有人，\n一起学习吧~");
             mNameHintMap.put(TRANSITION_IDEO, "提升思想境界和认知维度，\n从根上解决心理问题~");
             mNameHintMap.put(TRANSITION_TOOL, "小密准备了专业心理训练工具，\n一起见证心灵的成长吧~");
-            mNameHintMap.put(EMOJI_GUANJI, "[关机]即将关机");
-            mNameHintMap.put(EMOJI_SHIWANG, "[失望]请重新登录哦");
-            mNameHintMap.put(EMOJI_CHUMO, "[害羞]您好");
-            mNameHintMap.put(EMOJI_XUANYUN, "[眩晕]请尽快把我放到固定位置哦");
+//            mNameHintMap.put(EMOJI_GUANJI, "[关机]即将关机");
+            mNameHintMap.put(EMOJI_GUANJI, "即将关机");
+//            mNameHintMap.put(EMOJI_SHIWANG, "[失望]请重新登录哦");
+            mNameHintMap.put(EMOJI_SHIWANG, "请重新登录哦");
+//            mNameHintMap.put(EMOJI_CHUMO, "[害羞]您好");
+            mNameHintMap.put(EMOJI_CHUMO, "您好");
+//            mNameHintMap.put(EMOJI_XUANYUN, "[眩晕]请尽快把我放到固定位置哦");
+            mNameHintMap.put(EMOJI_XUANYUN, "请尽快把我放到固定位置哦");
             mNameHintMap.put(EMOJI_WELCOM, "欢迎");
-            mNameHintMap.put(EMOJI_KAIJI, "[开机]你好，我是小密，给你最贴心的心理服务");
+//            mNameHintMap.put(EMOJI_KAIJI, "[开机]你好，我是小密，给你最贴心的心理服务");
+            mNameHintMap.put(EMOJI_KAIJI, "你好，我是小密，给你最贴心的心理服务");
         }
     }
 

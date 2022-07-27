@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.util.DialogRobotFactory;
@@ -75,7 +76,10 @@ public class BootCompleteReceiver extends BroadcastReceiver {
                     LogUtil.i(TAG, "checkBootCompleteAnim svga complete");
                 }
             });
-            TtsHelper.getInstance().start(new TtsModel(WELCOME_TTS), null);
+            HandlerUtil.getMainHandler().postDelayed(() -> {
+                TtsHelper.getInstance().start(new TtsModel(WELCOME_TTS), null);
+            }, 1600);
+
         } else if (isBootComplete()) {
             DialogRobotFactory.createFullSvgaDialog(fragmentActivity, AnimFileName.EMOJI_KAIJI, new DialogRobotFactory.OnSVGACallBack() {
                 @Override
@@ -83,7 +87,9 @@ public class BootCompleteReceiver extends BroadcastReceiver {
                     LogUtil.i(TAG, "checkBootCompleteAnim svga complete");
                 }
             });
-            TtsHelper.getInstance().start(new TtsModel(WELCOME_TTS), null);
+            HandlerUtil.getMainHandler().postDelayed(() -> {
+                TtsHelper.getInstance().start(new TtsModel(WELCOME_TTS), null);
+            }, 1600);
         }
     }
 
