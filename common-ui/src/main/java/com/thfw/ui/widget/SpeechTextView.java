@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.scwang.wave.MultiWaveHeader;
 import com.thfw.ui.R;
 
 /**
@@ -22,7 +21,7 @@ import com.thfw.ui.R;
 public class SpeechTextView extends ConstraintLayout {
 
     private TextView mTvSpeechText;
-    private MultiWaveHeader mWaveHeader;
+    private MyMultiWaveHeader mWaveHeader;
     private int colorTheme;
 
     public SpeechTextView(Context context) {
@@ -42,7 +41,7 @@ public class SpeechTextView extends ConstraintLayout {
         colorTheme = Color.parseColor("#91dff3");
         View.inflate(context, R.layout.layout_speech_text_view, this);
         mTvSpeechText = (TextView) findViewById(R.id.tv_speech_text);
-        mWaveHeader = (MultiWaveHeader) findViewById(R.id.waveHeader);
+        mWaveHeader = (MyMultiWaveHeader) findViewById(R.id.waveHeader);
     }
 
     @Override
@@ -60,11 +59,11 @@ public class SpeechTextView extends ConstraintLayout {
     public void setSpeechTextHint(String hintText) {
         if (hintText != null && hintText.contains("倾听")) {
 //            stopAnim();
-            mWaveHeader.setVelocity(55);
+            mWaveHeader.setMaxVelocity(55);
             mWaveHeader.setStartColor(Color.CYAN);
         } else {
 //            startAnim();
-            mWaveHeader.setVelocity(25);
+            mWaveHeader.setMaxVelocity(20);
             mWaveHeader.setStartColor(Color.GREEN);
 
         }

@@ -35,8 +35,8 @@
 
     <ImageView
         android:id="@+id/iv_call"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginLeft="16dp"
         android:src="@mipmap/ic_hot_call_phone"
         app:layout_constraintBottom_toBottomOf="@id/tv_title"

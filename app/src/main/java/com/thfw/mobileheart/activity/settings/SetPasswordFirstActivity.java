@@ -1,14 +1,18 @@
 package com.thfw.mobileheart.activity.settings;
 
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -29,6 +33,8 @@ public class SetPasswordFirstActivity extends BaseActivity<LoginPresenter> imple
     private EditText mEtNewPassword;
     private EditText mEtNewPassword01;
     private TextView mTvHint;
+    private ImageView mIvSeePassword;
+    private ImageView mIvSeePassword2;
 
     @Override
     public int getContentView() {
@@ -50,6 +56,36 @@ public class SetPasswordFirstActivity extends BaseActivity<LoginPresenter> imple
         mTvHint = (TextView) findViewById(R.id.tv_hint);
         EditTextUtil.setEditTextInhibitInputSpace(mEtPasswordNew);
         EditTextUtil.setEditTextInhibitInputSpace(mEtPasswordNewConfirm);
+
+        mIvSeePassword = findViewById(R.id.iv_see_password);
+        mIvSeePassword2 = findViewById(R.id.iv_see_password2);
+        mIvSeePassword.setOnClickListener(v -> {
+
+            mIvSeePassword.setSelected(!mIvSeePassword.isSelected());
+            LogUtil.i("mIvSeePassword.isSelected() = " + mIvSeePassword.isSelected());
+            if (mIvSeePassword.isSelected()) {
+                // 如果选中，显示密码
+                mEtPasswordNew.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            } else {
+                // 否则隐藏密码
+                mEtPasswordNew.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            }
+            mEtPasswordNew.setSelection(mEtPasswordNew.getText().length());
+        });
+
+        mIvSeePassword2.setOnClickListener(v -> {
+
+            mIvSeePassword2.setSelected(!mIvSeePassword2.isSelected());
+            LogUtil.i("mIvSeePassword.isSelected() = " + mIvSeePassword2.isSelected());
+            if (mIvSeePassword2.isSelected()) {
+                // 如果选中，显示密码
+                mEtPasswordNewConfirm.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            } else {
+                // 否则隐藏密码
+                mEtPasswordNewConfirm.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            }
+            mEtPasswordNewConfirm.setSelection(mEtPasswordNewConfirm.getText().length());
+        });
     }
 
     @Override

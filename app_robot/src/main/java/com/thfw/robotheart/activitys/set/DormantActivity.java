@@ -31,6 +31,8 @@ import com.thfw.ui.utils.BrightnessHelper;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.voice.wakeup.WakeupHelper;
+import com.thfw.user.login.LoginStatus;
+import com.thfw.user.login.UserManager;
 
 import static android.os.BatteryManager.BATTERY_STATUS_CHARGING;
 import static android.os.BatteryManager.BATTERY_STATUS_DISCHARGING;
@@ -272,6 +274,7 @@ public class DormantActivity extends RobotBaseActivity
                 if (!RobotUtil.shutdownShell()) {
                     onStartDormant();
                 } else {
+                    UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
                     LogUtil.d(TAG, "shutDown -> isInstallRobot true 【关机成功】");
                 }
             }

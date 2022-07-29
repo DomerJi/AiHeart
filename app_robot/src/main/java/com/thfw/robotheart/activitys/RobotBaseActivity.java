@@ -88,11 +88,11 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
     protected void onResume() {
         super.onResume();
         // todo 关机动画
-        BootCompleteReceiver.setShutDownCallback(() -> {
-            if (isMeResumed()) {
-                RobotUtil.shutdownByDialog(this);
-            }
-        });
+//        BootCompleteReceiver.setShutDownCallback(() -> {
+//            if (isMeResumed()) {
+//                RobotUtil.shutdownByDialog(this);
+//            }
+//        });
         UrgeUtil.setListener(map -> {
             if (DialogRobotFactory.getUrgedDialog() != null) {
                 return;

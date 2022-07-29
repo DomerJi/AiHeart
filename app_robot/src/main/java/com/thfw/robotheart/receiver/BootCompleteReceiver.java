@@ -15,6 +15,8 @@ import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.Dormant;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.user.login.LoginStatus;
+import com.thfw.user.login.UserManager;
 
 import java.lang.ref.WeakReference;
 
@@ -106,6 +108,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 
         } else if (Intent.ACTION_SHUTDOWN.equals(intent.getAction())) {
             LogUtil.e(TAG, "关机广播 ++++++++++++++++++++++++++++++++++++++++++++");
+            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
             if (!Dormant.isCanShutdown()) {
                 if (shutDownCallback != null) {
                     shutDownCallback.shutDown();

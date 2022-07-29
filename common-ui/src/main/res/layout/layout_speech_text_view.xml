@@ -22,7 +22,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <com.scwang.wave.MultiWaveHeader
+    <com.thfw.ui.widget.MyMultiWaveHeader
         android:id="@+id/waveHeader"
         android:layout_width="0dp"
         android:layout_height="7dp"

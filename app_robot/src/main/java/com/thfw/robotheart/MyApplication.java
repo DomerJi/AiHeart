@@ -45,6 +45,7 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 /**
  * 入口
  * Created By jishuaipeng on 2021/4/27
+ * Physical size: 1280x800
  */
 public class MyApplication extends MultiDexApplication {
 

@@ -22,6 +22,8 @@ import com.thfw.robotheart.port.SerialManager;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.user.login.LoginStatus;
+import com.thfw.user.login.UserManager;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -143,6 +145,7 @@ public class RobotUtil {
      */
     public static boolean shutdownShell() {
         if (isInstallRobot()) {
+            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
             LogUtil.i(TAG, "shutdown() -> 关机");
             return CommandExecution.execCommand("reboot -p", false).result == 1;
         } else {
