@@ -23,6 +23,13 @@ public class TestResultModel implements IModel {
     @SerializedName("recommend_info")
     private List<RecommendInfoBean> recommendInfo;
 
+    @SerializedName("hide")
+    private int hide;
+
+    public boolean isHide() {
+        return hide == 1;
+    }
+
     public int getTestId() {
         return testId;
     }

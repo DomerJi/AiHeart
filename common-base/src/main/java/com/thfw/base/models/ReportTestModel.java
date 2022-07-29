@@ -38,6 +38,12 @@ public class ReportTestModel implements IModel {
     private int valid;
     @SerializedName("title")
     private String title;
+    @SerializedName("hide")
+    private int hide;
+
+    public boolean isHide() {
+        return hide == 1;
+    }
 
     public int getId() {
         return id;

@@ -82,12 +82,11 @@ dependencies {
     api 'com.scwang.smart:refresh-layout-kernel:' + smartRefresh      //核心必须依赖
     api 'com.scwang.smart:refresh-header-classics:' + smartRefresh    //经典刷新头
     api 'com.scwang.smart:refresh-footer-classics:' + smartRefresh    //经典加载
-    def  agentweb = "v4.1.9-androidx"
 
     // WebView 框架
-    api 'com.github.Justson.AgentWeb:agentweb-core:' + agentweb
-    api 'com.github.Justson.AgentWeb:agentweb-filechooser:' + agentweb
-    api 'com.github.Justson:Downloader:' + agentweb
+    api 'com.github.Justson.AgentWeb:agentweb-core:v5.0.0-alpha.1-androidx' // (必选)
+    api 'com.github.Justson.AgentWeb:agentweb-filechooser:v5.0.0-alpha.1-androidx' // (可选)
+    api 'com.github.Justson:Downloader:v5.0.0-androidx' // (可选)
 
     def roundedimageview = "2.3.0"
     // 圆角图片

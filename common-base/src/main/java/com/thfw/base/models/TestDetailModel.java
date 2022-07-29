@@ -63,6 +63,13 @@ public class TestDetailModel implements IModel {
         return mSubjectArray;
     }
 
+    @SerializedName("hide")
+    private int hide;
+
+    public boolean isHide() {
+        return hide == 1;
+    }
+
     public PsychtestInfoBean getPsychtestInfo() {
         return psychtestInfo;
     }

@@ -147,9 +147,15 @@ public class TestProgressIngActivity extends BaseActivity<TestPresenter> impleme
     @Override
     public void onSuccess(TestResultModel data) {
         LoadingDialog.hide();
-        data.setTestId(mModel.getPsychtestInfo().getId());
-        TestResultWebActivity.startActivity(mContext, data);
-        finish();
+
+        if (data.isHide()) {
+            DialogFactory.createSimple(TestProgressIngActivity.this, "感谢你认真的填答，祝你拥有美好的一天");
+        } else {
+            data.setTestId(mModel.getPsychtestInfo().getId());
+            TestResultWebActivity.startActivity(mContext, data);
+            finish();
+        }
+
     }
 
     @Override

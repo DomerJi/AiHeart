@@ -135,8 +135,13 @@ public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements
     @Override
     public void onSuccess(TestResultModel data) {
         LoadingDialog.hide();
-        TestResultWebActivity.startActivity(mContext, data);
-        finish();
+        if (data.isHide()) {
+            DialogRobotFactory.createSimple(TestIngActivity.this, "感谢你认真的填答，祝你拥有美好的一天");
+        } else {
+            data.setTestId(mModel.getPsychtestInfo().getId());
+            TestResultWebActivity.startActivity(mContext, data);
+            finish();
+        }
     }
 
     @Override

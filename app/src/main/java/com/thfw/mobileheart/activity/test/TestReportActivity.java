@@ -18,6 +18,7 @@ import com.thfw.base.presenter.TestPresenter;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.ReportTestAdapter;
+import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
@@ -80,9 +81,13 @@ public class TestReportActivity extends BaseActivity<TestPresenter> implements T
         reportTestAdapter.setOnRvItemListener(new OnRvItemListener<ReportTestModel>() {
             @Override
             public void onItemClick(List<ReportTestModel> list, int position) {
-                TestResultWebActivity.startActivity(mContext, new TestResultModel()
-                        .setResultId(list.get(position).getId())
-                        .setTestId(list.get(position).getRid()));
+                if (list.get(position).isHide()) {
+                    DialogFactory.createSimple(TestReportActivity.this, "本报告暂不支持查看");
+                } else {
+                    TestResultWebActivity.startActivity(mContext, new TestResultModel()
+                            .setResultId(list.get(position).getId())
+                            .setTestId(list.get(position).getRid()));
+                }
             }
         });
         mRvList.setAdapter(reportTestAdapter);

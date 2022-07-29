@@ -25,6 +25,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.TestHintAdapter;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.LoadingView;
@@ -121,7 +122,11 @@ public class TestDetailActivity extends RobotBaseActivity<TestPresenter> impleme
         mTvHint.setText("简介: " + mInfoBean.getIntr());
         mTvTestTitle.setText(mInfoBean.getTitle());
         mLlSeePort.setOnClickListener(v -> {
-            TestReportActivity.startActivity(mContext, mInfoBean.getId());
+            if (mModel != null && mModel.isHide()) {
+                DialogRobotFactory.createSimple(TestDetailActivity.this, "本报告暂不支持查看");
+            } else {
+                TestReportActivity.startActivity(mContext, mInfoBean.getId());
+            }
         });
 
         mBtBeginTest.setOnClickListener(v -> {

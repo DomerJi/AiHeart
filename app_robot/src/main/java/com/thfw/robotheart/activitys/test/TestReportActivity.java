@@ -18,6 +18,7 @@ import com.thfw.base.presenter.TestPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.ReportTestAdapter;
+import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.widget.LoadingView;
@@ -80,7 +81,11 @@ public class TestReportActivity extends RobotBaseActivity<TestPresenter> impleme
         reportTestAdapter.setOnRvItemListener(new OnRvItemListener<ReportTestModel>() {
             @Override
             public void onItemClick(List<ReportTestModel> list, int position) {
-                TestResultWebActivity.startActivity(mContext, new TestResultModel().setResultId(list.get(position).getId()));
+                if (list.get(position).isHide()) {
+                    DialogRobotFactory.createSimple(TestReportActivity.this, "本报告暂不支持查看");
+                } else {
+                    TestResultWebActivity.startActivity(mContext, new TestResultModel().setResultId(list.get(position).getId()));
+                }
             }
         });
         mRvList.setAdapter(reportTestAdapter);
