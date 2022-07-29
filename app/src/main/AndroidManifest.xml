@@ -230,9 +230,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.AudioSuspendActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.settings.SystemAppActivity"
             android:screenOrientation="portrait" />
 

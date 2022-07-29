@@ -2,7 +2,6 @@ package com.thfw.robotheart.activitys.test;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -91,7 +90,7 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
     }
 
     private void initAgentWeb(FrameLayout frameLayout) {
-        mAgentWeb = AgentWeb.with(this)//
+        AgentWeb.PreAgentWeb preAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent(frameLayout, -1, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))// 传入AgentWeb的父控件。
                 .useDefaultIndicator(-1, 3)// 设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) // 严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
@@ -115,63 +114,65 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
                         }
                     }
                 })
-                .createAgentWeb()// 创建AgentWeb。
-                .ready()// 设置 WebSettings。
-                .go(url); // WebView载入该url地址的页面并显示。
+                .createAgentWeb();// 创建AgentWeb。
 
-        AgentWebConfig.debug();
+        mAgentWeb = preAgentWeb.get();
+        // 不使用缓存
+        mAgentWeb.getWebCreator().getWebView().getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        // WebView载入该url地址的页面并显示。
+        preAgentWeb.ready().go(url);
 
-        // AgentWeb 4.0 开始，删除该类以及删除相关的API
-        //  DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownloadMsgConfig();
-        //  mDownloadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
-
-        // AgentWeb 没有把WebView的功能全面覆盖 ，所以某些设置 AgentWeb 没有提供 ， 请从WebView方面入手设置。
-        mAgentWeb.getWebCreator().getWebView().setOverScrollMode(WebView.OVER_SCROLL_NEVER);
-        // mAgentWeb.getWebCreator().getWebView()  获取WebView .
-
-        // mAgentWeb.getWebCreator().getWebView().setOnLongClickListener();
-
-
-        mAgentWeb.getWebCreator().getWebView().getSettings().setJavaScriptEnabled(true);
-        mAgentWeb.getWebCreator().getWebView().setLayerType(View.LAYER_TYPE_NONE, null);
-        // 优先使用网络
-        mAgentWeb.getWebCreator().getWebView().getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        // 将图片调整到适合webview的大小
-        mAgentWeb.getWebCreator().getWebView().getSettings().setUseWideViewPort(true);
-        // 支持内容重新布局
-        mAgentWeb.getWebCreator().getWebView().getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        // 支持自动加载图片
-        mAgentWeb.getWebCreator().getWebView().getSettings().setLoadsImagesAutomatically(true);
-        // 当webview调用requestFocus时为webview设置节点
-        mAgentWeb.getWebCreator().getWebView().getSettings().setNeedInitialFocus(true);
-        // 自适应屏幕
-        mAgentWeb.getWebCreator().getWebView().getSettings().setUseWideViewPort(true);
-        mAgentWeb.getWebCreator().getWebView().getSettings().setLoadWithOverviewMode(true);
-        // 开启DOM storage API功能（HTML5 提供的一种标准的接口，主要将键值对存储在本地，在页面加载完毕后可以通过 javascript 来操作这些数据。）
-        mAgentWeb.getWebCreator().getWebView().getSettings().setDomStorageEnabled(true);
-        // 支持缩放
-        mAgentWeb.getWebCreator().getWebView().getSettings().setBuiltInZoomControls(true);
-        mAgentWeb.getWebCreator().getWebView().getSettings().setSupportZoom(true);
-
-        // 允许webview对文件的操作
-        mAgentWeb.getWebCreator().getWebView().getSettings().setAllowFileAccess(true);
-        mAgentWeb.getWebCreator().getWebView().getSettings().setAllowFileAccessFromFileURLs(true);
-        mAgentWeb.getWebCreator().getWebView().getSettings().setAllowUniversalAccessFromFileURLs(true);
-        mAgentWeb.getWebCreator().getWebView().setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (keyCode == KeyEvent.KEYCODE_BACK && mAgentWeb.getWebCreator().getWebView().canGoBack()) { // 表示按返回键时的操作
-                        mAgentWeb.getWebCreator().getWebView().goBack(); // 后退
-                        // webview.goForward();// 前进
-                        return true; // 已处理
-                    } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        finish();
-                    }
-                }
-                return false;
-            }
-        });
+//        AgentWebConfig.debug();
+//        // AgentWeb 4.0 开始，删除该类以及删除相关的API
+//        //  DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownloadMsgConfig();
+//        //  mDownloadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
+//
+//        // AgentWeb 没有把WebView的功能全面覆盖 ，所以某些设置 AgentWeb 没有提供 ， 请从WebView方面入手设置。
+//        mAgentWeb.getWebCreator().getWebView().setOverScrollMode(WebView.OVER_SCROLL_NEVER);
+//        // mAgentWeb.getWebCreator().getWebView()  获取WebView .
+//
+//        // mAgentWeb.getWebCreator().getWebView().setOnLongClickListener();
+//
+//
+//        mAgentWeb.getWebCreator().getWebView().getSettings().setJavaScriptEnabled(true);
+//        mAgentWeb.getWebCreator().getWebView().setLayerType(View.LAYER_TYPE_NONE, null);
+//        // 优先使用网络
+//        mAgentWeb.getWebCreator().getWebView().getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+//        // 将图片调整到适合webview的大小
+//        mAgentWeb.getWebCreator().getWebView().getSettings().setUseWideViewPort(true);
+//        // 支持内容重新布局
+//        mAgentWeb.getWebCreator().getWebView().getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+//        // 支持自动加载图片
+//        mAgentWeb.getWebCreator().getWebView().getSettings().setLoadsImagesAutomatically(true);
+//        // 当webview调用requestFocus时为webview设置节点
+//        mAgentWeb.getWebCreator().getWebView().getSettings().setNeedInitialFocus(true);
+//        // 自适应屏幕
+//        mAgentWeb.getWebCreator().getWebView().getSettings().setUseWideViewPort(true);
+//        mAgentWeb.getWebCreator().getWebView().getSettings().setLoadWithOverviewMode(true);
+//        // 开启DOM storage API功能（HTML5 提供的一种标准的接口，主要将键值对存储在本地，在页面加载完毕后可以通过 javascript 来操作这些数据。）
+//        mAgentWeb.getWebCreator().getWebView().getSettings().setDomStorageEnabled(true);
+//        // 支持缩放
+//        mAgentWeb.getWebCreator().getWebView().getSettings().setBuiltInZoomControls(true);
+//        mAgentWeb.getWebCreator().getWebView().getSettings().setSupportZoom(true);
+//        // 允许webview对文件的操作
+//        mAgentWeb.getWebCreator().getWebView().getSettings().setAllowFileAccess(true);
+//        mAgentWeb.getWebCreator().getWebView().getSettings().setAllowFileAccessFromFileURLs(true);
+//        mAgentWeb.getWebCreator().getWebView().getSettings().setAllowUniversalAccessFromFileURLs(true);
+//        mAgentWeb.getWebCreator().getWebView().setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+//                    if (keyCode == KeyEvent.KEYCODE_BACK && mAgentWeb.getWebCreator().getWebView().canGoBack()) { // 表示按返回键时的操作
+//                        mAgentWeb.getWebCreator().getWebView().goBack(); // 后退
+//                        // webview.goForward();// 前进
+//                        return true; // 已处理
+//                    } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+//                        finish();
+//                    }
+//                }
+//                return false;
+//            }
+//        });
 
 
     }
@@ -190,8 +191,9 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        AgentWebConfig.clearDiskCache(this);
         mAgentWeb.getWebLifeCycle().onDestroy();
+        super.onDestroy();
     }
 
     @Override

@@ -85,9 +85,12 @@ dependencies {
     api 'com.makeramen:roundedimageview:' + rootProject.ext.roundedimageview
 
     // WebView 框架
-    api 'com.github.Justson.AgentWeb:agentweb-core:' + rootProject.ext.agentweb
-    api 'com.github.Justson.AgentWeb:agentweb-filechooser:' + rootProject.ext.agentweb
-    api 'com.github.Justson:Downloader:' + rootProject.ext.agentweb
+//    api 'com.github.Justson.AgentWeb:agentweb-core:' + rootProject.ext.agentweb
+//    api 'com.github.Justson.AgentWeb:agentweb-filechooser:' + rootProject.ext.agentweb
+//    api 'com.github.Justson:Downloader:' + rootProject.ext.agentweb
+    api 'com.github.Justson.AgentWeb:agentweb-core:v5.0.0-alpha.1-androidx' // (必选)
+    api 'com.github.Justson.AgentWeb:agentweb-filechooser:v5.0.0-alpha.1-androidx' // (可选)
+    api 'com.github.Justson:Downloader:v5.0.0-androidx' // (可选)
 
     // 省市区选择弹框
     api 'com.contrarywind:Android-PickerView:' + rootProject.ext.android_pickerview
