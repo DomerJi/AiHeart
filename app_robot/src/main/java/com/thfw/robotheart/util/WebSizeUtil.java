@@ -5,6 +5,7 @@ import android.util.DisplayMetrics;
 import android.webkit.WebSettings;
 
 import com.thfw.base.utils.LogUtil;
+import com.thfw.robotheart.robot.RobotUtil;
 
 /**
  * Author:pengs
@@ -17,6 +18,9 @@ public class WebSizeUtil {
         int screenDensity = context.getResources().getDisplayMetrics().densityDpi;
         float lv = screenDensity * 1.0f / DisplayMetrics.DENSITY_XHIGH;
         int sizeZoom = (int) (lv * 100f);
+        if (RobotUtil.isInstallRobot()) {
+            sizeZoom = (int) (sizeZoom * 1.42);
+        }
         LogUtil.d("WebSizeUtil", "sizeZoom = " + sizeZoom);
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         webSettings.setTextZoom(sizeZoom);

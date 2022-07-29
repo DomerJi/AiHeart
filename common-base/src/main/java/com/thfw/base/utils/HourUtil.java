@@ -10,6 +10,7 @@ import java.util.Date;
  */
 public class HourUtil {
     public static final long LEN_SECOND = 1000;
+    public static final long LEN_SECOND10 = 10000;
     public static final long LEN_MINUTE = 60000;
     public static final long LEN_5_MINUTE = 5 * 60000;
     public static final long LEN_10_MINUTE = 10 * 60000;

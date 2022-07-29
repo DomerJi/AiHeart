@@ -158,7 +158,7 @@ public final class YmHandler {
                         YmHandler.statciOnYmLoginCallBack.onFail(throwable.getCode(), throwable.getMessage());
                     }
                 }
-            }).loginByOpenId(phone, organId, userName, openId);
+            }).loginByOpenId(phone, appKey, userName, openId);
         }
     }
 

@@ -44,6 +44,7 @@ public class Dormant {
     }
 
     public static void reset() {
+        lastAddTime = 0;
         if (MINUTE_FREE == 0 && SLEEP_TIME == 0) {
             return;
         }

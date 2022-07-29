@@ -182,6 +182,9 @@ public class AnimFileName {
             case TALK_PINGJING: {
                 return new RobotOutPutInfo("我很冷静~", ActionParams.getNormalNod());
             }
+            case TALK_SHENGQI: {
+                return new RobotOutPutInfo("别生气哦~", ActionParams.getNormalShake());
+            }
             case TALK_ZENGHENG: {
                 return new RobotOutPutInfo("这很难受吧", ActionParams.getNormalShake());
             }

@@ -372,7 +372,7 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
                     R.id.tv_star_04, R.id.tv_star_05, R.id.tv_star_06, R.id.tv_star_07,
                     R.id.tv_star_08, R.id.tv_star_09, R.id.tv_star_10, R.id.tv_star_11,
                     R.id.tv_star_12, R.id.tv_star_13, R.id.tv_star_14, R.id.tv_star_15,
-                    R.id.tv_star_16};
+                    R.id.tv_star_16, R.id.tv_star_01_pinyin};
             for (int id : ids) {
                 findViewById(id).setVisibility(View.VISIBLE);
             }

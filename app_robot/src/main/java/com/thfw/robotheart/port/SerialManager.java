@@ -667,20 +667,22 @@ public class SerialManager {
         if (horizontalFlag != horizontal) {
             horizontalFlag = horizontal;
             horizontalFlagContinueTime = System.currentTimeMillis();
-            if (horizontalFlag == 1 && System.currentTimeMillis() - lastSensorTime > HourUtil.LEN_MINUTE) {
-                if (RobotUtil.isInstallRobot()) {
-                    lastSensorTime = System.currentTimeMillis();
-                    HandlerUtil.getMainHandler().postDelayed(() -> {
-                        if (isNoAction()) {
-                            lastSensorTime = System.currentTimeMillis();
-                            onSensor(horizontal, true);
-                        } else {
-                            lastSensorTime = lastSensorTime - HourUtil.LEN_MINUTE;
-                        }
-                    }, 1200);
-                }
+        }
+
+        if (horizontalFlag == 1 && System.currentTimeMillis() - lastSensorTime > HourUtil.LEN_SECOND10) {
+            if (RobotUtil.isInstallRobot()) {
+                lastSensorTime = System.currentTimeMillis();
+                HandlerUtil.getMainHandler().postDelayed(() -> {
+                    if (isNoAction()) {
+                        lastSensorTime = System.currentTimeMillis();
+                        onSensor(horizontal, true);
+                    } else {
+                        lastSensorTime = lastSensorTime - HourUtil.LEN_MINUTE;
+                    }
+                }, 1200);
             }
         }
+
         if (LogUtil.isLogEnabled()) {
             onSensor(horizontal, false);
         }

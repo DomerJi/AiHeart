@@ -22,10 +22,12 @@ import com.thfw.base.models.HeadModel;
 import com.thfw.base.net.ApiHost;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.MultipartBodyFactory;
+import com.thfw.base.net.NetParams;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.FileUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.utils.GlideUtil;
@@ -38,6 +40,7 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class TongueActivity extends AppCompatActivity {
@@ -59,6 +62,29 @@ public class TongueActivity extends AppCompatActivity {
         mContext = this;
         setContentView(R.layout.activity_tongue);
         initView();
+        Type type = new TypeToken<HashMap<String, String>>() {
+        }.getType();
+        HashMap<String, String> hashMap = SharePreferenceUtil.getObject("Tongue", type);
+        if (hashMap != null) {
+            mParams.putAll(hashMap);
+            addInfo("mParams : " + GsonUtil.toJson(mParams));
+        }
+
+        String frontImg = mParams.get(KEY_FRONT);
+        String backImg = mParams.get(KEY_BACK);
+        if (!TextUtils.isEmpty(frontImg)) {
+            GlideUtil.load(mContext, frontImg, mIvTongueFront);
+        }
+        if (!TextUtils.isEmpty(backImg)) {
+            GlideUtil.load(mContext, backImg, mIvTongueBack);
+        }
+        mIvTongueBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAlbum(KEY_BACK);
+            }
+        });
+
     }
 
     private void initView() {
@@ -79,6 +105,35 @@ public class TongueActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showAlbum(KEY_FRONT);
+            }
+        });
+
+        mBtRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String frontImg = mParams.get(KEY_FRONT);
+                String backImg = mParams.get(KEY_BACK);
+                if (TextUtils.isEmpty(frontImg) || TextUtils.isEmpty(backImg)) {
+                    ToastUtil.show("参数为空");
+                    return;
+                }
+                NetParams params = NetParams.crete().add("tongueFrontImgPath", frontImg)
+                        .add("tongueBottomImgPath", backImg)
+                        .add("notifyUrl", "https://tianhe.soulbuddy.cn/test");
+                RequestBody requestBody = XunAiOkHttp.getBody(params);
+                SharePreferenceUtil.setString("Tongue", GsonUtil.toJson(mParams));
+                XunAiOkHttp.request2(XunAiOkHttp.XUNAI_URL + XunAiOkHttp.XUNAI_TONGUE,
+                        requestBody, new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+                                addInfo("onFailure");
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+                                addInfo(response.body().string());
+                            }
+                        });
             }
         });
     }
@@ -188,13 +243,19 @@ public class TongueActivity extends AppCompatActivity {
 
 
     private void addInfo(String string) {
-        mTvInfo.setText(mTvInfo.getText().toString() + string + "\n");
-        mTvInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                copy(mContext, mTvInfo.getText().toString());
-            }
-        });
+        if (ToastUtil.isMainThread()) {
+            mTvInfo.setText(mTvInfo.getText().toString() + string + "\n");
+            mTvInfo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    copy(mContext, mTvInfo.getText().toString());
+                }
+            });
+        } else {
+            runOnUiThread(() -> {
+                addInfo(string);
+            });
+        }
     }
 
     /**
