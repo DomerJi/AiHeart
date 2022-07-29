@@ -193,8 +193,12 @@ public class SearchFragment extends RobotBaseFragment {
         for (int i = 0; i < count; i++) {
             TabLayout.TabView tabView = mTabLayout.getTabAt(i).view;
             LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) tabView.getLayoutParams();
-            p.leftMargin = 50;
-            p.rightMargin = 50;
+            if (i != 0) {
+                p.leftMargin = 25;
+            }
+            if (i != count - 1) {
+                p.rightMargin = 25;
+            }
             tabView.setLayoutParams(p);
         }
 
