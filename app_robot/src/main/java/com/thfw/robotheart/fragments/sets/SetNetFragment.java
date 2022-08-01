@@ -111,38 +111,38 @@ public class SetNetFragment extends RobotBaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    mSwitchWifi.setClickable(false);
-                    mSwitchWifi.setFocusable(false);
+                    if (mWifiManager != null && mWifiManager.isWifiEnabled()) {
+                        onScanWifi();
+                        return;
+                    }
                     WifiHelper.get().enableWifi();
+                    if (mWifiManager != null && mWifiManager.isWifiEnabled()) {
+                        onScanWifi();
+                        return;
+                    }
                     WifiHelper.get().enableWifi(new WifiStateListener() {
                         @Override
                         public void isSuccess(boolean isSuccess) {
                             if (!isResumed()) {
                                 return;
                             }
+                            isSuccess = mWifiManager != null && mWifiManager.isWifiEnabled();
                             mIvRescan.setVisibility(isSuccess ? View.VISIBLE : View.GONE);
                             if (isSuccess) {
-                                onScanWifi();
+                                if (mSwitchWifi.isChecked()) {
+                                    onScanWifi();
+                                } else {
+                                    wifiCloseView();
+                                }
                             } else {
                                 mSwitchWifi.setChecked(false);
-                                mPbLoading.setVisibility(View.GONE);
-                                mWifiList.setVisibility(View.GONE);
-                                WifiHelper.get().disableWifi();
+                                wifiCloseView();
                             }
-                            mSwitchWifi.setClickable(true);
-                            mSwitchWifi.setFocusable(true);
                         }
                     });
                 } else {
                     mIvRescan.clearAnimation();
-                    mPbLoading.setVisibility(View.GONE);
-                    mWifiList.setVisibility(View.GONE);
-                    mTvHint.setVisibility(View.VISIBLE);
-                    mTvHint.setText("Wifi已关闭");
-                    mIvRescan.setVisibility(View.GONE);
-                    WifiHelper.get().disableWifi();
-                    mSwitchWifi.setClickable(true);
-                    mSwitchWifi.setFocusable(true);
+                    wifiCloseView();
                 }
                 if (!RobotUtil.isInstallRobot()) {
                     checkWifiOffState();
@@ -164,6 +164,15 @@ public class SetNetFragment extends RobotBaseFragment {
         });
         registerWifi();
         delayScanWifi();
+    }
+
+    private void wifiCloseView() {
+        mPbLoading.setVisibility(View.GONE);
+        mWifiList.setVisibility(View.GONE);
+        mTvHint.setVisibility(View.VISIBLE);
+        mTvHint.setText("Wifi已关闭");
+        mIvRescan.setVisibility(View.GONE);
+        WifiHelper.get().disableWifi();
     }
 
     /**

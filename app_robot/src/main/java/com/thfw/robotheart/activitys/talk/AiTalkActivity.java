@@ -491,9 +491,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mRlKeyword.setOnClickListener(v -> {
             // 退出倾听模式
             if (mIvTalkModel.isSelected() || mStvText.isShow()) {
+                PolicyHelper.getInstance().end();
                 mIvTalkModel.setSelected(false);
                 mStvText.hide();
-                PolicyHelper.getInstance().end();
+                currentSelect = false;
                 onTalkModel(false);
             }
             mRlKeywordInput.setVisibility(View.VISIBLE);
