@@ -275,14 +275,13 @@
         android:minWidth="72dp"
         android:minHeight="52dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="1"
-        app:layout_constraintLeft_toRightOf="@id/cl_anim"
         app:layout_constraintRight_toRightOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_select"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="right" />
 
     </FrameLayout>
 

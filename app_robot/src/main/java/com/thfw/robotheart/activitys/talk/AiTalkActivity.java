@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -46,6 +47,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
@@ -238,6 +240,12 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
 
         mHitAnim = (HomeIpTextView) findViewById(R.id.hit_anim);
+
+
+        FrameLayout frameLayout = findViewById(R.id.fl_select);
+        ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) frameLayout.getLayoutParams();
+        lp.matchConstraintMaxWidth = Util.getScreenWidth(mContext) / 4 * 3;
+        frameLayout.setLayoutParams(lp);
     }
 
     /**
@@ -382,6 +390,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     }
 
     private void sendInputText(String inputText) {
+        mStvText.setSpeechText("");
         if (mHelper.getTalkModel() == null) {
             LogUtil.d(TAG, "mHelper.getTalkModel() == null 对话还未开始！！！");
             return;
@@ -483,7 +492,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             // 退出倾听模式
             if (mIvTalkModel.isSelected() || mStvText.isShow()) {
                 mIvTalkModel.setSelected(false);
-                mStvText.show();
+                mStvText.hide();
                 PolicyHelper.getInstance().end();
             }
             mRlKeywordInput.setVisibility(View.VISIBLE);
@@ -1031,6 +1040,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
      * @param talkModel
      */
     private void onTalkData(DialogTalkModel talkModel) {
+
         Log.d(TAG, talkModel != null ? talkModel.toString() : "talkModel is null");
         if (talkModel == null) {
             return;
