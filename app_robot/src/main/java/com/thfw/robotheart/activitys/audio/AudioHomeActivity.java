@@ -33,7 +33,7 @@ import java.util.List;
 public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> implements AudioPresenter.AudioUi<List<AudioTypeModel>> {
 
     private static final String KEY_TYPE_LIST = "key.audio.type.list";
-    private static String KEY_HAS_AUDIO = "key.audio.has";
+    private static String KEY_HAS_AUDIO;
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.recyclerview.widget.RecyclerView mRvList;
     private android.widget.LinearLayout mLlTop;
@@ -62,7 +62,7 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
         mLlTop = (LinearLayout) findViewById(R.id.ll_top);
         mFlContent = (FrameLayout) findViewById(R.id.fl_content);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        KEY_HAS_AUDIO = KEY_HAS_AUDIO + UserManager.getInstance().getUID();
+        KEY_HAS_AUDIO = "key.audio.has" + UserManager.getInstance().getUID();
         mTvLastAudio = (TextView) findViewById(R.id.tv_last_audio);
 
         mLlHistory = (LinearLayout) findViewById(R.id.ll_history);

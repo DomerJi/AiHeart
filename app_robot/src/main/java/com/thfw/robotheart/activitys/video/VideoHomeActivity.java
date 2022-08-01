@@ -34,7 +34,7 @@ import java.util.List;
 public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> implements VideoPresenter.VideoUi<List<VideoTypeModel>> {
 
     private static final String KEY_TYPE_LIST = "key.video.type.list";
-    private static String KEY_HAS_VIDEO = "key.video.has";
+    private static String KEY_HAS_VIDEO;
     private TitleRobotView mTitleRobotView;
     private RecyclerView mRvList;
     private LinearLayout mLlTop;
@@ -61,7 +61,7 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
         mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
         mRvList = (RecyclerView) findViewById(R.id.rvList);
         mLlTop = (LinearLayout) findViewById(R.id.ll_top);
-        KEY_HAS_VIDEO = KEY_HAS_VIDEO + UserManager.getInstance().getUID();
+        KEY_HAS_VIDEO = "key.video.has" + UserManager.getInstance().getUID();
 
         mFlContent = (FrameLayout) findViewById(R.id.fl_content);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));

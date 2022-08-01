@@ -113,6 +113,7 @@ public class SetNetFragment extends RobotBaseFragment {
                 if (isChecked) {
                     mSwitchWifi.setClickable(false);
                     mSwitchWifi.setFocusable(false);
+                    WifiHelper.get().enableWifi();
                     WifiHelper.get().enableWifi(new WifiStateListener() {
                         @Override
                         public void isSuccess(boolean isSuccess) {
@@ -140,6 +141,8 @@ public class SetNetFragment extends RobotBaseFragment {
                     mTvHint.setText("Wifi已关闭");
                     mIvRescan.setVisibility(View.GONE);
                     WifiHelper.get().disableWifi();
+                    mSwitchWifi.setClickable(true);
+                    mSwitchWifi.setFocusable(true);
                 }
                 if (!RobotUtil.isInstallRobot()) {
                     checkWifiOffState();
