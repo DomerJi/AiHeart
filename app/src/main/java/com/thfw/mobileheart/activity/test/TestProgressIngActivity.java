@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.activity.test;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.SparseIntArray;
 import android.view.View;
@@ -148,8 +149,15 @@ public class TestProgressIngActivity extends BaseActivity<TestPresenter> impleme
     public void onSuccess(TestResultModel data) {
         LoadingDialog.hide();
 
-        if (data.isHide()) {
-            DialogFactory.createSimple(TestProgressIngActivity.this, "感谢你认真的填答，祝你拥有美好的一天");
+        if (!data.isHide()) {
+            DialogFactory.createSimple(TestProgressIngActivity.this, "温馨提示",
+                    "感谢你认真的填答，祝你拥有美好的一天",
+                    new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            finish();
+                        }
+                    });
         } else {
             data.setTestId(mModel.getPsychtestInfo().getId());
             TestResultWebActivity.startActivity(mContext, data);

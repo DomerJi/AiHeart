@@ -186,6 +186,51 @@ public class DialogRobotFactory {
         }).setCancelable(false);
     }
 
+    /**
+     * 简单提示【dismiss回调】
+     *
+     * @param activity
+     */
+    public static void createSimple(FragmentActivity activity, String title, String msg,
+                                    DialogInterface.OnDismissListener dismissListener) {
+        new TDialog.Builder(activity.getSupportFragmentManager())
+                .setLayoutRes(R.layout.dialog_custom_layout)
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (dismissListener != null) {
+                            dismissListener.onDismiss(dialog);
+                        }
+                    }
+                })
+                .setDialogAnimationRes(R.style.animate_dialog_fade)
+                .addOnClickListener(R.id.tv_left, R.id.tv_right)
+                .setScreenWidthAspect(activity, 0.4f)
+                .setCancelableOutside(false)
+                // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
+                .setOnBindViewListener(viewHolder -> {
+                    TextView mTvTitle = viewHolder.getView(R.id.tv_title);
+                    TextView mTvHint = viewHolder.getView(R.id.tv_hint);
+                    TextView mTvLeft = viewHolder.getView(R.id.tv_left);
+                    TextView mTvRight = viewHolder.getView(R.id.tv_right);
+                    View mVLineVertical = viewHolder.getView(R.id.vline_vertical);
+                    mTvHint.setText(msg);
+                    mTvTitle.setText(title);
+                    mTvLeft.setVisibility(View.GONE);
+                    mTvRight.setBackgroundResource(com.thfw.robotheart.R.drawable.dialog_button_selector);
+                    mVLineVertical.setVisibility(View.GONE);
+                }).setOnViewClickListener(new OnViewClickListener() {
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+                if (dismissListener != null) {
+                    dismissListener.onDismiss(tDialog.getDialog());
+                }
+            }
+        }).create().show();
+    }
+
+
     public static TDialog createUrgedDialog(FragmentActivity activity, UrgedMsgModel model, OnUrgedBack onUrgedBack) {
         final View[] view = new View[1];
         if (urgedDialog != null) {
