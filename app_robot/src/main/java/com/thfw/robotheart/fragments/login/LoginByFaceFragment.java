@@ -738,7 +738,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                                     } else if (HttpResult.isServerTimeNoValid(result.getCode())) {
                                         DialogRobotFactory.createSimple(getActivity(), result.getMsg());
                                     } else {
-                                        ToastUtil.showLong(result.getMsg());
+                                        ToastUtil.showLong(result.getCode() == 0 ? "请重新登录哦" : result.getMsg());
                                     }
                                 }
                                 LogUtil.d(TAG, "人脸【登录】失败--------------------------------- failCount = " + failCount);

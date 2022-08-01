@@ -69,6 +69,7 @@ public class SerialManager {
     private Handler handler = new Handler();
     // 舵机查询延时
     private Runnable runnable;
+    private long currentTime;
 
     private SerialManager() {
         initPort();
@@ -170,6 +171,17 @@ public class SerialManager {
             instance.upElectricity();
             if (instance.manager == null) {
                 instance.initSensor();
+            } else if (System.currentTimeMillis() - instance.currentTime > HourUtil.LEN_SECOND5) {
+                if (instance.manager != null) {
+                    if (instance.accelerometerSensor != null) {
+                        instance.manager.unregisterListener(instance.listener, instance.accelerometerSensor);
+                    }
+                    if (instance.gyroscopeSensor != null) {
+                        instance.manager.unregisterListener(instance.listener, instance.gyroscopeSensor);
+                    }
+                    instance.manager = null;
+                    instance.initSensor();
+                }
             }
         }
         return instance;
@@ -662,22 +674,22 @@ public class SerialManager {
         }
         gravity = event.values;
         final int horizontal = isNoHorizontal(event.values[0], event.values[1], event.values[2]) ? 1 : 0;
-
-
+        currentTime = System.currentTimeMillis();
         if (horizontalFlag != horizontal) {
             horizontalFlag = horizontal;
-            horizontalFlagContinueTime = System.currentTimeMillis();
+            horizontalFlagContinueTime = currentTime;
         }
-
-        if (horizontalFlag == 1 && System.currentTimeMillis() - lastSensorTime > HourUtil.LEN_SECOND10) {
+        if (horizontalFlag == 0) {
+            lastSensorTime = 0;
+        } else if (System.currentTimeMillis() - lastSensorTime > HourUtil.LEN_MINUTE30) {
             if (RobotUtil.isInstallRobot()) {
-                lastSensorTime = System.currentTimeMillis();
+                lastSensorTime = currentTime;
                 HandlerUtil.getMainHandler().postDelayed(() -> {
                     if (isNoAction()) {
                         lastSensorTime = System.currentTimeMillis();
                         onSensor(horizontal, true);
                     } else {
-                        lastSensorTime = lastSensorTime - HourUtil.LEN_MINUTE;
+                        lastSensorTime = lastSensorTime - HourUtil.LEN_MINUTE30;
                     }
                 }, 1200);
             }

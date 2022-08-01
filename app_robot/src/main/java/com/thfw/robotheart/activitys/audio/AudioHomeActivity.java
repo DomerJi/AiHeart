@@ -24,6 +24,7 @@ import com.thfw.robotheart.fragments.media.AudioEtcListFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.widget.LoadingView;
+import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.lang.reflect.Type;
@@ -32,7 +33,7 @@ import java.util.List;
 public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> implements AudioPresenter.AudioUi<List<AudioTypeModel>> {
 
     private static final String KEY_TYPE_LIST = "key.audio.type.list";
-    private static final String KEY_HAS_AUDIO = "key.audio.has";
+    private static String KEY_HAS_AUDIO = "key.audio.has";
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.recyclerview.widget.RecyclerView mRvList;
     private android.widget.LinearLayout mLlTop;
@@ -61,13 +62,17 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
         mLlTop = (LinearLayout) findViewById(R.id.ll_top);
         mFlContent = (FrameLayout) findViewById(R.id.fl_content);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        if (!SharePreferenceUtil.getBoolean(KEY_HAS_AUDIO, false)) {
-            mLlTop.setVisibility(View.GONE);
-        }
+        KEY_HAS_AUDIO = KEY_HAS_AUDIO + UserManager.getInstance().getUID();
         mTvLastAudio = (TextView) findViewById(R.id.tv_last_audio);
 
         mLlHistory = (LinearLayout) findViewById(R.id.ll_history);
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
+        AudioLastEtcModel audioLastEtcModel = SharePreferenceUtil.getObject(KEY_HAS_AUDIO, AudioLastEtcModel.class);
+        if (audioLastEtcModel != null) {
+            mLlTop.setVisibility(View.VISIBLE);
+            notifyLastAudioData(audioLastEtcModel);
+        }
+
     }
 
     @Override
@@ -154,12 +159,15 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
 
     private void notifyLastAudioData(AudioLastEtcModel data) {
         if (data != null) {
-            SharePreferenceUtil.setBoolean(KEY_HAS_AUDIO, true);
+            SharePreferenceUtil.setString(KEY_HAS_AUDIO, GsonUtil.toJson(data));
             mLlTop.setVisibility(View.VISIBLE);
             mTvLastAudio.setText("上次播放：" + data.getTitle() + "     " + data.getAddTime());
             mTvLastAudio.setOnClickListener(v -> {
                 AudioPlayerActivity.startActivity(mContext, data.toAudioEtcModel());
             });
+        } else {
+            mLlTop.setVisibility(View.VISIBLE);
+            mTvLastAudio.setText("暂无");
         }
     }
 

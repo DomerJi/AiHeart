@@ -309,7 +309,7 @@ public class DialogRobotFactory {
     private static void dismissSVGA() {
         if (mSvgaTDialog != null) {
             try {
-                mSvgaTDialog.dismissAllowingStateLoss();
+                mSvgaTDialog.dismiss();
             } catch (Exception e) {
                 LogUtil.i(TAG, "mSvgaTDialog.dismiss() e = " + e.getMessage());
             } finally {

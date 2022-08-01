@@ -47,6 +47,7 @@ import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.adapter.WifiAdapter;
+import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.WifiHelper;
 
 import org.jetbrains.annotations.NotNull;
@@ -91,7 +92,7 @@ public class SetNetFragment extends RobotBaseFragment {
 
     @Override
     public void initView() {
-
+        mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         mRlWifi = (RelativeLayout) findViewById(R.id.rl_wifi);
         mSwitchWifi = (Switch) findViewById(R.id.switch_wifi);
         mWifiList = (RecyclerView) findViewById(R.id.wifi_list);
@@ -114,6 +115,9 @@ public class SetNetFragment extends RobotBaseFragment {
                     WifiHelper.get().enableWifi(new WifiStateListener() {
                         @Override
                         public void isSuccess(boolean isSuccess) {
+                            if (!isResumed()) {
+                                return;
+                            }
                             mIvRescan.setVisibility(isSuccess ? View.VISIBLE : View.GONE);
                             if (isSuccess) {
                                 onScanWifi();
@@ -129,18 +133,17 @@ public class SetNetFragment extends RobotBaseFragment {
                     mIvRescan.clearAnimation();
                     mPbLoading.setVisibility(View.GONE);
                     mWifiList.setVisibility(View.GONE);
+                    mTvHint.setVisibility(View.VISIBLE);
+                    mTvHint.setText("Wifi已关闭");
+                    mIvRescan.setVisibility(View.GONE);
                     WifiHelper.get().disableWifi();
                 }
-                HandlerUtil.getMainHandler().postDelayed(() -> {
-                    boolean enabled = mWifiManager != null && mWifiManager.isWifiEnabled();
-                    if (mSwitchWifi != null) {
-                        mSwitchWifi.setChecked(enabled);
-                    }
-                }, 800);
-
+                if (!RobotUtil.isInstallRobot()) {
+                    checkWifiOffState();
+                }
             }
         });
-        mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+
         boolean enabled = mWifiManager != null && mWifiManager.isWifiEnabled();
         setWifiAdapter();
         Log.i(TAG, "isWifiEnabled =  " + enabled);
@@ -155,6 +158,24 @@ public class SetNetFragment extends RobotBaseFragment {
         });
         registerWifi();
         delayScanWifi();
+    }
+
+    /**
+     * 检查网络状态
+     */
+    private void checkWifiOffState() {
+        HandlerUtil.getMainHandler().postDelayed(() -> {
+            if (!isResumed()) {
+                return;
+            }
+            boolean enabled = mWifiManager != null && mWifiManager.isWifiEnabled();
+            if (mSwitchWifi != null) {
+                mSwitchWifi.setChecked(enabled);
+            }
+            if (mIvRescan != null) {
+                mIvRescan.setVisibility(enabled ? View.VISIBLE : View.GONE);
+            }
+        }, 800);
     }
 
     private void registerWifi() {
@@ -338,11 +359,17 @@ public class SetNetFragment extends RobotBaseFragment {
 
 
     private void onScanWifi() {
+        boolean enabled = mWifiManager != null && mWifiManager.isWifiEnabled();
+        if (!enabled) {
+            LogUtil.d(TAG, "onScanWifi wifi enabled false");
+            return;
+        }
         mWifiList.setVisibility(View.VISIBLE);
         if (mWifiList.getAdapter() == null || mWifiList.getAdapter().getItemCount() == 0) {
             mPbLoading.setVisibility(View.VISIBLE);
             mTvHint.setVisibility(View.GONE);
         } else {
+            mTvHint.setVisibility(View.GONE);
             reScanAnimStart();
         }
         WifiHelper.get().scanWifi(this::getScanResults).start();

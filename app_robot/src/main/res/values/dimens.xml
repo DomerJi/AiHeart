@@ -82,6 +82,7 @@
     <dimen name="card_image_play_height">46dp</dimen>
     <dimen name="card_image_bottom_textSize">12sp</dimen>
     <dimen name="card_image_bottom_padding">12dp</dimen>
+    <dimen name="msg_dot_size">11dp</dimen>
 
 
 </resources>

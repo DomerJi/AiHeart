@@ -494,6 +494,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 mIvTalkModel.setSelected(false);
                 mStvText.hide();
                 PolicyHelper.getInstance().end();
+                onTalkModel(false);
             }
             mRlKeywordInput.setVisibility(View.VISIBLE);
             mRlKeyword.setVisibility(View.GONE);

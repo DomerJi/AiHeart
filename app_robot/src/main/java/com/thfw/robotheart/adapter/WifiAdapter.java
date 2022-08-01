@@ -46,6 +46,7 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
 
     public void notifySsId(String ssId) {
         if (!TextUtils.isEmpty(ssId)) {
+            notifyDataSetChanged();
             if (mDataList != null) {
                 int size = mDataList.size();
                 for (int position = 0; position < size; position++) {

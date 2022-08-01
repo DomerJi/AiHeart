@@ -25,6 +25,7 @@ import com.thfw.robotheart.fragments.media.VideoEtcListFragment;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.widget.LoadingView;
+import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.lang.reflect.Type;
@@ -33,7 +34,7 @@ import java.util.List;
 public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> implements VideoPresenter.VideoUi<List<VideoTypeModel>> {
 
     private static final String KEY_TYPE_LIST = "key.video.type.list";
-    private static final String KEY_HAS_VIDEO = "key.video.has";
+    private static String KEY_HAS_VIDEO = "key.video.has";
     private TitleRobotView mTitleRobotView;
     private RecyclerView mRvList;
     private LinearLayout mLlTop;
@@ -60,9 +61,8 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
         mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
         mRvList = (RecyclerView) findViewById(R.id.rvList);
         mLlTop = (LinearLayout) findViewById(R.id.ll_top);
-        if (!SharePreferenceUtil.getBoolean(KEY_HAS_VIDEO, false)) {
-            mLlTop.setVisibility(View.GONE);
-        }
+        KEY_HAS_VIDEO = KEY_HAS_VIDEO + UserManager.getInstance().getUID();
+
         mFlContent = (FrameLayout) findViewById(R.id.fl_content);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 
@@ -70,6 +70,11 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
 
         mLlHistory = (LinearLayout) findViewById(R.id.ll_history);
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
+
+        VideoLastEtcModel videoLastEtcModel = SharePreferenceUtil.getObject(KEY_HAS_VIDEO, VideoLastEtcModel.class);
+        if (videoLastEtcModel != null) {
+            notifyLastData(videoLastEtcModel);
+        }
     }
 
     @Override
@@ -176,12 +181,15 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
      */
     private void notifyLastData(VideoLastEtcModel data) {
         if (data != null) {
-            SharePreferenceUtil.setBoolean(KEY_HAS_VIDEO, true);
+            SharePreferenceUtil.setString(KEY_HAS_VIDEO, GsonUtil.toJson(data));
             mLlTop.setVisibility(View.VISIBLE);
             mTvLastAudio.setText("上次播放：" + data.getTitle() + "  播放至" + data.getPercentTime() + "%  " + data.getAddTime());
             mTvLastAudio.setOnClickListener(v -> {
                 VideoPlayerActivity.startActivity(mContext, data.getId(), false);
             });
+        } else {
+            mLlTop.setVisibility(View.VISIBLE);
+            mTvLastAudio.setText("暂无");
         }
     }
 }
