@@ -111,7 +111,8 @@ public class SetNetFragment extends RobotBaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    WifiHelper.get().enableWifi();
+                    mSwitchWifi.setClickable(false);
+                    mSwitchWifi.setFocusable(false);
                     WifiHelper.get().enableWifi(new WifiStateListener() {
                         @Override
                         public void isSuccess(boolean isSuccess) {
@@ -127,6 +128,8 @@ public class SetNetFragment extends RobotBaseFragment {
                                 mWifiList.setVisibility(View.GONE);
                                 WifiHelper.get().disableWifi();
                             }
+                            mSwitchWifi.setClickable(true);
+                            mSwitchWifi.setFocusable(true);
                         }
                     });
                 } else {
