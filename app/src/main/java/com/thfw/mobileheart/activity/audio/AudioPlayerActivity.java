@@ -672,7 +672,9 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
             if (play) {
                 mPbBar.hide();
             } else {
-                mPbBar.showLoadingNoText();
+                if (player != null && player.getPlayWhenReady()) {
+                    mPbBar.showLoadingNoText();
+                }
             }
         }
 
@@ -681,6 +683,21 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
         public void onPlaybackStateChanged(int state) {
             if (isTask && state == Player.STATE_ENDED) {
                 onFinishMusic(mMusicId);
+            }
+            if (state == Player.STATE_READY) {
+                uiPlayOrPause(player.getPlayWhenReady());
+            } else if (state == Player.STATE_ENDED) {
+                if (autoFinished) {
+                    finish();
+                    return;
+                } else {
+                    player.setPlayWhenReady(false);
+                    player.seekTo(player.getCurrentWindowIndex(), 0);
+                    player.setPlayWhenReady(false);
+                    uiPlayOrPause(false);
+                }
+            } else {
+                uiPlayOrPause(false);
             }
             if (state == Player.STATE_READY || state == Player.STATE_ENDED) {
                 uiPlayOrPause(true);
@@ -775,7 +792,7 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
                     if (httpError instanceof HttpDataSource.InvalidResponseCodeException) {
                         // Cast to InvalidResponseCodeException and retrieve the response code,
                         // message and headers.
-                        ToastUtil.show("视频资源错误");
+                        ToastUtil.show("音频资源错误");
                     } else {
                         // Try calling httpError.getCause() to retrieve the underlying cause,
                         // although note that it may be null.

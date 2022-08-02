@@ -168,7 +168,7 @@ public class AnimFileName {
         }
         switch (animFile) {
             case TALK_WANGYIN: {
-                return new RobotOutPutInfo("上瘾容易戒瘾难", ActionParams.getNormalNod());
+                return new RobotOutPutInfo("上瘾容易戒瘾难", ActionParams.getNormalShake());
             }
             case TALK_XINGFENG: {
                 return new RobotOutPutInfo("有什么好事分享一下呀", ActionParams.getNormalRotate());

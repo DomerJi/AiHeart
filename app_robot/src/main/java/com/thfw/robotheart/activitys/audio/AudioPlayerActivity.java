@@ -685,7 +685,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             if (play) {
                 mPbBar.hide();
             } else {
-                mPbBar.showLoadingNoText();
+                if (player != null && player.getPlayWhenReady()) {
+                    mPbBar.showLoadingNoText();
+                }
             }
             if (play) {
                 etcAnimState(true);
@@ -698,11 +700,18 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             if (isTask && state == Player.STATE_ENDED) {
                 onFinishMusic(mMusicId);
             }
-            if (state == Player.STATE_READY || state == Player.STATE_ENDED) {
-                uiPlayOrPause(true);
-                if (autoFinished && state == Player.STATE_ENDED) {
+            if (state == Player.STATE_READY) {
+                uiPlayOrPause(player.getPlayWhenReady());
+            } else if (state == Player.STATE_ENDED) {
+                if (autoFinished) {
                     finish();
                     return;
+                } else {
+                    player.setPlayWhenReady(false);
+                    player.seekTo(player.getCurrentWindowIndex(), 0);
+                    player.setPlayWhenReady(false);
+                    uiPlayOrPause(false);
+                    etcAnimState(false);
                 }
             } else {
                 uiPlayOrPause(false);
@@ -783,7 +792,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                     if (httpError instanceof HttpDataSource.InvalidResponseCodeException) {
                         // Cast to InvalidResponseCodeException and retrieve the response code,
                         // message and headers.
-                        ToastUtil.show("视频资源错误");
+                        ToastUtil.show("音频资源错误");
                     } else {
                         // Try calling httpError.getCause() to retrieve the underlying cause,
                         // although note that it may be null.
@@ -814,7 +823,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             // 上一首按键
         } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
             // 播放/暂停按键
-            if (player!= null) {
+            if (player != null) {
                 if (player.isPlaying()) {
                     player.pause();
                 } else {
