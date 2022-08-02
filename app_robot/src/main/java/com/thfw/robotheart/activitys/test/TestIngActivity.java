@@ -13,6 +13,7 @@ import com.thfw.base.models.TestDetailModel;
 import com.thfw.base.models.TestResultModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TestPresenter;
+import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -65,7 +66,11 @@ public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements
 
     @Override
     public void initData() {
-        mModel = testDetailModel;
+        if (testDetailModel == null) {
+            ToastUtil.show("参数错误");
+            return;
+        }
+        mModel = GsonUtil.fromJson(GsonUtil.toJson(testDetailModel), TestDetailModel.class);
         testDetailModel = null;
         beginTime = System.currentTimeMillis();
         mTestIngAdapter = new TestngAdapter(mModel.getSubjectArray());
