@@ -341,10 +341,10 @@ public class DialogRobotFactory {
                             if (svgaImageView.getCallback() == null) {
                                 return;
                             }
+                            dismissSVGA();
                             svgaImageView.setCallback(null);
                             onViewCallBack.callBack(svgaImageView);
                             svgaImageView.clear();
-                            dismissSVGA();
                         }
                     });
                 })
@@ -473,6 +473,7 @@ public class DialogRobotFactory {
                             if (svgaImageView.getCallback() == null) {
                                 return;
                             }
+                            dismissSVGA();
                             svgaImageView.setCallback(null);
                             onViewCallBack.callBack(svgaImageView);
                             svgaImageView.clear();
@@ -481,7 +482,6 @@ public class DialogRobotFactory {
                                 mTvTime = null;
                                 mMinuteRunnable = null;
                             }
-                            dismissSVGA();
                         }
                     });
                 })

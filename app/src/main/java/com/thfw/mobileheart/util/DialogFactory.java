@@ -441,6 +441,7 @@ public class DialogFactory {
                             if (svgaImageView.getCallback() == null) {
                                 return;
                             }
+                            dismissSVGA();
                             svgaImageView.setCallback(null);
                             onViewCallBack.callBack(svgaImageView);
                             svgaImageView.clear();
@@ -449,7 +450,6 @@ public class DialogFactory {
                                 mTvTime = null;
                                 mMinuteRunnable = null;
                             }
-                            dismissSVGA();
                         }
                     });
                 })
