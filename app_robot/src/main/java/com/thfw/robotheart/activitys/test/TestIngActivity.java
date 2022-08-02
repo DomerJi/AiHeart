@@ -136,7 +136,7 @@ public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements
     @Override
     public void onSuccess(TestResultModel data) {
         LoadingDialog.hide();
-        if (!data.isHide()) {
+        if (data.isHide()) {
             DialogRobotFactory.createSimple(TestIngActivity.this, "温馨提示",
                     "感谢你认真的填答，祝你拥有美好的一天",
                     new DialogInterface.OnDismissListener() {

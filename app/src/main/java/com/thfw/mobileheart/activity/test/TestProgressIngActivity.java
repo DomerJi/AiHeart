@@ -149,7 +149,7 @@ public class TestProgressIngActivity extends BaseActivity<TestPresenter> impleme
     public void onSuccess(TestResultModel data) {
         LoadingDialog.hide();
 
-        if (!data.isHide()) {
+        if (data.isHide()) {
             DialogFactory.createSimple(TestProgressIngActivity.this, "温馨提示",
                     "感谢你认真的填答，祝你拥有美好的一天",
                     new DialogInterface.OnDismissListener() {
