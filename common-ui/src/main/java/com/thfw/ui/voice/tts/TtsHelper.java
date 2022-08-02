@@ -159,10 +159,22 @@ public class TtsHelper implements ITtsFace {
             String cacheFile = getCacheFile(ttsModel.text);
             if (new File(cacheFile).exists()) {
                 // 播放本地缓存
-                playCacheFile(cacheFile);
+                if (!ToastUtil.isMainThread()) {
+                    HandlerUtil.getMainHandler().post(() -> {
+                        playCacheFile(cacheFile);
+                    });
+                } else {
+                    playCacheFile(cacheFile);
+                }
                 return true;
             } else if (WELCOME_TTS.equals(ttsModel.text)) {
-                playCacheFile(getAssetsFile(ttsModel.text));
+                if (!ToastUtil.isMainThread()) {
+                    HandlerUtil.getMainHandler().post(() -> {
+                        playCacheFile(getAssetsFile(ttsModel.text));
+                    });
+                } else {
+                    playCacheFile(getAssetsFile(ttsModel.text));
+                }
                 return true;
             }
             mTts.setParameter(SpeechConstant.AUDIO_FORMAT, "wav");
@@ -319,12 +331,6 @@ public class TtsHelper implements ITtsFace {
      * @param cacheFile
      */
     private void playCacheFile(String cacheFile) {
-        if (!ToastUtil.isMainThread()) {
-            HandlerUtil.getMainHandler().post(() -> {
-                playCacheFile(cacheFile);
-            });
-            return;
-        }
         onExoRelease();
         exoPlayer = new SimpleExoPlayer.Builder(ContextApp.get())
                 .setAudioAttributes(AudioAttributes.DEFAULT, true)

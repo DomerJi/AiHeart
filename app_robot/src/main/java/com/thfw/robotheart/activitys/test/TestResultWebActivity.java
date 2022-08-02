@@ -101,6 +101,9 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
                     @Override
                     public void onPageFinished(WebView view, String url) {
                         super.onPageFinished(view, url);
+                        if (EmptyUtil.isEmpty(TestResultWebActivity.this)) {
+                            return;
+                        }
                         if (testResultModel != null) {
                             findViewById(R.id.sv_view).scrollTo(0, 0);
                             // 解决 推荐内容 先出现闪烁的问题
