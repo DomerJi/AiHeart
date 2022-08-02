@@ -107,47 +107,21 @@ public class SetNetFragment extends RobotBaseFragment {
                 Log.d(tag + "jsp", message);
             }
         });
+
         mSwitchWifi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            Runnable runnable;
+
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    if (mWifiManager != null && mWifiManager.isWifiEnabled()) {
-                        onScanWifi();
-                        return;
-                    }
-                    WifiHelper.get().enableWifi();
-                    if (mWifiManager != null && mWifiManager.isWifiEnabled()) {
-                        onScanWifi();
-                        return;
-                    }
-                    WifiHelper.get().enableWifi(new WifiStateListener() {
-                        @Override
-                        public void isSuccess(boolean isSuccess) {
-                            if (!isResumed()) {
-                                return;
-                            }
-                            isSuccess = mWifiManager != null && mWifiManager.isWifiEnabled();
-                            mIvRescan.setVisibility(isSuccess ? View.VISIBLE : View.GONE);
-                            if (isSuccess) {
-                                if (mSwitchWifi.isChecked()) {
-                                    onScanWifi();
-                                } else {
-                                    wifiCloseView();
-                                }
-                            } else {
-                                mSwitchWifi.setChecked(false);
-                                wifiCloseView();
-                            }
-                        }
-                    });
-                } else {
-                    mIvRescan.clearAnimation();
-                    wifiCloseView();
+                if (runnable != null) {
+                    HandlerUtil.getMainHandler().removeCallbacks(runnable);
                 }
-                if (!RobotUtil.isInstallRobot()) {
-                    checkWifiOffState();
-                }
+                runnable = () -> {
+                    wifiOnOff(isChecked);
+                };
+                HandlerUtil.getMainHandler().postDelayed(runnable, 350);
             }
+
         });
 
         boolean enabled = mWifiManager != null && mWifiManager.isWifiEnabled();
@@ -164,6 +138,46 @@ public class SetNetFragment extends RobotBaseFragment {
         });
         registerWifi();
         delayScanWifi();
+    }
+
+    private void wifiOnOff(boolean isChecked) {
+        if (isChecked) {
+            if (mWifiManager != null && mWifiManager.isWifiEnabled()) {
+                onScanWifi();
+                return;
+            }
+            WifiHelper.get().enableWifi();
+            if (mWifiManager != null && mWifiManager.isWifiEnabled()) {
+                onScanWifi();
+                return;
+            }
+            WifiHelper.get().enableWifi(new WifiStateListener() {
+                @Override
+                public void isSuccess(boolean isSuccess) {
+                    if (!isResumed()) {
+                        return;
+                    }
+                    isSuccess = mWifiManager != null && mWifiManager.isWifiEnabled();
+                    mIvRescan.setVisibility(isSuccess ? View.VISIBLE : View.GONE);
+                    if (isSuccess) {
+                        if (mSwitchWifi.isChecked()) {
+                            onScanWifi();
+                        } else {
+                            wifiCloseView();
+                        }
+                    } else {
+                        mSwitchWifi.setChecked(false);
+                        wifiCloseView();
+                    }
+                }
+            });
+        } else {
+            mIvRescan.clearAnimation();
+            wifiCloseView();
+        }
+        if (!RobotUtil.isInstallRobot()) {
+            checkWifiOffState();
+        }
     }
 
     private void wifiCloseView() {
