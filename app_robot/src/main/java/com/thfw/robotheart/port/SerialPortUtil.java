@@ -244,13 +244,17 @@ public class SerialPortUtil {
         }
         int[] intContents = new int[mOrder.paramsLens.length];
         int from = 0;
-        for (int i = 0; i < mOrder.paramsLens.length; i++) {
-            byte[] byteNumbers = Arrays.copyOf(Arrays.copyOfRange(newBytes, from, from + mOrder.paramsLens[i]), 4);
-            intContents[i] = ByteConvert.Bytes2Int_LE(byteNumbers);
-            from += mOrder.paramsLens[i];
+        try {
+            for (int i = 0; i < mOrder.paramsLens.length; i++) {
+                byte[] byteNumbers = Arrays.copyOf(Arrays.copyOfRange(newBytes, from, from + mOrder.paramsLens[i]), 4);
+                intContents[i] = ByteConvert.Bytes2Int_LE(byteNumbers);
+                from += mOrder.paramsLens[i];
+            }
+            // 处理数据
+            onHandleOrder(order, intContents);
+        } catch (Exception e) {
+            LogUtil.e(TAG, e.getMessage() + " - " + data);
         }
-        // 处理数据
-        onHandleOrder(order, intContents);
     }
 
     public static void setParseDataListener(ParseDataListener parseDataListener) {
