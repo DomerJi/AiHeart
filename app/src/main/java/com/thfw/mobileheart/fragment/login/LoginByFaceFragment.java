@@ -28,6 +28,7 @@ import com.thfw.base.face.MyAnimationListener;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.ApiHost;
+import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.MultipartBodyFactory;
 import com.thfw.base.net.OkHttpUtil;
@@ -707,6 +708,11 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         // file
         if (!TextUtils.isEmpty(avatarUrl)) {
             factory.addImage("pic", avatarUrl);
+        }
+        factory.addString("device_type", CommonParameter.getDeviceType())
+                .addString("device_id", CommonParameter.getDeviceId());
+        if (!TextUtils.isEmpty(CommonParameter.getOrganizationId())) {
+            factory.addString("organization", CommonParameter.getOrganizationId());
         }
         LogUtil.d(TAG, "人脸【登录】开始---------------------------------");
         failByNet = false;
