@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.zbar_code.ZbarScanActivity;
+import com.example.zbar_code.ZxingScanActivity;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IModel;
 import com.thfw.base.face.OnRvItemListener;
@@ -236,8 +236,8 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
             return;
         }
         switch (requestCode) {
-            case ZbarScanActivity.REQUEST_CODE:
-                String codeData = data.getStringExtra(ZbarScanActivity.CODE_DATA);
+            case ZxingScanActivity.REQUEST_CODE:
+                String codeData = data.getStringExtra(ZxingScanActivity.CODE_DATA);
                 LogUtil.d(TAG, "codeData = " + codeData);
                 HashMap<String, String> params = parseCode(codeData);
                 LogUtil.d(TAG, "codeData params = " + GsonUtil.toJson(params));
@@ -300,7 +300,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
         mTvUserName.setText(UserManager.getInstance().getUser().getVisibleName());
         GlideUtil.load(mContext, UserManager.getInstance().getUser().getVisibleAvatar(), mRivAvatar);
         mBtScanJoin.setOnClickListener(v -> {
-            ZbarScanActivity.startActivityForResult((Activity) mContext);
+            ZxingScanActivity.startActivityForResult((Activity) mContext);
         });
 
         //==========================================//

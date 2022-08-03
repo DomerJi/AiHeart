@@ -42,13 +42,13 @@ public class ZxingScanActivity extends AppCompatActivity implements QRCodeView.D
     public static final int REQUEST_CODE = 87;
     public static final String CAMERA_FRONT_BACK = "front_back";
     public static final String CODE_DATA = "code_data";
-    private static final String TAG = ZbarScanActivity.class.getSimpleName();
+    private static final String TAG = ZxingScanActivity.class.getSimpleName();
     private static final int REQUEST_CODE_CHOOSE_QRCODE_FROM_GALLERY = 666;
     private ZXingView mZXingView;
     private ImageView mIvSelectAlbum;
 
     public static void startActivityForResult(Activity context) {
-        context.startActivityForResult(new Intent(context, ZxingScanActivity.class), 9);
+        context.startActivityForResult(new Intent(context, ZxingScanActivity.class), REQUEST_CODE);
     }
 
     public static void startActivityForResult(Activity context, boolean front) {

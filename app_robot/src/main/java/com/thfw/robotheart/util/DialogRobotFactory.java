@@ -341,8 +341,8 @@ public class DialogRobotFactory {
                             if (svgaImageView.getCallback() == null) {
                                 return;
                             }
-                            dismissSVGA();
                             svgaImageView.setCallback(null);
+                            dismissSVGA();
                             onViewCallBack.callBack(svgaImageView);
                             svgaImageView.clear();
                         }

@@ -69,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="登录代表同意"
-            android:textSize="@dimen/textSize_product" />
+            android:textSize="@dimen/textSize_product_dp" />
 
         <TextView
             android:id="@+id/tv_product_3g"
@@ -79,7 +79,7 @@
             android:paddingBottom="2dp"
             android:text="《中国移动认证服务条款》"
             android:textColor="@color/text_red"
-            android:textSize="@dimen/textSize_product"
+            android:textSize="@dimen/textSize_product_dp"
             android:visibility="gone" />
 
         <TextView
@@ -90,13 +90,13 @@
             android:paddingBottom="2dp"
             android:text="《用户服务协议》"
             android:textColor="@color/text_red"
-            android:textSize="@dimen/textSize_product" />
+            android:textSize="@dimen/textSize_product_dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="和"
-            android:textSize="@dimen/textSize_product" />
+            android:textSize="@dimen/textSize_product_dp" />
 
         <TextView
             android:id="@+id/tv_product_msg"
@@ -106,13 +106,13 @@
             android:paddingBottom="2dp"
             android:text="《隐私保护政策》"
             android:textColor="@color/text_red"
-            android:textSize="@dimen/textSize_product" />
+            android:textSize="@dimen/textSize_product_dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="，"
-            android:textSize="@dimen/textSize_product" />
+            android:textSize="@dimen/textSize_product_dp" />
 
     </LinearLayout>
 
@@ -132,14 +132,14 @@
             android:paddingBottom="2dp"
             android:text="《知情同意书》"
             android:textColor="@color/text_red"
-            android:textSize="@dimen/textSize_product"
+            android:textSize="@dimen/textSize_product_dp"
             android:visibility="gone" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="并授权使用您的账号信息（如昵称/头像/地址）以便您统一管理"
-            android:textSize="@dimen/textSize_product" />
+            android:textSize="@dimen/textSize_product_dp" />
 
     </LinearLayout>
 
