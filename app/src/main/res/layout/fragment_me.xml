@@ -85,7 +85,7 @@
 
                 <TextView
                     android:id="@+id/tv_name"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="12dp"
                     android:autoSizeMaxTextSize="@dimen/textSize_large"
@@ -99,8 +99,7 @@
                     app:layout_constraintBottom_toTopOf="@id/ll_status"
                     app:layout_constraintLeft_toRightOf="@id/riv_avatar"
                     app:layout_constraintTop_toTopOf="@id/riv_avatar"
-                    android:minWidth="140dp"
-                    tools:hint="点击登录" />
+                    tools:text="点击登录" />
 
                 <LinearLayout
                     android:id="@+id/ll_status"
