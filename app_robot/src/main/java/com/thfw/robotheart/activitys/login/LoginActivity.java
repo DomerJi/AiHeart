@@ -53,6 +53,7 @@ import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.ui.voice.wakeup.WakeupHelper;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.models.User;
@@ -321,6 +322,38 @@ public class LoginActivity extends RobotBaseActivity {
             }
         } else {
             checkOrganDialog();
+        }
+        wakeup();
+    }
+
+    /**
+     * 测试
+     */
+    private void wakeup() {
+        if (RobotUtil.isInstallRobot()) {
+            if (WakeupHelper.getInstance().isIng()) {
+                return;
+            }
+            WakeupHelper.getInstance().setWakeUpListener(new WakeupHelper.OnWakeUpListener() {
+                @Override
+                public void onWakeup(int angle, int beam) {
+                    RobotUtil.wakeup(angle, beam);
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
+            WakeupHelper.getInstance().start();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (RobotUtil.isInstallRobot() && WakeupHelper.getInstance().isIng()) {
+            WakeupHelper.getInstance().stop();
         }
     }
 
