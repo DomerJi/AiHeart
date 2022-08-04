@@ -260,11 +260,15 @@ public class SerialManager {
         serialHelper = new SerialHelper(selectPort, selectBaud) {
             @Override
             protected void onDataReceived(byte[] buff) {
-                String hexData = SerialDataUtils.ByteArrToHex(buff);
-                Log.d(TAG, "接收到数据: hexData = " + hexData);
-                HandlerUtil.getMainHandler().post(() -> {
-                    SerialManager.this.onDataReceived(hexData);
-                });
+                try {
+                    String hexData = SerialDataUtils.ByteArrToHex(buff);
+                    Log.d(TAG, "接收到数据: hexData = " + hexData);
+                    HandlerUtil.getMainHandler().post(() -> {
+                        SerialManager.this.onDataReceived(hexData);
+                    });
+                } catch (Exception e) {
+                    Log.e(TAG, "e " + e.getMessage());
+                }
             }
 
             @Override
