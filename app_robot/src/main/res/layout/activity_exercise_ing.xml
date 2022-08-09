@@ -94,6 +94,7 @@
                 android:layout_toLeftOf="@id/tv_send"
                 android:background="@drawable/talk_input_bg"
                 android:hint="请输入"
+                android:imeOptions="flagNoExtractUi"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 android:textColor="@color/black"

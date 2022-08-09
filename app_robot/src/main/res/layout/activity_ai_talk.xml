@@ -232,6 +232,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="4dp"
                 android:layout_toLeftOf="@id/tv_send"
+                android:imeOptions="flagNoExtractUi"
                 android:background="@drawable/talk_input_bg"
                 android:hint="请输入"
                 android:paddingLeft="12dp"

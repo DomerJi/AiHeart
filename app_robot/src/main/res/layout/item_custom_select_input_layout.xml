@@ -24,6 +24,7 @@
         android:background="@drawable/radius_wihte_bg"
         android:gravity="center"
         android:hint="2-4字限制"
+        android:imeOptions="flagNoExtractUi"
         android:maxLength="4"
         android:maxLines="1"
         android:paddingLeft="12dp"

@@ -14,6 +14,7 @@
         android:background="@drawable/white20_radius_8dp_bg"
         android:gravity="start"
         android:hint="请详细描述您的问题"
+        android:imeOptions="flagNoExtractUi"
         android:maxLines="12"
         android:minLines="10"
         android:padding="12dp"

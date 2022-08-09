@@ -69,6 +69,7 @@
                 android:background="@null"
                 android:gravity="center_vertical"
                 android:hint="@string/please_input_mobile_only"
+                android:imeOptions="flagNoExtractUi"
                 android:inputType="number"
                 android:maxLines="1"
                 android:paddingLeft="8dp"

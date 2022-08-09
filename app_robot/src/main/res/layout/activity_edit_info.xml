@@ -19,6 +19,7 @@
         android:layout_height="60dp"
         android:background="@color/transparent"
         android:hint="请输入"
+        android:imeOptions="flagNoExtractUi"
         android:maxLength="15"
         android:maxLines="1"
         android:paddingLeft="26dp"
