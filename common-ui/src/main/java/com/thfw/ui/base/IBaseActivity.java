@@ -118,7 +118,6 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity imp
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         if (userObserver != null) {
             UserManager.getInstance().deleteObserver(userObserver);
         }
@@ -126,6 +125,7 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity imp
             mPresenter.onDestroy();
             mPresenter = null;
         }
+        super.onDestroy();
     }
 
     /**

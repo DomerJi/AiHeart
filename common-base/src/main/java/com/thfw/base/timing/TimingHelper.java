@@ -9,6 +9,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.thfw.base.utils.HandlerUtil;
+import com.thfw.base.utils.ToastUtil;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +29,7 @@ public class TimingHelper {
 
     private TimingHelper() {
         mWorkInts = new HashMap<>();
-        mHandler = new Handler(Looper.myLooper()) {
+        mHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
@@ -56,6 +57,19 @@ public class TimingHelper {
     }
 
     public void notifyWork(WorkInt workInt) {
+        if (ToastUtil.isMainThread()) {
+            HashSet<WorkListener> workListeners = mWorkInts.get(workInt);
+            if (workListeners != null) {
+                for (WorkListener workListener : workListeners) {
+                    workListener.onArrive();
+                }
+                // 非重复任务，去除
+                if (!workInt.isRepeat()) {
+                    removeWorkArriveListener(workInt);
+                }
+            }
+            return;
+        }
         HandlerUtil.getMainHandler().post(new Runnable() {
             @Override
             public void run() {

@@ -39,6 +39,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.port.SerialManager;
+import com.thfw.robotheart.push.AidlHelper;
 import com.thfw.robotheart.robot.BleManager;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.DialogRobotFactory;
@@ -198,6 +199,7 @@ public class TitleBarView extends LinearLayout {
                     mTvTitleBarTime.setText(HourUtil.getHHMM(System.currentTimeMillis()));
                     Dormant.addMinute(mContext);
                     SerialManager.getInstance().queryCharge();
+                    AidlHelper.checkBind();
                 }
 
                 @Override

@@ -61,10 +61,10 @@
         <!--            android:name="org.android.agoo.accs.AgooService"-->
         <!--            android:exported="false"-->
         <!--            tools:replace="android:exported" />-->
-        <!--        <service-->
-        <!--            android:name="com.umeng.message.UmengIntentService"-->
-        <!--            android:exported="false"-->
-        <!--            tools:replace="android:exported" />-->
+                <service
+                    android:name="com.umeng.message.UmengIntentService"
+                    android:exported="false"
+                    tools:replace="android:exported" />
         <!--        <service-->
         <!--            android:name="com.umeng.message.XiaomiIntentService"-->
         <!--            android:exported="false"-->

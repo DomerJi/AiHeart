@@ -185,7 +185,7 @@ public class MyApplication extends MultiDexApplication {
 
     private void initAtThread() {
         //日志开关
-        UMConfigure.setLogEnabled(true);
+        UMConfigure.setLogEnabled(LogUtil.isLogEnabled());
         //预初始化
         PushHelper.preInit(this);
         boolean isMainProcess = UMUtils.isMainProgress(this);

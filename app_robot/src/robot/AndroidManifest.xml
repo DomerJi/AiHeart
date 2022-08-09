@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 机器人软件的 【PAD】 版本 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:sharedUserId="android.uid.system"
-    package="com.thfw.robotheart">
+    package="com.thfw.robotheart"
+    android:sharedUserId="android.uid.system">
 
     <!-- 友盟 -->
     <uses-sdk tools:overrideLibrary="com.huawei.hms.framework.common,         com.huawei.hms.framework.network.grs,         com.huawei.hmf.tasks,         com.huawei.agconnect.core,         com.huawei.hms.log,         com.huawei.hms.base.device,         com.huawei.hms.base.ui,         com.huawei.hms.stats,         com.huawei.hms.base.availableupdate,         com.huawei.android.hms.base,         com.huawei.android.hms.openid,         org.android.agoo.oppo,         com.vivo.push,         org.android.agoo.vivo,         org.android.agoo.meizu,         com.huawei.android.hms.push,         org.android.agoo.huawei,         com.pushsdk,         com.huawei.hms.hatool,         com.huawei.hms.framework.network.frameworkcompat" />
@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 设置时区 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
         android:name="android.permission.SET_TIME_ZONE"
         tools:ignore="ProtectedPermissions" /> <!-- 关机权限 -->
@@ -268,7 +269,6 @@
 
         <service
             android:name=".push.MyCustomMessageService"
-            android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity
@@ -337,6 +337,147 @@
         <receiver
             android:name="org.android.agoo.vivo.PushMessageReceiverImpl"
             android:exported="true" />
+
+        <!--    system-->
+
+        <service
+            android:name="com.umeng.message.component.UmengIntentService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="org.agoo.android.intent.action.RECEIVE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="com.umeng.message.component.UmengMessageReceiverService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="org.android.agoo.client.MessageReceiverService" />
+            </intent-filter>
+        </service>
+
+
+        <service
+            android:name="com.umeng.message.component.UmengIntentService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="org.agoo.android.intent.action.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.umeng.message.component.UmengMessageReceiverService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="org.android.agoo.client.MessageReceiverService" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.umeng.message.component.UmengMessageHandlerService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE">
+            <intent-filter>
+                <action android:name="com.umeng.message.action" />
+            </intent-filter>
+        </service>
+
+        <provider
+            android:name="com.umeng.message.component.UmengMessageProvider"
+            android:authorities="${applicationId}.umeng.message"
+            android:exported="false" />
+
+        <receiver
+            android:name="com.umeng.message.component.UmengNotificationReceiver"
+            android:exported="false" />
+
+        <activity
+            android:name="com.umeng.message.component.UmengNotificationClickActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.umeng.message.notify.UPushMessageNotifyActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="behind"
+            android:taskAffinity="${applicationId}.u_push"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <activity-alias
+            android:name="com.umeng.message.UMessageNotifyActivity"
+            android:exported="true"
+            android:targetActivity="com.umeng.message.notify.UPushMessageNotifyActivity"
+            android:taskAffinity="${applicationId}.u_push">
+            <intent-filter>
+                <action android:name="com.umeng.message.action.notify" />
+            </intent-filter>
+        </activity-alias>
+
+        <service
+            android:name="com.taobao.accs.ChannelService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.taobao.accs.intent.action.SERVICE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.taobao.accs.intent.action.ELECTION" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.taobao.accs.data.MsgDistributeService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.taobao.accs.intent.action.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.taobao.accs.internal.AccsJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name="com.taobao.accs.ChannelService$KernelService"
+            android:exported="false" />
+        <service
+            android:name="org.android.agoo.accs.AgooService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.taobao.accs.intent.action.RECEIVE" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name="com.taobao.accs.EventReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.taobao.accs.ServiceReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.taobao.accs.intent.action.COMMAND" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.taobao.accs.intent.action.START_FROM_AGOO" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.taobao.agoo.AgooCommondReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="${applicationId}.intent.action.COMMAND" />
+            </intent-filter>
+        </receiver>
+
+        <!-- <meta-data -->
+        <!-- android:name="UMENG_APPKEY" -->
+        <!-- android:value="${UMENG_APPKEY}" /> -->
+        <!-- <meta-data -->
+        <!-- android:name="UMENG_MESSAGE_SECRET" -->
+        <!-- android:value="${UMENG_MESSAGE_SECRET}" /> -->
+        <!-- <meta-data -->
+        <!-- android:name="UMENG_CHANNEL" -->
+        <!-- android:value="${UMENG_CHANNEL}" /> -->
+
     </application>
 
 </manifest>

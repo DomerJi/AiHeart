@@ -400,7 +400,9 @@ public class DialogFactory {
                         TextView mTvHint = viewHolder.getView(R.id.tv_hint);
                         mTvJump.setOnClickListener(v -> {
                             LogUtil.d(TAG, "onFinished click");
-                            svgaImageView.getCallback().onFinished();
+                            if (svgaImageView != null && svgaImageView.getCallback() != null) {
+                                svgaImageView.getCallback().onFinished();
+                            }
                         });
                         mTvHint.setText(hint);
                     } else {

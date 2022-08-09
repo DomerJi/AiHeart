@@ -112,7 +112,7 @@ public class BookDetailActivity extends BaseActivity<BookPresenter> implements B
         if (!contentHtml.startsWith("<html>")) {
 //            contentHtml = newHtml();
             contentHtml = "<html><head><style>"
-                    + "img{max-width: 80%;height: auto;object-fit: scale-down;}"
+                    + "img{max-width: 80%;height: auto;object-fit: contain;}"
                     + "body{padding-top:26px; padding-bottom:26px; padding-left:26px;padding-right:26px;}"
 //                    + "span{" + fontSize + "}"
 //                    + "p{" + fontSize + "}"

@@ -33,11 +33,11 @@ dependencies {
 //    api fileTree(dir: 'libs', include: ['*.aar'])
 
     //友盟基础库（必须）
-    api('com.umeng.umsdk:common:9.4.4')
-    api('com.umeng.umsdk:asms:1.5.0')
+    api('com.umeng.umsdk:common:9.5.1')
+    api('com.umeng.umsdk:asms:1.6.3')
 
     //友盟推送库
-    api('com.umeng.umsdk:push:6.5.0')
+    api('com.umeng.umsdk:push:6.5.4')
 
     //如果和支付宝sdk utdid冲突，可以集成支付宝无utdid版本，或者通过以下方式解决
 //    api('com.umeng.umsdk:push:6.5.0') {

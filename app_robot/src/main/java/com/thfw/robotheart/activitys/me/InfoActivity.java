@@ -538,8 +538,8 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
                         String birthday = mTvBirthday.getText().toString();
                         if (!TextUtils.isEmpty(birthday)) {
                             long birthdayTime = HourUtil.getYYMMDDbyLong(birthday);
-                            if (date.getTime() > birthdayTime) {
-                                ToastUtil.show("入职(伍)时间不能大于出生时间");
+                            if (date.getTime() < birthdayTime) {
+                                ToastUtil.show("入职(伍)时间不能小于出生时间");
                                 return;
                             }
                         }
@@ -998,6 +998,7 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
 
         if (!TextUtils.isEmpty(userInfo.account)) {
             mLlNamePinyin.setVisibility(View.GONE);
+            mTvNamePinyin.setText(userInfo.account);
             mVPinyinLine.setVisibility(View.GONE);
         }
 

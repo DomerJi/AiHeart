@@ -1,0 +1,89 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.thfw.robotheart.push"
+        minSdkVersion 19
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0.0"
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters 'armeabi-v7a'
+//            abiFilters 'armeabi-v7a',  'arm64-v8a'
+//            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86'
+        }
+    }
+
+    signingConfigs {
+        // 签名
+        release {
+            storeFile file("sign/heart_phone.jks")
+            storePassword "abc321654"
+            keyAlias "thfw"
+            keyPassword "abc321654"
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            // 是否混淆
+            minifyEnabled false
+            // 是否移除无用资源
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+        }
+    }
+
+    // 修改apk文件名
+    android.applicationVariants.all {
+        variant ->
+            variant.outputs.all {
+                output ->
+                    def outputFile = output.outputFile
+                    if (outputFile.name.contains("release")) {
+                        def fileName = "push_${variant.versionCode}_${variant.versionName}" + "_${variant.name}.apk"
+                        outputFileName = new File("../release/", fileName)
+                    } else if (outputFile.name.contains("debug")) {
+                        def fileName = "push_${variant.versionCode}_${variant.versionName}" + "_${variant.name}.apk"
+                        outputFileName = new File("../debug/", fileName)
+                    }
+            }
+
+
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    // 配置so文件在 libs目录下
+//    sourceSets {
+//        main {
+//            jniLibs.srcDirs = ['libs']
+//        }
+//    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(':push')
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+
+}

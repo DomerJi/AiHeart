@@ -116,7 +116,7 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
                 ToastUtil.show(mIvCollect.isSelected() ? "收藏失败" : "取消收藏失败");
                 mIvCollect.setSelected(!mIvCollect.isSelected());
             }
-        }).addCollect(HistoryApi.TYPE_COLLECT_AUDIO, mDetailModel.getPsychtestInfo().getId());
+        }).addCollect(HistoryApi.TYPE_COLLECT_TEST, mDetailModel.getPsychtestInfo().getId());
     }
 
 

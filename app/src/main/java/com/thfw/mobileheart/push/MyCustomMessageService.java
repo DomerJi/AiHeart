@@ -21,8 +21,8 @@ import com.umeng.message.PushAgent;
 import com.umeng.message.UTrack;
 import com.umeng.message.UmengMessageHandler;
 import com.umeng.message.UmengMessageService;
-import com.umeng.message.UmengNotificationReceiver;
 import com.umeng.message.common.UPushNotificationChannel;
+import com.umeng.message.component.UmengNotificationReceiver;
 import com.umeng.message.entity.UMessage;
 
 import org.android.agoo.common.AgooConstants;

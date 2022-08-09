@@ -75,7 +75,7 @@ public class UPushAlias {
             PushAgent.getInstance(MyApplication.getApp()).getTagManager().addTags(new UPushTagCallback<ITagManager.Result>() {
                 @Override
                 public void onMessage(boolean isSuccess, ITagManager.Result result) {
-                    LogUtil.d(TAG, "PushAgent 添加标签 isSuccess = " + isSuccess + ", result = " + result.msg);
+                    LogUtil.d(TAG, "PushAgent 添加标签 isSuccess = " + isSuccess);
                 }
             }, "organ_" + id);
         }

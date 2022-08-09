@@ -1,6 +1,8 @@
 package com.thfw.robotheart.activitys;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
@@ -53,6 +55,7 @@ import com.thfw.robotheart.activitys.text.BookStudyActivity;
 import com.thfw.robotheart.activitys.video.VideoHomeActivity;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.port.SerialManager;
+import com.thfw.robotheart.push.AidlHelper;
 import com.thfw.robotheart.push.MyPreferences;
 import com.thfw.robotheart.push.helper.PushHelper;
 import com.thfw.robotheart.push.tester.UPushAlias;
@@ -175,6 +178,18 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         initUmeng = false;
         initTts = false;
         initUrgedMsg = -1;
+        AidlHelper.resetId();
+
+        try {
+            NotificationManager manager = (NotificationManager) MyApplication.getApp()
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            if (manager != null) {
+                manager.cancelAll();
+            }
+        } catch (Exception e) {
+            Log.d("resetInit", e.getMessage());
+        }
+
     }
 
     private static boolean hasAgreedAgreement() {
@@ -607,7 +622,12 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                         CommonParameter.setOrganizationModel(data);
                         UserManager.getInstance().getUser().setOrganList(mSelecteds);
                         UserManager.getInstance().notifyUserInfo();
-                        UPushAlias.setTag(mSelecteds.get(mSelecteds.size() - 1).getId());
+
+                        if (!RobotUtil.isUseUmeng()) {
+                            AidlHelper.setOrganId(mSelecteds.get(mSelecteds.size() - 1).getId());
+                        } else {
+                            UPushAlias.setTag(mSelecteds.get(mSelecteds.size() - 1).getId());
+                        }
                     }
                     TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND5_1);
                     initOrganization = true;
@@ -667,7 +687,11 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                         LogUtil.d(TAG, "initUserInfo onSuccess ++++++++++++++++++++++ ");
                         UserManager.getInstance().getUser().setUserInfo(data);
                         UserManager.getInstance().notifyUserInfo();
-                        UPushAlias.set(MyApplication.getApp(), "user_" + data.id, "user");
+                        if (!RobotUtil.isUseUmeng()) {
+                            AidlHelper.setUserId(data.id);
+                        } else {
+                            UPushAlias.set(MyApplication.getApp(), "user_" + data.id, "user");
+                        }
                         ttsWelcome();
                         TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND5);
                     } else {
@@ -696,14 +720,16 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     }
 
     private void initUmeng() {
-        if (!initUmeng) {
-            if (hasAgreedAgreement()) {
-                PushAgent.getInstance(this).onAppStart();
-                String deviceToken = PushAgent.getInstance(this).getRegistrationId();
-                LogUtil.d(TAG, "deviceToken = " + deviceToken);
-                initUmeng = true;
-            } else {
-                agreementAfterInitUmeng();
+        if (RobotUtil.isUseUmeng()) {
+            if (!initUmeng) {
+                if (hasAgreedAgreement()) {
+                    PushAgent.getInstance(this).onAppStart();
+                    String deviceToken = PushAgent.getInstance(this).getRegistrationId();
+                    LogUtil.d(TAG, "deviceToken = " + deviceToken);
+                    initUmeng = true;
+                } else {
+                    agreementAfterInitUmeng();
+                }
             }
         }
     }
@@ -726,13 +752,13 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     /**
      * 登录状态下，即点击隐私协议同意按钮后，初始化PushSDK
      */
-    private void agreementAfterInitUmeng() {
-        MyPreferences.getInstance(getApplicationContext()).setAgreePrivacyAgreement(true);
-        PushHelper.init(getApplicationContext());
-        PushAgent.getInstance(getApplicationContext()).register(new UPushRegisterCallback() {
+    public void agreementAfterInitUmeng() {
+        MyPreferences.getInstance(MyApplication.getApp()).setAgreePrivacyAgreement(true);
+        PushHelper.init(MyApplication.getApp());
+        PushAgent.getInstance(MyApplication.getApp()).register(new UPushRegisterCallback() {
             @Override
             public void onSuccess(final String deviceToken) {
-                LogUtil.d(TAG, "deviceToken = " + deviceToken);
+                LogUtil.d("deviceToken = " + deviceToken);
                 initUmeng = true;
             }
 

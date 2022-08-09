@@ -685,7 +685,7 @@ public class SerialManager {
         }
         if (horizontalFlag == 0) {
             lastSensorTime = 0;
-        } else if (System.currentTimeMillis() - lastSensorTime > HourUtil.LEN_MINUTE30) {
+        } else if (isNoAction() && System.currentTimeMillis() - lastSensorTime > HourUtil.LEN_MINUTE30) {
             if (RobotUtil.isInstallRobot()) {
                 lastSensorTime = currentTime;
                 HandlerUtil.getMainHandler().postDelayed(() -> {

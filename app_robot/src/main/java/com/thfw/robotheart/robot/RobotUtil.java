@@ -44,6 +44,8 @@ public class RobotUtil {
     private static final String SHUTDOWN = "android.intent.action.ACTION_SHUTDOWN";
 
     public static int installRobot = -1;
+    // 是否使用umeng
+    public static final boolean USE_UMENG = false;
     /**
      * 长按关机监听
      */
@@ -126,6 +128,16 @@ public class RobotUtil {
             installRobot = isBuildMsg() ? 1 : 0;
         }
         return installRobot == 1;
+    }
+
+    /**
+     * 是否使用Umeng
+     *
+     * @return
+     */
+    public static boolean isUseUmeng() {
+//        return false;
+        return !isInstallRobot() || USE_UMENG;
     }
 
     public static void shutdownByDialog(FragmentActivity fragmentActivity) {

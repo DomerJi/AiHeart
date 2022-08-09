@@ -135,10 +135,12 @@ public class MyApplication extends MultiDexApplication {
     }
 
     private void initAtThread() {
-        //日志开关
-        UMConfigure.setLogEnabled(true);
-        //预初始化
-        PushHelper.preInit(this);
+        if (RobotUtil.isUseUmeng()) {
+            //日志开关
+            UMConfigure.setLogEnabled(LogUtil.isLogEnabled());
+            //预初始化
+            PushHelper.preInit(this);
+        }
         boolean isMainProcess = UMUtils.isMainProgress(this);
         if (isMainProcess) {
             //启动优化：建议在子线程中执行初始化
@@ -153,7 +155,7 @@ public class MyApplication extends MultiDexApplication {
 
     private void init() {
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
-        RobotUtil.longPressOffBtn();
+//        RobotUtil.longPressOffBtn();
         if (RobotUtil.isInstallRobot()) {
             WakeupHelper.initCae(app);
             BuglyUtil.init("382fc62522");
@@ -163,9 +165,11 @@ public class MyApplication extends MultiDexApplication {
         }
         initSpeech();
         //是否同意隐私政策
-        boolean agreed = MyPreferences.getInstance(this).hasAgreePrivacyAgreement();
-        if (agreed) {
-            PushHelper.init(getApplicationContext());
+        if (RobotUtil.isUseUmeng()) {
+            boolean agreed = MyPreferences.getInstance(this).hasAgreePrivacyAgreement();
+            if (agreed) {
+                PushHelper.init(MyApplication.getApp());
+            }
         }
     }
 
