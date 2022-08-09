@@ -13,6 +13,11 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:overScrollMode">never</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="android:editTextStyle">@style/App_EditTextStyle</item>
+    </style>
+
+    <style name="App_EditTextStyle">
+        <item name="android:imeOptions">flagNoExtractUi</item>
     </style>
 
     <style name="ChatTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
@@ -28,6 +33,7 @@
         <!--        <item name="android:windowFullscreen">true</item>-->
         <item name="android:overScrollMode">never</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="android:editTextStyle">@style/App_EditTextStyle</item>
     </style>
 
     <style name="LoginTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
@@ -43,6 +49,7 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:overScrollMode">never</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="android:editTextStyle">@style/App_EditTextStyle</item>
     </style>
 
     <declare-styleable name="CameraBridgeViewBase">
