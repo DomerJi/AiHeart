@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -159,6 +160,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             checkVersion();
         }
     };
+    private ImageView mIvHand;
 
     /**
      * 登录动画是否显示
@@ -249,6 +251,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                     break;
             }
         });
+
+        mIvHand = findViewById(R.id.iv_hand);
         mTitleBarView = (TitleBarView) findViewById(R.id.titleBarView);
         mWeekView = (WeekView) findViewById(R.id.weekView);
         mRivAvatar = (RoundedImageView) findViewById(R.id.riv_avatar);
@@ -361,6 +365,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             initOrganization();
             initUrgedMsg();
             wakeup();
+            GlideUtil.load(mContext, R.drawable.ic_ip_hand, mIvHand);
         }
 
     }

@@ -15,6 +15,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.util.DialogRobotFactory;
@@ -48,6 +49,7 @@ public class SetVolumeFragment extends RobotBaseFragment {
     private int maxSystemVolume;
     private int maxNotificationVolume;
     private AudioManager mAudioManager;
+    private NotificationManager notificationManager;
 
     @Override
     public int getContentView() {
@@ -86,7 +88,7 @@ public class SetVolumeFragment extends RobotBaseFragment {
         mLlSeekbarBtnVolume = (LinearLayout) findViewById(R.id.ll_seekbar_btn_volume);
         mTvBtnVolumeProgress = (TextView) findViewById(R.id.tv_btn_volume_progress);
 
-        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !notificationManager.isNotificationPolicyAccessGranted()) {
             showPermission();
             return;
@@ -119,6 +121,11 @@ public class SetVolumeFragment extends RobotBaseFragment {
         mSbSystemVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && notificationManager != null
+                        && !notificationManager.isNotificationPolicyAccessGranted()) {
+                    ToastUtil.show("没有开启静音权限");
+                    return;
+                }
                 textProgressChanged(progress, mTvSystemVolumeProgress, mSbSystemVolume);
                 if (fromUser) {
                     mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, maxSystemVolume * progress / 100, AudioManager.FLAG_PLAY_SOUND);

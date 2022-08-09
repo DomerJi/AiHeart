@@ -1,5 +1,7 @@
 package com.thfw.robotheart.activitys.talk;
 
+import android.widget.ImageView;
+
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +22,7 @@ import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.SVGAHelper;
 import com.thfw.robotheart.view.HomeIpTextView;
 import com.thfw.robotheart.view.TitleRobotView;
+import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -38,6 +41,7 @@ public class ThemeTalkActivity extends RobotBaseActivity<TalkPresenter> implemen
 
     private Random random = new Random();
     private com.thfw.robotheart.view.HomeIpTextView mHitAnim;
+    private ImageView mIvHand;
 
     @Override
     public int getContentView() {
@@ -59,7 +63,7 @@ public class ThemeTalkActivity extends RobotBaseActivity<TalkPresenter> implemen
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
         mSvgaBody = (SVGAImageView) findViewById(R.id.svga_body);
         mSvgaFace = (SVGAImageView) findViewById(R.id.svga_face);
-
+        mIvHand = findViewById(R.id.iv_hand);
         startFaceAnim();
         mHitAnim = (HomeIpTextView) findViewById(R.id.hit_anim);
     }
@@ -120,6 +124,7 @@ public class ThemeTalkActivity extends RobotBaseActivity<TalkPresenter> implemen
     protected void onResume() {
         super.onResume();
         animResume(true);
+        GlideUtil.load(mContext, R.drawable.ic_ip_hand, mIvHand);
     }
 
     @Override
