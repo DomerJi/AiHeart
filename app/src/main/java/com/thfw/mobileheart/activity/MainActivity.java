@@ -2,6 +2,7 @@ package com.thfw.mobileheart.activity;
 
 import android.animation.Animator;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -144,6 +145,16 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         moodHint = false;
         initTts = false;
         initUrgedMsg = -1;
+
+        try {
+            NotificationManager manager = (NotificationManager) MyApplication.getApp()
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            if (manager != null) {
+                manager.cancelAll();
+            }
+        } catch (Exception e) {
+            Log.d("resetInit", e.getMessage());
+        }
     }
 
     private static boolean hasAgreedAgreement() {
