@@ -241,18 +241,26 @@ public class TalkHistoryActivity extends RobotBaseActivity<TalkPresenter> implem
                 if (data != null) {
 
                     HashSet<String> mHasDays = new HashSet<>();
-
+                    String currentMonth = null;
                     for (String day : data) {
                         if (!TextUtils.isEmpty(day)) {
                             String[] ymd = day.split("-");
                             if (ymd.length == 3) {
+                                if (currentMonth == null) {
+                                    currentMonth = ymd[0] + "-" + ymd[1];
+                                }
                                 mHasDays.add(ymd[2]);
                             }
                         }
                     }
                     LogUtil.d(TAG, "mHasDays = " + GsonUtil.toJson(mHasDays));
-                    mAllHasDayMap.put(mCurrentMonth, mHasDays);
-                    onMonthHasDay(mCurrentMonth);
+                    if (currentMonth == null) {
+                        return;
+                    }
+                    mAllHasDayMap.put(currentMonth, mHasDays);
+                    if (mCurrentMonth.equals(currentMonth)) {
+                        onMonthHasDay(currentMonth);
+                    }
 
                 }
             }
