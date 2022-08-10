@@ -12,13 +12,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:maxLength="20"
         android:maxLines="2"
         android:textColor="@color/text_common"
         android:textSize="@dimen/textSize"
         app:layout_constraintHorizontal_weight="2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="MissingConstraints"
         tools:text="Title" />
 
 
@@ -27,10 +27,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
+        android:gravity="right"
         android:maxLines="1"
         android:textColor="@color/text_hint"
         android:textSize="@dimen/textSize_small"
-        android:gravity="right"
         app:layout_constraintBottom_toBottomOf="@id/tv_time"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_time"

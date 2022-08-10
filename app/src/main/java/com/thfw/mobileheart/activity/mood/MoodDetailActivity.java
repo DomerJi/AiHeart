@@ -309,13 +309,19 @@ public class MoodDetailActivity extends BaseActivity<MobilePresenter> implements
     private void onMonthHasDay(int year, int month) {
         String startTime;
         String endTime;
-        if (month == 12) {
-            startTime = year + "-" + String.format("%02d", month) + "-01";
-            endTime = year + 1 + "-" + String.format("%02d", 1) + "-01";
-        } else {
-            startTime = year + "-" + String.format("%02d", month) + "-01";
-            endTime = year + "-" + String.format("%02d", month + 1) + "-01";
-        }
+
+        // 获取日历对象
+        java.util.Calendar c = java.util.Calendar.getInstance();
+        // 设置日历对象为指定年月日，为指定月份的第一天
+        c.set(year, month, 1);
+        // 设置日历对象，指定月份往前推一天，也就是最后一天
+        c.add(java.util.Calendar.DATE, -1);
+        // 获取这一天输出即可
+        int day = c.get(java.util.Calendar.DATE);
+
+        startTime = year + "-" + String.format("%02d", month) + "-01";
+        endTime = year + "-" + String.format("%02d", month) + "-" + day;
+
         this.mCurrentYear = year;
         this.mCurrentMonth = month;
         mCurrentMonthStr = year + "-" + String.format("%02d", month);
@@ -736,26 +742,35 @@ public class MoodDetailActivity extends BaseActivity<MobilePresenter> implements
         if (data != null) {
             HashSet<String> mHasDays = new HashSet<>();
 
-
+            String currentMonth = null;
             for (MoodActiveModel model : data) {
                 if (!TextUtils.isEmpty(model.getTime())) {
                     String[] ymd = model.getTime().split("-");
                     if (ymd.length == 3) {
+                        if (currentMonth == null) {
+                            currentMonth = ymd[0] + "-" + ymd[1];
+                        }
                         mHasDays.add(ymd[2]);
                     }
                     mAllDataMap.put(model.getTime(), model);
                 }
             }
-            // 当前月份，今天使用本地数据
-            String today = HourUtil.getYYMMDD(System.currentTimeMillis());
-            if (today.startsWith(mCurrentMonthStr)) {
-                MoodActiveModel model = getToday();
-                mAllDataMap.put(model.time, model);
+            if (currentMonth != null) {
+                // 当前月份，今天使用本地数据
+                String today = HourUtil.getYYMMDD(System.currentTimeMillis());
+                if (today.startsWith(currentMonth)) {
+                    MoodActiveModel model = getToday();
+                    mAllDataMap.put(model.time, model);
+                }
+                LogUtil.d(TAG, "mHasDays = " + GsonUtil.toJson(mHasDays));
+                mAllHasDayMap.put(currentMonth, mHasDays);
+                if (currentMonth.equals(mCurrentMonthStr)) {
+                    onMonthHasDay(mCurrentYear, mCurrentMonth);
+                }
+            } else {
+                setChartData();
+                mLoadingView.hide();
             }
-            LogUtil.d(TAG, "mHasDays = " + GsonUtil.toJson(mHasDays));
-            mAllHasDayMap.put(mCurrentMonthStr, mHasDays);
-
-            onMonthHasDay(mCurrentYear, mCurrentMonth);
         } else {
             mLoadingView.showEmpty();
         }

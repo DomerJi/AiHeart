@@ -12,13 +12,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:maxLength="20"
         android:maxLines="2"
         android:textColor="@color/text_common"
         android:textSize="@dimen/textSize"
         app:layout_constraintHorizontal_weight="2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="MissingConstraints"
         tools:text="Title" />
 
 
