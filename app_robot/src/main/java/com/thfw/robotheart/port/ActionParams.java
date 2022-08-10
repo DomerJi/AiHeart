@@ -6,6 +6,7 @@ import android.os.Looper;
 import com.pl.sphelper.ConstantUtil;
 import com.pl.sphelper.SPHelper;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 
 import java.util.Arrays;
 
@@ -17,7 +18,10 @@ import java.util.Arrays;
 public class ActionParams {
 
     public static final int ONE_ANGLE_TIME = 30;
+    public static final int ANGLE = 30;
     public static final int ONE_ANGLE_TIME_10 = ONE_ANGLE_TIME / 15;
+    public static final String KEY_ROTATE_ANGLE = "key.rotate.angle";
+    public static final String KEY_ROTATE_TIME = "key.rotate.time";
 
 
     /**
@@ -60,14 +64,16 @@ public class ActionParams {
     private int anglesIndex = 0;
 
     public static ActionParams getNormalRotate(int... angles) {
+        int time = SharePreferenceUtil.getInt(KEY_ROTATE_TIME, ONE_ANGLE_TIME);
         if (EmptyUtil.isEmpty(angles)) {
+            int angle = SharePreferenceUtil.getInt(KEY_ROTATE_ANGLE, ANGLE);
             return new ActionParams(ControlOrder.ROTATE)
-                    .setAngles(30, -60, 30)
-                    .setOneRotateTimeMs(ONE_ANGLE_TIME);
+                    .setAngles(angle, -(angle * 2), angle)
+                    .setOneRotateTimeMs(time);
         }
         return new ActionParams(ControlOrder.ROTATE)
                 .setAngles(angles)
-                .setOneRotateTimeMs(ONE_ANGLE_TIME);
+                .setOneRotateTimeMs(time);
     }
 
     /**

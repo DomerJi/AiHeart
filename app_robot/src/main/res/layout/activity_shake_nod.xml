@@ -126,6 +126,96 @@
         app:layout_constraintTop_toBottomOf="@id/bt_nod"
         tools:ignore="MissingConstraints" />
 
+    <LinearLayout
+        android:id="@+id/ll_rotate_set"
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_marginLeft="8dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/bt_rotate"
+        app:layout_constraintLeft_toRightOf="@id/bt_rotate"
+        app:layout_constraintTop_toTopOf="@id/bt_rotate"
+        tools:ignore="MissingConstraints">
+
+        <Button
+            android:id="@+id/bt_angle_add"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:text="+"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_rotate_angle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:textColor="@color/text_red"
+            tools:text="12" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingRight="8dp"
+            android:text="℃"
+            android:textColor="@color/text_green" />
+
+        <Button
+            android:id="@+id/bt_angle_del"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:text="-"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_rotate_time"
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_marginLeft="8dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/bt_rotate"
+        app:layout_constraintLeft_toRightOf="@id/ll_rotate_set"
+        app:layout_constraintTop_toTopOf="@id/bt_rotate"
+        tools:ignore="MissingConstraints">
+
+        <Button
+            android:id="@+id/bt_time_add"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:text="+"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_rotate_time"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:textColor="@color/text_red"
+            tools:text="12" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingRight="8dp"
+            android:text="ms"
+            android:textColor="@color/text_green" />
+
+        <Button
+            android:id="@+id/bt_time_del"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:text="-"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/bt_shutdown"

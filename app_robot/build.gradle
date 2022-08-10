@@ -8,8 +8,8 @@ android {
         applicationId "com.thfw.robotheart"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 208
-        versionName "2.2.1"
+        versionCode 209
+        versionName "2.2.2"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "buildTest"
@@ -75,7 +75,7 @@ android {
             // 是否移除无用资源
             zipAlignEnabled true
         }
-        debug{
+        debug {
             signingConfig null // 置空
             // 是否混淆
             minifyEnabled false
@@ -83,7 +83,6 @@ android {
             zipAlignEnabled true
         }
     }
-
 
 
     productFlavors {

@@ -80,15 +80,19 @@ public class AidlHelper {
             @Override
             public void run() {
                 if (!isBind()) {
-                    pullUpByPackage(context, "com.thfw.robotheart.push",
-                            "com.thfw.robotheart.push.MainActivity");
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            bindService(context);
-                        }
-                    }, 200);
-                    mHandler.postDelayed(this, 1500);
+                    try {
+                        pullUpByPackage(context, "com.thfw.robotheart.push",
+                                "com.thfw.robotheart.push.MainActivity");
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                bindService(context);
+                            }
+                        }, 200);
+                        mHandler.postDelayed(this, 1500);
+                    } catch (Exception e) {
+                        Log.d(TAG, "pullUpByPackage e = " + e.getMessage());
+                    }
                 }
             }
         }, 1000);
