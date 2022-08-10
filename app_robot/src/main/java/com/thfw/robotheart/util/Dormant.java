@@ -6,6 +6,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.activitys.set.DormantActivity;
+import com.thfw.ui.voice.PolicyHelper;
 import com.thfw.ui.voice.speech.SpeechHelper;
 
 /**
@@ -57,12 +58,13 @@ public class Dormant {
     public static void addMinute(Context context) {
 
         LogUtil.d(TAG_DORMANT, "addMinute start");
-        if (System.currentTimeMillis() - lastAddTime < 300) {
+        long currentTimeMillis = System.currentTimeMillis();
+        if (lastAddTime <= currentTimeMillis && currentTimeMillis - lastAddTime < 300) {
             // 原因多个广播回调所致
             LogUtil.d(TAG_DORMANT, "addMinute 间隔不足一分钟+++++++++++++++++++++++++");
             return;
         }
-        lastAddTime = System.currentTimeMillis();
+        lastAddTime = currentTimeMillis;
         boolean mDormantSwitch = SharePreferenceUtil.getBoolean(KEY_DORMANT_SWITCH, true);
 
         if (!mDormantSwitch) {
@@ -70,7 +72,8 @@ public class Dormant {
             reset();
             return;
         }
-        if (ExoPlayerFactory.isPlaying() || SpeechHelper.getInstance().isIng()) {
+        if (ExoPlayerFactory.isPlaying() || SpeechHelper.getInstance().isIng()
+                || PolicyHelper.getInstance().isSpeechMode()) {
             reset();
             LogUtil.d(TAG_DORMANT, "addMinute isPlaying = true");
             return;
