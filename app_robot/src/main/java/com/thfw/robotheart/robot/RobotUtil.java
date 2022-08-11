@@ -20,6 +20,7 @@ import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.port.ActionParams;
 import com.thfw.robotheart.port.SerialManager;
 import com.thfw.robotheart.util.DialogRobotFactory;
+import com.thfw.robotheart.util.Dormant;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.user.login.LoginStatus;
@@ -335,6 +336,7 @@ public class RobotUtil {
 
     public static void wakeup(int angle, int beam) {
         if (RobotUtil.isInstallRobot() && angle != -1) {
+            Dormant.reset();
             int actionAngle = 0;
             if (angle != 90) {
                 actionAngle = angle < 90 ? -(90 - angle) : angle - 90;
