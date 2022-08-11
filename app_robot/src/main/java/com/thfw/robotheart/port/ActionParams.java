@@ -18,10 +18,33 @@ import java.util.Arrays;
 public class ActionParams {
 
     public static final int ONE_ANGLE_TIME = 30;
-    public static final int ANGLE = 30;
-    public static final int ONE_ANGLE_TIME_10 = ONE_ANGLE_TIME / 15;
+    public static final int ONE_ANGLE_TIME2 = 20;
+    public static final int ROTATE_ANGLE = 30;
+    public static final int SHAKE_ANGLE = 36;
+    public static final int NOD_UP_ANGLE = 26;
+    public static final int NOD_DOWN_ANGLE = 14;
+
     public static final String KEY_ROTATE_ANGLE = "key.rotate.angle";
+    public static final String KEY_SHAKE_ANGLE = "key.shake.angle";
+    // 低头
+    public static final String KEY_NOD_UP_ANGLE = "key.nod.up.angle";
+    // 抬头
+    public static final String KEY_NOD_DOWN_ANGLE = "key.nod.down.angle";
     public static final String KEY_ROTATE_TIME = "key.rotate.time";
+    public static final String KEY_SHAKE_TIME = "key.shake.time";
+    public static final String KEY_NOD_TIME = "key.nod.time";
+
+    public int getOneAngleTime() {
+        switch (controlOrder) {
+            case ControlOrder.ROTATE:
+                return oneRotateTimeMs;
+            case ControlOrder.SHAKE:
+                return SharePreferenceUtil.getInt(KEY_SHAKE_TIME, ONE_ANGLE_TIME2);
+            case ControlOrder.NOD:
+                return SharePreferenceUtil.getInt(KEY_NOD_TIME, ONE_ANGLE_TIME2);
+        }
+        return ONE_ANGLE_TIME;
+    }
 
 
     /**
@@ -33,10 +56,11 @@ public class ActionParams {
      * @return
      */
     public static ActionParams getNormalNod() {
+        int right = SharePreferenceUtil.getInt(KEY_NOD_UP_ANGLE, NOD_UP_ANGLE) * 10;
+        int left = SharePreferenceUtil.getInt(KEY_NOD_DOWN_ANGLE, NOD_DOWN_ANGLE) * 10;
         return new ActionParams(ControlOrder.NOD)
-                .setRight(260)
-                .setLeft(140)
-                .setTimeMs(2000)
+                .setRight(right)
+                .setLeft(left)
                 .setRepeatCount(1);
 
     }
@@ -50,10 +74,10 @@ public class ActionParams {
      * @return
      */
     public static ActionParams getNormalShake() {
+        int right = SharePreferenceUtil.getInt(KEY_SHAKE_ANGLE, SHAKE_ANGLE) * 10;
         return new ActionParams(ControlOrder.SHAKE)
-                .setRight(360)
-                .setLeft(360)
-                .setTimeMs(2000)
+                .setRight(right)
+                .setLeft(right)
                 .setRepeatCount(1);
     }
 
@@ -66,7 +90,7 @@ public class ActionParams {
     public static ActionParams getNormalRotate(int... angles) {
         int time = SharePreferenceUtil.getInt(KEY_ROTATE_TIME, ONE_ANGLE_TIME);
         if (EmptyUtil.isEmpty(angles)) {
-            int angle = SharePreferenceUtil.getInt(KEY_ROTATE_ANGLE, ANGLE);
+            int angle = SharePreferenceUtil.getInt(KEY_ROTATE_ANGLE, ROTATE_ANGLE);
             return new ActionParams(ControlOrder.ROTATE)
                     .setAngles(angle, -(angle * 2), angle)
                     .setOneRotateTimeMs(time);

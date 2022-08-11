@@ -360,21 +360,25 @@ public class SerialManager {
             int right = actionParams.getRight();
             int[] params;
             if (actionParams.getRunCount() == actionParams.getRepeatCount()) {
-                int time = right * ActionParams.ONE_ANGLE_TIME_10;
+                int time = (int) (right * (actionParams.getOneAngleTime() / 10f));
                 // 右
                 params = new int[]{controlOrder, centerPoint + right, time};
             } else if (actionParams.getRunCount() == -1) {
-                int time = left * ActionParams.ONE_ANGLE_TIME_10;
+                int time = (int) (left * (actionParams.getOneAngleTime() / 10f));
                 // 归零
                 actionParams.reverseRight();
                 params = new int[]{controlOrder, centerPoint, time};
             } else {
-                int time = (left + right) * ActionParams.ONE_ANGLE_TIME_10;
+                int time = (int) ((left + right) * (actionParams.getOneAngleTime() / 10f));
                 // 左or右
                 actionParams.reverseRight();
                 params = new int[]{controlOrder, actionParams.isRight() ? centerPoint + right : centerPoint - left, time};
             }
             LogUtil.d(TAG, "params -> " + Arrays.toString(params));
+            if (LogUtil.isLogEnabled()) {
+                ToastUtil.show(actionParams.getControlOrder() == ActionParams.ControlOrder.NOD
+                        ? "点头： -> " : "摇头： -> " + "left：" + left + "_right：" + right + "_" + Arrays.toString(params));
+            }
             SerialManager.getInstance().sendNow(order, params);
             if (actionParams.getRunCount() > -1) {
                 actionParams.setRunnable(() -> {

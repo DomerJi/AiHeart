@@ -38,6 +38,96 @@
         app:layout_constraintTop_toBottomOf="@id/tv_provider"
         tools:ignore="MissingConstraints" />
 
+    <LinearLayout
+        android:id="@+id/ll_shake_set"
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_marginLeft="8dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/bt_shake"
+        app:layout_constraintLeft_toRightOf="@id/bt_shake"
+        app:layout_constraintTop_toTopOf="@id/bt_shake"
+        tools:ignore="MissingConstraints">
+
+        <Button
+            android:id="@+id/bt_shake_angle_add"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:text="+"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_shake_angle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:textColor="@color/text_red"
+            tools:text="12" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingRight="8dp"
+            android:text="°"
+            android:textColor="@color/text_green" />
+
+        <Button
+            android:id="@+id/bt_shake_del"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:text="-"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_shake_time"
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_marginLeft="8dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/bt_shake"
+        app:layout_constraintLeft_toRightOf="@id/ll_shake_set"
+        app:layout_constraintTop_toTopOf="@id/bt_shake"
+        tools:ignore="MissingConstraints">
+
+        <Button
+            android:id="@+id/bt_shake_time_add"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:text="+"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_shake_time"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:textColor="@color/text_red"
+            tools:text="12" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingRight="8dp"
+            android:text="ms"
+            android:textColor="@color/text_green" />
+
+        <Button
+            android:id="@+id/bt_shake_time_del"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:text="-"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/bt_hide_bar"
         android:layout_width="120dp"
@@ -112,6 +202,141 @@
         app:layout_constraintTop_toBottomOf="@id/bt_shake"
         tools:ignore="MissingConstraints" />
 
+    <LinearLayout
+        android:id="@+id/ll_nod_set"
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_marginLeft="8dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/bt_nod"
+        app:layout_constraintLeft_toRightOf="@id/bt_nod"
+        app:layout_constraintTop_toTopOf="@id/bt_nod"
+        tools:ignore="MissingConstraints">
+
+        <Button
+            android:id="@+id/bt_nod_angle_add"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:text="+"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_nod_angle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:textColor="@color/text_red"
+            tools:text="12" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingRight="8dp"
+            android:text="°下"
+            android:textColor="@color/text_green" />
+
+        <Button
+            android:id="@+id/bt_nod_angle_del"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:text="-"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_nod_down_set"
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_marginLeft="8dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/bt_nod"
+        app:layout_constraintLeft_toRightOf="@id/ll_nod_set"
+        app:layout_constraintTop_toTopOf="@id/bt_nod"
+        tools:ignore="MissingConstraints">
+
+        <Button
+            android:id="@+id/bt_nod_down_angle_add"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:text="+"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_nod_down_angle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:textColor="@color/text_red"
+            tools:text="12" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingRight="8dp"
+            android:text="°上"
+            android:textColor="@color/text_green" />
+
+        <Button
+            android:id="@+id/bt_nod_down_angle_del"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:text="-"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_nod_time"
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_marginLeft="8dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/bt_nod"
+        app:layout_constraintLeft_toRightOf="@id/ll_nod_down_set"
+        app:layout_constraintTop_toTopOf="@id/bt_nod"
+        tools:ignore="MissingConstraints">
+
+        <Button
+            android:id="@+id/bt_nod_time_add"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:text="+"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_nod_time"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:textColor="@color/text_red"
+            tools:text="12" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingRight="8dp"
+            android:text="ms"
+            android:textColor="@color/text_green" />
+
+        <Button
+            android:id="@+id/bt_nod_time_del"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:text="-"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/bt_rotate"
@@ -159,7 +384,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:paddingRight="8dp"
-            android:text="℃"
+            android:text="°"
             android:textColor="@color/text_green" />
 
         <Button

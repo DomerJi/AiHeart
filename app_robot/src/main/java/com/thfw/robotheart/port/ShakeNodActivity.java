@@ -44,6 +44,28 @@ public class ShakeNodActivity extends RobotBaseActivity {
     private TextView mTvRotateTime;
     private Button mBtTimeDel;
 
+    private LinearLayout mLlShakeSet;
+    private Button mBtShakeAngleAdd;
+    private TextView mTvShakeAngle;
+    private Button mBtShakeDel;
+    private LinearLayout mLlShakeTime;
+    private Button mBtShakeTimeAdd;
+    private TextView mTvShakeTime;
+    private Button mBtShakeTimeDel;
+
+    private LinearLayout mLlNodSet;
+    private Button mBtNodAngleAdd;
+    private TextView mTvNodAngle;
+    private Button mBtNodAngleDel;
+    private LinearLayout mLlNodDownSet;
+    private Button mBtNodDownAngleAdd;
+    private TextView mTvNodDownAngle;
+    private Button mBtNodDownAngleDel;
+    private LinearLayout mLlNodTime;
+    private Button mBtNodTimeAdd;
+    private TextView mTvNodTime;
+    private Button mBtNodTimeDel;
+
 
     @Override
     public int getContentView() {
@@ -75,35 +97,141 @@ public class ShakeNodActivity extends RobotBaseActivity {
         mBtTimeAdd = (Button) findViewById(R.id.bt_time_add);
         mTvRotateTime = (TextView) findViewById(R.id.tv_rotate_time);
         mBtTimeDel = (Button) findViewById(R.id.bt_time_del);
-        int angle = SharePreferenceUtil.getInt(ActionParams.KEY_ROTATE_ANGLE, ActionParams.ANGLE);
+        int angle = SharePreferenceUtil.getInt(ActionParams.KEY_ROTATE_ANGLE, ActionParams.ROTATE_ANGLE);
         int time = SharePreferenceUtil.getInt(ActionParams.KEY_ROTATE_TIME, ActionParams.ONE_ANGLE_TIME);
         mTvRotateAngle.setText(String.valueOf(angle));
         mTvRotateTime.setText(String.valueOf(time));
         mBtRotate.setOnLongClickListener(v -> {
-            mLlRotateSet.setVisibility(View.VISIBLE);
-            mLlRotateTime.setVisibility(View.VISIBLE);
+            boolean oldVisible = mLlRotateSet.getVisibility() == View.VISIBLE;
+            mLlRotateSet.setVisibility(oldVisible ? View.GONE : View.VISIBLE);
+            mLlRotateTime.setVisibility(oldVisible ? View.GONE : View.VISIBLE);
             return false;
         });
         mBtAngleAdd.setOnClickListener(v -> {
-            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_ROTATE_ANGLE, ActionParams.ANGLE);
+            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_ROTATE_ANGLE, ActionParams.ROTATE_ANGLE);
             mTvRotateAngle.setText(String.valueOf(angleTemp + 1));
             SharePreferenceUtil.setInt(ActionParams.KEY_ROTATE_ANGLE, angleTemp + 1);
         });
         mBtAngleDel.setOnClickListener(v -> {
-            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_ROTATE_ANGLE, ActionParams.ANGLE);
+            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_ROTATE_ANGLE, ActionParams.ROTATE_ANGLE);
             mTvRotateAngle.setText(String.valueOf(angleTemp - 1));
             SharePreferenceUtil.setInt(ActionParams.KEY_ROTATE_ANGLE, angleTemp - 1);
         });
 
         mBtTimeAdd.setOnClickListener(v -> {
-            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_ROTATE_TIME, ActionParams.ANGLE);
+            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_ROTATE_TIME, ActionParams.ONE_ANGLE_TIME);
             mTvRotateTime.setText(String.valueOf(angleTemp + 1));
             SharePreferenceUtil.setInt(ActionParams.KEY_ROTATE_TIME, angleTemp + 1);
         });
         mBtTimeDel.setOnClickListener(v -> {
-            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_ROTATE_TIME, ActionParams.ANGLE);
+            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_ROTATE_TIME, ActionParams.ONE_ANGLE_TIME);
             mTvRotateTime.setText(String.valueOf(angleTemp - 1));
             SharePreferenceUtil.setInt(ActionParams.KEY_ROTATE_TIME, angleTemp - 1);
+        });
+
+        // 摇头度数
+        mLlShakeSet = (LinearLayout) findViewById(R.id.ll_shake_set);
+        mBtShakeAngleAdd = (Button) findViewById(R.id.bt_shake_angle_add);
+        mTvShakeAngle = (TextView) findViewById(R.id.tv_shake_angle);
+        mBtShakeDel = (Button) findViewById(R.id.bt_shake_del);
+        mLlShakeTime = (LinearLayout) findViewById(R.id.ll_shake_time);
+        mBtShakeTimeAdd = (Button) findViewById(R.id.bt_shake_time_add);
+        mTvShakeTime = (TextView) findViewById(R.id.tv_shake_time);
+        mBtShakeTimeDel = (Button) findViewById(R.id.bt_shake_time_del);
+
+        int angleShake = SharePreferenceUtil.getInt(ActionParams.KEY_SHAKE_ANGLE, ActionParams.SHAKE_ANGLE);
+        int timeShake = SharePreferenceUtil.getInt(ActionParams.KEY_SHAKE_TIME, ActionParams.ONE_ANGLE_TIME2);
+        mTvShakeAngle.setText(String.valueOf(angleShake));
+        mTvShakeTime.setText(String.valueOf(timeShake));
+        mBtShake.setOnLongClickListener(v -> {
+            boolean oldVisible = mLlShakeSet.getVisibility() == View.VISIBLE;
+            mLlShakeSet.setVisibility(oldVisible ? View.GONE : View.VISIBLE);
+            mLlShakeTime.setVisibility(oldVisible ? View.GONE : View.VISIBLE);
+            return true;
+        });
+        mBtShakeAngleAdd.setOnClickListener(v -> {
+            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_SHAKE_ANGLE, ActionParams.SHAKE_ANGLE);
+            mTvShakeAngle.setText(String.valueOf(angleTemp + 1));
+            SharePreferenceUtil.setInt(ActionParams.KEY_SHAKE_ANGLE, angleTemp + 1);
+        });
+        mBtShakeDel.setOnClickListener(v -> {
+            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_SHAKE_ANGLE, ActionParams.SHAKE_ANGLE);
+            mTvShakeAngle.setText(String.valueOf(angleTemp - 1));
+            SharePreferenceUtil.setInt(ActionParams.KEY_SHAKE_ANGLE, angleTemp - 1);
+        });
+
+        mBtShakeTimeAdd.setOnClickListener(v -> {
+            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_SHAKE_TIME, ActionParams.ONE_ANGLE_TIME2);
+            mTvShakeTime.setText(String.valueOf(angleTemp + 1));
+            SharePreferenceUtil.setInt(ActionParams.KEY_SHAKE_TIME, angleTemp + 1);
+        });
+        mBtShakeTimeDel.setOnClickListener(v -> {
+            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_SHAKE_TIME, ActionParams.ONE_ANGLE_TIME2);
+            mTvShakeTime.setText(String.valueOf(angleTemp - 1));
+            SharePreferenceUtil.setInt(ActionParams.KEY_SHAKE_TIME, angleTemp - 1);
+        });
+
+        // 点头度数
+        mLlNodSet = (LinearLayout) findViewById(R.id.ll_nod_set);
+        mBtNodAngleAdd = (Button) findViewById(R.id.bt_nod_angle_add);
+        mTvNodAngle = (TextView) findViewById(R.id.tv_nod_angle);
+        mBtNodAngleDel = (Button) findViewById(R.id.bt_nod_angle_del);
+        mLlNodDownSet = (LinearLayout) findViewById(R.id.ll_nod_down_set);
+        mBtNodDownAngleAdd = (Button) findViewById(R.id.bt_nod_down_angle_add);
+        mTvNodDownAngle = (TextView) findViewById(R.id.tv_nod_down_angle);
+        mBtNodDownAngleDel = (Button) findViewById(R.id.bt_nod_down_angle_del);
+        mLlNodTime = (LinearLayout) findViewById(R.id.ll_nod_time);
+        mBtNodTimeAdd = (Button) findViewById(R.id.bt_nod_time_add);
+        mTvNodTime = (TextView) findViewById(R.id.tv_nod_time);
+        mBtNodTimeDel = (Button) findViewById(R.id.bt_nod_time_del);
+
+        int angleNodUp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_UP_ANGLE, ActionParams.NOD_UP_ANGLE);
+        int angleNodDown = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_DOWN_ANGLE, ActionParams.NOD_DOWN_ANGLE);
+        int timeNod = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_TIME, ActionParams.ONE_ANGLE_TIME2);
+
+        mTvNodTime.setText(String.valueOf(timeNod));
+        mTvNodAngle.setText(String.valueOf(angleNodUp));
+        mTvNodDownAngle.setText(String.valueOf(angleNodDown));
+
+        mBtNod.setOnLongClickListener(v -> {
+            boolean oldVisible = mLlNodSet.getVisibility() == View.VISIBLE;
+            mLlNodSet.setVisibility(oldVisible ? View.GONE : View.VISIBLE);
+            mLlNodDownSet.setVisibility(oldVisible ? View.GONE : View.VISIBLE);
+            mLlNodTime.setVisibility(oldVisible ? View.GONE : View.VISIBLE);
+            return true;
+        });
+
+        mBtNodAngleAdd.setOnClickListener(v -> {
+            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_UP_ANGLE, ActionParams.NOD_UP_ANGLE);
+            mTvNodAngle.setText(String.valueOf(angleTemp + 1));
+            SharePreferenceUtil.setInt(ActionParams.KEY_NOD_UP_ANGLE, angleTemp + 1);
+        });
+        mBtNodAngleDel.setOnClickListener(v -> {
+            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_UP_ANGLE, ActionParams.NOD_UP_ANGLE);
+            mTvNodAngle.setText(String.valueOf(angleTemp - 1));
+            SharePreferenceUtil.setInt(ActionParams.KEY_NOD_UP_ANGLE, angleTemp - 1);
+        });
+
+        mBtNodDownAngleAdd.setOnClickListener(v -> {
+            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_DOWN_ANGLE, ActionParams.NOD_DOWN_ANGLE);
+            mTvNodDownAngle.setText(String.valueOf(angleTemp + 1));
+            SharePreferenceUtil.setInt(ActionParams.KEY_NOD_DOWN_ANGLE, angleTemp + 1);
+        });
+        mBtNodDownAngleDel.setOnClickListener(v -> {
+            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_DOWN_ANGLE, ActionParams.NOD_DOWN_ANGLE);
+            mTvNodDownAngle.setText(String.valueOf(angleTemp - 1));
+            SharePreferenceUtil.setInt(ActionParams.KEY_NOD_DOWN_ANGLE, angleTemp - 1);
+        });
+
+        mBtNodTimeAdd.setOnClickListener(v -> {
+            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_TIME, ActionParams.ONE_ANGLE_TIME2);
+            mTvNodTime.setText(String.valueOf(angleTemp + 1));
+            SharePreferenceUtil.setInt(ActionParams.KEY_NOD_TIME, angleTemp + 1);
+        });
+        mBtNodTimeDel.setOnClickListener(v -> {
+            int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_TIME, ActionParams.ONE_ANGLE_TIME2);
+            mTvNodTime.setText(String.valueOf(angleTemp - 1));
+            SharePreferenceUtil.setInt(ActionParams.KEY_NOD_TIME, angleTemp - 1);
         });
     }
 
