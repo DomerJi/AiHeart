@@ -40,6 +40,7 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
+import com.iflytek.cloud.SpeechError;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.face.MyAnimationListener;
@@ -71,6 +72,7 @@ import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.utils.VideoGestureHelper;
+import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -179,6 +181,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             return;
         }
 
+        playStateManager();
 
         mAudioView = (StyledPlayerView) findViewById(R.id.audio_view);
         mIvCollect = (ImageView) findViewById(R.id.iv_collect);
@@ -214,6 +217,32 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         mTvAudioTitle = (TextView) findViewById(R.id.tv_audio_title);
 
         initGesture();
+    }
+
+    /**
+     * tts打断后继续
+     */
+    private void playStateManager() {
+        TtsHelper.getInstance().setCurrentSynthesizerListener(new TtsHelper.SimpleSynthesizerListener() {
+
+            boolean organPlaying;
+
+            @Override
+            public void onSpeakBegin() {
+                super.onSpeakBegin();
+                organPlaying = player != null && player.isPlaying();
+            }
+
+            @Override
+            public void onCompleted(SpeechError speechError) {
+                super.onCompleted(speechError);
+                if (organPlaying) {
+                    if (player != null && !player.isPlaying()) {
+                        player.play();
+                    }
+                }
+            }
+        });
     }
 
     /**

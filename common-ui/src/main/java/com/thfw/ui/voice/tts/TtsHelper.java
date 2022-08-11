@@ -48,6 +48,7 @@ public class TtsHelper implements ITtsFace {
 
     private TtsModel ttsModel;
     private SynthesizerListener currentSynthesizerListener;
+    private SynthesizerListener currentSynthesizerListener2;
     private SimpleExoPlayer exoPlayer;
 
     private TtsHelper() {
@@ -138,7 +139,7 @@ public class TtsHelper implements ITtsFace {
     }
 
     public void setCurrentSynthesizerListener(SimpleSynthesizerListener currentSynthesizerListener) {
-        this.currentSynthesizerListener = currentSynthesizerListener;
+        this.currentSynthesizerListener2 = currentSynthesizerListener;
     }
 
     @Override
@@ -277,12 +278,18 @@ public class TtsHelper implements ITtsFace {
             if (currentSynthesizerListener != null) {
                 currentSynthesizerListener.onSpeakBegin();
             }
+            if (currentSynthesizerListener2 != null) {
+                currentSynthesizerListener2.onSpeakBegin();
+            }
         }
 
         @Override
         public void onBufferProgress(int i, int i1, int i2, String s) {
             if (currentSynthesizerListener != null) {
                 currentSynthesizerListener.onBufferProgress(i, i1, i2, s);
+            }
+            if (currentSynthesizerListener2 != null) {
+                currentSynthesizerListener2.onBufferProgress(i, i1, i2, s);
             }
         }
 
@@ -291,6 +298,9 @@ public class TtsHelper implements ITtsFace {
             if (currentSynthesizerListener != null) {
                 currentSynthesizerListener.onSpeakPaused();
             }
+            if (currentSynthesizerListener2 != null) {
+                currentSynthesizerListener2.onSpeakPaused();
+            }
         }
 
         @Override
@@ -298,12 +308,18 @@ public class TtsHelper implements ITtsFace {
             if (currentSynthesizerListener != null) {
                 currentSynthesizerListener.onSpeakResumed();
             }
+            if (currentSynthesizerListener2 != null) {
+                currentSynthesizerListener2.onSpeakResumed();
+            }
         }
 
         @Override
         public void onSpeakProgress(int i, int i1, int i2) {
             if (currentSynthesizerListener != null) {
                 currentSynthesizerListener.onSpeakProgress(i, i1, i2);
+            }
+            if (currentSynthesizerListener2 != null) {
+                currentSynthesizerListener2.onSpeakProgress(i, i1, i2);
             }
         }
 
@@ -313,6 +329,9 @@ public class TtsHelper implements ITtsFace {
             if (currentSynthesizerListener != null) {
                 currentSynthesizerListener.onCompleted(speechError);
             }
+            if (currentSynthesizerListener2 != null) {
+                currentSynthesizerListener2.onCompleted(speechError);
+            }
             VoiceTypeManager.getManager().setVoiceType(VoiceType.READ_STOP);
         }
 
@@ -320,6 +339,9 @@ public class TtsHelper implements ITtsFace {
         public void onEvent(int i, int i1, int i2, Bundle bundle) {
             if (currentSynthesizerListener != null) {
                 currentSynthesizerListener.onEvent(i, i1, i2, bundle);
+            }
+            if (currentSynthesizerListener2 != null) {
+                currentSynthesizerListener2.onEvent(i, i1, i2, bundle);
             }
         }
     }
@@ -336,6 +358,13 @@ public class TtsHelper implements ITtsFace {
                 .setAudioAttributes(AudioAttributes.DEFAULT, true)
                 .build();
         exoPlayer.addMediaItem(MediaItem.fromUri(cacheFile));
+        if (currentSynthesizerListener != null) {
+            currentSynthesizerListener.onSpeakBegin();
+        }
+        if (currentSynthesizerListener2 != null) {
+            currentSynthesizerListener2.onSpeakBegin();
+        }
+        LogUtil.i(TAG, "playCacheFile start");
         exoPlayer.prepare();
         exoPlayer.play();
         exoPlayer.addListener(new Player.Listener() {
@@ -347,6 +376,9 @@ public class TtsHelper implements ITtsFace {
                     if (currentSynthesizerListener != null) {
                         currentSynthesizerListener.onCompleted(new SpeechError(0));
                     }
+                    if (currentSynthesizerListener2 != null) {
+                        currentSynthesizerListener2.onCompleted(new SpeechError(0));
+                    }
                 }
             }
 
@@ -356,13 +388,15 @@ public class TtsHelper implements ITtsFace {
                 onExoRelease();
                 if (currentSynthesizerListener != null) {
                     currentSynthesizerListener.onEvent(0, 0, 0, null);
+                    currentSynthesizerListener.onCompleted(new SpeechError(0));
+                }
+
+                if (currentSynthesizerListener2 != null) {
+                    currentSynthesizerListener2.onEvent(0, 0, 0, null);
+                    currentSynthesizerListener2.onCompleted(new SpeechError(0));
                 }
             }
         });
-        if (currentSynthesizerListener != null) {
-            currentSynthesizerListener.onSpeakBegin();
-        }
-        LogUtil.i(TAG, "playCacheFile start");
     }
 
     private void onExoRelease() {

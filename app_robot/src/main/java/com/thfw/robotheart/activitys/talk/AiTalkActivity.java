@@ -1271,6 +1271,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     public void onDestroy() {
         PolicyHelper.getInstance().end();
         TtsHelper.getInstance().stop();
+        TtsHelper.getInstance().setCurrentSynthesizerListener(null);
         super.onDestroy();
     }
 
