@@ -37,7 +37,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
      * 1微秒=1000纳秒
      */
     private static final long ONE_NS_TIME = 1000 * 1000 * 1000;
-    private static final long JVM_MIN_BOOTP_TIME = 20 * ONE_NS_TIME;
+    private static final long JVM_MIN_BOOTP_TIME = 30 * ONE_NS_TIME;
     private static ShutDownCallback shutDownCallback;
     private static WeakReference<FragmentActivity> mFragmentActivity;
 
