@@ -29,6 +29,7 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
+import com.thfw.mobileheart.activity.PrivateSetActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.me.CollectActivity;
 import com.thfw.mobileheart.activity.me.MeHistoryActivity;
@@ -151,6 +152,11 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
         mLlMeTask = (LinearLayout) findViewById(R.id.ll_me_task);
         mTvHistoryHappy = (TextView) findViewById(R.id.tv_history_happy);
         mBtLogout = (Button) findViewById(R.id.bt_logout);
+        findViewById(R.id.v_top_banner).setOnClickListener(v -> {
+            if (ClickCountUtils.click(10)) {
+                startActivity(new Intent(mContext, PrivateSetActivity.class));
+            }
+        });
         // todo 我的任务
         mLlMeTask.setOnClickListener(v -> {
             startActivity(new Intent(mContext, MeTaskActivity.class));

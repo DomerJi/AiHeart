@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.ToastUtil;
 
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -24,11 +24,11 @@ public class TimingHelper {
 
     private static final String TAG = TimingHelper.class.getSimpleName();
     private Handler mHandler;
-    private HashMap<WorkInt, HashSet<WorkListener>> mWorkInts;
+    private ConcurrentHashMap<WorkInt, HashSet<WorkListener>> mWorkInts;
     private static final String S_COUNT = "handleMessage count ===========================";
 
     private TimingHelper() {
-        mWorkInts = new HashMap<>();
+        mWorkInts = new ConcurrentHashMap();
         mHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(@NonNull Message msg) {

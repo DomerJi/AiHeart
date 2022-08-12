@@ -9,6 +9,7 @@
     tools:context="com.thfw.mobileheart.fragment.MeFragment">
 
     <View
+        android:id="@+id/v_top_banner"
         android:layout_width="match_parent"
         android:layout_height="220dp"
         android:background="@color/colorPrimary"

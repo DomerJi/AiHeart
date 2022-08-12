@@ -4,23 +4,30 @@ package com.thfw.base.net;
 public class ApiHost {
 
     /**
-     * 沙盒环境
-     */
-    public static String SANDBOX_HOST = "https://sandbox-vehicle.baidu.com/";
-
-    /**
      * 正式环境
      */
-    public static String ONLINE_HOST = "https://tianhe.soulbuddy.cn/";
+    public static final String ONLINE_HOST = "http://psyhealthfw.thyunmai.com:40184/";
 
     /**
      * 测试环境
      */
-    public static String TEST_HOST = "http://183.232.231.82";
+    public static final String TEST_HOST = "https://tianhe.soulbuddy.cn/";
 
+    /**
+     * 正在使用
+     */
+    private static String CURRENT_HOST = ONLINE_HOST;
+
+
+    public static void setCurrentHost(String currentHost) {
+        CURRENT_HOST = currentHost;
+    }
 
     public static String getHost() {
-        return ONLINE_HOST;
+        if (CURRENT_HOST == null) {
+            CURRENT_HOST = ONLINE_HOST;
+        }
+        return CURRENT_HOST;
     }
 
 }

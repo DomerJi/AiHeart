@@ -47,4 +47,7 @@ dependencies {
     //androidx
     api 'com.scwang.wave:MultiWaveHeader:1.0.0-andx'
     implementation files('lib\\TarsosDSP-Android-2.4-bin.jar')
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
 }

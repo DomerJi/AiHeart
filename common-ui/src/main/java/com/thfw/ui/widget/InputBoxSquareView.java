@@ -143,7 +143,9 @@ public class InputBoxSquareView extends FrameLayout {
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
         if (hasWindowFocus && softKeyboardAuto) {
-            showSoftInput(mEtCode);
+            if (getVisibility() == VISIBLE) {
+                showSoftInput(mEtCode);
+            }
         }
     }
 

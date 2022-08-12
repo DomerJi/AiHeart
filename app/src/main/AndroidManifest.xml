@@ -60,6 +60,9 @@
             android:name=".activity.task.TaskDetailsActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activity.PrivateSetActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity.talk.TalkHistoryActivity"
             android:screenOrientation="portrait" />
         <activity

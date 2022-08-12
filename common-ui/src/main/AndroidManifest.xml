@@ -3,8 +3,9 @@
     package="com.thfw.ui">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+
     <application>
-        <activity android:name="com.thfw.ui.com.thfw.mobileheart.activity.BaseActivity"></activity>
+        <activity android:name=".base.HostActivity"></activity>
     </application>
 
 </manifest>

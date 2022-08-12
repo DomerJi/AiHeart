@@ -25,6 +25,7 @@ import androidx.annotation.RequiresApi;
 
 import com.thfw.base.ContextApp;
 
+import java.util.Date;
 import java.util.List;
 
 public class Util {
@@ -364,6 +365,14 @@ public class Util {
         }
         return null;
 
+    }
+
+    public static int getWeekFormCalendar(long time) {
+        Date inputDate = new Date();
+        inputDate.setTime(time);
+        java.util.Calendar date = java.util.Calendar.getInstance();
+        date.setTime(inputDate);
+        return date.get(java.util.Calendar.DAY_OF_WEEK) - 1;
     }
 
 
