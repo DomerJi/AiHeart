@@ -60,6 +60,7 @@
     <dimen name="textSize_small_2">14sp</dimen>
     <dimen name="textSize_product">12sp</dimen>
     <dimen name="textSize_large">20sp</dimen>
+    <dimen name="textSize_large_max">24sp</dimen>
     <dimen name="textSize_password">22sp</dimen>
     <dimen name="textSize_navigation_tab_left">22sp</dimen>
     <dimen name="textSize_navigation_tab_left_child">18sp</dimen>

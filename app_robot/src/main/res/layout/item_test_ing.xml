@@ -52,7 +52,7 @@
         android:paddingTop="2dp"
         android:text="@string/bigText2"
         android:textColor="@color/text_green"
-        android:textSize="@dimen/textSize_large"
+        android:textSize="@dimen/textSize_large_max"
         app:layout_constraintLeft_toRightOf="@id/v_tab"
         app:layout_constraintRight_toLeftOf="@id/ll_page"
         app:layout_constraintTop_toTopOf="@id/v_tab" />
