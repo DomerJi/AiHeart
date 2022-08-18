@@ -108,6 +108,16 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
             }
             if (paramsStr.startsWith("?")) {
                 paramsStr = paramsStr.substring(1);
+            } else {
+                // 匹配地址 中 有参数 以 “？” 来区分https://www.pgyer.com/qjphone?3RcI1a4bWnQc8oCo1qa5iw==
+                int askIndex = -1;
+                if ((askIndex = finalQRCode.indexOf("?")) != -1) {
+                    try {
+                        paramsStr = finalQRCode.substring(askIndex + 1);
+                    } catch (Exception e) {
+                        LogUtil.e("finalQRCode.substring(askIndex + 1) e = " + e.getMessage());
+                    }
+                }
             }
             LogUtil.d("parseCode", "paramsStr2 = " + paramsStr);
             // 3b86e89d01dafe17【3b86e89d01dafe17】
