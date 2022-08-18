@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -268,6 +269,9 @@ public class DormantActivity extends RobotBaseActivity
     private void shutDown() {
         LogUtil.d(TAG, "shutDown -> isInstallRobot true 【关机】");
         TtsHelper.getInstance().start(new TtsModel("拜拜,下次见哦"), null);
+        if (mTvTime != null) {
+            mTvTime.setVisibility(View.INVISIBLE);
+        }
         SVGAHelper.playSVGA(mIvAnim, SVGAHelper.SVGAModel.create(AnimFileName.EMOJI_GUANJI).setLoopCount(1), new DialogRobotFactory.SimpleSVGACallBack() {
             @Override
             public void onFinished() {

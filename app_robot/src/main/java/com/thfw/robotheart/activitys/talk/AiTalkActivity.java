@@ -55,7 +55,9 @@ import com.thfw.robotheart.activitys.test.TestActivity;
 import com.thfw.robotheart.adapter.ChatAdapter;
 import com.thfw.robotheart.adapter.ChatSelectAdapter;
 import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.port.ActionParams;
 import com.thfw.robotheart.port.SerialManager;
+import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.PageJumpUtils;
 import com.thfw.robotheart.util.SVGAHelper;
@@ -395,6 +397,12 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             LogUtil.d(TAG, "mHelper.getTalkModel() == null 对话还未开始！！！");
             return;
         }
+
+        if (checkDance(inputText)) {
+            LogUtil.i(TAG, "----------- speech dance -------------");
+            return;
+        }
+
         ChatEntity chatEntity = new ChatEntity();
         chatEntity.type = ChatEntity.TYPE_TO;
         chatEntity.talk = inputText;
@@ -404,6 +412,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         if (mScene != 1) {
             netParams.add("id", mHelper.getTalkModel().getId());
         }
+
         if (isReadAfterSpeech()) {
             PolicyHelper.getInstance().setRequestIng(true);
         }
@@ -413,6 +422,33 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mEtContent.setText("");
 
     }
+
+    private boolean checkDance(String inputText) {
+        if (RobotUtil.isInstallRobot() && mScene == 1) {
+            RobotUtil.Dance dance = RobotUtil.onDance(inputText);
+            if (dance.type == RobotUtil.Dance.NORMAL) {
+                return false;
+            }
+            LogUtil.i(TAG, "dance -> " + dance.toString());
+            TtsHelper.getInstance().start(new TtsModel(dance.tts), null);
+            switch (dance.type) {
+                case RobotUtil.Dance.ALL:
+                    SerialManager.getInstance().startAllAction();
+                    return true;
+                case RobotUtil.Dance.SHAKE:
+                    SerialManager.getInstance().startAction(ActionParams.getNormalShake());
+                    return true;
+                case RobotUtil.Dance.NOD:
+                    SerialManager.getInstance().startAction(ActionParams.getNormalNod());
+                    return true;
+                case RobotUtil.Dance.ROTATE:
+                    SerialManager.getInstance().startAction(ActionParams.getNormalRotate());
+                    return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public void initData() {

@@ -279,9 +279,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
         });
 
         mBtAllAction.setOnClickListener(v -> {
-            mBtShake.performClick();
-            mBtNod.performClick();
-            mBtRotate.performClick();
+            SerialManager.getInstance().startAllAction();
         });
 
 

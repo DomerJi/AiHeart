@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
@@ -44,9 +45,10 @@ public class RobotUtil {
     private static final String TAG = RobotUtil.class.getSimpleName();
     private static final String SHUTDOWN = "android.intent.action.ACTION_SHUTDOWN";
 
-    public static int installRobot = -1;
+    private static int installRobot = -1;
+
     // 是否使用umeng
-    public static final boolean USE_UMENG = false;
+    private static final boolean USE_UMENG = false;
     /**
      * 长按关机监听
      */
@@ -349,6 +351,59 @@ public class RobotUtil {
             }
             SerialManager.getInstance().startAction(ActionParams.getNormalRotate(actionAngle));
 
+        }
+    }
+
+
+    public static Dance onDance(String text) {
+        if (TextUtils.isEmpty(text) || text.length() > 12) {
+            return Dance.EMPTY;
+        }
+        if (text.contains("跳舞") || text.contains("跳个舞") || text.contains("动一动")) {
+            if (text.contains("跳个舞") || text.contains("会跳舞吗")
+                    || text.contains("能跳舞")
+                    || text.contains("动一动")) {
+                return new Dance(Dance.ALL, "我来跳舞吧");
+            }
+        } else if (text.contains("摇头") || text.contains("摇个头")) {
+            return new Dance(Dance.SHAKE, "我来摇个头吧");
+        } else if (text.contains("点头") || text.contains("点个头")) {
+            return new Dance(Dance.NOD, "我来点个头吧");
+        } else if (text.contains("转身") || text.contains("转个身") || text.contains("扭一扭")) {
+            return new Dance(Dance.ROTATE, "我来转个身吧");
+        }
+
+        return Dance.EMPTY;
+    }
+
+    public static class Dance {
+        public static final int NORMAL = 0;
+        public static final int SHAKE = 1;
+        public static final int NOD = 2;
+        public static final int ROTATE = 3;
+        public static final int ALL = 4;
+
+        public static final Dance EMPTY = new Dance();
+
+        public int type;
+        public String tts;
+
+        public Dance() {
+            this.type = NORMAL;
+        }
+
+        public Dance(int type, String tts) {
+            this.type = type;
+            this.tts = tts;
+        }
+
+
+        @Override
+        public String toString() {
+            return "Dance{" +
+                    "type=" + type +
+                    ", tts='" + tts + '\'' +
+                    '}';
         }
     }
 

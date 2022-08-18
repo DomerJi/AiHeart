@@ -289,6 +289,16 @@ public class SerialManager {
         }
     }
 
+    public void startAllAction() {
+        SerialManager.getInstance().startAction(ActionParams.getNormalShake());
+        HandlerUtil.getMainHandler().postDelayed(() -> {
+            SerialManager.getInstance().startAction(ActionParams.getNormalNod());
+        }, 100);
+        HandlerUtil.getMainHandler().postDelayed(() -> {
+            SerialManager.getInstance().startAction(ActionParams.getNormalRotate());
+        }, 200);
+    }
+
     public void startAction(ActionParams actionParams) {
         if (actionParams == null) {
             LogUtil.e(TAG, "actionParams -> null");
@@ -376,8 +386,8 @@ public class SerialManager {
             }
             LogUtil.d(TAG, "params -> " + Arrays.toString(params));
             if (LogUtil.isLogEnabled()) {
-                ToastUtil.show(actionParams.getControlOrder() == ActionParams.ControlOrder.NOD
-                        ? "点头： -> " : "摇头： -> " + "left：" + left + "_right：" + right + "_" + Arrays.toString(params));
+                ToastUtil.show((actionParams.getControlOrder() == ActionParams.ControlOrder.NOD
+                        ? "点头： -> " : "摇头： -> ") + "left：" + left + "_right：" + right + "_" + Arrays.toString(params));
             }
             SerialManager.getInstance().sendNow(order, params);
             if (actionParams.getRunCount() > -1) {

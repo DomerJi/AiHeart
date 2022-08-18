@@ -14,6 +14,9 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.ui.R;
 import com.thfw.ui.widget.TitleView;
 
+import static com.thfw.base.net.ApiHost.KEY_CUSTOM_HOST;
+import static com.thfw.base.net.ApiHost.KEY_SELECTED_HOST;
+
 public class HostActivity extends IBaseActivity {
 
     private com.thfw.ui.widget.TitleView mTitleView;
@@ -23,8 +26,7 @@ public class HostActivity extends IBaseActivity {
     private android.widget.EditText mEtCustom;
 
 
-    private static final String KEY_SELECTED_HOST = "key.selected.host";
-    private static final String KEY_CUSTOM_HOST = "key.custom.host";
+
 
     @Override
     public int getContentView() {
