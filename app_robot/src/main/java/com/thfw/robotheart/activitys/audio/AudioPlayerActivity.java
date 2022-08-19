@@ -43,12 +43,14 @@ import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.iflytek.cloud.SpeechError;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.api.HistoryApi;
+import com.thfw.base.api.MusicApi;
 import com.thfw.base.face.MyAnimationListener;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.LyricModel;
 import com.thfw.base.models.TaskMusicEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.AudioPresenter;
@@ -56,6 +58,7 @@ import com.thfw.base.presenter.HistoryPresenter;
 import com.thfw.base.presenter.TaskPresenter;
 import com.thfw.base.utils.DataChangeHelper;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.HourChangeHelper;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -81,6 +84,8 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+
+import me.wcy.lrcview.LrcView;
 
 /**
  * 正念冥想播放音频
@@ -142,6 +147,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private boolean isTask;
     private int mMusicId;
     private ArrayList<TaskMusicEtcModel.MusicListBean> mTaskEtcModel;
+    private LrcView mLrcView;
 
     public static void startActivity(Context context, AudioEtcModel audioEtcModel) {
         ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
@@ -320,6 +326,36 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             GlideUtil.load(mContext, mItemModel.getImg(), mRivEtc);
             setAudioData();
             mPbBar.hide();
+            if (mItemModel.isMp3()) {
+                MusicApi.requestLyric(mItemModel.getId() + "", new MusicApi.LyricCallback() {
+                    @Override
+                    public void onFailure(int code, String msg) {
+
+                    }
+
+                    @Override
+                    public void onResponse(LyricModel lyricModel) {
+                        if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
+                            return;
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
+                                    return;
+                                }
+                                mLrcView = findViewById(R.id.lrc_view);
+                                if (mLrcView != null) {
+                                    mLrcView.setVisibility(View.VISIBLE);
+                                    mLrcView.loadLrc(lyricModel.lyric);
+                                    lrcLoop();
+                                }
+                            }
+                        });
+                    }
+                });
+
+            }
             autoFinished = mItemModel.isAutoFinished();
         } else {
             autoFinished = mModel.isAutoFinished();
@@ -339,6 +375,22 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             mPresenter.getAudioEtcInfo(mModel.getId());
             mPbBar.showLoadingNoText();
         }
+    }
+
+    /**
+     * 歌词滚动
+     */
+    private void lrcLoop() {
+        HandlerUtil.getMainHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (EmptyUtil.isEmpty(AudioPlayerActivity.this) || mLrcView == null || player == null) {
+                    return;
+                }
+                mLrcView.updateTime(player.getCurrentPosition() + 300);
+                HandlerUtil.getMainHandler().postDelayed(this, player.isPlaying() ? 300 : 1000);
+            }
+        }, 1000);
     }
 
     private void setAudioData() {

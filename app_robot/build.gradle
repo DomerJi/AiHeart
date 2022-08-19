@@ -8,8 +8,8 @@ android {
         applicationId "com.thfw.robotheart"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 211
-        versionName "2.2.4"
+        versionCode 212
+        versionName "2.2.5"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "buildTest"
@@ -161,6 +161,8 @@ dependencies {
     implementation 'com.github.yyued:SVGAPlayer-Android:2.6.1'
     api 'me.samlss:bloom:1.0.0'
     api 'org.bytedeco:opencv:4.5.3-1.5.6'
+    // 歌词
+    api 'me.wcy:lrcview:2.2'
 //    api 'org.bytedeco:opencv:4.5.3-1.5.6:android-arm'
 
 }

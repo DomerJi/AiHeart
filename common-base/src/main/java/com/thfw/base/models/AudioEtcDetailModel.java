@@ -312,8 +312,10 @@ public class AudioEtcDetailModel implements IModel {
         @SerializedName("num")
         private int num;
         @SerializedName("img")
-        private String img;
+        private Object img;
 
+        // 音乐MP3 加载歌词
+        private boolean mp3;
         // 自定义 字段
         // 自动返回;
         private boolean autoFinished;
@@ -334,6 +336,14 @@ public class AudioEtcDetailModel implements IModel {
 
         public void setAutoFinished(boolean autoFinished) {
             this.autoFinished = autoFinished;
+        }
+
+        public boolean isMp3() {
+            return mp3;
+        }
+
+        public void setMp3(boolean mp3) {
+            this.mp3 = mp3;
         }
 
         public int getMusicId() {
@@ -384,11 +394,11 @@ public class AudioEtcDetailModel implements IModel {
             this.sfile = sfile;
         }
 
-        public String getImg() {
+        public Object getImg() {
             return img;
         }
 
-        public void setImg(String img) {
+        public void setImg(Object img) {
             this.img = img;
         }
 

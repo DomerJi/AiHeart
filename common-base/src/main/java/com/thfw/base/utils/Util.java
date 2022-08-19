@@ -83,6 +83,14 @@ public class Util {
     }
 
     /**
+     * sp 转 px
+     */
+    public static int spToPx(int sp, Context context) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.getResources().getDisplayMetrics());
+
+    }
+
+    /**
      * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
      */
     public static int px2dip(float pxValue, Context context) {

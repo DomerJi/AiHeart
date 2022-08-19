@@ -107,6 +107,32 @@
         app:layout_constraintLeft_toLeftOf="@id/tv_audio_title"
         app:layout_constraintTop_toBottomOf="@id/tv_audio_title" />
 
+    <me.wcy.lrcview.LrcView
+        android:id="@+id/lrc_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/ll_bottom_control"
+        app:layout_constraintLeft_toRightOf="@id/rl_etc_control"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_audio_title"
+        app:lrcAnimationDuration="1000"
+        app:lrcCurrentTextColor="@color/colorRobotFore"
+        app:lrcDividerHeight="15dp"
+        app:lrcLabel="找不到歌词(@_@)"
+        app:lrcNormalTextColor="@color/white_50"
+        app:lrcTextGravity="left"
+        app:lrcTextSize="15sp"
+        app:lrcTimelineHeight="10dp"
+        app:lrcNormalTextSize="15sp"
+        app:lrcTimeTextColor="#BDBDBD"
+        app:lrcTimelineColor="#80BDBDBD"
+        app:lrcTimelineTextColor="#9FA8DA" />
+
 
     <ImageView
         android:id="@+id/iv_play_order"
