@@ -437,6 +437,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     private boolean checkMusic(String inputText) {
         String tempText = inputText;
         if (mScene == 1) {
+            // 相关冥想不作音乐处理
+            if (inputText.contains("冥想")) {
+                return false;
+            }
             tempText = tempText.replaceAll("（,|，|。|！|!）", "");
 
             // 播放xxx的音乐 播放xxx音乐 播放xxx的歌曲 播放xxx歌曲 播放xxx的歌
