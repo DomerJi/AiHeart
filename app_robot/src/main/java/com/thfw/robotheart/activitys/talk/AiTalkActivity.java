@@ -440,10 +440,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             // 播放xxx的音乐 播放xxx音乐 播放xxx的歌曲 播放xxx歌曲 播放xxx的歌
             // 我想听xxx的音乐 我想听xxx音乐 想听xxx的音乐 想听xxx音乐 想听xxx的歌曲 想听xxx歌曲 想听xxx的歌 听xxx的歌
             // 来一首xxx的歌 来一首xxx的音乐 来一首xxx音乐 来一首xxx 来一曲xxx的歌 来一曲xxx的歌 来一曲xxx
-            String REGEX_MUSIC = "(我要听|我想听|播放|想听|听|来一首|来一曲|一首|来首|)" +
+            String REGEX_MUSIC = "(我要听|我想听|播放|想听|听|来一首|来一曲|一首|来首)" +
                     "[a-zA-Z0-9\\u4e00-\\u9fa5]" +
                     "{1,20}";
-            String REGEX_MUSIC_REPLACE = "(我要听|我想听|播放|想听|听|来一首|来一曲|一首|来首|)|(的音乐|的歌曲|的歌|音乐|歌曲)";
+            String REGEX_MUSIC_REPLACE = "(我要听|我想听|播放|想听|听|来一首|来一曲|一首|来首)|(的音乐|的歌曲|的歌|音乐|歌曲)";
             if (tempText.matches(REGEX_MUSIC)) {
                 String name = tempText.replaceAll(REGEX_MUSIC_REPLACE, "");
                 boolean notEmptyName = !TextUtils.isEmpty(name);
