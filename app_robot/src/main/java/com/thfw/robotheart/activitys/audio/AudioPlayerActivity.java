@@ -400,11 +400,15 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         }
 
         btPlay.setOnClickListener(v -> {
-            ExoPlayerFactory.getExoPlayer().play();
+            if (player != null) {
+                player.play();
+            }
         });
 
         btPause.setOnClickListener(v -> {
-            ExoPlayerFactory.getExoPlayer().pause();
+            if (player != null) {
+                player.pause();
+            }
         });
 
 
@@ -891,6 +895,8 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                 ToastUtil.show("未知错误 - TYPE_UNEXPECTED");
             } else if (error.type == ExoPlaybackException.TYPE_REMOTE) {
                 ToastUtil.show("网络错误");
+            } else {
+                ToastUtil.show("未知错误");
             }
 
         }

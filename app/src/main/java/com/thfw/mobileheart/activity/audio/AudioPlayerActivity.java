@@ -320,7 +320,7 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
         }
     }
 
-    private void setBgBlur(String url) {
+    private void setBgBlur(Object url) {
         Glide.with(mContext).asBitmap().load(url).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull @NotNull Bitmap resource, @Nullable @org.jetbrains.annotations.Nullable Transition<? super Bitmap> transition) {
@@ -338,11 +338,15 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
         }
 
         btPlay.setOnClickListener(v -> {
-            ExoPlayerFactory.getExoPlayer().play();
+            if (player != null) {
+                player.play();
+            }
         });
 
         btPause.setOnClickListener(v -> {
-            ExoPlayerFactory.getExoPlayer().pause();
+            if (player != null) {
+                player.pause();
+            }
         });
 
 

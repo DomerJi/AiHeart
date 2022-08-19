@@ -32,7 +32,7 @@ public class MusicApi {
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         builder.addFormDataPart("name", name);
         builder.addFormDataPart("pages", "1");
-        builder.addFormDataPart("count", "20");
+        builder.addFormDataPart("count", "10");
         builder.addFormDataPart("source", "netease");
         builder.addFormDataPart("types", "search");
         OkHttpClient httpClient = new OkHttpClient();

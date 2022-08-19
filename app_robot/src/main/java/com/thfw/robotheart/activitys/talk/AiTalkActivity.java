@@ -86,6 +86,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements TalkPresenter.TalkUi<HttpResult<List<DialogTalkModel>>> {
 
@@ -437,55 +438,79 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         String tempText = inputText;
         if (mScene == 1) {
             tempText = tempText.replaceAll("（,|，|。|！|!）", "");
+
             // 播放xxx的音乐 播放xxx音乐 播放xxx的歌曲 播放xxx歌曲 播放xxx的歌
             // 我想听xxx的音乐 我想听xxx音乐 想听xxx的音乐 想听xxx音乐 想听xxx的歌曲 想听xxx歌曲 想听xxx的歌 听xxx的歌
             // 来一首xxx的歌 来一首xxx的音乐 来一首xxx音乐 来一首xxx 来一曲xxx的歌 来一曲xxx的歌 来一曲xxx
-            String REGEX_MUSIC = "(我要听|我想听|播放|想听|听|来一首|来一曲|一首|来首)" +
+            String REGEX_MUSIC = "(我要听首|我要听一首|我要听|我想听首|我想听一首|我想听" +
+                    "|播放首|播放一首|播放|想听首|想听|听首|听|给我来一首|来一首|来一曲|一首" +
+                    "|给我推荐一首|推荐一首|给我推荐个|给我推荐一个|推荐一个|给我来首|来首|给我放首|放首)" +
                     "[a-zA-Z0-9\\u4e00-\\u9fa5]" +
                     "{1,20}";
-            String REGEX_MUSIC_REPLACE = "(我要听|我想听|播放|想听|听|来一首|来一曲|一首|来首)|(的音乐|的歌曲|的歌|音乐|歌曲)";
+            String REGEX_MUSIC_REPLACE = "(我要听首|我要听一首|我要听|我想听首|我想听一首|我想听" +
+                    "|播放首|播放一首|播放|想听首|想听|听首|听|给我来一首|来一首|来一曲|一首" +
+                    "|给我推荐一首|推荐一首|给我推荐个|给我推荐一个|推荐一个|给我来首|来首|给我放首|放首)" +
+                    "|(的音乐|的歌曲|的歌|音乐|歌曲)";
             if (tempText.matches(REGEX_MUSIC)) {
                 String name = tempText.replaceAll(REGEX_MUSIC_REPLACE, "");
                 boolean notEmptyName = !TextUtils.isEmpty(name);
-                if (notEmptyName) {
-                    String tts = "即将为您播放" + (RegularUtil.contains(name) ? (name + "的音乐") : name);
-                    ToastUtil.show(tts);
-                    MusicApi.request(name, new MusicApi.MusicCallback() {
-                        @Override
-                        public void onFailure(int code, String msg) {
-
-                        }
-
-                        @Override
-                        public void onResponse(List<MusicModel> list) {
-                            if (EmptyUtil.isEmpty(AiTalkActivity.this)) {
-                                return;
-                            }
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    MusicModel musicModel = list.get(0);
-                                    AudioEtcDetailModel.AudioItemModel audioItemModel = new AudioEtcDetailModel.AudioItemModel();
-                                    audioItemModel.setId(musicModel.getId());
-                                    audioItemModel.setMusicId(musicModel.getId());
-                                    audioItemModel.setSfile(musicModel.getMp3Url());
-                                    audioItemModel.setImg(musicModel.getPicUrl());
-                                    audioItemModel.setTitle(musicModel.getName() + " - " + musicModel.getAlbum());
-                                    audioItemModel.setAuthor(musicModel.getAlbum());
-                                    audioItemModel.setMp3(true);
-                                    audioItemModel.setAutoFinished(true);
-                                    AudioPlayerActivity.startActivity(mContext, audioItemModel);
-                                }
-                            });
-
-                        }
-                    });
+                String ttsHint = null;
+                boolean recommend = false;
+                if (!notEmptyName || "歌".equals(name) | "歌儿".equals(name)) {
+                    recommend = true;
+                    name = RegularUtil.getRandomPeople();
+                    ttsHint = "为您推荐" + name + "的音乐";
+                } else {
+                    recommend = RegularUtil.contains(name);
+                    ttsHint = "即将为您播放" + (recommend ? (name + "的音乐") : name);
                 }
-                return notEmptyName;
-            } else {
-                LogUtil.i(TAG, "checkMusic matches false");
+                ToastUtil.show(ttsHint);
+                final boolean recommendFinal = recommend;
+                MusicApi.request(name, new MusicApi.MusicCallback() {
+                    @Override
+                    public void onFailure(int code, String msg) {
+                        LogUtil.e(TAG, "code = " + code + " ; msg = " + msg);
+                        ToastUtil.show("没有找到您想要的音乐");
+                    }
+
+                    @Override
+                    public void onResponse(List<MusicModel> list) {
+                        if (EmptyUtil.isEmpty(AiTalkActivity.this)) {
+                            return;
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                MusicModel musicModel;
+                                // 推荐避免重复随机
+                                if (recommendFinal) {
+                                    musicModel = list.get(new Random().nextInt(list.size()));
+                                } else {
+                                    musicModel = list.get(0);
+                                }
+
+                                AudioEtcDetailModel.AudioItemModel audioItemModel = new AudioEtcDetailModel.AudioItemModel();
+                                audioItemModel.setId(musicModel.getId());
+                                audioItemModel.setMusicId(musicModel.getId());
+                                audioItemModel.setSfile(musicModel.getMp3Url());
+                                audioItemModel.setImg(musicModel.getPicUrl());
+                                audioItemModel.setTitle(musicModel.getName() + " - " + musicModel.getAlbum());
+                                audioItemModel.setAuthor(musicModel.getAlbum());
+                                audioItemModel.setMp3(true);
+                                audioItemModel.setAutoFinished(true);
+                                AudioPlayerActivity.startActivity(mContext, audioItemModel);
+                            }
+                        });
+
+                    }
+                });
+                return true;
             }
+            return false;
+        } else {
+            LogUtil.i(TAG, "checkMusic matches false");
         }
+
         return false;
     }
 
