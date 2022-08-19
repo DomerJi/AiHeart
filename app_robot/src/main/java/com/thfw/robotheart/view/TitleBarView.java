@@ -213,7 +213,7 @@ public class TitleBarView extends LinearLayout {
 
     public static void robotNoCharge(Context mContext) {
         try {
-            if (!Dormant.isCanDormant() && mContext instanceof RobotBaseActivity) {
+            if (RobotUtil.isInstallRobot() && !Dormant.isCanDormant() && mContext instanceof RobotBaseActivity) {
                 RobotBaseActivity baseActivity = (RobotBaseActivity) mContext;
                 if (!EmptyUtil.isEmpty(baseActivity) && baseActivity.isMeResumed()) {
                     DialogRobotFactory.createFullSvgaDialog(baseActivity, AnimFileName.EMOJI_XUANYUN, new DialogRobotFactory.OnSVGACallBack() {
