@@ -311,6 +311,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             mAudios.add(mItemModel);
             mIsMp3 = mItemModel.isMp3();
             if (mIsMp3) {
+                mTitleView.setCenterText("音乐推荐");
                 mLrcView.setVisibility(View.VISIBLE);
                 if (!EmptyUtil.isEmpty(mItemModel.mp3WaitList)) {
                     for (MusicModel musicModel : mItemModel.mp3WaitList) {
