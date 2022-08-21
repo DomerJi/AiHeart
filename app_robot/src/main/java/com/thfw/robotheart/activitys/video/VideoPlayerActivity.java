@@ -262,8 +262,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         long positionMs = -1;
         // 初始化ExoPlayer
         if (mExoPlayer == null) {
-            ExoPlayerFactory.with(mContext).builder(ExoPlayerFactory.EXO_VIDEO);
-            mExoPlayer = ExoPlayerFactory.getExoPlayer();
+            mExoPlayer = ExoPlayerFactory.with(mContext).builder(ExoPlayerFactory.EXO_VIDEO);
             if (mPlayerListener != null) {
                 mExoPlayer.removeListener(mPlayerListener);
             }

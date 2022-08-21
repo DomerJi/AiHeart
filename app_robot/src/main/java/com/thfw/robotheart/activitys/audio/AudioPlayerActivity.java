@@ -4,13 +4,11 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.KeyEvent;
@@ -63,12 +61,10 @@ import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.HourChangeHelper;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
-import com.thfw.robotheart.AudioService;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.AudioItemAdapter;
 import com.thfw.robotheart.constants.UIConfig;
-import com.thfw.robotheart.util.AudioModel;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.ExoPlayerFactory;
 import com.thfw.robotheart.view.TitleRobotView;
@@ -124,25 +120,12 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private boolean requestIng = false;
     private boolean audioByPagePause;
     private boolean autoFinished;
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            AudioService.MyBinder mMyBinder = (AudioService.MyBinder) service;
-            AudioService mMyService = mMyBinder.getService();
-            mMyBinder.setMusic(new AudioModel());
-        }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
     private VideoGestureHelper ly_VG;
     private ShowChangeLayout scl;
     private AudioManager mAudioManager;
     private int maxVolume = 0;
     private int oldVolume = 0;
-    private int newProgress = 0, oldProgress = 0;
     private Window mWindow;
     private WindowManager.LayoutParams mLayoutParams;
     private boolean isTask;
@@ -194,7 +177,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
         mAudioView = (StyledPlayerView) findViewById(R.id.audio_view);
         mIvCollect = (ImageView) findViewById(R.id.iv_collect);
-
+        mLrcView = findViewById(R.id.lrc_view);
         mRivEtc = (RoundedImageView) findViewById(R.id.riv_etc);
 
         mIvPlayCateLogue = (ImageView) findViewById(R.id.iv_play_catelogue);
@@ -327,11 +310,15 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         if (mItemModel != null) {
             mAudios.add(mItemModel);
             mIsMp3 = mItemModel.isMp3();
-            if (mIsMp3 && !EmptyUtil.isEmpty(mItemModel.mp3WaitList)) {
-                for (MusicModel musicModel : mItemModel.mp3WaitList) {
-                    mAudios.add(musicModel.toAudioItemModel());
+            if (mIsMp3) {
+                mLrcView.setVisibility(View.VISIBLE);
+                if (!EmptyUtil.isEmpty(mItemModel.mp3WaitList)) {
+                    for (MusicModel musicModel : mItemModel.mp3WaitList) {
+                        mAudios.add(musicModel.toAudioItemModel());
+                    }
                 }
             }
+
             GlideUtil.load(mContext, mItemModel.getImg(), mRivEtc);
             setAudioData();
             mPbBar.hide();
@@ -398,9 +385,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         btPlay.setVisibility(View.GONE);
         btPause.setVisibility(View.VISIBLE);
 
-
-        ExoPlayerFactory.with(mContext).builder(ExoPlayerFactory.EXO_AUDIO);
-        player = ExoPlayerFactory.getExoPlayer();
+        player = ExoPlayerFactory.with(mContext).builder(ExoPlayerFactory.EXO_AUDIO);
 
         playerListener = new PlayerListener();
         playerListener.setPbBar(mPbBar);
@@ -455,8 +440,8 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         // Start the playback.
         player.play();
 
-        Intent mServiceIntent = new Intent(mContext, AudioService.class);
-        mContext.bindService(mServiceIntent, connection, Context.BIND_AUTO_CREATE);
+//        Intent mServiceIntent = new Intent(mContext, AudioService.class);
+//        mContext.bindService(mServiceIntent, connection, Context.BIND_AUTO_CREATE);
     }
 
     // 重定向
@@ -618,11 +603,11 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             DataChangeHelper.collectChange(mIvCollect, mDetailModel.getCollectionInfo().getId());
         }
         super.onDestroy();
-        ExoPlayerFactory.release();
-        try {
-            mContext.unbindService(connection);
-        } catch (Exception e) {
+        if (player != null) {
+            player.release();
+            player = null;
         }
+        ExoPlayerFactory.release();
     }
 
     private void initGesture() {
@@ -893,6 +878,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         }
     }
 
+    /**
+     * 加载歌词
+     */
     private void mp3LrcLoad() {
         if (mIsMp3) {
             int mp3Id = -1;
@@ -916,7 +904,6 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mLrcView = findViewById(R.id.lrc_view);
                             if (mLrcView != null) {
                                 mLrcView.setVisibility(View.VISIBLE);
                                 mLrcView.setLabel("找不到歌词( @_ @)");
@@ -928,7 +915,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
                 @Override
                 public void onResponse(LyricModel lyricModel) {
-                    if (lyricModel == null || EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
+                    if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
                         return;
                     }
                     runOnUiThread(new Runnable() {
@@ -937,11 +924,14 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                             if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
                                 return;
                             }
-                            mLrcView = findViewById(R.id.lrc_view);
                             if (mLrcView != null) {
-                                mLrcView.setVisibility(View.VISIBLE);
-                                mLrcView.loadLrc(lyricModel.lyric);
-                                lrcLoop();
+                                if (lyricModel == null || TextUtils.isEmpty(lyricModel.lyric)) {
+                                    mLrcView.loadLrc("找不到歌词( @_ @)");
+                                } else {
+                                    mLrcView.loadLrc(lyricModel.lyric);
+                                    lrcLoop();
+                                }
+
                             }
                         }
                     });

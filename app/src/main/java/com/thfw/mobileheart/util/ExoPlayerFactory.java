@@ -32,15 +32,17 @@ public class ExoPlayerFactory {
 
     public static void release() {
         type = -1;
-        if (exoPlayer != null) {
-            synchronized (ExoPlayerFactory.class) {
-                if (exoPlayer != null) {
-                    exoPlayer.release();
-                    exoPlayer = null;
-                }
-            }
-        }
+        // 局部释放。这样偶现（50%） 播放不了音频
+//        if (exoPlayer != null) {
+//            synchronized (ExoPlayerFactory.class) {
+//                if (exoPlayer != null) {
+//                    exoPlayer.release();
+//                    exoPlayer = null;
+//                }
+//            }
+//        }
     }
+
 
     public static SimpleExoPlayer getExoPlayer() {
         return exoPlayer;
@@ -58,19 +60,17 @@ public class ExoPlayerFactory {
             this.mContext = mContext;
         }
 
-        public void builder(int type) {
-            if (ExoPlayerFactory.type == type && exoPlayer != null) {
-                return;
-            }
-
-            release();
+        public SimpleExoPlayer builder(int type) {
             ExoPlayerFactory.type = type;
+            if (exoPlayer != null) {
+                exoPlayer.release();
+                exoPlayer = null;
+            }
             DefaultBandwidthMeter mDefaultBandwidthMeter = new DefaultBandwidthMeter
                     .Builder(mContext)
                     .build();
             DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(mContext, mDefaultBandwidthMeter,
                     new DefaultHttpDataSourceFactory(UIConfig.getUserAgent(), null, 15000, 15000, true));
-
             switch (type) {
                 case EXO_AUDIO:
 
@@ -93,6 +93,16 @@ public class ExoPlayerFactory {
                             .setLoadControl(loadControl).build();
                     break;
             }
+            return exoPlayer;
         }
+    }
+
+    public static DefaultDataSourceFactory getFactory(Context mContext) {
+        DefaultBandwidthMeter mDefaultBandwidthMeter = new DefaultBandwidthMeter
+                .Builder(mContext)
+                .build();
+        DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(mContext, mDefaultBandwidthMeter,
+                new DefaultHttpDataSourceFactory(UIConfig.getUserAgent(), null, 15000, 15000, true));
+        return upstreamFactory;
     }
 }

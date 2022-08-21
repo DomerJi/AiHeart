@@ -354,8 +354,7 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
         btPause.setVisibility(View.VISIBLE);
 
 
-        ExoPlayerFactory.with(mContext).builder(ExoPlayerFactory.EXO_AUDIO);
-        player = ExoPlayerFactory.getExoPlayer();
+        player = ExoPlayerFactory.with(mContext).builder(ExoPlayerFactory.EXO_AUDIO);
 
         playerListener = new PlayerListener();
         playerListener.setPbBar(mPbBar);
@@ -538,6 +537,10 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
             DataChangeHelper.collectChange(mIvCollect, mDetailModel.getCollectionInfo().getId());
         }
         super.onDestroy();
+        if (player != null) {
+            player.release();
+            player = null;
+        }
         ExoPlayerFactory.release();
     }
 

@@ -431,8 +431,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
         long positionMs = -1;
         // 初始化ExoPlayer
         if (mExoPlayer == null) {
-            ExoPlayerFactory.with(mContext).builder(ExoPlayerFactory.EXO_VIDEO);
-            mExoPlayer = ExoPlayerFactory.getExoPlayer();
+            mExoPlayer = ExoPlayerFactory.with(mContext).builder(ExoPlayerFactory.EXO_VIDEO);
             if (mPlayerListener != null) {
                 mExoPlayer.removeListener(mPlayerListener);
             }
@@ -870,7 +869,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
             // 上一首按键
         } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
             // 播放/暂停按键
-            if (mExoPlayer!= null) {
+            if (mExoPlayer != null) {
                 if (mExoPlayer.isPlaying()) {
                     mExoPlayer.pause();
                 } else {
