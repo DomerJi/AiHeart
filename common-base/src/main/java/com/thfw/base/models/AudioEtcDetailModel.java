@@ -316,6 +316,16 @@ public class AudioEtcDetailModel implements IModel {
         private int num;
         @SerializedName("img")
         private Object img;
+        @SerializedName("mp3PicId")
+        private String mp3PicId;
+
+        public void setMp3PicId(String mp3PicId) {
+            this.mp3PicId = mp3PicId;
+        }
+
+        public String getMp3PicId() {
+            return mp3PicId;
+        }
 
         // 音乐MP3 加载歌词
         private boolean mp3;

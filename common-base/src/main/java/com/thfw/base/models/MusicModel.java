@@ -121,6 +121,7 @@ public class MusicModel implements Serializable {
         audioItemModel.setMusicId(getId());
         audioItemModel.setSfile(getMp3Url());
         audioItemModel.setImg(getPicUrl());
+        audioItemModel.setMp3PicId(getPicId());
         audioItemModel.setTitle(getName() + " - " + getAlbum());
         audioItemModel.setAuthor(getAlbum());
         audioItemModel.setMp3(true);

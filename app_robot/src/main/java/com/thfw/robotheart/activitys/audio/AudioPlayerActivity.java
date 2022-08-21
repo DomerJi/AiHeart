@@ -885,8 +885,12 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private void mp3LrcLoad() {
         if (mIsMp3) {
             int mp3Id = -1;
+            String mp3PicId = "";
+            AudioEtcDetailModel.AudioItemModel model;
             try {
-                mp3Id = mAudios.get(player.getCurrentWindowIndex()).getId();
+                model = mAudios.get(player.getCurrentWindowIndex());
+                mp3Id = model.getId();
+                mp3PicId = model.getMp3PicId();
                 mTvAudioTitle.setText(mAudios.get(player.getCurrentWindowIndex()).getTitle());
             } catch (Exception e) {
                 return;
@@ -896,6 +900,37 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                 mLrcView.setLabel("正在搜索歌词");
                 mLrcView.loadLrc("");
             }
+
+            GlideUtil.load(mContext, model.getImg(), mRivEtc);
+            MusicApi.requestAlbum(mp3PicId, new MusicApi.AlbumCallback() {
+                @Override
+                public void onFailure(int code, String msg) {
+                    LogUtil.e("code = " + code + "; msg = " + msg);
+                    if (mRivEtc == null || EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
+                        return;
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GlideUtil.load(mContext, model.getImg(), mRivEtc);
+                        }
+                    });
+                }
+
+                @Override
+                public void onResponse(String albumPic) {
+                    LogUtil.e("albumPic = " + albumPic + ";");
+                    if (mRivEtc == null || EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
+                        return;
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GlideUtil.load(mContext, albumPic, mRivEtc);
+                        }
+                    });
+                }
+            });
             MusicApi.requestLyric(String.valueOf(mp3Id), new MusicApi.LyricCallback() {
                 @Override
                 public void onFailure(int code, String msg) {
