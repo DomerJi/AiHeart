@@ -247,6 +247,9 @@ public class AudioEtcDetailModel implements IModel {
     }
 
     public static class AudioItemModel implements Serializable {
+        // mp3 待播放列表(应对播放失败的问题)
+        public List<MusicModel> mp3WaitList;
+
         public int status = -1;
         /**
          * music_id : 1828

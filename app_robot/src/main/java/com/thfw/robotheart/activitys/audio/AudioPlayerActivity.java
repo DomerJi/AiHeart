@@ -51,6 +51,7 @@ import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.LyricModel;
+import com.thfw.base.models.MusicModel;
 import com.thfw.base.models.TaskMusicEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.AudioPresenter;
@@ -148,6 +149,8 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private int mMusicId;
     private ArrayList<TaskMusicEtcModel.MusicListBean> mTaskEtcModel;
     private LrcView mLrcView;
+    private boolean mIsMp3;
+    private Runnable mLrcRunnable;
 
     public static void startActivity(Context context, AudioEtcModel audioEtcModel) {
         ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
@@ -323,39 +326,15 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
         if (mItemModel != null) {
             mAudios.add(mItemModel);
+            mIsMp3 = mItemModel.isMp3();
+            if (mIsMp3 && !EmptyUtil.isEmpty(mItemModel.mp3WaitList)) {
+                for (MusicModel musicModel : mItemModel.mp3WaitList) {
+                    mAudios.add(musicModel.toAudioItemModel());
+                }
+            }
             GlideUtil.load(mContext, mItemModel.getImg(), mRivEtc);
             setAudioData();
             mPbBar.hide();
-            if (mItemModel.isMp3()) {
-                MusicApi.requestLyric(mItemModel.getId() + "", new MusicApi.LyricCallback() {
-                    @Override
-                    public void onFailure(int code, String msg) {
-
-                    }
-
-                    @Override
-                    public void onResponse(LyricModel lyricModel) {
-                        if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
-                            return;
-                        }
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
-                                    return;
-                                }
-                                mLrcView = findViewById(R.id.lrc_view);
-                                if (mLrcView != null) {
-                                    mLrcView.setVisibility(View.VISIBLE);
-                                    mLrcView.loadLrc(lyricModel.lyric);
-                                    lrcLoop();
-                                }
-                            }
-                        });
-                    }
-                });
-
-            }
             autoFinished = mItemModel.isAutoFinished();
         } else {
             autoFinished = mModel.isAutoFinished();
@@ -370,7 +349,6 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                 mStaticTaskEtcModel = null;
             }
 
-
             GlideUtil.load(mContext, mModel.getImg(), mRivEtc);
             mPresenter.getAudioEtcInfo(mModel.getId());
             mPbBar.showLoadingNoText();
@@ -381,16 +359,21 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
      * 歌词滚动
      */
     private void lrcLoop() {
-        HandlerUtil.getMainHandler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (EmptyUtil.isEmpty(AudioPlayerActivity.this) || mLrcView == null || player == null) {
-                    return;
+        if (mLrcRunnable == null) {
+            mLrcRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (EmptyUtil.isEmpty(AudioPlayerActivity.this) || mLrcView == null || player == null) {
+                        return;
+                    }
+                    mLrcView.updateTime(player.getCurrentPosition() + 300);
+                    HandlerUtil.getMainHandler().postDelayed(this, player.isPlaying() ? 300 : 1000);
                 }
-                mLrcView.updateTime(player.getCurrentPosition() + 300);
-                HandlerUtil.getMainHandler().postDelayed(this, player.isPlaying() ? 300 : 1000);
-            }
-        }, 1000);
+            };
+        } else {
+            HandlerUtil.getMainHandler().removeCallbacks(mLrcRunnable);
+        }
+        HandlerUtil.getMainHandler().postDelayed(mLrcRunnable, 1000);
     }
 
     private void setAudioData() {
@@ -455,9 +438,13 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         } else {
             mIvCollect.setVisibility(View.GONE);
             mTvEtcTitle.setVisibility(View.GONE);
-            findViewById(R.id.exo_next).setVisibility(View.GONE);
-            findViewById(R.id.exo_prev).setVisibility(View.GONE);
-            mIvPlayCateLogue.setVisibility(View.GONE);
+            if (mAudios.size() == 1) {
+                mIvPlayCateLogue.setVisibility(View.GONE);
+                findViewById(R.id.exo_next).setVisibility(View.GONE);
+                findViewById(R.id.exo_prev).setVisibility(View.GONE);
+            } else {
+                mTvEtcTitleLogcate.setText("目录");
+            }
             mTvAudioTitle.setText(mAudios.get(0).getTitle());
             player.seekTo(0, 0);
         }
@@ -827,6 +814,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         @Override
         public void onMediaItemTransition(@Nullable @org.jetbrains.annotations.Nullable MediaItem mediaItem, int reason) {
             LogUtil.d(TAG, "onMediaItemTransition reason = " + reason);
+
             if (isTask && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
                 onFinishMusic(mMusicId);
             }
@@ -834,6 +822,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                 finish();
                 return;
             }
+            // 刷新歌词及标题
+            mp3LrcLoad();
+
             // 列表播放曲目切换监听
             if (mDetailModel == null) {
                 return;
@@ -898,6 +889,64 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             } else {
                 ToastUtil.show("未知错误");
             }
+
+        }
+    }
+
+    private void mp3LrcLoad() {
+        if (mIsMp3) {
+            int mp3Id = -1;
+            try {
+                mp3Id = mAudios.get(player.getCurrentWindowIndex()).getId();
+                mTvAudioTitle.setText(mAudios.get(player.getCurrentWindowIndex()).getTitle());
+            } catch (Exception e) {
+                return;
+            }
+            if (mLrcView != null) {
+                // 找不到歌词(@_@)
+                mLrcView.setLabel("正在搜索歌词");
+                mLrcView.loadLrc("");
+            }
+            MusicApi.requestLyric(String.valueOf(mp3Id), new MusicApi.LyricCallback() {
+                @Override
+                public void onFailure(int code, String msg) {
+                    if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
+                        return;
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mLrcView = findViewById(R.id.lrc_view);
+                            if (mLrcView != null) {
+                                mLrcView.setVisibility(View.VISIBLE);
+                                mLrcView.setLabel("找不到歌词( @_ @)");
+                                mLrcView.loadLrc("");
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onResponse(LyricModel lyricModel) {
+                    if (lyricModel == null || EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
+                        return;
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
+                                return;
+                            }
+                            mLrcView = findViewById(R.id.lrc_view);
+                            if (mLrcView != null) {
+                                mLrcView.setVisibility(View.VISIBLE);
+                                mLrcView.loadLrc(lyricModel.lyric);
+                                lrcLoop();
+                            }
+                        }
+                    });
+                }
+            });
 
         }
     }

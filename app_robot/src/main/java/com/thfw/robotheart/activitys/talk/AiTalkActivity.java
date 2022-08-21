@@ -441,7 +441,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             if (inputText.contains("冥想")) {
                 return false;
             }
-            tempText = tempText.replaceAll("（,|，|。|！|!）", "");
+            tempText = tempText.replaceAll("(小密|，|。|！|!|/?|？)", "");
 
             // 播放xxx的音乐 播放xxx音乐 播放xxx的歌曲 播放xxx歌曲 播放xxx的歌
             // 我想听xxx的音乐 我想听xxx音乐 想听xxx的音乐 想听xxx音乐 想听xxx的歌曲 想听xxx歌曲 想听xxx的歌 听xxx的歌
@@ -492,16 +492,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                                 } else {
                                     musicModel = list.get(0);
                                 }
-
-                                AudioEtcDetailModel.AudioItemModel audioItemModel = new AudioEtcDetailModel.AudioItemModel();
-                                audioItemModel.setId(musicModel.getId());
-                                audioItemModel.setMusicId(musicModel.getId());
-                                audioItemModel.setSfile(musicModel.getMp3Url());
-                                audioItemModel.setImg(musicModel.getPicUrl());
-                                audioItemModel.setTitle(musicModel.getName() + " - " + musicModel.getAlbum());
-                                audioItemModel.setAuthor(musicModel.getAlbum());
-                                audioItemModel.setMp3(true);
-                                audioItemModel.setAutoFinished(true);
+                                AudioEtcDetailModel.AudioItemModel audioItemModel = musicModel.toAudioItemModel();
+                                audioItemModel.mp3WaitList = list;
+                                audioItemModel.mp3WaitList.remove(musicModel);
                                 AudioPlayerActivity.startActivity(mContext, audioItemModel);
                             }
                         });

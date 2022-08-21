@@ -34,15 +34,18 @@
 
     <TextView
         android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
-        android:maxLength="20"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingRight="12dp"
         android:text="@string/title"
         android:textColor="@drawable/textcolor_white_green_selector"
-        android:textSize="@dimen/textSize"
+        android:textSize="@dimen/textSize_small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/tv_order"
+        app:layout_constraintRight_toLeftOf="@id/tv_current_play"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView

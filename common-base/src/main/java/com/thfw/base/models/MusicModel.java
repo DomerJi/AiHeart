@@ -115,6 +115,19 @@ public class MusicModel implements Serializable {
         this.artist = artist;
     }
 
+    public AudioEtcDetailModel.AudioItemModel toAudioItemModel() {
+        AudioEtcDetailModel.AudioItemModel audioItemModel = new AudioEtcDetailModel.AudioItemModel();
+        audioItemModel.setId(getId());
+        audioItemModel.setMusicId(getId());
+        audioItemModel.setSfile(getMp3Url());
+        audioItemModel.setImg(getPicUrl());
+        audioItemModel.setTitle(getName() + " - " + getAlbum());
+        audioItemModel.setAuthor(getAlbum());
+        audioItemModel.setMp3(true);
+        audioItemModel.setAutoFinished(true);
+        return audioItemModel;
+    }
+
     @Override
     public String toString() {
         return "MusicModel{" +

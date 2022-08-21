@@ -1,5 +1,7 @@
 package com.thfw.ui.voice;
 
+import android.text.TextUtils;
+
 import com.iflytek.cloud.RecognizerResult;
 import com.thfw.base.utils.LogUtil;
 
@@ -9,12 +11,14 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Json结果解析类
  */
 public class JsonParser {
-    private static HashMap<String, String> mIatResults = new HashMap<>();
+    // 使用 LinkedHashMap 保持顺序，识别结果不颠倒
+    private static HashMap<String, String> mIatResults = new LinkedHashMap<>();
 
     public static void clearText() {
         mIatResults.clear();
@@ -24,7 +28,9 @@ public class JsonParser {
     // 读取动态修正返回结果示例代码
     public static String printResult(RecognizerResult results, boolean isLast) {
         String text = JsonParser.parseIatResult(results.getResultString());
-
+        if (TextUtils.isEmpty(text)) {
+            return "";
+        }
         String sn = null;
         String pgs = null;
         String rg = null;
@@ -58,6 +64,7 @@ public class JsonParser {
         }
         return resultBuffer.toString();
     }
+
 
     public static String parseIatResult(String json) {
         LogUtil.d("parseIatResult json = " + json);
