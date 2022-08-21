@@ -926,8 +926,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                             }
                             if (mLrcView != null) {
                                 if (lyricModel == null || TextUtils.isEmpty(lyricModel.lyric)) {
-                                    mLrcView.loadLrc("找不到歌词( @_ @)");
+                                    mLrcView.setLabel("找不到歌词( @_ @)");
                                 } else {
+                                    mLrcView.setLabel("找不到歌词( @_ @)");
                                     mLrcView.loadLrc(lyricModel.lyric);
                                     lrcLoop();
                                 }
