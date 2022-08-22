@@ -290,7 +290,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                 animation = ObjectAnimator.ofFloat(mRivEtc, "rotation", 0, 360);
                 animation.setRepeatCount(ObjectAnimator.INFINITE);
                 animation.setRepeatMode(ObjectAnimator.RESTART);
-                animation.setDuration(10000);
+                animation.setDuration(15000);
                 animation.setInterpolator(new LinearInterpolator());
                 animation.start();
             } else {
@@ -912,7 +912,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            GlideUtil.load(mContext, model.getImg(), mRivEtc);
+                            GlideUtil.load(mContext, model.getImg(), R.drawable.ic_music_album, mRivEtc);
                         }
                     });
                 }
@@ -926,7 +926,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            GlideUtil.load(mContext, albumPic, mRivEtc);
+                            GlideUtil.load(mContext, albumPic, R.drawable.ic_music_album, mRivEtc);
                         }
                     });
                 }
