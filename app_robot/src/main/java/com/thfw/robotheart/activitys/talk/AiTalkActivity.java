@@ -405,11 +405,15 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         }
 
         if (checkDance(inputText)) {
+            hideInput();
+            mEtContent.setText("");
             LogUtil.i(TAG, "----------- speech dance -------------");
             return;
         }
 
         if (checkMusic(inputText)) {
+            hideInput();
+            mEtContent.setText("");
             LogUtil.i(TAG, "----------- search music -------------");
             return;
         }
