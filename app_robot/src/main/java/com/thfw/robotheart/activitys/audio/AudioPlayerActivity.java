@@ -134,6 +134,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private LrcView mLrcView;
     private boolean mIsMp3;
     private Runnable mLrcRunnable;
+    private Runnable mExoPlayerErrorRunnable;
 
     public static void startActivity(Context context, AudioEtcModel audioEtcModel) {
         ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
@@ -608,6 +609,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             player.release();
             player = null;
         }
+        if (mExoPlayerErrorRunnable != null) {
+            HandlerUtil.getMainHandler().removeCallbacks(mExoPlayerErrorRunnable);
+        }
         ExoPlayerFactory.release();
     }
 
@@ -834,15 +838,17 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
         @Override
         public void onPlayerError(ExoPlaybackException error) {
+            LogUtil.e("ExoPlaybackException", "error = " + error.type + "_" + error.getMessage());
+
             LoadingView mPbBar = getLoading();
-            if (mPbBar == null) {
-                return;
+            if (mPbBar != null) {
+                mPbBar.setTag("error");
+                mPbBar.showLoadingNoText();
+                uiPlayOrPause(false);
             }
-            mPbBar.setTag("error");
-            mPbBar.showLoadingNoText();
-            uiPlayOrPause(false);
 
             if (error.type == ExoPlaybackException.TYPE_SOURCE) {
+                String errorHandle = (player != null && player.hasNext()) ? "（3S后自动为您播放下一个)" : "（已经是最后一个）";
                 IOException cause = error.getSourceException();
                 if (cause instanceof HttpDataSource.HttpDataSourceException) {
                     // An HTTP error occurred.
@@ -854,17 +860,21 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                     if (httpError instanceof HttpDataSource.InvalidResponseCodeException) {
                         // Cast to InvalidResponseCodeException and retrieve the response code,
                         // message and headers.
-                        ToastUtil.show("音频资源错误");
+                        ToastUtil.show("音频资源错误" + errorHandle);
+                        exoPlayerErrorHandle();
                     } else {
                         // Try calling httpError.getCause() to retrieve the underlying cause,
                         // although note that it may be null.
-
                         if (httpError.getCause() instanceof UnknownHostException) {
                             ToastUtil.show("网络异常，请检查网络");
                         } else {
-                            ToastUtil.show("未知错误" + httpError.getCause());
+                            ToastUtil.show("未知错误" + errorHandle);
+                            exoPlayerErrorHandle();
                         }
                     }
+                } else {
+                    ToastUtil.show("音频资源错误" + errorHandle);
+                    exoPlayerErrorHandle();
                 }
             } else if (error.type == ExoPlaybackException.TYPE_RENDERER) {
                 ToastUtil.show("渲染错误 - TYPE_UNEXPECTED");
@@ -875,7 +885,30 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             } else {
                 ToastUtil.show("未知错误");
             }
+        }
+    }
 
+    private void exoPlayerErrorHandle() {
+        if (player != null) {
+            mExoPlayerErrorRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
+                        return;
+                    }
+                    if (player != null && player.hasNext()) {
+                        player.pause();
+                        player.prepare();
+                        player.play();
+                        player.seekTo(player.getNextWindowIndex(), 0);
+                    } else {
+                        if (mIsMp3) {
+                            finish();
+                        }
+                    }
+                }
+            };
+            HandlerUtil.getMainHandler().postDelayed(mExoPlayerErrorRunnable, 3000);
         }
     }
 
