@@ -212,7 +212,7 @@
             android:background="#EE01182C"
             android:orientation="vertical"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintWidth_percent="0.3">
+            app:layout_constraintWidth_percent="0.35">
 
             <TextView
                 android:id="@+id/tv_etc_title_logcate"

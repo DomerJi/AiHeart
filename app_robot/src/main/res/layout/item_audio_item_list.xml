@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="6dp">
+    android:layout_height="wrap_content">
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/riv_dot"
@@ -38,11 +37,14 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:ellipsize="end"
+        android:lineSpacingExtra="2dp"
         android:maxLines="2"
+        android:paddingTop="10dp"
         android:paddingRight="12dp"
-        android:text="@string/title"
+        android:paddingBottom="10dp"
+        android:text="@string/bigText2"
         android:textColor="@drawable/textcolor_white_green_selector"
-        android:textSize="@dimen/textSize_small"
+        android:textSize="@dimen/textSize"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/tv_order"
         app:layout_constraintRight_toLeftOf="@id/tv_current_play"
@@ -101,7 +103,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_2px"
-        android:layout_marginTop="12dp"
         android:background="@color/left_navigation_divder"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
