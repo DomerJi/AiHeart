@@ -815,6 +815,12 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             // 刷新歌词及标题
             mp3LrcLoad();
 
+            // 目录打开 自动切换音乐 正在播放条目刷新
+            if (mClContent != null && mClContent.getVisibility() == View.VISIBLE && player != null
+                    && mRvList != null && mRvList.getAdapter() != null) {
+                ((AudioItemAdapter) mRvList.getAdapter()).setCurrentIndex(player.getCurrentWindowIndex());
+            }
+
             // 列表播放曲目切换监听
             if (mDetailModel == null) {
                 return;

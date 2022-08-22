@@ -761,10 +761,18 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
                 finish();
                 return;
             }
+
+            // 目录打开 自动切换音乐 正在播放条目刷新
+            if (mClContent != null && mClContent.getVisibility() == View.VISIBLE && player != null
+                    && mRvList != null && mRvList.getAdapter() != null) {
+                ((AudioItemAdapter) mRvList.getAdapter()).setCurrentIndex(player.getCurrentWindowIndex());
+            }
+
             // 列表播放曲目切换监听
             if (mDetailModel == null) {
                 return;
             }
+
             LogUtil.d("onMediaItemTransition -> " + mediaItem.playbackProperties.uri);
             mTvAudioTitle.setText("正在播放：" + mAudios.get(player.getCurrentWindowIndex()).getTitle());
 
