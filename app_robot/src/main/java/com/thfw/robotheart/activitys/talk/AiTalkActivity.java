@@ -463,10 +463,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 if (!notEmptyName || "歌".equals(name) | "歌儿".equals(name)) {
                     recommend = true;
                     name = RegularUtil.getRandomPeople();
-                    ttsHint = "为您推荐" + name + "的音乐";
+                    ttsHint = "为您推荐 " + name + " 的音乐";
                 } else {
                     recommend = RegularUtil.contains(name);
-                    ttsHint = "即将为您播放" + (recommend ? (name + "的音乐") : name);
+                    ttsHint = "即将为您播放 " + (recommend ? (name + " 的音乐") : name);
                 }
                 ToastUtil.show(ttsHint);
                 final boolean recommendFinal = recommend;
