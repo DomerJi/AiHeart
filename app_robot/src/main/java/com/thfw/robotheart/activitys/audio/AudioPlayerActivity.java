@@ -848,7 +848,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         @Override
         public void onPlayerError(ExoPlaybackException error) {
             LogUtil.e("ExoPlaybackException", "error = " + error.type + "_" + error.getMessage());
-
+            if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
+                return;
+            }
             LoadingView mPbBar = getLoading();
             if (mPbBar != null) {
                 mPbBar.setTag("error");
