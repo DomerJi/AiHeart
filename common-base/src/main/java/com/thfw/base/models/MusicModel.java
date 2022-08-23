@@ -1,9 +1,13 @@
 package com.thfw.base.models;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 import com.thfw.base.R;
+import com.thfw.base.utils.EmptyUtil;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -122,7 +126,25 @@ public class MusicModel implements Serializable {
         audioItemModel.setSfile(getMp3Url());
         audioItemModel.setImg(getPicUrl());
         audioItemModel.setMp3PicId(getPicId());
-        audioItemModel.setTitle(getName() + " - " + getAlbum());
+        if (TextUtils.isEmpty(getAlbum())) {
+            if (!EmptyUtil.isEmpty(artist)) {
+                String author = Arrays.toString(artist.toArray());
+                author = author.substring(1, author.length() - 1);
+                audioItemModel.setTitle(getName() + " - " + author);
+            } else {
+                audioItemModel.setTitle(getName());
+            }
+        } else {
+            if (!EmptyUtil.isEmpty(artist)) {
+                String author = Arrays.toString(artist.toArray());
+                author = author.substring(1, author.length() - 1);
+                audioItemModel.setTitle(getName() + " - " + getAlbum() + " - " + author);
+            } else {
+                audioItemModel.setTitle(getName() + " - " + getAlbum());
+            }
+
+        }
+
         audioItemModel.setAuthor(getAlbum());
         audioItemModel.setMp3(true);
         audioItemModel.setAutoFinished(true);
