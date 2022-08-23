@@ -13,8 +13,10 @@ import com.thfw.base.utils.SharePreferenceUtil;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -32,7 +34,7 @@ public class MusicApi {
     public static final String TAG = "MusicApi";
     public static final String COOKIE = "PHPSESSID=ueimn7bbdegnipmtm28fr86ti2";
     public static final String KEY_ALBUM_PIC = "key.mp3.pics";
-    public static final HashMap<String, String> mAlbumPicMap = new HashMap<>();
+    public static final Map<String, String> mAlbumPicMap = Collections.synchronizedMap(new HashMap<>());
     public static boolean initPics;
 
     private static void initPics() {
