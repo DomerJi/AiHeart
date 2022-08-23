@@ -355,8 +355,8 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                     if (EmptyUtil.isEmpty(AudioPlayerActivity.this) || mLrcView == null || player == null) {
                         return;
                     }
-                    mLrcView.updateTime(player.getCurrentPosition() + 300);
-                    HandlerUtil.getMainHandler().postDelayed(this, player.isPlaying() ? 300 : 1000);
+                    mLrcView.updateTime(player.getCurrentPosition() + 800);
+                    HandlerUtil.getMainHandler().postDelayed(this, player.isPlaying() ? 500 : 1000);
                 }
             };
         } else {
@@ -611,6 +611,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         }
         if (mExoPlayerErrorRunnable != null) {
             HandlerUtil.getMainHandler().removeCallbacks(mExoPlayerErrorRunnable);
+        }
+        if (mLrcRunnable != null) {
+            HandlerUtil.getMainHandler().removeCallbacks(mLrcRunnable);
         }
         ExoPlayerFactory.release();
     }
