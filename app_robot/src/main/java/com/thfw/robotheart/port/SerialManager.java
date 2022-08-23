@@ -469,7 +469,13 @@ public class SerialManager {
                     break;
             }
         }));
-        SerialPortUtil.parseOrder(hexData);
+
+        try {
+            SerialPortUtil.parseOrder(hexData);
+        } catch (Exception e) {
+            LogUtil.e(TAG, "hexData e = " + e.getMessage());
+        }
+
     }
 
     public boolean isOpen() {
