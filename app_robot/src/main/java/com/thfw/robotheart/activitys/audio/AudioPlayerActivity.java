@@ -242,6 +242,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
      * 目录显示隐藏
      */
     private void audioLogcatue() {
+        if (player == null) {
+            return;
+        }
         if (mFlContent.getVisibility() == View.VISIBLE) {
 
             mFlContent.animate().alpha(0f).setListener(new MyAnimationListener() {

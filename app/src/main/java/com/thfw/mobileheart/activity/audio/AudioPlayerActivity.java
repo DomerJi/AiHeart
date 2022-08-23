@@ -247,6 +247,9 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
      * 目录显示隐藏
      */
     private void audioLogcatue() {
+        if (player == null) {
+            return;
+        }
         if (mClContent.getVisibility() == View.VISIBLE) {
 
             mClContent.animate().alpha(0f).setListener(new MyAnimationListener() {
