@@ -26,25 +26,13 @@
         android:layout_marginRight="16dp"
         android:ellipsize="end"
         android:maxLines="1"
+        android:paddingRight="16dp"
         android:textColor="@color/white"
         android:textSize="@dimen/textSize"
         app:layout_constraintLeft_toRightOf="@id/riv_dot"
-        app:layout_constraintRight_toLeftOf="@id/tv_type"
+        app:layout_constraintRight_toRightOf="parent"
         tools:ignore="MissingConstraints"
         tools:text="Title" />
-
-    <TextView
-        android:id="@+id/tv_type"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginRight="16dp"
-        android:gravity="center"
-        android:text="类型"
-        android:textColor="@color/colorRobotFore"
-        android:textSize="@dimen/textSize_small"
-        android:visibility="gone"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:ignore="MissingConstraints" />
 
     <View
         android:id="@+id/v_line"
@@ -53,6 +41,51 @@
         android:layout_marginTop="12dp"
         android:background="@color/divider"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+
+    <ImageView
+        android:id="@+id/iv_call"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@mipmap/ic_hot_call_phone"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_title"
+        app:tint="@color/colorRobotFore"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:gravity="left"
+        android:minWidth="150dp"
+        android:text="010 12345678"
+        android:textColor="@color/colorRobotFore"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title"
+        app:layout_constraintLeft_toRightOf="@id/iv_call"
+        app:layout_constraintTop_toTopOf="@id/tv_title"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="6dp"
+        android:gravity="right"
+        android:minWidth="160dp"
+        android:textColor="@color/colorRobotFore"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_title"
+        tools:text="周一到周日，24小时"
+        tools:visibility="visible" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

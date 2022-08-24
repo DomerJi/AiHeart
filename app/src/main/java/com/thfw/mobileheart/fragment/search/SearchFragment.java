@@ -156,6 +156,18 @@ public class SearchFragment extends BaseFragment {
 
         }
 
+        // 心理服务热线
+        if (!EmptyUtil.isEmpty(data.getCommonweal())) {
+            if (fragmentMaps.containsKey(SearchResultModel.TYPE_HOT_PHONE)) {
+                fragmentMaps.get(SearchResultModel.TYPE_HOT_PHONE).setResultBeans(data.getCommonweal());
+            } else {
+                fragmentMaps.put(SearchResultModel.TYPE_HOT_PHONE,
+                        new SearchResultFragment(SearchResultModel.TYPE_HOT_PHONE, "心理服务热线", data.getCommonweal()));
+            }
+            fragments.add(SearchResultModel.TYPE_HOT_PHONE);
+
+        }
+
 
         /**
          * setMaxLifecycle fragment 可见监听

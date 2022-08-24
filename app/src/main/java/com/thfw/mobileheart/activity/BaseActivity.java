@@ -16,14 +16,15 @@ import androidx.core.content.ContextCompat;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.UrgedMsgModel;
+import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.activity.task.MeTaskActivity;
 import com.thfw.mobileheart.util.DialogFactory;
-import com.thfw.ui.utils.UrgeUtil;
 import com.thfw.ui.R;
 import com.thfw.ui.base.IBaseActivity;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.utils.UrgeUtil;
 
 /**
  * 通用基础Activity
@@ -116,6 +117,10 @@ public abstract class BaseActivity<T extends IPresenter> extends IBaseActivity<T
 
         if (TextUtils.isEmpty(phone)) {
             ToastUtil.show("手机号码为空");
+            return;
+        }
+        if (RegularUtil.isTrueName(phone)) {
+            ToastUtil.show("不是有效电话");
             return;
         }
         phoneCall = phone;

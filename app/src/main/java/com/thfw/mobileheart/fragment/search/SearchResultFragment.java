@@ -14,6 +14,7 @@ import com.thfw.base.models.SearchResultModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.SearchActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
@@ -112,6 +113,12 @@ public class SearchResultFragment extends BaseFragment {
                     case SearchResultModel.TYPE_DIALOG:
                         ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
                                 .setId(resultBean.getId()));
+                        break;
+                    case SearchResultModel.TYPE_HOT_PHONE:
+                        if (getActivity() instanceof BaseActivity) {
+                            BaseActivity baseActivity = (BaseActivity) getActivity();
+                            baseActivity.call(resultBean.getPhone());
+                        }
                         break;
                     default:
                         ToastUtil.show("未处理该类型跳转 ->" + type);

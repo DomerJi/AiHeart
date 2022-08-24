@@ -19,6 +19,7 @@ public class SearchResultModel implements IModel {
     public static final int TYPE_TEXT = 5;
     public static final int TYPE_IDEO_TEXT = 6;
     public static final int TYPE_TOOL = 7;
+    public static final int TYPE_HOT_PHONE = 8;
     private List<ResultBean> allList;
     /**
      * 心理测评
@@ -50,6 +51,20 @@ public class SearchResultModel implements IModel {
      */
     @SerializedName("tool_package_list")
     private List<ResultBean> toolPackageList;
+    /**
+     * 心理服务热线
+     */
+    @SerializedName("commonweal")
+    private List<ResultBean> commonweal;
+
+    public List<ResultBean> getCommonweal() {
+        return commonweal;
+    }
+
+    public void setCommonweal(List<ResultBean> commonweal) {
+        this.commonweal = commonweal;
+    }
+
     /**
      * 思政文章
      *
@@ -104,6 +119,13 @@ public class SearchResultModel implements IModel {
                 }
                 allList.addAll(toolPackageList);
             }
+
+            if (commonweal != null) {
+                for (ResultBean bean : commonweal) {
+                    bean.setType(TYPE_HOT_PHONE);
+                }
+                allList.addAll(commonweal);
+            }
         }
         return allList;
     }
@@ -155,8 +177,14 @@ public class SearchResultModel implements IModel {
         private int id;
         @SerializedName("title")
         private String title;
+        @SerializedName("phone")
+        private String phone;
+        @SerializedName("time")
+        private String time;
         @SerializedName("type")
         private int type;
+
+
 
         public int getVideoType() {
             return type;
@@ -184,6 +212,26 @@ public class SearchResultModel implements IModel {
 
         public void setTitle(String title) {
             this.title = title;
+        }
+
+        /**
+         * 心理服务热线
+         */
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
         }
     }
 

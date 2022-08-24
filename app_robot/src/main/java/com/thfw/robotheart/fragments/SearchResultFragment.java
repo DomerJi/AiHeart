@@ -113,6 +113,9 @@ public class SearchResultFragment extends RobotBaseFragment {
                         AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
                                 .setId(resultBean.getId()));
                         break;
+                    case SearchResultModel.TYPE_HOT_PHONE:
+                        // 平板和机器人无法打电话
+                        break;
                     default:
                         ToastUtil.show("未处理该类型跳转 ->" + type);
                         break;
