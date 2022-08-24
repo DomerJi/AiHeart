@@ -207,6 +207,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
         mRvSelectChildren.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
         mBtConfirm = (Button) findViewById(R.id.bt_confirm);
+        mBtConfirm.setEnabled(false);
         mBtConfirm.setOnClickListener(v -> {
             if (EmptyUtil.isEmpty(mSelecteds)) {
                 return;
@@ -217,6 +218,13 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
         mLlWelcome = (LinearLayout) findViewById(R.id.ll_welcome);
         mTvChooseOrganization = (TextView) findViewById(R.id.tv_choose_organization);
         mClSelect = (ConstraintLayout) findViewById(R.id.cl_select);
+    }
+
+    /**
+     * 数据长度变化监听，必须选择组织层级
+     */
+    private void onSelectChange() {
+        mBtConfirm.setEnabled((EmptyUtil.isEmpty(mSelecteds) || mSelecteds.size() == 1) ? false : true);
     }
 
     private void initSelectedList() {
@@ -370,6 +378,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
     private void initSelectedList2(List<OrganizationModel.OrganizationBean> list, OrganizationModel.OrganizationBean bean) {
         if (bean != null) {
             list.add(bean);
+            onSelectChange();
             if (bean.getChildren() != null) {
                 for (OrganizationModel.OrganizationBean b : bean.getChildren()) {
                     if (childIds.contains(String.valueOf(b.getId()))) {
@@ -402,6 +411,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
             initSelectedList2(mSelecteds, mOrganizationModel.getOrganization());
         } else {
             mSelecteds.add(mOrganizationModel.getOrganization());
+            onSelectChange();
         }
         // 已选择信息
         mOranSelectedAdapter = new OrganSelectedAdapter(mSelecteds);
@@ -416,6 +426,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
                 for (int i = mSelecteds.size() - 1; i > position; i--) {
                     mSelecteds.remove(i);
                 }
+                onSelectChange();
                 mOranSelectedAdapter.notifyDataSetChanged();
                 mOrganSelectChildrenAdapter.setDataListNotify(mSelecteds.get(position).getChildren());
                 notifySelectedOrganization();
@@ -434,6 +445,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
             public void onItemClick(List<OrganizationModel.OrganizationBean> list, int position) {
                 OrganizationModel.OrganizationBean bean = list.get(position);
                 mSelecteds.add(bean);
+                onSelectChange();
                 mOranSelectedAdapter.notifyDataSetChanged();
                 mOrganSelectChildrenAdapter.setDataListNotify(bean.getChildren());
                 notifySelectedOrganization();
