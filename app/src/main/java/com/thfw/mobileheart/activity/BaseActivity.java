@@ -119,7 +119,7 @@ public abstract class BaseActivity<T extends IPresenter> extends IBaseActivity<T
             ToastUtil.show("手机号码为空");
             return;
         }
-        if (RegularUtil.isTrueName(phone)) {
+        if (RegularUtil.isContainChinese(phone)) {
             ToastUtil.show("不是有效电话");
             return;
         }

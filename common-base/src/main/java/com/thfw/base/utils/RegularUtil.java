@@ -3,6 +3,8 @@ package com.thfw.base.utils;
 import android.text.TextUtils;
 
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegularUtil {
 
@@ -49,6 +51,16 @@ public class RegularUtil {
         } else {
             return mobiles.matches(REGEX_PHONE);
         }
+    }
+
+    public static boolean isContainChinese(String str) {
+
+        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        Matcher m = p.matcher(str);
+        if (m.find()) {
+            return true;
+        }
+        return false;
     }
 
     public static boolean contains(String peopleNmae) {
