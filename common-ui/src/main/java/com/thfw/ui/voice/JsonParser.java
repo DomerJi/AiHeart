@@ -1,7 +1,5 @@
 package com.thfw.ui.voice;
 
-import android.text.TextUtils;
-
 import com.iflytek.cloud.RecognizerResult;
 import com.thfw.base.utils.LogUtil;
 
@@ -28,9 +26,6 @@ public class JsonParser {
     // 读取动态修正返回结果示例代码
     public static String printResult(RecognizerResult results, boolean isLast) {
         String text = JsonParser.parseIatResult(results.getResultString());
-        if (TextUtils.isEmpty(text)) {
-            return "";
-        }
         String sn = null;
         String pgs = null;
         String rg = null;
