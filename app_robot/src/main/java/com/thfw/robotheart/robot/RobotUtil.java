@@ -359,12 +359,9 @@ public class RobotUtil {
         if (TextUtils.isEmpty(text) || text.length() > 12) {
             return Dance.EMPTY;
         }
-        if (text.contains("跳舞") || text.contains("跳个舞") || text.contains("动一动")) {
-            if (text.contains("跳个舞") || text.contains("会跳舞吗")
-                    || text.contains("能跳舞")
-                    || text.contains("动一动")) {
-                return new Dance(Dance.ALL, "我来跳舞吧");
-            }
+        if (text.contains("跳舞") || text.contains("跳个舞")
+                || text.contains("动一动") || text.contains("跳支舞")) {
+            return new Dance(Dance.ALL, "我来跳个舞吧");
         } else if (text.contains("摇头") || text.contains("摇个头")) {
             return new Dance(Dance.SHAKE, "我来摇个头吧");
         } else if (text.contains("点头") || text.contains("点个头")) {
