@@ -455,11 +455,11 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                     "|给我推荐一首|推荐一首|给我推荐个音乐|给我推荐个歌曲|给我推荐一个音乐|给我推荐一个歌曲|推荐一个音乐|推荐一个歌曲|给我来首|来首|给我放首|放首)" +
                     "[ a-zA-Z0-9\\u4e00-\\u9fa5]" +
                     "{0,30}";
-            String REGEX_MUSIC_REPLACE = "(唱个歌|来个音乐|我要听首|我要听一首|我要听|我想听首|我想听一首|我想听" +
-                    "|播放首|播放一首|播放|想听首|想听|听首|给我来一首|来一首|来一曲|一首" +
-                    "|给我推荐一首|推荐一首|给我推荐个音乐|给我推荐个歌曲|给我推荐一个音乐|给我推荐一个歌曲|推荐一个音乐|推荐一个歌曲|给我来首|来首|给我放首|放首)" +
-                    "|(的音乐|的歌曲|的歌|音乐|歌曲)";
             if (tempText.matches(REGEX_MUSIC)) {
+                String REGEX_MUSIC_REPLACE = "(唱个歌|来个音乐|我要听首|我要听一首|我要听|我想听首|我想听一首|我想听" +
+                        "|播放首|播放一首|播放|想听首|想听|听首|给我来一首|来一首|来一曲|一首" +
+                        "|给我推荐一首|推荐一首|给我推荐个音乐|给我推荐个歌曲|给我推荐一个音乐|给我推荐一个歌曲|推荐一个音乐|推荐一个歌曲|给我来首|来首|给我放首|放首)" +
+                        "|(的音乐|的歌曲|的歌|音乐|歌曲)";
                 String name = tempText.replaceAll(REGEX_MUSIC_REPLACE, "");
                 boolean notEmptyName = !TextUtils.isEmpty(name);
                 String ttsHint = null;

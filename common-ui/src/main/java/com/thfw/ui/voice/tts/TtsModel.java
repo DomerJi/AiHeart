@@ -17,8 +17,7 @@ public class TtsModel {
         if (TextUtils.isEmpty(text)) {
             this.text = "";
         } else {
-            this.text = text.replaceAll("&nbsp;", "");
-            this.text = this.text.replaceAll(" ", "");
+            this.text = this.text.replaceAll("( |&nbsp;|<br>|</p>|<p>)", "");
         }
         this.ttsType = TtsType.READ_NORMAL;
     }
