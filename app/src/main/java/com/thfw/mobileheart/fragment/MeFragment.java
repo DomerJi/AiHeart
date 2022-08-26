@@ -208,9 +208,6 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
 
         mLlMeFace = (LinearLayout) findViewById(R.id.ll_me_face);
         mTvFaceSwitch = (TextView) findViewById(R.id.tv_face_switch);
-        mLlMeFace.setOnClickListener(v -> {
-            LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
-        });
     }
 
 

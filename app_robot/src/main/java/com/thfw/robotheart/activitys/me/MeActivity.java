@@ -250,10 +250,14 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
                     LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
                 }
             });
-        } else {
+        } else if (inputState == 0) {
             mTvInputState.setText("未录入");
             mRlFace.setOnClickListener(v -> {
                 LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
+            });
+        } else {
+            mTvInputState.setText("");
+            mRlFace.setOnClickListener(v -> {
             });
         }
 
