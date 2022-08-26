@@ -477,6 +477,15 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
             DialogFactory.createAddressBirthDay(mContext, findViewById(R.id.cl_root), new OnTimeSelectListener() {
                 @Override
                 public void onTimeSelect(Date date, View v) {
+
+                    String joinTimeStr = mTvJoinJTime.getText().toString();
+                    if (!TextUtils.isEmpty(joinTimeStr)) {
+                        long joinTime = HourUtil.getYYMMDDbyLong(joinTimeStr);
+                        if (date.getTime() > joinTime) {
+                            ToastUtil.show("出生时间 需早于 入职(伍)时间");
+                            return;
+                        }
+                    }
                     mTvBirthday.setText(HourUtil.getYYMMDD(date));
                     onUpdateInfo("birth", mTvBirthday.getText().toString());
                 }
@@ -533,14 +542,13 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
             DialogFactory.createAddressBirthDay(mContext, findViewById(R.id.cl_root), new OnTimeSelectListener() {
                 @Override
                 public void onTimeSelect(Date date, View v) {
-                    if (mFirstInputMsg) {
-                        String birthday = mTvBirthday.getText().toString();
-                        if (!TextUtils.isEmpty(birthday)) {
-                            long birthdayTime = HourUtil.getYYMMDDbyLong(birthday);
-                            if (date.getTime() < birthdayTime) {
-                                ToastUtil.show("入职(伍)时间不能小于出生时间");
-                                return;
-                            }
+
+                    String birthday = mTvBirthday.getText().toString();
+                    if (!TextUtils.isEmpty(birthday)) {
+                        long birthdayTime = HourUtil.getYYMMDDbyLong(birthday);
+                        if (date.getTime() < birthdayTime) {
+                            ToastUtil.show("入职(伍)时间 需晚于 出生时间");
+                            return;
                         }
                     }
 
