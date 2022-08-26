@@ -16,10 +16,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.opensource.svgaplayer.SVGAImageView;
-import com.thfw.base.api.MusicApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
-import com.thfw.base.models.MusicModel;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.models.TalkModel;
@@ -369,19 +367,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             wakeup();
             GlideUtil.load(mContext, R.drawable.ic_ip_hand, mIvHand);
         }
-
-        MusicApi.request("平凡之路", new MusicApi.MusicCallback() {
-            @Override
-            public void onFailure(int code, String msg) {
-
-            }
-
-            @Override
-            public void onResponse(List<MusicModel> list) {
-
-            }
-        });
-
     }
 
 
