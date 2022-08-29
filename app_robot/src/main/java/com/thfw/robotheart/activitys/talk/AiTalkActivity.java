@@ -403,18 +403,43 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             LogUtil.d(TAG, "mHelper.getTalkModel() == null 对话还未开始！！！");
             return;
         }
+        String tempText = inputText;
+        tempText = tempText.replaceAll("(小密|，|。|！|!|/?|？)", "");
 
-        if (checkDance(inputText)) {
+        // 跳个舞
+        if (checkDance(tempText)) {
             hideInput();
             mEtContent.setText("");
             LogUtil.i(TAG, "----------- speech dance -------------");
             return;
         }
-
-        if (checkMusic(inputText)) {
+        // 唱个歌曲
+        if (checkMusic(tempText)) {
             hideInput();
             mEtContent.setText("");
             LogUtil.i(TAG, "----------- search music -------------");
+            return;
+        }
+        // 讲个笑话
+        String joke = checkJoke(tempText);
+        if (!TextUtils.isEmpty(joke)) {
+
+            ChatEntity chatEntity = new ChatEntity();
+            chatEntity.type = ChatEntity.TYPE_TO;
+            chatEntity.talk = inputText;
+            sendData(chatEntity);
+            mMainHandler.postDelayed(() -> {
+                if (EmptyUtil.isEmpty(AiTalkActivity.this)) {
+                    return;
+                }
+                DialogTalkModel talkModel = new DialogTalkModel();
+                talkModel.setType(ChatEntity.TYPE_FROM_NORMAL);
+                talkModel.setQuestion(joke);
+                onTalkData(talkModel);
+            }, 1200);
+            hideInput();
+            mEtContent.setText("");
+            LogUtil.i(TAG, "----------- speech joke -------------");
             return;
         }
 
@@ -438,82 +463,83 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     }
 
-    private boolean checkMusic(String inputText) {
-        String tempText = inputText;
-        if (mScene == 1) {
-            // 相关冥想不作音乐处理
-            if (inputText.contains("冥想")) {
-                return false;
-            }
-            tempText = tempText.replaceAll("(小密|，|。|！|!|/?|？)", "");
-
-            // 播放xxx的音乐 播放xxx音乐 播放xxx的歌曲 播放xxx歌曲 播放xxx的歌
-            // 我想听xxx的音乐 我想听xxx音乐 想听xxx的音乐 想听xxx音乐 想听xxx的歌曲 想听xxx歌曲 想听xxx的歌 听xxx的歌
-            // 来一首xxx的歌 来一首xxx的音乐 来一首xxx音乐 来一首xxx 来一曲xxx的歌 来一曲xxx的歌 来一曲xxx
-            String REGEX_MUSIC = "(唱个歌|来个音乐|我要听首|我要听一首|我要听|我想听首|我想听一首|我想听" +
-                    "|播放首|播放一首|请播放|播放|想听首|想听|听首|给我来一首|来一首|来一曲|一首" +
-                    "|给我推荐一首|推荐一首|给我推荐个音乐|给我推荐个歌曲|给我推荐一个音乐|给我推荐一个歌曲|推荐一个音乐|推荐一个歌曲|给我来首|来首|给我放首|放首)" +
-                    "[ a-zA-Z0-9\\u4e00-\\u9fa5]" +
-                    "{0,30}";
-            if (tempText.matches(REGEX_MUSIC)) {
-                String REGEX_MUSIC_REPLACE = "(唱个歌|来个音乐|我要听首|我要听一首|我要听|我想听首|我想听一首|我想听" +
-                        "|播放首|播放一首|请播放|播放|想听首|想听|听首|给我来一首|来一首|来一曲|一首" +
-                        "|给我推荐一首|推荐一首|给我推荐个音乐|给我推荐个歌曲|给我推荐一个音乐|给我推荐一个歌曲|推荐一个音乐|推荐一个歌曲|给我来首|来首|给我放首|放首)" +
-                        "|(的音乐|的歌曲|的歌|音乐|歌曲)";
-                String name = tempText.replaceAll(REGEX_MUSIC_REPLACE, "");
-                boolean notEmptyName = !TextUtils.isEmpty(name);
-                String ttsHint = null;
-                boolean recommend = false;
-                if (!notEmptyName || "歌".equals(name) | "歌儿".equals(name)
-                        | "嘛".equals(name) | "吧".equals(name)) {
-                    recommend = true;
-                    name = RegularUtil.getRandomPeople();
-                    ttsHint = "为您推荐 " + name + " 的音乐";
-                } else {
-                    recommend = RegularUtil.contains(name);
-                    ttsHint = "即将为您播放 " + (recommend ? (name + " 的音乐") : name);
-                }
-                ToastUtil.show(ttsHint);
-                final boolean recommendFinal = recommend;
-                MusicApi.request(name, new MusicApi.MusicCallback() {
-                    @Override
-                    public void onFailure(int code, String msg) {
-                        LogUtil.e(TAG, "code = " + code + " ; msg = " + msg);
-                        ToastUtil.show("没有找到您想要的音乐");
-                    }
-
-                    @Override
-                    public void onResponse(List<MusicModel> list) {
-                        if (EmptyUtil.isEmpty(AiTalkActivity.this)) {
-                            return;
-                        }
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                MusicModel musicModel;
-                                // 推荐避免重复随机
-                                if (recommendFinal) {
-                                    musicModel = list.get(new Random().nextInt(list.size()));
-                                } else {
-                                    musicModel = list.get(0);
-                                }
-                                AudioEtcDetailModel.AudioItemModel audioItemModel = musicModel.toAudioItemModel();
-                                audioItemModel.mp3WaitList = list;
-                                audioItemModel.mp3WaitList.remove(musicModel);
-                                AudioPlayerActivity.startActivity(mContext, audioItemModel);
-                            }
-                        });
-
-                    }
-                });
-                return true;
-            }
-            return false;
-        } else {
-            LogUtil.i(TAG, "checkMusic matches false");
+    private String checkJoke(String inputText) {
+        if (mScene != 1) {
+            return null;
         }
 
-        return false;
+        String tempText = inputText;
+
+        if (tempText.matches(".{0,4}(讲|说|来|开).{0,3}(笑话|玩笑).{0,2}")) {
+            String[] jokes = mContext.getResources().getStringArray(R.array.jokes);
+            return jokes[new Random().nextInt(jokes.length)];
+        } else {
+            return null;
+        }
+    }
+
+    private boolean checkMusic(String inputText) {
+        if (mScene != 1) {
+            return false;
+        }
+        String tempText = inputText;
+        // 相关冥想不作音乐处理
+        if (inputText.contains("冥想")) {
+            return false;
+        }
+        String REGEX_MUSIC = ".{0,5}(播放|推荐|放|唱|听|来)(一个|一首|一曲|个|首|).{0,20}" +
+                "(的音乐|的歌曲|歌儿|歌吧|的歌|歌曲|音乐|曲儿|个歌|music)(吧|嘛|)";
+        if (tempText.matches(REGEX_MUSIC)) {
+            String REGEX_MUSIC_REPLACE = ".{0,5}(播放|推荐|放|唱|听|来)(一个|一首|一曲|个|首|)" +
+                    "|(的音乐|的歌曲|歌儿|歌吧|的歌|歌曲|音乐|曲儿|个歌|music)(吧|嘛|)";
+
+            String name = tempText.replaceAll(REGEX_MUSIC_REPLACE, "");
+            boolean notEmptyName = !TextUtils.isEmpty(name);
+            String ttsHint = null;
+            boolean recommend = false;
+            if (!notEmptyName || "歌".equals(name)) {
+                recommend = true;
+                name = RegularUtil.getRandomPeople();
+                ttsHint = "为您推荐 " + name + " 的音乐";
+            } else {
+                recommend = RegularUtil.contains(name);
+                ttsHint = "即将为您播放 " + (recommend ? (name + " 的音乐") : name);
+            }
+            ToastUtil.show(ttsHint);
+            final boolean recommendFinal = recommend;
+            MusicApi.request(name, new MusicApi.MusicCallback() {
+                @Override
+                public void onFailure(int code, String msg) {
+                    LogUtil.e(TAG, "code = " + code + " ; msg = " + msg);
+                    ToastUtil.show("没有找到您想要的音乐");
+                }
+
+                @Override
+                public void onResponse(List<MusicModel> list) {
+                    if (EmptyUtil.isEmpty(AiTalkActivity.this)) {
+                        return;
+                    }
+                    runOnUiThread(() -> {
+                        MusicModel musicModel;
+                        // 推荐避免重复随机
+                        if (recommendFinal) {
+                            musicModel = list.get(new Random().nextInt(list.size()));
+                        } else {
+                            musicModel = list.get(0);
+                        }
+                        AudioEtcDetailModel.AudioItemModel audioItemModel = musicModel.toAudioItemModel();
+                        audioItemModel.mp3WaitList = list;
+                        audioItemModel.mp3WaitList.remove(musicModel);
+                        AudioPlayerActivity.startActivity(mContext, audioItemModel);
+                    });
+
+                }
+            });
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     private boolean checkDance(String inputText) {
