@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.common.reflect.TypeToken;
+import com.thfw.base.models.BaikeModel;
 import com.thfw.base.models.LyricModel;
 import com.thfw.base.models.Mp3PicModel;
 import com.thfw.base.models.MusicModel;
@@ -194,6 +195,43 @@ public class MusicApi {
         });
     }
 
+    public static void requestBaiKe(String key, BaiKeCallback callback) {
+
+        String url = "http://baike.baidu.com/api/openapi/BaikeLemmaCardApi?scope=103&format=json&appid=379020&bk_key="
+                + key + "&bk_length=600";
+        OkHttpClient httpClient = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+        Call call = httpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "e = " + e.getMessage());
+                if (callback != null) {
+                    callback.onFailure(-1, e.getMessage());
+                }
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String json = response.body().string();
+                Type type = new TypeToken<BaikeModel>() {
+                }.getType();
+                BaikeModel baikeModel = GsonUtil.fromJson(json, type);
+                if (callback != null) {
+                    if (null != baikeModel) {
+                        callback.onResponse(baikeModel);
+                    } else {
+                        callback.onFailure(-2, "data is null");
+                    }
+                }
+                Log.i(TAG, "json = " + json);
+            }
+        });
+    }
+
 
     public interface MusicCallback {
         void onFailure(int code, String msg);
@@ -211,6 +249,12 @@ public class MusicApi {
         void onFailure(int code, String msg);
 
         void onResponse(String albumPic);
+    }
+
+    public interface BaiKeCallback {
+        void onFailure(int code, String msg);
+
+        void onResponse(BaikeModel baikeModel);
     }
 
 

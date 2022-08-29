@@ -34,6 +34,7 @@ import com.thfw.base.api.MusicApi;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcDetailModel;
+import com.thfw.base.models.BaikeModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.ChosenModel;
 import com.thfw.base.models.DialogTalkModel;
@@ -403,46 +404,18 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             LogUtil.d(TAG, "mHelper.getTalkModel() == null 对话还未开始！！！");
             return;
         }
-        String tempText = inputText;
-        tempText = tempText.replaceAll("(小密|，|。|！|!|/?|？)", "");
 
-        // 跳个舞
-        if (checkDance(tempText)) {
-            hideInput();
-            mEtContent.setText("");
-            LogUtil.i(TAG, "----------- speech dance -------------");
-            return;
-        }
-        // 唱个歌曲
-        if (checkMusic(tempText)) {
-            hideInput();
-            mEtContent.setText("");
-            LogUtil.i(TAG, "----------- search music -------------");
-            return;
-        }
-        // 讲个笑话
-        String joke = checkJoke(tempText);
-        if (!TextUtils.isEmpty(joke)) {
-
-            ChatEntity chatEntity = new ChatEntity();
-            chatEntity.type = ChatEntity.TYPE_TO;
-            chatEntity.talk = inputText;
-            sendData(chatEntity);
-            mMainHandler.postDelayed(() -> {
-                if (EmptyUtil.isEmpty(AiTalkActivity.this)) {
-                    return;
-                }
-                DialogTalkModel talkModel = new DialogTalkModel();
-                talkModel.setType(ChatEntity.TYPE_FROM_NORMAL);
-                talkModel.setQuestion(joke);
-                onTalkData(talkModel);
-            }, 1200);
-            hideInput();
-            mEtContent.setText("");
-            LogUtil.i(TAG, "----------- speech joke -------------");
-            return;
+        if (mScene == 1 && inputText.length() < 35) {
+            if (checkAbility(inputText)) {
+                return;
+            }
         }
 
+        sendData(inputText);
+
+    }
+
+    private void sendData(String inputText) {
         ChatEntity chatEntity = new ChatEntity();
         chatEntity.type = ChatEntity.TYPE_TO;
         chatEntity.talk = inputText;
@@ -460,7 +433,105 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         onDialog(mScene, netParams);
         sendData(chatEntity);
         mEtContent.setText("");
+    }
 
+    private boolean checkAbility(String inputText) {
+        String tempText = inputText;
+        tempText = tempText.replaceAll("(小密|，|。|！|!|/?|？)", "");
+        if (tempText.length() >= 2 && tempText.length() <= 4) {
+            if (checkTureName(tempText)) {
+                ChatEntity chatEntity = new ChatEntity();
+                chatEntity.type = ChatEntity.TYPE_TO;
+                chatEntity.talk = inputText;
+                sendData(chatEntity);
+                hideInput();
+                mEtContent.setText("");
+                LogUtil.i(TAG, "----------- speech baike -------------");
+                return true;
+            }
+        }
+        // 跳个舞
+        if (checkDance(tempText)) {
+            hideInput();
+            mEtContent.setText("");
+            LogUtil.i(TAG, "----------- speech dance -------------");
+            return true;
+        }
+        // 唱个歌曲
+        if (checkMusic(tempText)) {
+            hideInput();
+            mEtContent.setText("");
+            LogUtil.i(TAG, "----------- search music -------------");
+            return true;
+        }
+        // 讲个笑话
+        String joke = checkJoke(tempText);
+        if (!TextUtils.isEmpty(joke)) {
+            sendLocalData(inputText, joke);
+            hideInput();
+            mEtContent.setText("");
+            LogUtil.i(TAG, "----------- speech joke -------------");
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 不经过网络，假回答，历史记录不存在
+     *
+     * @param input
+     * @param question
+     */
+    private void sendLocalData(String input, String question) {
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_TO;
+        chatEntity.talk = input;
+        sendData(chatEntity);
+        mMainHandler.postDelayed(() -> {
+            if (EmptyUtil.isEmpty(AiTalkActivity.this)) {
+                return;
+            }
+            DialogTalkModel talkModel = new DialogTalkModel();
+            talkModel.setType(ChatEntity.TYPE_FROM_NORMAL);
+            talkModel.setQuestion(question);
+            onTalkData(talkModel);
+        }, 1200);
+    }
+
+    private boolean checkTureName(String inputText) {
+        if (mScene != 1) {
+            return false;
+        }
+        String surname = mContext.getResources().getString(R.string.surname);
+        if (RegularUtil.isTrueName(inputText) && surname.contains(inputText.substring(0, surname.length() == 4 ? 2 : 1))) {
+
+            MusicApi.requestBaiKe(inputText, new MusicApi.BaiKeCallback() {
+                @Override
+                public void onFailure(int code, String msg) {
+                    LogUtil.e(TAG, "code = " + code + " ; msg = " + msg);
+                    sendData(inputText);
+                }
+
+                @Override
+                public void onResponse(BaikeModel baikeModel) {
+                    if (EmptyUtil.isEmpty(AiTalkActivity.this)) {
+                        return;
+                    }
+                    runOnUiThread(() -> {
+                        if (baikeModel.isDescNull()) {
+                            sendData(inputText);
+                        } else {
+                            DialogTalkModel talkModel = new DialogTalkModel();
+                            talkModel.setType(ChatEntity.TYPE_FROM_NORMAL);
+                            talkModel.setQuestion(baikeModel.getDesc());
+                            onTalkData(talkModel);
+                        }
+                    });
+                }
+            });
+            return true;
+        }
+        return false;
     }
 
     private String checkJoke(String inputText) {
@@ -470,7 +541,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
         String tempText = inputText;
 
-        if (tempText.matches(".{0,4}(讲|说|来|开).{0,3}(笑话|玩笑).{0,2}")) {
+        if (tempText.matches(".{0,4}(讲|说|来|听|开).{0,3}(笑话|玩笑).{0,2}")) {
             String[] jokes = mContext.getResources().getStringArray(R.array.jokes);
             return jokes[new Random().nextInt(jokes.length)];
         } else {
