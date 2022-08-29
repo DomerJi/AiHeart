@@ -411,11 +411,11 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             }
         }
 
-        sendData(inputText);
+        sendData(inputText, true);
 
     }
 
-    private void sendData(String inputText) {
+    private void sendData(String inputText, boolean sendTo) {
         ChatEntity chatEntity = new ChatEntity();
         chatEntity.type = ChatEntity.TYPE_TO;
         chatEntity.talk = inputText;
@@ -431,7 +431,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         }
         readAfterSpeech();
         onDialog(mScene, netParams);
-        sendData(chatEntity);
+        if (sendTo) {
+            sendData(chatEntity);
+        }
         mEtContent.setText("");
     }
 
@@ -509,7 +511,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 @Override
                 public void onFailure(int code, String msg) {
                     LogUtil.e(TAG, "code = " + code + " ; msg = " + msg);
-                    sendData(inputText);
+                    sendData(inputText, false);
                 }
 
                 @Override
@@ -519,7 +521,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                     }
                     runOnUiThread(() -> {
                         if (baikeModel.isDescNull()) {
-                            sendData(inputText);
+                            sendData(inputText, false);
                         } else {
                             DialogTalkModel talkModel = new DialogTalkModel();
                             talkModel.setType(ChatEntity.TYPE_FROM_NORMAL);
