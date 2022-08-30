@@ -53,6 +53,7 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
     private TextView mTvProductAgree;
     private String phone;
     private ImageView mIvSeePassword;
+    private TextView mTvNoAccount;
 
     @Override
     public int getContentView() {
@@ -95,6 +96,14 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
             if (getActivity() instanceof LoginActivity) {
                 LoginActivity activity = (LoginActivity) getActivity();
                 activity.getFragmentLoader().load(LoginActivity.BY_OTHER);
+                hideInput();
+            }
+        });
+        mTvNoAccount = findViewById(R.id.tv_no_account);
+        mTvNoAccount.setOnClickListener(v -> {
+            if (getActivity() instanceof LoginActivity) {
+                LoginActivity activity = (LoginActivity) getActivity();
+                activity.getFragmentLoader().load(LoginActivity.BY_MOBILE);
                 hideInput();
             }
         });

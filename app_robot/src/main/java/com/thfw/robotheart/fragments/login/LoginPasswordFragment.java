@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.models.TokenModel;
@@ -49,6 +51,8 @@ public class LoginPasswordFragment extends RobotBaseFragment<LoginPresenter> imp
     private TextView mTvProductAgree;
     private TextView mTvLoginByFace;
     private TextView mTvLoginByPassword;
+    private ConstraintLayout mClForgetPassword;
+    private ConstraintLayout mClNoAccount;
 
     public LoginPasswordFragment() {
         // Required empty public constructor
@@ -72,6 +76,8 @@ public class LoginPasswordFragment extends RobotBaseFragment<LoginPresenter> imp
         mEtPassword = (EditText) findViewById(R.id.et_password);
         mIvSeePassword = (ImageView) findViewById(R.id.iv_see_password);
         mBtLogin = (Button) findViewById(R.id.bt_login);
+        mClForgetPassword = (ConstraintLayout) findViewById(R.id.cl_forget_password);
+        mClNoAccount = (ConstraintLayout) findViewById(R.id.cl_no_account);
         mTvForgetPassword = (TextView) findViewById(R.id.tv_forget_password);
         mClBottom = (LinearLayout) findViewById(R.id.cl_bottom);
         mRivWechat = (RoundedImageView) findViewById(R.id.riv_wechat);
@@ -160,6 +166,10 @@ public class LoginPasswordFragment extends RobotBaseFragment<LoginPresenter> imp
             LoginActivity loginActivity = (LoginActivity) getActivity();
             loginActivity.getFragmentLoader().load(LoginActivity.BY_MOBILE);
         });
+
+        mClNoAccount.setOnClickListener(v -> {
+            mTvLoginByMobile.performClick();
+        });
         mTvLoginByFace.setOnClickListener(v -> {
             if (!CommonParameter.isValid()) {
                 LoginActivity.showOrganIdNoValid(getActivity());
@@ -168,7 +178,7 @@ public class LoginPasswordFragment extends RobotBaseFragment<LoginPresenter> imp
             LoginActivity loginActivity = (LoginActivity) getActivity();
             loginActivity.getFragmentLoader().load(LoginActivity.BY_FACE);
         });
-        mTvForgetPassword.setOnClickListener(v -> {
+        mClForgetPassword.setOnClickListener(v -> {
             SetPasswordActivity.startActivity(mContext, SetPasswordActivity.SET_CODE);
         });
     }
