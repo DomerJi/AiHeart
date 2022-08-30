@@ -3,6 +3,7 @@ package com.thfw.robotheart.adapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -83,7 +84,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
      * 隐藏跳过语音按钮
      */
     public void hideJumpBtn() {
-        if (mRecyclerView != null) {
+        if (mRecyclerView == null) {
             return;
         }
         LinearLayoutManager manager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
@@ -102,9 +103,9 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
                     RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForLayoutPosition(lastPosition);
                     if (viewHolder instanceof ChatFromHolder) {
                         ChatFromHolder chatFromHolder = (ChatFromHolder) viewHolder;
-                        if (chatFromHolder.mTvJumpSpeech != null) {
-                            chatFromHolder.mTvJumpSpeech.setVisibility(View.INVISIBLE);
-                            chatFromHolder.mTvJumpSpeech.setEnabled(false);
+                        if (chatFromHolder.mLlJumpSpeech != null) {
+                            chatFromHolder.mLlJumpSpeech.setVisibility(View.INVISIBLE);
+                            chatFromHolder.mLlJumpSpeech.setEnabled(false);
                         }
                     }
                     break;
@@ -128,24 +129,24 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
                 RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForLayoutPosition(getItemCount() - 1);
                 if (viewHolder instanceof ChatFromHolder) {
                     ChatFromHolder chatFromHolder = (ChatFromHolder) viewHolder;
-                    if (chatFromHolder.mTvJumpSpeech == null) {
+                    if (chatFromHolder.mLlJumpSpeech == null) {
                         return;
                     }
                     if (volumeSwitch && chatEntity.getTalk().length() > JUMP_TEXT_MAX_COUNT
                             && TtsHelper.getInstance().isIng()) {
-                        chatFromHolder.mTvJumpSpeech.setEnabled(true);
-                        chatFromHolder.mTvJumpSpeech.setVisibility(View.VISIBLE);
-                        chatFromHolder.mTvJumpSpeech.setOnClickListener(v -> {
-                            chatFromHolder.mTvJumpSpeech.setEnabled(false);
-                            chatFromHolder.mTvJumpSpeech.setVisibility(View.INVISIBLE);
+                        chatFromHolder.mLlJumpSpeech.setEnabled(true);
+                        chatFromHolder.mLlJumpSpeech.setVisibility(View.VISIBLE);
+                        chatFromHolder.mLlJumpSpeech.setOnClickListener(v -> {
+                            chatFromHolder.mLlJumpSpeech.setEnabled(false);
+                            chatFromHolder.mLlJumpSpeech.setVisibility(View.INVISIBLE);
                             if (mContext instanceof AiTalkActivity) {
                                 AiTalkActivity aiTalkActivity = (AiTalkActivity) mContext;
                                 aiTalkActivity.ttsStopJump();
                             }
                         });
                     } else {
-                        chatFromHolder.mTvJumpSpeech.setVisibility(View.INVISIBLE);
-                        chatFromHolder.mTvJumpSpeech.setEnabled(false);
+                        chatFromHolder.mLlJumpSpeech.setVisibility(View.INVISIBLE);
+                        chatFromHolder.mLlJumpSpeech.setEnabled(false);
                     }
                 }
                 break;
@@ -166,19 +167,19 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
                     if (volumeSwitch && position == getItemCount() - 1
                             && chatEntity.getTalk().length() > JUMP_TEXT_MAX_COUNT
                             && TtsHelper.getInstance().isIng()) {
-                        chatFromHolder.mTvJumpSpeech.setEnabled(true);
-                        chatFromHolder.mTvJumpSpeech.setVisibility(View.VISIBLE);
-                        chatFromHolder.mTvJumpSpeech.setOnClickListener(v -> {
-                            chatFromHolder.mTvJumpSpeech.setEnabled(false);
-                            chatFromHolder.mTvJumpSpeech.setVisibility(View.INVISIBLE);
+                        chatFromHolder.mLlJumpSpeech.setEnabled(true);
+                        chatFromHolder.mLlJumpSpeech.setVisibility(View.VISIBLE);
+                        chatFromHolder.mLlJumpSpeech.setOnClickListener(v -> {
+                            chatFromHolder.mLlJumpSpeech.setEnabled(false);
+                            chatFromHolder.mLlJumpSpeech.setVisibility(View.INVISIBLE);
                             if (mContext instanceof AiTalkActivity) {
                                 AiTalkActivity aiTalkActivity = (AiTalkActivity) mContext;
                                 aiTalkActivity.ttsStopJump();
                             }
                         });
                     } else {
-                        chatFromHolder.mTvJumpSpeech.setEnabled(false);
-                        chatFromHolder.mTvJumpSpeech.setVisibility(View.INVISIBLE);
+                        chatFromHolder.mLlJumpSpeech.setEnabled(false);
+                        chatFromHolder.mLlJumpSpeech.setVisibility(View.INVISIBLE);
                     }
                 }
                 break;
@@ -273,12 +274,12 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
     public class ChatFromHolder extends ChatHolder {
 
         private final TextView mTvTalk;
-        private final TextView mTvJumpSpeech;
+        private final LinearLayout mLlJumpSpeech;
 
         public ChatFromHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvTalk = itemView.findViewById(R.id.tv_talk);
-            mTvJumpSpeech = itemView.findViewById(R.id.tv_jump_speech);
+            mLlJumpSpeech = itemView.findViewById(R.id.ll_jump_speech);
         }
     }
 

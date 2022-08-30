@@ -33,22 +33,37 @@
             android:textSize="@dimen/textSize"
             tools:text="test" />
 
-        <TextView
-            android:id="@+id/tv_jump_speech"
+        <LinearLayout
+            android:id="@+id/ll_jump_speech"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_talk"
             android:layout_alignParentRight="true"
             android:layout_marginTop="-18dp"
-            android:drawableLeft="@drawable/ic_baseline_volume_off_24"
-            android:drawableTint="@color/colorRobotFore"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:padding="6dp"
-            android:text=" 跳过 "
-            android:textColor="@color/colorRobotFore"
-            android:textSize="@dimen/textSize"
             android:visibility="invisible"
-            tools:visibility="visible" />
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_baseline_volume_off_24"
+                app:tint="@color/colorRobotFore" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:gravity="center_vertical"
+                android:text="跳过"
+                android:textColor="@color/colorRobotFore"
+                android:textSize="15dp" />
+
+        </LinearLayout>
+
 
     </RelativeLayout>
 

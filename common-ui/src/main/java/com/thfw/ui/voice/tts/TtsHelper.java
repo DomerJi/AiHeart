@@ -201,13 +201,13 @@ public class TtsHelper implements ITtsFace {
     @Override
     public void stop() {
         if (initialized()) {
+            mTts.stopSpeaking();
             if (currentSynthesizerListener != null) {
                 currentSynthesizerListener.onCompleted(new SpeechError(0));
             }
             if (currentSynthesizerListener2 != null) {
                 currentSynthesizerListener2.onCompleted(new SpeechError(0));
             }
-            mTts.stopSpeaking();
         }
         onExoRelease();
     }

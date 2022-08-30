@@ -696,8 +696,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 mRlKeywordInput.setVisibility(View.VISIBLE);
                 mRlKeyword.setVisibility(View.GONE);
                 softKeyBoardShow = true;
-                softKeyBoardShowStvText = mStvText.isShow();
-                mStvText.hide();
             }
 
             @Override
@@ -714,6 +712,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
                 if (softKeyBoardShowStvText) {
                     PolicyHelper.getInstance().startSpeech();
+                    currentSelect = true;
                     onTalkModel(true);
                     mStvText.show();
                 }
@@ -731,6 +730,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 mStvText.hide();
                 currentSelect = false;
                 onTalkModel(false);
+                softKeyBoardShowStvText = true;
+            } else {
+                softKeyBoardShowStvText = false;
             }
             mRlKeywordInput.setVisibility(View.VISIBLE);
             mRlKeyword.setVisibility(View.GONE);
