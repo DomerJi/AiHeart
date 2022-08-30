@@ -29,9 +29,11 @@ import com.google.android.flexbox.JustifyContent;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.scwang.wave.MultiWaveHeader;
+import com.thfw.base.api.MusicApi;
 import com.thfw.base.api.TalkApi;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.BaikeModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.ChosenModel;
 import com.thfw.base.models.DialogTalkModel;
@@ -44,6 +46,7 @@ import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
@@ -71,6 +74,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPresenter.TalkUi<HttpResult<List<DialogTalkModel>>> {
 
@@ -829,6 +833,12 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         if (EmptyUtil.isEmpty(inputText)) {
             return;
         }
+
+        if (mScene == 1 && inputText.length() < 35) {
+            if (checkAbility(inputText)) {
+                return;
+            }
+        }
         ChatEntity chatEntity = new ChatEntity();
         chatEntity.type = ChatEntity.TYPE_TO;
         chatEntity.talk = inputText;
@@ -841,6 +851,121 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         onDialog(mScene, netParams);
         sendData(chatEntity);
         mEtContent.setText("");
+    }
+
+    private boolean checkAbility(String inputText) {
+        String tempText = inputText;
+        tempText = tempText.replaceAll("(小密|，|。|！|!|/?|？)", "");
+        if (tempText.length() >= 2 && tempText.length() <= 4) {
+            if (checkTureName(tempText)) {
+                ChatEntity chatEntity = new ChatEntity();
+                chatEntity.type = ChatEntity.TYPE_TO;
+                chatEntity.talk = inputText;
+                sendData(chatEntity);
+                hideInput();
+                mEtContent.setText("");
+                LogUtil.i(TAG, "----------- speech baike -------------");
+                return true;
+            }
+        }
+        // 讲个笑话
+        String joke = checkJoke(tempText);
+        if (!TextUtils.isEmpty(joke)) {
+            sendLocalData(inputText, joke);
+            hideInput();
+            mEtContent.setText("");
+            LogUtil.i(TAG, "----------- speech joke -------------");
+            return true;
+        }
+        return false;
+    }
+
+    private void sendData(String inputText, boolean sendTo) {
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_TO;
+        chatEntity.talk = inputText;
+
+        NetParams netParams = NetParams.crete().add("question", chatEntity.talk);
+        LogUtil.d(TAG, "inputText = " + chatEntity.talk);
+        if (mScene != 1) {
+            netParams.add("id", mHelper.getTalkModel().getId());
+        }
+
+        onDialog(mScene, netParams);
+        if (sendTo) {
+            sendData(chatEntity);
+        }
+        mEtContent.setText("");
+    }
+
+    private boolean checkTureName(String inputText) {
+        String surname = mContext.getResources().getString(R.string.surname);
+        if (RegularUtil.isTrueName(inputText) && surname.contains(inputText.substring(0, surname.length() == 4 ? 2 : 1))) {
+
+            MusicApi.requestBaiKe(inputText, new MusicApi.BaiKeCallback() {
+                @Override
+                public void onFailure(int code, String msg) {
+                    LogUtil.e(TAG, "code = " + code + " ; msg = " + msg);
+                    sendData(inputText, false);
+                }
+
+                @Override
+                public void onResponse(BaikeModel baikeModel) {
+                    if (EmptyUtil.isEmpty(ChatActivity.this)) {
+                        return;
+                    }
+                    runOnUiThread(() -> {
+                        if (baikeModel.isDescNull()) {
+                            sendData(inputText, false);
+                        } else {
+                            DialogTalkModel talkModel = new DialogTalkModel();
+                            talkModel.setType(ChatEntity.TYPE_FROM_NORMAL);
+                            talkModel.setQuestion(baikeModel.getDesc());
+                            onTalkData(talkModel);
+                        }
+                    });
+                }
+            });
+            return true;
+        }
+        return false;
+    }
+
+    private String checkJoke(String inputText) {
+        if (mScene != 1) {
+            return null;
+        }
+
+        String tempText = inputText;
+
+        if (tempText.matches(".{0,4}(讲|说|来|听|开).{0,3}(笑话|玩笑).{0,2}")) {
+            String[] jokes = mContext.getResources().getStringArray(R.array.jokes);
+            return jokes[new Random().nextInt(jokes.length)];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 不经过网络，假回答，历史记录不存在
+     *
+     * @param input
+     * @param question
+     */
+    private void sendLocalData(String input, String question) {
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_TO;
+        chatEntity.talk = input;
+        sendData(chatEntity);
+        mMainHandler.postDelayed(() -> {
+            if (EmptyUtil.isEmpty(ChatActivity.this)) {
+                return;
+            }
+            DialogTalkModel talkModel = new DialogTalkModel();
+            talkModel.setType(ChatEntity.TYPE_FROM_NORMAL);
+            talkModel.setQuestion(question);
+            onTalkData(talkModel);
+        }, 1200);
     }
 
     /**

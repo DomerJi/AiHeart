@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -16,9 +17,11 @@ import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.talk.AiTalkActivity;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.util.SVGAHelper;
 import com.thfw.ui.utils.GlideUtil;
+import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.user.login.UserManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,10 +30,15 @@ import java.util.List;
 
 public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder> {
 
-
+    public static final int JUMP_TEXT_MAX_COUNT = 80;
     private final Object visibleAvatar;
-    OnRecommendListener mRecommendListener;
-    onSendStateChangeListener mOnSendStateChangeListener;
+    private OnRecommendListener mRecommendListener;
+    private onSendStateChangeListener mOnSendStateChangeListener;
+    private boolean volumeSwitch;
+
+    public void setVolumeSwitch(boolean volumeSwitch) {
+        this.volumeSwitch = volumeSwitch;
+    }
 
     public ChatAdapter(List<ChatEntity> dataList) {
         super(dataList);
@@ -71,6 +79,79 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
         }
     }
 
+    /**
+     * 隐藏跳过语音按钮
+     */
+    public void hideJumpBtn() {
+        if (mRecyclerView != null) {
+            return;
+        }
+        LinearLayoutManager manager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+        int firstPosition = manager.findFirstVisibleItemPosition();
+        int lastPosition = manager.findLastVisibleItemPosition();
+        if (firstPosition == RecyclerView.NO_POSITION || lastPosition == RecyclerView.NO_POSITION) {
+            return;
+        }
+
+        while (lastPosition > firstPosition) {
+            ChatEntity chatEntity = mDataList.get(lastPosition);
+            switch (chatEntity.type) {
+                case ChatEntity.TYPE_FROM_NORMAL:
+                case ChatEntity.TYPE_FROM_SELECT:
+                case ChatEntity.TYPE_INPUT:
+                    RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForLayoutPosition(lastPosition);
+                    if (viewHolder instanceof ChatFromHolder) {
+                        ChatFromHolder chatFromHolder = (ChatFromHolder) viewHolder;
+                        if (chatFromHolder.mTvJumpSpeech != null) {
+                            chatFromHolder.mTvJumpSpeech.setVisibility(View.INVISIBLE);
+                            chatFromHolder.mTvJumpSpeech.setEnabled(false);
+                        }
+                    }
+                    break;
+            }
+            lastPosition--;
+        }
+    }
+
+    /**
+     * 显示跳过语音按钮
+     */
+    public void showJumpBtn() {
+        if (mRecyclerView == null) {
+            return;
+        }
+        ChatEntity chatEntity = mDataList.get(getItemCount() - 1);
+        switch (chatEntity.type) {
+            case ChatEntity.TYPE_FROM_NORMAL:
+            case ChatEntity.TYPE_FROM_SELECT:
+            case ChatEntity.TYPE_INPUT:
+                RecyclerView.ViewHolder viewHolder = mRecyclerView.findViewHolderForLayoutPosition(getItemCount() - 1);
+                if (viewHolder instanceof ChatFromHolder) {
+                    ChatFromHolder chatFromHolder = (ChatFromHolder) viewHolder;
+                    if (chatFromHolder.mTvJumpSpeech == null) {
+                        return;
+                    }
+                    if (volumeSwitch && chatEntity.getTalk().length() > JUMP_TEXT_MAX_COUNT
+                            && TtsHelper.getInstance().isIng()) {
+                        chatFromHolder.mTvJumpSpeech.setEnabled(true);
+                        chatFromHolder.mTvJumpSpeech.setVisibility(View.VISIBLE);
+                        chatFromHolder.mTvJumpSpeech.setOnClickListener(v -> {
+                            chatFromHolder.mTvJumpSpeech.setEnabled(false);
+                            chatFromHolder.mTvJumpSpeech.setVisibility(View.INVISIBLE);
+                            if (mContext instanceof AiTalkActivity) {
+                                AiTalkActivity aiTalkActivity = (AiTalkActivity) mContext;
+                                aiTalkActivity.ttsStopJump();
+                            }
+                        });
+                    } else {
+                        chatFromHolder.mTvJumpSpeech.setVisibility(View.INVISIBLE);
+                        chatFromHolder.mTvJumpSpeech.setEnabled(false);
+                    }
+                }
+                break;
+        }
+    }
+
     @Override
     public void onBindViewHolder(@NonNull @NotNull ChatHolder holder, int position) {
         ChatEntity chatEntity = mDataList.get(position);
@@ -81,7 +162,24 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             case ChatEntity.TYPE_INPUT:
                 if (holder instanceof ChatFromHolder) {
                     ChatFromHolder chatFromHolder = (ChatFromHolder) holder;
-                    chatFromHolder.mTvTalk.setText(HtmlCompat.fromHtml(chatEntity.getNotPTalk(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    chatFromHolder.mTvTalk.setText(HtmlCompat.fromHtml(chatEntity.getNotPTalk(), HtmlCompat.FROM_HTML_MODE_COMPACT));
+                    if (volumeSwitch && position == getItemCount() - 1
+                            && chatEntity.getTalk().length() > JUMP_TEXT_MAX_COUNT
+                            && TtsHelper.getInstance().isIng()) {
+                        chatFromHolder.mTvJumpSpeech.setEnabled(true);
+                        chatFromHolder.mTvJumpSpeech.setVisibility(View.VISIBLE);
+                        chatFromHolder.mTvJumpSpeech.setOnClickListener(v -> {
+                            chatFromHolder.mTvJumpSpeech.setEnabled(false);
+                            chatFromHolder.mTvJumpSpeech.setVisibility(View.INVISIBLE);
+                            if (mContext instanceof AiTalkActivity) {
+                                AiTalkActivity aiTalkActivity = (AiTalkActivity) mContext;
+                                aiTalkActivity.ttsStopJump();
+                            }
+                        });
+                    } else {
+                        chatFromHolder.mTvJumpSpeech.setEnabled(false);
+                        chatFromHolder.mTvJumpSpeech.setVisibility(View.INVISIBLE);
+                    }
                 }
                 break;
             case ChatEntity.TYPE_EMOJI:
@@ -95,7 +193,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             case ChatEntity.TYPE_TO:
                 if (holder instanceof ChatToHolder) {
                     ChatToHolder chatToHolder = (ChatToHolder) holder;
-                    chatToHolder.mTvTalk.setText(HtmlCompat.fromHtml(chatEntity.getTalk(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    chatToHolder.mTvTalk.setText(HtmlCompat.fromHtml(chatEntity.getTalk(), HtmlCompat.FROM_HTML_MODE_COMPACT));
                     if (position == getItemCount() - 1) {
                         if (chatEntity.loading == -1) {
                             chatToHolder.mPbToTalk.setVisibility(View.GONE);
@@ -175,10 +273,12 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
     public class ChatFromHolder extends ChatHolder {
 
         private final TextView mTvTalk;
+        private final TextView mTvJumpSpeech;
 
         public ChatFromHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvTalk = itemView.findViewById(R.id.tv_talk);
+            mTvJumpSpeech = itemView.findViewById(R.id.tv_jump_speech);
         }
     }
 

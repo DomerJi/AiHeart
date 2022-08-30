@@ -38,7 +38,6 @@ public class BaikeModel implements Serializable {
      * logo : http://img.baidu.com/img/baike/logo-baike.gif
      * copyrights : 以上内容来自百度百科平台，由百度百科网友创作。
      * customImg :
-     * redirect : []
      */
 
     @SerializedName("id")
@@ -85,8 +84,6 @@ public class BaikeModel implements Serializable {
     private List<String> catalog;
     @SerializedName("wapCatalog")
     private List<String> wapCatalog;
-    @SerializedName("redirect")
-    private List<?> redirect;
 
     public static class CardBean implements Serializable {
         /**

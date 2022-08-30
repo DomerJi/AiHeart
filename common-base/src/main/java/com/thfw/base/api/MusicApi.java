@@ -10,6 +10,7 @@ import com.thfw.base.models.Mp3PicModel;
 import com.thfw.base.models.MusicModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 
 import java.io.IOException;
@@ -74,18 +75,23 @@ public class MusicApi {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
-                Type type = new TypeToken<List<MusicModel>>() {
-                }.getType();
-                List<MusicModel> list = GsonUtil.fromJson(json, type);
-
-                if (callback != null) {
-                    if (!EmptyUtil.isEmpty(list)) {
-                        callback.onResponse(list);
-                    } else {
-                        callback.onFailure(-2, "datas is null");
+                Log.i(TAG, "json = " + json);
+                List<MusicModel> list = null;
+                try {
+                    Type type = new TypeToken<List<MusicModel>>() {
+                    }.getType();
+                    list = GsonUtil.fromJson(json, type);
+                } catch (Exception e) {
+                    LogUtil.e(TAG, "list e = " + e.getMessage());
+                } finally {
+                    if (callback != null) {
+                        if (!EmptyUtil.isEmpty(list)) {
+                            callback.onResponse(list);
+                        } else {
+                            callback.onFailure(-2, "datas is null");
+                        }
                     }
                 }
-                Log.i(TAG, "json = " + json);
             }
         });
     }
@@ -119,18 +125,23 @@ public class MusicApi {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
-                Type type = new TypeToken<LyricModel>() {
-                }.getType();
-                LyricModel lyricModel = GsonUtil.fromJson(json, type);
-
-                if (callback != null) {
-                    if (null != lyricModel) {
-                        callback.onResponse(lyricModel);
-                    } else {
-                        callback.onFailure(-2, "data is null");
+                Log.i(TAG, "json = " + json);
+                LyricModel lyricModel = null;
+                try {
+                    Type type = new TypeToken<LyricModel>() {
+                    }.getType();
+                    lyricModel = GsonUtil.fromJson(json, type);
+                } catch (Exception e) {
+                    LogUtil.e(TAG, "lyricModel e = " + e.getMessage());
+                } finally {
+                    if (callback != null) {
+                        if (null != lyricModel) {
+                            callback.onResponse(lyricModel);
+                        } else {
+                            callback.onFailure(-2, "data is null");
+                        }
                     }
                 }
-                Log.i(TAG, "json = " + json);
             }
         });
     }
@@ -174,23 +185,31 @@ public class MusicApi {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
-                Type type = new TypeToken<Mp3PicModel>() {
-                }.getType();
-                Mp3PicModel mp3PicModel = GsonUtil.fromJson(json, type);
-                if (callback != null) {
-                    if (null != mp3PicModel) {
-                        if (!TextUtils.isEmpty(mp3PicModel.getUrl())) {
-                            mAlbumPicMap.put(picId, mp3PicModel.getUrl());
-                            SharePreferenceUtil.setString(KEY_ALBUM_PIC, GsonUtil.toJson(mAlbumPicMap));
-                            callback.onResponse(mp3PicModel.getUrl());
+                Log.i(TAG, "json = " + json);
+                Mp3PicModel mp3PicModel = null;
+                try {
+                    Type type = new TypeToken<Mp3PicModel>() {
+                    }.getType();
+                    mp3PicModel = GsonUtil.fromJson(json, type);
+                } catch (Exception e) {
+                    Log.i(TAG, "mp3PicModel e = " + e.getMessage());
+                } finally {
+                    if (callback != null) {
+                        if (null != mp3PicModel) {
+                            if (!TextUtils.isEmpty(mp3PicModel.getUrl())) {
+                                mAlbumPicMap.put(picId, mp3PicModel.getUrl());
+                                SharePreferenceUtil.setString(KEY_ALBUM_PIC, GsonUtil.toJson(mAlbumPicMap));
+                                callback.onResponse(mp3PicModel.getUrl());
+                            } else {
+                                callback.onFailure(-3, "data picUrl is null");
+                            }
                         } else {
-                            callback.onFailure(-3, "data picUrl is null");
+                            callback.onFailure(-2, "data is null");
                         }
-                    } else {
-                        callback.onFailure(-2, "data is null");
                     }
                 }
-                Log.i(TAG, "json = " + json);
+
+
             }
         });
     }
@@ -217,17 +236,23 @@ public class MusicApi {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
-                Type type = new TypeToken<BaikeModel>() {
-                }.getType();
-                BaikeModel baikeModel = GsonUtil.fromJson(json, type);
-                if (callback != null) {
-                    if (null != baikeModel) {
-                        callback.onResponse(baikeModel);
-                    } else {
-                        callback.onFailure(-2, "data is null");
+                Log.i(TAG, "json = " + json);
+                BaikeModel baikeModel = null;
+                try {
+                    Type type = new TypeToken<BaikeModel>() {
+                    }.getType();
+                    baikeModel = GsonUtil.fromJson(json, type);
+                } catch (Exception e) {
+                    LogUtil.e(TAG, "baikeModel e = " + e.getMessage());
+                } finally {
+                    if (callback != null) {
+                        if (null != baikeModel) {
+                            callback.onResponse(baikeModel);
+                        } else {
+                            callback.onFailure(-2, "data is null");
+                        }
                     }
                 }
-                Log.i(TAG, "json = " + json);
             }
         });
     }

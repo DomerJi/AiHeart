@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -28,9 +29,26 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
             android:padding="12dp"
-            android:text="test"
             android:textColor="@color/white"
-            android:textSize="@dimen/textSize" />
+            android:textSize="@dimen/textSize"
+            tools:text="test" />
+
+        <TextView
+            android:id="@+id/tv_jump_speech"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_talk"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="-18dp"
+            android:drawableLeft="@drawable/ic_baseline_volume_off_24"
+            android:drawableTint="@color/colorRobotFore"
+            android:gravity="center_vertical"
+            android:padding="6dp"
+            android:text=" 跳过 "
+            android:textColor="@color/colorRobotFore"
+            android:textSize="@dimen/textSize"
+            android:visibility="invisible"
+            tools:visibility="visible" />
 
     </RelativeLayout>
 

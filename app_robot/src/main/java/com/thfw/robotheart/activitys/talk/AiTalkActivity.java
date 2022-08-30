@@ -334,7 +334,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 mIvVolumeSwitch.setSelected(SharePreferenceUtil.getBoolean(KEY_ROBOT_SPEECH, true));
             }
         }
-
+        if (mChatAdapter != null) {
+            mChatAdapter.setVolumeSwitch(mIvVolumeSwitch.isSelected());
+        }
         if (!mIvVolumeSwitch.isSelected()) {
             LogUtil.i("TtsHelper.getInstance().stop");
             mTtsQueue.clear();
@@ -501,9 +503,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     }
 
     private boolean checkTureName(String inputText) {
-        if (mScene != 1) {
-            return false;
-        }
         String surname = mContext.getResources().getString(R.string.surname);
         if (RegularUtil.isTrueName(inputText) && surname.contains(inputText.substring(0, surname.length() == 4 ? 2 : 1))) {
 
@@ -661,6 +660,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mTitleRobotView.setCenterText(talkModel.getTitle());
         mChatAdapter = new ChatAdapter(null);
         mRvList.setAdapter(mChatAdapter);
+        mChatAdapter.setVolumeSwitch(mIvVolumeSwitch.isSelected());
         mRvList.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -713,6 +713,8 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 }
 
                 if (softKeyBoardShowStvText) {
+                    PolicyHelper.getInstance().startSpeech();
+                    onTalkModel(true);
                     mStvText.show();
                 }
 
@@ -724,6 +726,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             // 退出倾听模式
             if (mIvTalkModel.isSelected() || mStvText.isShow()) {
                 PolicyHelper.getInstance().end();
+                TtsHelper.getInstance().stop();
                 mIvTalkModel.setSelected(false);
                 mStvText.hide();
                 currentSelect = false;
@@ -1129,6 +1132,16 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         readAfterSpeech(false);
     }
 
+
+    public void ttsStopJump() {
+        if (mFaceType == FACE_TYPE_SPEECH || TtsHelper.getInstance().isIng()) {
+            startAnimFaceType(FACE_TYPE_FREE);
+            TtsHelper.getInstance().stop();
+            readAfterSpeech();
+        }
+
+    }
+
     private void readAfterSpeech(boolean formUser) {
         // 开启了语音和倾听交互模式
         if (isReadAfterSpeech()) {
@@ -1244,6 +1257,20 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 super.onSpeakBegin();
                 startAnimFaceType(FACE_TYPE_SPEECH);
                 readAfterSpeech();
+                // 更新跳过播报按钮
+                if (mIvVolumeSwitch != null && mIvVolumeSwitch.isSelected() && mChatAdapter != null && mChatAdapter.getItemCount() > 0) {
+                    int itemViewType = mChatAdapter.getItemViewType(mChatAdapter.getItemViewType(mChatAdapter.getItemCount() - 1));
+                    switch (itemViewType) {
+                        case ChatEntity.TYPE_FROM_NORMAL:
+                        case ChatEntity.TYPE_FROM_SELECT:
+                        case ChatEntity.TYPE_INPUT:
+                            ChatEntity chatEntity = mChatAdapter.getDataList().get(mChatAdapter.getItemCount() - 1);
+                            if (chatEntity != null && chatEntity.getTalk().length() > ChatAdapter.JUMP_TEXT_MAX_COUNT) {
+                                mChatAdapter.showJumpBtn();
+                            }
+                            break;
+                    }
+                }
             }
 
             @Override
@@ -1262,7 +1289,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                     startAnimFaceType(FACE_TYPE_FREE);
                     readAfterSpeech();
                 }
-
+                // 隐藏跳过语音按钮
+                if (mChatAdapter != null) {
+                    mChatAdapter.hideJumpBtn();
+                }
             }
 
         });

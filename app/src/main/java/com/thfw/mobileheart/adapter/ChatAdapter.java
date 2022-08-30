@@ -81,7 +81,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             case ChatEntity.TYPE_INPUT:
                 if (holder instanceof ChatFromHolder) {
                     ChatFromHolder chatFromHolder = (ChatFromHolder) holder;
-                    chatFromHolder.mTvTalk.setText(HtmlCompat.fromHtml(chatEntity.getNotPTalk(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    chatFromHolder.mTvTalk.setText(HtmlCompat.fromHtml(chatEntity.getNotPTalk(), HtmlCompat.FROM_HTML_MODE_COMPACT));
                 }
                 break;
             case ChatEntity.TYPE_EMOJI:
@@ -95,7 +95,7 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             case ChatEntity.TYPE_TO:
                 if (holder instanceof ChatToHolder) {
                     ChatToHolder chatToHolder = (ChatToHolder) holder;
-                    chatToHolder.mTvTalk.setText(HtmlCompat.fromHtml(chatEntity.getTalk(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    chatToHolder.mTvTalk.setText(HtmlCompat.fromHtml(chatEntity.getTalk(), HtmlCompat.FROM_HTML_MODE_COMPACT));
                     if (position == getItemCount() - 1) {
                         if (chatEntity.loading == -1) {
                             chatToHolder.mPbToTalk.setVisibility(View.GONE);
