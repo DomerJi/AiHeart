@@ -566,8 +566,8 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         if (tempText.matches(REGEX_MUSIC)
                 || tempText.matches(REGEX_MUSIC2)
                 || tempText.matches(REGEX_MUSIC3)) {
-            String REGEX_MUSIC_REPLACE = ".{0,5}(播放|推荐|放|唱|听|来)(一个|一首|一曲|个|首|)" +
-                    "|(的音乐|的歌曲|歌儿|歌吧|的歌|歌曲|音乐|曲儿|个歌|music)(吧|嘛|)";
+            String REGEX_MUSIC_REPLACE = ".{0,5}(播放|推荐|放|唱|听|来)(一个|一首|一曲|个|首)" +
+                    "|(的音乐|的歌曲|歌儿|歌吧|的歌|歌曲|音乐|曲儿|个歌|music)(吧|嘛)";
 
             String name = tempText.replaceAll(REGEX_MUSIC_REPLACE, "");
             boolean notEmptyName = !TextUtils.isEmpty(name);
