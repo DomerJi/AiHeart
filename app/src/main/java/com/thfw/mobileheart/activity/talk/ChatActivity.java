@@ -38,6 +38,7 @@ import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.ChosenModel;
 import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.models.TalkModel;
+import com.thfw.base.models.WeatherInfoModel;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.ResponeThrowable;
@@ -49,6 +50,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.base.utils.WeatherUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
@@ -868,6 +870,30 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
                 return true;
             }
         }
+        // 天气查询
+        String weatherId = checkWeather(tempText);
+        if (!TextUtils.isEmpty(weatherId)) {
+            hideInput();
+            mEtContent.setText("");
+            MusicApi.requestWeather(weatherId, new MusicApi.WeatherCallback() {
+                @Override
+                public void onFailure(int code, String msg) {
+                    ToastUtil.show("没有查到天气情况");
+                }
+
+                @Override
+                public void onResponse(WeatherInfoModel weatherInfoModel) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendLocalData(inputText, weatherInfoModel.getDesc());
+                        }
+                    });
+                }
+            });
+            LogUtil.i(TAG, "----------- search weather -------------");
+            return true;
+        }
         // 讲个笑话
         String joke = checkJoke(tempText);
         if (!TextUtils.isEmpty(joke)) {
@@ -929,6 +955,28 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
             return true;
         }
         return false;
+    }
+
+    private String checkWeather(String inputText) {
+        if (mScene != 1) {
+            return null;
+        }
+
+        String tempText = inputText;
+        String weather = ".{0,5}(天气|下雨|有雨|下雪|有雪).{0,3}(怎么样|吗|嘛).{0,2}";
+        if (tempText.matches(weather)) {
+
+            String weatherReplace = "(今天|现在|今日|市|天气|下雨|有雨|下雪|有雪).{0,3}(怎么样|吗|嘛).{0,2}";
+            String cityName = tempText.replaceAll(weatherReplace, "");
+            if (TextUtils.isEmpty(cityName)) {
+                return WeatherUtil.getWeatherCityId();
+            } else {
+                return WeatherUtil.getWeatherCityId(cityName);
+
+            }
+        } else {
+            return null;
+        }
     }
 
     private String checkJoke(String inputText) {

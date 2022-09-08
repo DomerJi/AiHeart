@@ -40,6 +40,7 @@ import com.thfw.base.models.ChosenModel;
 import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.models.MusicModel;
 import com.thfw.base.models.TalkModel;
+import com.thfw.base.models.WeatherInfoModel;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.ResponeThrowable;
@@ -53,6 +54,7 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
+import com.thfw.base.utils.WeatherUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
@@ -401,6 +403,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     }
 
     private void sendInputText(String inputText) {
+        ToastUtil.show("dddddddddd");
         mStvText.setSpeechText("");
         if (mHelper.getTalkModel() == null) {
             LogUtil.d(TAG, "mHelper.getTalkModel() == null 对话还未开始！！！");
@@ -466,6 +469,30 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             hideInput();
             mEtContent.setText("");
             LogUtil.i(TAG, "----------- search music -------------");
+            return true;
+        }
+        // 天气查询
+        String weatherId = checkWeather(tempText);
+        if (!TextUtils.isEmpty(weatherId)) {
+            hideInput();
+            mEtContent.setText("");
+            MusicApi.requestWeather(weatherId, new MusicApi.WeatherCallback() {
+                @Override
+                public void onFailure(int code, String msg) {
+                    ToastUtil.show("没有查到天气情况");
+                }
+
+                @Override
+                public void onResponse(WeatherInfoModel weatherInfoModel) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendLocalData(inputText, weatherInfoModel.getDesc());
+                        }
+                    });
+                }
+            });
+            LogUtil.i(TAG, "----------- search weather -------------");
             return true;
         }
         // 讲个笑话
@@ -545,6 +572,28 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         if (tempText.matches(".{0,4}(讲|说|来|听|开).{0,3}(笑话|玩笑).{0,2}")) {
             String[] jokes = mContext.getResources().getStringArray(R.array.jokes);
             return jokes[new Random().nextInt(jokes.length)];
+        } else {
+            return null;
+        }
+    }
+
+    private String checkWeather(String inputText) {
+        if (mScene != 1) {
+            return null;
+        }
+
+        String tempText = inputText;
+        String weather = ".{0,5}(天气|下雨|有雨|下雪|有雪).{0,3}(怎么样|吗|嘛).{0,2}";
+        if (tempText.matches(weather)) {
+
+            String weatherReplace = "(今天|现在|今日|市|天气|下雨|有雨|下雪|有雪).{0,3}(怎么样|吗|嘛).{0,2}";
+            String cityName = tempText.replaceAll(weatherReplace, "");
+            if (TextUtils.isEmpty(cityName)) {
+                return WeatherUtil.getWeatherCityId();
+            } else {
+                return WeatherUtil.getWeatherCityId(cityName);
+
+            }
         } else {
             return null;
         }
