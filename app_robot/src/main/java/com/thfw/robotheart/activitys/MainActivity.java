@@ -36,6 +36,7 @@ import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
+import com.thfw.base.utils.LocationUtils;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -677,6 +678,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             if (!UserManager.getInstance().isLogin()) {
                 return;
             }
+            // 当前城市查询
+            LocationUtils.getCNBylocation(mContext);
+
             MsgCountManager.getInstance().addOnCountChangeListener(this);
             new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<User.UserInfo>() {
                 @Override

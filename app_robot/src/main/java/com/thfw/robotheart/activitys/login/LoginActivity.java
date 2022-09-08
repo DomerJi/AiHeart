@@ -21,12 +21,10 @@ import com.luck.picture.lib.tools.PictureFileUtils;
 import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.ContextApp;
 import com.thfw.base.base.IPresenter;
-import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
-import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LocationUtils;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.PermissionUtil;
@@ -42,7 +40,6 @@ import com.thfw.robotheart.activitys.me.MeActivity;
 import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
 import com.thfw.robotheart.activitys.set.SettingActivity;
-import com.thfw.robotheart.activitys.talk.AiTalkActivity;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.fragments.login.LoginByFaceFragment;
@@ -315,15 +312,6 @@ public class LoginActivity extends RobotBaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-        LocationUtils.getCNBylocation(mContext);
-        HandlerUtil.getMainHandler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                ToastUtil.show(WeatherUtil.getWeatherCityId());
-                AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
-            }
-        }, 5000);
-
         Static2Helper.initOpenCV(true);
         MainActivity.resetInit();
         if (!checkPermissionsNoRequest()) {
