@@ -963,11 +963,14 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         }
 
         String tempText = inputText;
-        String weather = ".{0,5}(天气|下雨|有雨|下雪|有雪).{0,3}(怎么样|吗|嘛).{0,2}";
-        if (tempText.matches(weather)) {
+        String weather = ".{0,5}(气温|温度|天气|下雨|有雨|下雪|有雪).{0,3}(怎么样|冷不冷|热不热|吗|嘛).{0,2}";
+        String weather2 = ".{0,5}(冷不冷|热不热|冷吗|热吗).{0,2}";
+        if (tempText.matches(weather) || tempText.matches(weather2)) {
 
-            String weatherReplace = "(今天|现在|今日|市|天气|下雨|有雨|下雪|有雪).{0,3}(怎么样|吗|嘛).{0,2}";
+            String weatherReplace = "(气温|温度|天气|下雨|有雨|下雪|有雪|冷不冷|热不热|冷吗|热吗)|(怎么样|吗|嘛).{0,2}";
             String cityName = tempText.replaceAll(weatherReplace, "");
+            cityName = cityName.replaceAll("(今天|现在|今日|市|的)", "");
+            LogUtil.i(TAG, "cityName = " + cityName);
             if (TextUtils.isEmpty(cityName)) {
                 return WeatherUtil.getWeatherCityId();
             } else {

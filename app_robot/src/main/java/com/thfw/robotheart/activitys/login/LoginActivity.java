@@ -25,7 +25,6 @@ import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
-import com.thfw.base.utils.LocationUtils;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.PermissionUtil;
 import com.thfw.base.utils.RegularUtil;

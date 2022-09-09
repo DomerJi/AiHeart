@@ -35,12 +35,14 @@ public class WeatherInfoModel {
 
                 sb.append("，");
 
-                sb.append(" 温度 ");
-                sb.append(skModel.weatherinfo.temp);
+                sb.append("温度 ");
+                sb.append(cityModel.weatherinfo.temp1);
+                sb.append("~");
+                sb.append(cityModel.weatherinfo.temp2);
 
-                sb.append("℃，");
+                sb.append("，");
 
-                sb.append(" 相对湿度 ");
+                sb.append("相对湿度 ");
                 sb.append(skModel.weatherinfo.sd);
 
                 sb.append("，");

@@ -1,5 +1,6 @@
 package com.thfw.mobileheart.fragment.login;
 
+import android.content.Intent;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.widget.Button;
@@ -16,10 +17,12 @@ import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
+import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
+import com.thfw.mobileheart.activity.PrivateSetActivity;
 import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.activity.login.ForgetPasswordActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
@@ -79,7 +82,11 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
         mClBottom = (LinearLayout) findViewById(R.id.cl_bottom);
         mRivWechat = (RoundedImageView) findViewById(R.id.riv_wechat);
         mRivQq = (RoundedImageView) findViewById(R.id.riv_qq);
-
+        findViewById(R.id.tv_password_login_title).setOnClickListener(v -> {
+            if (ClickCountUtils.click(10)) {
+                startActivity(new Intent(mContext, PrivateSetActivity.class));
+            }
+        });
         MyTextWatcher myTextWatcher = new MyTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
