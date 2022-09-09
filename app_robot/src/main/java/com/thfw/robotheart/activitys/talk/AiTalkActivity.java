@@ -403,13 +403,11 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     }
 
     private void sendInputText(String inputText) {
-        ToastUtil.show("dddddddddd");
         mStvText.setSpeechText("");
         if (mHelper.getTalkModel() == null) {
             LogUtil.d(TAG, "mHelper.getTalkModel() == null 对话还未开始！！！");
             return;
         }
-
         if (mScene == 1 && inputText.length() < 35) {
             if (checkAbility(inputText)) {
                 return;
@@ -932,6 +930,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mStvText.setSpeechText("");
         LogUtil.d(TAG, "chooseOption(result)" + result + "; end = " + end);
         LogUtil.d(TAG, "chooseOption(result) mCurrentChatType = " + mCurrentChatType);
+
         if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
             if (end) {
                 sendInputText(result);

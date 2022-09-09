@@ -702,7 +702,11 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         }
 
         // 当前城市查询
-        LocationUtils.getCNBylocation(mContext);
+        try {
+            LocationUtils.getCNBylocation(mContext);
+        } catch (Exception e) {
+
+        }
 
         MsgCountManager.getInstance().addOnCountChangeListener(this);
 

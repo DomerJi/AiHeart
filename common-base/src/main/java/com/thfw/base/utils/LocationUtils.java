@@ -22,7 +22,11 @@ public class LocationUtils {
     // public static String cityName = "深圳";  // 城市名
     private static String cityName;  // 城市名
     private static final String KEY_LOCAL_CITY = "key.city";
+    private static final String TAG = "LocationUtils";
     private static Geocoder geocoder;    // 此对象能通过经纬度来获取相应的城市等信息
+
+    //用于获取Location对象，以及其他
+    private static LocationManager locationManager;
 
     public static String getCityName() {
         if (cityName == null) {
@@ -39,11 +43,13 @@ public class LocationUtils {
     public static void getCNBylocation(Context context) {
 
         geocoder = new Geocoder(context);
-        //用于获取Location对象，以及其他
-        LocationManager locationManager;
+
         String serviceName = Context.LOCATION_SERVICE;
         //实例化一个LocationManager对象
         locationManager = (LocationManager) context.getSystemService(serviceName);
+        if (locationManager == null || geocoder == null) {
+            return;
+        }
         //provider的类型
         String provider = LocationManager.NETWORK_PROVIDER;
 
@@ -68,8 +74,6 @@ public class LocationUtils {
          */
         locationManager.requestLocationUpdates(provider, 30000, 50,
                 locationListener);
-        //移除监听器，在只有一个widget的时候，这个还是适用的
-//        locationManager.removeUpdates(locationListener);
     }
 
     /**
@@ -84,7 +88,13 @@ public class LocationUtils {
             if ((tempCityName != null) && (tempCityName.length() != 0)) {
                 cityName = tempCityName;
                 SharePreferenceUtil.setString(KEY_LOCAL_CITY, cityName);
-                ToastUtil.show(cityName);
+                LogUtil.i(TAG, "cityName = " + cityName);
+                if (locationManager != null) {
+                    try {
+                        locationManager.removeUpdates(locationListener);
+                    } catch (Exception e) {
+                    }
+                }
             }
         }
 
@@ -93,8 +103,15 @@ public class LocationUtils {
             if ((tempCityName != null) && (tempCityName.length() != 0)) {
                 cityName = tempCityName;
                 SharePreferenceUtil.setString(KEY_LOCAL_CITY, cityName);
-                ToastUtil.show(cityName);
+                LogUtil.i(TAG, "cityName = " + cityName);
+                if (locationManager != null) {
+                    try {
+                        locationManager.removeUpdates(locationListener);
+                    } catch (Exception e) {
+                    }
+                }
             }
+
         }
 
         public void onProviderEnabled(String provider) {

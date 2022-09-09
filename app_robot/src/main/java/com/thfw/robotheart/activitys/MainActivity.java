@@ -679,7 +679,11 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 return;
             }
             // 当前城市查询
-            LocationUtils.getCNBylocation(mContext);
+            try {
+                LocationUtils.getCNBylocation(mContext);
+            } catch (Exception e) {
+            }
+
 
             MsgCountManager.getInstance().addOnCountChangeListener(this);
             new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<User.UserInfo>() {
