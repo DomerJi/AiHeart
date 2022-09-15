@@ -182,6 +182,16 @@ public class OkHttpUtil {
         LogUtil.d("MultipartBody -> request ");
     }
 
+    public static void request(String url, Callback callback) {
+        OkHttpClient httpClient = new OkHttpClient();
+        Request.Builder requestBuilder = new Request.Builder()
+                .url(url)
+                .get();
+        Request request = requestBuilder.build();
+        httpClient.newCall(request).enqueue(callback);
+        LogUtil.d("MultipartBody -> request ");
+    }
+
     @SuppressLint("CheckResult")
     public static <T extends Object, U extends UI> void requestByHttpResult(Observable<HttpResult<T>> observable, U resultUI) {
         if (resultUI.getLifecycleProvider() != null) {

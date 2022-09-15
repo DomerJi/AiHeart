@@ -8,6 +8,14 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.TextUtils;
+
+import com.thfw.base.net.OkHttpUtil;
+import com.thfw.base.timing.TimingHelper;
+import com.thfw.base.timing.WorkInt;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,10 +25,15 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 public class LocationUtils {
 
     // public static String cityName = "深圳";  // 城市名
     private static String cityName;  // 城市名
+    private static CityNameListener mCityNameListener;  // 城市名
     private static final String KEY_LOCAL_CITY = "key.city";
     private static final String TAG = "LocationUtils";
     private static Geocoder geocoder;    // 此对象能通过经纬度来获取相应的城市等信息
@@ -35,12 +48,40 @@ public class LocationUtils {
         return cityName;
     }
 
+    public static void setCityNameListener(CityNameListener mCityNameListener) {
+        LocationUtils.mCityNameListener = mCityNameListener;
+        notifyCityName();
+    }
+
+    private static void notifyCityName() {
+        HandlerUtil.getMainHandler().post(() -> {
+            if (LocationUtils.mCityNameListener != null) {
+                if (!TextUtils.isEmpty(getCityName())) {
+                    LocationUtils.mCityNameListener.callBack(cityName);
+                }
+            }
+        });
+
+    }
+
+    public interface CityNameListener {
+        void callBack(String cityName);
+    }
+
     /**
      * 通过地理坐标获取城市名	其中CN分别是city和name的首字母缩写
      *
      * @param context
      */
     public static void getCNBylocation(Context context) {
+        try {
+            getCNBylocationGeo(context);
+        } catch (Exception e) {
+            getCurrentProvinceAndCity();
+        }
+    }
+
+    private static void getCNBylocationGeo(Context context) throws Exception {
 
         geocoder = new Geocoder(context);
 
@@ -48,7 +89,7 @@ public class LocationUtils {
         //实例化一个LocationManager对象
         locationManager = (LocationManager) context.getSystemService(serviceName);
         if (locationManager == null || geocoder == null) {
-            return;
+            throw new Exception("geocoder == null");
         }
         //provider的类型
         String provider = LocationManager.NETWORK_PROVIDER;
@@ -88,6 +129,7 @@ public class LocationUtils {
             if ((tempCityName != null) && (tempCityName.length() != 0)) {
                 cityName = tempCityName;
                 SharePreferenceUtil.setString(KEY_LOCAL_CITY, cityName);
+                notifyCityName();
                 LogUtil.i(TAG, "cityName = " + cityName);
                 if (locationManager != null) {
                     try {
@@ -101,8 +143,10 @@ public class LocationUtils {
         public void onProviderDisabled(String provider) {
             tempCityName = updateWithNewLocation(null);
             if ((tempCityName != null) && (tempCityName.length() != 0)) {
+
                 cityName = tempCityName;
                 SharePreferenceUtil.setString(KEY_LOCAL_CITY, cityName);
+                notifyCityName();
                 LogUtil.i(TAG, "cityName = " + cityName);
                 if (locationManager != null) {
                     try {
@@ -217,6 +261,49 @@ public class LocationUtils {
             return null;
         }
         return addr;
+    }
+
+
+    private static void getCurrentProvinceAndCity() {
+        final String url = "http://ip-api.com/json/?lang=zh-CN";
+        OkHttpUtil.request(url, new Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
+                    @Override
+                    public void onArrive() {
+                        getCurrentProvinceAndCity();
+                    }
+
+                    @Override
+                    public WorkInt workInt() {
+                        return WorkInt.SECOND_IP;
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String json = response.body().string();
+                LogUtil.i(TAG, "json ip = " + json);
+                JSONObject jsonObject = null;
+                TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND_IP);
+                try {
+                    jsonObject = new JSONObject(json);
+                    if (jsonObject != null) {
+                        String city = jsonObject.optString("city");
+                        if (!TextUtils.isEmpty(city)) {
+                            cityName = city;
+                            SharePreferenceUtil.setString(KEY_LOCAL_CITY, cityName);
+                            notifyCityName();
+                        }
+                    }
+                } catch (JSONException e) {
+                    LogUtil.e(TAG, "json ip e = " + e.getMessage());
+                }
+            }
+        });
     }
 
 }

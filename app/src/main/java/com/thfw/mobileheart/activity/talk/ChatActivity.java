@@ -74,6 +74,7 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -925,9 +926,13 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
     }
 
     private boolean checkTureName(String inputText) {
+        if (!RegularUtil.isTrueName(inputText)) {
+            return false;
+        }
         String surname = mContext.getResources().getString(R.string.surname);
-        if (RegularUtil.isTrueName(inputText) && surname.contains(inputText.substring(0, surname.length() == 4 ? 2 : 1))) {
-
+        String[] surnames = surname.split(",");
+        List<String> surnameList = Arrays.asList(surnames);
+        if ((surnameList.contains(inputText.substring(0, 1)) || surnameList.contains(inputText.substring(0, 2)))) {
             MusicApi.requestBaiKe(inputText, new MusicApi.BaiKeCallback() {
                 @Override
                 public void onFailure(int code, String msg) {

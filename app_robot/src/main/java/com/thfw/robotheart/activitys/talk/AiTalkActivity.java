@@ -86,6 +86,7 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -528,9 +529,13 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     }
 
     private boolean checkTureName(String inputText) {
+        if (!RegularUtil.isTrueName(inputText)) {
+            return false;
+        }
         String surname = mContext.getResources().getString(R.string.surname);
-        if (RegularUtil.isTrueName(inputText) && surname.contains(inputText.substring(0, surname.length() == 4 ? 2 : 1))) {
-
+        String[] surnames = surname.split(",");
+        List<String> surnameList = Arrays.asList(surnames);
+        if ((surnameList.contains(inputText.substring(0, 1)) || surnameList.contains(inputText.substring(0, 2)))) {
             MusicApi.requestBaiKe(inputText, new MusicApi.BaiKeCallback() {
                 @Override
                 public void onFailure(int code, String msg) {
@@ -610,9 +615,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             return false;
         }
 //        String REGEX_MUSIC = ".{0,5}(播放|推荐|放|唱|听|来)(一个|一首|一曲|个|首).{0,20}";
-        String REGEX_MUSIC = ".{0,5}(播放|唱|听)(一个|一首|一曲|个|首|).{0,20}";
-        String REGEX_MUSIC2 = ".{0,5}(推荐|来)(一首|一曲|首).{0,20}";
-        String REGEX_MUSIC3 = ".{0,5}(推荐|来)(一个|一首|一曲|个|首|).{0,20}(的音乐|的歌曲|歌儿|歌吧|的歌|歌曲|音乐|曲儿|个歌|music).{0,3}";
+        String REGEX_MUSIC = ".{0,5}(播放)(一个|一首|一曲|个|首|).{0,20}";
+        String REGEX_MUSIC2 = ".{0,5}(推荐|来|唱|听)(一首|一曲|首).{0,20}";
+        String REGEX_MUSIC3 = ".{0,5}(推荐|来|唱|听)(一个|一首|一曲|个|首|).{0,20}(的音乐|的歌曲|歌儿|歌吧|的歌|歌曲|音乐|曲儿|个歌|music).{0,3}";
         String REGEX_MUSIC4 = ".{0,5}(放)(一个|一首|一曲|个|首).{0,20}";
         if (tempText.matches(REGEX_MUSIC)
                 || tempText.matches(REGEX_MUSIC2)

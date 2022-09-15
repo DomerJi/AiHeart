@@ -14,11 +14,12 @@ public enum WorkInt {
     SECOND(4, 1, true),
     SECOND5(5, 5, false),
     SECOND5_1(6, 6, false),
-    SECOND7(11, 7, false),
     SECOND3(7, 3, false),
     SECOND2(8, 2, true),
     SECOND5_MSG_COUNT(9, 5, true),
-    SECOND5_MSG_COUNT2(10, 5, true);
+    SECOND5_MSG_COUNT2(10, 5, true),
+    SECOND7(11, 7, false),
+    SECOND_IP(12, 8, false);
 
     /**
      * 标识

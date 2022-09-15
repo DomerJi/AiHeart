@@ -702,9 +702,12 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             try {
                 LocationUtils.getCNBylocation(mContext);
                 if (TextUtils.isEmpty(LocationUtils.getCityName())) {
-                    mMainHandler.postDelayed(() -> {
-                        initWeather();
-                    }, 3000);
+                    LocationUtils.setCityNameListener(new LocationUtils.CityNameListener() {
+                        @Override
+                        public void callBack(String cityName) {
+                            initWeather();
+                        }
+                    });
                 } else {
                     initWeather();
                 }
@@ -758,14 +761,16 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     }
 
     private void initWeather() {
+
         MusicApi.requestWeather(WeatherUtil.getWeatherCityId(), new MusicApi.WeatherCallback() {
             @Override
             public void onFailure(int code, String msg) {
+                LogUtil.d(TAG, "requestWeather onFail retry ++++++++++++++++++++++ ");
                 TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
                     @Override
                     public void onArrive() {
                         initWeather();
-                        LogUtil.d(TAG, "initOrganization onFail retry ++++++++++++++++++++++ ");
+                        LogUtil.d(TAG, "requestWeather onFail retry ++++++++++++++++++++++ ");
                     }
 
                     @Override
@@ -777,8 +782,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
             @Override
             public void onResponse(WeatherInfoModel weatherInfoModel) {
-                TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND7);
                 runOnUiThread(() -> {
+                    TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND7);
                     GlideUtil.load(mContext, IconUtil.getWeatherIcon(weatherInfoModel.getWeather()), R.mipmap.refresh_cloud, mIvWeather);
                     mTvWeather.setText(weatherInfoModel.getSimpleDesc());
                     mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore));
