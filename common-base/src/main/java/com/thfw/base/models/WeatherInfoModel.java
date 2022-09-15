@@ -17,6 +17,28 @@ public class WeatherInfoModel {
         this.skModel = skModel;
     }
 
+    public String getWeather() {
+        if (cityModel != null && cityModel.weatherinfo != null) {
+            return cityModel.weatherinfo.weather;
+        }
+        return null;
+    }
+
+    public String getSimpleDesc() {
+        StringBuilder sb = new StringBuilder();
+        if (cityModel != null && cityModel.weatherinfo != null) {
+            // 天气
+            sb.append(cityModel.weatherinfo.weather);
+            sb.append("  ");
+
+            if (skModel != null && skModel.weatherinfo != null) {
+                // 温度;
+                sb.append(Math.round(Math.ceil(Float.parseFloat(skModel.weatherinfo.temp))));
+                sb.append("℃");
+            }
+        }
+        return sb.toString();
+    }
 
     public String getDesc() {
         StringBuilder sb = new StringBuilder();

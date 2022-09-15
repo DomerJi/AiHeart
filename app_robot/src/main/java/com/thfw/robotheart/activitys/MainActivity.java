@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,12 +17,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.opensource.svgaplayer.SVGAImageView;
+import com.thfw.base.api.MusicApi;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.UrgedMsgModel;
+import com.thfw.base.models.WeatherInfoModel;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
@@ -40,6 +43,7 @@ import com.thfw.base.utils.LocationUtils;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.base.utils.WeatherUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
@@ -65,6 +69,7 @@ import com.thfw.robotheart.receiver.BootCompleteReceiver;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.service.AutoUpdateService;
 import com.thfw.robotheart.util.DialogRobotFactory;
+import com.thfw.robotheart.util.IconUtil;
 import com.thfw.robotheart.util.MsgCountManager;
 import com.thfw.robotheart.util.SVGAHelper;
 import com.thfw.robotheart.view.HomeIpTextView;
@@ -103,6 +108,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private static boolean initUmeng;
     private static boolean initTts;
     private static int initUrgedMsg = -1;
+    private static final String KEY_WEATHER = "key.weather";
     // 登录动画是否显示，为了不频繁获取sp数据
     private static boolean showLoginAnim;
     private com.thfw.robotheart.view.TitleBarView mTitleBarView;
@@ -162,6 +168,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         }
     };
     private ImageView mIvHand;
+    private ImageView mIvWeather;
+    private TextView mTvWeather;
 
     /**
      * 登录动画是否显示
@@ -311,6 +319,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mTvSetDotHint = (TextView) findViewById(R.id.tv_set_dot_hint);
         mTvMeDotHint = (TextView) findViewById(R.id.tv_me_dot_hint);
         mHitAnim = (HomeIpTextView) findViewById(R.id.hit_anim);
+        mIvWeather = (ImageView) findViewById(R.id.iv_weather);
+        mTvWeather = (TextView) findViewById(R.id.tv_weather);
     }
 
     @Override
@@ -340,6 +350,16 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
         SerialManager.getInstance().queryCharge();
         SerialManager.getInstance().allToZero();
+
+        String cacheWeather = SharePreferenceUtil.getString(KEY_WEATHER, "");
+        if (!TextUtils.isEmpty(cacheWeather)) {
+            String weathers[] = cacheWeather.split(" ");
+            if (weathers.length == 2 && !TextUtils.isEmpty(weathers[0]) && !TextUtils.isEmpty(weathers[1])) {
+                GlideUtil.load(mContext, IconUtil.getWeatherIcon(weathers[0]),
+                        R.mipmap.refresh_cloud, mIvWeather);
+                mTvWeather.setText(cacheWeather);
+            }
+        }
     }
 
     @Override
@@ -681,9 +701,15 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             // 当前城市查询
             try {
                 LocationUtils.getCNBylocation(mContext);
+                if (TextUtils.isEmpty(LocationUtils.getCityName())) {
+                    mMainHandler.postDelayed(() -> {
+                        initWeather();
+                    }, 3000);
+                } else {
+                    initWeather();
+                }
             } catch (Exception e) {
             }
-
 
             MsgCountManager.getInstance().addOnCountChangeListener(this);
             new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<User.UserInfo>() {
@@ -729,6 +755,47 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 }
             }).onGetUserInfo();
         }
+    }
+
+    private void initWeather() {
+        MusicApi.requestWeather(WeatherUtil.getWeatherCityId(), new MusicApi.WeatherCallback() {
+            @Override
+            public void onFailure(int code, String msg) {
+                TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
+                    @Override
+                    public void onArrive() {
+                        initWeather();
+                        LogUtil.d(TAG, "initOrganization onFail retry ++++++++++++++++++++++ ");
+                    }
+
+                    @Override
+                    public WorkInt workInt() {
+                        return WorkInt.SECOND7;
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(WeatherInfoModel weatherInfoModel) {
+                TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND7);
+                runOnUiThread(() -> {
+                    GlideUtil.load(mContext, IconUtil.getWeatherIcon(weatherInfoModel.getWeather()), R.mipmap.refresh_cloud, mIvWeather);
+                    mTvWeather.setText(weatherInfoModel.getSimpleDesc());
+                    mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore));
+                    SharePreferenceUtil.setString(KEY_WEATHER, weatherInfoModel.getSimpleDesc());
+                    mTvWeather.setOnClickListener(v -> {
+                        GlideUtil.load(mContext, R.mipmap.refresh_cloud, R.mipmap.refresh_cloud, mIvWeather);
+                        mTvWeather.setText(weatherInfoModel.getSimpleDesc());
+                        mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore_50));
+                        initWeather();
+                    });
+                    mIvWeather.setOnClickListener(v -> {
+                        mTvWeather.performClick();
+                    });
+                });
+            }
+        });
+        LogUtil.i(TAG, "----------- search weather -------------");
     }
 
     private void initUmeng() {

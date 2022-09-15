@@ -74,7 +74,7 @@ public class RegularUtil {
                 "蔡依林，蔡卓妍（阿sa），周笔畅，张韶涵，带泪的鱼，张惠妹，那英，黄小琥，杨幂，" +
                 "林心如，姚贝娜，严艺丹，卫兰，林忆莲，丁当，弦子，孙燕姿，曾沛慈，田馥甄，" +
                 "范玮琪（范范），戚薇，李玟（Coco），王心凌，金莎，莫文蔚，刘若英，邓丽君，" +
-                "蔡健雅，郭静，吉克隽逸，李宇春，刘惜君").contains(peopleNmae);
+                "蔡健雅，郭静，吉克隽逸，李宇春，刘惜君，陈小春").contains(peopleNmae);
     }
 
     public static String getRandomPeople() {
@@ -88,7 +88,7 @@ public class RegularUtil {
                 "蔡依林，蔡卓妍（阿sa），周笔畅，张韶涵，带泪的鱼，张惠妹，张惠妹，那英，黄小琥，杨幂，" +
                 "林心如，姚贝娜，严艺丹，卫兰，林忆莲，丁当，弦子，孙燕姿，曾沛慈，田馥甄，" +
                 "范玮琪（范范），戚薇，李玟（Coco），王心凌，金莎，莫文蔚，刘若英，邓丽君，" +
-                "蔡健雅，郭静，吉克隽逸，李宇春，刘惜君").split("，");
+                "蔡健雅，郭静，吉克隽逸，李宇春，刘惜君，陈小春").split("，");
         return peopleNames[new Random().nextInt(peopleNames.length)];
     }
 

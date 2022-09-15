@@ -11,12 +11,12 @@ public class ApiHost {
     /**
      * 正式环境
      */
-    public static final String ONLINE_HOST = "https://tianhe.soulbuddy.cn/";
+    public static final String ONLINE_HOST = "http://118.178.180.235:8080/";
 
     /**
      * 测试环境
      */
-    public static final String TEST_HOST = "http://psyhealthfw.thyunmai.com:40184/";
+    public static final String TEST_HOST = "http://psyhealthfw.thyunmai.com:8080/";
 
     /**
      * 正在使用

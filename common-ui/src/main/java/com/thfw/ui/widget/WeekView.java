@@ -37,7 +37,7 @@ public class WeekView extends TextView {
     private void init() {
         String ymd = HourUtil.getYYMMDD(System.currentTimeMillis()).replaceAll("-", "/");
         setGravity(Gravity.RIGHT);
-        setText(ymd + "\n" + HourUtil.getWeek(System.currentTimeMillis()));
+        setText(ymd + "  " + HourUtil.getWeek(System.currentTimeMillis()));
         initTimeReceiver();
     }
 
@@ -55,7 +55,7 @@ public class WeekView extends TextView {
         public void onReceive(Context context, Intent intent) {
             if (intent.ACTION_DATE_CHANGED.equals(intent.getAction())) {
                 String ymd = HourUtil.getYYMMDD(System.currentTimeMillis()).replaceAll("-", "/");
-                setText(ymd + "\n" + HourUtil.getWeek(System.currentTimeMillis()));
+                setText(ymd + "  " + HourUtil.getWeek(System.currentTimeMillis()));
             }
         }
     };

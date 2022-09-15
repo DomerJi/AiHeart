@@ -58,8 +58,8 @@
             android:gravity="center_vertical"
             android:hint="自定义域名"
             android:imeOptions="flagNoExtractUi"
-            android:maxLines="1"
             android:paddingLeft="16dp"
+            android:singleLine="true"
             android:textColorHint="@color/text_hint"
             android:textSize="@dimen/textSize" />
 
