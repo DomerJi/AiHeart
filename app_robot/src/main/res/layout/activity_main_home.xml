@@ -29,35 +29,42 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleBarView" />
 
-
-    <TextView
-        android:id="@+id/tv_weather"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_weather"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
         android:paddingTop="4dp"
         android:paddingRight="16dp"
-        android:paddingBottom="4dp"
-        android:textColor="@color/colorRobotFore"
-        android:textSize="14sp"
+        android:paddingBottom="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/weekView"
-        tools:ignore="MissingConstraints"
-        tools:text="多云 25℃" />
+        app:layout_constraintTop_toBottomOf="@id/weekView">
 
-    <ImageView
-        android:id="@+id/iv_weather"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="4dp"
-        android:adjustViewBounds="true"
-        app:layout_constraintBottom_toBottomOf="@id/tv_weather"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintRight_toLeftOf="@id/tv_weather"
-        app:layout_constraintTop_toBottomOf="@id/weekView"
-        app:layout_constraintTop_toTopOf="@id/tv_weather"
-        tools:src="@mipmap/icon_cloudy" />
+
+        <ImageView
+            android:id="@+id/iv_weather"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@id/tv_weather"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintRight_toLeftOf="@id/tv_weather"
+            app:layout_constraintTop_toTopOf="@id/tv_weather"
+            tools:src="@mipmap/icon_cloudy" />
+
+
+        <TextView
+            android:id="@+id/tv_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:textColor="@color/colorRobotFore"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toRightOf="@id/iv_weather"
+            tools:ignore="MissingConstraints"
+            tools:text="多云 25℃" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.thfw.ui.widget.MyRobotSearchView
         android:id="@+id/my_search"

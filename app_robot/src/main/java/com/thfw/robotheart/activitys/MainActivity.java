@@ -173,6 +173,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private ImageView mIvHand;
     private ImageView mIvWeather;
     private TextView mTvWeather;
+    private ConstraintLayout mClWeather;
 
     /**
      * 登录动画是否显示
@@ -324,6 +325,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         mHitAnim = (HomeIpTextView) findViewById(R.id.hit_anim);
         mIvWeather = (ImageView) findViewById(R.id.iv_weather);
         mTvWeather = (TextView) findViewById(R.id.tv_weather);
+        mClWeather = (ConstraintLayout) findViewById(R.id.cl_weather);
     }
 
     @Override
@@ -803,15 +805,12 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             mTvWeather.setText(weatherInfoModel.getSimpleDesc());
             mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore));
             SharePreferenceUtil.setString(KEY_WEATHER, weatherInfoModel.getSimpleDesc());
-            mTvWeather.setOnClickListener(v -> {
+            mClWeather.setOnClickListener(v -> {
                 GlideUtil.load(mContext, R.mipmap.refresh_cloud, R.mipmap.refresh_cloud, mIvWeather);
                 mTvWeather.setText(weatherInfoModel.getSimpleDesc());
                 mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore_50));
                 initWeather();
                 WeatherActivity.startActivity(mContext, weatherInfoModel);
-            });
-            mIvWeather.setOnClickListener(v -> {
-                mTvWeather.performClick();
             });
         });
     }

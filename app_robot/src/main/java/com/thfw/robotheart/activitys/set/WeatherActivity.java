@@ -213,11 +213,13 @@ public class WeatherActivity extends RobotBaseActivity {
 
         mMySearch.setOnSearchListener(new MyRobotSearchView.OnSearchListener() {
 
-            float maxScore = 0.3f;
+            final float MIN_SCORE = 0.4f;
+            float maxScore = MIN_SCORE;
             String oldKey = "";
 
             @Override
             public void onSearch(String key, boolean clickSearch) {
+                key = key.replaceAll(" ", "");
                 if (EmptyUtil.isEmpty(key)) {
                     mHotCityTitle.setVisibility(View.VISIBLE);
                     weatherCityAdapter.setDataListNotify(hotCityList);
@@ -227,9 +229,15 @@ public class WeatherActivity extends RobotBaseActivity {
                     }
                     if (key.length() < oldKey.length()) {
                         maxScore = key.length() * 0.1f;
-                        if (maxScore < 0.3) {
-                            maxScore = 0.3f;
+                    } else {
+                        if (maxScore > key.length() * 0.1f) {
+                            maxScore = key.length() * 0.1f;
                         }
+                    }
+                    if (maxScore < MIN_SCORE) {
+                        maxScore = MIN_SCORE;
+                    } else if (weatherCityAdapter.getItemCount() == 0) {
+                        maxScore = MIN_SCORE;
                     }
                     oldKey = key;
                     mHotCityTitle.setVisibility(View.GONE);
@@ -241,6 +249,7 @@ public class WeatherActivity extends RobotBaseActivity {
                         int keyLen = key.length();
                         boolean py9Key = false;
                         for (String city : cityKeys) {
+                            // 纯字母
                             if (isAbc) {
                                 String pinyin = PinYinUtil.getPinYin(city);
 
@@ -264,7 +273,18 @@ public class WeatherActivity extends RobotBaseActivity {
                                 } else if (score > 0) {
                                     String newPinyin = pinyin.replace(" ", "");
                                     float tempScore;
-                                    if ((tempScore = PinYinUtil.levenshtein(newPinyin, key)) >= maxScore) {
+                                    if (keyLen >= 3 && newPinyin.startsWith(key)) {
+                                        if ((tempScore = PinYinUtil.levenshtein(newPinyin, key)) >= maxScore) {
+                                            maxScore = tempScore;
+                                            if (py9Key) {
+                                                cityList.add(city);
+                                            } else {
+                                                cityList.add(0, city);
+                                            }
+                                        } else {
+                                            cityList.add(city);
+                                        }
+                                    } else if ((tempScore = PinYinUtil.levenshtein(newPinyin, key)) >= maxScore) {
                                         maxScore = tempScore;
                                         if (py9Key) {
                                             cityList.add(city);
@@ -273,7 +293,7 @@ public class WeatherActivity extends RobotBaseActivity {
                                         }
                                     }
                                 }
-
+                                // 汉字对比
                             } else {
                                 if (city.contains(key)) {
                                     cityList.add(city);
