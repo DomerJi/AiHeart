@@ -1,12 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?><!-- 机器人软件的 【桌面机器人】 版本 -->
-<!-- 此版本版本为系统签名，普通设备无法安装。 -->
-<!-- 因为增加了 android:sharedUserId="android.uid.system" -->
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.thfw.robotheart">
-
-    <!--    android:sharedUserId="android.uid.system"-->
-
+    package="com.thfw.robotheart"> <!-- android:sharedUserId="android.uid.system" -->
     <!-- 友盟 -->
     <uses-sdk tools:overrideLibrary="com.huawei.hms.framework.common,         com.huawei.hms.framework.network.grs,         com.huawei.hmf.tasks,         com.huawei.agconnect.core,         com.huawei.hms.log,         com.huawei.hms.base.device,         com.huawei.hms.base.ui,         com.huawei.hms.stats,         com.huawei.hms.base.availableupdate,         com.huawei.android.hms.base,         com.huawei.android.hms.openid,         org.android.agoo.oppo,         com.vivo.push,         org.android.agoo.vivo,         org.android.agoo.meizu,         com.huawei.android.hms.push,         org.android.agoo.huawei,         com.pushsdk,         com.huawei.hms.hatool,         com.huawei.hms.framework.network.frameworkcompat" />
     <!-- 录音/麦克风权限 -->
@@ -45,7 +40,6 @@
     <uses-permission
         android:name="android.permission.INSTALL_PACKAGES"
         tools:ignore="ProtectedPermissions" /> <!-- 静默安装 -->
-
     <uses-feature android:name="android.hardware.camera2.full" />
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -58,7 +52,6 @@
             <action android:name="android.intent.action.TTS_SERVICE" />
         </intent>
     </queries>
-
     <queries>
         <package android:name="com.thfw.robotheart.pad" />
     </queries>
@@ -98,6 +91,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".activitys.set.WeatherActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppThemeAnimFade" />
         <activity
             android:name=".port.ShakeNodActivity"
             android:screenOrientation="landscape" />
@@ -349,7 +346,6 @@
         <receiver
             android:name="org.android.agoo.vivo.PushMessageReceiverImpl"
             android:exported="true" />
-
     </application>
 
 </manifest>

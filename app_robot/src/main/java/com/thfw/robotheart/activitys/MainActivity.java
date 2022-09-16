@@ -24,7 +24,7 @@ import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.UrgedMsgModel;
-import com.thfw.base.models.WeatherInfoModel;
+import com.thfw.base.models.WeatherDetailsModel;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
@@ -53,6 +53,7 @@ import com.thfw.robotheart.activitys.me.HotPhoneActivity;
 import com.thfw.robotheart.activitys.me.MeActivity;
 import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.activitys.set.SettingActivity;
+import com.thfw.robotheart.activitys.set.WeatherActivity;
 import com.thfw.robotheart.activitys.talk.AiTalkActivity;
 import com.thfw.robotheart.activitys.talk.ThemeTalkActivity;
 import com.thfw.robotheart.activitys.test.TestActivity;
@@ -149,6 +150,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private Random random = new Random();
+
+    private WeatherDetailsModel weatherInfoModel;
 
     /**
      * 延时开启脸部动画
@@ -382,6 +385,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
             // 已登录 初始化用户信息和机构信息
             initUmeng();
+            notifyWeather();
             initUserInfo();
             initOrganization();
             initUrgedMsg();
@@ -781,26 +785,35 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             }
 
             @Override
-            public void onResponse(WeatherInfoModel weatherInfoModel) {
-                runOnUiThread(() -> {
-                    TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND7);
-                    GlideUtil.load(mContext, IconUtil.getWeatherIcon(weatherInfoModel.getWeather()), R.mipmap.refresh_cloud, mIvWeather);
-                    mTvWeather.setText(weatherInfoModel.getSimpleDesc());
-                    mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore));
-                    SharePreferenceUtil.setString(KEY_WEATHER, weatherInfoModel.getSimpleDesc());
-                    mTvWeather.setOnClickListener(v -> {
-                        GlideUtil.load(mContext, R.mipmap.refresh_cloud, R.mipmap.refresh_cloud, mIvWeather);
-                        mTvWeather.setText(weatherInfoModel.getSimpleDesc());
-                        mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore_50));
-                        initWeather();
-                    });
-                    mIvWeather.setOnClickListener(v -> {
-                        mTvWeather.performClick();
-                    });
-                });
+            public void onResponse(WeatherDetailsModel weatherInfoModel) {
+                MainActivity.this.weatherInfoModel = weatherInfoModel;
+                notifyWeather();
             }
         });
         LogUtil.i(TAG, "----------- search weather -------------");
+    }
+
+    private void notifyWeather() {
+        if (weatherInfoModel == null) {
+            return;
+        }
+        runOnUiThread(() -> {
+            TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND7);
+            GlideUtil.load(mContext, IconUtil.getWeatherIcon(weatherInfoModel.getMyWeather()), R.mipmap.refresh_cloud, mIvWeather);
+            mTvWeather.setText(weatherInfoModel.getSimpleDesc());
+            mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore));
+            SharePreferenceUtil.setString(KEY_WEATHER, weatherInfoModel.getSimpleDesc());
+            mTvWeather.setOnClickListener(v -> {
+                GlideUtil.load(mContext, R.mipmap.refresh_cloud, R.mipmap.refresh_cloud, mIvWeather);
+                mTvWeather.setText(weatherInfoModel.getSimpleDesc());
+                mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore_50));
+                initWeather();
+                WeatherActivity.startActivity(mContext, weatherInfoModel);
+            });
+            mIvWeather.setOnClickListener(v -> {
+                mTvWeather.performClick();
+            });
+        });
     }
 
     private void initUmeng() {

@@ -127,6 +127,18 @@ public class HourUtil {
         }
     }
 
+    /**
+     * @param time 2021-12-27 00:00:00
+     * @return
+     */
+    public static long getYYMMDDHHMMSSbyLong(String time) {
+        try {
+            return format.parse(time).getTime();
+        } catch (ParseException e) {
+            return -1;
+        }
+    }
+
     public static String getYYMMDD_HHMMSS(long time) {
         return format.format(new Date(time));
     }

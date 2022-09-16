@@ -8,9 +8,7 @@ import com.thfw.base.models.BaikeModel;
 import com.thfw.base.models.LyricModel;
 import com.thfw.base.models.Mp3PicModel;
 import com.thfw.base.models.MusicModel;
-import com.thfw.base.models.WeatherInfoCityModel;
-import com.thfw.base.models.WeatherInfoModel;
-import com.thfw.base.models.WeatherInfoSkModel;
+import com.thfw.base.models.WeatherDetailsModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
@@ -261,9 +259,7 @@ public class MusicApi {
     }
 
     public static void requestWeather(String weatherId, WeatherCallback callback) {
-        // http://www.weather.com.cn/data/sk/101010100.html
-        // http://www.weather.com.cn/data/cityinfo/101010100.html
-        String url = "http://www.weather.com.cn/data/cityinfo/" + weatherId + ".html";
+        String url = "http://aider.meizu.com/app/weather/listWeather?cityIds=" + weatherId;
         OkHttpClient httpClient = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(url)
@@ -283,61 +279,17 @@ public class MusicApi {
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
                 Log.i(TAG, "json = " + json);
-                WeatherInfoCityModel cityModel = null;
+                WeatherDetailsModel weatherDetailsModel = null;
                 try {
-                    Type type = new TypeToken<WeatherInfoCityModel>() {
+                    Type type = new TypeToken<WeatherDetailsModel>() {
                     }.getType();
-                    cityModel = GsonUtil.fromJson(json, type);
+                    weatherDetailsModel = GsonUtil.fromJson(json, type);
                 } catch (Exception e) {
-                    LogUtil.e(TAG, "cityModel e = " + e.getMessage());
+                    LogUtil.e(TAG, "weatherDetailsModel e = " + e.getMessage());
                 } finally {
                     if (callback != null) {
-                        if (null != cityModel) {
-                            requestWeatherSK(weatherId, callback, cityModel);
-                        } else {
-                            callback.onFailure(-2, "data is null");
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    private static void requestWeatherSK(String weatherId, WeatherCallback callback,
-                                        WeatherInfoCityModel cityModel) {
-        // http://www.weather.com.cn/data/sk/101010100.html
-        // http://www.weather.com.cn/data/cityinfo/101010100.html
-        String url = "http://www.weather.com.cn/data/sk/" + weatherId + ".html";
-        OkHttpClient httpClient = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .build();
-        Call call = httpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e(TAG, "e = " + e.getMessage());
-                if (callback != null) {
-                    callback.onFailure(-1, e.getMessage());
-                }
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String json = response.body().string();
-                Log.i(TAG, "json = " + json);
-                WeatherInfoSkModel skModel = null;
-                try {
-                    Type type = new TypeToken<WeatherInfoSkModel>() {
-                    }.getType();
-                    skModel = GsonUtil.fromJson(json, type);
-                } catch (Exception e) {
-                    LogUtil.e(TAG, "skModel e = " + e.getMessage());
-                } finally {
-                    if (callback != null) {
-                        if (null != skModel) {
-                            callback.onResponse(new WeatherInfoModel(cityModel, skModel));
+                        if (null != weatherDetailsModel) {
+                            callback.onResponse(weatherDetailsModel);
                         } else {
                             callback.onFailure(-2, "data is null");
                         }
@@ -375,7 +327,7 @@ public class MusicApi {
     public interface WeatherCallback {
         void onFailure(int code, String msg);
 
-        void onResponse(WeatherInfoModel weatherInfoModel);
+        void onResponse(WeatherDetailsModel weatherDetailsModel);
     }
 
 

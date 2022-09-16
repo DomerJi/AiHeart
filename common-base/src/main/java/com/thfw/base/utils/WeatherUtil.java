@@ -29,6 +29,10 @@ public class WeatherUtil {
     private static final String AREAID = "AREAID";
     private static HashMap<String, String> mCityIdMap;
 
+    public static HashMap<String, String> getCityIdMap() {
+        return mCityIdMap;
+    }
+
     public static String getWeatherCityId(String city) {
         if (mCityIdMap == null) {
             mCityIdMap = new HashMap<>();

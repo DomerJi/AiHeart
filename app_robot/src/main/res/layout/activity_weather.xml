@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/robot_page_bg"
+    tools:context=".activitys.set.WeatherActivity">
+
+    <com.thfw.robotheart.view.TitleRobotView
+        android:id="@+id/titleRobotView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:trv_centerText="天气"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:letterSpacing="0.05"
+        android:textColor="@color/colorRobotFore"
+        android:textSize="40dp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/v_center"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView"
+        tools:ignore="MissingConstraints"
+        tools:text="25" />
+
+    <TextView
+        android:id="@+id/tv_temp_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:text="℃"
+        android:textColor="@color/colorRobotFore"
+        android:textSize="14dp"
+        app:layout_constraintLeft_toRightOf="@id/tv_temp"
+        app:layout_constraintTop_toTopOf="@id/tv_temp"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_weather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorRobotFore"
+        android:textSize="18dp"
+        app:layout_constraintLeft_toRightOf="@id/iv_weather"
+        app:layout_constraintRight_toRightOf="@id/tv_temp"
+        app:layout_constraintTop_toBottomOf="@id/tv_temp"
+        tools:ignore="MissingConstraints"
+        tools:text="多云" />
+
+
+    <ImageView
+        android:id="@+id/iv_weather"
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="@id/tv_weather"
+        app:layout_constraintLeft_toLeftOf="@id/tv_temp"
+        app:layout_constraintRight_toLeftOf="@id/tv_weather"
+        app:layout_constraintTop_toTopOf="@id/tv_weather"
+        tools:ignore="MissingConstraints"
+        tools:src="@mipmap/icon_cloudy"
+        tools:text="多云" />
+
+    <LinearLayout
+        android:id="@+id/ll_today_details"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_weather"
+        app:layout_constraintWidth_percent="0.5">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_pm25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                tools:ignore="MissingConstraints"
+                tools:text="良97" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="空气"
+                android:textColor="@color/white_80"
+                android:textSize="14sp"
+                tools:ignore="MissingConstraints" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_wind_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                tools:ignore="MissingConstraints"
+                tools:text="2级" />
+
+            <TextView
+                android:id="@+id/tv_wind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/white_80"
+                android:textSize="14sp"
+                tools:ignore="MissingConstraints"
+                tools:text="北风" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_shidu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                tools:ignore="MissingConstraints"
+                tools:text="67%" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="湿度"
+                android:textColor="@color/white_80"
+                android:textSize="14sp"
+                tools:ignore="MissingConstraints" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_ziwaixian"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                tools:ignore="MissingConstraints"
+                tools:text="N/A" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="紫外线"
+                android:textColor="@color/white_80"
+                android:textSize="14sp"
+                tools:ignore="MissingConstraints" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tv_sun_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/colorRobotFore"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/v_center"
+        app:layout_constraintTop_toBottomOf="@id/ll_today_details"
+        tools:ignore="MissingConstraints"
+        tools:text="日出 06:41  日落 17:42" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_today_hour"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_sun_time"
+        tools:background="@color/colorRobotFore_50" />
+
+
+    <TextView
+        android:id="@+id/tv_alarms_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/text_yellow"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toRightOf="@id/rv_today_hour"
+        app:layout_constraintRight_toRightOf="@id/v_center"
+        app:layout_constraintTop_toTopOf="@id/rv_today_hour"
+        tools:ignore="MissingConstraints"
+        tools:text="大风蓝色预警" />
+
+
+    <TextView
+        android:id="@+id/tv_alarms_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="12dp"
+        android:textColor="@color/text_yellow"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toRightOf="@id/rv_today_hour"
+        app:layout_constraintRight_toRightOf="@id/v_center"
+        app:layout_constraintTop_toBottomOf="@id/tv_alarms_title"
+        tools:ignore="MissingConstraints"
+        tools:text="大风蓝色预警信号：预计16日14时到17日2时，沈阳市浑南区东北风转西北风4到5级，阵风7级，请注意出行安全，加固临时搭建物，防范高空坠物等风险。浑南区气象台2022年9月16日10时47分发布" />
+
+
+    <TextView
+        android:id="@+id/tv_future"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="预报"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/rv_week"
+        app:layout_constraintLeft_toRightOf="@id/v_center"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:ignore="MissingConstraints" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_week"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/v_center"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_future"
+        tools:background="@color/white_50" />
+
+
+    <View
+        android:id="@+id/v_center"
+        android:layout_width="1px"
+        android:layout_height="1px"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_search"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/robot_page_bg"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView">
+
+        <com.thfw.ui.widget.MyRobotSearchView
+            android:id="@+id/my_search"
+            android:layout_width="320dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rsv_hint="请输入您要搜索地级市"
+            app:rsv_hintColor="@color/white_50"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/tv_hot_city_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="48dp"
+            android:layout_marginTop="12dp"
+            android:text="热门城市"
+            android:textColor="@color/white_60"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/my_search"
+            tools:ignore="MissingConstraints" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_city_select"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="6dp"
+            android:paddingLeft="48dp"
+            android:paddingRight="48dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_hot_city_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <com.thfw.ui.widget.LoadingView
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/robot_page_bg"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

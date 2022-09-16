@@ -40,7 +40,7 @@ import com.thfw.base.models.ChosenModel;
 import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.models.MusicModel;
 import com.thfw.base.models.TalkModel;
-import com.thfw.base.models.WeatherInfoModel;
+import com.thfw.base.models.WeatherDetailsModel;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.ResponeThrowable;
@@ -154,6 +154,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     private TextView mTvVolumeSwitch;
     private boolean mSpeechMode;
     private boolean mReadAfterSpeech;
+    private boolean futureWeather;
 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, AiTalkActivity.class).putExtra(KEY_DATA, talkModel));
@@ -482,11 +483,11 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 }
 
                 @Override
-                public void onResponse(WeatherInfoModel weatherInfoModel) {
+                public void onResponse(WeatherDetailsModel weatherInfoModel) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            sendLocalData(inputText, weatherInfoModel.getDesc());
+                            sendLocalData(inputText, futureWeather ? weatherInfoModel.getWeekDesc() : weatherInfoModel.getDesc());
                         }
                     });
                 }
@@ -582,6 +583,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     private String checkWeather(String inputText) {
         if (mScene != 1) {
+            futureWeather = false;
             return null;
         }
 
@@ -594,13 +596,24 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             String cityName = tempText.replaceAll(weatherReplace, "");
             cityName = cityName.replaceAll("(今天|现在|今日|市|的)", "");
             LogUtil.i(TAG, "cityName = " + cityName);
+
             if (TextUtils.isEmpty(cityName)) {
+                futureWeather = false;
                 return WeatherUtil.getWeatherCityId();
             } else {
+                futureWeather = cityName.matches(".{0,5}(昨天|明天|后天|未来|一周).{0,5}");
+                LogUtil.i(TAG, "futureWeather = " + futureWeather);
+                if (futureWeather) {
+                    cityName = cityName.replaceAll("(昨天|明天|后天|未来|一周)", "");
+                }
+                if (TextUtils.isEmpty(cityName)) {
+                    return WeatherUtil.getWeatherCityId();
+                }
                 return WeatherUtil.getWeatherCityId(cityName);
 
             }
         } else {
+            futureWeather = false;
             return null;
         }
     }
