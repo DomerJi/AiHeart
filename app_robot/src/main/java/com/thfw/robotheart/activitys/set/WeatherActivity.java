@@ -270,10 +270,10 @@ public class WeatherActivity extends RobotBaseActivity {
                                         cityList.add(city);
                                     }
 
-                                } else if (score > 0) {
+                                } else {
                                     String newPinyin = pinyin.replace(" ", "");
                                     float tempScore;
-                                    if (keyLen >= 3 && newPinyin.startsWith(key)) {
+                                    if (score > 0 && keyLen >= 3 && newPinyin.startsWith(key)) {
                                         if ((tempScore = PinYinUtil.levenshtein(newPinyin, key)) >= maxScore) {
                                             maxScore = tempScore;
                                             if (py9Key) {
