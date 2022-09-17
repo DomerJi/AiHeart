@@ -4,7 +4,9 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.provider.Settings;
 import android.view.View;
@@ -15,12 +17,15 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+
+import java.io.IOException;
 
 /**
  * Author:pengs
@@ -50,6 +55,8 @@ public class SetVolumeFragment extends RobotBaseFragment {
     private int maxNotificationVolume;
     private AudioManager mAudioManager;
     private NotificationManager notificationManager;
+    private MediaPlayer mediaPlayer;
+    private Runnable runnable;
 
     @Override
     public int getContentView() {
@@ -129,6 +136,7 @@ public class SetVolumeFragment extends RobotBaseFragment {
                 textProgressChanged(progress, mTvSystemVolumeProgress, mSbSystemVolume);
                 if (fromUser) {
                     mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, maxSystemVolume * progress / 100, AudioManager.FLAG_PLAY_SOUND);
+                    playMusic(0);
                 }
             }
 
@@ -151,6 +159,7 @@ public class SetVolumeFragment extends RobotBaseFragment {
                 textProgressChanged(progress, mTvHintVolumeProgress, mSbHintVolume);
                 if (fromUser) {
                     mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxMusicVolume * progress / 100, AudioManager.FLAG_PLAY_SOUND);
+                    playMusic(1);
                 }
             }
 
@@ -218,7 +227,54 @@ public class SetVolumeFragment extends RobotBaseFragment {
 
     @Override
     public void initData() {
+    }
 
+    private void playMusic(int type) {
+        if (runnable != null) {
+            HandlerUtil.getMainHandler().removeCallbacks(runnable);
+        }
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    goPlayMusic(type);
+                } catch (Exception e) {
+                }
+            }
+        };
+        HandlerUtil.getMainHandler().postDelayed(runnable, 300);
+    }
+
+    private void goPlayMusic(int type) {
+        if (mediaPlayer != null) {
+            mediaPlayer.reset();
+        } else {
+            // 实例化播放内核
+            mediaPlayer = new MediaPlayer();
+        }
+
+        try {
+//
+            mediaPlayer.setAudioStreamType(type == 0 ? AudioManager.STREAM_NOTIFICATION : AudioManager.STREAM_MUSIC);
+//
+            AssetFileDescriptor afd = getResources().openRawResourceFd(R.raw.umeng_push_notification_default_sound);
+            // 注意这里的区别
+            // 给MediaPlayer设置播放源
+            mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+        } catch (IOException e) {
+        }
+
+        // 设置准备就绪状态监听
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                // 开始播放
+                mediaPlayer.start();
+            }
+        });
+
+        // 准备播放
+        mediaPlayer.prepareAsync();
     }
 
 }
