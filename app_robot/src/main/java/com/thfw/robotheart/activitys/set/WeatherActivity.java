@@ -337,7 +337,9 @@ public class WeatherActivity extends RobotBaseActivity {
                 }
                 runOnUiThread(() -> {
                     if (showLoading) {
-                        mLoadingView.hide();
+                        mLoadingView.showFail(v -> {
+                            search(cityName, showLoading);
+                        });
                     }
                     ToastUtil.show("天气更新失败,请检查网络连接");
                 });
