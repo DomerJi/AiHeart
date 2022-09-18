@@ -339,7 +339,7 @@ public class WeatherActivity extends RobotBaseActivity {
                     if (showLoading) {
                         mLoadingView.hide();
                     }
-                    ToastUtil.show("天气查找失败啦");
+                    ToastUtil.show("天气更新失败,请检查网络连接");
                 });
             }
 
