@@ -469,9 +469,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         }
         animResume(false);
         mMainHandler.removeCallbacks(mCheckVersionRunnable);
-        if (mWeatherRunnable != null) {
-            mMainHandler.removeCallbacks(mWeatherRunnable);
-        }
     }
 
     /**
@@ -768,9 +765,11 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             return;
         }
         notifyWeatherTime = System.currentTimeMillis();
-
         // 当前城市查询
         try {
+            if (mWeatherRunnable != null) {
+                mMainHandler.removeCallbacks(mWeatherRunnable);
+            }
             LocationUtils.getCNBylocation(mContext);
             if (TextUtils.isEmpty(LocationUtils.getCityName())) {
                 LocationUtils.setCityNameListener(new LocationUtils.CityNameListener() {
@@ -824,16 +823,19 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             return;
         }
         runOnUiThread(() -> {
-            GlideUtil.load(mContext, IconUtil.getWeatherIcon(weatherInfoModel.getMyWeather()), R.mipmap.refresh_cloud, mIvWeather);
-            mTvWeather.setText(weatherInfoModel.getSimpleDesc());
-            mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore));
-            SharePreferenceUtil.setString(KEY_WEATHER, weatherInfoModel.getSimpleDesc());
-            mClWeather.setOnClickListener(v -> {
-                GlideUtil.load(mContext, R.mipmap.refresh_cloud, R.mipmap.refresh_cloud, mIvWeather);
+            try {
+                GlideUtil.load(mContext, IconUtil.getWeatherIcon(weatherInfoModel.getMyWeather()), R.mipmap.refresh_cloud, mIvWeather);
                 mTvWeather.setText(weatherInfoModel.getSimpleDesc());
-                mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore_50));
-                WeatherActivity.startActivity(mContext, weatherInfoModel);
-            });
+                mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore));
+                SharePreferenceUtil.setString(KEY_WEATHER, weatherInfoModel.getSimpleDesc());
+                mClWeather.setOnClickListener(v -> {
+                    GlideUtil.load(mContext, R.mipmap.refresh_cloud, R.mipmap.refresh_cloud, mIvWeather);
+                    mTvWeather.setText(weatherInfoModel.getSimpleDesc());
+                    mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore_50));
+                    WeatherActivity.startActivity(mContext, weatherInfoModel);
+                });
+            } catch (Exception e) {
+            }
         });
     }
 
