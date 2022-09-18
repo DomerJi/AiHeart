@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -39,6 +40,7 @@ import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
+import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LocationUtils;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
@@ -174,6 +176,13 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private ImageView mIvWeather;
     private TextView mTvWeather;
     private ConstraintLayout mClWeather;
+    private Runnable mWeatherRunnable = () -> {
+        checkWeather();
+    };
+    // 天气最后一次更新
+    private static long notifyWeatherTime;
+    // 10分钟后自动更新
+    private static final long MIN_WEATHER_TIME = HourUtil.LEN_10_MINUTE;
 
     /**
      * 登录动画是否显示
@@ -387,7 +396,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
             // 已登录 初始化用户信息和机构信息
             initUmeng();
-            notifyWeather();
+            checkWeather();
             initUserInfo();
             initOrganization();
             initUrgedMsg();
@@ -460,6 +469,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         }
         animResume(false);
         mMainHandler.removeCallbacks(mCheckVersionRunnable);
+        if (mWeatherRunnable != null) {
+            mMainHandler.removeCallbacks(mWeatherRunnable);
+        }
     }
 
     /**
@@ -704,21 +716,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             if (!UserManager.getInstance().isLogin()) {
                 return;
             }
-            // 当前城市查询
-            try {
-                LocationUtils.getCNBylocation(mContext);
-                if (TextUtils.isEmpty(LocationUtils.getCityName())) {
-                    LocationUtils.setCityNameListener(new LocationUtils.CityNameListener() {
-                        @Override
-                        public void callBack(String cityName) {
-                            initWeather();
-                        }
-                    });
-                } else {
-                    initWeather();
-                }
-            } catch (Exception e) {
-            }
 
             MsgCountManager.getInstance().addOnCountChangeListener(this);
             new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<User.UserInfo>() {
@@ -766,8 +763,30 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         }
     }
 
-    private void initWeather() {
+    private void checkWeather() {
+        if (System.currentTimeMillis() - notifyWeatherTime < MIN_WEATHER_TIME) {
+            return;
+        }
+        notifyWeatherTime = System.currentTimeMillis();
 
+        // 当前城市查询
+        try {
+            LocationUtils.getCNBylocation(mContext);
+            if (TextUtils.isEmpty(LocationUtils.getCityName())) {
+                LocationUtils.setCityNameListener(new LocationUtils.CityNameListener() {
+                    @Override
+                    public void callBack(String cityName) {
+                        initWeather();
+                    }
+                });
+            } else {
+                initWeather();
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    private void initWeather() {
         MusicApi.requestWeather(WeatherUtil.getWeatherCityId(), new MusicApi.WeatherCallback() {
             @Override
             public void onFailure(int code, String msg) {
@@ -789,7 +808,12 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             @Override
             public void onResponse(WeatherDetailsModel weatherInfoModel) {
                 MainActivity.this.weatherInfoModel = weatherInfoModel;
+                TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND7);
                 notifyWeather();
+                if (mWeatherRunnable != null) {
+                    mMainHandler.removeCallbacks(mWeatherRunnable);
+                    mMainHandler.postDelayed(mWeatherRunnable, MIN_WEATHER_TIME);
+                }
             }
         });
         LogUtil.i(TAG, "----------- search weather -------------");
@@ -800,7 +824,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             return;
         }
         runOnUiThread(() -> {
-            TimingHelper.getInstance().removeWorkArriveListener(WorkInt.SECOND7);
             GlideUtil.load(mContext, IconUtil.getWeatherIcon(weatherInfoModel.getMyWeather()), R.mipmap.refresh_cloud, mIvWeather);
             mTvWeather.setText(weatherInfoModel.getSimpleDesc());
             mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore));
@@ -809,7 +832,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 GlideUtil.load(mContext, R.mipmap.refresh_cloud, R.mipmap.refresh_cloud, mIvWeather);
                 mTvWeather.setText(weatherInfoModel.getSimpleDesc());
                 mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore_50));
-                initWeather();
                 WeatherActivity.startActivity(mContext, weatherInfoModel);
             });
         });
@@ -924,5 +946,16 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         map.put(UrgeUtil.URGE_OBJ, mUrgedMsgModel);
         mUrgedMsgModel.setDisplay(0);
         UrgeUtil.notify(map);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == WeatherActivity.REQUEST_CODE && resultCode == RESULT_OK) {
+            if (WeatherActivity.getFirstModel() != null) {
+                weatherInfoModel = WeatherActivity.getFirstModel();
+                notifyWeather();
+            }
+        }
     }
 }

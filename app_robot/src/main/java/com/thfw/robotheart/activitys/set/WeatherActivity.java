@@ -1,5 +1,6 @@
 package com.thfw.robotheart.activitys.set;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -78,10 +79,17 @@ public class WeatherActivity extends RobotBaseActivity {
     }
 
     private static WeatherDetailsModel model;
+    private static WeatherDetailsModel firstModel;
+
+    public static WeatherDetailsModel getFirstModel() {
+        return firstModel;
+    }
+
+    public static final int REQUEST_CODE = 10;
 
     public static void startActivity(Context mContext, WeatherDetailsModel model) {
         WeatherActivity.model = model;
-        mContext.startActivity(new Intent(mContext, WeatherActivity.class));
+        ((Activity) mContext).startActivityForResult(new Intent(mContext, WeatherActivity.class), REQUEST_CODE);
     }
 
     @Override
@@ -346,6 +354,9 @@ public class WeatherActivity extends RobotBaseActivity {
                     }
                     if (weatherInfoModel != null) {
                         WeatherActivity.model = weatherInfoModel;
+                        if (firstModel == null) {
+                            firstModel = weatherInfoModel;
+                        }
                     }
                     initView();
                 });
@@ -355,4 +366,9 @@ public class WeatherActivity extends RobotBaseActivity {
         LogUtil.i(TAG, "----------- search weather -------------");
     }
 
+    @Override
+    public void finish() {
+        setResult(RESULT_OK);
+        super.finish();
+    }
 }
