@@ -93,8 +93,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activitys.set.WeatherActivity"
-            android:screenOrientation="landscape"
-            android:theme="@style/AppThemeAnimFade" />
+            android:screenOrientation="landscape" />
         <activity
             android:name=".port.ShakeNodActivity"
             android:screenOrientation="landscape" />
