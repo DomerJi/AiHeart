@@ -812,7 +812,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 notifyWeather();
                 if (mWeatherRunnable != null) {
                     mMainHandler.removeCallbacks(mWeatherRunnable);
-                    mMainHandler.postDelayed(mWeatherRunnable, MIN_WEATHER_TIME);
+                    mMainHandler.postDelayed(mWeatherRunnable, MIN_WEATHER_TIME + HourUtil.LEN_SECOND);
                 }
             }
         });
