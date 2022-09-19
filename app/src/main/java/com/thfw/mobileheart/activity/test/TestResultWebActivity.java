@@ -21,6 +21,7 @@ import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.TestResultModel;
+import com.thfw.base.net.ApiHost;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TestPresenter;
 import com.thfw.base.utils.EmptyUtil;
@@ -64,7 +65,7 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
     public static void startActivity(Context context, TestResultModel testResultModel) {
         context.startActivity(new Intent(context, TestResultWebActivity.class)
                 .putExtra(KEY_DATA, testResultModel)
-                .putExtra(KEY_URL, "https://resource.soulbuddy.cn/public/soul_the_land/depth_result.html?id=" + testResultModel.getResultId())
+                .putExtra(KEY_URL, ApiHost.getTestH5Host(testResultModel.getResultId()))
                 .putExtra(KEY_TITLE, "测评结果"));
     }
 
