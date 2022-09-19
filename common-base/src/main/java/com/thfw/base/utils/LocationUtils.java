@@ -75,9 +75,10 @@ public class LocationUtils {
      */
     public static void getCNBylocation(Context context) {
         try {
-            getCNBylocationGeo(context);
-        } catch (Exception e) {
+//            有时会有县一级的名字
+//            getCNBylocationGeo(context);
             getCurrentProvinceAndCity();
+        } catch (Exception e) {
         }
     }
 
@@ -224,8 +225,6 @@ public class LocationUtils {
         String url = String.format(
                 "http://ditu.google.cn/maps/geo?output=csv&key=abcdef&q=%s,%s",
                 latitude, longitude);
-
-        String url01 = "http://api.map.baidu.com/geocoder?output=json&location=23.131427,113.379763&ak=esNPFDwwsXWtsQfw4NMNmur1";
         URL myURL = null;
         URLConnection httpsConn = null;
         try {

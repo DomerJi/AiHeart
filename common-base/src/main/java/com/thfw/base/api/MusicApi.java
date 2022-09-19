@@ -260,6 +260,7 @@ public class MusicApi {
 
     public static void requestWeather(String weatherId, WeatherCallback callback) {
         String url = "http://aider.meizu.com/app/weather/listWeather?cityIds=" + weatherId;
+        LogUtil.e(TAG, "url = " + url);
         OkHttpClient httpClient = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(url)
