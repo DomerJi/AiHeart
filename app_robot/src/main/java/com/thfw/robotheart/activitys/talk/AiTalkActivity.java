@@ -629,17 +629,18 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         }
 //        String REGEX_MUSIC = ".{0,5}(播放|推荐|放|唱|听|来)(一个|一首|一曲|个|首).{0,20}";
         String REGEX_MUSIC = ".{0,5}(播放)(一个|一首|一曲|个|首|).{0,20}";
-        String REGEX_MUSIC2 = ".{0,5}(推荐|来|唱|听)(一首|一曲|首).{0,20}";
+        String REGEX_MUSIC2 = ".{0,5}(推荐|来|听)(一首|一曲|首).{1,20}";
         String REGEX_MUSIC3 = ".{0,5}(推荐|来|唱|听)(一个|一首|一曲|个|首|).{0,20}(的音乐|的歌曲|歌儿|歌吧|的歌|歌曲|音乐|曲儿|个歌|music).{0,3}";
-        String REGEX_MUSIC4 = ".{0,5}(放)(一个|一首|一曲|个|首).{0,20}";
+        String REGEX_MUSIC4 = ".{0,5}(放|唱)(一个|一首|一曲|个|首).{1,20}";
         if (tempText.matches(REGEX_MUSIC)
                 || tempText.matches(REGEX_MUSIC2)
                 || tempText.matches(REGEX_MUSIC3)
                 || tempText.matches(REGEX_MUSIC4)) {
-            String REGEX_MUSIC_REPLACE = ".{0,5}(播放|推荐|放|唱|听|来)(一个|一首|一曲|个|首)" +
-                    "|(的音乐|的歌曲|歌儿|歌吧|的歌|歌曲|音乐|曲儿|个歌|music).{0,3}";
+            String REGEX_MUSIC_REPLACE = ".{0,5}(播放|推荐|来|放|唱|听)(一个|一首|一曲|个|首)|(播放)";
+            String REGEX_MUSIC_REPLACE2 = "(的音乐|的歌曲|歌儿|歌吧|的歌|歌曲|音乐|曲儿|个歌|music).{0,3}";
 
             String name = tempText.replaceAll(REGEX_MUSIC_REPLACE, "");
+            name = name.replaceAll(REGEX_MUSIC_REPLACE2, "");
             boolean notEmptyName = !TextUtils.isEmpty(name);
             String ttsHint = null;
             boolean recommend = false;

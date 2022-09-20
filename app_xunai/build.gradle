@@ -84,6 +84,7 @@ dependencies {
     implementation project(':picture_library')
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
     implementation 'androidx.navigation:navigation-ui:2.3.0'
+    implementation 'androidx.concurrent:concurrent-listenablefuture-callback:1.0.0-beta01'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
