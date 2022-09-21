@@ -11,7 +11,8 @@ public class ApiHost {
     /**
      * 正式环境
      */
-    public static final String ONLINE_HOST = "http://118.178.180.235:8080/";
+//    public static final String ONLINE_HOST = "http://118.178.180.235:8080/";
+    public static final String ONLINE_HOST = "http://101.37.149.192:8080/";
 
     /**
      * 测试环境

@@ -1,5 +1,7 @@
 package com.thfw.user.login;
 
+import android.text.TextUtils;
+
 import com.thfw.base.net.CommonInterceptor;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
@@ -33,7 +35,7 @@ public class UserManager extends Observable {
         CommonInterceptor.setTokenListener(new CommonInterceptor.OnTokenListener() {
             @Override
             public String getToken() {
-                return isLogin() ? user.getToken() : "null";
+                return isLogin() ? user.getToken() : null;
             }
         });
     }
@@ -51,7 +53,7 @@ public class UserManager extends Observable {
 
     public String getUID() {
         if (isTrueLogin()) {
-            if (getUser() != null && getUser().getUserId() != null) {
+            if (getUser() != null && !TextUtils.isEmpty(getUser().getUserId())) {
                 return getUser().getUserId();
             }
         }

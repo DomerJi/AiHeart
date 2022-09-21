@@ -174,9 +174,11 @@ public class OkHttpUtil {
     public static void request(String url, MultipartBody multipartBody, Callback callback) {
         OkHttpClient httpClient = new OkHttpClient();
         Request.Builder requestBuilder = new Request.Builder()
-                .addHeader("Token", CommonInterceptor.getToken())
                 .url(url)
                 .post(multipartBody);
+
+        CommonInterceptor.addToken(requestBuilder);
+
         Request request = requestBuilder.build();
         httpClient.newCall(request).enqueue(callback);
         LogUtil.d("MultipartBody -> request ");

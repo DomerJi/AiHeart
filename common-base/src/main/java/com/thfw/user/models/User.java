@@ -172,7 +172,7 @@ public class User implements IUser, IUserInfo {
 
     @Override
     public String getUserId() {
-        return userInfo != null ? String.valueOf(userInfo.id) : "";
+        return userInfo != null ? String.valueOf(userInfo.id) : null;
     }
 
     @Override

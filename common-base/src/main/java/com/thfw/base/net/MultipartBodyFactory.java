@@ -31,13 +31,13 @@ public class MultipartBodyFactory {
     public MultipartBodyFactory addImage(String key, String imageUrl) {
         if (!TextUtils.isEmpty(imageUrl)) {
             File file = new File(imageUrl);
-            if (file == null || !file.exists()) {
+            if (!file.exists()) {
                 // todo 暂时用于修改店铺信息和商品图片修改地方
                 addString(key, imageUrl);
                 LogUtil.d("MultipartBodyFactory", "imageUrl addString -> " + imageUrl);
                 return this;
             }
-            LogUtil.d("MultipartBodyFactory", "imageUrl -> " + imageUrl);
+            LogUtil.d("MultipartBodyFactory", "imageUrl -> " + imageUrl + "_" + file.length());
             builder.addFormDataPart(key, file.getName(), RequestBody.create(MediaType.parse("image/*"), file));
         }
         return this;

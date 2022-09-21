@@ -19,6 +19,8 @@ import okhttp3.Response;
  */
 public class CommonInterceptor implements Interceptor {
 
+    public static final String TOKEN = "Token";
+
     private static OnTokenListener tokenListener;
 
     public static void setTokenListener(OnTokenListener tokenListener) {
@@ -26,15 +28,17 @@ public class CommonInterceptor implements Interceptor {
     }
 
     public static String getToken() {
-        return tokenListener != null ? tokenListener.getToken() : "token";
+        return tokenListener != null ? tokenListener.getToken() : null;
     }
 
     @Override
     public synchronized Response intercept(Chain chain) throws IOException {
         Request request = rebuildRequest(chain.request());
         Response response = chain.proceed(request);
-        String json = response.peekBody(Long.MAX_VALUE).string();
-        LogUtil.d("CommonInterceptor", "json = " + json);
+        if (LogUtil.isLogEnabled()) {
+            String json = response.peekBody(Long.MAX_VALUE).string();
+            LogUtil.d("CommonInterceptor", "json = " + json);
+        }
         return response;
     }
 
@@ -46,15 +50,21 @@ public class CommonInterceptor implements Interceptor {
             requestBuilder = request.newBuilder();
         }
 
-        // TODO 添加头部 cookie token
-        if (tokenListener != null) {
-            String token = tokenListener.getToken();
-            if (!TextUtils.isEmpty(token)) {
-                requestBuilder.addHeader("Token", token);
-            }
-        }
+        addToken(requestBuilder);
 
         return requestBuilder.build();
+    }
+
+    /**
+     * 添加 Token
+     *
+     * @param requestBuilder
+     */
+    public static void addToken(Request.Builder requestBuilder) {
+        String token = CommonInterceptor.getToken();
+        if (!TextUtils.isEmpty(token)) {
+            requestBuilder.addHeader(TOKEN, token);
+        }
     }
 
     public interface OnTokenListener {
