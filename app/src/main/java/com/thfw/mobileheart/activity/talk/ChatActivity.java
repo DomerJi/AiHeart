@@ -859,7 +859,7 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
 
     private boolean checkAbility(String inputText) {
         String tempText = inputText;
-        tempText = tempText.replaceAll("(小密|，|。|！|!|/?|？)", "");
+        tempText = tempText.replaceAll("(小密|，|。|！|!|？)", "");
         if (tempText.length() >= 2 && tempText.length() <= 4) {
             if (checkTureName(tempText)) {
                 ChatEntity chatEntity = new ChatEntity();
