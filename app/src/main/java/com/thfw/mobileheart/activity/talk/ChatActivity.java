@@ -933,7 +933,11 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         String surname = mContext.getResources().getString(R.string.surname);
         String[] surnames = surname.split(",");
         List<String> surnameList = Arrays.asList(surnames);
-        if ((surnameList.contains(inputText.substring(0, 1)) || surnameList.contains(inputText.substring(0, 2)))) {
+        if ((surnameList.contains(inputText.substring(0, 1)) || surnameList.contains(inputText.substring(0, 2)))
+                && !inputText.substring(0, 1).equals(inputText.substring(1, 2))) {
+            if (containsByWords(inputText)) {
+                return false;
+            }
             MusicApi.requestBaiKe(inputText, new MusicApi.BaiKeCallback() {
                 @Override
                 public void onFailure(int code, String msg) {
@@ -1261,5 +1265,13 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         public DialogTalkModel getTalkModel() {
             return talkModel;
         }
+    }
+
+    public boolean containsByWords(String word) {
+        long start = System.currentTimeMillis();
+        String keywords = mContext.getResources().getString(R.string.short_keyword);
+        boolean contains = keywords.contains(word);
+        LogUtil.i(TAG, "containsByWords time = " + (System.currentTimeMillis() - start));
+        return contains;
     }
 }

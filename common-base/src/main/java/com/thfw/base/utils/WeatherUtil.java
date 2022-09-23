@@ -36,7 +36,7 @@ public class WeatherUtil {
     public static String getWeatherCityId(String city) {
         if (mCityIdMap == null) {
             mCityIdMap = new HashMap<>();
-            String json = getAreaJsonString();
+            String json = getAreaJsonString(R.raw.weather);
             if (!TextUtils.isEmpty(json)) {
                 try {
                     JSONObject jsonObject = new JSONObject(json);
@@ -71,7 +71,7 @@ public class WeatherUtil {
         return getWeatherCityId(LocationUtils.getCityName());
     }
 
-    private static String getAreaJsonString() {
+    public static String getAreaJsonString(int rawRes) {
 
         StringBuffer sb = new StringBuffer();
 
@@ -86,7 +86,7 @@ public class WeatherUtil {
         Resources resources = ContextApp.get().getResources();
 
         try {
-            is = resources.openRawResource(R.raw.weather); // 读取相应的章节
+            is = resources.openRawResource(rawRes); // 读取相应的章节
             isr = new InputStreamReader(is, "UTF-8");// 这里添加了UTF-8，解决乱码问题
             br = new BufferedReader(isr);
 

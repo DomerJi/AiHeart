@@ -10,9 +10,9 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 220,
-      "versionName": "2.4-pad",
-      "outputFile": "QjmyPad_220_2.4-pad_mainRelease.apk"
+      "versionCode": 226,
+      "versionName": "2.5.6-pad",
+      "outputFile": "QjmyPad_226_2.5.6-pad_mainRelease.apk"
     }
   ]
 }

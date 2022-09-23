@@ -117,8 +117,8 @@
                 android:padding="2dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/msg_dot_size"
-                android:visibility="visible"
-                tools:text="99+" />
+                tools:text="99+"
+                tools:visibility="visible" />
 
         </RelativeLayout>
 
