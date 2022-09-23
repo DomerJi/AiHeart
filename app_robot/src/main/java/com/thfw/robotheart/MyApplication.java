@@ -1,13 +1,22 @@
 package com.thfw.robotheart;
 
 import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.multidex.MultiDexApplication;
 import androidx.room.Room;
 
@@ -25,13 +34,16 @@ import com.scwang.smart.refresh.layout.listener.DefaultRefreshHeaderCreator;
 import com.thfw.base.ContextApp;
 import com.thfw.base.room.AppDatabase;
 import com.thfw.base.utils.BuglyUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.activitys.MainActivity;
+import com.thfw.robotheart.activitys.set.DormantActivity;
 import com.thfw.robotheart.push.MyPreferences;
 import com.thfw.robotheart.push.helper.PushHelper;
 import com.thfw.robotheart.robot.RobotUtil;
+import com.thfw.robotheart.util.Dormant;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.voice.wakeup.WakeupHelper;
 import com.umeng.commonsdk.UMConfigure;
@@ -154,12 +166,14 @@ public class MyApplication extends MultiDexApplication {
     }
 
     private void init() {
-        registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
+
 //        RobotUtil.longPressOffBtn();
         if (RobotUtil.isInstallRobot()) {
             WakeupHelper.initCae(app);
             BuglyUtil.init("382fc62522");
             RobotUtil.hookWebView();
+            initScreenReceiver();
+            initActivityLifecycle();
         } else {
             BuglyUtil.init("d24e28638f");
         }
@@ -175,43 +189,50 @@ public class MyApplication extends MultiDexApplication {
 
     private static int startedActivityCount;
     private static int foregroundFlag = -1;
-    private static ActivityLifecycleCallbacks activityLifecycleCallbacks = new ActivityLifecycleCallbacks() {
-        @Override
-        public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+    private static ActivityLifecycleCallbacks activityLifecycleCallbacks;
 
+    private void initActivityLifecycle() {
+        if (activityLifecycleCallbacks == null) {
+            activityLifecycleCallbacks = new ActivityLifecycleCallbacks() {
+                @Override
+                public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+
+                }
+
+                @Override
+                public void onActivityStarted(@NonNull Activity activity) {
+                    startedActivityCount++;
+                    onForeground();
+                }
+
+                @Override
+                public void onActivityResumed(@NonNull Activity activity) {
+                }
+
+                @Override
+                public void onActivityPaused(@NonNull Activity activity) {
+
+                }
+
+                @Override
+                public void onActivityStopped(@NonNull Activity activity) {
+                    startedActivityCount--;
+                    onForeground();
+                }
+
+                @Override
+                public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+
+                }
+
+                @Override
+                public void onActivityDestroyed(@NonNull Activity activity) {
+
+                }
+            };
         }
-
-        @Override
-        public void onActivityStarted(@NonNull Activity activity) {
-            startedActivityCount++;
-            onForeground();
-        }
-
-        @Override
-        public void onActivityResumed(@NonNull Activity activity) {
-        }
-
-        @Override
-        public void onActivityPaused(@NonNull Activity activity) {
-
-        }
-
-        @Override
-        public void onActivityStopped(@NonNull Activity activity) {
-            startedActivityCount--;
-            onForeground();
-        }
-
-        @Override
-        public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
-
-        }
-
-        @Override
-        public void onActivityDestroyed(@NonNull Activity activity) {
-
-        }
-    };
+        registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
+    }
 
     public static void onForeground() {
         int flag = ifForeground() ? 1 : 0;
@@ -231,6 +252,80 @@ public class MyApplication extends MultiDexApplication {
 
     public static boolean ifForeground() {
         return startedActivityCount > 0;
+    }
+
+    private static BroadcastReceiver mScreenReceiver;
+
+    private void initScreenReceiver() {
+        if (mScreenReceiver == null) {
+            mScreenReceiver = new BroadcastReceiver() {
+
+                private Runnable runnable;
+                private boolean isLockScreen;
+
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    // TODO Auto-generated method stub
+                    if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {//当按下电源键，屏幕亮起的时候
+                        isLockScreen = false;
+                    }
+                    if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {//当按下电源键，屏幕变黑的时候
+                        isLockScreen = true;
+                    }
+                    if (Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {//当解除锁屏的时候
+                        isLockScreen = false;
+                    }
+                    LogUtil.i("mScreenReceiver", "isLockScreen  = " + isLockScreen);
+                    if (LogUtil.isLogEnabled()) {
+                        HandlerUtil.getMainHandler().post(() -> {
+                            String ts = "isLockScreen -> " + isLockScreen;
+                            Toast.makeText(MyApplication.getApp(), ts, Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                    if (runnable != null) {
+                        HandlerUtil.getMainHandler().removeCallbacks(runnable);
+                    } else {
+                        runnable = () -> {
+                            LogUtil.i("mScreenReceiver", "isLockScreen = " + isLockScreen + " ; isWake = " + DormantActivity.isWake());
+                            if (isLockScreen) {
+                                try {
+                                    if (!DormantActivity.isWake()) {
+                                        Dormant.toDormant(MyApplication.getApp());
+                                    }
+                                    wakeUpScreen();
+                                } catch (Exception e) {
+                                    LogUtil.e("mScreenReceiver", e.getMessage());
+                                }
+                            }
+                        };
+                    }
+                    HandlerUtil.getMainHandler().postDelayed(runnable, 1000);
+                }
+            };
+        }
+
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        intentFilter.addAction(Intent.ACTION_USER_PRESENT);
+        registerReceiver(mScreenReceiver, intentFilter);
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
+    private void wakeUpScreen() {
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        Log.d("mScreenReceiver", "screen is on ? == " + powerManager.isInteractive());
+        if (!powerManager.isInteractive()) {
+            new Thread(() -> {
+                try {
+                    Instrumentation inst = new Instrumentation();
+                    inst.sendKeyDownUpSync(KeyEvent.KEYCODE_POWER);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+
     }
 
 }

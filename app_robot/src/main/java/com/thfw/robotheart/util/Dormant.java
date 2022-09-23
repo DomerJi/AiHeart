@@ -107,6 +107,11 @@ public class Dormant {
         }
     }
 
+    /**
+     * 手动触发休眠
+     *
+     * @param context
+     */
     public static void toDormant(Context context) {
         MINUTE_FREE = SharePreferenceUtil.getInt(KEY_DORMANT_MINUTE, MINUTE_FREE_COUNT) + 1;
         // todo 休眠或待机进入低功耗

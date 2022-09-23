@@ -16,6 +16,7 @@ import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HourUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.activitys.task.TaskActivity;
 import com.thfw.robotheart.constants.AnimFileName;
@@ -37,9 +38,18 @@ import com.thfw.ui.voice.tts.TtsModel;
  */
 public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActivity<T> implements SerialManager.RobotTouchListener {
 
+    private static long lastTouch;
+
     @Override
     public void onTouch(int code, int down) {
-        if (!EmptyUtil.isEmpty(RobotBaseActivity.this) && isMeResumed()) {
+        // 屁股不触发
+        if (code == 3) {
+            lastTouch = 0;
+            return;
+        }
+        if (!EmptyUtil.isEmpty(RobotBaseActivity.this) && isMeResumed()
+                && System.currentTimeMillis() - lastTouch > HourUtil.LEN_SECOND5) {
+            lastTouch = System.currentTimeMillis();
             DialogRobotFactory.createFullSvgaDialog(RobotBaseActivity.this,
                     AnimFileName.EMOJI_CHUMO, new DialogRobotFactory.OnSVGACallBack() {
                         @Override

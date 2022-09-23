@@ -1,5 +1,6 @@
 package com.thfw.robotheart.activitys.set;
 
+import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -72,7 +73,13 @@ public class DormantActivity extends RobotBaseActivity
     private static DormantActivity dormantActivity;
 
     public static void startActivity(Context context) {
-        context.startActivity(new Intent(context, DormantActivity.class));
+        Intent intent = new Intent(context, DormantActivity.class);
+        if (context instanceof Application) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        } else {
+            context.startActivity(intent);
+        }
     }
 
     @Override
@@ -111,6 +118,10 @@ public class DormantActivity extends RobotBaseActivity
         if (!EmptyUtil.isEmpty(dormantActivity)) {
             dormantActivity.onWakeUp(WakeUpType.CLICK);
         }
+    }
+
+    public static boolean isWake() {
+        return !EmptyUtil.isEmpty(dormantActivity);
     }
 
 
