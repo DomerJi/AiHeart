@@ -42,11 +42,6 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
 
     @Override
     public void onTouch(int code, int down) {
-        // 屁股不触发
-        if (code == 3) {
-            lastTouch = 0;
-            return;
-        }
         if (!EmptyUtil.isEmpty(RobotBaseActivity.this) && isMeResumed()
                 && System.currentTimeMillis() - lastTouch > HourUtil.LEN_SECOND5) {
             lastTouch = System.currentTimeMillis();

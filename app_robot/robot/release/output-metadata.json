@@ -10,9 +10,9 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 222,
-      "versionName": "2.5.1",
-      "outputFile": "QjmyPad_222_2.5.1_robotRelease.apk"
+      "versionCode": 223,
+      "versionName": "2.5.2",
+      "outputFile": "QjmyPad_223_2.5.2_robotRelease.apk"
     }
   ]
 }
