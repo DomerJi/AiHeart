@@ -422,7 +422,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 return;
             }
         }
-
         sendData(inputText, true);
 
     }
@@ -472,13 +471,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             return true;
         }
         // 唱个歌曲
-        if (checkVolume(tempText)) {
-            hideInput();
-            mEtContent.setText("");
-            LogUtil.i(TAG, "----------- search volume -------------");
-            return true;
-        }
-        // 唱个歌曲
         if (checkMusic(tempText)) {
             hideInput();
             mEtContent.setText("");
@@ -522,26 +514,22 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     }
 
     private boolean checkVolume(String inputText) {
-        if (mScene != 1) {
-            return false;
-        }
         String tempText = inputText;
 
         if (tempText.matches(".{0,4}(音量|声音|语音|调高|调低|调大|调小).{0,3}(小|低|高|大|音量|声音|).{1,2}")) {
-            ToastUtil.show("dddd");
             // 声音变小
             if (tempText.matches(".{0,6}(太高|太大).{0,6}")) {
-                volumeChange(tempText, -0.25f);
+                volumeChange(tempText, -0.2f);
             } else if (tempText.matches(".{0,6}(太低|太小).{0,6}")) {
-                volumeChange(tempText, 0.25f);
+                volumeChange(tempText, 0.2f);
             } else if (tempText.matches(".{0,6}(最高|最大).{0,6}")) {
                 volumeChange(tempText, 1f);
             } else if (tempText.matches(".{0,6}(最小|最低).{0,6}")) {
                 volumeChange(tempText, -1f);
             } else if (tempText.matches(".{0,6}(小|低).{0,6}")) {
-                volumeChange(tempText, -0.125f);
+                volumeChange(tempText, -0.12f);
             } else if (tempText.matches(".{0,6}(大|高).{0,6}")) {
-                volumeChange(tempText, 0.125f);
+                volumeChange(tempText, 0.12f);
             }
             return true;
         } else {
@@ -560,7 +548,11 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         newVolume = Math.round(maxVolume * lv) + volume;
 
         if ((newVolume >= volume && volume >= maxVolume) || (newVolume <= 0 && volume <= 0)) {
-            sendLocalData(inputText, volume >= maxVolume ? "声音已经最大了" : "声音已经最小了");
+            if (mScene == 1) {
+                sendLocalData(inputText, volume >= maxVolume ? "声音已经最大了" : "声音已经最小了");
+            } else {
+                ToastUtil.showLong(volume >= maxVolume ? "声音已经最大了" : "声音已经最小了");
+            }
             return;
         }
         if (newVolume > maxVolume) {
@@ -572,7 +564,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         scl.show();
         mMainHandler.postDelayed(() -> {
             mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, AudioManager.FLAG_PLAY_SOUND);
-            Log.d(TAG, "onVolumeGesture: newVolume " + newVolume);
+            LogUtil.d(TAG, "onVolumeGesture: newVolume " + newVolume);
             //要强行转Float类型才能算出小数点，不然结果一直为0
             int volumeProgress = (int) (newVolume / Float.valueOf(maxVolume) * 100);
             if (volumeProgress >= 50) {
@@ -584,7 +576,11 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             }
             scl.setProgress((int) (newVolume / Float.valueOf(maxVolume) * 100));
             scl.show();
-            sendLocalData(inputText, newVolume > volume ? "已经为您调高音量" : "已经为您调低音量");
+            if (mScene == 1) {
+                sendLocalData(inputText, newVolume > volume ? "已经为您调高音量" : "已经为您调低音量");
+            } else {
+                ToastUtil.showLong(newVolume > volume ? "已经为您调高音量" : "已经为您调低音量");
+            }
         }, 500);
 
 
@@ -613,7 +609,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     }
 
     private boolean checkTureName(String inputText) {
-        if (!RegularUtil.isTrueName(inputText)) {
+        if (mScene != 1 || !RegularUtil.isTrueName(inputText)) {
             return false;
         }
         String surname = mContext.getResources().getString(R.string.surname);
@@ -741,7 +737,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 recommend = RegularUtil.contains(name);
                 ttsHint = "即将为您播放 " + (recommend ? (name + " 的音乐") : name);
             }
-            ToastUtil.show(ttsHint);
+            ToastUtil.showLong(ttsHint);
             final boolean recommendFinal = recommend;
             MusicApi.request(name, new MusicApi.MusicCallback() {
                 @Override
@@ -779,28 +775,31 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     }
 
     private boolean checkDance(String inputText) {
-        if (RobotUtil.isInstallRobot() && mScene == 1) {
-            RobotUtil.Dance dance = RobotUtil.onDance(inputText);
-            if (dance.type == RobotUtil.Dance.NORMAL) {
-                return false;
-            }
-            LogUtil.i(TAG, "dance -> " + dance.toString());
-            TtsHelper.getInstance().start(new TtsModel(dance.tts), null);
-            switch (dance.type) {
-                case RobotUtil.Dance.ALL:
-                    SerialManager.getInstance().startAllAction();
-                    return true;
-                case RobotUtil.Dance.SHAKE:
-                    SerialManager.getInstance().startAction(ActionParams.getNormalShake());
-                    return true;
-                case RobotUtil.Dance.NOD:
-                    SerialManager.getInstance().startAction(ActionParams.getNormalNod());
-                    return true;
-                case RobotUtil.Dance.ROTATE:
-                    SerialManager.getInstance().startAction(ActionParams.getNormalRotate());
-                    return true;
-            }
+        if (mScene != 1 || !RobotUtil.isInstallRobot()) {
+            return false;
         }
+
+        RobotUtil.Dance dance = RobotUtil.onDance(inputText);
+        if (dance.type == RobotUtil.Dance.NORMAL) {
+            return false;
+        }
+        LogUtil.i(TAG, "dance -> " + dance.toString());
+        TtsHelper.getInstance().start(new TtsModel(dance.tts), null);
+        switch (dance.type) {
+            case RobotUtil.Dance.ALL:
+                SerialManager.getInstance().startAllAction();
+                return true;
+            case RobotUtil.Dance.SHAKE:
+                SerialManager.getInstance().startAction(ActionParams.getNormalShake());
+                return true;
+            case RobotUtil.Dance.NOD:
+                SerialManager.getInstance().startAction(ActionParams.getNormalNod());
+                return true;
+            case RobotUtil.Dance.ROTATE:
+                SerialManager.getInstance().startAction(ActionParams.getNormalRotate());
+                return true;
+        }
+
         return false;
     }
 
@@ -1041,7 +1040,13 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mStvText.setSpeechText("");
         LogUtil.d(TAG, "chooseOption(result)" + result + "; end = " + end);
         LogUtil.d(TAG, "chooseOption(result) mCurrentChatType = " + mCurrentChatType);
-
+        // 音量调整
+        if (checkVolume(result)) {
+            hideInput();
+            mEtContent.setText("");
+            LogUtil.i(TAG, "----------- search volume -------------");
+            return;
+        }
         if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
             if (end) {
                 sendInputText(result);
@@ -1728,6 +1733,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         public DialogTalkModel getTalkModel() {
             return talkModel;
         }
+
     }
 
     public boolean containsByWords(String word) {
