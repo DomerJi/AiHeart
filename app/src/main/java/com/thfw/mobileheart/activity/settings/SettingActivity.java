@@ -22,7 +22,6 @@ import com.luck.picture.lib.tools.PictureFileUtils;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.utils.BuglyUtil;
-import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -71,15 +70,6 @@ public class SettingActivity extends BaseActivity {
 
     @Override
     public void initView() {
-        findViewById(R.id.titleView).setOnClickListener(v -> {
-            if (ClickCountUtils.click(10)) {
-                if (LogUtil.switchLogEnable()) {
-                    ToastUtil.show("Log调试 -> 开启");
-                } else {
-                    ToastUtil.show("Log调试 -> 关闭");
-                }
-            }
-        });
         mLlAccountSafe = (LinearLayout) findViewById(R.id.ll_account_safe);
         mLlInfo = (LinearLayout) findViewById(R.id.ll_info);
         mLlClearCache = (LinearLayout) findViewById(R.id.ll_clear_cache);

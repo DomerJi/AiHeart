@@ -19,7 +19,11 @@ public class LogUtil {
     private static String versionName = "1.0.0";
 
     public static boolean switchLogEnable() {
-        isLogEnabled = !isLogSpEnable();
+        return switchLogEnable(!isLogSpEnable());
+    }
+
+    public static boolean switchLogEnable(boolean logEnabled) {
+        isLogEnabled = logEnabled;
         SharePreferenceUtil.setBoolean(KEY_LOG_ENABLE, isLogEnabled);
         Setting.setShowLog(isLogEnabled);
         return isLogEnabled;

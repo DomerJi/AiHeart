@@ -19,7 +19,6 @@ import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
-import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.sets.SetBlueFragment;
@@ -66,15 +65,6 @@ public class SettingActivity extends RobotBaseActivity {
     public void initView() {
 
         mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
-        mTitleRobotView.setOnClickListener(v -> {
-            if (ClickCountUtils.click(10)) {
-                if (LogUtil.switchLogEnable()) {
-                    ToastUtil.show("Log调试 -> 开启");
-                } else {
-                    ToastUtil.show("Log调试 -> 关闭");
-                }
-            }
-        });
         mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
         mFlContent = (FrameLayout) findViewById(R.id.fl_content);
         mLlNavigation = (LinearLayout) findViewById(R.id.ll_navigation);

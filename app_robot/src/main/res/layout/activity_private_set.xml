@@ -170,6 +170,17 @@
                     android:layout_height="wrap_content"
                     android:text="应用程序设置" />
 
+                <CheckBox
+                    android:id="@+id/cb_debug"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:buttonTint="@color/colorRobotFore"
+                    android:checked="true"
+                    android:paddingRight="8dp"
+                    android:text="Log调试"
+                    android:textColor="@color/colorRobotFore" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -185,7 +196,8 @@
         android:background="@drawable/robot_page_bg"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleRobotView">
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView"
+        tools:visibility="gone">
 
         <com.thfw.ui.widget.InputBoxSquareView
             android:id="@+id/ibv_code"

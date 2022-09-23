@@ -50,6 +50,25 @@
                 android:layout_height="@dimen/divider_1px"
                 android:background="@color/divider" />
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/cb_debug"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:buttonTint="@color/text_common"
+                    android:checked="true"
+                    android:paddingRight="8dp"
+                    android:text="Log调试"
+                    android:textColor="@color/text_common" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
 
@@ -63,7 +82,8 @@
         android:background="@color/colorPrimary"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleRobotView">
+        app:layout_constraintTop_toBottomOf="@id/titleRobotView"
+        tools:visibility="gone">
 
         <com.thfw.ui.widget.InputBoxSquareView
             android:id="@+id/ibv_code"

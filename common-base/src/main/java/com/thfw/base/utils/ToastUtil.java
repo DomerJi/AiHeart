@@ -49,6 +49,16 @@ public final class ToastUtil {
         }
     }
 
+    public static void debugShow(String charSequence) {
+        if (LogUtil.isLogEnabled()) {
+            if (isMainThread()) {
+                Toast.makeText(appContext, charSequence, Toast.LENGTH_SHORT).show();
+            } else {
+                showOnMainThread(charSequence, Toast.LENGTH_SHORT);
+            }
+        }
+    }
+
     public static void showLong(CharSequence charSequence) {
         if (System.currentTimeMillis() - showTime > LIMIT) {
             showTime = System.currentTimeMillis();

@@ -20,7 +20,6 @@ import com.thfw.base.ContextApp;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.CommonParameter;
-import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.PermissionUtil;
@@ -135,16 +134,6 @@ public class LoginActivity extends BaseActivity {
         fragmentLoader.add(BY_OTHER, new OtherLoginFragment());
 
         fragmentLoader.load(type);
-
-        findViewById(R.id.fl_content).setOnClickListener(v -> {
-            if (ClickCountUtils.click(10)) {
-                if (LogUtil.switchLogEnable()) {
-                    ToastUtil.show("Log调试 -> 开启");
-                } else {
-                    ToastUtil.show("Log调试 -> 关闭");
-                }
-            }
-        });
     }
 
     @Override

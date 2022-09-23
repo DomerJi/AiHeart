@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,6 +43,7 @@ public class PrivateSetActivity extends RobotBaseActivity {
     private android.widget.Button mBtAppsSettings;
     private ConstraintLayout mClInputPassword;
     private InputBoxSquareView mIbvCode;
+    private CheckBox mCbDebug;
 
     public static final int getAnimFrequency() {
         return SharePreferenceUtil.getInt(AnimFileName.Frequency.KEY_FREQUENCY, AnimFileName.Frequency.EVERY_TIME);
@@ -134,6 +137,14 @@ public class PrivateSetActivity extends RobotBaseActivity {
         });
         mClInputPassword = (ConstraintLayout) findViewById(R.id.cl_input_password);
         mIbvCode = (InputBoxSquareView) findViewById(R.id.ibv_code);
+        mCbDebug = findViewById(R.id.cb_debug);
+        mCbDebug.setChecked(LogUtil.isLogSpEnable());
+        mCbDebug.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                LogUtil.switchLogEnable(isChecked);
+            }
+        });
     }
 
     private void startOtherActivity(String mComponentName) {

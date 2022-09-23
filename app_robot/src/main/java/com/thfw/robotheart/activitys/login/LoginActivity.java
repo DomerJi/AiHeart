@@ -154,15 +154,6 @@ public class LoginActivity extends RobotBaseActivity {
                 startActivity(new Intent(mContext, PrivateSetActivity.class));
             }
         });
-        findViewById(R.id.fl_content).setOnClickListener(v -> {
-            if (ClickCountUtils.click(10)) {
-                if (LogUtil.switchLogEnable()) {
-                    ToastUtil.show("Log调试 -> 开启");
-                } else {
-                    ToastUtil.show("Log调试 -> 关闭");
-                }
-            }
-        });
         fragmentLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
 
         fragmentLoader.add(BY_MOBILE, new LoginMobileFragment());

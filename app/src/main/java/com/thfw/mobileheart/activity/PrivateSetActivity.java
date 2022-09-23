@@ -2,11 +2,14 @@ package com.thfw.mobileheart.activity;
 
 import android.content.Intent;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.R;
@@ -21,6 +24,7 @@ public class PrivateSetActivity extends RobotActivity {
 
     private TitleView mTitleView;
     private LinearLayout mLlHostSet;
+    private CheckBox mCbDebug;
 
 
     @Override
@@ -85,6 +89,14 @@ public class PrivateSetActivity extends RobotActivity {
         });
         mLlHostSet.setOnClickListener(v -> {
             startActivity(new Intent(mContext, HostActivity.class));
+        });
+        mCbDebug = findViewById(R.id.cb_debug);
+        mCbDebug.setChecked(LogUtil.isLogSpEnable());
+        mCbDebug.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                LogUtil.switchLogEnable(isChecked);
+            }
         });
 
     }
