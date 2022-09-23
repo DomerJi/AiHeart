@@ -36,6 +36,10 @@ public class ApiHost {
         return CURRENT_HOST;
     }
 
+    public static String getNo8080Host() {
+        return getHost().replace(":8080", "");
+    }
+
     public static String getTestH5Host(Object id) {
         return "https://resource.soulbuddy.cn/public/soul_the_land/depth_result.html?id=" + String.valueOf(id);
     }

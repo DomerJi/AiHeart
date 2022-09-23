@@ -5,8 +5,8 @@ import com.thfw.base.net.ApiHost;
 public enum AgreeOn {
 
 
-    AGREE_USER(ApiHost.getHost() + "tianhe/user_server_mobile.html", "用户服务协议"),
-    AGREE_MSG(ApiHost.getHost() + "tianhe/secret_protect_mobile.html", "隐私保护政策"),
+    AGREE_USER(ApiHost.getNo8080Host()+ "tianhe/user_server_mobile.html", "用户服务协议"),
+    AGREE_MSG(ApiHost.getNo8080Host() + "tianhe/secret_protect_mobile.html", "隐私保护政策"),
     @Deprecated
     AGREE_3G("https://www.baidu.com", "中国移动认证服务条款"),
     @Deprecated

@@ -1,7 +1,9 @@
 package com.thfw.robotheart.activitys.me;
 
 import android.content.Intent;
+import android.provider.Settings;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,6 +37,10 @@ public class PrivateSetActivity extends RobotBaseActivity {
     private android.widget.TextView mTvTranAnimFrequency;
     private LinearLayout mLlPushTest;
     private LinearLayout mLlHostSet;
+    private android.widget.Button mBtSystemSettings;
+    private android.widget.Button mBtAppsSettings;
+    private ConstraintLayout mClInputPassword;
+    private InputBoxSquareView mIbvCode;
 
     public static final int getAnimFrequency() {
         return SharePreferenceUtil.getInt(AnimFileName.Frequency.KEY_FREQUENCY, AnimFileName.Frequency.EVERY_TIME);
@@ -61,10 +67,7 @@ public class PrivateSetActivity extends RobotBaseActivity {
         mLlRobotAction = (LinearLayout) findViewById(R.id.ll_robot_action);
         mTvTranAnimFrequency = (TextView) findViewById(R.id.tv_tran_anim_frequency);
         mLlHostSet = (LinearLayout) findViewById(R.id.ll_host_set);
-        ConstraintLayout mClInputPassword = findViewById(R.id.cl_input_password);
-        mClInputPassword.setOnClickListener(v -> {
 
-        });
         InputBoxSquareView mInputBoxSquareView = findViewById(R.id.ibv_code);
         mInputBoxSquareView.setOnInputCompleteListener(new InputBoxSquareView.OnInputCompleteListener() {
             @Override
@@ -121,6 +124,27 @@ public class PrivateSetActivity extends RobotBaseActivity {
                 startActivity(new Intent(mContext, ShakeNodActivity.class));
             });
         }
+        mBtSystemSettings = (Button) findViewById(R.id.bt_system_settings);
+        mBtAppsSettings = (Button) findViewById(R.id.bt_apps_settings);
+        mBtSystemSettings.setOnClickListener(v -> {
+            startOtherActivity(Settings.ACTION_SETTINGS);
+        });
+        mBtAppsSettings.setOnClickListener(v -> {
+            startOtherActivity(Settings.ACTION_APPLICATION_SETTINGS);
+        });
+        mClInputPassword = (ConstraintLayout) findViewById(R.id.cl_input_password);
+        mIbvCode = (InputBoxSquareView) findViewById(R.id.ibv_code);
+    }
+
+    private void startOtherActivity(String mComponentName) {
+        try {
+            //打开系统设置界面
+            Intent intent = new Intent(mComponentName);
+            startActivity(intent);
+        } catch (Exception e) {
+            ToastUtil.show("打开失败");
+        }
+
     }
 
     private void setAnimFrequency() {
