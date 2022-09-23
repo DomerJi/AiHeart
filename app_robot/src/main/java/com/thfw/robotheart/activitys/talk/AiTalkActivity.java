@@ -1,7 +1,9 @@
 package com.thfw.robotheart.activitys.talk;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -78,6 +80,7 @@ import com.thfw.ui.voice.speech.SpeechHelper;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.LoadingView;
+import com.thfw.ui.widget.ShowChangeLayout;
 import com.thfw.ui.widget.SpeechTextView;
 import com.thfw.ui.widget.SpeedLinearLayoutManager;
 import com.thfw.user.login.UserManager;
@@ -155,6 +158,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     private boolean mSpeechMode;
     private boolean mReadAfterSpeech;
     private boolean futureWeather;
+    private AudioManager mAudioManager;
+    private int maxVolume;
+    private ShowChangeLayout scl;
+    private int newVolume;
 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, AiTalkActivity.class).putExtra(KEY_DATA, talkModel));
@@ -465,6 +472,13 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             return true;
         }
         // 唱个歌曲
+        if (checkVolume(tempText)) {
+            hideInput();
+            mEtContent.setText("");
+            LogUtil.i(TAG, "----------- search volume -------------");
+            return true;
+        }
+        // 唱个歌曲
         if (checkMusic(tempText)) {
             hideInput();
             mEtContent.setText("");
@@ -505,6 +519,75 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             return true;
         }
         return false;
+    }
+
+    private boolean checkVolume(String inputText) {
+        if (mScene != 1) {
+            return false;
+        }
+        String tempText = inputText;
+
+        if (tempText.matches(".{0,4}(音量|声音|语音|调高|调低|调大|调小).{0,3}(小|低|高|大|音量|声音|).{1,2}")) {
+            ToastUtil.show("dddd");
+            // 声音变小
+            if (tempText.matches(".{0,6}(太高|太大).{0,6}")) {
+                volumeChange(tempText, -0.25f);
+            } else if (tempText.matches(".{0,6}(太低|太小).{0,6}")) {
+                volumeChange(tempText, 0.25f);
+            } else if (tempText.matches(".{0,6}(最高|最大).{0,6}")) {
+                volumeChange(tempText, 1f);
+            } else if (tempText.matches(".{0,6}(最小|最低).{0,6}")) {
+                volumeChange(tempText, -1f);
+            } else if (tempText.matches(".{0,6}(小|低).{0,6}")) {
+                volumeChange(tempText, -0.125f);
+            } else if (tempText.matches(".{0,6}(大|高).{0,6}")) {
+                volumeChange(tempText, 0.125f);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void volumeChange(String inputText, float lv) {
+        if (mAudioManager == null) {
+            // 初始化获取音量属性
+            mAudioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
+            maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            scl = findViewById(R.id.scl);
+        }
+        int volume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        newVolume = Math.round(maxVolume * lv) + volume;
+
+        if ((newVolume >= volume && volume >= maxVolume) || (newVolume <= 0 && volume <= 0)) {
+            sendLocalData(inputText, volume >= maxVolume ? "声音已经最大了" : "声音已经最小了");
+            return;
+        }
+        if (newVolume > maxVolume) {
+            newVolume = maxVolume;
+        } else if (newVolume < 0) {
+            newVolume = 0;
+        }
+        scl.setProgress((int) (volume / Float.valueOf(maxVolume) * 100));
+        scl.show();
+        mMainHandler.postDelayed(() -> {
+            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, AudioManager.FLAG_PLAY_SOUND);
+            Log.d(TAG, "onVolumeGesture: newVolume " + newVolume);
+            //要强行转Float类型才能算出小数点，不然结果一直为0
+            int volumeProgress = (int) (newVolume / Float.valueOf(maxVolume) * 100);
+            if (volumeProgress >= 50) {
+                scl.setImageResource(R.drawable.ic_volume_higher_w);
+            } else if (volumeProgress > 0) {
+                scl.setImageResource(R.drawable.ic_volume_lower_w);
+            } else {
+                scl.setImageResource(R.drawable.ic_volume_off_w);
+            }
+            scl.setProgress((int) (newVolume / Float.valueOf(maxVolume) * 100));
+            scl.show();
+            sendLocalData(inputText, newVolume > volume ? "已经为您调高音量" : "已经为您调低音量");
+        }, 500);
+
+
     }
 
     /**
