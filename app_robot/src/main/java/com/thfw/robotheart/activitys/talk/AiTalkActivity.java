@@ -51,6 +51,7 @@ import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.NumberUtil;
 import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.StringUtil;
@@ -470,6 +471,13 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             LogUtil.i(TAG, "----------- speech dance -------------");
             return true;
         }
+        // 音量调整
+        if (checkVolume(tempText)) {
+            hideInput();
+            mEtContent.setText("");
+            LogUtil.i(TAG, "----------- search volume -------------");
+            return true;
+        }
         // 唱个歌曲
         if (checkMusic(tempText)) {
             hideInput();
@@ -515,29 +523,57 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
     private boolean checkVolume(String inputText) {
         String tempText = inputText;
-
-        if (tempText.matches(".{0,4}(音量|声音|语音|调高|调低|调大|调小).{0,3}(小|低|高|大|音量|声音|).{1,2}")) {
+        String volumeRegex = ".{0,4}(音量|声音).{0,3}(调高|调低|调大|调小|增加|减少|大|小|高|低).{0,2}";
+        String volumeRegex2 = ".{0,4}(调高|调低|调大|调小|增加|减少).{0,3}(音量|声音).{0,2}";
+        String volumeRegex3 = ".{0,4}(音量|声音).{0,2}(调整|调|设置|增加|增|减少|减)(到|成|为)" +
+                // 1/3  0~100 30%
+                "((\\d+)\\/(\\d+)|(\\d|[1-9]\\d|100)|(\\d|[1-9]\\d|100)%" +
+                "|(一半|中等|中间|零|一|二|三|四|五|六|七|八|九|十))";
+        if (tempText.matches(volumeRegex) || tempText.matches(volumeRegex2)) {
             // 声音变小
             if (tempText.matches(".{0,6}(太高|太大).{0,6}")) {
-                volumeChange(tempText, -0.2f);
+                volumeChange(tempText, -0.2f, false);
             } else if (tempText.matches(".{0,6}(太低|太小).{0,6}")) {
-                volumeChange(tempText, 0.2f);
+                volumeChange(tempText, 0.2f, false);
             } else if (tempText.matches(".{0,6}(最高|最大).{0,6}")) {
-                volumeChange(tempText, 1f);
+                volumeChange(tempText, 1f, true);
             } else if (tempText.matches(".{0,6}(最小|最低).{0,6}")) {
-                volumeChange(tempText, -1f);
-            } else if (tempText.matches(".{0,6}(小|低).{0,6}")) {
-                volumeChange(tempText, -0.12f);
-            } else if (tempText.matches(".{0,6}(大|高).{0,6}")) {
-                volumeChange(tempText, 0.12f);
+                volumeChange(tempText, -0f, true);
+            } else if (tempText.matches(".{0,6}(小|低|少).{0,6}")) {
+                volumeChange(tempText, -0.12f, false);
+            } else if (tempText.matches(".{0,6}(大|高|加).{0,6}")) {
+                volumeChange(tempText, 0.12f, false);
             }
             return true;
+        } else if (tempText.matches(volumeRegex3)) {
+            String replace = ".{0,4}(音量|声音).{0,2}(调整|调|设置|设)(到|成|为)";
+            String number = tempText.replaceAll(replace, "").replace("%", "");
+            try {
+                if (number.contains("/")) {
+                    String[] fenNum = number.split("/");
+                    if (fenNum.length == 2) {
+                        float lv = Integer.parseInt(fenNum[0]) * 1f / Integer.parseInt(fenNum[1]);
+                        volumeChange(tempText, lv, true);
+                    } else {
+                        return false;
+                    }
+                } else if (number.matches("(一半|中等|中间)")) {
+                    volumeChange(tempText, 0.5f, true);
+                } else if (number.matches("(零|一|二|三|四|五|六|七|八|九|十)")) {
+                    volumeChange(tempText, NumberUtil.toUppercase(number) * 1f / 100, true);
+                } else {
+                    volumeChange(tempText, Integer.parseInt(number) * 1f / 100, true);
+                }
+                return true;
+            } catch (Exception e) {
+            }
+            return false;
         } else {
             return false;
         }
     }
 
-    private void volumeChange(String inputText, float lv) {
+    private void volumeChange(String inputText, float lv, boolean reset) {
         if (mAudioManager == null) {
             // 初始化获取音量属性
             mAudioManager = (AudioManager) getSystemService(Service.AUDIO_SERVICE);
@@ -545,7 +581,11 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             scl = findViewById(R.id.scl);
         }
         int volume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        newVolume = Math.round(maxVolume * lv) + volume;
+        if (reset) {
+            newVolume = Math.round(maxVolume * lv);
+        } else {
+            newVolume = Math.round(maxVolume * lv) + volume;
+        }
 
         if ((newVolume >= volume && volume >= maxVolume) || (newVolume <= 0 && volume <= 0)) {
             if (mScene == 1) {
@@ -1040,18 +1080,20 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mStvText.setSpeechText("");
         LogUtil.d(TAG, "chooseOption(result)" + result + "; end = " + end);
         LogUtil.d(TAG, "chooseOption(result) mCurrentChatType = " + mCurrentChatType);
-        // 音量调整
-        if (checkVolume(result)) {
-            hideInput();
-            mEtContent.setText("");
-            LogUtil.i(TAG, "----------- search volume -------------");
-            return;
-        }
+
         if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
             if (end) {
                 sendInputText(result);
             }
         } else if (mCurrentChatType == ChatEntity.TYPE_FROM_SELECT) {
+            String tempText = result.replaceAll("(小密|，|。|！|!|？)", "");
+            // 音量调整
+            if (checkVolume(tempText)) {
+                hideInput();
+                mEtContent.setText("");
+                LogUtil.i(TAG, "----------- search volume -------------");
+                return;
+            }
             if (mSelectAdapter == null) {
                 return;
             }
