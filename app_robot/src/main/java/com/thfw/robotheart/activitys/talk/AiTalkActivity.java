@@ -795,14 +795,16 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
 
         String tempText = inputText;
 
-        String regexAsk = ".{1,5}(是)(谁|干什么的|干啥的|啥||什么东西|什么|干啥用的|做什么用的)";
+        String regexAsk = ".{1,5}(是)(谁|干什么用的|干什么的|干啥的|啥|什么东西|什么|干啥用的|做什么用的)(呀|)";
         String regexAsk2 = "(你|)(认识|知道).{1,5}(吗)";
-        String regexAsk3 = ".{0,2}(介绍一下).{1,5}";
+        String regexAsk3 = "(给我|给|请|)(介绍一下).{1,5}";
+        String regexAsk4 = "(把).{1,5}(介绍一下)(吧|)";
 
-        if (tempText.matches(regexAsk) || tempText.matches(regexAsk2) || tempText.matches(regexAsk3)) {
+        if (tempText.matches(regexAsk) || tempText.matches(regexAsk2)
+                || tempText.matches(regexAsk3) || tempText.matches(regexAsk4)) {
             String replace = "(是)(谁|干什么的|干啥的|啥|什么|干啥用的|做什么用的)" +
                     "|(你|)(认识|知道)" +
-                    "|(吗)|.{0,2}(介绍一下)";
+                    "|(吗|把)|(给我|给|请|)(介绍一下)";
             tempText = tempText.replaceAll(replace, "");
             final String tempTextfinal = tempText;
             if (TextUtils.isEmpty(tempTextfinal)) {
