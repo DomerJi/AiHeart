@@ -31,7 +31,7 @@ import java.util.List;
 
 public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder> {
 
-    public static final int JUMP_TEXT_MAX_COUNT = 80;
+    public static final int JUMP_TEXT_MAX_COUNT = 50;
     private final Object visibleAvatar;
     private OnRecommendListener mRecommendListener;
     private onSendStateChangeListener mOnSendStateChangeListener;

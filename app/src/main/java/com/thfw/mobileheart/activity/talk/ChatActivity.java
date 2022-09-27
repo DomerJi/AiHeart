@@ -872,6 +872,18 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
                 return true;
             }
         }
+        // 询问百科
+        if (checkBaiKeAsk(tempText)) {
+            ChatEntity chatEntity = new ChatEntity();
+            chatEntity.type = ChatEntity.TYPE_TO;
+            chatEntity.talk = inputText;
+            sendData(chatEntity);
+            hideInput();
+            mEtContent.setText("");
+            LogUtil.i(TAG, "----------- speech BaiKeAsk -------------");
+            return true;
+        }
+
         // 天气查询
         String weatherId = checkWeather(tempText);
         if (!TextUtils.isEmpty(weatherId)) {
@@ -938,34 +950,81 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
             if (containsByWords(inputText)) {
                 return false;
             }
-            MusicApi.requestBaiKe(inputText, new MusicApi.BaiKeCallback() {
-                @Override
-                public void onFailure(int code, String msg) {
-                    LogUtil.e(TAG, "code = " + code + " ; msg = " + msg);
-                    sendData(inputText, false);
-                }
-
-                @Override
-                public void onResponse(BaikeModel baikeModel) {
-                    if (EmptyUtil.isEmpty(ChatActivity.this)) {
-                        return;
-                    }
-                    runOnUiThread(() -> {
-                        if (baikeModel.isDescNull()) {
-                            sendData(inputText, false);
-                        } else {
-                            DialogTalkModel talkModel = new DialogTalkModel();
-                            talkModel.setType(ChatEntity.TYPE_FROM_NORMAL);
-                            talkModel.setQuestion(baikeModel.getDesc());
-                            onTalkData(talkModel);
-                        }
-                    });
-                }
-            });
+            mMainHandler.postDelayed(() -> {
+                requestBaiKe(inputText);
+            }, 300);
             return true;
         }
         return false;
     }
+
+    /**
+     * 询问百科
+     *
+     * @param inputText
+     * @return
+     */
+    private boolean checkBaiKeAsk(String inputText) {
+        if (mScene != 1) {
+            return false;
+        }
+
+        String tempText = inputText;
+
+        String regexAsk = ".{1,5}(是)(谁|干什么的|干啥的|啥|什么东西|什么|干啥用的|做什么用的)";
+        String regexAsk2 = "(你|)(认识|知道).{1,5}(吗)";
+        String regexAsk3 = ".{0,2}(介绍一下).{1,5}";
+
+        if (tempText.matches(regexAsk) || tempText.matches(regexAsk2) || tempText.matches(regexAsk3)) {
+            String replace = "(是)(谁|干什么的|干啥的|啥|什么|干啥用的|做什么用的)" +
+                    "|(你|)(认识|知道)" +
+                    "|(吗)|.{0,2}(介绍一下)";
+            tempText = tempText.replaceAll(replace, "");
+            final String tempTextfinal = tempText;
+            if (TextUtils.isEmpty(tempTextfinal)) {
+                return false;
+            } else {
+                mMainHandler.postDelayed(() -> {
+                    requestBaiKe(tempTextfinal);
+                }, 300);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 请求百科
+     *
+     * @param inputText
+     */
+    private void requestBaiKe(String inputText) {
+        MusicApi.requestBaiKe(inputText, new MusicApi.BaiKeCallback() {
+            @Override
+            public void onFailure(int code, String msg) {
+                LogUtil.e(TAG, "code = " + code + " ; msg = " + msg);
+                sendData(inputText, false);
+            }
+
+            @Override
+            public void onResponse(BaikeModel baikeModel) {
+                if (EmptyUtil.isEmpty(ChatActivity.this)) {
+                    return;
+                }
+                runOnUiThread(() -> {
+                    if (baikeModel.isDescNull()) {
+                        sendData(inputText, false);
+                    } else {
+                        DialogTalkModel talkModel = new DialogTalkModel();
+                        talkModel.setType(ChatEntity.TYPE_FROM_NORMAL);
+                        talkModel.setQuestion(baikeModel.getDesc());
+                        onTalkData(talkModel);
+                    }
+                });
+            }
+        });
+    }
+
 
     private String checkWeather(String inputText) {
         if (mScene != 1) {
