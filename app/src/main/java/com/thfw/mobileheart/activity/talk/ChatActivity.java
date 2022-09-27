@@ -978,9 +978,9 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
 
         if (tempText.matches(regexAsk) || tempText.matches(regexAsk2)
                 || tempText.matches(regexAsk3) || tempText.matches(regexAsk4)) {
-            String replace = "(是)(谁|干什么的|干啥的|啥|什么|干啥用的|做什么用的)" +
+            String replace = "(是)(谁|干什么用的|干什么的|干啥的|啥|什么东西|什么|干啥用的|做什么用的)(呀|)" +
                     "|(你|)(认识|知道)" +
-                    "|(吗|把)|(给我|给|请|)(介绍一下)";
+                    "|(吗|把)|(给我|给|请|)(介绍一下)(吧|)";
             tempText = tempText.replaceAll(replace, "");
             final String tempTextfinal = tempText;
             if (TextUtils.isEmpty(tempTextfinal)) {
