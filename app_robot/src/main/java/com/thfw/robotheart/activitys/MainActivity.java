@@ -202,6 +202,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         initUmeng = false;
         initTts = false;
         initUrgedMsg = -1;
+        notifyWeatherTime = 0;
         AidlHelper.resetId();
 
         try {
@@ -352,6 +353,17 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             if (UserManager.getInstance().isLogin()) {
                 startActivity(new Intent(mContext, MeActivity.class));
             }
+        });
+
+        mClWeather.setOnClickListener(v -> {
+            if (weatherInfoModel == null) {
+                ToastUtil.show(R.string.net_no_connected);
+                return;
+            }
+            GlideUtil.load(mContext, R.mipmap.refresh_cloud, R.mipmap.refresh_cloud, mIvWeather);
+            mTvWeather.setText(weatherInfoModel.getSimpleDesc());
+            mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore_50));
+            WeatherActivity.startActivity(mContext, weatherInfoModel);
         });
 
         if (UserManager.getInstance().isTrueLogin()) {
@@ -828,12 +840,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                 mTvWeather.setText(weatherInfoModel.getSimpleDesc());
                 mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore));
                 SharePreferenceUtil.setString(KEY_WEATHER, weatherInfoModel.getSimpleDesc());
-                mClWeather.setOnClickListener(v -> {
-                    GlideUtil.load(mContext, R.mipmap.refresh_cloud, R.mipmap.refresh_cloud, mIvWeather);
-                    mTvWeather.setText(weatherInfoModel.getSimpleDesc());
-                    mTvWeather.setTextColor(mContext.getResources().getColor(R.color.colorRobotFore_50));
-                    WeatherActivity.startActivity(mContext, weatherInfoModel);
-                });
             } catch (Exception e) {
             }
         });
