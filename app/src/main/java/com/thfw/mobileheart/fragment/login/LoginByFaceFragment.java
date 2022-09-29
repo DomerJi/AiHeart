@@ -50,6 +50,9 @@ import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.fragment.MeFragment;
 import com.thfw.mobileheart.util.DialogFactory;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.user.login.UserManager;
 
 import org.opencv.android.CameraBridgeViewBase;
@@ -228,6 +231,18 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     public void initData() {
 
         mBtBegin.setOnClickListener(v -> {
+            if (!mCbProduct.isChecked()) {
+                LoginActivity.agreeDialog(getActivity(), new OnViewClickListener() {
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                        if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                            mCbProduct.setChecked(true);
+                            mBtBegin.performClick();
+                        }
+                    }
+                });
+                return;
+            }
             if (ContextCompat.checkSelfPermission(mContext, UIConfig.NEEDED_PERMISSION[0])
                     != PackageManager.PERMISSION_GRANTED) {
                 ToastUtil.show("没有开启相机权限");

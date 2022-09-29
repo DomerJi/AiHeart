@@ -1,5 +1,6 @@
 package com.thfw.mobileheart.fragment.login;
 
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -25,6 +26,9 @@ import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.widget.VerificationCodeView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -133,6 +137,18 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
         mCheckBox = (CheckBox) findViewById(R.id.cb_product);
 
         mBtLogin.setOnClickListener(v -> {
+            if (!mCheckBox.isChecked()) {
+                LoginActivity.agreeDialog(getActivity(), new OnViewClickListener() {
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                        if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                            mCheckBox.setChecked(true);
+                            mBtLogin.performClick();
+                        }
+                    }
+                });
+                return;
+            }
             LoadingDialog.show(getActivity(), "登录中");
             mPresenter.loginByMobile(phone, mVfcode.getVerificationCode().getText().toString());
         });

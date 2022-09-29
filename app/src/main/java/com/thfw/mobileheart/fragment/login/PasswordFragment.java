@@ -3,7 +3,9 @@ package com.thfw.mobileheart.fragment.login;
 import android.content.Intent;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,6 +31,9 @@ import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.utils.EditTextUtil;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -57,6 +62,7 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
     private String phone;
     private ImageView mIvSeePassword;
     private TextView mTvNoAccount;
+    private CheckBox mCbProduct;
 
     @Override
     public int getContentView() {
@@ -136,8 +142,21 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
         mTvProductUser = (TextView) findViewById(R.id.tv_product_user);
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
+        mCbProduct = (CheckBox) findViewById(R.id.cb_product);
 
         mBtLogin.setOnClickListener(v -> {
+            if (!mCbProduct.isChecked()) {
+                LoginActivity.agreeDialog(getActivity(), new OnViewClickListener() {
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                        if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                            mCbProduct.setChecked(true);
+                            mBtLogin.performClick();
+                        }
+                    }
+                });
+                return;
+            }
             phone = mEtMobile.getText().toString();
             String password = mEtPassword.getText().toString();
             LoadingDialog.show(getActivity(), "登录中");

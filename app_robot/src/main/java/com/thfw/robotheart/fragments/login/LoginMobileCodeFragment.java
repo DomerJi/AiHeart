@@ -21,8 +21,12 @@ import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.constants.AgreeOn;
+import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.widget.InputBoxSquareView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -78,6 +82,7 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
         mTvLoginByFace = (TextView) findViewById(R.id.tv_login_by_face);
         mTvLoginByMobile = (TextView) findViewById(R.id.tv_login_by_mobile);
         mTvLoginByMobile.setVisibility(View.GONE);
+        mCbProduct.setChecked(RobotUtil.isInstallRobot());
         Util.addUnderLine(mTvProductUser, mTvProductMsg, mTvProductAgree);
         initAgreeClick();
     }
@@ -142,6 +147,18 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
 
         mBtGetCode.setEnabled(false);
         mBtGetCode.setOnClickListener(v -> {
+            if (!mCbProduct.isChecked()) {
+                LoginActivity.agreeDialog(getActivity(), new OnViewClickListener() {
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                        if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                            mCbProduct.setChecked(true);
+                            mBtGetCode.performClick();
+                        }
+                    }
+                });
+                return;
+            }
             LoginActivity loginActivity = (LoginActivity) getActivity();
             phone = loginActivity.getFragmentLoader().get(LoginActivity.KEY_PHONE_NUMBER);
             LoadingDialog.show(getActivity(), "登录中");
@@ -154,6 +171,18 @@ public class LoginMobileCodeFragment extends RobotBaseFragment<LoginPresenter>
         });
 
         mTvLoginByFace.setOnClickListener(v -> {
+            if (!mCbProduct.isChecked()) {
+                LoginActivity.agreeDialog(getActivity(), new OnViewClickListener() {
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                        if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                            mCbProduct.setChecked(true);
+                            mTvLoginByFace.performClick();
+                        }
+                    }
+                });
+                return;
+            }
             LoginActivity loginActivity = (LoginActivity) getActivity();
             loginActivity.getFragmentLoader().load(LoginActivity.BY_FACE);
         });

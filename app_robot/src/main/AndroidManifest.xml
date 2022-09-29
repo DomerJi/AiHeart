@@ -192,6 +192,9 @@
             android:name=".activitys.test.TestIngActivity"
             android:screenOrientation="landscape" />
         <activity
+            android:name=".activitys.set.PrivacyPolicyActivity"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".activitys.test.TestDetailActivity"
             android:screenOrientation="landscape" />
         <activity

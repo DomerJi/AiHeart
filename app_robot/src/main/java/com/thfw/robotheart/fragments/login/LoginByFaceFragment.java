@@ -170,7 +170,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
         mTvFaceHint = (TextView) findViewById(R.id.tv_face_hint);
-
+        mCbProduct.setChecked(true);
         mJavaCamera2CircleView = (JavaCamera2CircleView) findViewById(R.id.javaCamera2CircleView);
         mIvBorder = (ImageView) findViewById(R.id.iv_border);
         mIvLine = (ImageView) findViewById(R.id.iv_line);

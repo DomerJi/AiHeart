@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.luck.picture.lib.tools.PictureFileUtils;
@@ -38,6 +39,7 @@ import com.thfw.robotheart.activitys.me.InfoActivity;
 import com.thfw.robotheart.activitys.me.MeActivity;
 import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.activitys.me.SelectOrganizationActivity;
+import com.thfw.robotheart.activitys.set.PrivacyPolicyActivity;
 import com.thfw.robotheart.activitys.set.SettingActivity;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.constants.UIConfig;
@@ -51,6 +53,7 @@ import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.voice.wakeup.WakeupHelper;
@@ -372,5 +375,29 @@ public class LoginActivity extends RobotBaseActivity {
             }
         });
         TtsHelper.getInstance().start(new TtsModel("请重新登录哦"), null);
+    }
+
+    public static void agreeDialog(FragmentActivity activity, OnViewClickListener onViewClickListener) {
+        DialogRobotFactory.createCustomDialog(activity, new DialogRobotFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                String html = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请阅读并同意  <font color='" + UIConfig.COLOR_RED + "'>《用户服务协议》《隐私保护政策》</font>";
+                mTvHint.setText(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY));
+                mTvHint.setOnClickListener(v -> {
+                    activity.startActivity(new Intent(activity, PrivacyPolicyActivity.class));
+                });
+                mTvTitle.setVisibility(View.GONE);
+                mTvLeft.setText("我再想想");
+                mTvRight.setText("同意");
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+                if (onViewClickListener != null) {
+                    onViewClickListener.onViewClick(viewHolder, view, tDialog);
+                }
+            }
+        });
     }
 }

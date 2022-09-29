@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.thfw.base.ContextApp;
@@ -32,6 +33,7 @@ import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.MainActivity;
 import com.thfw.mobileheart.activity.organ.AskForSelectActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
+import com.thfw.mobileheart.activity.settings.PrivacyPolicyActivity;
 import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.fragment.MeFragment;
 import com.thfw.mobileheart.fragment.login.LoginByFaceFragment;
@@ -42,6 +44,7 @@ import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FragmentLoader;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.models.User;
@@ -285,6 +288,30 @@ public class LoginActivity extends BaseActivity {
         if (!UserManager.getInstance().isLogin()) {
             MyApplication.kill();
         }
+    }
+
+    public static void agreeDialog(FragmentActivity activity, OnViewClickListener onViewClickListener) {
+        DialogFactory.createCustomDialog(activity, new DialogFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                String html = "请阅读并同意  <font color='" + UIConfig.COLOR_AGREE + "'>《用户服务协议》《隐私保护政策》</font>";
+                mTvHint.setText(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY));
+                mTvHint.setOnClickListener(v -> {
+                    activity.startActivity(new Intent(activity, PrivacyPolicyActivity.class));
+                });
+                mTvTitle.setVisibility(View.GONE);
+                mTvLeft.setText("我再想想");
+                mTvRight.setText("同意");
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+                if (onViewClickListener != null) {
+                    onViewClickListener.onViewClick(viewHolder, view, tDialog);
+                }
+            }
+        });
     }
 
 }

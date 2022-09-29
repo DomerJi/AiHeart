@@ -60,9 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="2dp"
             android:buttonTint="@color/white"
-            android:checked="true"
-            android:clickable="false"
-            android:focusable="false"
+            android:checked="false"
             android:scaleX="0.6"
             android:scaleY="0.6" />
 
@@ -104,9 +102,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="，"
-            android:visibility="gone"
             android:textColor="@color/white"
-            android:textSize="@dimen/textSize_product" />
+            android:textSize="@dimen/textSize_product"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_product_agree"
@@ -115,9 +113,9 @@
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
             android:text="《知情同意书》"
-            android:visibility="gone"
             android:textColor="@color/white"
-            android:textSize="@dimen/textSize_product" />
+            android:textSize="@dimen/textSize_product"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="wrap_content"
