@@ -40,7 +40,6 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.MyApplication;
-import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.adapter.BaseAdapter;
 import com.thfw.robotheart.adapter.DialogLikeAdapter;
@@ -55,8 +54,6 @@ import com.thfw.ui.utils.DragViewUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.InputBoxView;
-import com.thfw.user.login.LoginStatus;
-import com.thfw.user.login.UserManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -136,10 +133,7 @@ public class DialogRobotFactory {
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        if (UserManager.getInstance().isTrueLogin()) {
-                            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
-                            LoginActivity.startActivity(activity, LoginActivity.BY_PASSWORD);
-                        }
+                        onViewCallBack.onViewClick(null, null, null);
                     }
                 })
                 .setScreenWidthAspect(activity, 0.4f)
