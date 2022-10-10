@@ -61,9 +61,9 @@ import com.thfw.robotheart.activitys.login.SetPasswordActivity;
 import com.thfw.robotheart.adapter.BaseAdapter;
 import com.thfw.robotheart.adapter.DialogLikeAdapter;
 import com.thfw.robotheart.adapter.InfoLikeAdapter;
+import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.AreaUtil;
 import com.thfw.robotheart.util.DialogRobotFactory;
-import com.thfw.robotheart.util.GlideImageEngine;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
@@ -850,17 +850,17 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
         //参数很多，根据需要添加
         PictureSelector.create(this)
                 .openGallery(PictureMimeType.ofImage())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
-                .imageEngine(new GlideImageEngine())
+                .isUseCustomCamera(RobotUtil.isInstallRobot())
                 .maxSelectNum(1)// 最大图片选择数量
                 .minSelectNum(1) // 最小选择数量
                 .imageSpanCount(6)// 每行显示个数
                 .selectionMode(PictureConfig.SINGLE)// 多选 or 单选PictureConfig.MULTIPLE : PictureConfig.SINGLE
-                .isPreviewImage(true)// 是否可预览图片
+                .previewImage(true)// 是否可预览图片
                 .isCamera(true)// 是否显示拍照按钮
                 .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
-                .isCompress(true)// 是否压缩
+                .compress(true)// 是否压缩
                 .withAspectRatio(1, 1)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
-                .isEnableCrop(true)
+                .enableCrop(true)
                 .videoMaxSecond(15) // 过滤掉15秒以上的视频
                 .videoMinSecond(2) // 过滤掉2秒以下的视频
                 .rotateEnabled(true) // 裁剪是否可旋转图片

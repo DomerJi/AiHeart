@@ -7,7 +7,6 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -38,6 +37,7 @@ import com.luck.picture.lib.animators.SlideInBottomAnimationAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.dialog.PhotoItemSelectedDialog;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
@@ -48,7 +48,6 @@ import com.luck.picture.lib.listener.OnItemClickListener;
 import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.listener.OnRecyclerViewPreloadMoreListener;
-import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
@@ -1863,7 +1862,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 dismissDialog();
                 // Refresh the system library
                 if (!SdkVersionUtils.checkedAndroid_Q()) {
-                    if (!isBuildMsg() && config.isFallbackVersion3) {
+                    if (config.isFallbackVersion3) {
                         new PictureMediaScannerConnection(getContext(), config.cameraPath);
                     } else {
                         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
@@ -1881,16 +1880,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
         });
 
-    }
-
-    /**
-     * 第一个桌面机器人
-     *
-     * @return
-     */
-    private static boolean isBuildMsg() {
-        return "TH-ROBOT".equals(Build.PRODUCT) || "TH-RK3399".equals(Build.DEVICE)
-                || "RK3399-TH".equals(Build.MODEL) || "ROCKCHIP-TH".equals(Build.BRAND);
     }
 
     /**

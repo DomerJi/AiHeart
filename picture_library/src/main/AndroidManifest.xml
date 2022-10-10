@@ -19,6 +19,8 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+
+
         <activity
             android:name=".PictureSelectorActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />

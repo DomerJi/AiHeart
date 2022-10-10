@@ -130,16 +130,16 @@ public class MeWillHelpBackActivity extends BaseActivity {
         //参数很多，根据需要添加
         PictureSelector.create(this)
                 .openGallery(PictureMimeType.ofImage())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
-                .imageEngine(new GlideImageEngine())
+                .loadImageEngine(new GlideImageEngine())
                 .maxSelectNum(1)// 最大图片选择数量
                 .minSelectNum(1) // 最小选择数量
                 .imageSpanCount(4)// 每行显示个数
                 .selectionMode(PictureConfig.SINGLE)// 多选 or 单选PictureConfig.MULTIPLE : PictureConfig.SINGLE
-                .isPreviewImage(true)// 是否可预览图片
+                .previewImage(true)// 是否可预览图片
                 .isCamera(true)// 是否显示拍照按钮
                 .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
-                .isCompress(true)// 是否压缩
-                .isEnableCrop(true)
+                .compress(true)// 是否压缩
+                .enableCrop(true)
                 .videoMaxSecond(15) // 过滤掉15秒以上的视频
                 .videoMinSecond(2) // 过滤掉2秒以下的视频
                 .rotateEnabled(true) // 裁剪是否可旋转图片

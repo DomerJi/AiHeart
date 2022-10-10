@@ -28,6 +28,7 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
+import com.luck.picture.lib.tools.ScreenUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
@@ -68,7 +69,6 @@ import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.SpeedLinearLayoutManager;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
-import com.yalantis.ucrop.util.ScreenUtils;
 
 import org.jetbrains.annotations.NotNull;
 

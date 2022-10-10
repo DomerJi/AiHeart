@@ -8,8 +8,8 @@ android {
         applicationId "com.thfw.robotheart"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 232
-        versionName "2.6.2"
+        versionCode 233
+        versionName "2.6.3"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "buildTest"
@@ -149,7 +149,9 @@ dependencies {
     implementation project(':common-base')
     implementation project(':common-ui')
     implementation project(':push')
-    implementation project(':picture_library')
+//    implementation project(':picture_library')
+    // PictureSelector basic (Necessary)
+    implementation 'io.github.lucksiege:pictureselector:v2.5.1'
     implementation project(':calendarview')
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.navigation:navigation-fragment:2.3.0'

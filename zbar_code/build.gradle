@@ -38,5 +38,7 @@ dependencies {
     api 'com.github.bingoogolapple.BGAQRCode-Android:zbar:1.3.8'
     api 'com.github.bingoogolapple.BGAQRCode-Android:zxing:1.3.8'
 
-    implementation project(':picture_library')
+//    implementation project(':picture_library')
+
+    implementation 'io.github.lucksiege:pictureselector:v2.5.1'
 }

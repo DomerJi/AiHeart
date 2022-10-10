@@ -26,7 +26,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.tools.ToastUtils;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -176,17 +175,17 @@ public class ZbarScanActivity extends AppCompatActivity implements QRCodeView.De
         //参数很多，根据需要添加
         PictureSelector.create(this)
                 .openGallery(PictureMimeType.ofImage())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
-                .imageEngine(new GlideImageEngine())
+                .loadImageEngine(new GlideImageEngine())
                 .maxSelectNum(1)// 最大图片选择数量
                 .minSelectNum(1) // 最小选择数量
                 .imageSpanCount(4)// 每行显示个数
                 .selectionMode(PictureConfig.SINGLE)// 多选 or 单选PictureConfig.MULTIPLE : PictureConfig.SINGLE
-                .isPreviewImage(true)// 是否可预览图片
+                .previewImage(true)// 是否可预览图片
                 .isCamera(false)// 是否显示拍照按钮
                 .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
-                .isCompress(false)// 是否压缩
+                .compress(false)// 是否压缩
                 .withAspectRatio(1, 1)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
-                .isEnableCrop(false)
+                .enableCrop(false)
                 .videoMaxSecond(15) // 过滤掉15秒以上的视频
                 .videoMinSecond(2) // 过滤掉2秒以下的视频
                 .rotateEnabled(true) // 裁剪是否可旋转图片

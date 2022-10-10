@@ -1,6 +1,5 @@
 include ':app'
 include ':app_robot'
-include ':picture_library'
 include ':calendarview'
 include ':zbar_code'
 include ':common-base'

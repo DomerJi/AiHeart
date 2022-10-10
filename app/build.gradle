@@ -84,7 +84,8 @@ dependencies {
 
     implementation project(':common-base')
     implementation project(':common-ui')
-    implementation project(':picture_library')
+//    implementation project(':picture_library')
+    implementation 'io.github.lucksiege:pictureselector:v2.5.1'
     implementation project(':calendarview')
     implementation project(':push')
     implementation project(':zbar_code')
