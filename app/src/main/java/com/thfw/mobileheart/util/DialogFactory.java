@@ -38,7 +38,6 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.R;
-import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.adapter.BaseAdapter;
 import com.thfw.mobileheart.adapter.DialogLikeAdapter;
 import com.thfw.mobileheart.constants.AnimFileName;
@@ -50,8 +49,6 @@ import com.thfw.ui.utils.DragViewUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.InputBoxView;
-import com.thfw.user.login.LoginStatus;
-import com.thfw.user.login.UserManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -130,10 +127,7 @@ public class DialogFactory {
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        if (UserManager.getInstance().isTrueLogin()) {
-                            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
-                            LoginActivity.startActivity(activity, LoginActivity.BY_PASSWORD);
-                        }
+                        onViewCallBack.onViewClick(null, null, null);
                     }
                 })
                 .setScreenWidthAspect(activity, WIDTH_ASPECT)

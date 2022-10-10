@@ -131,6 +131,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private boolean trueResume;
     private long exitTime = 0;
     private UrgedMsgModel mUrgedMsgModel;
+    private TDialog mServerStopDialog;
 
     public static void setShowLoginAnim(boolean showLoginAnim) {
         MainActivity.showLoginAnim = showLoginAnim;
@@ -208,7 +209,10 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     if (!UserManager.getInstance().isTrueLogin()) {
                         return;
                     }
-                    DialogFactory.createServerStopDialog(MainActivity.this, new DialogFactory.OnViewCallBack() {
+                    if (mServerStopDialog != null) {
+                        return;
+                    }
+                    mServerStopDialog = DialogFactory.createServerStopDialog(MainActivity.this, new DialogFactory.OnViewCallBack() {
                         @Override
                         public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
                             mTvHint.setText(msg);
@@ -216,6 +220,10 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
 
                         @Override
                         public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                            if (tDialog != null) {
+                                tDialog.dismiss();
+                            }
+                            mServerStopDialog = null;
                             if (!UserManager.getInstance().isTrueLogin()) {
                                 return;
                             }
@@ -225,7 +233,6 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                             } else {
                                 MyApplication.goAppHome((Activity) mContext);
                             }
-                            tDialog.dismiss();
                         }
                     });
                     break;

@@ -44,7 +44,7 @@ public class SerialManager {
     private boolean actionNoFinished;
     private float[] gravity = new float[3];
     // 加速度偏差值
-    private static final int SENSOR_FLOAT_MIN = 1;
+    private static final int SENSOR_FLOAT_MIN = 2;
     private static final int SENSOR_FLOAT_MAX = 10 - SENSOR_FLOAT_MIN;
     private static SerialManager instance;
     private boolean upElectricity;

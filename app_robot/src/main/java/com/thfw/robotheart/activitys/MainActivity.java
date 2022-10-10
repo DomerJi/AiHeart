@@ -183,6 +183,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private static long notifyWeatherTime;
     // 10分钟后自动更新
     private static final long MIN_WEATHER_TIME = HourUtil.LEN_10_MINUTE;
+    private TDialog mServerStopDialog;
 
     /**
      * 登录动画是否显示
@@ -251,7 +252,10 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                     if (!UserManager.getInstance().isTrueLogin()) {
                         return;
                     }
-                    DialogRobotFactory.createServerStopDialog(MainActivity.this, new DialogRobotFactory.OnViewCallBack() {
+                    if (mServerStopDialog != null) {
+                        return;
+                    }
+                    mServerStopDialog = DialogRobotFactory.createServerStopDialog(MainActivity.this, new DialogRobotFactory.OnViewCallBack() {
                         @Override
                         public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
                             mTvHint.setText(msg);
@@ -259,6 +263,11 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
                         @Override
                         public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                            if (tDialog != null) {
+                                tDialog.dismiss();
+                            }
+                            mServerStopDialog = null;
+
                             if (!UserManager.getInstance().isTrueLogin()) {
                                 return;
                             }
@@ -268,7 +277,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                             } else {
                                 MyApplication.goAppHome((Activity) mContext);
                             }
-                            tDialog.dismiss();
                         }
                     });
                     break;

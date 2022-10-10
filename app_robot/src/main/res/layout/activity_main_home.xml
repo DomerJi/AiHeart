@@ -117,6 +117,7 @@
                 android:padding="2dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/msg_dot_size"
+                android:visibility="gone"
                 tools:text="99+"
                 tools:visibility="visible" />
 

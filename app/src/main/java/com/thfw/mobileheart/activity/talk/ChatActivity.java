@@ -984,9 +984,14 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
             String replace = "(是)(谁|干什么用的|干什么的|干啥的|啥|什么东西|什么|干啥用的|做什么用的)(呀|)" +
                     "|(你|)(认识|知道)" +
                     "|(吗|把)|(给我|给|请|)(介绍一下)(吧|)";
-            tempText = tempText.replaceAll(replace, "");
-            final String tempTextfinal = tempText;
-            if (TextUtils.isEmpty(tempTextfinal)) {
+            String replaceAfter = tempText.replaceAll(replace, "");
+
+            final String tempTextfinal = replaceAfter;
+            if (TextUtils.isEmpty(tempTextfinal)
+                    // 你是谁 他是谁 *是谁
+                    || (tempTextfinal.length() == 1 && tempText.contains("是谁"))
+                    // 他们 我们 这个 那个
+                    || (tempTextfinal.length() <= 2 && tempTextfinal.matches(".{0,2}(你|我|她|他|它|这|那).{0,2}"))) {
                 return false;
             } else {
                 mMainHandler.postDelayed(() -> {

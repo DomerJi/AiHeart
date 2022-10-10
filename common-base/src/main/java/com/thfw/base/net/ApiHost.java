@@ -36,7 +36,7 @@ public class ApiHost {
     }
 
     public static String getNo8080Host() {
-        return getHost().replace(":8080", "");
+        return "https://psyhealth.work/";
     }
 
     public static String getTestH5Host(Object id) {
