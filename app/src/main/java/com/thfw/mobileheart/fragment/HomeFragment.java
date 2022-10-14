@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -26,7 +27,9 @@ import com.thfw.base.presenter.MobilePresenter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HandlerUtil;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
+import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.SearchActivity;
@@ -38,6 +41,7 @@ import com.thfw.mobileheart.activity.talk.ChatActivity;
 import com.thfw.mobileheart.activity.test.TestBeginActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.HomeAdapter;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.MoodLivelyHelper;
 import com.thfw.ui.widget.LinearTopLayout;
 import com.thfw.ui.widget.MySearchView;
@@ -108,6 +112,19 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
             }
         });
         mRefreshLayout.setHeaderHeight(75);
+
+        LhXkHelper.setSpeechResult(new LhXkHelper.SpeechResult() {
+            @Override
+            public void onResult(String result) {
+                if (LogUtil.isLogEnabled()) {
+                    Toast.makeText(MyApplication.getApp(), result, Toast.LENGTH_SHORT).show();
+                }
+                switch (result) {
+                    case "看一看":
+                        break;
+                }
+            }
+        });
     }
 
     private void searchViewScroll() {

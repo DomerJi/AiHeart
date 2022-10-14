@@ -104,6 +104,7 @@ dependencies {
 //    api 'org.bytedeco:opencv:4.5.3-1.5.6:android-arm'
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation files('libs\\robotservice.jar')
 
 //   todo test
 //    implementation project(':export_ym')

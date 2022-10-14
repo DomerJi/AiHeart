@@ -54,6 +54,7 @@ import com.thfw.mobileheart.constants.AnimFileName;
 import com.thfw.mobileheart.fragment.HomeFragment;
 import com.thfw.mobileheart.fragment.MeFragment;
 import com.thfw.mobileheart.fragment.MessageFragment;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.push.MyPreferences;
 import com.thfw.mobileheart.push.helper.PushHelper;
 import com.thfw.mobileheart.push.tester.UPushAlias;
@@ -681,6 +682,13 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         if (isMeResumed2()) {
             onMeResume();
         }
+        LhXkHelper.onSpeechStart();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LhXkHelper.onSpeechStop();
     }
 
     private void initSelectedList

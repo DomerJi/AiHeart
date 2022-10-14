@@ -231,6 +231,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- 猎户星空 - 自启动 -->
+            <intent-filter>
+                <action android:name="action.orionstar.default.app" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activity.login.LoginActivity"
