@@ -25,7 +25,7 @@ public class LinearTopLayout extends LinearLayout {
 
     public LinearTopLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !DeviceUtil.isLhXk_CM_GB03D()) {
             setPadding(0, Util.getStatusBarHeight(context), 0, 0);
         }
     }

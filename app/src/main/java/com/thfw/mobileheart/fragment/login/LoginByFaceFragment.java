@@ -53,6 +53,7 @@ import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnViewClickListener;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.user.login.UserManager;
 
 import org.opencv.android.CameraBridgeViewBase;
@@ -156,6 +157,8 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     private TextView mTvPageTitle;
     private ObjectAnimator lineAnimation;
     private boolean mGoFinish;
+    // 是否是 猎豹星空
+    private boolean isLhXkCmGb03d;
 
     @Override
     public int getContentView() {
@@ -169,7 +172,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
 
     @Override
     public void initView() {
-
+        isLhXkCmGb03d = DeviceUtil.isLhXk_CM_GB03D();
         inputFace = UserManager.getInstance().isLogin();
         mClBottom = (LinearLayout) findViewById(R.id.cl_bottom);
         mRivWechat = (RoundedImageView) findViewById(R.id.riv_wechat);
@@ -493,12 +496,14 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         if (rotateMat == null) {
             rotateMat = Imgproc.getRotationMatrix2D(new Point(rgba.cols() / 2, rgba.rows() / 2), 90, 1);
         }
+
         Mat dstRgba = new Mat();
         Imgproc.warpAffine(rgba, dstRgba, rotateMat, dstRgba.size());
         // 水平翻转
         Mat flipMap = new Mat();
-        Core.flip(dstRgba, flipMap, 1);
+        Core.flip(dstRgba, flipMap, isLhXkCmGb03d ? 0 : 1);
         mRgba = flipMap;
+
 
         if (beginTime == 0) {
             beginTime = System.currentTimeMillis();
@@ -524,7 +529,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         Imgproc.warpAffine(gray, dstGray, rotateMat, dstGray.size());
         // 水平翻转
         Mat flipGrayMap = new Mat();
-        Core.flip(dstGray, flipGrayMap, 1);
+        Core.flip(dstGray, flipGrayMap, isLhXkCmGb03d ? 0 : 1);
         mGray = flipGrayMap;
 
         if (mAbsoluteFaceSize == 0) {
