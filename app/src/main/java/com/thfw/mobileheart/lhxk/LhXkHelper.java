@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ainirobot.coreservice.client.ApiListener;
 import com.ainirobot.coreservice.client.Definition;
@@ -19,9 +20,9 @@ import com.ainirobot.coreservice.client.speech.SkillCallback;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.HourUtil;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.MyApplication;
-import com.thfw.mobileheart.activity.MainActivity;
 import com.thfw.ui.widget.DeviceUtil;
 
 import java.util.ArrayList;
@@ -49,8 +50,11 @@ public class LhXkHelper {
     {
         if (DeviceUtil.isLhXk_CM_GB03D()) {
             mSpeechToActionMap = new HashMap();
-            putAction(MainActivity.class.getSimpleName().hashCode(), new SpeechToAction());
         }
+    }
+
+    public static void putAction(Class classes, SpeechToAction speechToAction) {
+        putAction(classes.hashCode(), speechToAction);
     }
 
     public static void putAction(int code, SpeechToAction speechToAction) {
@@ -62,10 +66,41 @@ public class LhXkHelper {
         mSpeechToActionMap.put(code, actions);
     }
 
+    public static void removeAction(Class classes) {
+        removeAction(classes.hashCode());
+    }
+
+    public static void removeAction(int code) {
+        mSpeechToActionMap.remove(code);
+    }
+
     public static class SpeechToAction {
         public String text;
+        public int type;
         public int code;
         public Intent intent;
+        public Runnable runnable;
+
+        public SpeechToAction(String text, Runnable runnable) {
+            this.text = text;
+            this.runnable = runnable;
+        }
+
+        public boolean run() {
+            if (runnable != null) {
+                try {
+                    runnable.run();
+                    LogUtil.i(TAG, "SpeechToAction -> text = " + text);
+                    return true;
+                } catch (Exception e) {
+                    LogUtil.i(TAG, "SpeechToAction -> Exception e " + e.getMessage() + " text = " + text);
+                    return false;
+                }
+            } else {
+                LogUtil.i(TAG, "SpeechToAction -> runnable is null text = " + text);
+                return false;
+            }
+        }
     }
 
     public static void disconnectApi() {
@@ -284,6 +319,9 @@ public class LhXkHelper {
                     public void run() {
                         if (!TextUtils.isEmpty(mSpeechParResult)) {
                             String result = mSpeechParResult;
+                            if (LogUtil.isLogEnabled()) {
+                                Toast.makeText(MyApplication.getApp(), result, Toast.LENGTH_SHORT).show();
+                            }
                             // 语音触发取消跟随
                             if (result.length() < 8 && result.contains("别看我了")) {
                                 // 取消跟随语音

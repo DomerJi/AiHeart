@@ -18,13 +18,14 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.task.MeTaskActivity;
 import com.thfw.mobileheart.util.DialogFactory;
-import com.thfw.ui.R;
 import com.thfw.ui.base.IBaseActivity;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.UrgeUtil;
+import com.thfw.ui.widget.DeviceUtil;
 
 /**
  * 通用基础Activity
@@ -33,6 +34,8 @@ public abstract class BaseActivity<T extends IPresenter> extends IBaseActivity<T
 
     // ================= 打电话权限 =======================//
     public static final int REQUEST_CALL_PERMISSION = 10111; //拨号请求码
+    public static final int VOICE_STATIC = 0;
+    public static final int VOICE_CHANGED = 1;
     private String phoneCall;
 
     public boolean isMainThread() {
@@ -57,6 +60,10 @@ public abstract class BaseActivity<T extends IPresenter> extends IBaseActivity<T
             }
             showUrgedDialog();
         });
+
+        if (DeviceUtil.isLhXk_CM_GB03D()) {
+            initLocalVoice(VOICE_STATIC);
+        }
     }
 
     @Override
@@ -66,6 +73,17 @@ public abstract class BaseActivity<T extends IPresenter> extends IBaseActivity<T
         if (DialogFactory.getUrgedDialog() != null) {
             DialogFactory.getUrgedDialog().dismiss();
         }
+        if (DeviceUtil.isLhXk_CM_GB03D()) {
+            clearLocalVoice(VOICE_STATIC);
+        }
+    }
+
+    protected void initLocalVoice(int type) {
+
+    }
+
+    protected void clearLocalVoice(int type) {
+
     }
 
     /**

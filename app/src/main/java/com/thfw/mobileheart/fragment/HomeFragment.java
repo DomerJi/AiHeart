@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -27,18 +26,23 @@ import com.thfw.base.presenter.MobilePresenter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HandlerUtil;
-import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
-import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.SearchActivity;
+import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
+import com.thfw.mobileheart.activity.exercise.ExerciseActivity;
 import com.thfw.mobileheart.activity.exercise.ExerciseDetailActivity;
 import com.thfw.mobileheart.activity.read.BookDetailActivity;
 import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
+import com.thfw.mobileheart.activity.read.ReadHomeActivity;
+import com.thfw.mobileheart.activity.read.StudyHomeActivity;
 import com.thfw.mobileheart.activity.talk.ChatActivity;
+import com.thfw.mobileheart.activity.talk.ThemeListActivity;
 import com.thfw.mobileheart.activity.test.TestBeginActivity;
+import com.thfw.mobileheart.activity.test.TestingActivity;
+import com.thfw.mobileheart.activity.video.VideoHomeActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.HomeAdapter;
 import com.thfw.mobileheart.lhxk.LhXkHelper;
@@ -113,18 +117,35 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
         });
         mRefreshLayout.setHeaderHeight(75);
 
-        LhXkHelper.setSpeechResult(new LhXkHelper.SpeechResult() {
-            @Override
-            public void onResult(String result) {
-                if (LogUtil.isLogEnabled()) {
-                    Toast.makeText(MyApplication.getApp(), result, Toast.LENGTH_SHORT).show();
-                }
-                switch (result) {
-                    case "看一看":
-                        break;
-                }
-            }
-        });
+
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("主题对话|聊一聊",
+                () -> ThemeListActivity.startActivity(mContext)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("倾诉吐槽",
+                () -> ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI))));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("测一测",
+                () -> TestingActivity.startActivity(mContext)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("练一练",
+                () -> ExerciseActivity.startActivity(mContext)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("听一听",
+                () -> AudioHomeActivity.startActivity(mContext)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("看一看",
+                () -> VideoHomeActivity.startActivity(mContext)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("读一读",
+                () -> ReadHomeActivity.startActivity(mContext)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("学一学",
+                () -> StudyHomeActivity.startActivity(mContext)));
+    }
+
+    @Override
+    protected void clearLocalVoice(int type) {
+        super.clearLocalVoice(type);
+        LhXkHelper.removeAction(HomeFragment.class);
     }
 
     private void searchViewScroll() {
