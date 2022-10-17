@@ -31,10 +31,10 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.activity.MainActivity;
-import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.push.MyPreferences;
 import com.thfw.mobileheart.push.helper.PushHelper;
 import com.thfw.mobileheart.util.ActivityLifeCycle;
+import com.thfw.mobileheart.util.AppLifeHelper;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.widget.DeviceUtil;
 import com.umeng.commonsdk.UMConfigure;
@@ -169,9 +169,7 @@ public class MyApplication extends MultiDexApplication {
         TDialog.init(this);
         LogUtil.setLogEnabled(LogUtil.isLogSpEnable());
         initAtThread();
-        if (DeviceUtil.isLhXk_CM_GB03D()) {
-            LhXkHelper.init();
-        }
+
     }
 
     private void initSpeech() {
@@ -195,6 +193,9 @@ public class MyApplication extends MultiDexApplication {
         PushHelper.preInit(this);
         boolean isMainProcess = UMUtils.isMainProgress(this);
         if (isMainProcess) {
+            if (DeviceUtil.isLhXk_CM_GB03D()) {
+                AppLifeHelper.initActivityLifecycle(this);
+            }
             //启动优化：建议在子线程中执行初始化
             new Thread(new Runnable() {
                 @Override

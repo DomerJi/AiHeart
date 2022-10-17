@@ -10,6 +10,7 @@ import com.ainirobot.coreservice.client.Definition;
 import com.ainirobot.coreservice.client.RobotApi;
 import com.ainirobot.coreservice.client.StatusListener;
 import com.ainirobot.coreservice.client.listener.ActionListener;
+import com.ainirobot.coreservice.client.listener.CommandListener;
 import com.ainirobot.coreservice.client.listener.Person;
 import com.ainirobot.coreservice.client.person.PersonApi;
 import com.ainirobot.coreservice.client.person.PersonListener;
@@ -17,6 +18,7 @@ import com.ainirobot.coreservice.client.speech.SkillApi;
 import com.ainirobot.coreservice.client.speech.SkillCallback;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
+import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.activity.MainActivity;
@@ -36,9 +38,13 @@ public class LhXkHelper {
     private static final String TAG = "LhXkHelper";
     private static SkillApi skillApi;
     private static String mSpeechParResult;
+    private static int mReqId = -1;
+    private static int mPersonId = -1;
 
     private static HashMap<Integer, List<SpeechToAction>> mSpeechToActionMap;
     private static PersonListener listener;
+    private static int cancelPersonId;
+    private static long cancelPersonIdTime;
 
     {
         if (DeviceUtil.isLhXk_CM_GB03D()) {
@@ -60,6 +66,10 @@ public class LhXkHelper {
         public String text;
         public int code;
         public Intent intent;
+    }
+
+    public static void disconnectApi() {
+        RobotApi.getInstance().disconnectApi();
     }
 
     public static void init() {
@@ -129,8 +139,26 @@ public class LhXkHelper {
                 // 获取机器人视野内1m范围内所有的人员信息
                 List<Person> personList = PersonApi.getInstance().getAllPersons(1);
                 if (!EmptyUtil.isEmpty(personList)) {
-                    Person person = personList.get(0);
-                    startFocusFollow(-1, person.getId());
+                    if (personList.size() > 1) {
+                        double tempDistance = personList.get(0).getDistance();
+                        mPersonId = personList.get(0).getId();
+                        for (Person p : personList) {
+                            // 别看我了。十秒内 不进行此人脸的跟随。
+                            if (cancelPersonId == p.getId() && System.currentTimeMillis() - cancelPersonIdTime
+                                    < HourUtil.LEN_SECOND10) {
+                                continue;
+                            }
+                            if (p.getDistance() < tempDistance) {
+                                tempDistance = p.getDistance();
+                                mPersonId = p.getId();
+                            }
+                        }
+                    } else {
+                        mPersonId = personList.get(0).getId();
+                    }
+                    startFocusFollow(-1, mPersonId);
+                } else {
+                    mPersonId = -1;
                 }
             }
         };
@@ -139,11 +167,28 @@ public class LhXkHelper {
     }
 
     public static void startFocusFollow(int reqId, int personId) {
-        startFocusFollow(reqId, personId, 2000, 2);
+        startFocusFollow(reqId, personId, 1000, 1.5f);
     }
 
-    private static void startFocusFollow(int reqId, int faceId, long lostTimeout, long maxDistance) {
+    private static void startFocusFollow(int reqId, int faceId, long lostTimeout, float maxDistance) {
 
+        if (faceId != -1) {
+            Person person = PersonApi.getInstance().getFocusPerson();
+            if (person != null) {
+                return;
+            }
+        } else {
+            Person person = PersonApi.getInstance().getFocusPerson();
+            if (person != null) {
+                RobotApi.getInstance().stopFocusFollow(person.getId());
+
+            }
+            if (mReqId != -1) {
+                RobotApi.getInstance().stopFocusFollow(mReqId);
+            }
+        }
+        mReqId = reqId;
+        mPersonId = faceId;
         RobotApi.getInstance().startFocusFollow(reqId, faceId, lostTimeout, maxDistance, new ActionListener() {
             @Override
             public void onStatusUpdate(int status, String data) {
@@ -239,6 +284,47 @@ public class LhXkHelper {
                     public void run() {
                         if (!TextUtils.isEmpty(mSpeechParResult)) {
                             String result = mSpeechParResult;
+                            // 语音触发取消跟随
+                            if (result.length() < 8 && result.contains("别看我了")) {
+                                // 取消跟随语音
+                                if (mReqId != -1) {
+                                    RobotApi.getInstance().stopFocusFollow(mReqId);
+                                    RobotApi.getInstance().resetHead(mReqId, new CommandListener() {
+
+                                    });
+                                    // 取消跟随人脸。 如果有其他人脸则跟随其他人脸没有其他人脸 则不跟随
+                                } else if (mPersonId != -1) {
+                                    cancelPersonId = mPersonId;
+                                    cancelPersonIdTime = System.currentTimeMillis();
+
+                                    RobotApi.getInstance().stopFocusFollow(mPersonId);
+
+                                    List<Person> personList = PersonApi.getInstance().getAllPersons(1);
+                                    if (!EmptyUtil.isEmpty(personList)) {
+
+                                        double tempDistance = personList.get(0).getDistance();
+                                        int tempPersonId = personList.get(0).getId();
+                                        for (Person p : personList) {
+                                            if (p.getId() != mPersonId && p.getDistance() < tempDistance) {
+                                                tempDistance = p.getDistance();
+                                                tempPersonId = p.getId();
+                                            }
+                                        }
+                                        if (tempPersonId != mPersonId) {
+                                            mPersonId = tempPersonId;
+                                            startFocusFollow(-1, tempPersonId);
+                                        } else {
+                                            RobotApi.getInstance().resetHead(mPersonId, new CommandListener() {
+
+                                            });
+                                        }
+                                    } else {
+                                        RobotApi.getInstance().resetHead(mPersonId, new CommandListener() {
+
+                                        });
+                                    }
+                                }
+                            }
                             mSpeechParResult = null;
                             if (ToastUtil.isMainThread()) {
                                 if (speechResult != null) {
