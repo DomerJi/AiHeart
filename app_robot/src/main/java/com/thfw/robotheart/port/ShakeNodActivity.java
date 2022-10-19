@@ -275,6 +275,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
         });
 
         mBtUpElectricity.setOnClickListener(v -> {
+            SerialManager.getInstance().release();
             SerialManager.getInstance().upElectricityNow();
         });
 

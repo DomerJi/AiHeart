@@ -507,6 +507,8 @@ public class SerialManager {
         if (currentTime - queryMvTime > HourUtil.LEN_SECOND) {
             queryMvTime = currentTime;
             send(Order.DOWN_STATE, 1);
+        } else {
+            queryMvTime = currentTime;
         }
 
     }
