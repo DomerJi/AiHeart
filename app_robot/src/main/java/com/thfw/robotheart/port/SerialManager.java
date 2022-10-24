@@ -44,8 +44,8 @@ public class SerialManager {
     private boolean actionNoFinished;
     private float[] gravity = new float[3];
     // 加速度偏差值
-    private static final int SENSOR_FLOAT_MIN = 2;
-    private static final int SENSOR_FLOAT_MAX = 10 - SENSOR_FLOAT_MIN;
+    private static final float SENSOR_FLOAT_MIN = 2.6f;
+    private static final float SENSOR_FLOAT_MAX = 10 - SENSOR_FLOAT_MIN;
     private static SerialManager instance;
     private boolean upElectricity;
     private static final int DELAY_TIME = 140;
@@ -747,7 +747,7 @@ public class SerialManager {
      */
     public boolean isNoAction() {
         return horizontalFlag == 1 && horizontalFlagContinueTime != -1
-                && System.currentTimeMillis() - horizontalFlagContinueTime > 800;
+                && System.currentTimeMillis() - horizontalFlagContinueTime > HourUtil.LEN_SECOND;
     }
 
     public boolean isNoHorizontal(double x, double y, double z) {

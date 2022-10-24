@@ -151,11 +151,17 @@ public class ShakeNodActivity extends RobotBaseActivity {
         });
         mBtShakeAngleAdd.setOnClickListener(v -> {
             int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_SHAKE_ANGLE, ActionParams.SHAKE_ANGLE);
+            if (angleTemp >= 50) {
+                return;
+            }
             mTvShakeAngle.setText(String.valueOf(angleTemp + 1));
             SharePreferenceUtil.setInt(ActionParams.KEY_SHAKE_ANGLE, angleTemp + 1);
         });
         mBtShakeDel.setOnClickListener(v -> {
             int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_SHAKE_ANGLE, ActionParams.SHAKE_ANGLE);
+            if (angleTemp <= 5) {
+                return;
+            }
             mTvShakeAngle.setText(String.valueOf(angleTemp - 1));
             SharePreferenceUtil.setInt(ActionParams.KEY_SHAKE_ANGLE, angleTemp - 1);
         });
@@ -203,22 +209,34 @@ public class ShakeNodActivity extends RobotBaseActivity {
 
         mBtNodAngleAdd.setOnClickListener(v -> {
             int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_UP_ANGLE, ActionParams.NOD_UP_ANGLE);
+            if (angleTemp >= 36) {
+                return;
+            }
             mTvNodAngle.setText(String.valueOf(angleTemp + 1));
             SharePreferenceUtil.setInt(ActionParams.KEY_NOD_UP_ANGLE, angleTemp + 1);
         });
         mBtNodAngleDel.setOnClickListener(v -> {
             int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_UP_ANGLE, ActionParams.NOD_UP_ANGLE);
+            if (angleTemp <= 5) {
+                return;
+            }
             mTvNodAngle.setText(String.valueOf(angleTemp - 1));
             SharePreferenceUtil.setInt(ActionParams.KEY_NOD_UP_ANGLE, angleTemp - 1);
         });
-
+        // 上
         mBtNodDownAngleAdd.setOnClickListener(v -> {
             int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_DOWN_ANGLE, ActionParams.NOD_DOWN_ANGLE);
+            if (angleTemp >= 28) {
+                return;
+            }
             mTvNodDownAngle.setText(String.valueOf(angleTemp + 1));
             SharePreferenceUtil.setInt(ActionParams.KEY_NOD_DOWN_ANGLE, angleTemp + 1);
         });
         mBtNodDownAngleDel.setOnClickListener(v -> {
             int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_DOWN_ANGLE, ActionParams.NOD_DOWN_ANGLE);
+            if (angleTemp <= 5) {
+                return;
+            }
             mTvNodDownAngle.setText(String.valueOf(angleTemp - 1));
             SharePreferenceUtil.setInt(ActionParams.KEY_NOD_DOWN_ANGLE, angleTemp - 1);
         });
