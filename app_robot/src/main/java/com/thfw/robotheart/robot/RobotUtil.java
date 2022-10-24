@@ -360,7 +360,8 @@ public class RobotUtil {
             return Dance.EMPTY;
         }
         if (text.contains("跳舞") || text.contains("跳个舞")
-                || text.contains("动一动") || text.contains("跳支舞")) {
+                || text.contains("动一动") || text.contains("跳支舞")
+                || (text.contains("舞") && text.contains("跳"))) {
             return new Dance(Dance.ALL, "我来跳个舞吧");
         } else if (text.contains("摇头") || text.contains("摇个头")) {
             return new Dance(Dance.SHAKE, "我来摇个头吧");

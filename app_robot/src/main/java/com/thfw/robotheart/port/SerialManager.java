@@ -211,26 +211,36 @@ public class SerialManager {
      * 全部归零
      */
     public void allToZero() {
+        if (isNoAction() || actionNoFinished) {
+            return;
+        }
+
         queryServoState(new ServoStateListener() {
             @Override
             public void onState(int[] angle) {
                 ActionParams actionParams = new ActionParams(ActionParams.ControlOrder.NOD);
                 if (actionParams.canUse()) {
                     if (Math.abs(angle[0] - actionParams.getCenterPoint()) > 30) {
-                        send(ActionParams.ControlOrder.NOD, actionParams.getCenterPoint(),
-                                Math.abs(angle[0] - actionParams.getCenterPoint()) * 30);
+                        HandlerUtil.getMainHandler().postDelayed(() -> {
+                            send(ActionParams.ControlOrder.NOD, actionParams.getCenterPoint(),
+                                    Math.abs(angle[0] - actionParams.getCenterPoint()) * 30);
+                        }, 100);
                     }
                 }
                 int shakeZero = SPHelper.getInt(ConstantUtil.Key.SHAKE_ZERO);
                 if (shakeZero != ConstantUtil.DEFAULT_INT) {
                     if (Math.abs(angle[1] - shakeZero) > 30) {
-                        send(ActionParams.ControlOrder.SHAKE, shakeZero, Math.abs(angle[0] - shakeZero) * 30);
+                        HandlerUtil.getMainHandler().postDelayed(() -> {
+                            send(ActionParams.ControlOrder.SHAKE, shakeZero, Math.abs(angle[0] - shakeZero) * 30);
+                        }, 600);
                     }
                 }
                 int rotateZero = SPHelper.getInt(ConstantUtil.Key.ROTATE_ZERO);
                 if (rotateZero != ConstantUtil.DEFAULT_INT) {
                     if (Math.abs(angle[2] - rotateZero) > 90) {
-                        send(ActionParams.ControlOrder.ROTATE, rotateZero, Math.abs(angle[2] - rotateZero) * 30);
+                        HandlerUtil.getMainHandler().postDelayed(() -> {
+                            send(ActionParams.ControlOrder.ROTATE, rotateZero, Math.abs(angle[2] - rotateZero) * 30);
+                        }, 1100);
                     }
                 }
             }
@@ -293,10 +303,10 @@ public class SerialManager {
         SerialManager.getInstance().startAction(ActionParams.getNormalShake());
         HandlerUtil.getMainHandler().postDelayed(() -> {
             SerialManager.getInstance().startAction(ActionParams.getNormalNod());
-        }, 100);
+        }, 150);
         HandlerUtil.getMainHandler().postDelayed(() -> {
             SerialManager.getInstance().startAction(ActionParams.getNormalRotate());
-        }, 200);
+        }, 300);
     }
 
     public void startAction(ActionParams actionParams) {
@@ -737,7 +747,7 @@ public class SerialManager {
      */
     public boolean isNoAction() {
         return horizontalFlag == 1 && horizontalFlagContinueTime != -1
-                && System.currentTimeMillis() - horizontalFlagContinueTime > 500;
+                && System.currentTimeMillis() - horizontalFlagContinueTime > 800;
     }
 
     public boolean isNoHorizontal(double x, double y, double z) {

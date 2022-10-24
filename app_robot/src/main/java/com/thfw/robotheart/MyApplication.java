@@ -62,6 +62,7 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 public class MyApplication extends MultiDexApplication {
 
     private static MyApplication app;
+    public static long mStartTime;
     private static float lv;
 
     // static 代码段可以防止内存泄露
@@ -122,6 +123,7 @@ public class MyApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         app = this;
+        mStartTime = System.currentTimeMillis();
         ContextApp.init(this);
         SharePreferenceUtil.init(this);
         ContextApp.setDeviceType(ContextApp.DeviceType.ROBOT);

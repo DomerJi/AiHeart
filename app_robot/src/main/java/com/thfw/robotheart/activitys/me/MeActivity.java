@@ -121,9 +121,9 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
                     @Override
                     public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
                         if (view.getId() == R.id.tv_right) {
-                            TtsHelper.getInstance().start(new TtsModel("拜拜，下次见哦"), null);
                             UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
                             finish();
+                            TtsHelper.getInstance().start(new TtsModel("拜拜，下次见哦"), null);
                         }
                         tDialog.dismiss();
                     }

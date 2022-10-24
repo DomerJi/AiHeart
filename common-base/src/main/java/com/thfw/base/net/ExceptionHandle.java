@@ -40,7 +40,7 @@ public class ExceptionHandle {
                 case SERVICE_UNAVAILABLE:
                 default:
                     //ex.code = httpException.code();
-                    ex.message = "网络错误,请检查网络链接";
+                    ex.message = "网络错误,请检查网络连接";
                     break;
             }
             return ex;
@@ -65,7 +65,7 @@ public class ExceptionHandle {
             return ex;
         } else if (e instanceof UnknownHostException) {
             ex = new ResponeThrowable(e, ERROR.NETWORD_ERROR);
-            ex.message = "网络错误,请检查网络链接";
+            ex.message = "网络错误,请检查网络连接";
             return ex;
         } else {
             ex = new ResponeThrowable(e, ERROR.UNKNOWN);

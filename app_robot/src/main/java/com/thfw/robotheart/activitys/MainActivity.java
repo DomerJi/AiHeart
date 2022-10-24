@@ -381,9 +381,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             // 未登录进入登录页面
             LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
         }
-
-        SerialManager.getInstance().queryCharge();
-        SerialManager.getInstance().allToZero();
+        if (RobotUtil.isInstallRobot()) {
+            SerialManager.getInstance().queryCharge();
+        }
 
         String cacheWeather = SharePreferenceUtil.getString(KEY_WEATHER, "");
         if (!TextUtils.isEmpty(cacheWeather)) {
@@ -399,7 +399,11 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-
+        if (RobotUtil.isInstallRobot()) {
+            HandlerUtil.getMainHandler().postDelayed(() -> {
+                SerialManager.getInstance().allToZero();
+            }, 2000);
+        }
         if (!UserManager.getInstance().isTrueLogin()) {
             // 未登录进入登录页面
             LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
@@ -908,6 +912,11 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         SerialManager.getInstance().release();
         MsgCountManager.getInstance().removeOnCountChangeListener(this);
         resetInit();
+        if (RobotUtil.isInstallRobot()) {
+            if (Math.abs(System.currentTimeMillis() - MyApplication.mStartTime) < HourUtil.LEN_SECOND) {
+                UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+            }
+        }
         super.onDestroy();
 
     }

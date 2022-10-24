@@ -308,7 +308,7 @@ public class SetNetFragment extends RobotBaseFragment {
                         @Override
                         public void success() {
                             wifiAdapter.notifyDataSetChanged();
-                            ToastUtil.show("成功链接至-" + scanResult.SSID);
+                            ToastUtil.show("成功连接至-" + scanResult.SSID);
                         }
 
                         @Override

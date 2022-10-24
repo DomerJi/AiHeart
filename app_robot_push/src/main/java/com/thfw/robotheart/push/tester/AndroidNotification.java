@@ -129,7 +129,7 @@ abstract class AndroidNotification extends BaseNotification {
         setPredefinedKeyValue("largeIcon", largeIcon);
     }
 
-    //通知栏大图标的URL链接。该字段的优先级大于largeIcon。该字段要求以http或者https开头。
+    //通知栏大图标的URL连接。该字段的优先级大于largeIcon。该字段要求以http或者https开头。
     public void setImg(String img) throws Exception {
         setPredefinedKeyValue("img", img);
     }

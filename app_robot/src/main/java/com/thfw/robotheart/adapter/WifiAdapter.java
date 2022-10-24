@@ -212,13 +212,13 @@ public class WifiAdapter extends BaseAdapter<ScanResult, WifiAdapter.WifiHolder>
                         @Override
                         public void success() {
                             Util.removeWifiBySsid(mWifiManager, scanResult.SSID);
-                            Toast.makeText(mContext, "成功断开链接", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "成功断开连接", Toast.LENGTH_SHORT).show();
                             notifyDataSetChanged();
                         }
 
                         @Override
                         public void failed(@NonNull DisconnectionErrorCode errorCode) {
-                            Toast.makeText(mContext, "断开链接失败: " + errorCode.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "断开连接失败: " + errorCode.toString(), Toast.LENGTH_SHORT).show();
                             notifyDataSetChanged();
                         }
                     });

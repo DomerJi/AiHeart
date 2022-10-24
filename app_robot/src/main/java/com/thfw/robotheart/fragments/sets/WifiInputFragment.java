@@ -169,7 +169,7 @@ public class WifiInputFragment extends RobotBaseFragment {
                         if (completeInputListener != null) {
                             completeInputListener.onComplete();
                         }
-                        ToastUtil.show("成功链接至-" + scanResult.SSID);
+                        ToastUtil.show("成功连接至-" + scanResult.SSID);
                         successListener.onConnectionResult(null);
                     }
 
@@ -177,7 +177,7 @@ public class WifiInputFragment extends RobotBaseFragment {
                     public void failed(@NonNull ConnectionErrorCode errorCode) {
                         connectUi(false);
                         Util.removeWifiBySsid((WifiManager) mContext.getSystemService(Context.WIFI_SERVICE), scanResult.SSID);
-                        ToastUtil.show("链接失败");
+                        ToastUtil.show("连接失败");
                         successListener.onConnectionResult(null);
                     }
                 }).start();

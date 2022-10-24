@@ -80,7 +80,7 @@ public class NetworkUtil {
              EVDO_A : 3G 1.8mbps - 3.1mbps 属于3G过渡，3.5G
              1xRTT : 2G CDMA2000 1xRTT (RTT - 无线电传输技术) 144kbps 2G的过渡,
              HSDPA : 3.5G 高速下行分组接入 3.5G WCDMA High Speed Downlink Packet Access 14.4mbps
-             HSUPA : 3.5G High Speed Uplink Packet Access 高速上行链路分组接入 1.4 - 5.8 mbps
+             HSUPA : 3.5G High Speed Uplink Packet Access 高速上行连路分组接入 1.4 - 5.8 mbps
              HSPA : 3G (分HSDPA,HSUPA) High Speed Packet Access
              IDEN : 2G Integrated Dispatch Enhanced Networks 集成数字增强型网络 （属于2G，来自维基百科）
              EVDO_B : 3G EV-DO Rev.B 14.7Mbps 下行 3.5G

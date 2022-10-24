@@ -40,7 +40,7 @@ public class PushMsgModel implements IModel {
      * 对应type字段
      * <p>
      * msg_type为7的时候
-     * turn_page里面直接放H5的链接
+     * turn_page里面直接放H5的连接
      */
     @SerializedName("turn_page")
     private String turnPage;
