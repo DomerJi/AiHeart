@@ -46,6 +46,8 @@ import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.Dormant;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.voice.wakeup.WakeupHelper;
+import com.thfw.user.login.LoginStatus;
+import com.thfw.user.login.UserManager;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.commonsdk.utils.UMUtils;
 
@@ -171,6 +173,7 @@ public class MyApplication extends MultiDexApplication {
 
 //        RobotUtil.longPressOffBtn();
         if (RobotUtil.isInstallRobot()) {
+            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
             WakeupHelper.initCae(app);
             BuglyUtil.init("382fc62522");
             RobotUtil.hookWebView();
