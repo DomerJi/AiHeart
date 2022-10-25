@@ -41,7 +41,6 @@ public class SerialManager {
     private MySensorEventListener listener;
     private Sensor accelerometerSensor;
     private Sensor gyroscopeSensor;
-    private boolean actionNoFinished;
     private float[] gravity = new float[3];
     // 加速度偏差值
     private static final float SENSOR_FLOAT_MIN = 2.6f;
@@ -55,13 +54,14 @@ public class SerialManager {
     private ArrayList<RobotTouchListener> touchListeners = new ArrayList<>();
     private LinkedList<String> mWaitOrder = new LinkedList<>();
     private HashMap<Integer, Long> mRunningActionParams = new HashMap<>();
+    private HashMap<Integer, Boolean> mRunningActionNoFinish = new HashMap<>();
 
     private static final int ELECTRICITY_MAX = 8000;
     private static final int ELECTRICITY_MIN = 7000;
     private int electricity = -1;
     private int percent = 100;
     private int charge = -1;
-    private int horizontalFlag = -1;
+    private int mNoHorizontalFlag = -1;
     private long horizontalFlagContinueTime = -1;
     private static long lastSensorTime;
     private static long queryMvTime;
@@ -80,7 +80,7 @@ public class SerialManager {
             electricity = -1;
             percent = 100;
             charge = -1;
-            horizontalFlag = -1;
+            mNoHorizontalFlag = -1;
             try {
                 Log.d(TAG, "open =====================1111111111111111111");
                 int openStatus = open(SerialPortUtil.PORT_NAME, SerialPortUtil.IBAUDTATE);
@@ -211,37 +211,34 @@ public class SerialManager {
      * 全部归零
      */
     public void allToZero() {
-        if (isNoAction() || actionNoFinished) {
+        if (isNoAction() || isActionNoFinished()) {
             return;
         }
 
-        queryServoState(new ServoStateListener() {
-            @Override
-            public void onState(int[] angle) {
-                ActionParams actionParams = new ActionParams(ActionParams.ControlOrder.NOD);
-                if (actionParams.canUse()) {
-                    if (Math.abs(angle[0] - actionParams.getCenterPoint()) > 30) {
-                        HandlerUtil.getMainHandler().postDelayed(() -> {
-                            send(ActionParams.ControlOrder.NOD, actionParams.getCenterPoint(),
-                                    Math.abs(angle[0] - actionParams.getCenterPoint()) * 30);
-                        }, 100);
-                    }
+        queryServoState((angle) -> {
+            ActionParams actionParams = new ActionParams(ActionParams.ControlOrder.NOD);
+            if (actionParams.canUse()) {
+                if (Math.abs(angle[0] - actionParams.getCenterPoint()) > 30) {
+                    HandlerUtil.getMainHandler().postDelayed(() -> {
+                        send(ActionParams.ControlOrder.NOD, actionParams.getCenterPoint(),
+                                Math.abs(angle[0] - actionParams.getCenterPoint()) * 30);
+                    }, 100);
                 }
-                int shakeZero = SPHelper.getInt(ConstantUtil.Key.SHAKE_ZERO);
-                if (shakeZero != ConstantUtil.DEFAULT_INT) {
-                    if (Math.abs(angle[1] - shakeZero) > 30) {
-                        HandlerUtil.getMainHandler().postDelayed(() -> {
-                            send(ActionParams.ControlOrder.SHAKE, shakeZero, Math.abs(angle[0] - shakeZero) * 30);
-                        }, 600);
-                    }
+            }
+            int shakeZero = SPHelper.getInt(ConstantUtil.Key.SHAKE_ZERO);
+            if (shakeZero != ConstantUtil.DEFAULT_INT) {
+                if (Math.abs(angle[1] - shakeZero) > 30) {
+                    HandlerUtil.getMainHandler().postDelayed(() -> {
+                        send(ActionParams.ControlOrder.SHAKE, shakeZero, Math.abs(angle[0] - shakeZero) * 30);
+                    }, 600);
                 }
-                int rotateZero = SPHelper.getInt(ConstantUtil.Key.ROTATE_ZERO);
-                if (rotateZero != ConstantUtil.DEFAULT_INT) {
-                    if (Math.abs(angle[2] - rotateZero) > 90) {
-                        HandlerUtil.getMainHandler().postDelayed(() -> {
-                            send(ActionParams.ControlOrder.ROTATE, rotateZero, Math.abs(angle[2] - rotateZero) * 30);
-                        }, 1100);
-                    }
+            }
+            int rotateZero = SPHelper.getInt(ConstantUtil.Key.ROTATE_ZERO);
+            if (rotateZero != ConstantUtil.DEFAULT_INT) {
+                if (Math.abs(angle[2] - rotateZero) > 90) {
+                    HandlerUtil.getMainHandler().postDelayed(() -> {
+                        send(ActionParams.ControlOrder.ROTATE, rotateZero, Math.abs(angle[2] - rotateZero) * 30);
+                    }, 1100);
                 }
             }
         });
@@ -309,6 +306,15 @@ public class SerialManager {
         }, 300);
     }
 
+    /**
+     * 是否有动作正在进行中
+     *
+     * @return
+     */
+    private boolean isActionNoFinished() {
+        return mRunningActionNoFinish.containsValue(true);
+    }
+
     public void startAction(ActionParams actionParams) {
         if (actionParams == null) {
             LogUtil.e(TAG, "actionParams -> null");
@@ -319,7 +325,7 @@ public class SerialManager {
         } else if (!isOpen()) {
             LogUtil.i(TAG, "串口未开启");
             return;
-        } else if (isNoAction() && !actionNoFinished) {
+        } else if (isNoAction() && !isActionNoFinished()) {
             LogUtil.i(TAG, "请放平机器人后再试");
             ToastUtil.show("请放平机器人后再试");
             return;
@@ -345,13 +351,25 @@ public class SerialManager {
          */
         if (controlOrder == ActionParams.ControlOrder.ROTATE) {
             if (!actionParams.nextRotate()) {
+                mRunningActionNoFinish.put(controlOrder, false);
+                allToZero();
                 LogUtil.i(TAG, "actionParams.nextRotate() false 01");
                 return;
             }
-            actionNoFinished = false;
+            // 异常后确保回到零位
+            final Runnable rotateCancel = () -> {
+                mRunningActionNoFinish.put(controlOrder, false);
+                allToZero();
+            };
+            // 延时后没有反馈则 认为异常 终止此次任务
+            HandlerUtil.getMainHandler().postDelayed(rotateCancel, 1500);
             queryServoState((angle) -> {
-                actionNoFinished = true;
+                HandlerUtil.getMainHandler().removeCallbacks(rotateCancel);
+                mRunningActionNoFinish.put(controlOrder, true);
                 int[] params = new int[]{controlOrder, angle[2] + actionParams.getAngle(), actionParams.getTimeMs()};
+                if (actionParams.isFirst()) {
+                    SPHelper.setNewRotateZero(angle[2]);
+                }
                 actionParams.nextRotateIndex();
                 LogUtil.d(TAG, "转身：params -> " + Arrays.toString(params));
                 SerialManager.getInstance().sendNow(order, params);
@@ -368,13 +386,14 @@ public class SerialManager {
                     });
                     actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + (DELAY_TIME / 2));
                 } else {
-                    actionNoFinished = false;
+                    mRunningActionNoFinish.put(controlOrder, false);
+                    allToZero();
                     LogUtil.i(TAG, "actionParams.nextRotate() false 02");
                 }
             });
 
         } else {
-            actionNoFinished = true;
+            mRunningActionNoFinish.put(controlOrder, true);
             int centerPoint = actionParams.getCenterPoint();
             int left = actionParams.getLeft();
             int right = actionParams.getRight();
@@ -408,7 +427,8 @@ public class SerialManager {
                 });
                 actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + DELAY_TIME);
             } else {
-                actionNoFinished = false;
+                mRunningActionNoFinish.put(controlOrder, false);
+                allToZero();
                 LogUtil.i(TAG, "actionParams.getRunCount() false 02");
             }
         }
@@ -709,13 +729,13 @@ public class SerialManager {
             return;
         }
         gravity = event.values;
-        final int horizontal = isNoHorizontal(event.values[0], event.values[1], event.values[2]) ? 1 : 0;
+        final int mNoHorizontal = isNoHorizontal(event.values[0], event.values[1], event.values[2]) ? 1 : 0;
         currentTime = System.currentTimeMillis();
-        if (horizontalFlag != horizontal) {
-            horizontalFlag = horizontal;
+        if (mNoHorizontalFlag != mNoHorizontal) {
+            mNoHorizontalFlag = mNoHorizontal;
             horizontalFlagContinueTime = currentTime;
         }
-        if (horizontalFlag == 0) {
+        if (mNoHorizontalFlag == 0) {
             lastSensorTime = 0;
         } else if (isNoAction() && System.currentTimeMillis() - lastSensorTime > HourUtil.LEN_MINUTE30) {
             if (RobotUtil.isInstallRobot()) {
@@ -723,7 +743,7 @@ public class SerialManager {
                 HandlerUtil.getMainHandler().postDelayed(() -> {
                     if (isNoAction()) {
                         lastSensorTime = System.currentTimeMillis();
-                        onSensor(horizontal, true);
+                        onSensor(mNoHorizontal, true);
                     } else {
                         lastSensorTime = lastSensorTime - HourUtil.LEN_MINUTE30;
                     }
@@ -732,7 +752,7 @@ public class SerialManager {
         }
 
         if (LogUtil.isLogEnabled()) {
-            onSensor(horizontal, false);
+            onSensor(mNoHorizontal, false);
         }
     }
 
@@ -746,10 +766,18 @@ public class SerialManager {
      * @return
      */
     public boolean isNoAction() {
-        return horizontalFlag == 1 && horizontalFlagContinueTime != -1
+        return mNoHorizontalFlag == 1 && horizontalFlagContinueTime != -1
                 && System.currentTimeMillis() - horizontalFlagContinueTime > HourUtil.LEN_SECOND;
     }
 
+    /**
+     * 是否不在水平 状态
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public boolean isNoHorizontal(double x, double y, double z) {
         return Math.abs(x) > SENSOR_FLOAT_MIN
                 || Math.abs(y) < SENSOR_FLOAT_MAX

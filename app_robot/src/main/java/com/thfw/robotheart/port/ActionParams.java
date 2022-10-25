@@ -109,6 +109,16 @@ public class ActionParams {
         return angles[anglesIndex] * 30;
     }
 
+    /**
+     * 一组动作的第一次
+     * 可用于记录 动作之前的位置
+     *
+     * @return
+     */
+    public boolean isFirst() {
+        return anglesIndex == 0;
+    }
+
     public void nextRotateIndex() {
         anglesIndex++;
     }

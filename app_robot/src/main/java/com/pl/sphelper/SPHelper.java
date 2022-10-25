@@ -19,6 +19,7 @@ import static com.pl.sphelper.ConstantUtil.CONTENT_URI;
 import static com.pl.sphelper.ConstantUtil.CURSOR_COLUMN_NAME;
 import static com.pl.sphelper.ConstantUtil.CURSOR_COLUMN_TYPE;
 import static com.pl.sphelper.ConstantUtil.CURSOR_COLUMN_VALUE;
+import static com.pl.sphelper.ConstantUtil.DEFAULT_INT;
 import static com.pl.sphelper.ConstantUtil.NULL_STRING;
 import static com.pl.sphelper.ConstantUtil.SEPARATOR;
 import static com.pl.sphelper.ConstantUtil.TYPE_BOOLEAN;
@@ -36,6 +37,12 @@ public class SPHelper {
     public static final String COMMA_REPLACEMENT = "__COMMA__";
 
     public static Context context;
+    public static int newRotateZero = DEFAULT_INT;
+
+
+    public static void setNewRotateZero(int newRotateZero) {
+        SPHelper.newRotateZero = newRotateZero;
+    }
 
     public static void checkContext() {
         if (context == null) {
@@ -129,6 +136,9 @@ public class SPHelper {
     }
 
     public static int getInt(String name) {
+        if (ConstantUtil.Key.ROTATE_ZERO.equals(name) && newRotateZero != DEFAULT_INT) {
+            return newRotateZero;
+        }
         return getInt(name, ConstantUtil.DEFAULT_INT);
     }
 
