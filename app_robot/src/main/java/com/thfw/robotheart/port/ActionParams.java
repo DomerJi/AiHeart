@@ -23,7 +23,7 @@ public class ActionParams {
     // 转身
     public static final int ROTATE_ANGLE = 39;
     // 摇头
-    public static final int SHAKE_ANGLE = 36;
+    public static final int SHAKE_ANGLE = 40;
     // 点头 向下 40 - 10offset
     public static final int NOD_UP_ANGLE = 40;
     // 点头 向上 38
