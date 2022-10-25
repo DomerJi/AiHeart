@@ -16,13 +16,18 @@ import java.util.Arrays;
  * Describe:机器人动作 参数配置
  */
 public class ActionParams {
-
-    public static final int ONE_ANGLE_TIME = 30;
-    public static final int ONE_ANGLE_TIME2 = 20;
-    public static final int ROTATE_ANGLE = 30;
+    // 转身
+    public static final int ONE_ANGLE_TIME = 20;
+    // 摇头 和 点头
+    public static final int ONE_ANGLE_TIME2 = 15;
+    // 转身
+    public static final int ROTATE_ANGLE = 39;
+    // 摇头
     public static final int SHAKE_ANGLE = 36;
-    public static final int NOD_UP_ANGLE = 26;
-    public static final int NOD_DOWN_ANGLE = 14;
+    // 点头 向下 40 - 10offset
+    public static final int NOD_UP_ANGLE = 40;
+    // 点头 向上 38
+    public static final int NOD_DOWN_ANGLE = 38;
 
     public static final String KEY_ROTATE_ANGLE = "key.rotate.angle";
     public static final String KEY_SHAKE_ANGLE = "key.shake.angle";
@@ -37,7 +42,7 @@ public class ActionParams {
     public int getOneAngleTime() {
         switch (controlOrder) {
             case ControlOrder.ROTATE:
-                return oneRotateTimeMs;
+                return SharePreferenceUtil.getInt(KEY_ROTATE_TIME, ONE_ANGLE_TIME);
             case ControlOrder.SHAKE:
                 return SharePreferenceUtil.getInt(KEY_SHAKE_TIME, ONE_ANGLE_TIME2);
             case ControlOrder.NOD:
@@ -82,7 +87,7 @@ public class ActionParams {
     }
 
     // =========================  旋转相关【开始】  ==============================
-    // 时间旋转 一共360度 没 一度 需要时间
+    // 时间旋转 一共360度 每一度所需要的时间
     private int oneRotateTimeMs = ONE_ANGLE_TIME;
     private int[] angles;
     private int anglesIndex = 0;
@@ -239,7 +244,7 @@ public class ActionParams {
     public int getTimeMs() {
         switch (controlOrder) {
             case ControlOrder.ROTATE:
-                return Math.abs(angles[anglesIndex]) * oneRotateTimeMs;
+                return Math.abs(angles[anglesIndex]) * getOneAngleTime();
         }
 
         return timeMs;

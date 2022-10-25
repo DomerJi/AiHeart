@@ -206,7 +206,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
             mLlNodTime.setVisibility(oldVisible ? View.GONE : View.VISIBLE);
             return true;
         });
-
+        // 下
         mBtNodAngleAdd.setOnClickListener(v -> {
             int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_UP_ANGLE, ActionParams.NOD_UP_ANGLE);
             if (angleTemp >= 36) {
