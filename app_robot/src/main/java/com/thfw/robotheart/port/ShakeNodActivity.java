@@ -209,7 +209,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
         // 下
         mBtNodAngleAdd.setOnClickListener(v -> {
             int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_UP_ANGLE, ActionParams.NOD_UP_ANGLE);
-            if (angleTemp >= 36) {
+            if (angleTemp >= 40) {
                 return;
             }
             mTvNodAngle.setText(String.valueOf(angleTemp + 1));
@@ -217,7 +217,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
         });
         mBtNodAngleDel.setOnClickListener(v -> {
             int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_UP_ANGLE, ActionParams.NOD_UP_ANGLE);
-            if (angleTemp <= 5) {
+            if (angleTemp <= 10) {
                 return;
             }
             mTvNodAngle.setText(String.valueOf(angleTemp - 1));
@@ -226,7 +226,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
         // 上
         mBtNodDownAngleAdd.setOnClickListener(v -> {
             int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_DOWN_ANGLE, ActionParams.NOD_DOWN_ANGLE);
-            if (angleTemp >= 28) {
+            if (angleTemp >= 40) {
                 return;
             }
             mTvNodDownAngle.setText(String.valueOf(angleTemp + 1));
@@ -234,7 +234,7 @@ public class ShakeNodActivity extends RobotBaseActivity {
         });
         mBtNodDownAngleDel.setOnClickListener(v -> {
             int angleTemp = SharePreferenceUtil.getInt(ActionParams.KEY_NOD_DOWN_ANGLE, ActionParams.NOD_DOWN_ANGLE);
-            if (angleTemp <= 5) {
+            if (angleTemp <= 10) {
                 return;
             }
             mTvNodDownAngle.setText(String.valueOf(angleTemp - 1));
