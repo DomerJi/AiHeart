@@ -29,15 +29,26 @@ public class ActionParams {
     // 点头 向上 38
     public static final int NOD_DOWN_ANGLE = 38;
 
-    public static final String KEY_ROTATE_ANGLE = "key.rotate.angle";
-    public static final String KEY_SHAKE_ANGLE = "key.shake.angle";
+    public static final String KEY_ROTATE_ANGLE = "key.rotate.angle1";
+    public static final String KEY_SHAKE_ANGLE = "key.shake.angle1";
     // 低头
-    public static final String KEY_NOD_UP_ANGLE = "key.nod.up.angle";
+    public static final String KEY_NOD_UP_ANGLE = "key.nod.up.angle1";
     // 抬头
-    public static final String KEY_NOD_DOWN_ANGLE = "key.nod.down.angle";
-    public static final String KEY_ROTATE_TIME = "key.rotate.time";
-    public static final String KEY_SHAKE_TIME = "key.shake.time";
-    public static final String KEY_NOD_TIME = "key.nod.time";
+    public static final String KEY_NOD_DOWN_ANGLE = "key.nod.down.angle1";
+    public static final String KEY_ROTATE_TIME = "key.rotate.time1";
+    public static final String KEY_SHAKE_TIME = "key.shake.time1";
+    public static final String KEY_NOD_TIME = "key.nod.time1";
+    // 是否强制执行动作
+    private boolean force = false;
+
+    public ActionParams setForce(boolean force) {
+        this.force = force;
+        return this;
+    }
+
+    public boolean isForce() {
+        return force;
+    }
 
     public int getOneAngleTime() {
         switch (controlOrder) {

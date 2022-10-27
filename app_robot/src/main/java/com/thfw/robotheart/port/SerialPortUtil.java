@@ -84,8 +84,8 @@ public class SerialPortUtil {
         bb.order(ByteOrder.LITTLE_ENDIAN);
         Order mOrder = Order.getOrderMap().get(order);
         if (mOrder == null) {
-            LogUtil.d(TAG, "不支持order = " + order);
-            return "不支持该指令";
+            Log.d(TAG, "不支持该指令 order = " + order);
+            return "";
         }
         if (order == Order.UP_STATE) {
             int msgType = arrayBytes[0];
@@ -146,7 +146,7 @@ public class SerialPortUtil {
         int checkBitInt = count % 256;
         Log.d(TAG, "checkBitInt -> " + checkBitInt);
         stringBuffer.append(SerialDataUtils.Int2Hex(checkBitInt));
-        Log.d(TAG, "send final -> " + stringBuffer.toString());
+        Log.d(TAG, "getSendData -> " + stringBuffer.toString());
         return stringBuffer.toString();
     }
 
@@ -244,17 +244,14 @@ public class SerialPortUtil {
         }
         int[] intContents = new int[mOrder.paramsLens.length];
         int from = 0;
-        try {
-            for (int i = 0; i < mOrder.paramsLens.length; i++) {
-                byte[] byteNumbers = Arrays.copyOf(Arrays.copyOfRange(newBytes, from, from + mOrder.paramsLens[i]), 4);
-                intContents[i] = ByteConvert.Bytes2Int_LE(byteNumbers);
-                from += mOrder.paramsLens[i];
-            }
-            // 处理数据
-            onHandleOrder(order, intContents);
-        } catch (Exception e) {
-            LogUtil.e(TAG, e.getMessage() + " - " + data);
+
+        for (int i = 0; i < mOrder.paramsLens.length; i++) {
+            byte[] byteNumbers = Arrays.copyOf(Arrays.copyOfRange(newBytes, from, from + mOrder.paramsLens[i]), 4);
+            intContents[i] = ByteConvert.Bytes2Int_LE(byteNumbers);
+            from += mOrder.paramsLens[i];
         }
+        // 处理数据
+        onHandleOrder(order, intContents);
     }
 
     public static void setParseDataListener(ParseDataListener parseDataListener) {

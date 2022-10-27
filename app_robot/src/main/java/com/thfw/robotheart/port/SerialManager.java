@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.pl.sphelper.ConstantUtil;
@@ -203,43 +204,53 @@ public class SerialManager {
         if (instance.isOpen()) {
             instance.upElectricity = true;
             // 先上电
-            instance.sendNow(Order.DOWN_ELECTRICITY_STATE, 1);
+            instance.send(Order.DOWN_ELECTRICITY_STATE, 1);
         }
     }
 
     /**
-     * 全部归零
+     * 舵机归零
      */
-    public void allToZero() {
+    public void allToZero(int type) {
         if (isNoAction() || isActionNoFinished()) {
             return;
         }
 
         queryServoState((angle) -> {
-            ActionParams actionParams = new ActionParams(ActionParams.ControlOrder.NOD);
-            if (actionParams.canUse()) {
-                if (Math.abs(angle[0] - actionParams.getCenterPoint()) > 30) {
-                    HandlerUtil.getMainHandler().postDelayed(() -> {
-                        send(ActionParams.ControlOrder.NOD, actionParams.getCenterPoint(),
-                                Math.abs(angle[0] - actionParams.getCenterPoint()) * 30);
-                    }, 100);
-                }
-            }
-            int shakeZero = SPHelper.getInt(ConstantUtil.Key.SHAKE_ZERO);
-            if (shakeZero != ConstantUtil.DEFAULT_INT) {
-                if (Math.abs(angle[1] - shakeZero) > 30) {
-                    HandlerUtil.getMainHandler().postDelayed(() -> {
-                        send(ActionParams.ControlOrder.SHAKE, shakeZero, Math.abs(angle[0] - shakeZero) * 30);
-                    }, 600);
-                }
-            }
-            int rotateZero = SPHelper.getInt(ConstantUtil.Key.ROTATE_ZERO);
-            if (rotateZero != ConstantUtil.DEFAULT_INT) {
-                if (Math.abs(angle[2] - rotateZero) > 90) {
-                    HandlerUtil.getMainHandler().postDelayed(() -> {
-                        send(ActionParams.ControlOrder.ROTATE, rotateZero, Math.abs(angle[2] - rotateZero) * 30);
-                    }, 1100);
-                }
+            switch (type) {
+                case ActionParams.ControlOrder.NOD:
+                    ActionParams actionParams = new ActionParams(ActionParams.ControlOrder.NOD);
+                    if (actionParams.canUse()) {
+                        if (Math.abs(angle[0] - actionParams.getCenterPoint()) > 30) {
+                            startAction(actionParams
+                                    .setForce(true)
+                                    .setAngles(actionParams.getCenterPoint() - angle[0])
+                                    .setOneRotateTimeMs(40));
+                        }
+                    }
+                    break;
+                case ActionParams.ControlOrder.SHAKE:
+                    int shakeZero = SPHelper.getInt(ConstantUtil.Key.SHAKE_ZERO);
+                    if (shakeZero != ConstantUtil.DEFAULT_INT) {
+                        if (Math.abs(angle[1] - shakeZero) > 30) {
+                            startAction(new ActionParams(ActionParams.ControlOrder.SHAKE)
+                                    .setForce(true)
+                                    .setAngles(shakeZero - angle[1])
+                                    .setOneRotateTimeMs(40));
+                        }
+                    }
+                    break;
+                case ActionParams.ControlOrder.ROTATE:
+                    int rotateZero = SPHelper.getInt(ConstantUtil.Key.ROTATE_ZERO);
+                    if (rotateZero != ConstantUtil.DEFAULT_INT) {
+                        if (Math.abs(angle[2] - rotateZero) > 90) {
+                            startAction(new ActionParams(ActionParams.ControlOrder.ROTATE)
+                                    .setForce(true)
+                                    .setAngles(rotateZero - angle[2])
+                                    .setOneRotateTimeMs(40));
+                        }
+                    }
+                    break;
             }
         });
 
@@ -298,12 +309,10 @@ public class SerialManager {
 
     public void startAllAction() {
         SerialManager.getInstance().startAction(ActionParams.getNormalShake());
-        HandlerUtil.getMainHandler().postDelayed(() -> {
-            SerialManager.getInstance().startAction(ActionParams.getNormalNod());
-        }, 150);
-        HandlerUtil.getMainHandler().postDelayed(() -> {
-            SerialManager.getInstance().startAction(ActionParams.getNormalRotate());
-        }, 300);
+
+        SerialManager.getInstance().startAction(ActionParams.getNormalNod());
+
+        SerialManager.getInstance().startAction(ActionParams.getNormalRotate());
     }
 
     /**
@@ -325,7 +334,7 @@ public class SerialManager {
         } else if (!isOpen()) {
             LogUtil.i(TAG, "串口未开启");
             return;
-        } else if (isNoAction() && !isActionNoFinished()) {
+        } else if (!actionParams.isForce() && isNoAction() && !isActionNoFinished()) {
             LogUtil.i(TAG, "请放平机器人后再试");
             ToastUtil.show("请放平机器人后再试");
             return;
@@ -352,19 +361,19 @@ public class SerialManager {
         if (controlOrder == ActionParams.ControlOrder.ROTATE) {
             if (!actionParams.nextRotate()) {
                 mRunningActionNoFinish.put(controlOrder, false);
-                allToZero();
+                allToZero(controlOrder);
                 LogUtil.i(TAG, "actionParams.nextRotate() false 01");
                 return;
             }
             // 异常后确保回到零位
             final Runnable rotateCancel = () -> {
                 mRunningActionNoFinish.put(controlOrder, false);
-                allToZero();
+                allToZero(controlOrder);
             };
             // 延时后没有反馈则 认为异常 终止此次任务
-            HandlerUtil.getMainHandler().postDelayed(rotateCancel, 1500);
+            handler.postDelayed(rotateCancel, 1500);
             queryServoState((angle) -> {
-                HandlerUtil.getMainHandler().removeCallbacks(rotateCancel);
+                handler.removeCallbacks(rotateCancel);
                 mRunningActionNoFinish.put(controlOrder, true);
                 int[] params = new int[]{controlOrder, angle[2] + actionParams.getAngle(), actionParams.getTimeMs()};
                 if (actionParams.isFirst()) {
@@ -372,7 +381,7 @@ public class SerialManager {
                 }
                 actionParams.nextRotateIndex();
                 LogUtil.d(TAG, "转身：params -> " + Arrays.toString(params));
-                SerialManager.getInstance().sendNow(order, params);
+                SerialManager.getInstance().send(order, params);
                 if (LogUtil.isLogEnabled()) {
                     ToastUtil.show("转身： -> " + angle[2] + "_" + Arrays.toString(params));
                 }
@@ -387,7 +396,7 @@ public class SerialManager {
                     actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + (DELAY_TIME / 2));
                 } else {
                     mRunningActionNoFinish.put(controlOrder, false);
-                    allToZero();
+                    allToZero(controlOrder);
                     LogUtil.i(TAG, "actionParams.nextRotate() false 02");
                 }
             });
@@ -418,7 +427,7 @@ public class SerialManager {
                 ToastUtil.show((actionParams.getControlOrder() == ActionParams.ControlOrder.NOD
                         ? "点头： -> " : "摇头： -> ") + "left：" + left + "_right：" + right + "_" + Arrays.toString(params));
             }
-            SerialManager.getInstance().sendNow(order, params);
+            SerialManager.getInstance().send(order, params);
             if (actionParams.getRunCount() > -1) {
                 actionParams.setRunnable(() -> {
                     mRunningActionParams.remove(actionParams.getControlOrder());
@@ -428,7 +437,7 @@ public class SerialManager {
                 actionParams.getHandler().postDelayed(actionParams.getRunnable(), params[2] + DELAY_TIME);
             } else {
                 mRunningActionNoFinish.put(controlOrder, false);
-                allToZero();
+                allToZero(controlOrder);
                 LogUtil.i(TAG, "actionParams.getRunCount() false 02");
             }
         }
@@ -510,10 +519,8 @@ public class SerialManager {
 
     public boolean isOpen() {
         boolean isOpen = serialHelper != null && serialHelper.isOpen();
-        if (RobotUtil.isInstallRobot()) {
-            if (LogUtil.isLogEnabled() && !isOpen) {
-                ToastUtil.show("port not open");
-            }
+        if (RobotUtil.isInstallRobot() && LogUtil.isLogEnabled() && !isOpen) {
+            ToastUtil.show("port not open");
         }
         return isOpen;
     }
@@ -521,7 +528,7 @@ public class SerialManager {
     /**
      * 查询电压和适配器状态
      */
-    public void queryCharge() {
+    public synchronized void queryCharge() {
         /**
          * .add("所有信息", 0)
          * .add("电压", 1)
@@ -538,7 +545,9 @@ public class SerialManager {
             queryMvTime = currentTime;
             send(Order.DOWN_STATE, 1);
         } else {
-            queryMvTime = currentTime;
+            if (queryMvTime > currentTime) {
+                queryMvTime = currentTime;
+            }
         }
 
     }
@@ -551,7 +560,7 @@ public class SerialManager {
         }
         if (this.servoStateListener == null) {
             this.servoStateListener = servoStateListener;
-            sendNow(Order.DOWN_STATE, 4);
+            send(Order.DOWN_STATE, 4);
         } else {
             LogUtil.d(TAG, "queryServoState not null");
         }
@@ -560,26 +569,18 @@ public class SerialManager {
     }
 
     public synchronized boolean send(int order, int... params) {
-        return send(SerialPortUtil.getSendData(order, params));
-    }
-
-    public synchronized boolean sendNow(int order, int... params) {
-        if (isOpen()) {
-            serialHelper.sendHex(SerialPortUtil.getSendData(order, params));
-            return true;
+        try {
+            String hex = SerialPortUtil.getSendData(order, params);
+            return !TextUtils.isEmpty(hex) && send(hex);
+        } catch (Exception e) {
+            return false;
         }
-        return false;
-    }
-
-    public synchronized boolean sendText(String text) {
-        if (isOpen()) {
-            serialHelper.sendTxt(text);
-            return true;
-        }
-        return false;
     }
 
     public synchronized boolean send(String hex) {
+        if (!isOpen()) {
+            open(SerialPortUtil.PORT_NAME, SerialPortUtil.IBAUDTATE);
+        }
         if (isOpen()) {
             if (mWaitOrder.isEmpty()) {
                 mWaitOrder.add(hex);
@@ -594,14 +595,19 @@ public class SerialManager {
 
     private void sendDelayed() {
         String hex = mWaitOrder.getFirst();
-        serialHelper.sendHex(hex);
-        Log.d(TAG, "send -> hex：" + hex);
+        if (isOpen()) {
+            serialHelper.sendHex(hex);
+            Log.d(TAG, "send -> hex：" + hex);
+        } else {
+            Log.d(TAG, "send -> hex：fail " + hex);
+        }
+
         handler.postDelayed(() -> {
             mWaitOrder.removeFirst();
             if (!mWaitOrder.isEmpty()) {
                 sendDelayed();
             }
-        }, 1000);
+        }, 200);
     }
 
     public void onCharge2() {

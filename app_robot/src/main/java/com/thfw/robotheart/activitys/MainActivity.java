@@ -63,6 +63,7 @@ import com.thfw.robotheart.activitys.text.BookActivity;
 import com.thfw.robotheart.activitys.text.BookStudyActivity;
 import com.thfw.robotheart.activitys.video.VideoHomeActivity;
 import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.port.ActionParams;
 import com.thfw.robotheart.port.SerialManager;
 import com.thfw.robotheart.push.AidlHelper;
 import com.thfw.robotheart.push.MyPreferences;
@@ -381,8 +382,11 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             // 未登录进入登录页面
             LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
         }
+
         if (RobotUtil.isInstallRobot()) {
             SerialManager.getInstance().queryCharge();
+            SerialManager.getInstance().allToZero(ActionParams.ControlOrder.NOD);
+            SerialManager.getInstance().allToZero(ActionParams.ControlOrder.SHAKE);
         }
 
         String cacheWeather = SharePreferenceUtil.getString(KEY_WEATHER, "");
@@ -399,11 +403,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        if (RobotUtil.isInstallRobot()) {
-            HandlerUtil.getMainHandler().postDelayed(() -> {
-                SerialManager.getInstance().allToZero();
-            }, 2000);
-        }
         if (!UserManager.getInstance().isTrueLogin()) {
             // 未登录进入登录页面
             LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
