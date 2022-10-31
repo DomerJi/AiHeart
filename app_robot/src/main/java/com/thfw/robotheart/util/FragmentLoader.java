@@ -55,15 +55,17 @@ public class FragmentLoader {
                 Class cls = Class.forName(item.fragmentCls.getName());
                 mCurrentFragment = (Fragment) cls.newInstance();
             } catch (Exception e) {
-                e.printStackTrace();
             }
         }
         if (mCurrentFragment == null) {
             return null;
         }
 
-        if (!mCurrentFragment.isAdded() && null == mFragmentManager.findFragmentByTag(item.tag)) {
-            transaction.add(mContentLayoutId, mCurrentFragment, item.tag);
+        if (!mCurrentFragment.isAdded()) {
+            try {
+                transaction.add(mContentLayoutId, mCurrentFragment, item.tag);
+            }catch (Exception e){
+            }
         }
 
         transaction.show(mCurrentFragment).commit();

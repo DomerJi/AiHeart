@@ -31,7 +31,7 @@ android {
         }
         // 系统签名
         system {
-            storeFile file("sign/debug.keystore")
+            storeFile file("sign/new_debug.keystore")
             keyAlias "androiddebugkey"
             keyPassword 'throbut'
             storePassword 'throbut'
@@ -140,6 +140,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+
 
 }
 
