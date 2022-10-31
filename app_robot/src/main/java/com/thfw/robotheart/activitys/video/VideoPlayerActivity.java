@@ -608,10 +608,12 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
                 @Override
                 public void handleMessage(@NonNull Message msg) {
                     super.handleMessage(msg);
-                    int progress = (int) (player.getContentPosition() * 1000 / player.getContentDuration());
-                    int secondaryProgress = (int) (player.getContentBufferedPosition() * 1000 / player.getContentDuration());
-                    mPbBar.setProgress(progress);
-                    mPbBar.setSecondaryProgress(secondaryProgress);
+                    if (player != null && mPbBar != null) {
+                        int progress = (int) (player.getContentPosition() * 1000 / player.getContentDuration());
+                        int secondaryProgress = (int) (player.getContentBufferedPosition() * 1000 / player.getContentDuration());
+                        mPbBar.setProgress(progress);
+                        mPbBar.setSecondaryProgress(secondaryProgress);
+                    }
                     handler.sendEmptyMessageDelayed(0, 1000);
                 }
 

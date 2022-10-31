@@ -15,6 +15,7 @@ import com.thfw.base.models.VideoLastEtcModel;
 import com.thfw.base.models.VideoTypeModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.VideoPresenter;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
@@ -87,6 +88,9 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
         mVideoEtcTypeAdapter.setOnRvItemListener(new OnRvItemListener<VideoTypeModel>() {
             @Override
             public void onItemClick(List<VideoTypeModel> list, int position) {
+                if (EmptyUtil.isEmpty(list) || position < 0 || position >= list.size()) {
+                    return;
+                }
                 // todo type
                 int rootType = list.get(position).rootType;
                 LogUtil.d("onItemClick rootType = " + rootType);

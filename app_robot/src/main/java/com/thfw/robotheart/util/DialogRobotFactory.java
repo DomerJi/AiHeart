@@ -428,7 +428,9 @@ public class DialogRobotFactory {
                         TextView mTvHint = viewHolder.getView(com.thfw.robotheart.R.id.tv_hint);
                         mTvJump.setOnClickListener(v -> {
                             LogUtil.d(TAG, "onFinished click");
-                            svgaImageView.getCallback().onFinished();
+                            if (svgaImageView != null && svgaImageView.getCallback() != null) {
+                                svgaImageView.getCallback().onFinished();
+                            }
                         });
                         mTvHint.setText(hint);
                     } else {

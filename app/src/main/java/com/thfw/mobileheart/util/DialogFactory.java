@@ -375,7 +375,9 @@ public class DialogFactory {
                         if (mTvTime != null) {
                             mTvTime.setOnClickListener(v -> {
                                 LogUtil.d(TAG, "onFinished click tvtime");
-                                svgaImageView.getCallback().onFinished();
+                                if (svgaImageView != null && svgaImageView.getCallback() != null) {
+                                    svgaImageView.getCallback().onFinished();
+                                }
                             });
                         }
                         mMinuteRunnable = new Runnable() {

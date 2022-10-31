@@ -62,7 +62,7 @@ public class FragmentLoader {
             return null;
         }
 
-        if (!mCurrentFragment.isAdded()) {
+        if (!mCurrentFragment.isAdded() && null == mFragmentManager.findFragmentByTag(item.tag)) {
             transaction.add(mContentLayoutId, mCurrentFragment, item.tag);
         }
 

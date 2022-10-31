@@ -369,8 +369,12 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 
     @Override
     public void onCameraViewStopped() {
-        mGray.release();
-        mRgba.release();
+        if (mGray != null) {
+            mGray.release();
+        }
+        if (mRgba != null) {
+            mRgba.release();
+        }
     }
 
     @Override
