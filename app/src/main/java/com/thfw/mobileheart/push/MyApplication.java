@@ -2,6 +2,7 @@ package com.thfw.mobileheart.push;
 
 import android.app.Application;
 
+import com.thfw.base.utils.MyPreferences;
 import com.thfw.mobileheart.push.helper.PushHelper;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.commonsdk.utils.UMUtils;

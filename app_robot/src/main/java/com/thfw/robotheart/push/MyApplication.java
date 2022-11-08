@@ -2,6 +2,7 @@ package com.thfw.robotheart.push;
 
 import android.app.Application;
 
+import com.thfw.base.utils.MyPreferences;
 import com.thfw.robotheart.push.helper.PushHelper;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.commonsdk.utils.UMUtils;

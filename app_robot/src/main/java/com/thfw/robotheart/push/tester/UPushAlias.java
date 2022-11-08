@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.thfw.base.utils.LogUtil;
 import com.thfw.robotheart.MyApplication;
-import com.thfw.robotheart.push.MyPreferences;
+import com.thfw.base.utils.MyPreferences;
 import com.umeng.message.PushAgent;
 import com.umeng.message.api.UPushAliasCallback;
 import com.umeng.message.api.UPushTagCallback;

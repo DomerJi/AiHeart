@@ -36,11 +36,11 @@ import com.thfw.base.room.AppDatabase;
 import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.MyPreferences;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.activitys.MainActivity;
 import com.thfw.robotheart.activitys.set.DormantActivity;
-import com.thfw.robotheart.push.MyPreferences;
 import com.thfw.robotheart.push.helper.PushHelper;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.Dormant;
@@ -174,19 +174,34 @@ public class MyApplication extends MultiDexApplication {
 //        RobotUtil.longPressOffBtn();
         if (RobotUtil.isInstallRobot()) {
             UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
-            WakeupHelper.initCae(app);
-            BuglyUtil.init("382fc62522");
             RobotUtil.hookWebView();
             initScreenReceiver();
             initActivityLifecycle();
-        } else {
-            BuglyUtil.init("d24e28638f");
         }
-        initSpeech();
-        //是否同意隐私政策
-        if (RobotUtil.isUseUmeng()) {
-            boolean agreed = MyPreferences.getInstance(this).hasAgreePrivacyAgreement();
-            if (agreed) {
+        UserManager.getInstance().setAgreedInitListener(new UserManager.OnAgreedInitListener() {
+            @Override
+            public void onAgreed(boolean agreed) {
+                if (agreed) {
+                    agreedInit();
+                }
+            }
+        });
+        agreedInit();
+    }
+
+    public void agreedInit() {
+        boolean agreed = MyPreferences.getInstance(MyApplication.getApp()).hasAgreePrivacyAgreement();
+        if (agreed) {
+            UserManager.getInstance().setAgreedInitListener(null);
+            if (RobotUtil.isInstallRobot()) {
+                WakeupHelper.initCae(app);
+                BuglyUtil.init("382fc62522");
+            } else {
+                BuglyUtil.init("d24e28638f");
+            }
+            initSpeech();
+            //是否同意隐私政策
+            if (RobotUtil.isUseUmeng()) {
                 PushHelper.init(MyApplication.getApp());
             }
         }

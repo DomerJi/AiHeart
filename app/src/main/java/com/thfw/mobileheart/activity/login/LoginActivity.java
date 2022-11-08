@@ -23,6 +23,7 @@ import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.MyPreferences;
 import com.thfw.base.utils.PermissionUtil;
 import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
@@ -71,6 +72,7 @@ public class LoginActivity extends BaseActivity {
 
     public static void startActivity(Context context, int type) {
         context.startActivity(new Intent(context, LoginActivity.class).putExtra(KEY_DATA, type));
+        MyPreferences.getInstance(MyApplication.getApp()).setAgreePrivacyAgreement(false);
     }
 
     public static boolean login(Activity activity, TokenModel data, String mobile) {
@@ -104,6 +106,8 @@ public class LoginActivity extends BaseActivity {
             } else {
                 user.setLoginStatus(LoginStatus.LOGINED);
                 UserManager.getInstance().login(user);
+                MyPreferences.getInstance(MyApplication.getApp()).setAgreePrivacyAgreement(true);
+
             }
             activity.finish();
             return true;
@@ -155,6 +159,8 @@ public class LoginActivity extends BaseActivity {
             MainActivity.setShowLoginAnim(true);
             SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN, true);
             SharePreferenceUtil.setBoolean(KEY_LOGIN_BEGIN_TTS, true);
+        } else {
+            MyPreferences.getInstance(getApplicationContext()).setAgreePrivacyAgreement(false);
         }
     }
 
@@ -302,12 +308,16 @@ public class LoginActivity extends BaseActivity {
                 mTvTitle.setVisibility(View.GONE);
                 mTvLeft.setText("我再想想");
                 mTvRight.setText("同意");
+
             }
 
             @Override
             public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
                 tDialog.dismiss();
                 if (onViewClickListener != null) {
+                    if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                        MyPreferences.getInstance(MyApplication.getApp()).setAgreePrivacyAgreement(true);
+                    }
                     onViewClickListener.onViewClick(viewHolder, view, tDialog);
                 }
             }

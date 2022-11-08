@@ -1,4 +1,4 @@
-package com.thfw.mobileheart.push;
+package com.thfw.base.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

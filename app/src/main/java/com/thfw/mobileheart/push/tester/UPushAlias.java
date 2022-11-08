@@ -3,8 +3,8 @@ package com.thfw.mobileheart.push.tester;
 import android.content.Context;
 
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.MyPreferences;
 import com.thfw.mobileheart.MyApplication;
-import com.thfw.mobileheart.push.MyPreferences;
 import com.umeng.message.PushAgent;
 import com.umeng.message.api.UPushAliasCallback;
 import com.umeng.message.api.UPushTagCallback;

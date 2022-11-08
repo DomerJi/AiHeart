@@ -2,9 +2,11 @@ package com.thfw.user.login;
 
 import android.text.TextUtils;
 
+import com.thfw.base.ContextApp;
 import com.thfw.base.net.CommonInterceptor;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.MyPreferences;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.user.models.User;
 
@@ -104,6 +106,7 @@ public class UserManager extends Observable {
         setChanged();
         notifyObservers(user);
         SharePreferenceUtil.setString(KEY_USER, "");
+        MyPreferences.getInstance(ContextApp.get()).setAgreePrivacyAgreement(false);
     }
 
     public void login() {
@@ -122,6 +125,23 @@ public class UserManager extends Observable {
         if (user.getLoginStatus() == LoginStatus.LOGINED) {
             SharePreferenceUtil.setString(KEY_USER, userJson);
         }
+        MyPreferences.getInstance(ContextApp.get()).setAgreePrivacyAgreement(isTrueLogin());
+        if (agreedInitListener != null) {
+            if (isTrueLogin()) {
+                agreedInitListener.onAgreed(true);
+            }
+        }
+    }
+
+    private OnAgreedInitListener agreedInitListener;
+
+
+    public void setAgreedInitListener(OnAgreedInitListener agreedInitListener) {
+        this.agreedInitListener = agreedInitListener;
+    }
+
+    public interface OnAgreedInitListener {
+        void onAgreed(boolean agreed);
     }
 
 

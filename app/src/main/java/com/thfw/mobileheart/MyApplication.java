@@ -27,16 +27,17 @@ import com.thfw.base.room.AppDatabase;
 import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.MyPreferences;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.activity.MainActivity;
-import com.thfw.mobileheart.push.MyPreferences;
 import com.thfw.mobileheart.push.helper.PushHelper;
 import com.thfw.mobileheart.util.ActivityLifeCycle;
 import com.thfw.mobileheart.util.AppLifeHelper;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.widget.DeviceUtil;
+import com.thfw.user.login.UserManager;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.commonsdk.utils.UMUtils;
 
@@ -193,9 +194,6 @@ public class MyApplication extends MultiDexApplication {
         PushHelper.preInit(this);
         boolean isMainProcess = UMUtils.isMainProgress(this);
         if (isMainProcess) {
-            if (DeviceUtil.isLhXk_CM_GB03D()) {
-                AppLifeHelper.initActivityLifecycle(this);
-            }
             //启动优化：建议在子线程中执行初始化
             new Thread(new Runnable() {
                 @Override
@@ -209,11 +207,27 @@ public class MyApplication extends MultiDexApplication {
     private void init() {
         registerActivityLifecycleCallbacks(activityLifeCycle);
         initTimeReceiver();
-        BuglyUtil.init("36df997c6c");
-        initSpeech();
+
+        UserManager.getInstance().setAgreedInitListener(new UserManager.OnAgreedInitListener() {
+            @Override
+            public void onAgreed(boolean agreed) {
+                if(agreed){
+                    agreedInit();
+                }
+            }
+        });
+
+    }
+
+    private  void agreedInit(){
         //是否同意隐私政策
         boolean agreed = MyPreferences.getInstance(this).hasAgreePrivacyAgreement();
         if (agreed) {
+            BuglyUtil.init("36df997c6c");
+            initSpeech();
+            if (DeviceUtil.isLhXk_CM_GB03D()) {
+                AppLifeHelper.initActivityLifecycle(this);
+            }
             PushHelper.init(getApplicationContext());
         }
     }
