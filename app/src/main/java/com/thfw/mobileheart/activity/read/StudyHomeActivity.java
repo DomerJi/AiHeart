@@ -3,7 +3,9 @@ package com.thfw.mobileheart.activity.read;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextPaint;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,11 +15,9 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.common.reflect.TypeToken;
 import com.thfw.base.models.BookStudyTypeModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.BookPresenter;
-import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
@@ -30,7 +30,6 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +43,7 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
     private androidx.viewpager.widget.ViewPager mViewPager;
     private com.thfw.ui.widget.LoadingView mLoadingView;
     private com.thfw.mobileheart.view.LastTextView mTvLastAudio;
+    private List<BookStudyTypeModel> models;
 
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, StudyHomeActivity.class));
@@ -73,42 +73,68 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
     public void initData() {
 
 
-        //设置TabLayout和ViewPager联动
-        mTabLayout.setupWithViewPager(mViewPager, false);
-
-        Type type = new TypeToken<List<BookStudyTypeModel>>() {
-        }.getType();
-        List<BookStudyTypeModel> cacheModel = SharePreferenceUtil.getObject(KEY_TYPE_LIST, type);
-        if (!EmptyUtil.isEmpty(cacheModel)) {
-            mLoadingView.hide();
-            setAdapter(cacheModel);
-        }
+//        Type type = new TypeToken<List<BookStudyTypeModel>>() {
+//        }.getType();
+//        List<BookStudyTypeModel> cacheModel = SharePreferenceUtil.getObject(KEY_TYPE_LIST, type);
+//        if (!EmptyUtil.isEmpty(cacheModel)) {
+//            mLoadingView.hide();
+//            setAdapter(cacheModel);
+//        }
         mPresenter.getIdeologyArticleType();
 
+
+    }
+
+    private void setAdapter(List<BookStudyTypeModel> cacheModel) {
+        this.models = cacheModel;
+        int size = cacheModel.size();
+        mViewPager.setOffscreenPageLimit(size);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
 
+                refreshTabColor();
+                mViewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                if (tab.getCustomView() != null) {
+                    TextView textView = tab.getCustomView().findViewById(android.R.id.text1);
+                    TextPaint paint = textView.getPaint();
+                    paint.setFakeBoldText(false);
+                    textView.setTextColor(cacheModel.get(tab.getPosition()).getUnSelectedColor());
+                }
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                ((StudyListFragment) tabFragmentList.get(tab.getPosition())).onReSelected();
+                try {
+                    ((StudyListFragment) tabFragmentList.get(tab.getPosition())).onReSelected();
+                } catch (Exception e) {
+
+                }
             }
         });
-    }
 
-    private void setAdapter(List<BookStudyTypeModel> cacheModel) {
-        int size = cacheModel.size();
-        mViewPager.setOffscreenPageLimit(size);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                mTabLayout.setScrollPosition(position, positionOffset, true);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mTabLayout.selectTab(mTabLayout.getTabAt(position));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         //添加tab
         for (int i = 0; i < size; i++) {
-            mTabLayout.addTab(mTabLayout.newTab().setText(cacheModel.get(i).name));
             int contentType = cacheModel.get(i).id;
             StudyListFragment studyListFragment = new StudyListFragment(contentType);
             Bundle bundle = new Bundle();
@@ -117,6 +143,7 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
             tabFragmentList.add(studyListFragment);
 
         }
+
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -160,11 +187,56 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
             }
 
             @Nullable
+            @org.jetbrains.annotations.Nullable
             @Override
             public CharSequence getPageTitle(int position) {
                 return cacheModel.get(position).name;
             }
         });
+
+        //添加tab
+        for (int i = 0; i < size; i++) {
+
+            // todo 自定义布局
+            TabLayout.Tab tabAt = mTabLayout.newTab().setText(cacheModel.get(i).name);
+            mTabLayout.addTab(tabAt);
+            tabAt.setCustomView(R.layout.tab_custeom_item_study);
+            if (cacheModel.get(i).isUnSelectedChange()) {
+                if (tabAt.getCustomView() != null) {
+                    TextView mText1 = tabAt.getCustomView().findViewById(android.R.id.text1);
+                    mText1.setTextColor(models.get(i).getUnSelectedColor());
+                }
+
+            }
+
+        }
+
+        // 设置TabLayout和ViewPager联动
+//        mTabLayout.setupWithViewPager(mViewPager, false);
+    }
+
+    private void refreshTabColor() {
+        int count = mTabLayout.getTabCount();
+        for (int i = 0; i < count; i++) {
+            BookStudyTypeModel model = models.get(i);
+            TabLayout.Tab tabAt = mTabLayout.getTabAt(i);
+            if (tabAt != null && tabAt.getCustomView() != null) {
+                if (mTabLayout.getSelectedTabPosition() == i) {
+
+                    TextView mText1 = tabAt.getCustomView().findViewById(android.R.id.text1);
+                    mText1.setTextColor(model.getSelectedColor());
+                    mTabLayout.setSelectedTabIndicatorColor(model.getSelectedColor());
+                    TextPaint paint = mText1.getPaint();
+                    paint.setFakeBoldText(model.getSelectedColor() == model.getUnSelectedColor());
+                } else {
+                    TextView mText1 = tabAt.getCustomView().findViewById(android.R.id.text1);
+                    mText1.setTextColor(model.getUnSelectedColor());
+                    TextPaint paint = mText1.getPaint();
+                    paint.setFakeBoldText(false);
+
+                }
+            }
+        }
     }
 
     @Override
@@ -174,6 +246,7 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
 
     @Override
     public void onSuccess(List<BookStudyTypeModel> data) {
+        BookStudyTypeModel.sort(data);
         if (data != null) {
             data.add(0, new BookStudyTypeModel("全部", 0));
         }

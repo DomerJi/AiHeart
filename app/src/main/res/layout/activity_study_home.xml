@@ -17,17 +17,32 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/tab_layout_bottom_divider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleView"
         app:tabIndicatorAnimationDuration="300"
         app:tabIndicatorFullWidth="false"
         app:tabMinWidth="60dp"
         app:tabMode="scrollable"
-        android:background="@drawable/tab_layout_bottom_divider"
         app:tabRippleColor="@color/transparent"
-        app:tabSelectedTextColor="@color/text_green"
-        app:tabTextColor="@color/text_common"
         app:tabUnboundedRipple="false" />
+
+    <!--    <com.google.android.material.tabs.TabLayout-->
+    <!--        android:id="@+id/tab_layout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/titleView"-->
+    <!--        app:tabIndicatorAnimationDuration="300"-->
+    <!--        app:tabIndicatorFullWidth="false"-->
+    <!--        app:tabMinWidth="60dp"-->
+    <!--        app:tabMode="scrollable"-->
+    <!--        android:background="@drawable/tab_layout_bottom_divider"-->
+    <!--        app:tabRippleColor="@color/transparent"-->
+    <!--        app:tabSelectedTextColor="@color/text_green"-->
+    <!--        app:tabTextColor="@color/text_common"-->
+    <!--        app:tabUnboundedRipple="false" />-->
+
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"

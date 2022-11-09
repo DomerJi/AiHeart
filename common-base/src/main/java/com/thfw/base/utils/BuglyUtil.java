@@ -98,19 +98,21 @@ public class BuglyUtil {
     public static void requestNewVersion(SimpleUpgradeStateListener simpleUpgradeStateListener) {
         BuglyUtil.requestUpgradeStateListener = simpleUpgradeStateListener;
         if (BuglyUtil.requestUpgradeStateListener != null) {
-            if (Beta.getUpgradeInfo() != null) {
-                int versionCode = Util.getAppVersionCode(ContextApp.get());
-                if (Beta.getUpgradeInfo().versionCode <= versionCode) {
-                    BuglyUtil.requestUpgradeStateListener.onUpgradeNoVersion(false);
-                    BuglyUtil.requestUpgradeStateListener = null;
-                    onBetaCheckUpgrade();
-                } else {
-                    BuglyUtil.requestUpgradeStateListener.onVersion(true);
-                    BuglyUtil.requestUpgradeStateListener = null;
-                }
-            } else {
-                onBetaCheckUpgrade();
-            }
+            // todo bugly 应用升级已经停止服务【停用日期2022-10-26】 此处代码无用
+            // todo 新的版本检查策略
+//            if (Beta.getUpgradeInfo() != null) {
+//                int versionCode = Util.getAppVersionCode(ContextApp.get());
+//                if (Beta.getUpgradeInfo().versionCode <= versionCode) {
+//                    BuglyUtil.requestUpgradeStateListener.onUpgradeNoVersion(false);
+//                    BuglyUtil.requestUpgradeStateListener = null;
+//                    onBetaCheckUpgrade();
+//                } else {
+//                    BuglyUtil.requestUpgradeStateListener.onVersion(true);
+//                    BuglyUtil.requestUpgradeStateListener = null;
+//                }
+//            } else {
+//                onBetaCheckUpgrade();
+//            }
         }
     }
 
