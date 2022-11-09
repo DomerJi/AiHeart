@@ -147,7 +147,8 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     private String faceHint02 = "请靠近摄像头，保持双眼睁开";
     private String faceHint03 = "正在识别...";
     // 检测器
-    private int mDetectorType = NATIVE_DETECTOR;
+//    private int mDetectorType = NATIVE_DETECTOR;
+    private int mDetectorType = JAVA_DETECTOR;
     private String[] mDetectorName;
     private float mRelativeFaceSize = 0.2f;
     private int mAbsoluteFaceSize = 0;
@@ -159,6 +160,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     private boolean mGoFinish;
     // 是否是 猎豹星空
     private boolean isLhXkCmGb03d;
+    private ImageView mIvTestFace;
 
     @Override
     public int getContentView() {
@@ -416,7 +418,6 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         mDetectorName[JAVA_DETECTOR] = "Java";
         mDetectorName[NATIVE_DETECTOR] = "Native (tracking)";
 
-        System.loadLibrary("detection_based_tracker");
 
         try {
 
@@ -434,15 +435,17 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
             is.close();
             os.close();
 
-            mJavaDetector = new CascadeClassifier(mCascadeFile.getAbsolutePath());
-            if (mJavaDetector.empty()) {
-                Log.e(TAG, "Failed to load cascade classifier");
-                mJavaDetector = null;
-            } else
-                Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
-
-            mNativeDetector = new DetectionBasedTracker(mCascadeFile.getAbsolutePath(), 0);
-
+            if (mDetectorType == NATIVE_DETECTOR) {
+                System.loadLibrary("detection_based_tracker");
+                mNativeDetector = new DetectionBasedTracker(mCascadeFile.getAbsolutePath(), 0);
+            } else {
+                mJavaDetector = new CascadeClassifier(mCascadeFile.getAbsolutePath());
+                if (mJavaDetector.empty()) {
+                    Log.e(TAG, "Failed to load cascade classifier");
+                    mJavaDetector = null;
+                } else
+                    Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
+            }
             cascadeDir.delete();
 
         } catch (IOException e) {
@@ -472,15 +475,16 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
             is.close();
             os.close();
 
-            mJavaEyeDetector = new CascadeClassifier(mCascadeEyeFile.getAbsolutePath());
-            if (mJavaEyeDetector.empty()) {
-                Log.e(TAG, "Failed to load cascade classifier");
-                mJavaEyeDetector = null;
-            } else
-                Log.i(TAG, "Loaded cascade classifier from " + mCascadeEyeFile.getAbsolutePath());
-
-            mNativeEyeDetector = new DetectionBasedTracker(mCascadeEyeFile.getAbsolutePath(), 0);
-
+            if (mDetectorType == NATIVE_DETECTOR) {
+                mNativeEyeDetector = new DetectionBasedTracker(mCascadeEyeFile.getAbsolutePath(), 0);
+            } else {
+                mJavaEyeDetector = new CascadeClassifier(mCascadeEyeFile.getAbsolutePath());
+                if (mJavaEyeDetector.empty()) {
+                    Log.e(TAG, "Failed to load cascade classifier");
+                    mJavaEyeDetector = null;
+                } else
+                    Log.i(TAG, "Loaded cascade classifier from " + mCascadeEyeFile.getAbsolutePath());
+            }
             cascadeDir.delete();
 
         } catch (IOException e) {
@@ -537,7 +541,11 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
             if (Math.round(height * mRelativeFaceSize) > 0) {
                 mAbsoluteFaceSize = Math.round(height * mRelativeFaceSize);
             }
-            mNativeDetector.setMinFaceSize(mAbsoluteFaceSize);
+            if (mDetectorType == JAVA_DETECTOR) {
+                // todo
+            } else {
+                mNativeDetector.setMinFaceSize(mAbsoluteFaceSize);
+            }
         }
 
         MatOfRect faces = new MatOfRect();

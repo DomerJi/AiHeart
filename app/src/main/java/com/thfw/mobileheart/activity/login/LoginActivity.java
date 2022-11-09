@@ -271,7 +271,9 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
+
         Static2Helper.initOpenCV(true);
+
         if (!checkPermissionsNoRequest()) {
             if (checkPermissionFirst) {
                 checkPermissions();

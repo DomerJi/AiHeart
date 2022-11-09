@@ -208,27 +208,29 @@ public class MyApplication extends MultiDexApplication {
         registerActivityLifecycleCallbacks(activityLifeCycle);
         initTimeReceiver();
 
-        UserManager.getInstance().setAgreedInitListener(new UserManager.OnAgreedInitListener() {
-            @Override
-            public void onAgreed(boolean agreed) {
-                if(agreed){
-                    agreedInit();
-                }
-            }
-        });
-
+        agreedInit();
     }
 
-    private  void agreedInit(){
+    private void agreedInit() {
         //是否同意隐私政策
         boolean agreed = MyPreferences.getInstance(this).hasAgreePrivacyAgreement();
         if (agreed) {
+            UserManager.getInstance().setAgreedInitListener(null);
             BuglyUtil.init("36df997c6c");
             initSpeech();
             if (DeviceUtil.isLhXk_CM_GB03D()) {
                 AppLifeHelper.initActivityLifecycle(this);
             }
             PushHelper.init(getApplicationContext());
+        } else {
+            UserManager.getInstance().setAgreedInitListener(new UserManager.OnAgreedInitListener() {
+                @Override
+                public void onAgreed(boolean agreed) {
+                    if (agreed) {
+                        agreedInit();
+                    }
+                }
+            });
         }
     }
 

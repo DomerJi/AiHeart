@@ -178,14 +178,6 @@ public class MyApplication extends MultiDexApplication {
             initScreenReceiver();
             initActivityLifecycle();
         }
-        UserManager.getInstance().setAgreedInitListener(new UserManager.OnAgreedInitListener() {
-            @Override
-            public void onAgreed(boolean agreed) {
-                if (agreed) {
-                    agreedInit();
-                }
-            }
-        });
         agreedInit();
     }
 
@@ -204,6 +196,15 @@ public class MyApplication extends MultiDexApplication {
             if (RobotUtil.isUseUmeng()) {
                 PushHelper.init(MyApplication.getApp());
             }
+        } else {
+            UserManager.getInstance().setAgreedInitListener(new UserManager.OnAgreedInitListener() {
+                @Override
+                public void onAgreed(boolean agreed) {
+                    if (agreed) {
+                        agreedInit();
+                    }
+                }
+            });
         }
     }
 
