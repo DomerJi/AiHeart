@@ -149,6 +149,18 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
         OkHttpUtil.requestByHttpResult(observable, getUI());
     }
 
+    /**
+     * [账号密码登录]
+     *
+     */
+    public void onDeleteAccount() {
+        NetParams netParams = NetParams.crete();
+        Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(LoginApi.class)
+                .onDeleteAccount(netParams);
+        OkHttpUtil.request(observable, getUI());
+    }
+
+
     public void loginByThirdParty(Map<String, String> map) {
 
     }

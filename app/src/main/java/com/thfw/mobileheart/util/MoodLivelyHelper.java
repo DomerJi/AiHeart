@@ -8,7 +8,9 @@ import com.thfw.base.timing.TimingHelper;
 import com.thfw.base.timing.WorkInt;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.FunctionType;
+import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HandlerUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -21,7 +23,7 @@ import java.util.List;
  * Describe:Todo
  */
 public class MoodLivelyHelper {
-
+    private static final String KEY_MOOD = "key_mood";
     private static MoodLivelyModel model;
     private static List<MoodLivelyListener> livelyListeners = new ArrayList<>();
     private static TimingHelper.WorkListener workListener;
@@ -70,6 +72,10 @@ public class MoodLivelyHelper {
         }
     }
 
+    public static MoodLivelyModel getCacheMood() {
+        return SharePreferenceUtil.getObject(KEY_MOOD, MoodLivelyModel.class);
+    }
+
     public static void addListener(MoodLivelyListener livelyListener) {
         if (!livelyListeners.contains(livelyListener)) {
             livelyListeners.add(livelyListener);
@@ -95,6 +101,7 @@ public class MoodLivelyHelper {
             public void onSuccess(MoodLivelyModel data) {
                 if (data != null) {
                     model = data;
+                    SharePreferenceUtil.setString(KEY_MOOD, GsonUtil.toJson(model));
                     FunctionDurationUtil.setFunctionTime(FunctionType.FUNCTION_APP, model.getTodayActiveTime());
                     change();
                     if (workListener != null) {

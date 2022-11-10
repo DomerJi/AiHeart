@@ -34,6 +34,9 @@ public class BookStudyTypeModel implements IModel {
     @SerializedName("un_selected_color")
     public String unSelectedColorStr;
 
+    @SerializedName("fire")
+    public int fire;
+
     public boolean isChangedColor() {
         refreshColorName();
         return !TextUtils.isEmpty(selectedColorStr) || !TextUtils.isEmpty(unSelectedColorStr);

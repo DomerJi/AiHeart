@@ -344,5 +344,21 @@
         android:textColor="@color/white"
         android:textSize="@dimen/textSize" />
 
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/bt_delete_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:padding="8dp"
+        android:text="@string/delete_account"
+        android:textColor="@color/link"
+        android:textSize="@dimen/textSize_small" />
+
 
 </LinearLayout>

@@ -19,4 +19,15 @@
         tools:ignore="MissingConstraints"
         tools:text="Title" />
 
+    <ImageView
+        android:id="@+id/iv_fire"
+        android:layout_width="16dp"
+        android:visibility="gone"
+        android:src="@drawable/ic_baseline_local_fire_department_24"
+        android:layout_height="16dp"
+        app:layout_constraintLeft_toRightOf="@android:id/text1"
+        app:layout_constraintBottom_toBottomOf="@android:id/text1"
+        android:layout_marginBottom="8dp"
+        tools:ignore="MissingConstraints" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

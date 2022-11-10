@@ -28,6 +28,15 @@
             app:riv_corner_radius="10dp"
             app:riv_oval="false" />
 
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/riv_red_flag"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitStart"
+            android:src="@mipmap/ic_red_flag_big"
+            app:riv_corner_radius="10dp"
+            app:riv_oval="false" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

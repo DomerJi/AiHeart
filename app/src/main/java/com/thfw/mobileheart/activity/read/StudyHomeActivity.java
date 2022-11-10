@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextPaint;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -201,11 +203,15 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
             TabLayout.Tab tabAt = mTabLayout.newTab().setText(cacheModel.get(i).name);
             mTabLayout.addTab(tabAt);
             tabAt.setCustomView(R.layout.tab_custeom_item_study);
-            if (cacheModel.get(i).isUnSelectedChange()) {
-                if (tabAt.getCustomView() != null) {
+
+            if (tabAt.getCustomView() != null) {
+                if (cacheModel.get(i).isUnSelectedChange()) {
                     TextView mText1 = tabAt.getCustomView().findViewById(android.R.id.text1);
                     mText1.setTextColor(models.get(i).getUnSelectedColor());
                 }
+                ImageView mIvFire = tabAt.getCustomView().findViewById(R.id.iv_fire);
+                mIvFire.setVisibility(cacheModel.get(i).fire == 1 ? View.VISIBLE : View.GONE);
+
 
             }
 
@@ -221,6 +227,8 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
             BookStudyTypeModel model = models.get(i);
             TabLayout.Tab tabAt = mTabLayout.getTabAt(i);
             if (tabAt != null && tabAt.getCustomView() != null) {
+                ImageView mIvFire = tabAt.getCustomView().findViewById(R.id.iv_fire);
+                mIvFire.setVisibility(model.fire == 1 ? View.VISIBLE : View.GONE);
                 if (mTabLayout.getSelectedTabPosition() == i) {
 
                     TextView mText1 = tabAt.getCustomView().findViewById(android.R.id.text1);
@@ -228,6 +236,7 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
                     mTabLayout.setSelectedTabIndicatorColor(model.getSelectedColor());
                     TextPaint paint = mText1.getPaint();
                     paint.setFakeBoldText(model.getSelectedColor() == model.getUnSelectedColor());
+
                 } else {
                     TextView mText1 = tabAt.getCustomView().findViewById(android.R.id.text1);
                     mText1.setTextColor(model.getUnSelectedColor());

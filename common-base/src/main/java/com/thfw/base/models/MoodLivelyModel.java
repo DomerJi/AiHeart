@@ -26,7 +26,16 @@ public class MoodLivelyModel implements Serializable {
     private long todayActiveTime;
     @SerializedName("user_mood")
     private MoodModel userMood;
+    @SerializedName("hide_red_flag")
+    private int hideRedFlag;
 
+    public void setHideRedFlag(int hideRedFlag) {
+        this.hideRedFlag = hideRedFlag;
+    }
+
+    public int getHideRedFlag() {
+        return hideRedFlag;
+    }
 
     public int getLoginDays() {
         return loginDays;

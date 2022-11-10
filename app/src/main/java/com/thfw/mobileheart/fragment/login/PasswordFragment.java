@@ -20,7 +20,10 @@ import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.utils.ClickCountUtils;
+import com.thfw.base.utils.HandlerUtil;
+import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
@@ -157,7 +160,15 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
                 });
                 return;
             }
+
             phone = mEtMobile.getText().toString();
+            if (System.currentTimeMillis() - SharePreferenceUtil.getLong(phone, 0)
+                    < HourUtil.LEN_HOUR) {
+                HandlerUtil.getMainHandler().postDelayed(() -> {
+                    ToastUtil.show("账号或密码错误");
+                }, 1000);
+                return;
+            }
             String password = mEtPassword.getText().toString();
             LoadingDialog.show(getActivity(), "登录中");
             mPresenter.loginByPassword(phone, password);

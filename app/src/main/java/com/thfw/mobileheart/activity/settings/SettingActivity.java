@@ -21,9 +21,14 @@ import com.bumptech.glide.Glide;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
+import com.thfw.base.models.CommonModel;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.MyApplication;
@@ -33,10 +38,15 @@ import com.thfw.mobileheart.activity.me.AboutMeActivity;
 import com.thfw.mobileheart.activity.service.AutoUpdateService;
 import com.thfw.mobileheart.constants.AnimFileName;
 import com.thfw.mobileheart.util.AnimFrequencyUtil;
+import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FileSizeUtil;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.dialog.LoadingMobileDialog;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 public class SettingActivity extends BaseActivity {
 
@@ -57,6 +67,7 @@ public class SettingActivity extends BaseActivity {
     private LinearLayout mLlTransition;
     private TextView mTvTransition;
     private PopupWindow mPopWindow;
+    private TextView mTvDeleteAccount;
 
     @Override
     public int getContentView() {
@@ -76,6 +87,7 @@ public class SettingActivity extends BaseActivity {
         mLlPrivacyPolicy = (LinearLayout) findViewById(R.id.ll_privacy_policy);
         mLlAbout = (LinearLayout) findViewById(R.id.ll_about);
         mBtLogout = (Button) findViewById(R.id.bt_logout);
+        mTvDeleteAccount = (TextView) findViewById(R.id.bt_delete_account);
         mLlInfo.setOnClickListener(v -> {
             startActivity(new Intent(mContext, InfoActivity.class));
         });
@@ -115,7 +127,88 @@ public class SettingActivity extends BaseActivity {
             showTransitionSelect();
         });
         mTvTransition.setText(AnimFrequencyUtil.getAnimFrequencyStr());
+
+        mTvDeleteAccount.setOnClickListener(v -> {
+            DialogFactory.createCustomDialog(SettingActivity.this, new DialogFactory.OnViewCallBack() {
+                int countS = 5;
+                Runnable runnable;
+
+                @Override
+                public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                    mTvHint.setText(R.string.deleteAccount);
+                    mTvTitle.setText("注销账号？");
+                    mTvRight.setEnabled(false);
+                    mTvRight.setAlpha(0.5f);
+
+                    mTvRight.setText("注销(" + countS + ")");
+                    runnable = () -> {
+                        countS--;
+                        if (countS <= 0) {
+                            mTvRight.setText("注销");
+                            mTvRight.setEnabled(true);
+                            mTvRight.setAlpha(1f);
+                        } else {
+                            mTvRight.setText("注销(" + countS + ")");
+                            HandlerUtil.getMainHandler().postDelayed(runnable, 1000);
+                        }
+                    };
+
+                    HandlerUtil.getMainHandler().postDelayed(runnable, 1000);
+
+
+                }
+
+                @Override
+                public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                    if (view.getId() == R.id.tv_left) {
+                        if (runnable != null) {
+                            HandlerUtil.getMainHandler().removeCallbacks(runnable);
+                        }
+                        tDialog.dismiss();
+                    } else {
+                        tDialog.dismiss();
+                        deleteAccount();
+                    }
+                }
+            }, false);
+        });
     }
+
+    private void deleteAccount() {
+
+        LoadingMobileDialog.show(SettingActivity.this, "正在注销");
+        HandlerUtil.getMainHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new LoginPresenter(new LoginPresenter.LoginUi<CommonModel>() {
+                    @Override
+                    public LifecycleProvider getLifecycleProvider() {
+                        return SettingActivity.this;
+                    }
+
+                    @Override
+                    public void onSuccess(CommonModel data) {
+                        LoadingMobileDialog.hide();
+                        SharePreferenceUtil.setLong(UserManager.getInstance().getUser().getMobile(), System.currentTimeMillis());
+                        ToastUtil.showLong("账号注销成功");
+                        mBtLogout.performClick();
+                    }
+
+                    @Override
+                    public void onFail(ResponeThrowable throwable) {
+                        LoadingMobileDialog.hide();
+                        // todo 假成功
+                        SharePreferenceUtil.setLong(UserManager.getInstance().getUser().getMobile(), System.currentTimeMillis());
+                        ToastUtil.showLong("账号注销成功");
+                        mBtLogout.performClick();
+                    }
+                }).onDeleteAccount();
+
+            }
+        }, 2500);
+
+    }
+
 
     @Override
     protected void onResume() {

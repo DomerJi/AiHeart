@@ -40,6 +40,7 @@
     <!--  登录相关-->
     <string name="login">登录</string>
     <string name="logout">退出登录</string>
+    <string name="delete_account">注销账号</string>
     <string name="other_login_type">其他登录方式</string>
     <string name="forget_password">忘记密码</string>
     <string name="login_by_password">账号密码登录</string>

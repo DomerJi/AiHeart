@@ -100,6 +100,8 @@
     <string name="share">分享</string>
     <!-- 聊天 -->
     <string name="finishServiceTitle">确认退出当前对话吗？</string>
+    <string name="deleteAccount">注销后，您将失去此账号关联的一切信息，且无法找回，
+        确认要注销该账号吗？</string>
     <string name="finishServiceHint">确认退出当前对话吗？</string>
 
     <!--订单-->

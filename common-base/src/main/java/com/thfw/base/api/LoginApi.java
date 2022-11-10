@@ -19,6 +19,8 @@ import retrofit2.http.POST;
  */
 public interface LoginApi {
 
+    String KEY_DELETE_TIME = "account_delete_time";
+
     /**
      * [登录接口]
      * device_type string 目前支持 phone | pad | robot
@@ -107,6 +109,15 @@ public interface LoginApi {
     @POST("mobile_code_check")
     Observable<HttpResult<CommonModel>> onCheckMobileCode(@Field("mobile") String mobile,
                                                           @Field("code") String code);
+
+    /**
+     * [验证码-手机验证码验证]
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("delete_account")
+    Observable<HttpResult<CommonModel>> onDeleteAccount(@FieldMap Map<String, Object> params);
 
 
 }

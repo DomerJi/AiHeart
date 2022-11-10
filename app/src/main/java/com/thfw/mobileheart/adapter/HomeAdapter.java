@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.adapter;
 
 import android.content.Intent;
+import android.os.Build;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,7 +102,13 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             if (viewHolder instanceof MadeHolder) {
                 LogUtil.i("onMoodLively 03");
                 ((MadeHolder) viewHolder).setMood(data);
+                ((MadeHolder) viewHolder).setData();
                 ((MadeHolder) viewHolder).notifyTodayTime();
+            }
+
+            RecyclerView.ViewHolder viewHolderSort = mRecyclerView.findViewHolderForLayoutPosition(1);
+            if (viewHolderSort instanceof SortHolder) {
+                ((SortHolder) viewHolderSort).setData();
             }
         }
     }
@@ -183,10 +190,15 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                 MadeHolder madeHolder = (MadeHolder) holder;
                 madeHolder.notifyTodayTime();
                 madeHolder.setMood(MoodLivelyHelper.getModel());
+                madeHolder.setData();
                 break;
             case HomeEntity.TYPE_TAB_TITLE:
                 TabTitleHolder tabTitleHolder = (TabTitleHolder) holder;
                 tabTitleHolder.mTvTitle.setText(mDataList.get(position).tabTitle);
+                break;
+            case HomeEntity.TYPE_SORT:
+                SortHolder sortHolder = (SortHolder) holder;
+                sortHolder.setData();
                 break;
         }
     }
@@ -337,6 +349,29 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             itemView.findViewById(R.id.rl_tab_06).setOnClickListener(clickViewListener);
             itemView.findViewById(R.id.rl_tab_07).setOnClickListener(clickViewListener);
             itemView.findViewById(R.id.rl_tab_08).setOnClickListener(clickViewListener);
+            setData();
+        }
+
+        public void setData() {
+
+            MoodLivelyModel model = MoodLivelyHelper.getCacheMood();
+            boolean showFlag = model != null && model.getHideRedFlag() == 0;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                int[] handleRedIds = new int[]{R.id.iv_tab_04, R.id.iv_tab_06, R.id.iv_tab_08};
+                try {
+                    if (showFlag) {
+                        for (int id : handleRedIds) {
+                            itemView.findViewById(id).setForeground(mContext.getResources().getDrawable(R.mipmap.ic_red_flag_small));
+                        }
+                    } else {
+                        for (int id : handleRedIds) {
+                            itemView.findViewById(id).setForeground(null);
+                        }
+                    }
+                } catch (Exception e) {
+
+                }
+            }
         }
     }
 
@@ -391,10 +426,22 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             mTvMoodTitle.setOnClickListener(v -> {
                 StatusActivity.startActivity(mContext);
             });
+            setData();
 
         }
 
+        public void setData() {
+            try {
+                MoodLivelyModel model = MoodLivelyHelper.getCacheMood();
+                boolean showFlag = model != null && model.getHideRedFlag() == 0;
+                itemView.findViewById(R.id.riv_red_flag).setVisibility(showFlag ? View.VISIBLE : View.GONE);
+            } catch (Exception e) {
+
+            }
+        }
+
         public void setMood(MoodLivelyModel mood) {
+
             if (mTvMoodValue == null || mRivEmoji == null) {
                 return;
             }
