@@ -97,6 +97,7 @@ public class BookStudyActivity extends RobotBaseActivity<BookPresenter> implemen
     @Override
     public void onSuccess(List<BookStudyTypeModel> data) {
         if (data != null) {
+            BookStudyTypeModel.sort(data);
             data.add(0, new BookStudyTypeModel("全部", 0));
         }
 

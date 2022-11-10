@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
+import com.thfw.base.ContextApp;
 import com.thfw.base.base.IModel;
 import com.thfw.base.utils.GsonUtil;
 
@@ -61,7 +62,13 @@ public class BookStudyTypeModel implements IModel {
         try {
             return Color.parseColor(unSelectedColorStr);
         } catch (Exception e) {
-            return Color.parseColor("#333333");
+            switch (ContextApp.getDeviceType()){
+                case ContextApp.DeviceType.ROBOT:
+                    return Color.WHITE;
+                default:
+                    return Color.parseColor("#333333");
+            }
+
         }
     }
 
@@ -70,7 +77,12 @@ public class BookStudyTypeModel implements IModel {
         try {
             return Color.parseColor(selectedColorStr);
         } catch (Exception e) {
-            return Color.parseColor("#00A871");
+            switch (ContextApp.getDeviceType()){
+                case ContextApp.DeviceType.ROBOT:
+                    return Color.BLACK;
+                default:
+                    return Color.parseColor("#00A871");
+            }
         }
     }
 

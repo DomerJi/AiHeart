@@ -1,5 +1,6 @@
 package com.thfw.robotheart.adapter;
 
+import android.text.TextPaint;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -47,6 +48,14 @@ public class BookStudyTypeAdapter extends BaseAdapter<BookStudyTypeModel, BookSt
         holder.mTvType.setTextSize(selectedIndex == position ? UIConfig.LEFT_TAB_MAX_TEXTSIZE : UIConfig.LEFT_TAB_MIN_TEXTSIZE);
         holder.mTvType.setText(bean.name);
         holder.mTvType.setSelected(selectedIndex == position);
+        // 二十大标红
+        if(selectedIndex == position){
+            holder.mTvType.setTextColor(bean.getSelectedColor());
+            TextPaint paint = holder.mTvType.getPaint();
+            paint.setFakeBoldText(bean.getSelectedColor() == bean.getUnSelectedColor());
+        }else {
+            holder.mTvType.setTextColor(bean.getUnSelectedColor());
+        }
         if (selectedIndex == position && expand) {
             if (!EmptyUtil.isEmpty(bean.list)) {
                 BookStudyChildTypeAdapter childAdapter = new BookStudyChildTypeAdapter(bean.list);
