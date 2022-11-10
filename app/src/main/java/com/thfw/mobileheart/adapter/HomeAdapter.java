@@ -355,7 +355,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         public void setData() {
 
             MoodLivelyModel model = MoodLivelyHelper.getCacheMood();
-            boolean showFlag = model != null && model.getHideRedFlag() == 0;
+            boolean showFlag = (model == null || model.getHideRedFlag() == 0);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 int[] handleRedIds = new int[]{R.id.iv_tab_04, R.id.iv_tab_06, R.id.iv_tab_08};
                 try {
@@ -433,7 +433,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         public void setData() {
             try {
                 MoodLivelyModel model = MoodLivelyHelper.getCacheMood();
-                boolean showFlag = model != null && model.getHideRedFlag() == 0;
+                boolean showFlag = (model == null || model.getHideRedFlag() == 0);
                 itemView.findViewById(R.id.riv_red_flag).setVisibility(showFlag ? View.VISIBLE : View.GONE);
             } catch (Exception e) {
 
