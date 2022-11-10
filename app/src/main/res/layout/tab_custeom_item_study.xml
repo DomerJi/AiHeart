@@ -9,9 +9,8 @@
         android:id="@android:id/text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="123"
-        android:textSize="15sp"
         android:textColor="@color/text_common"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -22,12 +21,12 @@
     <ImageView
         android:id="@+id/iv_fire"
         android:layout_width="16dp"
-        android:visibility="gone"
-        android:src="@drawable/ic_baseline_local_fire_department_24"
         android:layout_height="16dp"
-        app:layout_constraintLeft_toRightOf="@android:id/text1"
-        app:layout_constraintBottom_toBottomOf="@android:id/text1"
         android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_baseline_local_fire_department_24"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@android:id/text1"
+        app:layout_constraintLeft_toRightOf="@android:id/text1"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

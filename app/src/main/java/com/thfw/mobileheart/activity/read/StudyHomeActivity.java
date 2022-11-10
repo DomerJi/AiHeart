@@ -1,9 +1,11 @@
 package com.thfw.mobileheart.activity.read;
 
+import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.TextPaint;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -46,6 +48,7 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
     private com.thfw.ui.widget.LoadingView mLoadingView;
     private com.thfw.mobileheart.view.LastTextView mTvLastAudio;
     private List<BookStudyTypeModel> models;
+    private List<TextView> textList;
 
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, StudyHomeActivity.class));
@@ -94,19 +97,15 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
-                refreshTabColor();
-                mViewPager.setCurrentItem(tab.getPosition());
+                Log.i("onTabSelected", "position -> " + tab.getPosition());
+                refreshTabColor(tab.getPosition());
+                if (mViewPager.getCurrentItem() != tab.getPosition()) {
+                    mViewPager.setCurrentItem(tab.getPosition());
+                }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                if (tab.getCustomView() != null) {
-                    TextView textView = tab.getCustomView().findViewById(android.R.id.text1);
-                    TextPaint paint = textView.getPaint();
-                    paint.setFakeBoldText(false);
-                    textView.setTextColor(cacheModel.get(tab.getPosition()).getUnSelectedColor());
-                }
             }
 
             @Override
@@ -119,19 +118,47 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
             }
         });
 
+        /**
+         * TypeEvaluator简介
+         * Android提供了以下几个简单的Evalutor实现类：
+         * IntEvaluator：属性的值类型为int
+         * FloatEvaluator：属性的值类型为float
+         * ArgbEvaluator：属性的值类型为十六进制颜色值
+         */
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            ArgbEvaluator argbEvaluator = new ArgbEvaluator();
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                if (positionOffset <= 0 || positionOffsetPixels <= 0) {
+                    return;
+                }
+
+                Object startColor = cacheModel.get(position).getSelectedColor();
+                Object endColor = cacheModel.get(position + 1).getSelectedColor();
+                int color = (int) argbEvaluator.evaluate(positionOffset, startColor, endColor);
+                mTabLayout.setSelectedTabIndicatorColor(color);
+                Log.i("onPageScrolled", "position -> " + position
+                        + " ; positionOffset -> " + positionOffset
+                        + " ; positionOffsetPixels -> " + positionOffsetPixels
+                        + " ; color -> " + color + " ; toPosition -> " + (position + 1));
                 mTabLayout.setScrollPosition(position, positionOffset, true);
             }
 
             @Override
             public void onPageSelected(int position) {
-                mTabLayout.selectTab(mTabLayout.getTabAt(position));
+                getSupportFragmentManager().beginTransaction()
+                        .setMaxLifecycle(tabFragmentList.get(position), Lifecycle.State.RESUMED).commit();
+                if (mTabLayout.getSelectedTabPosition() != position) {
+                    mTabLayout.selectTab(mTabLayout.getTabAt(position));
+                }
+
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
+
 
             }
         });
@@ -146,24 +173,6 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
 
         }
 
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                getSupportFragmentManager().beginTransaction()
-                        .setMaxLifecycle(tabFragmentList.get(position), Lifecycle.State.RESUMED).commit();
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             @NonNull
             @Override
@@ -203,10 +212,11 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
             TabLayout.Tab tabAt = mTabLayout.newTab().setText(cacheModel.get(i).name);
             mTabLayout.addTab(tabAt);
             tabAt.setCustomView(R.layout.tab_custeom_item_study);
-
+            textList = new ArrayList<>();
             if (tabAt.getCustomView() != null) {
                 if (cacheModel.get(i).isUnSelectedChange()) {
                     TextView mText1 = tabAt.getCustomView().findViewById(android.R.id.text1);
+                    textList.add(mText1);
                     mText1.setTextColor(models.get(i).getUnSelectedColor());
                 }
                 ImageView mIvFire = tabAt.getCustomView().findViewById(R.id.iv_fire);
@@ -221,28 +231,25 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
 //        mTabLayout.setupWithViewPager(mViewPager, false);
     }
 
-    private void refreshTabColor() {
+    private void refreshTabColor(int position) {
         int count = mTabLayout.getTabCount();
         for (int i = 0; i < count; i++) {
             BookStudyTypeModel model = models.get(i);
             TabLayout.Tab tabAt = mTabLayout.getTabAt(i);
+
+
             if (tabAt != null && tabAt.getCustomView() != null) {
+                TextView mText1 = tabAt.getCustomView().findViewById(android.R.id.text1);
                 ImageView mIvFire = tabAt.getCustomView().findViewById(R.id.iv_fire);
                 mIvFire.setVisibility(model.fire == 1 ? View.VISIBLE : View.GONE);
-                if (mTabLayout.getSelectedTabPosition() == i) {
-
-                    TextView mText1 = tabAt.getCustomView().findViewById(android.R.id.text1);
+                if (position == i) {
                     mText1.setTextColor(model.getSelectedColor());
+                    // mText1.setTypeface 加粗最可靠！！！
+                    mText1.setTypeface(model.getSelectedColor() == model.getUnSelectedColor() ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
                     mTabLayout.setSelectedTabIndicatorColor(model.getSelectedColor());
-                    TextPaint paint = mText1.getPaint();
-                    paint.setFakeBoldText(model.getSelectedColor() == model.getUnSelectedColor());
-
                 } else {
-                    TextView mText1 = tabAt.getCustomView().findViewById(android.R.id.text1);
                     mText1.setTextColor(model.getUnSelectedColor());
-                    TextPaint paint = mText1.getPaint();
-                    paint.setFakeBoldText(false);
-
+                    mText1.setTypeface(Typeface.DEFAULT);
                 }
             }
         }

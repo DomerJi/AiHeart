@@ -38,6 +38,32 @@ public class BookStudyTypeModel implements IModel {
     @SerializedName("fire")
     public int fire;
 
+    public String getSelectedColorStr() {
+        refreshColorName();
+        if (selectedColorStr == null) {
+            switch (ContextApp.getDeviceType()) {
+                case ContextApp.DeviceType.ROBOT:
+                    return "#FFFFFF";
+                default:
+                    return "#333333";
+            }
+        }
+        return selectedColorStr;
+    }
+
+    public String getUnSelectedColorStr() {
+        refreshColorName();
+        if (unSelectedColorStr == null) {
+            switch (ContextApp.getDeviceType()) {
+                case ContextApp.DeviceType.ROBOT:
+                    return "#000000";
+                default:
+                    return "#00A871";
+            }
+        }
+        return unSelectedColorStr;
+    }
+
     public boolean isChangedColor() {
         refreshColorName();
         return !TextUtils.isEmpty(selectedColorStr) || !TextUtils.isEmpty(unSelectedColorStr);
@@ -59,12 +85,21 @@ public class BookStudyTypeModel implements IModel {
 
     public int getUnSelectedColor() {
         refreshColorName();
+        if (TextUtils.isEmpty(unSelectedColorStr)) {
+            switch (ContextApp.getDeviceType()) {
+                case ContextApp.DeviceType.ROBOT:
+                    return Color.parseColor("#FFFFFF");
+                default:
+                    return Color.parseColor("#333333");
+            }
+
+        }
         try {
             return Color.parseColor(unSelectedColorStr);
         } catch (Exception e) {
-            switch (ContextApp.getDeviceType()){
+            switch (ContextApp.getDeviceType()) {
                 case ContextApp.DeviceType.ROBOT:
-                    return Color.WHITE;
+                    return Color.parseColor("#FFFFFF");
                 default:
                     return Color.parseColor("#333333");
             }
@@ -74,12 +109,20 @@ public class BookStudyTypeModel implements IModel {
 
     public int getSelectedColor() {
         refreshColorName();
+        if (TextUtils.isEmpty(selectedColorStr)) {
+            switch (ContextApp.getDeviceType()) {
+                case ContextApp.DeviceType.ROBOT:
+                    return Color.parseColor("#000000");
+                default:
+                    return Color.parseColor("#00A871");
+            }
+        }
         try {
             return Color.parseColor(selectedColorStr);
         } catch (Exception e) {
-            switch (ContextApp.getDeviceType()){
+            switch (ContextApp.getDeviceType()) {
                 case ContextApp.DeviceType.ROBOT:
-                    return Color.BLACK;
+                    return Color.parseColor("#000000");
                 default:
                     return Color.parseColor("#00A871");
             }
