@@ -17,7 +17,6 @@ import com.thfw.base.models.VideoTypeModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.VideoPresenter;
 import com.thfw.base.utils.EmptyUtil;
-import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
@@ -112,9 +111,11 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
 
                 @Override
                 public void onItemClick(List<VideoTypeModel> list, int position) {
-                    LogUtil.d(TAG, "onItemClick -> " + position + GsonUtil.toJson(list.get(position).list));
+                    LogUtil.d(TAG, "onItemClick -> " + position);
                     if (position == -1) {
                         mLoader.hide();
+                        mRvChildren2.setVisibility(View.GONE);
+                        mRvChildren2.removeAllViews();
                         return;
                     }
 
