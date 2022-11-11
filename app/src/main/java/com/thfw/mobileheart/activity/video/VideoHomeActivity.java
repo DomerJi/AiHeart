@@ -14,12 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.common.reflect.TypeToken;
 import com.thfw.base.models.VideoLastEtcModel;
 import com.thfw.base.models.VideoTypeModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.VideoPresenter;
-import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
@@ -31,7 +29,6 @@ import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,13 +74,13 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
         //设置TabLayout和ViewPager联动
         mTabLayout.setupWithViewPager(mViewPager, false);
 
-        Type type = new TypeToken<List<VideoTypeModel>>() {
-        }.getType();
-        List<VideoTypeModel> cacheModel = SharePreferenceUtil.getObject(KEY_TYPE_LIST, type);
-        if (!EmptyUtil.isEmpty(cacheModel)) {
-            mLoadingView.hide();
-            setAdapter(cacheModel);
-        }
+//        Type type = new TypeToken<List<VideoTypeModel>>() {
+//        }.getType();
+//        List<VideoTypeModel> cacheModel = SharePreferenceUtil.getObject(KEY_TYPE_LIST, type);
+//        if (!EmptyUtil.isEmpty(cacheModel)) {
+//            mLoadingView.hide();
+//            setAdapter(cacheModel);
+//        }
         mPresenter.getVideoType();
 
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -167,6 +164,7 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
 
     @Override
     public void onSuccess(List<VideoTypeModel> data) {
+        VideoTypeModel.resetList(data);
         if (data != null) {
             data.add(0, new VideoTypeModel("全部", 0));
         }

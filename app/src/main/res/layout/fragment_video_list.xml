@@ -11,11 +11,19 @@
         android:layout_height="wrap_content"
         android:background="@color/page_background_gray" />
 
+    <com.thfw.mobileheart.view.VideoRecyclerView
+        android:id="@+id/rv_children2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rv_children"
+        android:background="@drawable/tab_layout_bottom_divider"
+        android:visibility="gone" />
+
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rv_children">
+        android:layout_below="@id/rv_children2">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_list"
@@ -28,11 +36,11 @@
         android:id="@+id/loadingView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rv_children" />
+        android:layout_below="@id/rv_children2" />
 
     <FrameLayout
         android:id="@+id/fl_content01"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rv_children" />
+        android:layout_below="@id/rv_children2" />
 </RelativeLayout>

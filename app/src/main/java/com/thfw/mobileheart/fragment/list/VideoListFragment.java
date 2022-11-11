@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.fragment.list;
 
 import android.content.Context;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,6 +16,8 @@ import com.thfw.base.models.VideoEtcModel;
 import com.thfw.base.models.VideoTypeModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.VideoPresenter;
+import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
@@ -45,6 +48,7 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
     private PageHelper<VideoEtcModel> mPageHelper;
     private RecyclerView mRvChildren;
     private VideoChildTypeAdapter videoChildTypeAdapter;
+    private RecyclerView mRvChildren2;
 
     public VideoListFragment(int type) {
         super();
@@ -86,6 +90,7 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
 
         mRefreshLayout = (SmartRefreshLayout) findViewById(R.id.refreshLayout);
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
+
         if (getActivity() instanceof VideoHomeActivity) {
             VideoHomeActivity videoHomeActivity = (VideoHomeActivity) getActivity();
             videoHomeActivity.setRecyclerView(mRvList);
@@ -94,7 +99,9 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 
         mRvChildren = (RecyclerView) findViewById(R.id.rv_children);
+        mRvChildren2 = findViewById(R.id.rv_children2);
         mRvChildren.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+        mRvChildren2.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         if (getArguments() != null && !getArguments().isEmpty()) {
             ArrayList<VideoTypeModel> videoTypeModels = (ArrayList<VideoTypeModel>) getArguments().getSerializable(KEY_CHILD_TYPE);
             videoChildTypeAdapter = new VideoChildTypeAdapter(videoTypeModels);
@@ -105,10 +112,39 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
 
                 @Override
                 public void onItemClick(List<VideoTypeModel> list, int position) {
-                    LogUtil.d(TAG, "onItemClick -> " + position);
+                    LogUtil.d(TAG, "onItemClick -> " + position + GsonUtil.toJson(list.get(position).list));
                     if (position == -1) {
                         mLoader.hide();
                         return;
+                    }
+
+                    // 三级标题
+                    if (!EmptyUtil.isEmpty(list.get(position).list)) {
+                        mRvChildren2.setVisibility(View.VISIBLE);
+                        VideoChildTypeAdapter child2Adapter = new VideoChildTypeAdapter(list.get(position).list);
+                        child2Adapter.setSelectedIndex(0);
+                        child2Adapter.setOnRvItemListener(new OnRvItemListener<VideoTypeModel>() {
+                            @Override
+                            public void onItemClick(List<VideoTypeModel> list, int position) {
+                                int childType = list.get(position).id;
+                                Fragment fragment = mLoader.load(childType);
+                                if (fragment == null) {
+                                    mLoader.add(childType, new VideoListFragment(childType));
+                                }
+                                mVideoListFragment = (VideoListFragment) mLoader.load(childType);
+                            }
+                        });
+                        mRvChildren2.setAdapter(child2Adapter);
+                        int childType = list.get(0).id;
+                        Fragment fragment = mLoader.load(childType);
+                        if (fragment == null) {
+                            mLoader.add(childType, new VideoListFragment(childType));
+                        }
+                        mVideoListFragment = (VideoListFragment) mLoader.load(childType);
+//                        videoChildTypeAdapter.getOnRvItemListener().onItemClick(list.get(position).list, 0);
+                        return;
+                    } else {
+                        mRvChildren2.setVisibility(View.GONE);
                     }
                     int childType = list.get(position).id;
                     Fragment fragment = mLoader.load(childType);
