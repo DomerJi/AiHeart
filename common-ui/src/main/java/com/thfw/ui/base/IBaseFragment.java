@@ -33,7 +33,7 @@ public abstract class IBaseFragment<T extends IPresenter> extends RxFragment imp
     protected T mPresenter;
     protected Context mContext;
     protected boolean hasLoad = false;
-    private boolean isVisible = false;
+    private boolean isHasLoadData = false;
     private UserObserver userObserver;
     private View rootView;
 
@@ -81,8 +81,7 @@ public abstract class IBaseFragment<T extends IPresenter> extends RxFragment imp
             if (userObserver != null) {
                 UserManager.getInstance().addObserver(userObserver);
             }
-
-            initData();
+//            initData();
         }
     }
 
@@ -120,6 +119,10 @@ public abstract class IBaseFragment<T extends IPresenter> extends RxFragment imp
      */
     public void onVisible(boolean isVisible) {
         lifecycleSubject.onNext(isVisible ? FragmentEvent.RESUME : FragmentEvent.PAUSE);
+        if (!isHasLoadData && isVisible) {
+            isHasLoadData = true;
+            initData();
+        }
     }
 
     @Override
@@ -153,6 +156,14 @@ public abstract class IBaseFragment<T extends IPresenter> extends RxFragment imp
      * 初始化数据
      */
     public abstract void initData();
+
+    /**
+     *
+     */
+    public void initDataByVisible() {
+
+    }
+
 
     /**
      * @return 子类实现User状态监听
