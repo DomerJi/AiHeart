@@ -197,10 +197,14 @@ public class VideoTypeModel implements IModel {
             Collections.sort(list, new Comparator<VideoTypeModel>() {
                 @Override
                 public int compare(VideoTypeModel o1, VideoTypeModel o2) {
-                    if (Math.abs(o1.sort) == Math.abs(o2.sort)) {
+                    try {
+                        if (Math.abs(o1.sort) == Math.abs(o2.sort)) {
+                            return 0;
+                        }
+                        return Math.abs(o1.sort) > Math.abs(o2.sort) ? -1 : 1;
+                    } catch (Exception e) {
                         return 0;
                     }
-                    return Math.abs(o1.sort) > Math.abs(o2.sort) ? -1 : 1;
                 }
             });
 

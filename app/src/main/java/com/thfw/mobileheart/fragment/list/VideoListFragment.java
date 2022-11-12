@@ -124,9 +124,13 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
                         mRvChildren2.setVisibility(View.VISIBLE);
                         VideoChildTypeAdapter child2Adapter = new VideoChildTypeAdapter(list.get(position).list);
                         child2Adapter.setSelectedIndex(0);
+                        child2Adapter.setReSetPosition(false);
                         child2Adapter.setOnRvItemListener(new OnRvItemListener<VideoTypeModel>() {
                             @Override
                             public void onItemClick(List<VideoTypeModel> list, int position) {
+                                if (position == -1) {
+                                    return;
+                                }
                                 int childType = list.get(position).id;
                                 Fragment fragment = mLoader.load(childType);
                                 if (fragment == null) {

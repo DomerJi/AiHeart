@@ -24,6 +24,12 @@ import java.util.List;
 public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChildTypeAdapter.VideoChildHolder> {
 
     private int mSelectedIndex = -1;
+    // 重复点击 是否 mSelectedIndex = -1
+    private boolean reSetPosition = true;
+
+    public void setReSetPosition(boolean reSetPosition) {
+        this.reSetPosition = reSetPosition;
+    }
 
     public VideoChildTypeAdapter(List<VideoTypeModel> dataList) {
         super(dataList);
@@ -83,6 +89,9 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
             itemView.setOnClickListener(v -> {
                 int position = getBindingAdapterPosition();
                 if (mSelectedIndex == position) {
+                    if(!reSetPosition){
+                        return;
+                    }
                     mSelectedIndex = -1;
                 } else {
                     mSelectedIndex = position;
