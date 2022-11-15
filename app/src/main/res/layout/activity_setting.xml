@@ -358,7 +358,8 @@
         android:padding="8dp"
         android:text="@string/delete_account"
         android:textColor="@color/link"
-        android:textSize="@dimen/textSize_small" />
+        android:textSize="@dimen/textSize_small"
+        android:visibility="gone" />
 
 
 </LinearLayout>

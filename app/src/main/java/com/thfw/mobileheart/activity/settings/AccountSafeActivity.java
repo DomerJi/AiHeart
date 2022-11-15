@@ -5,17 +5,28 @@ import android.text.TextUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.models.CommonModel;
+import com.thfw.base.net.NetParams;
+import com.thfw.base.net.ResponeThrowable;
+import com.thfw.base.presenter.UserInfoPresenter;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
+import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.TitleView;
 import com.thfw.user.login.UserManager;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 /**
  * 账号管理
  */
 public class AccountSafeActivity extends BaseActivity {
 
+
+    private static final int BIND_CODE = 9;
     private com.thfw.ui.widget.TitleView mTitleView;
     private android.widget.LinearLayout mLlMobile;
     private android.widget.LinearLayout mLlWechat;
@@ -62,7 +73,7 @@ public class AccountSafeActivity extends BaseActivity {
         mTvPhone = (TextView) findViewById(R.id.tv_phone);
 
         mLlMobile.setOnClickListener(v -> {
-            startActivity(new Intent(mContext, BindMobileActivity.class));
+            startActivityForResult(new Intent(mContext, BindMobileActivity.class), BIND_CODE);
         });
         mLlPassword.setOnClickListener(v -> {
             startActivity(new Intent(mContext, SetPasswordOriginActivity.class));
@@ -97,5 +108,53 @@ public class AccountSafeActivity extends BaseActivity {
     @Override
     public void initData() {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK || data == null) {
+            return;
+        }
+        switch (requestCode) {
+            case BIND_CODE:
+                String phoneNumber = data.getStringExtra(BindMobileActivity.KEY_RESULT);
+                mTvPhone.setText(phoneNumber);
+                onUpdateInfo("mobile", phoneNumber);
+                UserManager.getInstance().getUser().getUserInfo().mobile = phoneNumber;
+                UserManager.getInstance().notifyUserInfo();
+                break;
+        }
+    }
+
+
+    public void onUpdateInfo(String key, Object value) {
+        onUpdateInfo(NetParams.crete()
+                .add("key", key)
+                .add("value", value));
+    }
+
+    public void onUpdateInfo(NetParams netParams) {
+
+        LoadingDialog.show(this, "保存中...");
+        new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<CommonModel>() {
+            @Override
+            public LifecycleProvider getLifecycleProvider() {
+                return AccountSafeActivity.this;
+            }
+
+            @Override
+            public void onSuccess(CommonModel data) {
+                LoadingDialog.hide();
+                ToastUtil.show("保存成功");
+            }
+
+            @Override
+            public void onFail(ResponeThrowable throwable) {
+                LoadingDialog.hide();
+                ToastUtil.show("保存失败");
+
+            }
+        }).onUpdate(netParams);
     }
 }
