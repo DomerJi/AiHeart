@@ -20,7 +20,6 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.role.Limits;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
-import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
@@ -118,7 +117,7 @@ public abstract class IBaseFragment<T extends IPresenter> extends RxFragment imp
      * @param isVisible true 可见
      */
     public void onVisible(boolean isVisible) {
-        lifecycleSubject.onNext(isVisible ? FragmentEvent.RESUME : FragmentEvent.PAUSE);
+//        lifecycleSubject.onNext(isVisible ? FragmentEvent.RESUME : FragmentEvent.PAUSE);
         if (!isHasLoadData && isVisible) {
             isHasLoadData = true;
             initData();

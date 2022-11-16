@@ -54,9 +54,9 @@ public abstract class RxFragment extends Fragment implements LifecycleProvider<F
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (hidden) {
-            lifecycleSubject.onNext(FragmentEvent.PAUSE);
+//            lifecycleSubject.onNext(FragmentEvent.PAUSE);
         } else {
-            lifecycleSubject.onNext(FragmentEvent.RESUME);
+//            lifecycleSubject.onNext(FragmentEvent.RESUME);
         }
     }
 
@@ -64,14 +64,14 @@ public abstract class RxFragment extends Fragment implements LifecycleProvider<F
     @CallSuper
     public void onResume() {
         super.onResume();
-        lifecycleSubject.onNext(FragmentEvent.RESUME);
+//        lifecycleSubject.onNext(FragmentEvent.RESUME);
     }
 
     @Override
     @CallSuper
     public void onPause() {
         super.onPause();
-        lifecycleSubject.onNext(FragmentEvent.PAUSE);
+//        lifecycleSubject.onNext(FragmentEvent.PAUSE);
     }
 
     @Override
