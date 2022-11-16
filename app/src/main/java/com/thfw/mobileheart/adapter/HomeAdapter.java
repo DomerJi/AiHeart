@@ -174,7 +174,6 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull @NotNull RecyclerView.ViewHolder holder, int position) {
         HomeEntity entity = mDataList.get(position);
-        getItemViewType(position);
         switch (entity.type) {
             case HomeEntity.TYPE_BODY:
                 BodyHolder bodyHolder = (BodyHolder) holder;
