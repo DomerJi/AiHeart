@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.utils.HandlerUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
@@ -119,9 +120,6 @@ public class SetVolumeFragment extends RobotBaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        textProgressChanged(mSbSystemVolume.getProgress(), mTvSystemVolumeProgress, mSbSystemVolume);
-        textProgressChanged(mSbHintVolume.getProgress(), mTvHintVolumeProgress, mSbHintVolume);
-        textProgressChanged(mSbBtnVolume.getProgress(), mTvBtnVolumeProgress, mSbBtnVolume);
 
 
         // 系统音量
@@ -133,6 +131,7 @@ public class SetVolumeFragment extends RobotBaseFragment {
                     ToastUtil.show("没有开启静音权限");
                     return;
                 }
+                SharePreferenceUtil.setInt("STREAM_SYSTEM", progress);
                 textProgressChanged(progress, mTvSystemVolumeProgress, mSbSystemVolume);
                 if (fromUser) {
                     mAudioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, maxSystemVolume * progress / 100, AudioManager.FLAG_PLAY_SOUND);
@@ -157,6 +156,7 @@ public class SetVolumeFragment extends RobotBaseFragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 textProgressChanged(progress, mTvHintVolumeProgress, mSbHintVolume);
+                SharePreferenceUtil.setInt("STREAM_MUSIC", progress);
                 if (fromUser) {
                     mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxMusicVolume * progress / 100, AudioManager.FLAG_PLAY_SOUND);
                     playMusic(1);
@@ -195,10 +195,25 @@ public class SetVolumeFragment extends RobotBaseFragment {
 
             }
         });
+        int trueSystemVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) * 100 / maxSystemVolume;
+        int visibleSystemVolume = SharePreferenceUtil.getInt("STREAM_SYSTEM", trueSystemVolume);
+        if (Math.abs(visibleSystemVolume - trueSystemVolume) > 1 * 100 / maxSystemVolume) {
+            visibleSystemVolume = trueSystemVolume;
+        }
+        mSbSystemVolume.setProgress(visibleSystemVolume);
 
-        mSbSystemVolume.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) * 100 / maxSystemVolume);
-        mSbHintVolume.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC) * 100 / maxMusicVolume);
-        mSbBtnVolume.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION) * 100 / maxNotificationVolume);
+        int trueMusicVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC) * 100 / maxMusicVolume;
+        int visibleMusicVolume = SharePreferenceUtil.getInt("STREAM_MUSIC", trueMusicVolume);
+        if (Math.abs(visibleMusicVolume - trueMusicVolume) > 1 * 100 / maxMusicVolume) {
+            visibleMusicVolume = trueMusicVolume;
+        }
+        mSbHintVolume.setProgress(visibleMusicVolume);
+//        mSbBtnVolume.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION) * 100 / maxNotificationVolume);
+
+
+        textProgressChanged(mSbSystemVolume.getProgress(), mTvSystemVolumeProgress, mSbSystemVolume);
+        textProgressChanged(mSbHintVolume.getProgress(), mTvHintVolumeProgress, mSbHintVolume);
+//        textProgressChanged(mSbBtnVolume.getProgress(), mTvBtnVolumeProgress, mSbBtnVolume);
     }
 
     /**

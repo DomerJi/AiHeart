@@ -125,6 +125,7 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
 
     @Override
     public void onSuccess(List<VideoTypeModel> data) {
+        VideoTypeModel.resetList(data);
         if (data != null) {
             data.add(0, new VideoTypeModel("全部", 0));
         }

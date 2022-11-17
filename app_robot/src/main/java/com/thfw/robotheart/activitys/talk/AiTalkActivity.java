@@ -922,7 +922,11 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             return false;
         }
         LogUtil.i(TAG, "dance -> " + dance.toString());
-        TtsHelper.getInstance().start(new TtsModel(dance.tts), null);
+        // 机器人 跳舞 回答语言
+        ChatEntity chatEntity = new ChatEntity();
+        chatEntity.type = ChatEntity.TYPE_FROM_NORMAL;
+        chatEntity.talk = dance.tts;
+        ttsHandle(chatEntity);
         switch (dance.type) {
             case RobotUtil.Dance.ALL:
                 SerialManager.getInstance().startAllAction();

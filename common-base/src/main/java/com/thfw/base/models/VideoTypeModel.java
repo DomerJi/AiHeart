@@ -89,12 +89,12 @@ public class VideoTypeModel implements IModel {
     }
 
     private void refreshColorName() {
-        if (TextUtils.isEmpty(unSelectedColorStr) && sort < 0 && String.valueOf(sort).endsWith("7")) {
-            unSelectedColorStr = "#FF0000";
-        }
-        if (TextUtils.isEmpty(selectedColorStr) && sort < 0 && String.valueOf(sort).endsWith("7")) {
-            selectedColorStr = "#FF0000";
-        }
+//        if (TextUtils.isEmpty(unSelectedColorStr) && sort < 0 && String.valueOf(sort).endsWith("7")) {
+//            unSelectedColorStr = "#FF0000";
+//        }
+//        if (TextUtils.isEmpty(selectedColorStr) && sort < 0 && String.valueOf(sort).endsWith("7")) {
+//            selectedColorStr = "#FF0000";
+//        }
     }
 
     public int getUnSelectedColor() {
@@ -126,7 +126,7 @@ public class VideoTypeModel implements IModel {
         if (TextUtils.isEmpty(selectedColorStr)) {
             switch (ContextApp.getDeviceType()) {
                 case ContextApp.DeviceType.ROBOT:
-                    return Color.parseColor("#000000");
+                    return Color.parseColor("#91dff3");
                 default:
                     return Color.parseColor("#00A871");
             }
@@ -136,7 +136,7 @@ public class VideoTypeModel implements IModel {
         } catch (Exception e) {
             switch (ContextApp.getDeviceType()) {
                 case ContextApp.DeviceType.ROBOT:
-                    return Color.parseColor("#000000");
+                    return Color.parseColor("#91dff3");
                 default:
                     return Color.parseColor("#00A871");
             }
@@ -149,9 +149,11 @@ public class VideoTypeModel implements IModel {
 
 
     public static void resetList(List<VideoTypeModel> list) {
-        for (VideoTypeModel model : list) {
-            if (!EmptyUtil.isEmpty(model.list)) {
-                model.list = resetNewList(model.list);
+        if (list != null) {
+            for (VideoTypeModel model : list) {
+                if (!EmptyUtil.isEmpty(model.list)) {
+                    model.list = resetNewList(model.list);
+                }
             }
         }
     }

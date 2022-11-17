@@ -1,5 +1,6 @@
 package com.thfw.robotheart.adapter;
 
+import android.text.TextPaint;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -48,6 +49,14 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
         holder.mTvType.setTextSize(selectedIndex == position ? UIConfig.LEFT_TAB_CHILD_MAX_TEXTSIZE : UIConfig.LEFT_TAB_CHILD_MIN_TEXTSIZE);
         holder.mTvType.setSelected(selectedIndex == position);
         holder.mTvType.setText(mDataList.get(position).name);
+        // 二十大标红
+        if(selectedIndex == position){
+            holder.mTvType.setTextColor(mDataList.get(position).getSelectedColor());
+            TextPaint paint = holder.mTvType.getPaint();
+            paint.setFakeBoldText(mDataList.get(position).getSelectedColor() == mDataList.get(position).getUnSelectedColor());
+        }else {
+            holder.mTvType.setTextColor(mDataList.get(position).getUnSelectedColor());
+        }
         holder.mVLine.setVisibility(position == getItemCount() - 1 ? View.INVISIBLE : View.VISIBLE);
     }
 

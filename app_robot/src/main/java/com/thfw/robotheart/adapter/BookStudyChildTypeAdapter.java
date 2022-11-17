@@ -48,6 +48,7 @@ public class BookStudyChildTypeAdapter extends BaseAdapter<BookStudyTypeModel, B
         holder.mTvType.setTextSize(selectedIndex == position ? UIConfig.LEFT_TAB_CHILD_MAX_TEXTSIZE : UIConfig.LEFT_TAB_CHILD_MIN_TEXTSIZE);
         holder.mTvType.setSelected(selectedIndex == position);
         holder.mTvType.setText(mDataList.get(position).name);
+        holder.mTvType.setTextSize(holder.mTvType.getText().length() > 8 ? 15 : 18);
         holder.mVLine.setVisibility(position == getItemCount() - 1 ? View.INVISIBLE : View.VISIBLE);
     }
 
