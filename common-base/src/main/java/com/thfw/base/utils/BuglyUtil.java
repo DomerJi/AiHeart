@@ -98,6 +98,9 @@ public class BuglyUtil {
                         BuglyUtil.requestUpgradeStateListener.onVersion(true);
                     }
                 } else {
+                    if (BuglyUtil.requestUpgradeStateListener != null) {
+                        BuglyUtil.requestUpgradeStateListener.onVersion(isNewVersion());
+                    }
                     TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
                         @Override
                         public void onArrive() {
