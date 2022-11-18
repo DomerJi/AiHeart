@@ -19,7 +19,8 @@ public enum WorkInt {
     SECOND5_MSG_COUNT(9, 5, true),
     SECOND5_MSG_COUNT2(10, 5, true),
     SECOND7(11, 7, false),
-    SECOND_IP(12, 8, false);
+    SECOND_IP(12, 8, false),
+    CHECK_VERSION(13, 15, false);
 
     /**
      * 标识

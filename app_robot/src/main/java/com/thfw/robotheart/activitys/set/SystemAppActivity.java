@@ -10,16 +10,20 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tencent.bugly.beta.Beta;
-import com.tencent.bugly.beta.download.DownloadListener;
-import com.tencent.bugly.beta.download.DownloadTask;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.models.VersionModel;
+import com.thfw.base.net.download.ProgressListener;
+import com.thfw.base.net.download.TestDownLoad;
+import com.thfw.base.utils.AppUtils;
+import com.thfw.base.utils.BuglyUtil;
+import com.thfw.base.utils.NetworkUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.service.AutoUpdateService;
 
+import java.io.File;
 import java.math.BigDecimal;
 
 /**
@@ -37,6 +41,8 @@ public class SystemAppActivity extends RobotBaseActivity {
     private TextView mTvProgress;
     private LinearLayout mLlProgress;
     private ProgressBar mPbDowning;
+
+    private String mFilePath;
 
     /**
      * 将文件大小kb转换成M
@@ -75,81 +81,6 @@ public class SystemAppActivity extends RobotBaseActivity {
         mTvProgress = findViewById(R.id.tv_down_progress);
         mLlProgress = (LinearLayout) findViewById(R.id.ll_progress);
         mPbDowning = (ProgressBar) findViewById(R.id.pb_downing);
-        initData();
-    }
-
-    @Override
-    public void initData() {
-        if (Beta.getUpgradeInfo() == null) {
-            ToastUtil.show("您的版本是最新的");
-            finish();
-            return;
-        }
-        version = findViewById(R.id.version);
-        size = findViewById(R.id.size);
-        content = findViewById(R.id.content);
-        start = findViewById(R.id.start);
-
-        /*获取下载任务，初始化界面信息*/
-        updateBtn(Beta.getStrategyTask());
-        if (Beta.getStrategyTask() != null
-                && Beta.getStrategyTask().getStatus() == DownloadTask.DOWNLOADING) {
-            mLlProgress.setVisibility(View.VISIBLE);
-        }
-        /*获取策略信息，初始化界面信息*/
-        version.setText(Beta.getUpgradeInfo().versionName);
-        size.setText(toFileSizeM(Beta.getUpgradeInfo().fileSize + ""));
-        content.setText(Beta.getUpgradeInfo().newFeature);
-
-        /*为下载按钮设置监听*/
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DownloadTask task = Beta.startDownload();
-                updateBtn(task);
-                if (task.getStatus() == DownloadTask.DOWNLOADING) {
-                    mLlProgress.setVisibility(View.VISIBLE);
-                } else if (task.getStatus() == DownloadTask.COMPLETE) {
-                    checkPermission();
-                }
-            }
-        });
-        /*注册下载监听，监听下载事件*/
-        Beta.registerDownloadListener(new DownloadListener() {
-            @Override
-            public void onReceive(DownloadTask task) {
-                updateBtn(task);
-                if (task.getTotalLength() <= 0) {
-                    return;
-                }
-                int progress = (int) (task.getSavedLength() * 100 / task.getTotalLength());
-                Log.d(TAG, "progress  - > " + progress);
-                mPbDowning.setProgress(progress);
-                mTvProgress.setText(progress + "%");
-            }
-
-            @Override
-            public void onCompleted(DownloadTask task) {
-                updateBtn(task);
-                Log.d(TAG, "progress - > onCompleted");
-                mPbDowning.setProgress(100);
-                mTvProgress.setText("100%");
-            }
-
-            @Override
-            public void onFailed(DownloadTask task, int code, String extMsg) {
-                updateBtn(task);
-                Log.d(TAG, "progress - > Failed");
-                mTvProgress.setText("failed");
-            }
-        });
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        /*注销下载监听*/
-        Beta.unregisterDownloadListener();
     }
 
     @Override
@@ -162,32 +93,76 @@ public class SystemAppActivity extends RobotBaseActivity {
         return null;
     }
 
-    public void updateBtn(DownloadTask task) {
-        if (task == null) {
+    @Override
+    public void initData() {
+        if (BuglyUtil.getVersionModel() == null) {
+            ToastUtil.show("您的版本是最新的");
+            finish();
             return;
         }
-        Log.d(TAG, "status = " + task.getStatus());
-        /*根据下载任务状态设置按钮*/
-        switch (task.getStatus()) {
-            case DownloadTask.INIT:
-            case DownloadTask.DELETED:
-            case DownloadTask.FAILED: {
-                start.setText("立即更新");
+
+        version = findViewById(R.id.version);
+        size = findViewById(R.id.size);
+        content = findViewById(R.id.content);
+        start = findViewById(R.id.start);
+
+        VersionModel versionModel = BuglyUtil.getVersionModel();
+
+        /*获取策略信息，初始化界面信息*/
+        version.setText(versionModel.getVersion());
+        size.setText(toFileSizeM(versionModel.getSize()));
+        content.setText(versionModel.getDes());
+
+        /*为下载按钮设置监听*/
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ("安装".equals(start.getText()) || mFilePath != null) {
+                    checkPermission();
+                    return;
+                }
+
+                if (!NetworkUtil.isNetConnected(mContext)) {
+                    ToastUtil.show("请连接网络后再试");
+                    return;
+                }
+
+                start.setEnabled(false);
+                start.setText("正在下载...");
+                mLlProgress.setVisibility(View.VISIBLE);
+
+                TestDownLoad.test(BuglyUtil.getVersionModel().getDownloadUrl(), SystemAppActivity.this, new ProgressListener() {
+                    @Override
+                    public void update(String url, long bytesRead, long contentLength, boolean done, String filePath) {
+                        Log.i("TestDownLoad", "bytesRead = " + bytesRead
+                                + " contentLength = " + contentLength + " filePath = " + filePath);
+                        if (!isMeResumed()) {
+                            return;
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(contentLength<=0){
+                                    ToastUtil.show("资源错误");
+                                    return;
+                                }
+                                int progress = (int) (bytesRead * 100 / contentLength);
+                                Log.d(TAG, "progress  - > " + progress);
+
+                                mPbDowning.setProgress(progress);
+                                mTvProgress.setText(progress + "%");
+                                if (progress == 100) {
+                                    SystemAppActivity.this.mFilePath = TestDownLoad.getApkPath(BuglyUtil.getVersionModel().getDownloadUrl());
+                                    start.setEnabled(true);
+                                    start.setText("安装");
+                                }
+                            }
+                        });
+                    }
+                });
+
             }
-            break;
-            case DownloadTask.COMPLETE: {
-                start.setText("安装");
-            }
-            break;
-            case DownloadTask.DOWNLOADING: {
-                start.setText("暂停");
-            }
-            break;
-            case DownloadTask.PAUSED: {
-                start.setText("继续下载");
-            }
-            break;
-        }
+        });
     }
 
 
@@ -209,15 +184,12 @@ public class SystemAppActivity extends RobotBaseActivity {
     }
 
     private void install() {
-        DownloadTask task = Beta.startDownload();
-        if (task != null && task.getStatus() == DownloadTask.COMPLETE) {
+
+        if (mFilePath != null) {
             SharePreferenceUtil.setLong(AutoUpdateService.AFTER_TIME, 0);
-            Beta.installApk(task.getSaveFile());
-            Log.e(TAG, "Beta.installApk ============================== ");
+            AppUtils.installApk(SystemAppActivity.this, mFilePath);
+            Log.e(TAG, "Beta.installApk ============================== " + mFilePath + "_" + new File(mFilePath).length());
         } else {
-            if (task != null) {
-                task.delete(true);
-            }
             Log.e(TAG, "Beta.installApk ============================== fail");
         }
     }

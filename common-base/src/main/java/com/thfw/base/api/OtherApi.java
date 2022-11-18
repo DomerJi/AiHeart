@@ -3,6 +3,7 @@ package com.thfw.base.api;
 import com.thfw.base.models.AboutUsModel;
 import com.thfw.base.models.CommonProblemModel;
 import com.thfw.base.models.HotCallModel;
+import com.thfw.base.models.VersionModel;
 import com.thfw.base.models.VoiceInstructionModel;
 import com.thfw.base.net.HttpResult;
 
@@ -63,5 +64,23 @@ public interface OtherApi {
     @FormUrlEncoded
     @POST("about_us")
     Observable<HttpResult<AboutUsModel>> getAboutUs(@FieldMap Map<String, Object> params);
+
+
+    /**
+     * 【检查版本】
+     *
+     * “https://cos.pgyer.com/7bb7d47f86ad8d258db85abd00b5c928.apk?sign=9f994f27c7bfe29b4aa9d713088fe54e&t=1668755455&response-content-disposition=attachment%3Bfilename%3DAI%E5%92%A8%E8%AF%A2%E5%B8%88_2.0.0.apk”
+     * type phone
+     *
+     * size
+     * version
+     * des
+     * update_time
+     * download_url
+     */
+    @FormUrlEncoded
+    @POST("getVersion")
+    Observable<HttpResult<VersionModel>> getVersion(@FieldMap Map<String, Object> params);
+
 
 }

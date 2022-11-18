@@ -126,7 +126,7 @@ public class TestActivity extends AppCompatActivity {
         mBtBeginDownload.setOnClickListener(v -> {
             DownLoadIntentService.setProgressListener(new ProgressListener() {
                 @Override
-                public void update(String url, long bytesRead, long contentLength, boolean done) {
+                public void update(String url, long bytesRead, long contentLength, boolean done, String filePath) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

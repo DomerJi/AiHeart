@@ -69,12 +69,12 @@ public class DownLoadIntentService extends IntentService {
         }
 
         @Override
-        public void update(String url, long bytesRead, long contentLength, boolean done) {
+        public void update(String url, long bytesRead, long contentLength, boolean done,String filePath) {
 //            Log.e(TAG, "update -> url = " + url
 //                    + "; bytesRead = " + bytesRead
 //                    + "; contentLength = " + contentLength);
             if (DownLoadIntentService.progressListener != null) {
-                DownLoadIntentService.progressListener.update(url, bytesRead, contentLength, done);
+                DownLoadIntentService.progressListener.update(url, bytesRead, contentLength, done,filePath);
             }
             if (done) {
                 progressMap.remove(url);

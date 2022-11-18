@@ -75,12 +75,12 @@ public class BookStudyTypeModel implements IModel {
     }
 
     private void refreshColorName() {
-        if (TextUtils.isEmpty(unSelectedColorStr) && name != null && name.contains("二十大")) {
-            unSelectedColorStr = "#FF0000";
-        }
-        if (TextUtils.isEmpty(selectedColorStr) && name != null && name.contains("二十大")) {
-            selectedColorStr = "#FF0000";
-        }
+//        if (TextUtils.isEmpty(unSelectedColorStr) && name != null && name.contains("二十大")) {
+//            unSelectedColorStr = "#FF0000";
+//        }
+//        if (TextUtils.isEmpty(selectedColorStr) && name != null && name.contains("二十大")) {
+//            selectedColorStr = "#FF0000";
+//        }
     }
 
     public int getUnSelectedColor() {

@@ -8,6 +8,7 @@ import com.thfw.base.models.AboutUsModel;
 import com.thfw.base.models.CommonProblemModel;
 import com.thfw.base.models.FeedBackModel;
 import com.thfw.base.models.HotCallModel;
+import com.thfw.base.models.VersionModel;
 import com.thfw.base.models.VoiceInstructionModel;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.HttpResult;
@@ -60,6 +61,13 @@ public class OtherPresenter extends IPresenter<OtherPresenter.OtherUi> {
     public void onGetFeedBackList() {
         Observable<HttpResult<List<FeedBackModel>>> observable = OkHttpUtil.createService(HelpApi.class)
                 .getFeedBackList(NetParams.crete());
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    public void onCheckVersion() {
+        Observable<HttpResult<VersionModel>> observable = OkHttpUtil.createService(OtherApi.class)
+                .getVersion(NetParams.crete()
+                        .add("type", CommonParameter.getDeviceType()));
         OkHttpUtil.request(observable, getUI());
     }
 

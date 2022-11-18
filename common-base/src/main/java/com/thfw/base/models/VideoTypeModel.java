@@ -149,6 +149,9 @@ public class VideoTypeModel implements IModel {
 
 
     public static void resetList(List<VideoTypeModel> list) {
+        if(true){
+            return;
+        }
         if (list != null) {
             for (VideoTypeModel model : list) {
                 if (!EmptyUtil.isEmpty(model.list)) {

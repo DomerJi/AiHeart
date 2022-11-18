@@ -2,8 +2,10 @@ package com.thfw.base.net.download;
 
 import android.util.Log;
 
+import com.thfw.base.ContextApp;
 import com.thfw.base.utils.MD5Util;
-import com.thfw.base.utils.ToastUtil;
+import com.thfw.base.utils.Util;
+import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,8 +13,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -37,19 +41,40 @@ public class TestDownLoad {
         return baseUrl;
     }
 
+    private static HashMap<String, String> apkUrlMap = new HashMap<>();
+
+    public static String getApkPath(String downUrl) {
+
+        if (apkUrlMap.containsKey(downUrl)) {
+            return apkUrlMap.get(downUrl);
+        }
+
+        String mApkFileDir = ContextApp.get().getExternalFilesDir("") + File.separator + "apk";
+        if (!new File(mApkFileDir).exists()) {
+            new File(mApkFileDir).mkdirs();
+        }
+
+        String fileNmae01 = MD5Util.getMD5String(downUrl).toUpperCase();
+        String version = Util.getAppVersion(ContextApp.get()).replaceAll("\\.", "_");
+        String path = mApkFileDir + File.separator + fileNmae01 + "_" + version + ".apk";
+        apkUrlMap.put(downUrl, path);
+        return path;
+    }
+
     private static Retrofit getRetrofit(ProgressListener progressListener, String downUrl) {
 
 
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
+
         ProgressListener mControlProgressListener = new ProgressListener() {
             @Override
-            public void update(String url, long bytesRead, long contentLength, boolean done) {
+            public void update(String url, long bytesRead, long contentLength, boolean done, String filePath) {
                 // tellProgress(url, bytesRead, contentLength, done);
 //                        Log.e(TAG, "url = " + url
 //                                + "; bytesRead = " + bytesRead
 //                                + "; contentLength = " + contentLength);
-                progressListener.update(url, bytesRead, contentLength, done);
+                progressListener.update(url, bytesRead, contentLength, done, filePath);
             }
         };
 
@@ -63,9 +88,7 @@ public class TestDownLoad {
     }
 
     private static long getSkip(String downUrl) {
-        String fileNmae01 = MD5Util.getMD5String(downUrl).toUpperCase();
-        String path = ToastUtil.getAppContext().getCacheDir() + File.separator
-                + fileNmae01 + "_" + ".apk";
+        String path = getApkPath(downUrl);
 
         File file = new File(path);
         long skip = 0;
@@ -85,10 +108,18 @@ public class TestDownLoad {
     }
 
     public static void test(String downUrl, ProgressListener progressListener) {
+        test(downUrl, null, progressListener);
+    }
 
-        getRetrofit(progressListener, downUrl).create(ApiService.class)
-                .download(downUrl)
-                .subscribeOn(Schedulers.io())
+    public static void test(String downUrl, LifecycleProvider lifecycleProvider, ProgressListener progressListener) {
+
+        Observable<ResponseBody> requestBodyObservable = getRetrofit(progressListener, downUrl).create(ApiService.class)
+                .download(downUrl);
+        if (lifecycleProvider != null) {
+            requestBodyObservable.compose(lifecycleProvider.bindToLifecycle());
+        }
+
+        requestBodyObservable.subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .doOnNext(new Consumer<ResponseBody>() {
                     @Override
@@ -133,10 +164,24 @@ public class TestDownLoad {
 
         long contentLength = responseBody.contentLength();
 
-//        String fileName = HourUtil.getDate_(System.currentTimeMillis());
-        String fileNmae01 = MD5Util.getMD5String(downUrl).toUpperCase();
-        String path = ToastUtil.getAppContext().getCacheDir() + File.separator
-                + fileNmae01 + "_" + ".apk";
+        /**
+         *
+         * <paths>
+         *     <!-- /storage/emulated/0/Download/${applicationId}/.beta/apk-->
+         *     <external-path
+         *         name="beta_external_path"
+         *         path="Download/" />
+         *     <!--/storage/emulated/0/Android/data/${applicationId}/files/apk/-->
+         *     <external-path
+         *         name="beta_external_files_path"
+         *         path="Android/data/" />
+         * </paths>
+         */
+        //.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+        // /storage/emulated/0/Android/data/com.thfw.mobileheart/files/Download/37D1CC6006D561D873165963ADD0E57C_.apk
+        // .getExternalFilesDir("")
+        // /storage/emulated/0/Android/data/com.thfw.mobileheart/files/37D1CC6006D561D873165963ADD0E57C_.apk
+        String path = getApkPath(downUrl);
 
         File file = new File(path);
         RandomAccessFile raf = null;
@@ -150,7 +195,7 @@ public class TestDownLoad {
             }
         } else {
             if (file.length() == contentLength) {
-                progressListener.update(getBaseUrl() + downUrl, file.length(), contentLength, file.length() == contentLength);
+                progressListener.update(downUrl, file.length(), contentLength, file.length() == contentLength, file.getAbsolutePath());
                 return;
             } else {
                 // 移动指针
