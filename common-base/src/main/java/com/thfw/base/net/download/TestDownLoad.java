@@ -45,6 +45,7 @@ public class TestDownLoad {
 
     public static String getApkPath(String downUrl) {
 
+
         if (apkUrlMap.containsKey(downUrl)) {
             return apkUrlMap.get(downUrl);
         }
@@ -54,9 +55,9 @@ public class TestDownLoad {
             new File(mApkFileDir).mkdirs();
         }
 
-        String fileNmae01 = MD5Util.getMD5String(downUrl).toUpperCase();
+        String fileNmae = MD5Util.getMD5String(downUrl).toUpperCase();
         String version = Util.getAppVersion(ContextApp.get()).replaceAll("\\.", "_");
-        String path = mApkFileDir + File.separator + fileNmae01 + "_" + version + ".apk";
+        String path = mApkFileDir + File.separator + fileNmae + "_" + version + ".apk";
         apkUrlMap.put(downUrl, path);
         return path;
     }
@@ -116,7 +117,7 @@ public class TestDownLoad {
         Observable<ResponseBody> requestBodyObservable = getRetrofit(progressListener, downUrl).create(ApiService.class)
                 .download(downUrl);
         if (lifecycleProvider != null) {
-            requestBodyObservable.compose(lifecycleProvider.bindToLifecycle());
+            requestBodyObservable = requestBodyObservable.compose(lifecycleProvider.bindToLifecycle());
         }
 
         requestBodyObservable.subscribeOn(Schedulers.io())
@@ -244,6 +245,7 @@ public class TestDownLoad {
             }
 
             if (progress == 100) {
+                progressListener.update(downUrl, file.length(), contentLength, file.length() == contentLength, file.getAbsolutePath());
                 Log.e(TAG, "下载成功==== path -> " + file.getAbsolutePath());
             }
             responseBody.close();

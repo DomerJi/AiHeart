@@ -74,6 +74,8 @@ dependencies {
     // 腾讯bugly
     api 'com.tencent.bugly:crashreport_upgrade:1.5.23'
     api 'com.tencent.bugly:nativecrashreport:3.8.0'
+    // 断点续传
+    api 'com.liulishuo.filedownloader:library:1.7.7'
 
     /**
      * ======================= 结束 OkHttp Rxjava2 retrofit2 =====================
@@ -85,9 +87,6 @@ dependencies {
     api 'com.makeramen:roundedimageview:' + rootProject.ext.roundedimageview
 
     // WebView 框架
-//    api 'com.github.Justson.AgentWeb:agentweb-core:' + rootProject.ext.agentweb
-//    api 'com.github.Justson.AgentWeb:agentweb-filechooser:' + rootProject.ext.agentweb
-//    api 'com.github.Justson:Downloader:' + rootProject.ext.agentweb
     api 'com.github.Justson.AgentWeb:agentweb-core:v5.0.0-alpha.1-androidx' // (必选)
     api 'com.github.Justson.AgentWeb:agentweb-filechooser:v5.0.0-alpha.1-androidx' // (可选)
     api 'com.github.Justson:Downloader:v5.0.0-androidx' // (可选)

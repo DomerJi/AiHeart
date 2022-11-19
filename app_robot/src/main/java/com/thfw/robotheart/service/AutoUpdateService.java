@@ -9,15 +9,18 @@ import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 
-import com.tencent.bugly.beta.Beta;
-import com.tencent.bugly.beta.download.DownloadListener;
-import com.tencent.bugly.beta.download.DownloadTask;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.DownloadTask;
+import com.liulishuo.filedownloader.FileDownloadSampleListener;
+import com.liulishuo.filedownloader.FileDownloader;
+import com.liulishuo.filedownloader.model.FileDownloadStatus;
+import com.thfw.base.models.VersionModel;
+import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NetworkUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.set.SystemAppActivity;
-import com.thfw.robotheart.fragments.sets.SetUpdateFragment;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
@@ -34,16 +37,21 @@ public class AutoUpdateService extends IntentService {
     }
 
     public static void startUpdate(Context context) {
-        if (!SharePreferenceUtil.getBoolean(SetUpdateFragment.SET_AUTO_UPDATE_BOOLEAN, true)) {
-            Log.e(TAG, "startUpdate 未开启自动更新");
+        VersionModel versionModel = BuglyUtil.getVersionModel();
+
+        if (versionModel == null) {
+            LogUtil.d(TAG, "startUpdate versionModel == null");
             return;
         }
-        DownloadTask task = Beta.getStrategyTask();
-        if (task == null) {
-            LogUtil.d(TAG, "startUpdate task == null");
+
+        DownloadTask downloadTask = (DownloadTask) BuglyUtil.getApkDownLoad();
+        if (downloadTask == null) {
             return;
         }
-        if (task.getStatus() == DownloadTask.COMPLETE) {
+        if (downloadTask.isRunning()) {
+            return;
+        }
+        if (downloadTask.getStatus() == FileDownloadStatus.completed) {
             LogUtil.d(TAG, "startUpdate complete = 已经下载完成可以提示用户安装/或自动安装");
             showHintInstallApk(context);
             return;
@@ -69,7 +77,7 @@ public class AutoUpdateService extends IntentService {
 
     private static void showHintInstallApk(Context context) {
         if (!isLimitTimeInstall()) {
-            LogUtil.d(TAG, "showHintInstallApk 距离上次提示安装不足【两】小时");
+            LogUtil.d(TAG, "showHintInstallApk 距离上次提示安装不足【23】小时");
             return;
         }
         if (context == null || !(context instanceof FragmentActivity)) {
@@ -79,6 +87,7 @@ public class AutoUpdateService extends IntentService {
         SharePreferenceUtil.setLong(AFTER_TIME, System.currentTimeMillis());
 
         DialogRobotFactory.createCustomDialog((FragmentActivity) context, new DialogRobotFactory.OnViewCallBack() {
+
             @Override
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
                 mTvHint.setText(R.string.finishDownlaodApk);
@@ -93,11 +102,7 @@ public class AutoUpdateService extends IntentService {
                 if (view.getId() == R.id.tv_left) {
                     LogUtil.d(TAG, "以后 立即安装");
                 } else {
-                    DownloadTask downloadTask = Beta.getStrategyTask();
-                    if (downloadTask != null && downloadTask.getStatus() == DownloadTask.COMPLETE) {
-                        context.startActivity(new Intent(context, SystemAppActivity.class));
-                        LogUtil.d(TAG, "现在 立即安装");
-                    }
+                    context.startActivity(new Intent(context, SystemAppActivity.class));
                 }
             }
         }, false);
@@ -109,7 +114,7 @@ public class AutoUpdateService extends IntentService {
      * @return
      */
     public static boolean isLimitTimeInstall() {
-        return (System.currentTimeMillis() - SharePreferenceUtil.getLong(AFTER_TIME, 0)) > 2 * 60 * 60 * 1000;
+        return (System.currentTimeMillis() - SharePreferenceUtil.getLong(AFTER_TIME, 0)) > 23 * 60 * 60 * 1000;
     }
 
     @Override
@@ -119,95 +124,39 @@ public class AutoUpdateService extends IntentService {
             final String action = intent.getAction();
             if (ACTION_UPLOAD_IMG.equals(action)) {
                 final int cmd = intent.getIntExtra(ACTION_CONTROL, -1);
-                DownloadTask task = Beta.getStrategyTask();
-                LogUtil.d(TAG, "onHandleIntent cmd = " + cmd);
-                if (task == null) {
-                    Log.e(TAG, "task == null");
-                    return;
-                }
-                LogUtil.d(TAG, "onHandleIntent task.status = " + task.getStatus());
+                DownloadTask downloadTask = (DownloadTask) BuglyUtil.getApkDownLoad()
+                        .setCallbackProgressTimes(100)
+                        .setMinIntervalUpdateSpeed(1000)
+                        .setCallbackProgressMinInterval(300)
+                        .setWifiRequired(true);
+                LogUtil.d(TAG, "onHandleIntent downloadTask.status = " + downloadTask.getStatus());
                 switch (cmd) {
                     case CmdControl.PLAY:
-                        if (task.getStatus() == DownloadTask.COMPLETE) {
-                            LogUtil.d(TAG, "onHandleIntent complete = 已经下载完成可以提示用户安装/或自动安装");
-                            showHintInstallApk(mContext);
-                        } else if (task.getStatus() != DownloadTask.DOWNLOADING) {
-                            handleAutoUpdate();
-                            task = Beta.startDownload();
+
+                        downloadTask.setListener(new FileDownloadSampleListener() {
+                            @Override
+                            protected void completed(BaseDownloadTask task) {
+                                super.completed(task);
+                                showHintInstallApk(mContext);
+                            }
+                        });
+                        if (downloadTask.isUsing()) {
+                            if (downloadTask.reuse()) {
+                                downloadTask.start();
+                            }
+                        } else {
+                            downloadTask.start();
                         }
                         break;
                     case CmdControl.PAUSE:
-                        if (task.getStatus() == DownloadTask.DOWNLOADING) {
-                            task.stop();
+                        if (downloadTask.isRunning()) {
+                            FileDownloader.getImpl().pause(downloadTask.getId());
                         }
                         break;
                 }
             }
         }
         LogUtil.d(TAG, "onHandleIntent end");
-    }
-
-    private void handleAutoUpdate() {
-
-        LogUtil.d(TAG, "handleAutoUpdate start");
-
-        /*注册下载监听，监听下载事件*/
-        Beta.registerDownloadListener(new DownloadListener() {
-            @Override
-            public void onReceive(DownloadTask task) {
-                updateBtn(task);
-                if (task.getTotalLength() <= 0) {
-                    return;
-                }
-                int progress = (int) (task.getSavedLength() * 100 / task.getTotalLength());
-                Log.d(TAG, "progress  - > " + progress);
-
-            }
-
-            @Override
-            public void onCompleted(DownloadTask task) {
-                updateBtn(task);
-                Log.d(TAG, "progress - > onCompleted");
-            }
-
-            @Override
-            public void onFailed(DownloadTask task, int code, String extMsg) {
-                updateBtn(task);
-                Log.d(TAG, "progress - > Failed");
-            }
-        });
-
-        LogUtil.d(TAG, "handleAutoUpdate end");
-
-
-    }
-
-    public void updateBtn(DownloadTask task) {
-        if (task == null) {
-            return;
-        }
-        Log.d(TAG, "status = " + task.getStatus());
-        /*根据下载任务状态设置按钮*/
-        switch (task.getStatus()) {
-            case DownloadTask.INIT:
-            case DownloadTask.DELETED:
-            case DownloadTask.FAILED: {
-                // start.setText("立即更新");
-            }
-            break;
-            case DownloadTask.COMPLETE: {
-                // start.setText("安装");
-            }
-            break;
-            case DownloadTask.DOWNLOADING: {
-                // start.setText("暂停");
-            }
-            break;
-            case DownloadTask.PAUSED: {
-                // start.setText("继续下载");
-            }
-            break;
-        }
     }
 
     @Override

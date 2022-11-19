@@ -10,12 +10,17 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.DownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
+import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.VersionModel;
-import com.thfw.base.net.download.ProgressListener;
 import com.thfw.base.net.download.TestDownLoad;
 import com.thfw.base.utils.AppUtils;
 import com.thfw.base.utils.BuglyUtil;
+import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NetworkUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -42,6 +47,8 @@ public class SystemAppActivity extends BaseActivity {
     private LinearLayout mLlProgress;
     private ProgressBar mPbDowning;
     private String mFilePath;
+    private int taskId;
+    private DownloadTask downloadTask;
 
     /**
      * 将文件大小kb转换成M
@@ -82,6 +89,17 @@ public class SystemAppActivity extends BaseActivity {
         mPbDowning = (ProgressBar) findViewById(R.id.pb_downing);
     }
 
+
+    @Override
+    public int getContentView() {
+        return R.layout.activity_system_app;
+    }
+
+    @Override
+    public IPresenter onCreatePresenter() {
+        return null;
+    }
+
     @Override
     public void initData() {
         if (BuglyUtil.getVersionModel() == null) {
@@ -102,74 +120,178 @@ public class SystemAppActivity extends BaseActivity {
         size.setText(toFileSizeM(versionModel.getSize()));
         content.setText(versionModel.getDes());
 
+        try {
+            initDownLoader();
+        } catch (Exception e) {
+            finish();
+            ToastUtil.show("升级失败");
+            return;
+        }
+
         /*为下载按钮设置监听*/
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if ("安装".equals(start.getText()) && mFilePath != null) {
-                    checkPermission();
-                    return;
-                }
 
+                int status = downloadTask.getStatus();
+                if (status == FileDownloadStatus.completed) {
+                    File file = new File(downloadTask.getPath());
+                    if (file.exists() && file.length() <= 0) {
+                        downloadTask.start();
+                        return;
+                    }
+                    checkPermission();
+                } else if (FileDownloadStatus.isIng(status)) {
+                    FileDownloader.getImpl().pause(downloadTask.getId());
+                } else {
+                    if (!downloadTask.isRunning()) {
+                        if (downloadTask.isUsing()) {
+                            if (downloadTask.reuse()) {
+                                downloadTask.start();
+                            }
+                        } else {
+
+                            downloadTask.start();
+                        }
+                    }
+                }
+                refreshStatus();
                 if (!NetworkUtil.isNetConnected(mContext)) {
                     ToastUtil.show("请连接网络后再试");
                     return;
                 }
+            }
+        });
+        if (downloadTask.isUsing()) {
+            if (downloadTask.reuse()) {
+                downloadTask.start();
+            }
+        } else {
+            downloadTask.start();
+        }
+        refreshStatus();
+    }
 
-                start.setEnabled(false);
-                start.setText("正在下载...");
-                mLlProgress.setVisibility(View.VISIBLE);
+    private void initDownLoader() {
 
-                TestDownLoad.test(BuglyUtil.getVersionModel().getDownloadUrl(), SystemAppActivity.this, new ProgressListener() {
+        downloadTask = (DownloadTask) BuglyUtil.getApkDownLoad()
+                .setCallbackProgressTimes(1000)
+                .setMinIntervalUpdateSpeed(300)
+                .setCallbackProgressMinInterval(300)
+                .setWifiRequired(false);
+        downloadTask.setListener(new FileDownloadListener() {
+            @Override
+            protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                LogUtil.i(TAG, "pending soFarBytes = " + soFarBytes + " ; totalBytes = " + totalBytes);
+            }
+
+            @Override
+            protected void connected(BaseDownloadTask task, String etag, boolean isContinue, int soFarBytes, int totalBytes) {
+                LogUtil.i(TAG, "connected soFarBytes = " + soFarBytes + " ; totalBytes = " + totalBytes);
+            }
+
+            @Override
+            protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                LogUtil.i(TAG, "progress soFarBytes = " + soFarBytes + " ; totalBytes = " + totalBytes);
+                if (!isMeResumed()) {
+                    return;
+                }
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void update(String url, long bytesRead, long contentLength, boolean done, String filePath) {
-                        Log.i("TestDownLoad", "bytesRead = " + bytesRead
-                                + " contentLength = " + contentLength + " filePath = " + filePath);
-                        if (!isMeResumed()) {
+                    public void run() {
+                        if (totalBytes <= 0) {
+                            start.setEnabled(true);
+                            start.setText("立即更新");
+                            ToastUtil.show("资源错误");
                             return;
                         }
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (contentLength <= 0) {
-                                    ToastUtil.show("资源错误");
-                                    return;
-                                }
-                                int progress = (int) (bytesRead * 100 / contentLength);
-                                Log.d(TAG, "progress  - > " + progress);
+                        BigDecimal progressObj = new BigDecimal(soFarBytes)
+                                .multiply(new BigDecimal(100))
+                                .divide(new BigDecimal(totalBytes), 2, BigDecimal.ROUND_HALF_UP);
 
-                                mPbDowning.setProgress(progress);
-                                mTvProgress.setText(progress + "%");
-                                if (progress == 100) {
-                                    SystemAppActivity.this.mFilePath = TestDownLoad.getApkPath(BuglyUtil.getVersionModel().getDownloadUrl());
-                                    start.setEnabled(true);
-                                    start.setText("安装");
-                                }
-                            }
-                        });
+                        int progress = (int) Math.round(progressObj.doubleValue());
+                        ;
+                        Log.d(TAG, "progress  - > " + progress);
+
+                        mPbDowning.setProgress(progress);
+                        mTvProgress.setText(progressObj.doubleValue() + "%");
+                        if (soFarBytes == totalBytes) {
+                            refreshStatus();
+                        }
                     }
                 });
+            }
+
+            @Override
+            protected void blockComplete(BaseDownloadTask task) {
+            }
+
+            @Override
+            protected void retry(final BaseDownloadTask task, final Throwable ex, final int retryingTimes, final int soFarBytes) {
+            }
+
+            @Override
+            protected void completed(BaseDownloadTask task) {
+                LogUtil.i(TAG, "completed ");
+                mPbDowning.setProgress(100);
+                mTvProgress.setText("100%");
+                refreshStatus();
+            }
+
+            @Override
+            protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                refreshStatus();
+                LogUtil.i(TAG, "paused soFarBytes = " + soFarBytes + " ; totalBytes = " + totalBytes);
+
+            }
+
+            @Override
+            protected void error(BaseDownloadTask task, Throwable e) {
+            }
+
+            @Override
+            protected void warn(BaseDownloadTask task) {
 
             }
         });
     }
 
+
+    private void refreshStatus() {
+        runOnUiThread(() -> {
+            int status = downloadTask.getStatus();
+            if (status == FileDownloadStatus.completed || downloadTask.isReusedOldFile()) {
+                File file = new File(downloadTask.getPath());
+                if (!file.exists() || file.length() <= 100) {
+                    start.setEnabled(true);
+                    start.setText("重试(资源错误)");
+                } else {
+                    start.setEnabled(true);
+                    start.setText("安装");
+                }
+            } else if (FileDownloadStatus.isIng(status)) {
+                mLlProgress.setVisibility(View.VISIBLE);
+                start.setEnabled(true);
+                start.setText("暂停");
+            } else {
+                start.setEnabled(true);
+                start.setText("开始下载");
+            }
+        });
+
+    }
+
     @Override
     public void onDestroy() {
+        if (downloadTask != null) {
+            downloadTask.pause();
+        }
         super.onDestroy();
     }
 
-    @Override
-    public int getContentView() {
-        return R.layout.activity_system_app;
-    }
-
-    @Override
-    public IPresenter onCreatePresenter() {
-        return null;
-    }
 
     public void checkPermission() {
+        SystemAppActivity.this.mFilePath = TestDownLoad.getApkPath(BuglyUtil.getVersionModel().getDownloadUrl());
         boolean haveInstallPermission;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             haveInstallPermission = getPackageManager().canRequestPackageInstalls();

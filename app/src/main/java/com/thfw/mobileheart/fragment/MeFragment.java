@@ -35,7 +35,6 @@ import com.thfw.mobileheart.activity.me.CollectActivity;
 import com.thfw.mobileheart.activity.me.MeHistoryActivity;
 import com.thfw.mobileheart.activity.mood.MoodDetailActivity;
 import com.thfw.mobileheart.activity.mood.StatusActivity;
-import com.thfw.mobileheart.activity.service.AutoUpdateService;
 import com.thfw.mobileheart.activity.settings.HelpBackActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
 import com.thfw.mobileheart.activity.settings.SettingActivity;
@@ -353,9 +352,6 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
                 if (isVisible()) {
                     mTvMsgVersion.setText("新");
                     mTvMsgVersion.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
-                    if (hasNewVersion) {
-                        AutoUpdateService.startUpdate(mContext);
-                    }
                 }
             }
         });
