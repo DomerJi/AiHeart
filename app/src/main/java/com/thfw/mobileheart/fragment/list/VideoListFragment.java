@@ -44,6 +44,7 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
     private RecyclerView mRvList;
     private LoadingView mLoadingView;
     private int type;
+    private int parentType;
     private PageHelper<VideoEtcModel> mPageHelper;
     private RecyclerView mRvChildren;
     private VideoChildTypeAdapter videoChildTypeAdapter;
@@ -52,6 +53,11 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
     public VideoListFragment(int type) {
         super();
         this.type = type;
+    }
+
+    public VideoListFragment setParentType(int parentType) {
+        this.parentType = parentType;
+        return this;
     }
 
     @Override
@@ -134,7 +140,14 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
                                 int childType = list.get(position).id;
                                 Fragment fragment = mLoader.load(childType);
                                 if (fragment == null) {
-                                    mLoader.add(childType, new VideoListFragment(childType));
+                                    if (videoChildTypeAdapter.getmSelectedIndex() > -1 && videoChildTypeAdapter.getmSelectedIndex() < videoChildTypeAdapter.getItemCount()) {
+                                        int parentType = videoChildTypeAdapter.getDataList().get(videoChildTypeAdapter.getmSelectedIndex()).id;
+                                        mLoader.add(childType, new VideoListFragment(childType).setParentType(parentType));
+                                    } else {
+                                        mLoader.add(childType, new VideoListFragment(childType));
+                                    }
+
+
                                 }
                                 mVideoListFragment = (VideoListFragment) mLoader.load(childType);
                             }
@@ -197,13 +210,13 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
         mRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull @NotNull RefreshLayout refreshLayout) {
-                mPresenter.getVideoList(type, mPageHelper.getPage());
+                loadData();
             }
 
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 mPageHelper.onRefresh();
-                mPresenter.getVideoList(type, mPageHelper.getPage());
+                loadData();
             }
         });
 
@@ -211,7 +224,7 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
 
         mPageHelper = new PageHelper<>(mLoadingView, mRefreshLayout, homeVideoListAdapter);
 
-        mPresenter.getVideoList(type, mPageHelper.getPage());
+        loadData();
     }
 
     @Override
@@ -227,8 +240,17 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
     @Override
     public void onFail(ResponeThrowable throwable) {
         mPageHelper.onFail(v -> {
-            mPresenter.getVideoList(type, mPageHelper.getPage());
+            loadData();
         });
+    }
+
+    private void loadData() {
+        if (parentType > 0) {
+            mPresenter.getVideoList(parentType, type, mPageHelper.getPage());
+        } else {
+            mPresenter.getVideoList(type, mPageHelper.getPage());
+        }
+
     }
 
     @Override
