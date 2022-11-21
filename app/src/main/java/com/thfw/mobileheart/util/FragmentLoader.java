@@ -49,6 +49,13 @@ public class FragmentLoader {
         }
     }
 
+    public void hide(Fragment fragment) {
+        if (fragment != null && fragment.isAdded() && !fragment.isHidden()) {
+            FragmentTransaction transaction = mFragmentManager.beginTransaction();
+            transaction.hide(fragment).commit();
+        }
+    }
+
     public Fragment load(int id) {
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         FragmentItem item = mFragments.get(id);

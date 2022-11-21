@@ -1,7 +1,9 @@
 package com.thfw.mobileheart.adapter;
 
+import android.graphics.Typeface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,8 +42,21 @@ public class StudyChildTypeAdapter extends BaseAdapter<BookStudyTypeModel, Study
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull VideoChildHolder holder, int position) {
-        holder.mTvTitle.setText(mDataList.get(position).name);
+        BookStudyTypeModel typeModel =  mDataList.get(position);
+        holder.mTvTitle.setText(typeModel.name);
         holder.mTvTitle.setSelected(position == mSelectedIndex);
+        holder.mIvFire.setVisibility(typeModel.fire == 1 ? View.VISIBLE : View.GONE);
+        holder.mTvTitle.setSelected(position == mSelectedIndex);
+        if (typeModel.isChangedColor()) {
+
+            holder.mTvTitle.setTypeface(holder.mTvTitle.isSelected()
+                    && typeModel.getSelectedColor() == typeModel.getUnSelectedColor()
+                    ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
+            holder.mTvTitle.setTextColor(holder.mTvTitle.isSelected() ? typeModel.getSelectedColor() : typeModel.getUnSelectedColor());
+        } else {
+            holder.mTvTitle.setTypeface(Typeface.DEFAULT);
+            holder.mTvTitle.setTextColor(mContext.getResources().getColorStateList(R.drawable.textcolor_gray_green_selector));
+        }
     }
 
     public void setSelectedIndex(int mSelectedIndex) {
@@ -59,10 +74,12 @@ public class StudyChildTypeAdapter extends BaseAdapter<BookStudyTypeModel, Study
     public class VideoChildHolder extends RecyclerView.ViewHolder {
 
         private final TextView mTvTitle;
+        private final ImageView mIvFire;
 
         public VideoChildHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvTitle = itemView.findViewById(R.id.tv_title);
+            mIvFire = itemView.findViewById(R.id.iv_fire);
             itemView.setOnClickListener(v -> {
                 int position = getBindingAdapterPosition();
                 if (mSelectedIndex == position) {

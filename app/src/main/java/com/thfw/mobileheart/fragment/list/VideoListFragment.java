@@ -102,7 +102,6 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
         }
         mLoadingView = (LoadingView) findViewById(R.id.loadingView);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-
         mRvChildren = (RecyclerView) findViewById(R.id.rv_children);
         mRvChildren2 = findViewById(R.id.rv_children2);
         mRvChildren.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
@@ -129,12 +128,20 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
                     if (!EmptyUtil.isEmpty(list.get(position).list)) {
                         mRvChildren2.setVisibility(View.VISIBLE);
                         VideoChildTypeAdapter child2Adapter = new VideoChildTypeAdapter(list.get(position).list);
-                        child2Adapter.setSelectedIndex(0);
-                        child2Adapter.setReSetPosition(false);
+//                        child2Adapter.setSelectedIndex(0);
+//                        child2Adapter.setReSetPosition(false);
                         child2Adapter.setOnRvItemListener(new OnRvItemListener<VideoTypeModel>() {
                             @Override
                             public void onItemClick(List<VideoTypeModel> list, int position) {
                                 if (position == -1) {
+                                    for (VideoTypeModel model : list) {
+                                        Fragment fragment = mLoader.load(model.id);
+                                        if (fragment != null) {
+                                            mLoader.hide(fragment);
+                                        }
+                                    }
+                                    videoChildTypeAdapter.getOnRvItemListener()
+                                            .onItemClick(videoChildTypeAdapter.getDataList(), videoChildTypeAdapter.getmSelectedIndex());
                                     return;
                                 }
                                 int childType = list.get(position).id;
