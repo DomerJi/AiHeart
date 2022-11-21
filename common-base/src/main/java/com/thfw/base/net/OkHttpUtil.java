@@ -9,7 +9,10 @@ import com.thfw.base.base.UI;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
 
+import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.X509TrustManager;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -40,6 +43,7 @@ public class OkHttpUtil {
     private static final CommonInterceptor mCommonInterceptor = new CommonInterceptor();
 
     private static final OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
+            .sslSocketFactory(new SSL(sslSocket()),sslSocket())
             .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
 
@@ -57,6 +61,25 @@ public class OkHttpUtil {
 
     public static synchronized <S> S createService(Class<S> serviceClass) {
         return createService(serviceClass, null);
+    }
+
+    private static  X509TrustManager sslSocket(){
+        //定义一个信任所有证书的TrustManager
+        final X509TrustManager trustAllCert = new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+            }
+
+            @Override
+            public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+            }
+
+            @Override
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return new java.security.cert.X509Certificate[]{};
+            }
+        };
+        return trustAllCert;
     }
 
     public static <S> S createService(Class<S> serviceClass, String baseUrl) {
@@ -173,6 +196,7 @@ public class OkHttpUtil {
 
     public static void request(String url, MultipartBody multipartBody, Callback callback) {
         OkHttpClient httpClient = new OkHttpClient();
+        httpClient = httpClient.newBuilder().sslSocketFactory(new SSL(sslSocket()),sslSocket()).build();
         Request.Builder requestBuilder = new Request.Builder()
                 .url(url)
                 .post(multipartBody);
@@ -186,6 +210,7 @@ public class OkHttpUtil {
 
     public static void request(String url, Callback callback) {
         OkHttpClient httpClient = new OkHttpClient();
+        httpClient = httpClient.newBuilder().sslSocketFactory(new SSL(sslSocket()),sslSocket()).build();
         Request.Builder requestBuilder = new Request.Builder()
                 .url(url)
                 .get();
