@@ -82,6 +82,7 @@ public class BuglyUtil {
 
             @Override
             public void onSuccess(VersionModel data) {
+                requestIng = false;
                 if (versionModel != null && data != null) {
                     if (StringUtil.contentEquals(versionModel.getVersion(), data.getVersion())
                             && StringUtil.contentEquals(versionModel.getDownloadUrl(), data.getDownloadUrl())) {
@@ -93,7 +94,6 @@ public class BuglyUtil {
                 }
                 versionModel = data;
                 checkVersionTime = System.currentTimeMillis();
-                requestIng = false;
                 if (BuglyUtil.requestUpgradeStateListener != null) {
                     BuglyUtil.requestUpgradeStateListener.onVersion(isNewVersion());
                 }
@@ -101,10 +101,10 @@ public class BuglyUtil {
 
             @Override
             public void onFail(ResponeThrowable throwable) {
+                requestIng = false;
                 boolean debug = false;
 //                boolean debug = true;
                 if (debug) {
-                    requestIng = false;
                     versionModel = new VersionModel();
                     versionModel.setVersion("2.0.0999");
                     versionModel.setSize("99889789");
