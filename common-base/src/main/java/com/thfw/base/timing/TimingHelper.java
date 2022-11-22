@@ -120,8 +120,11 @@ public class TimingHelper {
     }
 
     public void removeWorkArriveListener(WorkInt workInt) {
-        if (mWorkInts.containsKey(workInt)) {
-            mWorkInts.remove(workInt);
+        try {
+            if (mWorkInts.containsKey(workInt)) {
+                mWorkInts.remove(workInt);
+            }
+        } catch (Exception e) {
         }
     }
 

@@ -26,6 +26,7 @@ public class LoadingView extends RelativeLayout implements ILoading {
 
     private int iconWidth;
     private int iconHeight;
+    private boolean noText;
     // loading
     private ProgressBar mProgressBar;
     private TextView mTvLoading;
@@ -53,6 +54,7 @@ public class LoadingView extends RelativeLayout implements ILoading {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.LoadingView);
             iconWidth = ta.getDimensionPixelSize(R.styleable.LoadingView_iconWidth, -1);
             iconHeight = ta.getDimensionPixelSize(R.styleable.LoadingView_iconHeight, -1);
+            noText = ta.getBoolean(R.styleable.LoadingView_noText, false);
         }
         init();
     }
@@ -73,10 +75,15 @@ public class LoadingView extends RelativeLayout implements ILoading {
             mProgressBar = findViewById(R.id.cl_pb);
             mTvLoading = findViewById(R.id.tv_loading);
         }
+
         hideFail();
         hideEmpty();
         mProgressBar.setVisibility(VISIBLE);
-        mTvLoading.setVisibility(VISIBLE);
+        if (noText) {
+            mTvLoading.setVisibility(GONE);
+        } else {
+            mTvLoading.setVisibility(VISIBLE);
+        }
         mLayoutLoading.setVisibility(VISIBLE);
     }
 

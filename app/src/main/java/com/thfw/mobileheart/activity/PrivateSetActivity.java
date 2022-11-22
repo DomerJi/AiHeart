@@ -14,7 +14,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.robot.RobotActivity;
-import com.thfw.ui.base.HostActivity;
+import com.thfw.ui.common.HostActivity;
 import com.thfw.ui.widget.InputBoxSquareView;
 import com.thfw.ui.widget.TitleView;
 

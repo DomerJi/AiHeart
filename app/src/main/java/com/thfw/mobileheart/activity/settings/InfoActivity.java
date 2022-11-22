@@ -65,6 +65,7 @@ import com.thfw.mobileheart.adapter.InfoLikeAdapter;
 import com.thfw.mobileheart.util.AreaUtil;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.GlideImageEngine;
+import com.thfw.ui.common.ImageActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
@@ -440,6 +441,18 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
         // 头像
         mLlAvatar.setOnClickListener(v -> {
             showAlbumSelect();
+        });
+
+        mLlAvatar.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String pic = UserManager.getInstance().getUser().getAvatar();
+                if (TextUtils.isEmpty(pic)) {
+                    return false;
+                }
+                ImageActivity.startActivity(mContext, pic);
+                return true;
+            }
         });
         // 姓名
         mLlName.setOnClickListener(v -> {

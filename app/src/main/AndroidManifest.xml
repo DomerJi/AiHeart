@@ -53,7 +53,7 @@
             android:name=".activity.mood.MoodDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thfw.ui.base.HostActivity"
+            android:name="com.thfw.ui.common.HostActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.SearchActivity"

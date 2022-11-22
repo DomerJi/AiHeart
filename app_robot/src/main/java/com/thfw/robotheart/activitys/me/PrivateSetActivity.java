@@ -25,7 +25,7 @@ import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.port.ShakeNodActivity;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.view.TitleRobotView;
-import com.thfw.ui.base.HostActivity;
+import com.thfw.ui.common.HostActivity;
 import com.thfw.ui.widget.InputBoxSquareView;
 
 import java.util.Calendar;

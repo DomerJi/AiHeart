@@ -4,6 +4,7 @@
     <declare-styleable name="LoadingView">
         <attr name="iconWidth" format="dimension" />
         <attr name="iconHeight" format="dimension" />
+        <attr name="noText" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="AmountView">

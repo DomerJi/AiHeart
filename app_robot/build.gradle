@@ -161,7 +161,7 @@ dependencies {
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
     api 'com.thanosfisherman.wifiutils:wifiutils:1.6.5'
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.github.yyued:SVGAPlayer-Android:2.6.1'
     api 'me.samlss:bloom:1.0.0'
     api 'org.bytedeco:opencv:4.5.3-1.5.6'

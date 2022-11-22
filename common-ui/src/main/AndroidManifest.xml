@@ -5,7 +5,10 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application>
-        <activity android:name=".base.HostActivity"></activity>
+        <activity android:name=".common.ImageActivity"
+            android:theme="@style/ImageTheme"
+            android:launchMode="singleTask"></activity>
+        <activity android:name=".common.HostActivity" />
     </application>
 
 </manifest>

@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
@@ -544,6 +545,32 @@ public class DialogFactory {
                     // justifyContent 属性定义了项目在主轴上的对齐方式。
                     flexboxLayoutManager.setJustifyContent(JustifyContent.FLEX_START);// 交叉轴的起点对齐。
                     mRvSelect.setLayoutManager(flexboxLayoutManager);
+                    DialogLikeAdapter dialogLikeAdapter = new DialogLikeAdapter(likeModels);
+                    mRvSelect.setAdapter(dialogLikeAdapter);
+                    onViewCallBack.callBack(dialogLikeAdapter);
+
+                })
+                .setOnViewClickListener(onViewCallBack).create().show();
+    }
+
+    /**
+     * 单选/多选+自定义
+     *
+     * @param activity
+     * @param onViewCallBack
+     * @return
+     */
+    public static TDialog createSelectCustom(FragmentActivity activity, List<PickerData> likeModels, OnViewSelectCallBack onViewCallBack) {
+        return new TDialog.Builder(activity.getSupportFragmentManager())
+                .setLayoutRes(R.layout.dialog_select_cancel_layout)
+                .setGravity(Gravity.BOTTOM)
+                .setDialogAnimationRes(R.style.animate_dialog)
+                .addOnClickListener(R.id.tv_cancel)
+                .setScreenWidthAspect(activity, 1f)
+                // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
+                .setOnBindViewListener(viewHolder -> {
+                    RecyclerView mRvSelect = viewHolder.getView(R.id.rv_select);
+                    mRvSelect.setLayoutManager(new LinearLayoutManager(mRvSelect.getContext()));
                     DialogLikeAdapter dialogLikeAdapter = new DialogLikeAdapter(likeModels);
                     mRvSelect.setAdapter(dialogLikeAdapter);
                     onViewCallBack.callBack(dialogLikeAdapter);

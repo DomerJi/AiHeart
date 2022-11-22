@@ -9,7 +9,7 @@ import android.webkit.WebViewClient;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
-import com.thfw.base.utils.ToastUtil;
+import com.thfw.ui.common.ImageActivity;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,6 +17,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author:pengs
@@ -53,7 +54,7 @@ public class WebViewTapUtil {
 
     public static void initWebView(WebView webView, String html) {
 
-        final ArrayList<String> images = getImageUrls(html);
+        final List<String> images = getImageUrls(html);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.addJavascriptInterface(new JavaScriptImageFace() {
             @JavascriptInterface
@@ -64,7 +65,7 @@ public class WebViewTapUtil {
                     index = images.indexOf(img);
                 }
                 LogUtil.i(TAG, "img = " + img + " ; index = " + index + GsonUtil.toJson(images));
-                ToastUtil.show("img = " + img + " ; index = " + index);
+                ImageActivity.startActivity(webView.getContext(), images, index);
             }
         }, FACE_NAME);
         LogUtil.i(TAG, "setWebViewClient==============");

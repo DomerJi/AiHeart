@@ -1,4 +1,4 @@
-package com.thfw.ui.base;
+package com.thfw.ui.common;
 
 import android.graphics.Color;
 import android.text.Editable;
@@ -12,6 +12,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.net.ApiHost;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.ui.R;
+import com.thfw.ui.base.IBaseActivity;
 import com.thfw.ui.widget.TitleView;
 
 import static com.thfw.base.net.ApiHost.KEY_CUSTOM_HOST;
