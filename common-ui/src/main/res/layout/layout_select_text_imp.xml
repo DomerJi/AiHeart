@@ -8,11 +8,13 @@
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
+        android:layout_height="46dp"
         android:background="@drawable/common_white_gray_selector"
         android:gravity="center"
         android:textColor="@color/text_common"
-        tools:ignore="MissingConstraints" />
+        android:textSize="@dimen/textSize"
+        tools:ignore="MissingConstraints"
+        tools:text="@string/title" />
 
     <View
         android:layout_width="match_parent"

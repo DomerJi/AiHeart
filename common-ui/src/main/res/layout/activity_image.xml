@@ -11,6 +11,7 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp2_images"
         android:layout_width="match_parent"
+        android:overScrollMode="always"
         android:layout_height="match_parent" />
 
     <ImageView
