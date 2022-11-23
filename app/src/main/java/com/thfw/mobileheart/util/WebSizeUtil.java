@@ -22,8 +22,8 @@ public class WebSizeUtil {
                 lv = 1.45f;
             }
         } else {
-            if (lv < 2.18f) {
-                lv = 2.2f;
+            if (lv < 2.19f) {
+                lv = 2.5f;
             }
         }
         int sizeZoom = (int) (lv * 100f);

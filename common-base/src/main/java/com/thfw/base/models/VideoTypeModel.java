@@ -89,11 +89,12 @@ public class VideoTypeModel implements IModel {
     }
 
     private void refreshColorName() {
-//        if (TextUtils.isEmpty(unSelectedColorStr) && sort < 0 && String.valueOf(sort).endsWith("7")) {
+//        if (TextUtils.isEmpty(unSelectedColorStr) && name.contains("思政")) {
 //            unSelectedColorStr = "#FF0000";
 //        }
-//        if (TextUtils.isEmpty(selectedColorStr) && sort < 0 && String.valueOf(sort).endsWith("7")) {
+//        if (TextUtils.isEmpty(selectedColorStr) && name.contains("思政")) {
 //            selectedColorStr = "#FF0000";
+//            fire = 1;
 //        }
     }
 
@@ -151,6 +152,7 @@ public class VideoTypeModel implements IModel {
     public static void resetList(List<VideoTypeModel> list) {
 
         if (list != null) {
+            sort(list);
             for (VideoTypeModel model : list) {
                 if (!EmptyUtil.isEmpty(model.list)) {
                     sort(model.list);

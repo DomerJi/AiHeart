@@ -12,7 +12,6 @@ import com.thfw.base.utils.GsonUtil;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Author:pengs
@@ -148,18 +147,13 @@ public class BookStudyTypeModel implements IModel {
 
     public static void sort(List<BookStudyTypeModel> list) {
         if (list != null) {
-            boolean up = new Random().nextBoolean();
             Collections.sort(list, new Comparator<BookStudyTypeModel>() {
                 @Override
                 public int compare(BookStudyTypeModel o1, BookStudyTypeModel o2) {
                     if (o1.sort == o2.sort) {
                         return 0;
                     }
-//                    if (up) {
                     return o1.sort > o2.sort ? -1 : 1;
-//                    } else {
-//                        return o1.sort > o2.sort ? 1 : -1;
-//                    }
                 }
             });
 

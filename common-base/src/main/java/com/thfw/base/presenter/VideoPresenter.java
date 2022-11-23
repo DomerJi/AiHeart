@@ -46,7 +46,7 @@ public class VideoPresenter extends IPresenter<VideoPresenter.VideoUi> {
         //type root_type page
         NetParams netParams = NetParams.crete()
                 .add("type", type)
-                .add("subType", subType)
+                .add("sub_type", subType)
                 .add("page", page);
         Observable<HttpResult<List<VideoEtcModel>>> observable = OkHttpUtil.createService(VideoApi.class)
                 .getAudioList(netParams);

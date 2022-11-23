@@ -23,6 +23,7 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.DefaultRefreshFooterCreator;
 import com.scwang.smart.refresh.layout.listener.DefaultRefreshHeaderCreator;
 import com.thfw.base.ContextApp;
+import com.thfw.base.face.WebViewListener;
 import com.thfw.base.room.AppDatabase;
 import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.EmptyUtil;
@@ -32,6 +33,7 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.activity.MainActivity;
+import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.push.helper.PushHelper;
 import com.thfw.mobileheart.util.ActivityLifeCycle;
 import com.thfw.mobileheart.util.AppLifeHelper;
@@ -169,6 +171,12 @@ public class MyApplication extends MultiDexApplication {
         ToastUtil.init(this);
         TDialog.init(this);
         LogUtil.setLogEnabled(LogUtil.isLogSpEnable());
+        ContextApp.setWebViewListener(new WebViewListener() {
+            @Override
+            public void jump(Context context, String url) {
+                WebActivity.startActivity(context, url);
+            }
+        });
         initAtThread();
 
     }

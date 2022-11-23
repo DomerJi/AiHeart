@@ -100,7 +100,7 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
                 Log.i("onTabSelected", "position -> " + tab.getPosition());
                 refreshTabColor(tab.getPosition());
                 if (mViewPager.getCurrentItem() != tab.getPosition()) {
-                    mViewPager.setCurrentItem(tab.getPosition());
+                    mViewPager.setCurrentItem(tab.getPosition(), false);
                 }
             }
 

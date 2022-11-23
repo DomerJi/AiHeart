@@ -63,6 +63,7 @@ class VpImageAdapter constructor(images: ArrayList<ImageModel>, dragCloseHelper:
 
         init {
             mPvImage = itemView.findViewById<PhotoView>(R.id.pv_image);
+            itemView.tag = this
             dragCloseHelper.setShareElementMode(false);
             mPvImage.setOnClickListener(View.OnClickListener { (mPvImage.context as Activity).finish() })
             mPvImage.setOnLongClickListener(View.OnLongClickListener {

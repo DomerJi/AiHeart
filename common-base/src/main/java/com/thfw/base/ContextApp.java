@@ -2,6 +2,7 @@ package com.thfw.base;
 
 import android.content.Context;
 
+import com.thfw.base.face.WebViewListener;
 import com.thfw.base.utils.SharePreferenceUtil;
 
 /**
@@ -35,6 +36,16 @@ public final class ContextApp {
         return String.valueOf(getDeviceType());
     }
 
+
+    public static WebViewListener webViewListener;
+
+    public static void setWebViewListener(WebViewListener webViewListener) {
+        ContextApp.webViewListener = webViewListener;
+    }
+
+    public static WebViewListener getWebViewListener() {
+        return webViewListener;
+    }
 
     public static void init(Context context) {
         ContextApp.context = context.getApplicationContext();

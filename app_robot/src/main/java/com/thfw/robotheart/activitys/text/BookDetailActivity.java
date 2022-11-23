@@ -33,6 +33,7 @@ import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.util.WebSizeUtil;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.widget.LoadingView;
+import com.thfw.ui.widget.WebViewTapUtil;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jsoup.Jsoup;
@@ -186,6 +187,7 @@ public class BookDetailActivity extends RobotBaseActivity<BookPresenter> impleme
             mAgentWeb = preAgentWeb.get();
             Log.d("contentHtml", "contentHtml = " + contentHtml);
             WebView webView = mAgentWeb.getWebCreator().getWebView();
+            WebViewTapUtil.initWebView(webView, contentHtml);
             frameLayout.setBackgroundColor(Color.WHITE);
             webView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
             webView.getSettings().setDefaultTextEncodingName("UTF-8");//设置默认为utf-8

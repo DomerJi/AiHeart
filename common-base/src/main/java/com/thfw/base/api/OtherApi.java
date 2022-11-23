@@ -79,7 +79,7 @@ public interface OtherApi {
      * download_url
      */
     @FormUrlEncoded
-    @POST("getVersion")
+    @POST("version/latest")
     Observable<HttpResult<VersionModel>> getVersion(@FieldMap Map<String, Object> params);
 
 

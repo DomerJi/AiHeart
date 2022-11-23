@@ -136,7 +136,7 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
                                 } else {
                                     mPresenter.onGetResult(testResultModel.getResultId());
                                 }
-                            }, 500);
+                            }, 650);
                         }
                     }
                 })

@@ -3,6 +3,7 @@ package com.thfw.base.models;
 import com.contrarywind.interfaces.IPickerViewData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -15,6 +16,20 @@ public class PickerData implements IPickerViewData {
     private String name;
     private int type = -1;
     private boolean check;
+
+    private HashMap<String, Object> ext;
+
+    public PickerData put(String key, Object obj) {
+        if (ext == null) {
+            ext = new HashMap<>();
+        }
+        ext.put(key, obj);
+        return this;
+    }
+
+    public Object get(String key) {
+        return ext.get(key);
+    }
 
     public PickerData(String name) {
         this.name = name;

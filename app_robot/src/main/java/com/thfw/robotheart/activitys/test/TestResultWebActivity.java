@@ -114,7 +114,7 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
                                 } else {
                                     mPresenter.onGetResult(testResultModel.getResultId());
                                 }
-                            }, 500);
+                            }, 650);
                         }
                     }
                 })

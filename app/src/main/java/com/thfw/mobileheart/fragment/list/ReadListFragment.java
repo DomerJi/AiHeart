@@ -95,6 +95,10 @@ public class ReadListFragment extends BaseFragment<BookPresenter> implements Boo
 
     }
 
+    public void onReSelected() {
+        // todo noting
+    }
+
     @Override
     public void onFail(ResponeThrowable throwable) {
         if (page == 1) {

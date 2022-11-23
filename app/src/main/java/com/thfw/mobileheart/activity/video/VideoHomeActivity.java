@@ -1,9 +1,15 @@
 package com.thfw.mobileheart.activity.video;
 
+import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +35,8 @@ import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +50,8 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
     private androidx.viewpager.widget.ViewPager mViewPager;
     private com.thfw.ui.widget.LoadingView mLoadingView;
     private com.thfw.mobileheart.view.LastTextView mTvLastAudio;
+    private List<VideoTypeModel> models;
+    private ArrayList<Object> textList;
 
     public static void startActivity(Context context) {
         context.startActivity(new Intent(context, VideoHomeActivity.class));
@@ -70,10 +80,6 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
     @Override
     public void initData() {
 
-
-        //设置TabLayout和ViewPager联动
-        mTabLayout.setupWithViewPager(mViewPager, false);
-
 //        Type type = new TypeToken<List<VideoTypeModel>>() {
 //        }.getType();
 //        List<VideoTypeModel> cacheModel = SharePreferenceUtil.getObject(KEY_TYPE_LIST, type);
@@ -83,25 +89,9 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
 //        }
         mPresenter.getVideoType();
 
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                ((VideoListFragment) tabFragmentList.get(tab.getPosition())).onReSelected();
-            }
-        });
     }
 
-    private void setAdapter(List<VideoTypeModel> cacheModel) {
+    private void setAdapterOld(List<VideoTypeModel> cacheModel) {
         int size = cacheModel.size();
         mViewPager.setOffscreenPageLimit(size);
         //添加tab
@@ -156,6 +146,175 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
             }
         });
     }
+
+    private void setAdapter(List<VideoTypeModel> cacheModel) {
+        this.models = cacheModel;
+        int size = cacheModel.size();
+        Log.i(TAG, "size = " + size);
+        mViewPager.setOffscreenPageLimit(size);
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Log.i("onTabSelected", "position -> " + tab.getPosition());
+                refreshTabColor(tab.getPosition());
+                if (mViewPager.getCurrentItem() != tab.getPosition()) {
+                    mViewPager.setCurrentItem(tab.getPosition(), false);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                try {
+                    ((VideoListFragment) tabFragmentList.get(tab.getPosition())).onReSelected();
+                } catch (Exception e) {
+
+                }
+            }
+        });
+
+        /**
+         * TypeEvaluator简介
+         * Android提供了以下几个简单的Evalutor实现类：
+         * IntEvaluator：属性的值类型为int
+         * FloatEvaluator：属性的值类型为float
+         * ArgbEvaluator：属性的值类型为十六进制颜色值
+         */
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            ArgbEvaluator argbEvaluator = new ArgbEvaluator();
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                if (positionOffset <= 0 || positionOffsetPixels <= 0) {
+                    return;
+                }
+
+                Object startColor = cacheModel.get(position).getSelectedColor();
+                Object endColor = cacheModel.get(position + 1).getSelectedColor();
+                int color = (int) argbEvaluator.evaluate(positionOffset, startColor, endColor);
+                mTabLayout.setSelectedTabIndicatorColor(color);
+                Log.i("onPageScrolled", "position -> " + position
+                        + " ; positionOffset -> " + positionOffset
+                        + " ; positionOffsetPixels -> " + positionOffsetPixels
+                        + " ; color -> " + color + " ; toPosition -> " + (position + 1));
+                mTabLayout.setScrollPosition(position, positionOffset, true);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                getSupportFragmentManager().beginTransaction()
+                        .setMaxLifecycle(tabFragmentList.get(position), Lifecycle.State.RESUMED).commit();
+                if (mTabLayout.getSelectedTabPosition() != position) {
+                    mTabLayout.selectTab(mTabLayout.getTabAt(position));
+                }
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+
+            }
+        });
+        //添加tab
+        for (int i = 0; i < size; i++) {
+            int rootType = cacheModel.get(i).rootType;
+            LogUtil.d("onItemClick rootType = " + rootType);
+            int id = cacheModel.get(i).id;
+            int contentType = id > 0 ? id : rootType;
+            VideoListFragment videoListFragment = new VideoListFragment(contentType);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(VideoListFragment.KEY_CHILD_TYPE, (ArrayList) cacheModel.get(i).getList());
+            videoListFragment.setArguments(bundle);
+            tabFragmentList.add(videoListFragment);
+
+        }
+
+        mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+            @NonNull
+            @Override
+            public Fragment getItem(int position) {
+                return tabFragmentList.get(position);
+            }
+
+            @NonNull
+            @NotNull
+            @Override
+            public Object instantiateItem(@NonNull @NotNull ViewGroup container, int position) {
+                return super.instantiateItem(container, position);
+            }
+
+            @Override
+            public void destroyItem(@NonNull @NotNull ViewGroup container, int position, @NonNull @NotNull Object object) {
+                super.destroyItem(container, position, object);
+            }
+
+            @Override
+            public int getCount() {
+                return tabFragmentList.size();
+            }
+
+            @Nullable
+            @org.jetbrains.annotations.Nullable
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return cacheModel.get(position).name;
+            }
+        });
+
+        //添加tab
+        for (int i = 0; i < size; i++) {
+            // todo 自定义布局
+            TabLayout.Tab tabAt = mTabLayout.newTab().setText(cacheModel.get(i).name);
+            mTabLayout.addTab(tabAt);
+            tabAt.setCustomView(R.layout.tab_custeom_item_study);
+            textList = new ArrayList<>();
+            if (tabAt.getCustomView() != null) {
+                if (cacheModel.get(i).isUnSelectedChange()) {
+                    TextView mText1 = tabAt.getCustomView().findViewById(android.R.id.text1);
+                    textList.add(mText1);
+                    mText1.setTextColor(models.get(i).getUnSelectedColor());
+                }
+                ImageView mIvFire = tabAt.getCustomView().findViewById(R.id.iv_fire);
+                mIvFire.setVisibility(cacheModel.get(i).fire == 1 ? View.VISIBLE : View.GONE);
+
+
+            }
+
+        }
+
+        // 设置TabLayout和ViewPager联动
+//        mTabLayout.setupWithViewPager(mViewPager, false);
+    }
+
+    private void refreshTabColor(int position) {
+        int count = mTabLayout.getTabCount();
+        for (int i = 0; i < count; i++) {
+            VideoTypeModel model = models.get(i);
+            TabLayout.Tab tabAt = mTabLayout.getTabAt(i);
+
+
+            if (tabAt != null && tabAt.getCustomView() != null) {
+                TextView mText1 = tabAt.getCustomView().findViewById(android.R.id.text1);
+                ImageView mIvFire = tabAt.getCustomView().findViewById(R.id.iv_fire);
+                mIvFire.setVisibility(model.fire == 1 ? View.VISIBLE : View.GONE);
+                if (position == i) {
+                    mText1.setTextColor(model.getSelectedColor());
+                    // mText1.setTypeface 加粗最可靠！！！
+                    mText1.setTypeface(model.getSelectedColor() == model.getUnSelectedColor() ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
+                    mTabLayout.setSelectedTabIndicatorColor(model.getSelectedColor());
+                } else {
+                    mText1.setTextColor(model.getUnSelectedColor());
+                    mText1.setTypeface(Typeface.DEFAULT);
+                }
+            }
+        }
+    }
+
 
     @Override
     public LifecycleProvider getLifecycleProvider() {
