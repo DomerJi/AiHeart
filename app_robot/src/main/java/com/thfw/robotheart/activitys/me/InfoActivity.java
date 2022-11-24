@@ -65,6 +65,7 @@ import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.AreaUtil;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
+import com.thfw.ui.common.ImageActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
@@ -441,6 +442,14 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
         // 头像
         mLlAvatar.setOnClickListener(v -> {
             showAlbumSelect();
+        });
+        mLlAvatar.setOnLongClickListener(v -> {
+            String pic = UserManager.getInstance().getUser().getAvatar();
+            if (TextUtils.isEmpty(pic)) {
+                return false;
+            }
+            ImageActivity.startActivity(mContext, pic);
+            return true;
         });
         // 姓名
         mLlName.setOnClickListener(v -> {

@@ -1,6 +1,7 @@
 package com.thfw.robotheart.activitys.me;
 
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -25,6 +26,7 @@ import com.thfw.robotheart.activitys.test.TestReportActivity;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.MsgCountManager;
 import com.thfw.robotheart.view.TitleRobotView;
+import com.thfw.ui.common.ImageActivity;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
@@ -82,6 +84,21 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
 
         mTitleRobotView = (TitleRobotView) findViewById(R.id.titleRobotView);
         mRivAvatar = (RoundedImageView) findViewById(R.id.riv_avatar);
+        mRivAvatar.setOnClickListener(v -> {
+            String pic = UserManager.getInstance().getUser().getAvatar();
+            if (TextUtils.isEmpty(pic)) {
+                return;
+            }
+            ImageActivity.startActivity(mContext, pic);
+        });
+        mRivAvatar.setOnLongClickListener(v -> {
+            String pic = UserManager.getInstance().getUser().getAvatar();
+            if (TextUtils.isEmpty(pic)) {
+                return false;
+            }
+            ImageActivity.startActivity(mContext, pic);
+            return true;
+        });
         mTvNickname = (TextView) findViewById(R.id.tv_nickname);
         mLlHistory = (LinearLayout) findViewById(R.id.ll_history);
         mLlTest = (LinearLayout) findViewById(R.id.ll_test);

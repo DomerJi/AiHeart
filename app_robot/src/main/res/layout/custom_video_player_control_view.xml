@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="26dp"
         android:paddingTop="18dp"
-        android:text="续播：从上次播放位置为您续播"
+        android:text="从上次播放位置为您续播"
         android:textColor="@color/text_yellow"
         android:visibility="gone"
         tools:visibility="visible" />
