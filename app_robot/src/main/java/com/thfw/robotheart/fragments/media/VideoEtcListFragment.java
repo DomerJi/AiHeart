@@ -31,6 +31,7 @@ import java.util.List;
 public class VideoEtcListFragment extends RobotBaseFragment<VideoPresenter> implements VideoPresenter.VideoUi<List<VideoEtcModel>> {
 
     private int type;
+    private int prentType;
     private SmartRefreshLayout mRefreshLayout;
     private RecyclerView mRvEtcList;
     private LoadingView mLoadingView;
@@ -41,6 +42,12 @@ public class VideoEtcListFragment extends RobotBaseFragment<VideoPresenter> impl
     public VideoEtcListFragment(int type) {
         super();
         this.type = type;
+    }
+
+    public VideoEtcListFragment(int type, int parentType) {
+        super();
+        this.type = type;
+        this.prentType = parentType;
     }
 
     @Override
@@ -73,7 +80,12 @@ public class VideoEtcListFragment extends RobotBaseFragment<VideoPresenter> impl
 
     @Override
     public void initData() {
-        mPresenter.getVideoList(type, page);
+        if (prentType > 0) {
+            mPresenter.getVideoList(prentType, type, page);
+        } else {
+            mPresenter.getVideoList(type, page);
+        }
+
     }
 
     @Override

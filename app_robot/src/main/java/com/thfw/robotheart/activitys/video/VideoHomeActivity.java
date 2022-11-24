@@ -91,15 +91,22 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
                 if (EmptyUtil.isEmpty(list) || position < 0 || position >= list.size()) {
                     return;
                 }
+                VideoTypeModel model = list.get(position);
                 // todo type
-                int rootType = list.get(position).rootType;
+                int rootType = model.rootType;
                 LogUtil.d("onItemClick rootType = " + rootType);
-                int id = list.get(position).id;
+                int id = model.id;
                 int type = id > 0 ? id : rootType;
                 LogUtil.d("onItemClick id = " + type);
                 Fragment fragment = mLoader.load(type);
+
                 if (fragment == null) {
-                    mLoader.add(type, new VideoEtcListFragment(type));
+                    if (model.prentType > 0) {
+                        mLoader.add(type, new VideoEtcListFragment(type, model.prentType));
+                    } else {
+                        mLoader.add(type, new VideoEtcListFragment(type));
+                    }
+
                 }
                 mVideoEtcListFragment = (VideoEtcListFragment) mLoader.load(type);
             }

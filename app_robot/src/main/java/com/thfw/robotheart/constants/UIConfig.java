@@ -11,10 +11,13 @@ import com.thfw.robotheart.R;
  * Describe:Todo
  */
 public class UIConfig {
-    public static final int LEFT_TAB_MAX_TEXTSIZE = 20;
-    public static final int LEFT_TAB_MIN_TEXTSIZE = 17;
-    public static final int LEFT_TAB_CHILD_MAX_TEXTSIZE = 20;
-    public static final int LEFT_TAB_CHILD_MIN_TEXTSIZE = 17;
+    public static final float LEFT_TAB_MAX_TEXTSIZE = 21f;
+    public static final float LEFT_TAB_MIN_TEXTSIZE = 19f;
+    public static final float LEFT_TAB_CHILD_MAX_TEXTSIZE = 19f;
+    public static final float LEFT_TAB_CHILD_MIN_TEXTSIZE = 17f;
+    public static final float LEFT_TAB_CHILD2_MAX_TEXTSIZE = 17f;
+    public static final float LEFT_TAB_CHILD2_MIN_TEXTSIZE = 15f;
+
     public static final String COLOR_HOUR = "#FD9D56";
     public static final String COLOR_RED = "#FF5454";
     public static final String COLOR_GRREN = "#00A871";

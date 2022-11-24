@@ -1,10 +1,13 @@
 package com.thfw.robotheart.adapter;
 
+import android.text.TextPaint;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,6 +52,25 @@ public class VideoEtcTypeAdapter extends BaseAdapter<VideoTypeModel, VideoEtcTyp
         holder.mTvType.setSelected(selectedIndex == position);
         holder.mTvType.setText(bean.name);
         LogUtil.d("VideoEtcTypeAdapter", "bean.list = " + !EmptyUtil.isEmpty(bean.list));
+
+        holder.mClRoot.setSelected(selectedIndex == position);
+
+        if (bean.fire == 0) {
+            holder.mIvFire.setVisibility(View.GONE);
+        } else {
+            holder.mIvFire.setVisibility(View.VISIBLE);
+            holder.mIvFire.setImageLevel(bean.fire);
+        }
+
+        // 二十大标红
+        if (selectedIndex == position) {
+            holder.mTvType.setTextColor(bean.getSelectedColor());
+            TextPaint paint = holder.mTvType.getPaint();
+            paint.setFakeBoldText(bean.getSelectedColor() == bean.getUnSelectedColor());
+        } else {
+            holder.mTvType.setTextColor(bean.getUnSelectedColor());
+        }
+
         if (selectedIndex == position && expand) {
             if (!EmptyUtil.isEmpty(bean.list)) {
                 VideoChildTypeAdapter childAdapter = new VideoChildTypeAdapter(bean.list);
@@ -79,11 +101,15 @@ public class VideoEtcTypeAdapter extends BaseAdapter<VideoTypeModel, VideoEtcTyp
 
         private final TextView mTvType;
         private final RecyclerView mRvChild;
+        private final ImageView mIvFire;
+        private final ConstraintLayout mClRoot;
 
         public AudioEctTypeHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvType = itemView.findViewById(R.id.tv_type);
             mRvChild = itemView.findViewById(R.id.rv_child);
+            mClRoot = itemView.findViewById(R.id.cl_root);
+            mIvFire = itemView.findViewById(R.id.iv_fire);
             mRvChild.setLayoutManager(new LinearLayoutManager(mContext));
             itemView.setOnClickListener(v -> {
                 if (getBindingAdapterPosition() == selectedIndex) {

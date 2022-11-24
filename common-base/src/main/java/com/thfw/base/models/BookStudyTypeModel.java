@@ -107,6 +107,7 @@ public class BookStudyTypeModel implements IModel {
     }
 
     public int getSelectedColor() {
+
         refreshColorName();
         if (TextUtils.isEmpty(selectedColorStr)) {
             switch (ContextApp.getDeviceType()) {
@@ -129,7 +130,7 @@ public class BookStudyTypeModel implements IModel {
     }
 
     public boolean isSelectedChange() {
-        return !TextUtils.isEmpty(unSelectedColorStr);
+        return !TextUtils.isEmpty(selectedColorStr);
     }
 
     public BookStudyTypeModel(String name, int id) {

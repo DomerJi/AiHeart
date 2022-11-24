@@ -25,7 +25,7 @@
         android:layout_height="14dp"
         android:layout_marginBottom="8dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_baseline_local_fire_department_24"
+        android:src="@drawable/tab_flag_level_list"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tv_title"
         app:layout_constraintLeft_toRightOf="@id/tv_title"

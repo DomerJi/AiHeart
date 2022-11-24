@@ -54,7 +54,12 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
     public void onBindViewHolder(@NonNull @NotNull VideoChildHolder holder, int position) {
         VideoTypeModel typeModel = mDataList.get(position);
         holder.mTvTitle.setText(typeModel.name);
-        holder.mIvFire.setVisibility(typeModel.fire == 1 ? View.VISIBLE : View.GONE);
+        if (typeModel.fire == 0) {
+            holder.mIvFire.setVisibility(View.GONE);
+        } else {
+            holder.mIvFire.setVisibility(View.VISIBLE);
+            holder.mIvFire.setImageLevel(typeModel.fire);
+        }
         holder.mTvTitle.setSelected(position == mSelectedIndex);
         if (typeModel.isChangedColor()) {
 

@@ -154,7 +154,8 @@ public class AudioTypeModel implements IModel {
     }
 
     public boolean isSelectedChange() {
-        return !TextUtils.isEmpty(unSelectedColorStr);
+        refreshColorName();
+        return !TextUtils.isEmpty(selectedColorStr);
     }
 
     public static void sort(List<AudioTypeModel> list) {

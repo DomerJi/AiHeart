@@ -27,6 +27,8 @@ public class VideoTypeModel implements IModel {
 
     @SerializedName("root_type")
     public int rootType = 0;
+    @SerializedName("prent_type")
+    public int prentType = 0;
     @SerializedName("sort")
     public int sort;
     @SerializedName("children")
@@ -127,7 +129,7 @@ public class VideoTypeModel implements IModel {
         if (TextUtils.isEmpty(selectedColorStr)) {
             switch (ContextApp.getDeviceType()) {
                 case ContextApp.DeviceType.ROBOT:
-                    return Color.parseColor("#91dff3");
+                    return Color.parseColor("#000000");
                 default:
                     return Color.parseColor("#00A871");
             }
@@ -137,7 +139,7 @@ public class VideoTypeModel implements IModel {
         } catch (Exception e) {
             switch (ContextApp.getDeviceType()) {
                 case ContextApp.DeviceType.ROBOT:
-                    return Color.parseColor("#91dff3");
+                    return Color.parseColor("#000000");
                 default:
                     return Color.parseColor("#00A871");
             }
@@ -145,7 +147,8 @@ public class VideoTypeModel implements IModel {
     }
 
     public boolean isSelectedChange() {
-        return !TextUtils.isEmpty(unSelectedColorStr);
+        refreshColorName();
+        return !TextUtils.isEmpty(selectedColorStr);
     }
 
 

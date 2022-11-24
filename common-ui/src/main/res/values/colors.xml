@@ -49,6 +49,7 @@
     <color name="robot_search_border_color">#8D99A4</color>
     <color name="robot_search_bg">@color/white_20</color>
     <color name="left_navigation_divder">#4d5f77</color>
+    <color name="left_navigation_divder_height">#3772c1</color>
 
 
     <color name="text_green">#00A871</color>

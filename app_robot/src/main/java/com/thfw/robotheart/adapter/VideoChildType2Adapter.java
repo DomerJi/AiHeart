@@ -9,12 +9,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.VideoTypeModel;
-import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.constants.UIConfig;
 
@@ -27,13 +24,11 @@ import java.util.List;
  * Date: 2021/12/2 16:24
  * Describe:音频合集类型列表
  */
-public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChildTypeAdapter.BookStudyTypeHolder> {
+public class VideoChildType2Adapter extends BaseAdapter<VideoTypeModel, VideoChildType2Adapter.BookStudyTypeHolder> {
 
     private int selectedIndex = -1;
-    private boolean expand = true;
-    private int childSelectedIndex = -1;
 
-    public VideoChildTypeAdapter(List<VideoTypeModel> dataList) {
+    public VideoChildType2Adapter(List<VideoTypeModel> dataList) {
         super(dataList);
     }
 
@@ -56,10 +51,9 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
     public void onBindViewHolder(@NonNull @NotNull BookStudyTypeHolder holder, int position) {
         VideoTypeModel bean = mDataList.get(position);
 
-        holder.mTvType.setTextSize(selectedIndex == position ? UIConfig.LEFT_TAB_CHILD_MAX_TEXTSIZE : UIConfig.LEFT_TAB_CHILD_MIN_TEXTSIZE);
+        holder.mTvType.setTextSize(selectedIndex == position ? UIConfig.LEFT_TAB_CHILD2_MAX_TEXTSIZE : UIConfig.LEFT_TAB_CHILD2_MIN_TEXTSIZE);
         holder.mTvType.setSelected(selectedIndex == position);
         holder.mTvType.setText(mDataList.get(position).name);
-
         if (bean.fire == 0) {
             holder.mIvFire.setVisibility(View.GONE);
         } else {
@@ -90,34 +84,11 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
             TextPaint paint = holder.mTvType.getPaint();
             paint.setFakeBoldText(false);
         }
-        holder.mVLine.setVisibility(position == getItemCount() - 1 ? View.INVISIBLE : View.VISIBLE);
-
-        if (selectedIndex == position && expand) {
-            if (!EmptyUtil.isEmpty(bean.list)) {
-                for (VideoTypeModel child2 : bean.list) {
-                    child2.prentType = bean.id;
-                }
-                VideoChildType2Adapter childAdapter = new VideoChildType2Adapter(bean.list);
-                childAdapter.setSelectedIndex(childSelectedIndex);
-                childAdapter.setOnRvItemListener(new OnRvItemListener<VideoTypeModel>() {
-                    @Override
-                    public void onItemClick(List<VideoTypeModel> list, int position) {
-                        childSelectedIndex = position;
-                        if (mOnRvItemListener != null) {
-                            mOnRvItemListener.onItemClick(list, position);
-                        }
-                    }
-                });
-                holder.mRvChild.setAdapter(childAdapter);
-                holder.mRvChild.setVisibility(View.VISIBLE);
-            } else {
-                holder.mRvChild.setVisibility(View.GONE);
-            }
-        } else {
-            holder.mRvChild.removeAllViews();
-            holder.mRvChild.setVisibility(View.GONE);
-        }
-
+        holder.mVLine.setVisibility(View.VISIBLE);
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) holder.mVLine.getLayoutParams();
+        layoutParams.leftMargin = 36;
+        layoutParams.rightMargin = 36;
+        holder.mVLine.setLayoutParams(layoutParams);
     }
 
     public class BookStudyTypeHolder extends RecyclerView.ViewHolder {
@@ -127,23 +98,18 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
         private final View mVLine;
         private final ImageView mIvFire;
         private final ConstraintLayout mClRoot;
+        private final ConstraintLayout mClText;
 
         public BookStudyTypeHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvType = itemView.findViewById(R.id.tv_type);
             mRvChild = itemView.findViewById(R.id.rv_child);
             mClRoot = itemView.findViewById(R.id.cl_root);
+            mClText = itemView.findViewById(R.id.cl_text);
             mIvFire = itemView.findViewById(R.id.iv_fire);
             mVLine = itemView.findViewById(R.id.v_line);
-            mRvChild.setLayoutManager(new LinearLayoutManager(mContext));
             itemView.setOnClickListener(v -> {
-                if (getBindingAdapterPosition() == selectedIndex) {
-                    expand = !expand;
-                } else {
-                    expand = true;
-                }
                 selectedIndex = getBindingAdapterPosition();
-                childSelectedIndex = -1;
                 notifyDataSetChanged();
                 if (mOnRvItemListener != null) {
                     mOnRvItemListener.onItemClick(getDataList(), selectedIndex);

@@ -220,8 +220,12 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
                     mText1.setTextColor(models.get(i).getUnSelectedColor());
                 }
                 ImageView mIvFire = tabAt.getCustomView().findViewById(R.id.iv_fire);
-                mIvFire.setVisibility(cacheModel.get(i).fire == 1 ? View.VISIBLE : View.GONE);
-
+                if (cacheModel.get(i).fire == 0) {
+                    mIvFire.setVisibility(View.GONE);
+                } else {
+                    mIvFire.setVisibility(View.VISIBLE);
+                    mIvFire.setImageLevel(cacheModel.get(i).fire);
+                }
 
             }
 
@@ -241,7 +245,12 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
             if (tabAt != null && tabAt.getCustomView() != null) {
                 TextView mText1 = tabAt.getCustomView().findViewById(android.R.id.text1);
                 ImageView mIvFire = tabAt.getCustomView().findViewById(R.id.iv_fire);
-                mIvFire.setVisibility(model.fire == 1 ? View.VISIBLE : View.GONE);
+                if (model.fire == 0) {
+                    mIvFire.setVisibility(View.GONE);
+                } else {
+                    mIvFire.setVisibility(View.VISIBLE);
+                    mIvFire.setImageLevel(model.fire);
+                }
                 if (position == i) {
                     mText1.setTextColor(model.getSelectedColor());
                     // mText1.setTypeface 加粗最可靠！！！

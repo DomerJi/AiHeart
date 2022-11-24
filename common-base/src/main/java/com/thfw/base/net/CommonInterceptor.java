@@ -20,6 +20,8 @@ import okhttp3.Response;
 public class CommonInterceptor implements Interceptor {
 
     public static final String TOKEN = "Token";
+//    public static final String DEVICE_TYPE = "device_type";
+    public static final String DEVICE_TYPE = "device-type";
 
     private static OnTokenListener tokenListener;
 
@@ -62,9 +64,13 @@ public class CommonInterceptor implements Interceptor {
      */
     public static void addToken(Request.Builder requestBuilder) {
         String token = CommonInterceptor.getToken();
+
+
         if (!TextUtils.isEmpty(token)) {
             requestBuilder.addHeader(TOKEN, token);
         }
+        requestBuilder.addHeader(DEVICE_TYPE, CommonParameter.getDeviceType());
+
     }
 
     public interface OnTokenListener {

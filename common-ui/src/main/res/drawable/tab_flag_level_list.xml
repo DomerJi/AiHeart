@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:drawable="@drawable/ic_baseline_local_fire_department_24"
+        android:maxLevel="1" />
+
+    <item
+        android:drawable="@drawable/ic_five_star_flag"
+        android:maxLevel="2" />
+
+</level-list>
