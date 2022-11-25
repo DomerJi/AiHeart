@@ -152,6 +152,7 @@
 
         <activity
             android:name=".activitys.set.SystemAppActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.SearchActivity"

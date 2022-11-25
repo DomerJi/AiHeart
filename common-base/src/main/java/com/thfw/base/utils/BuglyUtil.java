@@ -67,13 +67,16 @@ public class BuglyUtil {
             return;
         }
         requestIng = true;
+        TimingHelper.getInstance().removeWorkArriveListener(WorkInt.CHECK_VERSION);
         if (versionModel != null && System.currentTimeMillis() - checkVersionTime < HourUtil.LEN_MINUTE) {
             requestIng = false;
             if (BuglyUtil.requestUpgradeStateListener != null) {
                 BuglyUtil.requestUpgradeStateListener.onVersion(isNewVersion());
+                BuglyUtil.requestUpgradeStateListener = null;
             }
             return;
         }
+
         new OtherPresenter(new OtherPresenter.OtherUi<VersionModel>() {
             @Override
             public LifecycleProvider getLifecycleProvider() {
@@ -96,6 +99,7 @@ public class BuglyUtil {
                 checkVersionTime = System.currentTimeMillis();
                 if (BuglyUtil.requestUpgradeStateListener != null) {
                     BuglyUtil.requestUpgradeStateListener.onVersion(isNewVersion());
+                    BuglyUtil.requestUpgradeStateListener = null;
                 }
             }
 
@@ -112,10 +116,12 @@ public class BuglyUtil {
                     versionModel.setDownloadUrl("https://oss.ucdl.pp.uc.cn/fs01/union_pack/Wandoujia_3963569_web_seo_baidu_binded.apk?x-oss-process=udf%2Fpp-udf%2CJjc3LiMnJ3J%2BcXZycA%3D%3D");
                     if (BuglyUtil.requestUpgradeStateListener != null) {
                         BuglyUtil.requestUpgradeStateListener.onVersion(true);
+                        BuglyUtil.requestUpgradeStateListener = null;
                     }
                 } else {
                     if (BuglyUtil.requestUpgradeStateListener != null) {
                         BuglyUtil.requestUpgradeStateListener.onVersion(isNewVersion());
+                        BuglyUtil.requestUpgradeStateListener = null;
                     }
                     TimingHelper.getInstance().addWorkArriveListener(new TimingHelper.WorkListener() {
                         @Override

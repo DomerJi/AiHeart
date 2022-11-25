@@ -251,8 +251,10 @@
             android:name=".activity.login.LoginActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".activity.settings.SystemAppActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
         <service android:name="com.thfw.base.net.download.DownLoadIntentService">
