@@ -3,7 +3,10 @@ package com.thfw.base.net;
 
 import android.text.TextUtils;
 
+import com.thfw.base.ContextApp;
+import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.RobotUtil2;
 
 import java.io.IOException;
 
@@ -20,9 +23,9 @@ import okhttp3.Response;
 public class CommonInterceptor implements Interceptor {
 
     public static final String TOKEN = "Token";
-//    public static final String DEVICE_TYPE = "device_type";
+    //    public static final String DEVICE_TYPE = "device_type";
     public static final String DEVICE_TYPE = "device-type";
-
+    private static final String CHECK_VERSION_URL = "version/latest";
     private static OnTokenListener tokenListener;
 
     public static void setTokenListener(OnTokenListener tokenListener) {
@@ -64,14 +67,31 @@ public class CommonInterceptor implements Interceptor {
      */
     public static void addToken(Request.Builder requestBuilder) {
         String token = CommonInterceptor.getToken();
+        LogUtil.i(" requestBuilder.build().url() =111 " + GsonUtil.toJson(requestBuilder.build()));
 
 
         if (!TextUtils.isEmpty(token)) {
             requestBuilder.addHeader(TOKEN, token);
         }
-        requestBuilder.addHeader(DEVICE_TYPE, CommonParameter.getDeviceType());
+
+        if (requestBuilder.build().url().toString().endsWith(CHECK_VERSION_URL)) {
+            switch (ContextApp.getDeviceType()) {
+                case ContextApp.DeviceType.PAD:
+                case ContextApp.DeviceType.MOBILE:
+                    requestBuilder.addHeader(DEVICE_TYPE, CommonParameter.DeviceType.MOBILE);
+                case ContextApp.DeviceType.ROBOT:
+                    if (RobotUtil2.isInstallRobot()) {
+                        requestBuilder.addHeader(DEVICE_TYPE, CommonParameter.DeviceType.ROBOT);
+                    } else {
+                        requestBuilder.addHeader(DEVICE_TYPE, CommonParameter.DeviceType.PAD);
+                    }
+            }
+        } else {
+            requestBuilder.addHeader(DEVICE_TYPE, CommonParameter.getDeviceType());
+        }
 
     }
+
 
     public interface OnTokenListener {
         String getToken();

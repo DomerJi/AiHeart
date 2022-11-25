@@ -66,8 +66,7 @@ public class OtherPresenter extends IPresenter<OtherPresenter.OtherUi> {
 
     public void onCheckVersion() {
         Observable<HttpResult<VersionModel>> observable = OkHttpUtil.createService(OtherApi.class)
-                .getVersion(NetParams.crete()
-                        .add("type", CommonParameter.getDeviceType()));
+                .getVersion(NetParams.crete());
         OkHttpUtil.request(observable, getUI());
     }
 
