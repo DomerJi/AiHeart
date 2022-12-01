@@ -294,7 +294,6 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         });
         pageStateViewModel.check();
 
-        Util.setBlackView(getWindow().getDecorView());
         mFragmentLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content)
                 .add(mLlHome.getId(), new HomeFragment())
                 .add(mLlMessage.getId(), new MessageFragment())
