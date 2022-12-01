@@ -8,6 +8,7 @@ import com.thfw.base.models.AboutUsModel;
 import com.thfw.base.models.CommonProblemModel;
 import com.thfw.base.models.FeedBackModel;
 import com.thfw.base.models.HotCallModel;
+import com.thfw.base.models.PageStateModel;
 import com.thfw.base.models.VersionModel;
 import com.thfw.base.models.VoiceInstructionModel;
 import com.thfw.base.net.CommonParameter;
@@ -67,6 +68,12 @@ public class OtherPresenter extends IPresenter<OtherPresenter.OtherUi> {
     public void onCheckVersion() {
         Observable<HttpResult<VersionModel>> observable = OkHttpUtil.createService(OtherApi.class)
                 .getVersion(NetParams.crete());
+        OkHttpUtil.request(observable, getUI());
+    }
+
+    public void onGetPageState() {
+        Observable<HttpResult<PageStateModel>> observable = OkHttpUtil.createService(OtherApi.class)
+                .pageState(NetParams.crete());
         OkHttpUtil.request(observable, getUI());
     }
 

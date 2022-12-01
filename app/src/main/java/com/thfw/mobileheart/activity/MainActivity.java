@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.base.IPresenter;
@@ -25,6 +27,7 @@ import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.MoodLivelyModel;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
+import com.thfw.base.models.PageStateModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.net.CommonParameter;
@@ -45,6 +48,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.MyPreferences;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.login.LoginActivity;
@@ -67,6 +71,7 @@ import com.thfw.mobileheart.view.SimpleAnimatorListener;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnViewClickListener;
+import com.thfw.ui.utils.PageStateViewModel;
 import com.thfw.ui.utils.UrgeUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
@@ -276,7 +281,20 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
 
     @Override
     public void initData() {
+        PageStateViewModel pageStateViewModel = new ViewModelProvider(this).get(PageStateViewModel.class);
+        pageStateViewModel.getPageStateLive().observe(this, new Observer<PageStateModel>() {
+            @Override
+            public void onChanged(PageStateModel pageStateModel) {
+                if (pageStateModel.isHomeBlack()) {
+                    Util.setBlackView(MainActivity.this);
+                } else {
+                    Util.setRgbView(MainActivity.this);
+                }
+            }
+        });
+        pageStateViewModel.check();
 
+        Util.setBlackView(getWindow().getDecorView());
         mFragmentLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content)
                 .add(mLlHome.getId(), new HomeFragment())
                 .add(mLlMessage.getId(), new MessageFragment())

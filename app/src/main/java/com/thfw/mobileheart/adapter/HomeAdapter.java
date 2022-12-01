@@ -10,8 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +23,7 @@ import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.models.HomeEntity;
 import com.thfw.base.models.HomeHistoryEntity;
 import com.thfw.base.models.MoodLivelyModel;
+import com.thfw.base.models.PageStateModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.FunctionType;
@@ -43,6 +47,7 @@ import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FunctionDurationUtil;
 import com.thfw.mobileheart.util.MoodLivelyHelper;
 import com.thfw.ui.utils.GlideUtil;
+import com.thfw.ui.utils.PageStateViewModel;
 import com.thfw.user.login.UserManager;
 import com.youth.banner.Banner;
 import com.youth.banner.indicator.RectangleIndicator;
@@ -60,10 +65,28 @@ import java.util.List;
 public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder>
         implements MyApplication.OnMinuteListener, MoodLivelyHelper.MoodLivelyListener {
     private static final long DELAY_TIME_BANNER = 5000;
+    private PageStateViewModel pageStateViewModel;
 
 
     public HomeAdapter(List<HomeEntity> dataList) {
         super(dataList);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull @NotNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+
+        pageStateViewModel = new ViewModelProvider((AppCompatActivity) mContext).get(PageStateViewModel.class);
+        pageStateViewModel.getPageStateLive().observe((AppCompatActivity) mContext, new Observer<PageStateModel>() {
+            @Override
+            public void onChanged(PageStateModel pageStateModel) {
+
+                RecyclerView.ViewHolder viewHolderSort = mRecyclerView.findViewHolderForLayoutPosition(1);
+                if (viewHolderSort instanceof SortHolder) {
+                    ((SortHolder) viewHolderSort).setData();
+                }
+            }
+        });
     }
 
     public void setBanner(boolean resume) {
@@ -102,13 +125,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             if (viewHolder instanceof MadeHolder) {
                 LogUtil.i("onMoodLively 03");
                 ((MadeHolder) viewHolder).setMood(data);
-                ((MadeHolder) viewHolder).setData();
                 ((MadeHolder) viewHolder).notifyTodayTime();
-            }
-
-            RecyclerView.ViewHolder viewHolderSort = mRecyclerView.findViewHolderForLayoutPosition(1);
-            if (viewHolderSort instanceof SortHolder) {
-                ((SortHolder) viewHolderSort).setData();
             }
         }
     }
@@ -189,7 +206,6 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                 MadeHolder madeHolder = (MadeHolder) holder;
                 madeHolder.notifyTodayTime();
                 madeHolder.setMood(MoodLivelyHelper.getModel());
-                madeHolder.setData();
                 break;
             case HomeEntity.TYPE_TAB_TITLE:
                 TabTitleHolder tabTitleHolder = (TabTitleHolder) holder;
@@ -353,8 +369,9 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
 
         public void setData() {
 
-            MoodLivelyModel model = MoodLivelyHelper.getCacheMood();
-            boolean showFlag = (model == null || model.getHideRedFlag() == 0);
+            boolean showFlag = (pageStateViewModel == null || pageStateViewModel.getPageStateLive().getValue() == null
+                    || !pageStateViewModel.getPageStateLive().getValue().isHideRedFlag());
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 int[] handleRedIds = new int[]{R.id.iv_tab_04, R.id.iv_tab_06, R.id.iv_tab_08};
                 try {
@@ -425,18 +442,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             mTvMoodTitle.setOnClickListener(v -> {
                 StatusActivity.startActivity(mContext);
             });
-            setData();
 
-        }
-
-        public void setData() {
-            try {
-                MoodLivelyModel model = MoodLivelyHelper.getCacheMood();
-                boolean showFlag = (model == null || model.getHideRedFlag() == 0);
-                itemView.findViewById(R.id.riv_red_flag).setVisibility(showFlag ? View.VISIBLE : View.GONE);
-            } catch (Exception e) {
-
-            }
         }
 
         public void setMood(MoodLivelyModel mood) {

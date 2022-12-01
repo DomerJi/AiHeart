@@ -34,18 +34,24 @@ public class TimingHelper {
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
                 Log.d(TAG, S_COUNT);
+
                 if (!mWorkInts.isEmpty()) {
-                    for (WorkInt workInt : mWorkInts.keySet()) {
-                        workInt.addCount();
-                        if (workInt.arrive()) {
-                            notifyWork(workInt);
+                    try {
+                        for (WorkInt workInt : mWorkInts.keySet()) {
+                            workInt.addCount();
+                            if (workInt.arrive()) {
+                                notifyWork(workInt);
+
+                            }
                         }
+                    } catch (Exception e) {
                     }
                     if (!mWorkInts.isEmpty()) {
                         removeMessages(0);
                         sendEmptyMessageDelayed(0, 999);
                     }
                 }
+
 
             }
         };

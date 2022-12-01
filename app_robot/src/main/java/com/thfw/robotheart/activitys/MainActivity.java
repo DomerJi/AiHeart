@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.opensource.svgaplayer.SVGAImageView;
@@ -23,6 +25,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
+import com.thfw.base.models.PageStateModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.models.WeatherDetailsModel;
@@ -46,6 +49,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.MyPreferences;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.base.utils.Util;
 import com.thfw.base.utils.WeatherUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
@@ -81,6 +85,7 @@ import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
+import com.thfw.ui.utils.PageStateViewModel;
 import com.thfw.ui.utils.UrgeUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
@@ -283,7 +288,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
                     break;
             }
         });
-
         mIvHand = findViewById(R.id.iv_hand);
         mTitleBarView = (TitleBarView) findViewById(R.id.titleBarView);
         mWeekView = (WeekView) findViewById(R.id.weekView);
@@ -349,6 +353,20 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
     @Override
     public void initData() {
+
+        PageStateViewModel pageStateViewModel = new ViewModelProvider(this).get(PageStateViewModel.class);
+        pageStateViewModel.getPageStateLive().observe(this, new Observer<PageStateModel>() {
+            @Override
+            public void onChanged(PageStateModel pageStateModel) {
+                if (pageStateModel.isHomeBlack()) {
+                    Util.setBlackView(MainActivity.this);
+                } else {
+                    Util.setRgbView(MainActivity.this);
+                }
+            }
+        });
+        pageStateViewModel.check();
+
         // 日期、星期连续点击10次进入配置页面（机构id设置）
         View.OnClickListener clickListener = v -> {
             if (ClickCountUtils.click(10)) {

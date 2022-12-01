@@ -1,11 +1,14 @@
 package com.thfw.base.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.net.wifi.WifiConfiguration;
@@ -18,6 +21,7 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -383,5 +387,41 @@ public class Util {
         return date.get(java.util.Calendar.DAY_OF_WEEK) - 1;
     }
 
+    public static void setBlackView(Activity activity) {
+        if (!EmptyUtil.isEmpty(activity)) {
+            Window window = activity.getWindow();
+            if (window != null) {
+                setBlackView(window.getDecorView());
+            }
+        }
+    }
+
+    public static void setRgbView(Activity activity) {
+        if (!EmptyUtil.isEmpty(activity)) {
+            Window window = activity.getWindow();
+            if (window != null) {
+                setRgbView(window.getDecorView());
+            }
+        }
+    }
+
+    public static void setBlackView(View view) {
+        if (view != null) {
+            Paint mPaint = new Paint();
+            ColorMatrix cm = new ColorMatrix();
+            cm.setSaturation(0);
+            mPaint.setColorFilter(new ColorMatrixColorFilter(cm));
+            view.setLayerType(View.LAYER_TYPE_HARDWARE, mPaint);
+        }
+    }
+
+    public static void setRgbView(View view) {
+        if (view != null) {
+            Paint mPaint = new Paint();
+            ColorMatrix cm = new ColorMatrix();
+            mPaint.setColorFilter(new ColorMatrixColorFilter(cm));
+            view.setLayerType(View.LAYER_TYPE_HARDWARE, mPaint);
+        }
+    }
 
 }
