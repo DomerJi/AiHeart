@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
-import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.activitys.set.DormantActivity;
 import com.thfw.ui.voice.PolicyHelper;
@@ -47,7 +46,6 @@ public class Dormant {
 
     public static void reset() {
         LogUtil.d(TAG_DORMANT, TAG_RESET);
-        ToastUtil.debugShow(TAG_RESET);
         lastAddTime = 0;
         MINUTE_FREE = 0;
         SLEEP_TIME = 0;
@@ -56,12 +54,10 @@ public class Dormant {
 
     public static void addMinute(Context context) {
         LogUtil.d(TAG_DORMANT, "addMinute start");
-        ToastUtil.debugShow("addMinute start");
         long currentTimeMillis = System.currentTimeMillis();
         if (lastAddTime <= currentTimeMillis && currentTimeMillis - lastAddTime < 300) {
             // 原因多个广播回调所致
             LogUtil.d(TAG_DORMANT, "addMinute 间隔不足一分钟+++++++++++++++++++++++++");
-            ToastUtil.debugShow("addMinute 间隔不足一分钟+++++++++++++++++++++++++");
             return;
         }
         lastAddTime = currentTimeMillis;
@@ -69,7 +65,6 @@ public class Dormant {
 
         if (!mDormantSwitch) {
             LogUtil.d(TAG_DORMANT, "addMinute mDormantSwitch = " + mDormantSwitch);
-            ToastUtil.debugShow("addMinute mDormantSwitch = " + mDormantSwitch);
             reset();
             return;
         }
@@ -77,39 +72,33 @@ public class Dormant {
                 || PolicyHelper.getInstance().isSpeechMode()) {
             reset();
             LogUtil.d(TAG_DORMANT, "addMinute isPlaying = true");
-            ToastUtil.debugShow("addMinute isPlaying = true");
             return;
         }
         if (!MyApplication.ifForeground()) {
             LogUtil.d(TAG_DORMANT, "addMinute ifForeground = false");
-            ToastUtil.debugShow("addMinute ifForeground = false");
             return;
         }
         if (isCanDormant()) {
             SLEEP_TIME++;
             LogUtil.d(TAG_DORMANT, "addMinute SLEEP_TIME = " + SLEEP_TIME);
-            ToastUtil.debugShow("addMinute SLEEP_TIME = " + SLEEP_TIME);
             if (mMinuteChangeListener != null) {
                 mMinuteChangeListener.onChange();
             }
             if (isCanShutdown()) {
                 // todo 睡眠超时，关机或退出登录
                 LogUtil.d(TAG_DORMANT, "addMinute 【关机】！！！睡眠超时，关机或退出登录");
-                ToastUtil.debugShow("addMinute 【关机】！！！睡眠超时，关机或退出登录");
             }
             return;
         }
 
         MINUTE_FREE++;
         LogUtil.d(TAG_DORMANT, "addMinute MINUTE_FREE = " + MINUTE_FREE);
-        ToastUtil.debugShow("addMinute MINUTE_FREE = " + MINUTE_FREE);
         if (mMinuteChangeListener != null) {
             mMinuteChangeListener.onChange();
         }
         if (isCanDormant()) {
             // todo 休眠或待机进入低功耗
             LogUtil.d(TAG_DORMANT, "addMinute 【休眠】！！！休眠或待机进入低功耗");
-            ToastUtil.debugShow("addMinute 【休眠】！！！休眠或待机进入低功耗");
             DormantActivity.startActivity(context);
         }
     }

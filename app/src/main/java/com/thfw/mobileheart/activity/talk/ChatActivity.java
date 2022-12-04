@@ -37,6 +37,7 @@ import com.thfw.base.models.BaikeModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.ChosenModel;
 import com.thfw.base.models.DialogTalkModel;
+import com.thfw.base.models.GuPiaoModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.WeatherDetailsModel;
 import com.thfw.base.net.HttpResult;
@@ -45,6 +46,7 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.TalkPresenter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.RegularUtil;
@@ -887,27 +889,55 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         // 天气查询
         String weatherId = checkWeather(tempText);
         if (!TextUtils.isEmpty(weatherId)) {
+            ChatEntity chatEntity = new ChatEntity();
+            chatEntity.type = ChatEntity.TYPE_TO;
+            chatEntity.talk = inputText;
+            sendData(chatEntity);
             hideInput();
             mEtContent.setText("");
-            MusicApi.requestWeather(weatherId, new MusicApi.WeatherCallback() {
-                @Override
-                public void onFailure(int code, String msg) {
-                    ToastUtil.show("没有查到天气情况");
-                }
-
-                @Override
-                public void onResponse(WeatherDetailsModel weatherInfoModel) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            sendLocalData(inputText, futureWeather ? weatherInfoModel.getWeekDesc() : weatherInfoModel.getDesc());
+            HandlerUtil.getMainHandler().postDelayed(() -> {
+                MusicApi.requestWeather(weatherId, new MusicApi.WeatherCallback() {
+                    @Override
+                    public void onFailure(int code, String msg) {
+                        if (EmptyUtil.isEmpty(ChatActivity.this) || !isMeResumed()) {
+                            return;
                         }
-                    });
-                }
-            });
+                        runOnUiThread(() -> {
+                            sendData(inputText, false);
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(WeatherDetailsModel weatherInfoModel) {
+                        if (EmptyUtil.isEmpty(ChatActivity.this) || !isMeResumed()) {
+                            return;
+                        }
+                        runOnUiThread(() -> {
+                            DialogTalkModel talkModel = new DialogTalkModel();
+                            talkModel.setType(ChatEntity.TYPE_FROM_NORMAL);
+                            talkModel.setQuestion(futureWeather ? weatherInfoModel.getWeekDesc() : weatherInfoModel.getDesc());
+                            onTalkData(talkModel);
+                        });
+                    }
+                });
+            }, 300);
+
             LogUtil.i(TAG, "----------- search weather -------------");
             return true;
         }
+
+        // 股票查询
+        if (checkGupiao(tempText)) {
+            ChatEntity chatEntity = new ChatEntity();
+            chatEntity.type = ChatEntity.TYPE_TO;
+            chatEntity.talk = inputText;
+            sendData(chatEntity);
+            hideInput();
+            mEtContent.setText("");
+            LogUtil.i(TAG, "----------- speech gupiao -------------");
+            return true;
+        }
+
         // 讲个笑话
         String joke = checkJoke(tempText);
         if (!TextUtils.isEmpty(joke)) {
@@ -1071,6 +1101,51 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         } else {
             futureWeather = false;
             return null;
+        }
+    }
+
+    /**
+     * 股票股价查询
+     *
+     * @param inputText
+     * @return
+     */
+    private boolean checkGupiao(String inputText) {
+        if (mScene != 1) {
+            return false;
+        }
+
+        String tempText = inputText;
+
+        if (tempText.matches(".{0,6}(股价|股票).{0,4}")) {
+            String company = tempText.replaceAll("(的|股价|股票).{0,8}", "");
+            MusicApi.requestGupiao(company, new MusicApi.GuPiaoCallback() {
+                @Override
+                public void onFailure(int code, String msg) {
+                    if (EmptyUtil.isEmpty(ChatActivity.this) || !isMeResumed()) {
+                        return;
+                    }
+                    runOnUiThread(() -> {
+                        sendData(inputText, false);
+                    });
+                }
+
+                @Override
+                public void onResponse(GuPiaoModel data) {
+                    if (EmptyUtil.isEmpty(ChatActivity.this) || !isMeResumed()) {
+                        return;
+                    }
+                    runOnUiThread(() -> {
+                        DialogTalkModel talkModel = new DialogTalkModel();
+                        talkModel.setType(ChatEntity.TYPE_FROM_NORMAL);
+                        talkModel.setQuestion(data.ttsAll());
+                        onTalkData(talkModel);
+                    });
+                }
+            });
+            return true;
+        } else {
+            return false;
         }
     }
 
