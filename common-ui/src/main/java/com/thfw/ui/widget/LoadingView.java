@@ -2,6 +2,7 @@ package com.thfw.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ public class LoadingView extends RelativeLayout implements ILoading {
     private int iconWidth;
     private int iconHeight;
     private boolean noText;
+    private String loadingText;
     // loading
     private ProgressBar mProgressBar;
     private TextView mTvLoading;
@@ -55,6 +57,7 @@ public class LoadingView extends RelativeLayout implements ILoading {
             iconWidth = ta.getDimensionPixelSize(R.styleable.LoadingView_iconWidth, -1);
             iconHeight = ta.getDimensionPixelSize(R.styleable.LoadingView_iconHeight, -1);
             noText = ta.getBoolean(R.styleable.LoadingView_noText, false);
+            loadingText = ta.getString(R.styleable.LoadingView_loading_text);
         }
         init();
     }
@@ -62,6 +65,9 @@ public class LoadingView extends RelativeLayout implements ILoading {
     private void init() {
         setGravity(CENTER);
         showLoading();
+        if (!TextUtils.isEmpty(loadingText)) {
+            mTvLoading.setText(loadingText);
+        }
     }
 
     /**

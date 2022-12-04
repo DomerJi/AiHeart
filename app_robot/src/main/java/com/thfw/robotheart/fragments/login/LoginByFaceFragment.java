@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -186,7 +187,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 
         mTvLoginByMobile.setOnClickListener(v -> {
             LoginActivity loginActivity = (LoginActivity) getActivity();
-            loginActivity.getFragmentLoader().load(LoginActivity.BY_MOBILE);
+            loginActivity.getFragmentLoader().load(LoginActivity.BY_MOBILE).setArguments(new Bundle());
         });
         Util.addUnderLine(mTvProductUser, mTvProductMsg, mTvProductAgree);
         initAgreeClick();
@@ -700,6 +701,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         }
         LogUtil.d(TAG, "人脸【登录】开始---------------------------------");
         failByNet = false;
+
         OkHttpUtil.request(ApiHost.getHost() + "face_login/face_recognition", factory.build(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

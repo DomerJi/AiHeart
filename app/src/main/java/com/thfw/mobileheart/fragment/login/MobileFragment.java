@@ -1,5 +1,6 @@
 package com.thfw.mobileheart.fragment.login;
 
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -57,6 +58,7 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
     private RoundedImageView mRivIconBg;
     private CheckBox mCheckBox;
     private String phone;
+    private TextView mTvMobileTitle;
 
     @Override
     public int getContentView() {
@@ -77,6 +79,7 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
         mEtMobile = (EditText) findViewById(R.id.et_mobile);
         mVfcode = (VerificationCodeView) findViewById(R.id.vfcode);
         mBtLogin = (Button) findViewById(R.id.bt_login);
+        mTvMobileTitle = (TextView) findViewById(R.id.tv_mobile_title);
         mTvLoginByPassword = (TextView) findViewById(R.id.tv_login_by_password);
         mTvForgetPassword = (TextView) findViewById(R.id.tv_forget_password);
         mClBottom = (LinearLayout) findViewById(R.id.cl_bottom);
@@ -126,6 +129,8 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
             }
         });
 
+        onCheckCanLogin();
+
         mTvForgetPassword.setOnClickListener(v -> {
             ForgetPasswordActivity.startActivity(mContext, ForgetPasswordActivity.BY_MOBILE);
         });
@@ -162,6 +167,14 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
             if (RegularUtil.isNumber(LoginActivity.INPUT_PHONE)
                     && LoginActivity.INPUT_PHONE.startsWith("1")) {
                 mEtMobile.setText(LoginActivity.INPUT_PHONE);
+            }
+            Bundle bundle = getArguments();
+            if (bundle != null && bundle.getBoolean("register")) {
+                mTvMobileTitle.setText("免密登录/注册");
+                mBtLogin.setText("登录/注册");
+            } else {
+                mTvMobileTitle.setText("免密登录");
+                mBtLogin.setText("登录");
             }
         } else {
             LoginActivity.INPUT_PHONE = mEtMobile.getText().toString();

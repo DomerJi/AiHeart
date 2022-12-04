@@ -1,5 +1,6 @@
 package com.thfw.robotheart.fragments.login;
 
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -45,6 +46,7 @@ public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> imple
     private TextView mTvLoginByFace;
     private TextView mTvLoginByPassword;
     private TextView mTvLoginByMobile;
+    private TextView mTvLoginTitle;
 
     public LoginMobileFragment() {
         // Required empty public constructor
@@ -64,6 +66,7 @@ public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> imple
     public void initView() {
 
         mTvLoginByPassword = (TextView) findViewById(R.id.tv_login_by_password);
+        mTvLoginTitle = (TextView) findViewById(R.id.tv_login_title);
         mTvCountry = (TextView) findViewById(R.id.tv_country);
         mEtMobile = (EditText) findViewById(R.id.et_mobile);
         mBtGetCode = (Button) findViewById(R.id.bt_get_code);
@@ -137,6 +140,12 @@ public class LoginMobileFragment extends RobotBaseFragment<LoginPresenter> imple
     public void onVisible(boolean isVisible) {
         super.onVisible(isVisible);
         if (isVisible) {
+            Bundle bundle = getArguments();
+            if (bundle != null && bundle.getBoolean("register")) {
+                mTvLoginTitle.setText("手机号登录/注册");
+            } else {
+                mTvLoginTitle.setText("手机号登录");
+            }
             if (RegularUtil.isNumber(LoginActivity.INPUT_PHONE)
                     && LoginActivity.INPUT_PHONE.startsWith("1")) {
                 mEtMobile.setText(LoginActivity.INPUT_PHONE);

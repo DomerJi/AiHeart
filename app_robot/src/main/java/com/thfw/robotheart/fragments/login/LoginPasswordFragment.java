@@ -1,5 +1,6 @@
 package com.thfw.robotheart.fragments.login;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -182,11 +183,19 @@ public class LoginPasswordFragment extends RobotBaseFragment<LoginPresenter> imp
                 return;
             }
             LoginActivity loginActivity = (LoginActivity) getActivity();
-            loginActivity.getFragmentLoader().load(LoginActivity.BY_MOBILE);
+            loginActivity.getFragmentLoader().load(LoginActivity.BY_MOBILE).setArguments(new Bundle());
         });
 
         mClNoAccount.setOnClickListener(v -> {
             mTvLoginByMobile.performClick();
+            if (!CommonParameter.isValid()) {
+                LoginActivity.showOrganIdNoValid(getActivity());
+                return;
+            }
+            LoginActivity loginActivity = (LoginActivity) getActivity();
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("register",true);
+            loginActivity.getFragmentLoader().load(LoginActivity.BY_MOBILE).setArguments(bundle);
         });
         mTvLoginByFace.setOnClickListener(v -> {
             if (!mCbProduct.isChecked()) {

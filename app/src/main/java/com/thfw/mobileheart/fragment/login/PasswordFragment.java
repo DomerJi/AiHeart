@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.fragment.login;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
@@ -119,7 +120,9 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
         mTvNoAccount.setOnClickListener(v -> {
             if (getActivity() instanceof LoginActivity) {
                 LoginActivity activity = (LoginActivity) getActivity();
-                activity.getFragmentLoader().load(LoginActivity.BY_MOBILE);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("register",true);
+                activity.getFragmentLoader().load(LoginActivity.BY_MOBILE).setArguments(bundle);
                 hideInput();
             }
         });

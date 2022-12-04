@@ -1,5 +1,6 @@
 package com.thfw.mobileheart.fragment.login;
 
+import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -49,7 +50,7 @@ public class OtherLoginFragment extends BaseFragment {
         mTvMobileLogin.setOnClickListener(v -> {
             if (getActivity() instanceof LoginActivity) {
                 LoginActivity activity = (LoginActivity) getActivity();
-                activity.getFragmentLoader().load(LoginActivity.BY_MOBILE);
+                activity.getFragmentLoader().load(LoginActivity.BY_MOBILE).setArguments(new Bundle());
             }
         });
 
