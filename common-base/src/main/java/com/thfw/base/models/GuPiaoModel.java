@@ -63,13 +63,16 @@ public class GuPiaoModel {
 
     public String ttsAll() {
         return company + "(" + market + code + ")，当前价格：" + data[3]
-                + "元，涨跌：" + data[32]
+                + (company.contains("指数") || company.contains("成指") ? "点，涨跌：" : "元，涨跌：") + data[32]
                 + "%，总市值：" + NumberUtil.amountConversion(new BigDecimal(data[45])) + "亿元。";
     }
 
     public static class MarketType {
+        // 香港
         public static final String HK = "hk";
+        // 上海
         public static final String SH = "sh";
+        // 深证
         public static final String SZ = "sz";
     }
 }
