@@ -79,12 +79,14 @@ public class CommonInterceptor implements Interceptor {
                 case ContextApp.DeviceType.PAD:
                 case ContextApp.DeviceType.MOBILE:
                     requestBuilder.addHeader(DEVICE_TYPE, CommonParameter.DeviceType.MOBILE);
+                    break;
                 case ContextApp.DeviceType.ROBOT:
                     if (RobotUtil2.isInstallRobot()) {
                         requestBuilder.addHeader(DEVICE_TYPE, CommonParameter.DeviceType.ROBOT);
                     } else {
                         requestBuilder.addHeader(DEVICE_TYPE, CommonParameter.DeviceType.PAD);
                     }
+                    break;
             }
         } else {
             requestBuilder.addHeader(DEVICE_TYPE, CommonParameter.getDeviceType());
