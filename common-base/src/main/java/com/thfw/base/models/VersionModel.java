@@ -12,12 +12,24 @@ public class VersionModel implements IModel {
 
     private String size;
     private String version;
+
+    @SerializedName("build_version")
+    private String buildVersion;
+
     private String des;
     @SerializedName("update_time")
     private String updateTime;
     @SerializedName("download_url")
     private String downloadUrl;
 
+
+    public String getBuildVersion() {
+        return buildVersion;
+    }
+
+    public void setBuildVersion(String buildVersion) {
+        this.buildVersion = buildVersion;
+    }
 
     public String getSize() {
         return size;

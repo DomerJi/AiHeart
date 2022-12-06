@@ -1,6 +1,7 @@
 package com.thfw.base.utils;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.liulishuo.filedownloader.DownloadTask;
 import com.liulishuo.filedownloader.FileDownloader;
@@ -56,6 +57,18 @@ public class BuglyUtil {
 
     public static boolean isNewVersion() {
         if (versionModel != null) {
+
+            if (RegularUtil.isNumber(versionModel.getBuildVersion())) {
+                try {
+                    int newVersionCode = Integer.parseInt(versionModel.getBuildVersion());
+                    Log.i(TAG, "newVersionCode -> " + newVersionCode
+                            + " ; ApkUtil.getAppVersionCode(ContextApp.get()) -> "
+                            + ApkUtil.getAppVersionCode(ContextApp.get()));
+                    return newVersionCode > ApkUtil.getAppVersionCode(ContextApp.get());
+                } catch (Exception e) {
+                    return false;
+                }
+            }
             return !Util.getAppVersion(ContextApp.get()).equals(versionModel.getVersion());
 
         }
@@ -88,6 +101,7 @@ public class BuglyUtil {
                 requestIng = false;
                 if (versionModel != null && data != null) {
                     if (StringUtil.contentEquals(versionModel.getVersion(), data.getVersion())
+                            && StringUtil.contentEquals(versionModel.getBuildVersion(), data.getBuildVersion())
                             && StringUtil.contentEquals(versionModel.getDownloadUrl(), data.getDownloadUrl())) {
 
                     } else {
@@ -112,10 +126,11 @@ public class BuglyUtil {
                     versionModel = new VersionModel();
                     versionModel.setVersion("2.0.0999");
                     versionModel.setSize("99889789");
+                    versionModel.setBuildVersion(String.valueOf(Integer.MAX_VALUE));
                     versionModel.setDes("版本升级说明");
                     versionModel.setDownloadUrl("https://oss.ucdl.pp.uc.cn/fs01/union_pack/Wandoujia_3963569_web_seo_baidu_binded.apk?x-oss-process=udf%2Fpp-udf%2CJjc3LiMnJ3J%2BcXZycA%3D%3D");
                     if (BuglyUtil.requestUpgradeStateListener != null) {
-                        BuglyUtil.requestUpgradeStateListener.onVersion(true);
+                        BuglyUtil.requestUpgradeStateListener.onVersion(isNewVersion());
                         BuglyUtil.requestUpgradeStateListener = null;
                     }
                 } else {

@@ -62,8 +62,9 @@ public class GuPiaoModel {
     }
 
     public String ttsAll() {
-        return company + "(" + market + code + ")，当前价格：" + data[3]
-                + (company.contains("指数") || company.contains("成指") ? "点，涨跌：" : "元，涨跌：") + data[32]
+        boolean isZhiShu = company.contains("指数") || company.contains("成指");
+        return company + "(" + market + code + (isZhiShu ? ")，当前：" : ")，当前价格：") + data[3]
+                + (isZhiShu ? "点，涨跌：" : "元，涨跌：") + data[32]
                 + "%，总市值：" + NumberUtil.amountConversion(new BigDecimal(data[45])) + "亿元。";
     }
 

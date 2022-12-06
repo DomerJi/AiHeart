@@ -49,7 +49,7 @@ android {
                 output ->
                     def outputFile = output.outputFile
                     if (outputFile.name.contains("release")) {
-                        def fileName = "QjmyPhone_${variant.versionCode}_${variant.versionName}" + "_${variant.name}.apk"
+                        def fileName = "phone_${variant.versionCode}_${variant.versionName}.apk"
                         outputFileName = new File("../release/", fileName)
                     } else if (outputFile.name.contains("debug")) {
                         def fileName = "QjmyPhone_${variant.versionCode}_${variant.versionName}" + "_${variant.name}.apk"

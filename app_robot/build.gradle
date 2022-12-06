@@ -90,7 +90,7 @@ android {
         // 【普通应用】支持所有设备
         main {
             applicationIdSuffix ".pad"//输出：com.thfw.robotheart.pad
-            versionNameSuffix "-pad"//输出：1.0-pad
+            versionNameSuffix ""//输出：1.0-pad
             dimension "buildTest"
             signingConfig signingConfigs.pad
         }
@@ -113,8 +113,16 @@ android {
                 output ->
                     def outputFile = output.outputFile
                     if (outputFile.name.contains("release")) {
-                        def fileName = "QjmyPad_${variant.versionCode}_${variant.versionName}" + "_${variant.name}.apk"
-                        outputFileName = new File("../release/", fileName)
+                        if("${variant.name}".contains("robot")){
+                            def fileName = "robot_${variant.versionCode}_${variant.versionName}.apk"
+                            outputFileName = new File("../release/", fileName)
+                        } else if("${variant.name}".contains("main")){
+                            def fileName = "pad_${variant.versionCode}_${variant.versionName}.apk"
+                            outputFileName = new File("../release/", fileName)
+                        } else {
+                            def fileName = "null_${variant.versionCode}_${variant.versionName}.apk"
+                            outputFileName = new File("../release/", fileName)
+                        }
                     } else if (outputFile.name.contains("debug")) {
                         def fileName = "QjmyPad_${variant.versionCode}_${variant.versionName}" + "_${variant.name}.apk"
                         outputFileName = new File("../debug/", fileName)
