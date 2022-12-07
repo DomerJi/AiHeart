@@ -29,8 +29,11 @@ import androidx.annotation.RequiresApi;
 
 import com.thfw.base.ContextApp;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Util {
 
@@ -422,6 +425,29 @@ public class Util {
             mPaint.setColorFilter(new ColorMatrixColorFilter(cm));
             view.setLayerType(View.LAYER_TYPE_HARDWARE, mPaint);
         }
+    }
+
+    /**
+     * 获取特定字符串之间的内容
+     *
+     * @param soap 内容 【123456789】
+     * @param rgex 匹配内容 【123(.*?)789】
+     * @return 【456】
+     */
+    public static List<String> getSubUtil(String soap, String rgex) {
+        List<String> list = new ArrayList<String>();
+        Pattern pattern = Pattern.compile(rgex);
+        // 匹配的模式
+        Matcher m = pattern.matcher(soap);
+        while (m.find()) {
+            int i = 1;
+            String content = m.group(i);
+            if (!TextUtils.isEmpty(content)) {
+                list.add(content);
+            }
+            i++;
+        }
+        return list;
     }
 
 }
