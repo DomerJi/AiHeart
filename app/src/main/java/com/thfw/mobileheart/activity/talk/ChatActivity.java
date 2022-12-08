@@ -33,6 +33,7 @@ import com.thfw.base.api.MusicApi;
 import com.thfw.base.api.TalkApi;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.face.PermissionListener;
 import com.thfw.base.models.BaikeModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.ChosenModel;
@@ -60,6 +61,7 @@ import com.thfw.mobileheart.activity.test.TestingActivity;
 import com.thfw.mobileheart.adapter.ChatAdapter;
 import com.thfw.mobileheart.adapter.ChatSelectAdapter;
 import com.thfw.mobileheart.constants.AnimFileName;
+import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.PageJumpUtils;
 import com.thfw.ui.dialog.TDialog;
@@ -104,6 +106,7 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
     private ImageView mIvControlVoiceIng;
     private ImageView mIvControlPress;
     private TextView mTvControlHintSend;
+    private static boolean hasAudioPermission = false;
 
 
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
@@ -153,7 +156,6 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
 
     @Override
     public void initView() {
-
         mRlRoot = (RelativeLayout) findViewById(R.id.rl_root);
         mLoadingView = findViewById(R.id.loadingView);
         mRefreshLayout = findViewById(R.id.refreshLayout);
@@ -482,6 +484,18 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                if (hasAudioPermission || checkPermissionsNoRequest(new String[]{UIConfig.NEEDED_PERMISSION[1]})) {
+                    hasAudioPermission = true;
+                } else {
+                    requestCallPermission(new String[]{UIConfig.NEEDED_PERMISSION[1]},
+                            new PermissionListener() {
+                                @Override
+                                public void onPermission(boolean has) {
+                                    ToastUtil.show("您可以使用此功能了");
+                                }
+                            });
+                    return false;
+                }
 
                 LogUtil.d("mTvPressSpeech Y = " + event.getY());
                 LogUtil.d("mTvPressSpeech X = " + event.getX());
@@ -1375,6 +1389,7 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
     @Override
     protected void onResume() {
         super.onResume();
+        hasAudioPermission = checkPermissionsNoRequest(new String[]{UIConfig.NEEDED_PERMISSION[1]});
     }
 
 

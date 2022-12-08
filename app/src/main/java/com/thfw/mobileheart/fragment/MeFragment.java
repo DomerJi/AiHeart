@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.face.PermissionListener;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.MoodLivelyModel;
@@ -28,6 +29,7 @@ import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.PrivateSetActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
@@ -40,6 +42,7 @@ import com.thfw.mobileheart.activity.settings.InfoActivity;
 import com.thfw.mobileheart.activity.settings.SettingActivity;
 import com.thfw.mobileheart.activity.task.MeTaskActivity;
 import com.thfw.mobileheart.activity.test.TestReportActivity;
+import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FunctionDurationUtil;
 import com.thfw.mobileheart.util.MoodLivelyHelper;
@@ -332,7 +335,19 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
         } else if (inputState == 0) {
             mTvFaceSwitch.setText("未录入");
             mLlMeFace.setOnClickListener(v -> {
-                LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
+                if (getActivity() instanceof BaseActivity) {
+                    BaseActivity baseActivity = (BaseActivity) getActivity();
+                    baseActivity.requestCallPermission(new String[]{UIConfig.NEEDED_PERMISSION[0]},
+                            new PermissionListener() {
+                                @Override
+                                public void onPermission(boolean has) {
+                                    if (has) {
+                                        LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
+                                    }
+                                }
+                            });
+                }
+
             });
         } else {
             mTvFaceSwitch.setText("");

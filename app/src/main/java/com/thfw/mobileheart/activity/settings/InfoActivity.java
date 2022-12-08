@@ -32,6 +32,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.face.PermissionListener;
 import com.thfw.base.models.AccountPinyinModel;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.HeadModel;
@@ -62,6 +63,7 @@ import com.thfw.mobileheart.activity.organ.AskForSelectActivity;
 import com.thfw.mobileheart.adapter.BaseAdapter;
 import com.thfw.mobileheart.adapter.DialogLikeAdapter;
 import com.thfw.mobileheart.adapter.InfoLikeAdapter;
+import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.util.AreaUtil;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.GlideImageEngine;
@@ -847,7 +849,16 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
         mTvAlbum.setOnClickListener(v -> {
             mPopWindow.dismiss();
             mPopWindow = null;
-            showAlbum();
+            requestCallPermission(new String[]{UIConfig.NEEDED_PERMISSION[0], UIConfig.NEEDED_PERMISSION[2]},
+                    new PermissionListener() {
+                        @Override
+                        public void onPermission(boolean has) {
+                            if (has) {
+                                showAlbum();
+                            }
+                        }
+                    });
+
         });
         // 预置头像库
         mTvPreset.setOnClickListener(v -> {

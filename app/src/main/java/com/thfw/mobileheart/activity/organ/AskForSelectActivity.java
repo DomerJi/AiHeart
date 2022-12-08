@@ -19,6 +19,7 @@ import com.example.zbar_code.ZxingScanActivity;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IModel;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.face.PermissionListener;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
 import com.thfw.base.net.CommonParameter;
@@ -36,6 +37,7 @@ import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
 import com.thfw.mobileheart.adapter.OrganSelectChildrenAdapter;
 import com.thfw.mobileheart.adapter.OrganSelectedAdapter;
+import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.push.tester.UPushAlias;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.LoadingDialog;
@@ -318,7 +320,16 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
         mTvUserName.setText(UserManager.getInstance().getUser().getVisibleName());
         GlideUtil.load(mContext, UserManager.getInstance().getUser().getVisibleAvatar(), mRivAvatar);
         mBtScanJoin.setOnClickListener(v -> {
-            ZxingScanActivity.startActivityForResult((Activity) mContext);
+            requestCallPermission(new String[]{UIConfig.NEEDED_PERMISSION[0], UIConfig.NEEDED_PERMISSION[2]},
+                    new PermissionListener() {
+                        @Override
+                        public void onPermission(boolean has) {
+                            if (has) {
+                                ZxingScanActivity.startActivityForResult((Activity) mContext);
+                            }
+                        }
+                    });
+
         });
 
         //==========================================//
