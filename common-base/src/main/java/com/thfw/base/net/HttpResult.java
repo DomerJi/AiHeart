@@ -11,7 +11,6 @@ import com.thfw.base.base.IResult;
  */
 public class HttpResult<T> implements IResult, IModel {
 
-
     /**
      * 0 => "请求失败"
      * 1 => "成功"

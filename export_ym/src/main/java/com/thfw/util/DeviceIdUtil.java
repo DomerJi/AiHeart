@@ -22,6 +22,7 @@ public class DeviceIdUtil {
      * @return 设备硬件标识
      */
     public static String getDeviceId(Context context) {
+
         StringBuilder sbDeviceId = new StringBuilder();
 
         //获得设备默认IMEI（>=6.0 需要ReadPhoneState权限）
@@ -63,7 +64,7 @@ public class DeviceIdUtil {
                     return sha1;
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LogUtil.e("sbDeviceId", ex.getMessage());
             }
         }
 
@@ -95,7 +96,7 @@ public class DeviceIdUtil {
             return Settings.Secure.getString(context.getContentResolver(),
                     Settings.Secure.ANDROID_ID);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogUtil.e("getAndroidId", ex.getMessage());
         }
         return "";
     }
@@ -109,7 +110,7 @@ public class DeviceIdUtil {
         try {
             return Build.SERIAL;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogUtil.e("getSERIAL", ex.getMessage());
         }
         return "";
     }
@@ -134,7 +135,7 @@ public class DeviceIdUtil {
             return new UUID(dev.hashCode(),
                     Build.SERIAL.hashCode()).toString();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogUtil.e("getDeviceUUID", ex.getMessage());
             return "";
         }
     }

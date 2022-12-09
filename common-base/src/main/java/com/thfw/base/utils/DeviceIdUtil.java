@@ -1,9 +1,11 @@
-package com.thfw.base.utils;
+package com.thfw.util;
 
 import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+
+import com.thfw.base.utils.LogUtil;
 
 import java.security.MessageDigest;
 import java.util.Locale;
@@ -63,7 +65,7 @@ public class DeviceIdUtil {
                     return sha1;
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LogUtil.e("sbDeviceId", ex.getMessage());
             }
         }
 
@@ -95,7 +97,7 @@ public class DeviceIdUtil {
             return Settings.Secure.getString(context.getContentResolver(),
                     Settings.Secure.ANDROID_ID);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogUtil.e("getAndroidId", ex.getMessage());
         }
         return "";
     }
@@ -109,7 +111,7 @@ public class DeviceIdUtil {
         try {
             return Build.SERIAL;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogUtil.e("getSERIAL", ex.getMessage());
         }
         return "";
     }
@@ -134,7 +136,7 @@ public class DeviceIdUtil {
             return new UUID(dev.hashCode(),
                     Build.SERIAL.hashCode()).toString();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogUtil.e("getDeviceUUID", ex.getMessage());
             return "";
         }
     }

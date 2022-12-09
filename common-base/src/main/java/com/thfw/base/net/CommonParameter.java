@@ -6,11 +6,11 @@ import com.google.gson.reflect.TypeToken;
 import com.thfw.base.ContextApp;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
-import com.thfw.base.utils.DeviceIdUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.Util;
+import com.thfw.util.DeviceIdUtil;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

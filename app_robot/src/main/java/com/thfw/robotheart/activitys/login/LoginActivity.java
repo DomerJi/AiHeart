@@ -10,6 +10,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -66,7 +67,7 @@ import org.opencv.android.Static2Helper;
 import java.util.ArrayList;
 
 public class LoginActivity extends RobotBaseActivity {
-
+    public static final boolean AGREE_CLICK_DIALOG = false;
     public static final int BY_MOBILE = 0;
     public static final int BY_PASSWORD = 1;
     public static final int BY_FORGET = 2;
@@ -381,13 +382,19 @@ public class LoginActivity extends RobotBaseActivity {
         DialogRobotFactory.createCustomDialog(activity, new DialogRobotFactory.OnViewCallBack() {
             @Override
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-                String html = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;请阅读并同意  <font color='" + UIConfig.COLOR_RED + "'>《用户服务协议》《隐私保护政策》</font>";
+
+                String html = "请你务必审慎阅读、充分理解 " +
+                        " <font color='" + UIConfig.COLOR_RED + "'>《用户服务协议》</font>" +
+                        "和<font color='" + UIConfig.COLOR_RED + "'>《隐私保护政策》</font>各条款。<p> </p>" +
+                        "如您同意所列条款，请点击\"同意\"按钮，开始使用我们的产品和服务。";
+
                 mTvHint.setText(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY));
                 mTvHint.setOnClickListener(v -> {
                     activity.startActivity(new Intent(activity, PrivacyPolicyActivity.class));
                 });
-                mTvTitle.setVisibility(View.GONE);
-                mTvLeft.setText("我再想想");
+
+                mTvTitle.setText("欢迎使用AI咨询师");
+                mTvLeft.setText("拒绝");
                 mTvRight.setText("同意");
             }
 
@@ -399,5 +406,23 @@ public class LoginActivity extends RobotBaseActivity {
                 }
             }
         });
+    }
+
+    public static void agreedClickDialog(CheckBox mCbProduct) {
+        if (LoginActivity.AGREE_CLICK_DIALOG) {
+            mCbProduct.setOnClickListener(v -> {
+                if (mCbProduct.isChecked()) {
+                    mCbProduct.setChecked(false);
+                    LoginActivity.agreeDialog((FragmentActivity) mCbProduct.getContext(), new OnViewClickListener() {
+                        @Override
+                        public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                            if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                                mCbProduct.setChecked(true);
+                            }
+                        }
+                    });
+                }
+            });
+        }
     }
 }

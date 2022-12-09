@@ -181,6 +181,8 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         mRivQq = (RoundedImageView) findViewById(R.id.riv_qq);
 
         mCbProduct = (CheckBox) findViewById(R.id.cb_product);
+        LoginActivity.agreedClickDialog(mCbProduct);
+
         mTvProductUser = (TextView) findViewById(R.id.tv_product_user);
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);

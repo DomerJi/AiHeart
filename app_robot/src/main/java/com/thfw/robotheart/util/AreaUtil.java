@@ -2,9 +2,9 @@ package com.thfw.robotheart.util;
 
 import android.content.res.Resources;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.thfw.base.models.AreaModel;
+import com.thfw.base.utils.GsonUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 
@@ -103,7 +103,7 @@ public class AreaUtil {
         }
         Type type = new TypeToken<List<AreaModel>>() {
         }.getType();
-        areaModels = new Gson().fromJson(areaJson, type);
+        areaModels = GsonUtil.fromJson(areaJson, type);
         return areaModels;
     }
 }

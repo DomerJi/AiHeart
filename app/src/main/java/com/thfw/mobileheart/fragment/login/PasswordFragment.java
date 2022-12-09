@@ -149,7 +149,7 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
         mCbProduct = (CheckBox) findViewById(R.id.cb_product);
-
+        LoginActivity.agreedClickDialog(mCbProduct);
         mBtLogin.setOnClickListener(v -> {
             if (!mCbProduct.isChecked()) {
                 LoginActivity.agreeDialog(getActivity(), new OnViewClickListener() {

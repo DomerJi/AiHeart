@@ -8,8 +8,8 @@ android {
         applicationId "com.thfw.mobileheart"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 45
-        versionName "2.0.3"
+        versionCode 46
+        versionName "2.0.31"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

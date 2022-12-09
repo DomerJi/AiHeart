@@ -140,7 +140,7 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
         mTvProductAgree = (TextView) findViewById(R.id.tv_product_agree);
         mRivIconBg = (RoundedImageView) findViewById(R.id.riv_icon_bg);
         mCheckBox = (CheckBox) findViewById(R.id.cb_product);
-
+        LoginActivity.agreedClickDialog(mCheckBox);
         mBtLogin.setOnClickListener(v -> {
             if (!mCheckBox.isChecked()) {
                 LoginActivity.agreeDialog(getActivity(), new OnViewClickListener() {
