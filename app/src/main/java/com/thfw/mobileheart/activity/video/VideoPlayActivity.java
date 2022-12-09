@@ -1,5 +1,7 @@
 package com.thfw.mobileheart.activity.video;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
@@ -16,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -38,6 +41,8 @@ import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
+import com.google.android.exoplayer2.video.VideoSize;
+import com.luck.picture.lib.tools.ScreenUtils;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.VideoModel;
@@ -69,6 +74,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static android.view.View.VISIBLE;
 
@@ -82,6 +88,8 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     public static final String KEY_PLAY_POSITION = "key.position";
     public static final String KEY_AUTO_FINISH = "key.auto.finish";
     public static final String KEY_FROM_TYPE = "key.from.type";
+    public static final int ORIGIN_WIDTH = 16;
+    public static final int ORIGIN_HEIGHT = 9;
     private PlayerView mMPlayerView;
     private ProgressBar mPbBottom;
     private TextView mTvTitle;
@@ -487,6 +495,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
         // 添加动画
         mRvVideoDetail.setItemAnimator(new DefaultItemAnimator());
         mRvVideoDetail.setAdapter(mVideoPlayListAdapter);
+        setRvTouch();
     }
 
     /**
@@ -780,10 +789,196 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
         }
     }
 
+    private int originVideoHeight;
+    private int maxVideoHeight;
+    private boolean canZoom;
+
+    private void setRvTouch() {
+        mRvVideoDetail.setOnTouchListener(new View.OnTouchListener() {
+            float downY;
+            long downTime;
+            boolean noMove = true;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.i(TAG, "getY -> " + event.getY()
+                        + ",mRvVideoDetail.canScrollVertically(0) ->" + mRvVideoDetail.canScrollVertically(-1));
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        downY = event.getY();
+                        downTime = System.currentTimeMillis();
+                        noMove = true;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+
+                        int moveY = Math.round(event.getY() - downY);
+                        if (noMove && Math.abs(moveY) > 25) {
+                            noMove = false;
+                        }
+                        Log.i(TAG, "moveY -> " + moveY);
+                        if (!canZoom) {
+                            return false;
+                        }
+                        boolean canUp = mRvVideoDetail.canScrollVertically(-1);
+                        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mMPlayerView.getLayoutParams();
+
+                        if (moveY > 0 && !canUp) {
+                            // 视频【竖屏】设置
+                            if (layoutParams.height <= 0) {
+                                layoutParams.height = originVideoHeight;
+                            }
+                            int newHeight = layoutParams.height + moveY;
+                            if (newHeight <= originVideoHeight) {
+                                return false;
+                            }
+                            if (newHeight > maxVideoHeight) {
+                                newHeight = maxVideoHeight;
+                            }
+
+                            layoutParams.dimensionRatio = null;
+
+                            layoutParams.height = newHeight;
+                            ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) mVideoLayout.getLayoutParams();
+                            layoutParams1.height = layoutParams.height;
+                            layoutParams1.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+                            mVideoLayout.setLayoutParams(layoutParams1);
+
+                            layoutParams.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+                            mMPlayerView.setLayoutParams(layoutParams);
+                            return true;
+                        } else {
+                            if (canUp) {
+                                downY = event.getY();
+                            }
+                            if (layoutParams.height <= originVideoHeight) {
+                                return false;
+                            }
+                            int newHeight = layoutParams.height + moveY;
+                            if (newHeight <= originVideoHeight) {
+                                newHeight = originVideoHeight;
+                            }
+                            layoutParams.dimensionRatio = null;
+                            layoutParams.height = newHeight;
+                            ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) mVideoLayout.getLayoutParams();
+                            layoutParams1.height = layoutParams.height;
+                            layoutParams1.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+                            mVideoLayout.setLayoutParams(layoutParams1);
+
+                            layoutParams.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+                            mMPlayerView.setLayoutParams(layoutParams);
+                            return true;
+                        }
+                    case MotionEvent.ACTION_UP:
+                        clickItem(event);
+                        break;
+                }
+
+                return false;
+            }
+
+
+            private void clickItem(MotionEvent event) {
+                Log.d("TvDrag", "clickItem = ");
+                if (noMove && Math.abs(event.getY() - downY) < 25 && System.currentTimeMillis() - downTime < 200) {
+                    View childView = mRvVideoDetail.findChildViewUnder(event.getX(), event.getY());
+                    Log.d("TvDrag", "childView = " + childView);
+                    if (childView != null) {
+                        RecyclerView.ViewHolder viewHolder = mRvVideoDetail.findContainingViewHolder(childView);
+                        if (viewHolder != null) {
+                            Log.d("TvDrag", "viewHolder = " + viewHolder);
+                            mVideoPlayListAdapter.onItemCLick(viewHolder.getBindingAdapterPosition());
+                            Log.d("TvDrag", "position = " + viewHolder.getBindingAdapterPosition());
+                        }
+                    }
+
+                }
+            }
+        });
+    }
+
     /**
      * 视频事件监听
      */
     public class PlayerListener implements Player.Listener {
+        ValueAnimator animator;
+
+        @Override
+        public void onVideoSizeChanged(VideoSize videoSize) {
+            if (originVideoHeight <= 0) {
+                originVideoHeight = mMPlayerView.getHeight();
+                mVideoLayout.setMinimumHeight(originVideoHeight);
+                mVideoLayout.setMinHeight(originVideoHeight);
+                mMPlayerView.setMinimumHeight(originVideoHeight);
+            }
+            Log.i(TAG, "bundle -> " + videoSize.toBundle().toString() + "__originVideoHeight -> " + originVideoHeight);
+
+            float videoWHRatio = 0;
+            if (true) {
+                videoWHRatio = videoSize.height * 1.0f / videoSize.width;
+            } else {
+                // 测试
+                Random random = new Random();
+                videoWHRatio = (4f + random.nextInt(6)) / (4f + random.nextInt(6));
+            }
+            // 9/16 = 0.5625f
+            if (videoWHRatio > 0.6f) {
+                maxVideoHeight = (int) (videoWHRatio * ScreenUtils.getScreenWidth(mContext));
+                maxVideoHeight = Math.min(maxVideoHeight, ScreenUtils.getScreenHeight(mContext) - 150);
+                mMPlayerView.post(() -> {
+                    if (mMPlayerView.getHeight() > maxVideoHeight) {
+                        anim(mMPlayerView.getHeight(), maxVideoHeight);
+                    }
+                });
+
+                canZoom = true;
+            } else {
+                canZoom = false;
+                mMPlayerView.post(() -> {
+                    if (mMPlayerView.getHeight() > originVideoHeight) {
+                        anim(mMPlayerView.getHeight(), originVideoHeight);
+                    }
+                });
+
+
+            }
+        }
+
+        private void anim(int form, int to) {
+            if (animator != null && animator.isRunning()) {
+                return;
+            }
+            if (to == form) {
+                return;
+            }
+            animator = ObjectAnimator.ofInt(form, to);
+            int duration = Math.abs(form - to) * 4;
+            if (duration > 300) {
+                duration = 300;
+            } else if (duration > 1200) {
+                duration = 1200;
+            }
+            animator.setDuration(duration);
+            animator.setInterpolator(new DecelerateInterpolator());
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int height = (int) animation.getAnimatedValue();
+                    ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mMPlayerView.getLayoutParams();
+
+                    layoutParams.dimensionRatio = null;
+                    layoutParams.height = height;
+                    ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) mVideoLayout.getLayoutParams();
+                    layoutParams1.height = layoutParams.height;
+                    layoutParams1.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+                    mVideoLayout.setLayoutParams(layoutParams1);
+
+                    layoutParams.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+                    mMPlayerView.setLayoutParams(layoutParams);
+                }
+            });
+            animator.start();
+        }
 
         @Override
         public void onPlaybackStateChanged(int state) {

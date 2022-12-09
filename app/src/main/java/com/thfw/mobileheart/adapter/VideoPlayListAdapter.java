@@ -38,6 +38,7 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
     private ImageView mIvCollectTop;
     private boolean requestIng;
     private int mVideoId;
+    private VideoDetailsHolder holder;
 
     private int playPosition;
 
@@ -139,16 +140,19 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
         }
 
         private void initView(View itemView) {
+            VideoPlayListAdapter.this.holder = this;
             mRivBg = (RoundedImageView) itemView.findViewById(R.id.riv_bg);
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             mIvPlay = (ImageView) itemView.findViewById(R.id.iv_play);
-            itemView.setOnClickListener(v -> {
-                if (mOnRvItemListener != null) {
-                    playPosition = getBindingAdapterPosition() - 2;
-                    notifyDataSetChanged();
-                    mOnRvItemListener.onItemClick(mDataList, playPosition);
-                }
-            });
+        }
+    }
+
+
+    public void onItemCLick(int position) {
+        if (mOnRvItemListener != null) {
+            playPosition = position - 2;
+            notifyDataSetChanged();
+            mOnRvItemListener.onItemClick(mDataList, playPosition);
         }
     }
 
