@@ -43,11 +43,6 @@ public class SpeechHelper implements ISpeechFace {
         mListener = new CustomRecognizerListener();
     }
 
-    public void clearCacheText() {
-        JsonParser.clearText();
-        mSpeechResult.setLength(0);
-    }
-
     public static SpeechHelper getInstance() {
         if (speechHelper == null) {
             synchronized (TtsHelper.class) {
@@ -59,6 +54,13 @@ public class SpeechHelper implements ISpeechFace {
         }
         return speechHelper;
     }
+
+    @Override
+    public void clearCacheText() {
+        JsonParser.clearText();
+        mSpeechResult.setLength(0);
+    }
+
 
     @Override
     public boolean initialized() {
@@ -172,6 +174,7 @@ public class SpeechHelper implements ISpeechFace {
         VoiceTypeManager.getManager().setVoiceType(VoiceType.ACCEPT_STOP);
     }
 
+    @Override
     public void destroy() {
         if (initialized()) {
             mIat.destroy();

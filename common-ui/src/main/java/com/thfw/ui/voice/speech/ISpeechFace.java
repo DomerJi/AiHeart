@@ -8,5 +8,5 @@ import com.thfw.ui.voice.ILife;
  * Describe:Todo
  */
 public interface ISpeechFace extends ILife {
-
+    void clearCacheText();
 }

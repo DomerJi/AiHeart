@@ -80,6 +80,7 @@ import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.voice.PolicyHelper;
 import com.thfw.ui.voice.speech.SpeechHelper;
+import com.thfw.ui.voice.tts.SimpleSynthesizerListener;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
 import com.thfw.ui.widget.LoadingView;
@@ -1610,7 +1611,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 if (mTtsStarted) {
                     return;
                 }
-                TtsHelper.getInstance().setCurrentSynthesizerListener(new TtsHelper.SimpleSynthesizerListener() {
+                TtsHelper.getInstance().setCurrentSynthesizerListener(new SimpleSynthesizerListener() {
                     @Override
                     public void onIng(boolean ing) {
                         super.onIng(ing);
@@ -1643,7 +1644,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         LogUtil.d(TAG, "ttsHandle TtsHelper.getInstance().start begin");
         startAnimFaceType(FACE_TYPE_SPEECH);
         readAfterSpeech();
-        TtsHelper.getInstance().start(mTtsQueue.poll(), new TtsHelper.SimpleSynthesizerListener() {
+        TtsHelper.getInstance().start(mTtsQueue.poll(), new SimpleSynthesizerListener() {
 
             @Override
             public void onSpeakBegin() {

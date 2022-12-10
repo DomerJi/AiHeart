@@ -11,4 +11,8 @@ import com.thfw.ui.voice.ILife;
 public interface ITtsFace extends ILife {
 
     boolean start(TtsModel ttsModel, SynthesizerListener synthesizerListener);
+
+    void setCurrentSynthesizerListener(SimpleSynthesizerListener currentSynthesizerListener);
+
+    void pause();
 }

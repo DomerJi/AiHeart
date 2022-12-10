@@ -72,6 +72,7 @@ import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.utils.VideoGestureHelper;
+import com.thfw.ui.voice.tts.SimpleSynthesizerListener;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
@@ -216,7 +217,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
      * tts打断后继续
      */
     private void playStateManager() {
-        TtsHelper.getInstance().setCurrentSynthesizerListener(new TtsHelper.SimpleSynthesizerListener() {
+        TtsHelper.getInstance().setCurrentSynthesizerListener(new SimpleSynthesizerListener() {
 
             boolean organPlaying;
 

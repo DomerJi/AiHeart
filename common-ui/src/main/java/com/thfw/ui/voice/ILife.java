@@ -38,4 +38,9 @@ public interface ILife {
      * 结束
      */
     void stop();
+
+    /**
+     * 销毁
+     */
+    void destroy();
 }

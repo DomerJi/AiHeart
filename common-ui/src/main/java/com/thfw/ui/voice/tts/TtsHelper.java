@@ -138,6 +138,8 @@ public class TtsHelper implements ITtsFace {
         return start();
     }
 
+
+    @Override
     public void setCurrentSynthesizerListener(SimpleSynthesizerListener currentSynthesizerListener) {
         this.currentSynthesizerListener2 = currentSynthesizerListener;
     }
@@ -212,6 +214,7 @@ public class TtsHelper implements ITtsFace {
         onExoRelease();
     }
 
+    @Override
     public void destroy() {
         if (initialized()) {
             mTts.destroy();
@@ -220,6 +223,7 @@ public class TtsHelper implements ITtsFace {
         onExoRelease();
     }
 
+    @Override
     public void pause() {
         if (initialized()) {
             mTts.pauseSpeaking();
@@ -232,48 +236,6 @@ public class TtsHelper implements ITtsFace {
             mTts.resumeSpeaking();
         }
         onExoResume();
-    }
-
-    public static class SimpleSynthesizerListener implements SynthesizerListener {
-
-        @Override
-        public void onSpeakBegin() {
-            onIng(ttsHelper.isIng());
-        }
-
-        @Override
-        public void onBufferProgress(int i, int i1, int i2, String s) {
-            onIng(ttsHelper.isIng());
-        }
-
-        @Override
-        public void onSpeakPaused() {
-            onIng(ttsHelper.isIng());
-        }
-
-        @Override
-        public void onSpeakResumed() {
-            onIng(ttsHelper.isIng());
-        }
-
-        @Override
-        public void onSpeakProgress(int i, int i1, int i2) {
-            onIng(ttsHelper.isIng());
-        }
-
-        @Override
-        public void onCompleted(SpeechError speechError) {
-            onIng(ttsHelper.isIng());
-        }
-
-        @Override
-        public void onEvent(int i, int i1, int i2, Bundle bundle) {
-            onIng(ttsHelper.isIng());
-        }
-
-        public void onIng(boolean ing) {
-
-        }
     }
 
     public class CustomSynthesizerListener implements SynthesizerListener {
