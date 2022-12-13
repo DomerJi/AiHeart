@@ -16,7 +16,7 @@ public class DeviceUtil {
      * @return
      */
     public static boolean isLhXk_CM_GB03D() {
-        return "CM-GB03D".equals(Build.MODEL) && "ORIONSTAR".equals(Build.BRAND);
+        return "CM-GB03D".equals(Build.MODEL);
     }
 
 }

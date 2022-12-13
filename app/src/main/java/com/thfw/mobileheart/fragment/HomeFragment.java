@@ -6,11 +6,13 @@ import android.os.Handler;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.reflect.TypeToken;
+import com.opensource.svgaplayer.SVGAImageView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -34,6 +36,8 @@ import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 import com.thfw.mobileheart.activity.exercise.ExerciseActivity;
 import com.thfw.mobileheart.activity.exercise.ExerciseDetailActivity;
+import com.thfw.mobileheart.activity.me.HotPhoneActivity;
+import com.thfw.mobileheart.activity.mood.MoodDetailActivity;
 import com.thfw.mobileheart.activity.read.BookDetailActivity;
 import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
 import com.thfw.mobileheart.activity.read.ReadHomeActivity;
@@ -45,7 +49,9 @@ import com.thfw.mobileheart.activity.test.TestingActivity;
 import com.thfw.mobileheart.activity.video.VideoHomeActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.HomeAdapter;
+import com.thfw.mobileheart.constants.AnimFileName;
 import com.thfw.mobileheart.lhxk.LhXkHelper;
+import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.MoodLivelyHelper;
 import com.thfw.ui.widget.LinearTopLayout;
 import com.thfw.ui.widget.MySearchView;
@@ -124,28 +130,68 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
 
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("主题对话|聊一聊",
-                () -> ThemeListActivity.startActivity(mContext)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("主题对话,聊一聊",
+                () -> onAction(AnimFileName.TRANSITION_THEME)));
         LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("倾诉吐槽",
-                () -> ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI))));
+                () -> onAction(AnimFileName.TRANSITION_TALK)));
         LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("测一测",
-                () -> TestingActivity.startActivity(mContext)));
+                () -> onAction(AnimFileName.TRANSITION_TEST)));
         LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("练一练",
-                () -> ExerciseActivity.startActivity(mContext)));
+                () -> onAction(AnimFileName.TRANSITION_TOOL)));
         LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("听一听",
-                () -> AudioHomeActivity.startActivity(mContext)));
+                () -> onAction(AnimFileName.TRANSITION_AUDIO)));
         LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("看一看",
-                () -> VideoHomeActivity.startActivity(mContext)));
+                () -> onAction(AnimFileName.TRANSITION_VIDEO)));
         LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("读一读",
-                () -> ReadHomeActivity.startActivity(mContext)));
+                () -> onAction(AnimFileName.TRANSITION_BOOK)));
         LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("学一学",
-                () -> StudyHomeActivity.startActivity(mContext)));
+                () -> onAction(AnimFileName.TRANSITION_IDEO)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("心情日记",
+                () -> MoodDetailActivity.startActivity(mContext)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("活跃",
+                () -> MoodDetailActivity.startActivity(mContext)).setLike(true));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("心理热线,了解更多",
+                () -> mContext.startActivity(new Intent(mContext, HotPhoneActivity.class))).setLike(true));
+
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("搜索",
+                () -> startActivity(new Intent(mContext, SearchActivity.class))));
     }
 
-    @Override
-    protected void clearLocalVoice(int type) {
-        super.clearLocalVoice(type);
-        LhXkHelper.removeAction(HomeFragment.class);
+    private void onAction(String animName) {
+        DialogFactory.createSvgaDialog((FragmentActivity) mContext,
+                animName,
+                new DialogFactory.OnSVGACallBack() {
+                    @Override
+                    public void callBack(SVGAImageView svgaImageView) {
+                        switch (animName) {
+                            case AnimFileName.TRANSITION_THEME:
+                                ThemeListActivity.startActivity(mContext);
+                                break;
+                            case AnimFileName.TRANSITION_TALK:
+                                ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
+                                break;
+                            case AnimFileName.TRANSITION_TEST:
+                                TestingActivity.startActivity(mContext);
+                                break;
+                            case AnimFileName.TRANSITION_TOOL:
+                                ExerciseActivity.startActivity(mContext);
+                                break;
+                            case AnimFileName.TRANSITION_AUDIO:
+                                AudioHomeActivity.startActivity(mContext);
+                                break;
+                            case AnimFileName.TRANSITION_VIDEO:
+                                VideoHomeActivity.startActivity(mContext);
+                                break;
+                            case AnimFileName.TRANSITION_BOOK:
+                                ReadHomeActivity.startActivity(mContext);
+                                break;
+                            case AnimFileName.TRANSITION_IDEO:
+                                StudyHomeActivity.startActivity(mContext);
+                                break;
+                        }
+                    }
+                });
+
     }
 
     private void searchViewScroll() {

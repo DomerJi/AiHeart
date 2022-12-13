@@ -67,6 +67,7 @@ public class AppLifeHelper {
 
     public static void onForeground() {
         int flag = ifForeground() ? 1 : 0;
+        LogUtil.i("RobotApi.getInstance().isApiConnectedService() -> "+RobotApi.getInstance().isApiConnectedService());
         if (foregroundFlag != flag) {
             foregroundFlag = flag;
             if (foregroundFlag == 1) {

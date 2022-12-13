@@ -30,7 +30,8 @@ public class ModuleCallback extends ModuleCallbackApi {
                 @Override
                 public void run() {
                     RobotApi.getInstance().finishModuleParser(reqId, false, "ok");
-                    LhXkHelper.startFocusFollow(reqId, -1);
+                    LhXkHelper.stopFocusFollow();
+//                    LhXkHelper.startFocusFollow(reqId);
                     float angle = -1;
                     try {
                         angle = Float.parseFloat(reqParam);
@@ -43,6 +44,8 @@ public class ModuleCallback extends ModuleCallbackApi {
                     RobotApi.getInstance().wakeUp(reqId, angle, new ActionListener() {
                         @Override
                         public void onResult(int status, String responseString) throws RemoteException {
+                            Log.i(TAG, "onSendRequest ->>>>>>>>>>>>>  onResult = "
+                                    + status + " ; responseString = " + responseString);
                             switch (status) {
                                 case Definition.RESULT_OK:
                                     //唤醒完成
@@ -55,6 +58,9 @@ public class ModuleCallback extends ModuleCallbackApi {
 
                         @Override
                         public void onError(int errorCode, String errorString) throws RemoteException {
+
+                            Log.i(TAG, "onSendRequest ->>>>>>>>>>>>>  onError = "
+                                    + errorCode + " ; responseString = " + errorString);
                             switch (errorCode) {
                                 case Definition.ERROR_MOVE_HEAD_FAILED:
                                     //头部云台移动失败

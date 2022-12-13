@@ -42,6 +42,7 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.adapter.BaseAdapter;
 import com.thfw.mobileheart.adapter.DialogLikeAdapter;
 import com.thfw.mobileheart.constants.AnimFileName;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnBindViewListener;
@@ -49,6 +50,7 @@ import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.utils.DragViewUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.InputBoxView;
 
 import org.jetbrains.annotations.NotNull;
@@ -98,6 +100,12 @@ public class DialogFactory {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(com.thfw.ui.R.layout.dialog_custom_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        dialogSpeechUnRegister();
+                    }
+                })
                 .addOnClickListener(com.thfw.ui.R.id.tv_left, com.thfw.ui.R.id.tv_right)
                 .setScreenWidthAspect(activity, WIDTH_ASPECT)
                 .setCancelableOutside(cancleOutside)
@@ -109,8 +117,26 @@ public class DialogFactory {
                     TextView mTvRight = viewHolder.getView(com.thfw.ui.R.id.tv_right);
                     View mVLineVertical = viewHolder.getView(com.thfw.ui.R.id.vline_vertical);
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
+                    dialogSpeechRegister(mTvLeft, mTvRight);
                 })
                 .setOnViewClickListener(onViewCallBack).create().show();
+    }
+
+    private static void dialogSpeechRegister(TextView mTvLeft, TextView mTvRight) {
+        if (DeviceUtil.isLhXk_CM_GB03D()) {
+            LhXkHelper.putAction(TDialog.class, new LhXkHelper.SpeechToAction(mTvLeft.getText().toString(), () -> {
+                mTvLeft.performClick();
+            }));
+            LhXkHelper.putAction(TDialog.class, new LhXkHelper.SpeechToAction(mTvRight.getText().toString(), () -> {
+                mTvRight.performClick();
+            }));
+        }
+    }
+
+    private static void dialogSpeechUnRegister() {
+        if (DeviceUtil.isLhXk_CM_GB03D()) {
+            LhXkHelper.removeAction(TDialog.class);
+        }
     }
 
     /**
@@ -129,6 +155,7 @@ public class DialogFactory {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         onViewCallBack.onViewClick(null, null, null);
+                        dialogSpeechUnRegister();
                     }
                 })
                 .setScreenWidthAspect(activity, WIDTH_ASPECT)
@@ -144,6 +171,7 @@ public class DialogFactory {
                     mVLineVertical.setVisibility(View.GONE);
                     mTvLeft.setVisibility(View.GONE);
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
+                    dialogSpeechRegister(mTvLeft, mTvRight);
                 })
                 .setOnViewClickListener(onViewCallBack).create().show();
     }

@@ -75,6 +75,7 @@ import com.thfw.ui.utils.PageStateViewModel;
 import com.thfw.ui.utils.UrgeUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 import com.thfw.user.login.UserObserver;
@@ -691,6 +692,23 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     }
 
     @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("首页", () -> {
+            mLlHome.performClick();
+        }));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("消息", () -> {
+            mLlMessage.performClick();
+        }));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("我的", () -> {
+            mLlMe.performClick();
+        }));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("倾诉吐槽", () -> {
+            mLlAiChat.performClick();
+        }));
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         if (DialogFactory.getSvgaTDialog() != null) {
@@ -705,7 +723,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     @Override
     protected void onPause() {
         super.onPause();
-        LhXkHelper.onSpeechStop();
+//        LhXkHelper.onSpeechStop();
     }
 
     private void initSelectedList
@@ -719,6 +737,13 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             if (bean.getChildren() != null) {
                 initSelectedList(list, bean.getChildren());
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!DeviceUtil.isLhXk_CM_GB03D()) {
+            super.onBackPressed();
         }
     }
 

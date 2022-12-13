@@ -43,6 +43,7 @@ import com.thfw.mobileheart.activity.settings.SettingActivity;
 import com.thfw.mobileheart.activity.task.MeTaskActivity;
 import com.thfw.mobileheart.activity.test.TestReportActivity;
 import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FunctionDurationUtil;
 import com.thfw.mobileheart.util.MoodLivelyHelper;
@@ -413,5 +414,42 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
         if (mTvTimeMinute != null) {
             mTvTimeMinute.setText(FunctionDurationUtil.getFunctionTimeHour(FunctionType.FUNCTION_APP));
         }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("活跃,历史心情",
+                () -> MoodDetailActivity.startActivity(mContext)).setLike(true));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("我测的",
+                () -> MeHistoryActivity.startActivity(mContext, 0)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("我练的",
+                () -> MeHistoryActivity.startActivity(mContext, 1)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("我听的",
+                () -> MeHistoryActivity.startActivity(mContext, 2)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("我看的",
+                () -> MeHistoryActivity.startActivity(mContext, 3)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("我读的",
+                () -> MeHistoryActivity.startActivity(mContext, 4)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("我学的",
+                () -> MeHistoryActivity.startActivity(mContext, 5)));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("健康档案",
+                () -> mLlSafeReport.performClick()));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("个人信息",
+                () -> InfoActivity.startActivity(mContext)));
+
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("人脸录入",
+                () -> mLlMeFace.performClick()));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("我的收藏",
+                () -> mLlMeCollect.performClick()));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("我的任务",
+                () -> mLlMeTask.performClick()));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("帮助与反馈",
+                () -> mLlHelpBack.performClick()));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("设置",
+                () -> mLlSetting.performClick()));
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("退出登录",
+                () -> mBtLogout.performClick()).setLike(true));
+
     }
 }

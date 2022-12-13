@@ -149,7 +149,7 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
 
 
     public void onItemCLick(int position) {
-        if (mOnRvItemListener != null) {
+        if (mOnRvItemListener != null && position >= 2) {
             playPosition = position - 2;
             notifyDataSetChanged();
             mOnRvItemListener.onItemClick(mDataList, playPosition);

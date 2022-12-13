@@ -26,6 +26,7 @@ import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.task.MeTaskActivity;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.base.IBaseActivity;
 import com.thfw.ui.dialog.TDialog;
@@ -91,11 +92,14 @@ public abstract class BaseActivity<T extends IPresenter> extends IBaseActivity<T
     }
 
     protected void initLocalVoice(int type) {
-
+        LhXkHelper.putAction(BaseActivity.class, new LhXkHelper.SpeechToAction("返回", () -> {
+            onBackPressed();
+        }));
     }
 
     protected void clearLocalVoice(int type) {
-
+        LhXkHelper.removeAction(BaseActivity.class);
+        LhXkHelper.removeAction(this.getClass());
     }
 
     /**

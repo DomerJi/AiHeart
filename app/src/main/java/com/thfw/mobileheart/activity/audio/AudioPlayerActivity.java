@@ -56,6 +56,7 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.AudioItemAdapter;
 import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
 import com.thfw.ui.dialog.TDialog;
@@ -419,6 +420,33 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
             audioByPagePause = false;
         }
     }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("播放", () -> {
+            if (player != null && !player.isPlaying()) {
+                player.play();
+            }
+        }));
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("暂停", () -> {
+            if (player != null && player.isPlaying()) {
+                player.pause();
+            }
+        }));
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("下一个", () -> {
+            if (player != null && player.hasNext()) {
+                player.next();
+            }
+        }));
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("上一个", () -> {
+            if (player != null && player.hasPrevious()) {
+                player.previous();
+            }
+
+        }));
+    }
+
 
     @Override
     protected void onResume() {

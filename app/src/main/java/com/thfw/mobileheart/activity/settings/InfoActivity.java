@@ -166,6 +166,10 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
         context.startActivity(new Intent(context, InfoActivity.class).putExtra(KEY_DATA, true));
     }
 
+    public static void startActivity(Context context) {
+        context.startActivity(new Intent(context, InfoActivity.class));
+    }
+
     @Override
     public int getContentView() {
         return R.layout.activity_info;

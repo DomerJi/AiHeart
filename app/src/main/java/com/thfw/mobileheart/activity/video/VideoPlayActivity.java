@@ -60,6 +60,7 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.talk.TalkItemJumpHelper;
 import com.thfw.mobileheart.adapter.VideoPlayListAdapter;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
 import com.thfw.ui.base.AVResource;
 import com.thfw.ui.utils.BrightnessHelper;
@@ -573,6 +574,39 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
                 mExoPlayer.setPlayWhenReady(true);
             }
         }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("播放", () -> {
+            if (mExoPlayer != null && !mExoPlayer.isPlaying()) {
+                mExoPlayer.play();
+            }
+        }));
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("暂停", () -> {
+            if (mExoPlayer != null && mExoPlayer.isPlaying()) {
+                mExoPlayer.pause();
+            }
+        }));
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("下一个", () -> {
+            if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
+                int newPostion = this.mPlayPosition + 1;
+                if (newPostion > 0 && newPostion < mVideoList.size()) {
+                    videoChanged(this.mPlayPosition + 1);
+                }
+            }
+        }));
+
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("上一个", () -> {
+            if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
+                int newPostion = this.mPlayPosition - 1;
+                if (newPostion > 0 && newPostion < mVideoList.size()) {
+                    videoChanged(this.mPlayPosition - 1);
+                }
+            }
+
+        }));
     }
 
     @Override

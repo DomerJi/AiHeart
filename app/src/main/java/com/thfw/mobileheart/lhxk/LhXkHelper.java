@@ -10,6 +10,7 @@ import com.ainirobot.coreservice.client.ApiListener;
 import com.ainirobot.coreservice.client.Definition;
 import com.ainirobot.coreservice.client.RobotApi;
 import com.ainirobot.coreservice.client.StatusListener;
+import com.ainirobot.coreservice.client.actionbean.FaceTrackBean;
 import com.ainirobot.coreservice.client.listener.ActionListener;
 import com.ainirobot.coreservice.client.listener.CommandListener;
 import com.ainirobot.coreservice.client.listener.Person;
@@ -23,11 +24,16 @@ import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.MyApplication;
-import com.thfw.ui.widget.DeviceUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Author:pengs
@@ -42,16 +48,10 @@ public class LhXkHelper {
     private static int mReqId = -1;
     private static int mPersonId = -1;
 
-    private static HashMap<Integer, List<SpeechToAction>> mSpeechToActionMap;
+    private static LinkedHashMap<Integer, List<SpeechToAction>> mSpeechToActionMap = new LinkedHashMap<>();
     private static PersonListener listener;
     private static int cancelPersonId;
     private static long cancelPersonIdTime;
-
-    {
-        if (DeviceUtil.isLhXk_CM_GB03D()) {
-            mSpeechToActionMap = new HashMap();
-        }
-    }
 
     public static void putAction(Class classes, SpeechToAction speechToAction) {
         putAction(classes.hashCode(), speechToAction);
@@ -74,16 +74,49 @@ public class LhXkHelper {
         mSpeechToActionMap.remove(code);
     }
 
+    public static boolean onAction(String word) {
+        word = word.replaceAll("(打开|点击)", "");
+        Set<Map.Entry<Integer, List<SpeechToAction>>> entrySet = mSpeechToActionMap.entrySet();
+        for (Map.Entry<Integer, List<SpeechToAction>> map : entrySet) {
+            List<SpeechToAction> list = map.getValue();
+            for (SpeechToAction speechToAction : list) {
+                LogUtil.i("onAcion", "speechToAction.text.contains(,) = " + speechToAction.text.contains("|"));
+                LogUtil.i("onAcion", "speechToAction.text.split(,) = "
+                        + Arrays.toString(speechToAction.text.split(",")));
+
+                if (speechToAction.text.contains(",")) {
+                    if (Arrays.asList(speechToAction.text.split(",")).contains(word)) {
+                        return speechToAction.run();
+                    }
+                } else if (speechToAction.like) {
+                    float lv = speechToAction.text.length() * 1f / word.length();
+                    if (lv >= 1 && lv < 2.5f && speechToAction.text.contains(word)) {
+                        return speechToAction.run();
+                    }
+                } else if (speechToAction.text.equals(word)) {
+                    return speechToAction.run();
+                }
+            }
+        }
+        return false;
+    }
+
     public static class SpeechToAction {
         public String text;
         public int type;
         public int code;
+        public boolean like;
         public Intent intent;
         public Runnable runnable;
 
         public SpeechToAction(String text, Runnable runnable) {
             this.text = text;
             this.runnable = runnable;
+        }
+
+        public SpeechToAction setLike(boolean like) {
+            this.like = like;
+            return this;
         }
 
         public boolean run() {
@@ -168,11 +201,12 @@ public class LhXkHelper {
             @Override
             public void personChanged() {
                 super.personChanged();
+                LogUtil.i(TAG, "personChanged ->>>>>>>>>>>>>>");
                 // 人员变化时，可以调用获取当前人员列表接口获取机器人视野内所有人员
                 // 获取机器人视野内全部人员信息
 //                List<Person> personList = PersonApi.getInstance().getAllPersons();
                 // 获取机器人视野内1m范围内所有的人员信息
-                List<Person> personList = PersonApi.getInstance().getAllPersons(1);
+                List<Person> personList = PersonApi.getInstance().getAllPersons(2);
                 if (!EmptyUtil.isEmpty(personList)) {
                     if (personList.size() > 1) {
                         double tempDistance = personList.get(0).getDistance();
@@ -191,7 +225,7 @@ public class LhXkHelper {
                     } else {
                         mPersonId = personList.get(0).getId();
                     }
-                    startFocusFollow(-1, mPersonId);
+                    startFocusFollowPerson(mPersonId);
                 } else {
                     mPersonId = -1;
                 }
@@ -201,30 +235,31 @@ public class LhXkHelper {
         PersonApi.getInstance().registerPersonListener(listener);
     }
 
-    public static void startFocusFollow(int reqId, int personId) {
-        startFocusFollow(reqId, personId, 1000, 1.5f);
+    public static void startFocusFollow(int reqId) {
+        startFocusFollow(reqId, -1, 5000, 2.5f);
+    }
+
+
+    public static void startFocusFollowPerson(int personId) {
+        startFocusFollow(-1, personId, 5000, 2.5f);
+    }
+
+    public static void stopFocusFollow() {
+        RobotApi.getInstance().stopFaceTrack(-1);
     }
 
     private static void startFocusFollow(int reqId, int faceId, long lostTimeout, float maxDistance) {
-
-        if (faceId != -1) {
-            Person person = PersonApi.getInstance().getFocusPerson();
-            if (person != null) {
-                return;
-            }
-        } else {
-            Person person = PersonApi.getInstance().getFocusPerson();
-            if (person != null) {
-                RobotApi.getInstance().stopFocusFollow(person.getId());
-
-            }
-            if (mReqId != -1) {
-                RobotApi.getInstance().stopFocusFollow(mReqId);
-            }
+        if (reqId == -1) {
+            reqId = faceId;
         }
-        mReqId = reqId;
         mPersonId = faceId;
-        RobotApi.getInstance().startFocusFollow(reqId, faceId, lostTimeout, maxDistance, new ActionListener() {
+        FaceTrackBean faceTrackBean = new FaceTrackBean();
+        faceTrackBean.setPersonId(mPersonId);
+        faceTrackBean.setAllowMoveBody(true);
+        faceTrackBean.setLostTimer(lostTimeout);
+        faceTrackBean.setMaxDistance(maxDistance);
+        mReqId = RobotApi.getInstance().startFaceTrack(reqId, faceTrackBean, new ActionListener() {
+            //        RobotApi.getInstance().startFocusFollow(reqId, faceId, lostTimeout, maxDistance, new ActionListener() {
             @Override
             public void onStatusUpdate(int status, String data) {
                 Log.d(TAG, "onStatusUpdate onResult status: " + status + " ; data = " + data);
@@ -268,6 +303,28 @@ public class LhXkHelper {
                     case Definition.ACTION_RESPONSE_STOP_SUCCESS:
                         //在焦点跟随过程中，主动调用stopFocusFollow，成功停止跟随
                         break;
+                }
+            }
+        });
+        Log.i(TAG, "mReqId = " + mReqId);
+    }
+
+    public static void reset() {
+        LogUtil.i(TAG, "reset +++++++++++++");
+        RobotApi.getInstance().resetHead(-1, new CommandListener() {
+            @Override
+            public void onResult(int result, String message) {
+                try {
+                    JSONObject json = new JSONObject(message);
+                    String status = json.getString("status");
+                    if (Definition.CMD_STATUS_OK.equals(status)) {
+                        if (LogUtil.isLogEnabled()) {
+                            ToastUtil.show("resetHead");
+                        }
+                        //操作成功
+                    }
+                } catch (JSONException | NullPointerException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -322,14 +379,13 @@ public class LhXkHelper {
                             if (LogUtil.isLogEnabled()) {
                                 Toast.makeText(MyApplication.getApp(), result, Toast.LENGTH_SHORT).show();
                             }
+                            onAction(result);
                             // 语音触发取消跟随
-                            if (result.length() < 8 && result.contains("别看我了")) {
+                            if (result.length() < 8 && result.contains("别看我")) {
                                 // 取消跟随语音
                                 if (mReqId != -1) {
                                     RobotApi.getInstance().stopFocusFollow(mReqId);
-                                    RobotApi.getInstance().resetHead(mReqId, new CommandListener() {
-
-                                    });
+                                    reset();
                                     // 取消跟随人脸。 如果有其他人脸则跟随其他人脸没有其他人脸 则不跟随
                                 } else if (mPersonId != -1) {
                                     cancelPersonId = mPersonId;
@@ -350,17 +406,15 @@ public class LhXkHelper {
                                         }
                                         if (tempPersonId != mPersonId) {
                                             mPersonId = tempPersonId;
-                                            startFocusFollow(-1, tempPersonId);
+                                            startFocusFollow(tempPersonId);
                                         } else {
-                                            RobotApi.getInstance().resetHead(mPersonId, new CommandListener() {
-
-                                            });
+                                            reset();
                                         }
                                     } else {
-                                        RobotApi.getInstance().resetHead(mPersonId, new CommandListener() {
-
-                                        });
+                                        reset();
                                     }
+                                } else {
+                                    reset();
                                 }
                             }
                             mSpeechParResult = null;

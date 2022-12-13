@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.activity;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.ui.base.IBaseFragment;
 import com.thfw.ui.widget.DeviceUtil;
 
@@ -30,7 +31,7 @@ public abstract class BaseFragment<T extends IPresenter> extends IBaseFragment<T
     }
 
     protected void clearLocalVoice(int type) {
-
+        LhXkHelper.removeAction(this.getClass());
     }
 
 }
