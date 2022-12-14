@@ -8,8 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.ainirobot.coreservice.client.RobotApi;
+import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.lhxk.LhXkHelper;
+import com.thfw.ui.widget.DeviceUtil;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Author:pengs
@@ -21,6 +26,14 @@ public class AppLifeHelper {
     private static int startedActivityCount;
     private static int foregroundFlag = -1;
     private static Application.ActivityLifecycleCallbacks activityLifecycleCallbacks;
+    private static WeakReference<Activity> mTopActivity;
+
+    public static Activity getTopActivity() {
+        if (ifForeground() && mTopActivity != null) {
+            return mTopActivity.get();
+        }
+        return null;
+    }
 
     public static void initActivityLifecycle(Application application) {
         if (activityLifecycleCallbacks == null) {
@@ -34,15 +47,18 @@ public class AppLifeHelper {
                 public void onActivityStarted(@NonNull Activity activity) {
                     startedActivityCount++;
                     onForeground();
+
                 }
 
                 @Override
                 public void onActivityResumed(@NonNull Activity activity) {
+                    mTopActivity = new WeakReference<>(activity);
                 }
 
                 @Override
                 public void onActivityPaused(@NonNull Activity activity) {
-
+                    mTopActivity = null;
+                    DialogFactory.dismissSpeech();
                 }
 
                 @Override
@@ -65,21 +81,33 @@ public class AppLifeHelper {
         application.registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
     }
 
+    private static final long ONE_NS_TIME = 1000 * 1000 * 1000;
+
     public static void onForeground() {
         int flag = ifForeground() ? 1 : 0;
-        LogUtil.i("RobotApi.getInstance().isApiConnectedService() -> "+RobotApi.getInstance().isApiConnectedService());
+        LogUtil.i("RobotApi.getInstance().isApiConnectedService() -> " + RobotApi.getInstance().isApiConnectedService());
         if (foregroundFlag != flag) {
             foregroundFlag = flag;
-            if (foregroundFlag == 1) {
-                if (!RobotApi.getInstance().isApiConnectedService()) {
-                    LhXkHelper.init();
+            LogUtil.d("onForeground = " + ifForeground());
+            if (DeviceUtil.isLhXk_CM_GB03D()) {
+
+                if (foregroundFlag == 1) {
+                    if (!RobotApi.getInstance().isApiConnectedService()) {
+                        if (System.nanoTime() < 180 * ONE_NS_TIME) {
+                            HandlerUtil.getMainHandler().postDelayed(() -> LhXkHelper.init(), 1200);
+                        } else {
+                            LhXkHelper.init();
+                        }
+
+                    }
+                    LogUtil.d("onForeground = " + 1);
+                } else {
+                    if (RobotApi.getInstance().isApiConnectedService()) {
+                        LhXkHelper.disconnectApi();
+                    }
+                    MyApplication.kill();
                 }
-                LogUtil.d("onForeground = " + 1);
-            } else {
-                if (RobotApi.getInstance().isApiConnectedService()) {
-                    LhXkHelper.disconnectApi();
-                }
-                LogUtil.d("onForeground = " + 0);
+
             }
 
         }

@@ -1,10 +1,12 @@
 package com.thfw.mobileheart.lhxk;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.ainirobot.coreservice.client.ApiListener;
 import com.ainirobot.coreservice.client.Definition;
@@ -22,18 +24,24 @@ import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.MyApplication;
+import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.mobileheart.util.AppLifeHelper;
+import com.thfw.mobileheart.util.DialogFactory;
+import com.thfw.ui.voice.tts.TtsHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static com.thfw.mobileheart.activity.PrivateSetActivity.KEY_FACE_FOCUS;
 
 /**
  * Author:pengs
@@ -50,8 +58,37 @@ public class LhXkHelper {
 
     private static LinkedHashMap<Integer, List<SpeechToAction>> mSpeechToActionMap = new LinkedHashMap<>();
     private static PersonListener listener;
+    // 别看我 的 人员 id
     private static int cancelPersonId;
+    // 别看我后 持续多长时间
+    private static final long CANCEL_PERSON_ID_TIME_MAX = HourUtil.LEN_MINUTE;
     private static long cancelPersonIdTime;
+    // 获取机器人视野内N米范围内所有的人员信息
+    private static final int MAX_DISTANCE = 3;
+
+    static {
+        putAction(LhXkHelper.class, new SpeechToAction("别看我,看别人,看其他人,看别的人,看别的地方,不准看我,不要看我", () -> {
+            LogUtil.i(TAG, "============================别看我============================");
+            if (mPersonId != -1) {
+                cancelPersonId = mPersonId;
+                cancelPersonIdTime = System.currentTimeMillis();
+                stopFocusFollow();
+                List<Person> personList = PersonApi.getInstance().getAllPersons(MAX_DISTANCE);
+                // 如果有其他人在视野内，看向其他人
+                if (!EmptyUtil.isEmpty(personList)) {
+                    int tempPersonId = getFocusPersonId(personList);
+                    if (tempPersonId != -1) {
+                        startFocusFollowPerson(tempPersonId);
+                        return;
+                    }
+                }
+            }
+            // 恢复云台初始位置
+            reset();
+        }));
+    }
+
+    private static SkillCallback mSkillCallback;
 
     public static void putAction(Class classes, SpeechToAction speechToAction) {
         putAction(classes.hashCode(), speechToAction);
@@ -74,26 +111,41 @@ public class LhXkHelper {
         mSpeechToActionMap.remove(code);
     }
 
+    public static String onActionText(String word) {
+        String oldWord = word;
+        String newWord = word.replaceAll("(打开|点击)", "");
+        Set<Map.Entry<Integer, List<SpeechToAction>>> entrySet = mSpeechToActionMap.entrySet();
+        for (Map.Entry<Integer, List<SpeechToAction>> map : entrySet) {
+            List<SpeechToAction> list = map.getValue();
+            for (SpeechToAction speechToAction : list) {
+                String regex = ".{0,2}(" + speechToAction.text.replaceAll(",", "|") + ").{0,2}";
+                LogUtil.i(TAG, "regex -> " + regex);
+                if (newWord.matches(regex)) {
+                    String[] words = speechToAction.text.split(",");
+                    for (String key : words) {
+                        int start = oldWord.indexOf(key);
+                        if (start != -1) {
+                            oldWord = oldWord.substring(0, start) + "<font color='" + UIConfig.COLOR_AGREE + "'>" + key +
+                                    "</font>";
+                        }
+                    }
+                    return oldWord;
+                }
+            }
+        }
+        return oldWord;
+    }
+
     public static boolean onAction(String word) {
         word = word.replaceAll("(打开|点击)", "");
         Set<Map.Entry<Integer, List<SpeechToAction>>> entrySet = mSpeechToActionMap.entrySet();
         for (Map.Entry<Integer, List<SpeechToAction>> map : entrySet) {
             List<SpeechToAction> list = map.getValue();
             for (SpeechToAction speechToAction : list) {
-                LogUtil.i("onAcion", "speechToAction.text.contains(,) = " + speechToAction.text.contains("|"));
-                LogUtil.i("onAcion", "speechToAction.text.split(,) = "
-                        + Arrays.toString(speechToAction.text.split(",")));
-
-                if (speechToAction.text.contains(",")) {
-                    if (Arrays.asList(speechToAction.text.split(",")).contains(word)) {
-                        return speechToAction.run();
-                    }
-                } else if (speechToAction.like) {
-                    float lv = speechToAction.text.length() * 1f / word.length();
-                    if (lv >= 1 && lv < 2.5f && speechToAction.text.contains(word)) {
-                        return speechToAction.run();
-                    }
-                } else if (speechToAction.text.equals(word)) {
+                String regex = ".{0,2}(" + speechToAction.text.replaceAll(",", "|") + ").{0,2}";
+                LogUtil.i(TAG, "regex -> " + regex);
+                if (word.matches(regex)) {
+                    LogUtil.i(TAG, "regex true*********** -> " + regex);
                     return speechToAction.run();
                 }
             }
@@ -170,6 +222,10 @@ public class LhXkHelper {
                 if (listener != null) {
                     PersonApi.getInstance().unregisterPersonListener(listener);
                 }
+                if (AppLifeHelper.ifForeground()) {
+                    HandlerUtil.getMainHandler().postDelayed(() -> init(), 5000);
+                }
+
             }
         });
 
@@ -206,28 +262,14 @@ public class LhXkHelper {
                 // 获取机器人视野内全部人员信息
 //                List<Person> personList = PersonApi.getInstance().getAllPersons();
                 // 获取机器人视野内1m范围内所有的人员信息
-                List<Person> personList = PersonApi.getInstance().getAllPersons(2);
-                if (!EmptyUtil.isEmpty(personList)) {
-                    if (personList.size() > 1) {
-                        double tempDistance = personList.get(0).getDistance();
-                        mPersonId = personList.get(0).getId();
-                        for (Person p : personList) {
-                            // 别看我了。十秒内 不进行此人脸的跟随。
-                            if (cancelPersonId == p.getId() && System.currentTimeMillis() - cancelPersonIdTime
-                                    < HourUtil.LEN_SECOND10) {
-                                continue;
-                            }
-                            if (p.getDistance() < tempDistance) {
-                                tempDistance = p.getDistance();
-                                mPersonId = p.getId();
-                            }
-                        }
+
+                if (SharePreferenceUtil.getInt(KEY_FACE_FOCUS, 1) == 1) {
+                    List<Person> personList = PersonApi.getInstance().getAllPersons(MAX_DISTANCE);
+                    if (!EmptyUtil.isEmpty(personList)) {
+                        startFocusFollowPerson(getFocusPersonId(personList));
                     } else {
-                        mPersonId = personList.get(0).getId();
+                        stopFocusFollow();
                     }
-                    startFocusFollowPerson(mPersonId);
-                } else {
-                    mPersonId = -1;
                 }
             }
         };
@@ -235,33 +277,60 @@ public class LhXkHelper {
         PersonApi.getInstance().registerPersonListener(listener);
     }
 
+    private static int getFocusPersonId(List<Person> personList) {
+        int tempPersonId = -1;
+        double tempDistance = Double.MAX_VALUE;
+        for (Person p : personList) {
+            // 别看我了。十秒内 不进行此人脸的跟随。
+            if (cancelPersonId == p.getId() && System.currentTimeMillis() - cancelPersonIdTime
+                    < CANCEL_PERSON_ID_TIME_MAX) {
+                continue;
+            }
+            if (p.getDistance() < tempDistance) {
+                tempDistance = p.getDistance();
+                tempPersonId = p.getId();
+            }
+        }
+        return tempPersonId;
+    }
+
+    /**
+     * 非法参数
+     *
+     * @param reqId
+     */
+    @Deprecated
     public static void startFocusFollow(int reqId) {
         startFocusFollow(reqId, -1, 5000, 2.5f);
     }
 
 
     public static void startFocusFollowPerson(int personId) {
-        startFocusFollow(-1, personId, 5000, 2.5f);
+        if (personId == -1) {
+            LogUtil.i(TAG, "personId == -1");
+        } else {
+            startFocusFollow(-1, personId, 5000, 2.5f);
+        }
     }
 
     public static void stopFocusFollow() {
-        RobotApi.getInstance().stopFaceTrack(-1);
+        mPersonId = -1;
+        mReqId = -1;
+        RobotApi.getInstance().stopFaceTrack(mReqId);
     }
 
     private static void startFocusFollow(int reqId, int faceId, long lostTimeout, float maxDistance) {
-        if (reqId == -1) {
-            reqId = faceId;
-        }
         mPersonId = faceId;
+        mReqId = -1;
         FaceTrackBean faceTrackBean = new FaceTrackBean();
         faceTrackBean.setPersonId(mPersonId);
         faceTrackBean.setAllowMoveBody(true);
         faceTrackBean.setLostTimer(lostTimeout);
         faceTrackBean.setMaxDistance(maxDistance);
-        mReqId = RobotApi.getInstance().startFaceTrack(reqId, faceTrackBean, new ActionListener() {
-            //        RobotApi.getInstance().startFocusFollow(reqId, faceId, lostTimeout, maxDistance, new ActionListener() {
+        RobotApi.getInstance().startFaceTrack(reqId, faceTrackBean, new ActionListener() {
+
             @Override
-            public void onStatusUpdate(int status, String data) {
+            public void onStatusUpdate(int status, String data, String extraData) {
                 Log.d(TAG, "onStatusUpdate onResult status: " + status + " ; data = " + data);
                 switch (status) {
                     case Definition.STATUS_TRACK_TARGET_SUCCEED:
@@ -280,7 +349,7 @@ public class LhXkHelper {
             }
 
             @Override
-            public void onError(int errorCode, String errorString) {
+            public void onError(int errorCode, String errorString, String extraData) {
                 Log.d(TAG, "onError onResult errorCode: " + errorCode + " ; errorString = " + errorString);
                 switch (errorCode) {
                     case Definition.ERROR_SET_TRACK_FAILED:
@@ -348,123 +417,68 @@ public class LhXkHelper {
         }
     }
 
+    private static Runnable runnable;
+
     private static void initSpeech() {
-        SkillCallback mSkillCallback = new SkillCallback() {
+        if (mSkillCallback == null) {
+            mSkillCallback = new SkillCallback() {
 
-            private Runnable runnable;
 
-            @Override
-            public void onSpeechParResult(String s) throws RemoteException {
-                mSpeechParResult = s;
-                Log.i(TAG, "onSpeechParResult ->>>>>>>>>>> s = " + s);
-                //语音临时识别结果
-            }
-
-            @Override
-            public void onStart() throws RemoteException {
-                //开始识别
-                Log.i(TAG, "onStart ->>>>>>>>>>> s = ");
-            }
-
-            @Override
-            public void onStop() throws RemoteException {
-                if (runnable != null) {
-                    HandlerUtil.getMainHandler().removeCallbacks(runnable);
-                }
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!TextUtils.isEmpty(mSpeechParResult)) {
-                            String result = mSpeechParResult;
-                            if (LogUtil.isLogEnabled()) {
-                                Toast.makeText(MyApplication.getApp(), result, Toast.LENGTH_SHORT).show();
-                            }
-                            onAction(result);
-                            // 语音触发取消跟随
-                            if (result.length() < 8 && result.contains("别看我")) {
-                                // 取消跟随语音
-                                if (mReqId != -1) {
-                                    RobotApi.getInstance().stopFocusFollow(mReqId);
-                                    reset();
-                                    // 取消跟随人脸。 如果有其他人脸则跟随其他人脸没有其他人脸 则不跟随
-                                } else if (mPersonId != -1) {
-                                    cancelPersonId = mPersonId;
-                                    cancelPersonIdTime = System.currentTimeMillis();
-
-                                    RobotApi.getInstance().stopFocusFollow(mPersonId);
-
-                                    List<Person> personList = PersonApi.getInstance().getAllPersons(1);
-                                    if (!EmptyUtil.isEmpty(personList)) {
-
-                                        double tempDistance = personList.get(0).getDistance();
-                                        int tempPersonId = personList.get(0).getId();
-                                        for (Person p : personList) {
-                                            if (p.getId() != mPersonId && p.getDistance() < tempDistance) {
-                                                tempDistance = p.getDistance();
-                                                tempPersonId = p.getId();
-                                            }
-                                        }
-                                        if (tempPersonId != mPersonId) {
-                                            mPersonId = tempPersonId;
-                                            startFocusFollow(tempPersonId);
-                                        } else {
-                                            reset();
-                                        }
-                                    } else {
-                                        reset();
-                                    }
-                                } else {
-                                    reset();
-                                }
-                            }
-                            mSpeechParResult = null;
-                            if (ToastUtil.isMainThread()) {
-                                if (speechResult != null) {
-                                    speechResult.onResult(result);
-                                }
-                            } else {
-                                HandlerUtil.getMainHandler().post(() -> {
-                                    if (speechResult != null) {
-                                        speechResult.onResult(result);
-                                    }
-                                });
-                            }
-                        }
+                @Override
+                public void onSpeechParResult(String s) throws RemoteException {
+                    mSpeechParResult = s;
+                    if (!TtsHelper.getInstance().isIng()) {
+                        showSpeechText(onActionText(mSpeechParResult));
                     }
-                };
+                    Log.i(TAG, "onSpeechParResult ->>>>>>>>>>> s = " + s);
+                    // 语音临时识别结果
+                    if (runnable != null) {
+                        HandlerUtil.getMainHandler().removeCallbacks(runnable);
+                    }
+                    runnable = new SpeechRunnable(mSpeechParResult);
+                    HandlerUtil.getMainHandler().postDelayed(runnable, 1200);
+                }
 
-                HandlerUtil.getMainHandler().postDelayed(runnable, 500);
-                //识别结束
-                Log.i(TAG, "onStop ->>>>>>>>>>> s = " + mSpeechParResult);
-            }
+                @Override
+                public void onStart() throws RemoteException {
+                    //开始识别
+                    Log.i(TAG, "onStart ->>>>>>>>>>> s = ");
+                    DialogFactory.dismissSpeech();
+                }
 
-            @Override
-            public void onVolumeChange(int volume) throws RemoteException {
-                //识别的声音大小变化
-                Log.i(TAG, "onVolumeChange ->>>>>>>>>>> volume = " + volume);
-            }
+                @Override
+                public void onStop() throws RemoteException {
+                    //识别结束
+                    Log.i(TAG, "onStop ->>>>>>>>>>> s = " + mSpeechParResult);
+                }
 
-            /**
-             @param status 0 : 正常返回
-             1 : other返回
-             2 : 噪音或single_other返回
-             3 : 超时
-             4 : 被强制取消
-             5 : asr结果提前结束，未经过NLU
-             6 : 全双工语意相同情况下，other返回
-             */
-            @Override
-            public void onQueryEnded(int status) throws RemoteException {
-                //status状态
-            }
+                @Override
+                public void onVolumeChange(int volume) throws RemoteException {
+                    //识别的声音大小变化
+                    Log.i(TAG, "onVolumeChange ->>>>>>>>>>> volume = " + volume);
+                }
 
-            @Override
-            public void onQueryAsrResult(String asrResult) throws RemoteException {
-                //asrResult ：最终识别结果
-            }
-        };
+                /**
+                 * @param status 0 : 正常返回
+                 *               1 : other返回
+                 *               2 : 噪音或single_other返回
+                 *               3 : 超时
+                 *               4 : 被强制取消
+                 *               5 : asr结果提前结束，未经过NLU
+                 *               6 : 全双工语意相同情况下，other返回
+                 */
+                @Override
+                public void onQueryEnded(int status) throws RemoteException {
+                    //status状态
+                }
 
+                @Override
+                public void onQueryAsrResult(String asrResult) throws RemoteException {
+                    //asrResult ：最终识别结果
+                }
+            };
 
+        }
         skillApi = new SkillApi();
         skillApi.connectApi(MyApplication.getApp(), new ApiListener() {
             @Override
@@ -484,11 +498,44 @@ public class LhXkHelper {
             @Override
             public void handleApiDisconnected() {
                 //语音服务已断开
+                skillApi.unregisterCallBack(mSkillCallback);
                 Log.i(TAG, "handleApiDisconnected ->>>>>>>>>>>");
             }
         });
 
     }
+
+    public static class SpeechRunnable implements Runnable {
+        String text;
+
+        public SpeechRunnable(String text) {
+            this.text = text;
+        }
+
+        @Override
+        public void run() {
+            // ===================================
+            Log.i(TAG, "SpeechRunnable v runnable = " + text);
+            if (!TextUtils.isEmpty(text)) {
+                onAction(text);
+                if (speechResult != null) {
+                    if (ToastUtil.isMainThread()) {
+                        if (speechResult != null) {
+                            speechResult.onResult(text);
+                        }
+                    } else {
+                        HandlerUtil.getMainHandler().post(() -> {
+                            if (speechResult != null) {
+                                speechResult.onResult(text);
+                            }
+                        });
+                    }
+                }
+            }
+            // ================================
+        }
+    }
+
 
     static SpeechResult speechResult;
 
@@ -498,5 +545,15 @@ public class LhXkHelper {
 
     public interface SpeechResult {
         void onResult(String result);
+    }
+
+    private static void showSpeechText(String text) {
+        Activity fragmentActivity = AppLifeHelper.getTopActivity();
+        LogUtil.i(TAG, "show text -> " + text);
+        if (fragmentActivity instanceof FragmentActivity) {
+            DialogFactory.createSpeechDialog((FragmentActivity) fragmentActivity, text);
+        } else {
+            DialogFactory.dismissSpeech();
+        }
     }
 }

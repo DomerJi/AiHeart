@@ -7,9 +7,11 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +22,7 @@ import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.bigkoo.pickerview.view.TimePickerView;
+import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
@@ -75,6 +78,7 @@ public class DialogFactory {
     private static int minute;
     private static long currentTimeMillis;
     private static TDialog urgedDialog;
+    private static TDialog speechDialog;
     private static Runnable urgedDialogRunnable;
 
     public static TDialog getUrgedDialog() {
@@ -190,11 +194,15 @@ public class DialogFactory {
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        urgedDialog = null;
+                        if (urgedDialog != null) {
+                            urgedDialog.dismiss();
+                            urgedDialog = null;
+                        }
                         if (urgedDialogRunnable != null) {
                             HandlerUtil.getMainHandler().removeCallbacks(urgedDialogRunnable);
+                            urgedDialogRunnable = null;
                         }
-                        urgedDialogRunnable = null;
+
                     }
                 })
                 .setNotFocusable(true)
@@ -219,6 +227,7 @@ public class DialogFactory {
                     HandlerUtil.getMainHandler().postDelayed(() -> {
                         if (urgedDialog != null) {
                             urgedDialog.dismiss();
+                            urgedDialog = null;
                         }
                     }, 500);
                 });
@@ -234,6 +243,75 @@ public class DialogFactory {
         };
         HandlerUtil.getMainHandler().postDelayed(urgedDialogRunnable, URGE_DELAY_TIME);
         return urgedDialog;
+    }
+
+
+    private static BindViewHolder bindViewHolder;
+
+    public static void dismissSpeech() {
+        try {
+            if (speechDialog != null) {
+                speechDialog.dismiss();
+                speechDialog = null;
+            }
+            bindViewHolder = null;
+            runnable = null;
+        } catch (Exception e) {
+
+        }
+
+
+    }
+
+    public static void resetSpeech() {
+        if (runnable != null) {
+            HandlerUtil.getMainHandler().removeCallbacks(runnable);
+
+        }
+        runnable = () -> {
+            dismissSpeech();
+        };
+        HandlerUtil.getMainHandler().postDelayed(runnable, 1800);
+
+    }
+
+    private static Runnable runnable;
+
+    public static void createSpeechDialog(FragmentActivity activity, String text) {
+        synchronized (DialogFactory.class) {
+            if (speechDialog != null) {
+                if (bindViewHolder != null) {
+                    resetSpeech();
+                    TextView mTv = bindViewHolder.getView(R.id.tv_hint);
+                    mTv.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    return;
+                }
+            }
+            dismissSpeech();
+            speechDialog = new TDialog.Builder(activity.getSupportFragmentManager())
+                    .setLayoutRes(R.layout.dialog_speech_layout)
+                    .setDialogAnimationRes(R.style.animate_dialog_fade)
+                    .setScreenWidthAspect(activity, WIDTH_ASPECT_2)
+                    .setNotFocusable(true)
+                    .setDimAmount(0.1f)
+                    .setGravity(Gravity.CENTER)
+                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            dismissSpeech();
+                        }
+                    })
+                    .setOnBindViewListener(viewHolder -> {
+                        bindViewHolder = viewHolder;
+                        ImageView imageView = viewHolder.getView(R.id.iv_voice);
+                        imageView.post(() -> {
+                            Glide.with(imageView.getContext()).asGif().load(R.drawable.live_micing_icon_black).into(imageView);
+                        });
+                        TextView textView = viewHolder.getView(R.id.tv_hint);
+                        textView.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    }).create().show();
+            resetSpeech();
+        }
     }
 
 
