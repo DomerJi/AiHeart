@@ -579,12 +579,12 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("播放", () -> {
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("播放,继续", () -> {
             if (mExoPlayer != null && !mExoPlayer.isPlaying()) {
                 mExoPlayer.play();
             }
         }));
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("暂停", () -> {
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("暂停,停止", () -> {
             if (mExoPlayer != null && mExoPlayer.isPlaying()) {
                 mExoPlayer.pause();
             }

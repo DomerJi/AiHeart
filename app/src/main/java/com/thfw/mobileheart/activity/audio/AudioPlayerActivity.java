@@ -424,12 +424,12 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("播放", () -> {
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("播放,继续", () -> {
             if (player != null && !player.isPlaying()) {
                 player.play();
             }
         }));
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("暂停", () -> {
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("暂停,停止", () -> {
             if (player != null && player.isPlaying()) {
                 player.pause();
             }
