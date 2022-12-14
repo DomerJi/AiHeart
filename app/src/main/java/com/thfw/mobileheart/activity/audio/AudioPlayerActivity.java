@@ -434,12 +434,12 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
                 player.pause();
             }
         }));
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("下一个", () -> {
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("下一个,下一首,下一曲", () -> {
             if (player != null && player.hasNext()) {
                 player.next();
             }
         }));
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("上一个", () -> {
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("上一个,上一首,上一曲", () -> {
             if (player != null && player.hasPrevious()) {
                 player.previous();
             }

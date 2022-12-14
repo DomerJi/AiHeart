@@ -589,7 +589,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
                 mExoPlayer.pause();
             }
         }));
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("下一个", () -> {
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("下一个,下一首,下一曲", () -> {
             if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
                 int newPostion = this.mPlayPosition + 1;
                 if (newPostion > 0 && newPostion < mVideoList.size()) {
@@ -598,7 +598,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
             }
         }));
 
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("上一个", () -> {
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("上一个,上一首,上一曲", () -> {
             if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
                 int newPostion = this.mPlayPosition - 1;
                 if (newPostion > 0 && newPostion < mVideoList.size()) {

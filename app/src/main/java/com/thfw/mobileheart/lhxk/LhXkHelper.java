@@ -30,7 +30,6 @@ import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.util.AppLifeHelper;
 import com.thfw.mobileheart.util.DialogFactory;
-import com.thfw.ui.voice.tts.TtsHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -427,9 +426,7 @@ public class LhXkHelper {
                 @Override
                 public void onSpeechParResult(String s) throws RemoteException {
                     mSpeechParResult = s;
-                    if (!TtsHelper.getInstance().isIng()) {
-                        showSpeechText(onActionText(mSpeechParResult));
-                    }
+                    showSpeechText(onActionText(mSpeechParResult));
                     Log.i(TAG, "onSpeechParResult ->>>>>>>>>>> s = " + s);
                     // 语音临时识别结果
                     if (runnable != null) {
