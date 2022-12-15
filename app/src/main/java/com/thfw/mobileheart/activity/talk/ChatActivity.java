@@ -62,14 +62,17 @@ import com.thfw.mobileheart.adapter.ChatAdapter;
 import com.thfw.mobileheart.adapter.ChatSelectAdapter;
 import com.thfw.mobileheart.constants.AnimFileName;
 import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.PageJumpUtils;
+import com.thfw.ui.common.LhXkSet;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.voice.PolicyHelper;
 import com.thfw.ui.voice.speech.SpeechHelper;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.widget.AnimBottomRelativeLayout;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.SpeedLinearLayoutManager;
 import com.thfw.ui.widget.TitleView;
@@ -622,8 +625,14 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
                 LogUtil.d(TAG, "ing =================================== " + ing);
                 if (ing) {
                     mMultiWaveHeader.start();
+                    if (DeviceUtil.isLhXk_CM_GB03D() && LhXkSet.voiceOpen == 1) {
+                        LhXkHelper.onSpeechStop();
+                    }
                 } else {
                     mMultiWaveHeader.stop();
+                    if (DeviceUtil.isLhXk_CM_GB03D() && LhXkSet.voiceOpen == 1) {
+                        LhXkHelper.onSpeechStart();
+                    }
                 }
             }
         });

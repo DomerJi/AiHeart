@@ -4,7 +4,6 @@ import android.os.Build;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.pl.sphelper.ConstantUtil;
@@ -66,19 +65,6 @@ public class ShakeNodActivity extends RobotBaseActivity {
     private Button mBtNodTimeAdd;
     private TextView mTvNodTime;
     private Button mBtNodTimeDel;
-    private LinearLayout mLlFocusM;
-    private TextView mTvFocusMValue;
-    private LinearLayout mLlFocusNoSeeModel;
-    private TextView mTvFocusNoSeeModel;
-    private LinearLayout mLlFocusNoSee;
-    private TextView mTvFocusNoSeeValue;
-    private LinearLayout mLlVoice;
-    private android.widget.Switch mSwitchVoice;
-    private LinearLayout mLlVoiceChild;
-    private LinearLayout mLlVoiceText;
-    private android.widget.Switch mSwitchVoiceText;
-    private LinearLayout mLlVoiceTextGravity;
-    private android.widget.Switch mSwitchVoiceTextGravity;
 
 
     @Override
@@ -93,7 +79,6 @@ public class ShakeNodActivity extends RobotBaseActivity {
 
     @Override
     public void initView() {
-        R.layout.activity_lhxk_setting
         mTvProvider = (TextView) findViewById(R.id.tv_provider);
         mBtShake = (Button) findViewById(R.id.bt_shake);
         mBtNod = (Button) findViewById(R.id.bt_nod);
@@ -266,19 +251,6 @@ public class ShakeNodActivity extends RobotBaseActivity {
             mTvNodTime.setText(String.valueOf(angleTemp - 1));
             SharePreferenceUtil.setInt(ActionParams.KEY_NOD_TIME, angleTemp - 1);
         });
-        mLlFocusM = (LinearLayout) findViewById(R.id.ll_focus_m);
-        mTvFocusMValue = (TextView) findViewById(R.id.tv_focus_m_value);
-        mLlFocusNoSeeModel = (LinearLayout) findViewById(R.id.ll_focus_no_see_model);
-        mTvFocusNoSeeModel = (TextView) findViewById(R.id.tv_focus_no_see_model);
-        mLlFocusNoSee = (LinearLayout) findViewById(R.id.ll_focus_no_see);
-        mTvFocusNoSeeValue = (TextView) findViewById(R.id.tv_focus_no_see_value);
-        mLlVoice = (LinearLayout) findViewById(R.id.ll_voice);
-        mSwitchVoice = (Switch) findViewById(R.id.switch_voice);
-        mLlVoiceChild = (LinearLayout) findViewById(R.id.ll_voice_child);
-        mLlVoiceText = (LinearLayout) findViewById(R.id.ll_voice_text);
-        mSwitchVoiceText = (Switch) findViewById(R.id.switch_voice_text);
-        mLlVoiceTextGravity = (LinearLayout) findViewById(R.id.ll_voice_text_gravity);
-        mSwitchVoiceTextGravity = (Switch) findViewById(R.id.switch_voice_text_gravity);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.thfw.ui.common;
 
+import com.thfw.base.face.LhXkListener;
 import com.thfw.base.utils.SharePreferenceUtil;
 
 import static com.thfw.ui.common.LhXkSettingActivity.KEY_FACE_FOCUS;
@@ -21,6 +22,14 @@ public class LhXkSet {
     public static int focusNoseeTime = LhXkSettingActivity.KEY_FACE_FOCUS_NOSEE_TIME_DEFALUT;
 
     public static void refreshLhXkSet() {
+        refreshLhXkSet(true);
+    }
+
+    public static void init() {
+        refreshLhXkSet(false);
+    }
+
+    public static void refreshLhXkSet(boolean changed) {
         LhXkSet.voiceOpen = SharePreferenceUtil.getInt(LhXkSettingActivity.KEY_VOICE,
                 LhXkSettingActivity.KEY_VOICE_DEFALUT);
         LhXkSet.voiceTextOpen = SharePreferenceUtil.getInt(LhXkSettingActivity.KEY_VOICE_TEXT,
@@ -36,5 +45,11 @@ public class LhXkSet {
                 LhXkSettingActivity.KEY_FACE_FOCUS_NOSEE_MODEL_DEFALUT);
         LhXkSet.focusNoseeTime = SharePreferenceUtil.getInt(LhXkSettingActivity.KEY_FACE_FOCUS_NOSEE_TIME,
                 LhXkSettingActivity.KEY_FACE_FOCUS_NOSEE_TIME_DEFALUT);
+    }
+
+    static LhXkListener lhXkListener;
+
+    public static void setLhXkListener(LhXkListener lhXkListener) {
+        LhXkSet.lhXkListener = lhXkListener;
     }
 }

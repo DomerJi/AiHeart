@@ -20,6 +20,8 @@ import com.ainirobot.coreservice.client.person.PersonApi;
 import com.ainirobot.coreservice.client.person.PersonListener;
 import com.ainirobot.coreservice.client.speech.SkillApi;
 import com.ainirobot.coreservice.client.speech.SkillCallback;
+import com.thfw.base.face.LhXkListener;
+import com.thfw.base.models.SpeechModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
@@ -83,7 +85,30 @@ public class LhXkHelper {
             // 恢复云台初始位置
             reset();
         }));
-        LhXkSet.refreshLhXkSet();
+        LhXkSet.init();
+        LhXkSet.setLhXkListener(new LhXkListener() {
+            @Override
+            public void onChange(int type, Object obj) {
+                if (type == 0) {
+                    if (LhXkSet.voiceOpen == 1) {
+                        onSpeechStart();
+                    } else {
+                        onSpeechStop();
+                    }
+
+                    if (LhXkSet.focusOpen == 1) {
+                        if (listener == null) {
+                            initFace();
+                        }
+                    } else {
+                        if (listener != null) {
+                            PersonApi.getInstance().unregisterPersonListener(listener);
+                        }
+
+                    }
+                }
+            }
+        });
     }
 
     private static SkillCallback mSkillCallback;
@@ -109,7 +134,7 @@ public class LhXkHelper {
         mSpeechToActionMap.remove(code);
     }
 
-    public static String onActionText(String word) {
+    public static SpeechModel onActionText(String word, boolean end) {
         String oldWord = word;
         String newWord = word.replaceAll("(打开|点击)", "");
         Set<Map.Entry<Integer, List<SpeechToAction>>> entrySet = mSpeechToActionMap.entrySet();
@@ -127,28 +152,17 @@ public class LhXkHelper {
                                     "</font>";
                         }
                     }
-                    return oldWord;
+                    if (end) {
+                        LogUtil.i(TAG, "regex true*********** -> " + regex);
+                        HandlerUtil.getMainHandler().postDelayed(() -> {
+                            speechToAction.run();
+                        }, 500);
+                    }
+                    return SpeechModel.create(oldWord).setMatches(true);
                 }
             }
         }
-        return oldWord;
-    }
-
-    public static boolean onAction(String word) {
-        word = word.replaceAll("(打开|点击)", "");
-        Set<Map.Entry<Integer, List<SpeechToAction>>> entrySet = mSpeechToActionMap.entrySet();
-        for (Map.Entry<Integer, List<SpeechToAction>> map : entrySet) {
-            List<SpeechToAction> list = map.getValue();
-            for (SpeechToAction speechToAction : list) {
-                String regex = ".{0,2}(" + speechToAction.text.replaceAll(",", "|") + ").{0,2}";
-                LogUtil.i(TAG, "regex -> " + regex);
-                if (word.matches(regex)) {
-                    LogUtil.i(TAG, "regex true*********** -> " + regex);
-                    return speechToAction.run();
-                }
-            }
-        }
-        return false;
+        return SpeechModel.create(oldWord).setMatches(false);
     }
 
     public static class SpeechToAction {
@@ -255,7 +269,6 @@ public class LhXkHelper {
             @Override
             public void personChanged() {
                 super.personChanged();
-                LogUtil.i(TAG, "personChanged ->>>>>>>>>>>>>>");
                 // 人员变化时，可以调用获取当前人员列表接口获取机器人视野内所有人员
                 // 获取机器人视野内全部人员信息
 //                List<Person> personList = PersonApi.getInstance().getAllPersons();
@@ -275,13 +288,14 @@ public class LhXkHelper {
         PersonApi.getInstance().registerPersonListener(listener);
     }
 
+
     private static int getFocusPersonId(List<Person> personList) {
         int tempPersonId = -1;
         double tempDistance = Double.MAX_VALUE;
         for (Person p : personList) {
             // 别看我了。十秒内 不进行此人脸的跟随。
             if (cancelPersonIdOrTime.containsKey(p.getId())) {
-                if (System.currentTimeMillis() - cancelPersonIdOrTime.get(p.getId()) < LhXkSet.focusNoseeTime) {
+                if (System.currentTimeMillis() - cancelPersonIdOrTime.get(p.getId()) < LhXkSet.focusNoseeTime * 1000) {
                     continue;
                 } else {
                     cancelPersonIdOrTime.remove(p.getId());
@@ -428,18 +442,11 @@ public class LhXkHelper {
                 @Override
                 public void onSpeechParResult(String s) throws RemoteException {
                     mSpeechParResult = s;
-
                     Log.i(TAG, "onSpeechParResult ->>>>>>>>>>> s = " + s);
                     if (LhXkSet.voiceOpen == 1) {
                         if (LhXkSet.voiceTextOpen == 1) {
-                            showSpeechText(onActionText(mSpeechParResult));
+                            showSpeechText(onActionText(mSpeechParResult, false));
                         }
-                        // 语音临时识别结果
-                        if (runnable != null) {
-                            HandlerUtil.getMainHandler().removeCallbacks(runnable);
-                        }
-                        runnable = new SpeechRunnable(mSpeechParResult);
-                        HandlerUtil.getMainHandler().postDelayed(runnable, 1200);
                     }
 
                 }
@@ -460,7 +467,6 @@ public class LhXkHelper {
                 @Override
                 public void onVolumeChange(int volume) throws RemoteException {
                     //识别的声音大小变化
-                    Log.i(TAG, "onVolumeChange ->>>>>>>>>>> volume = " + volume);
                 }
 
                 /**
@@ -474,12 +480,37 @@ public class LhXkHelper {
                  */
                 @Override
                 public void onQueryEnded(int status) throws RemoteException {
-                    //status状态
+                    // status状态
+                    Log.i(TAG, "onQueryEnded ->>>>>>>>>>> status = " + status);
                 }
 
                 @Override
                 public void onQueryAsrResult(String asrResult) throws RemoteException {
-                    //asrResult ：最终识别结果
+                    // asrResult ：最终识别结果
+                    Log.i(TAG, "onQueryAsrResult ->>>>>>>>>>> asrResult = " + asrResult);
+                    if (TextUtils.isEmpty(asrResult)) {
+                        return;
+                    }
+                    if (LhXkSet.voiceOpen == 1) {
+                        if (LhXkSet.voiceTextOpen == 1) {
+                            SpeechModel speechModel = onActionText(asrResult, true);
+                            speechModel.setType(speechModel.matches ? SpeechModel.Type.SUCCESS : SpeechModel.Type.FAIL);
+                            showSpeechText(speechModel);
+                            if (speechResult != null) {
+                                if (ToastUtil.isMainThread()) {
+                                    if (speechResult != null) {
+                                        speechResult.onResult(asrResult);
+                                    }
+                                } else {
+                                    HandlerUtil.getMainHandler().post(() -> {
+                                        if (speechResult != null) {
+                                            speechResult.onResult(asrResult);
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
                 }
             };
 
@@ -522,7 +553,7 @@ public class LhXkHelper {
             // ===================================
             Log.i(TAG, "SpeechRunnable v runnable = " + text);
             if (!TextUtils.isEmpty(text)) {
-                onAction(text);
+
                 if (speechResult != null) {
                     if (ToastUtil.isMainThread()) {
                         if (speechResult != null) {
@@ -553,11 +584,11 @@ public class LhXkHelper {
 
     }
 
-    private static void showSpeechText(String text) {
+    private static void showSpeechText(SpeechModel model) {
         Activity fragmentActivity = AppLifeHelper.getTopActivity();
-        LogUtil.i(TAG, "show text -> " + text);
+        LogUtil.i(TAG, "show text -> " + model.text);
         if (fragmentActivity instanceof FragmentActivity) {
-            DialogFactory.createSpeechDialog((FragmentActivity) fragmentActivity, text);
+            DialogFactory.createSpeechDialog((FragmentActivity) fragmentActivity, model);
         } else {
             DialogFactory.dismissSpeech();
         }

@@ -7,10 +7,13 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.CycleInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,14 +35,17 @@ import com.opensource.svgaplayer.SVGADrawable;
 import com.opensource.svgaplayer.SVGAImageView;
 import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
+import com.thfw.base.ContextApp;
 import com.thfw.base.models.AreaModel;
 import com.thfw.base.models.PickerData;
+import com.thfw.base.models.SpeechModel;
 import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.adapter.BaseAdapter;
@@ -265,6 +271,13 @@ public class DialogFactory {
     }
 
     public static void resetSpeech() {
+        resetSpeech(1200);
+
+    }
+
+    public static final int SPEECH_END_TIME = 500;
+
+    public static void resetSpeech(long delayMillis) {
         if (runnable != null) {
             HandlerUtil.getMainHandler().removeCallbacks(runnable);
 
@@ -272,19 +285,18 @@ public class DialogFactory {
         runnable = () -> {
             dismissSpeech();
         };
-        HandlerUtil.getMainHandler().postDelayed(runnable, 1800);
+        HandlerUtil.getMainHandler().postDelayed(runnable, delayMillis);
 
     }
 
     private static Runnable runnable;
 
-    public static void createSpeechDialog(FragmentActivity activity, String text) {
+    public static void createSpeechDialog(FragmentActivity activity, SpeechModel model) {
         synchronized (DialogFactory.class) {
             if (speechDialog != null) {
                 if (bindViewHolder != null) {
                     resetSpeech();
-                    TextView mTv = bindViewHolder.getView(R.id.tv_hint);
-                    mTv.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    setSpeechView(bindViewHolder, model);
                     return;
                 }
             }
@@ -294,7 +306,7 @@ public class DialogFactory {
                     .setDialogAnimationRes(R.style.animate_dialog_fade)
                     .setScreenWidthAspect(activity, WIDTH_ASPECT_2)
                     .setNotFocusable(true)
-                    .setDimAmount(0.1f)
+                    .setDimAmount(0.08f)
                     .setGravity(LhXkSet.voiceTextGravity)
                     .setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
@@ -303,15 +315,55 @@ public class DialogFactory {
                         }
                     })
                     .setOnBindViewListener(viewHolder -> {
-                        bindViewHolder = viewHolder;
-                        ImageView imageView = viewHolder.getView(R.id.iv_voice);
-                        imageView.post(() -> {
-                            Glide.with(imageView.getContext()).asGif().load(R.drawable.live_micing_icon_black).into(imageView);
-                        });
-                        TextView textView = viewHolder.getView(R.id.tv_hint);
-                        textView.setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY));
+                        setSpeechView(viewHolder, model);
                     }).create().show();
             resetSpeech();
+        }
+    }
+
+    private static void setSpeechView(BindViewHolder viewHolder, SpeechModel model) {
+
+        bindViewHolder = viewHolder;
+        if (viewHolder == null) {
+            return;
+        }
+        if (!ToastUtil.isMainThread()) {
+            HandlerUtil.getMainHandler().post(() -> setSpeechView(viewHolder, model));
+            return;
+        }
+        ImageView imageView = viewHolder.getView(R.id.iv_voice);
+        TextView textView = viewHolder.getView(R.id.tv_hint);
+        textView.setText(HtmlCompat.fromHtml(model.text, HtmlCompat.FROM_HTML_MODE_LEGACY));
+
+        textView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                //这个监听的回调是异步的，在监听完以后一定要把绘制监听移除，不然这个会一直回调，导致界面错乱
+                textView.getViewTreeObserver().removeOnPreDrawListener(this);
+
+                int line = textView.getLineCount();
+                if (line > 1) {
+                    ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) textView.getLayoutParams();
+                    lp.height = line * Util.dipToPx(17, ContextApp.get());
+                    textView.setLayoutParams(lp);
+                }
+                return true;
+            }
+        });
+        if (model.type != SpeechModel.Type.ING) {
+            resetSpeech(SPEECH_END_TIME);
+            Glide.with(imageView.getContext()).pauseRequests();
+            if (model.type == SpeechModel.Type.SUCCESS) {
+                imageView.setImageResource(com.thfw.ui.R.drawable.ic_speech_success);
+                imageView.animate().translationY(12).setInterpolator(new CycleInterpolator(2)).setDuration(400);
+            } else {
+                imageView.setImageResource(com.thfw.ui.R.drawable.ic_speech_fail);
+                imageView.animate().translationX(12).setInterpolator(new CycleInterpolator(2)).setDuration(400);
+            }
+        } else {
+            imageView.post(() -> {
+                Glide.with(imageView.getContext()).asGif().load(R.drawable.live_micing_icon_black).into(imageView);
+            });
         }
     }
 
