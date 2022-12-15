@@ -27,8 +27,8 @@ public class PickerData implements IPickerViewData {
         return this;
     }
 
-    public Object get(String key) {
-        return ext.get(key);
+    public <T> T get(String key) {
+        return (T) ext.get(key);
     }
 
     public PickerData(String name) {

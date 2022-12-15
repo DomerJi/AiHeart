@@ -5,9 +5,11 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application>
-        <activity android:name=".common.ImageActivity"
-            android:theme="@style/ImageTheme"
-            android:launchMode="singleTask"></activity>
+        <activity android:name=".common.LhXkSettingActivity"></activity>
+        <activity
+            android:name=".common.ImageActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/ImageTheme" />
         <activity android:name=".common.HostActivity" />
     </application>
 

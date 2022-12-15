@@ -145,6 +145,48 @@
         android:layout_marginRight="16dp"
         android:background="@color/divider" />
 
+    <LinearLayout
+        android:id="@+id/ll_voice_focus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="12dp"
+        android:paddingTop="16dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="16dp"
+        android:visibility="gone">
+
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/set_voice_focus"
+            android:textColor="@color/text_common"
+            android:textSize="@dimen/textSize" />
+
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_right" />
+
+
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/v_voice_focus"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_2px"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/divider"
+        android:visibility="gone" />
+
 
     <LinearLayout
         android:id="@+id/ll_clear_cache"

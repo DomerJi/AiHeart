@@ -39,6 +39,16 @@ public class SharePreferenceUtil {
         editor.commit();
     }
 
+    public static void setFloat(String key, float value) {
+        Editor editor = getSharedPreferences().edit();
+        editor.putFloat(key, value);
+        editor.commit();
+    }
+
+    public static Float getFloat(String key,float dValue){
+        return getSharedPreferences().getFloat(key, dValue);
+    }
+
     public static String getString(String key, String dValue) {
         String result = getSharedPreferences().getString(key, dValue);
         return result;

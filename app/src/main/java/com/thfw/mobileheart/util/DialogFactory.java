@@ -46,6 +46,7 @@ import com.thfw.mobileheart.adapter.BaseAdapter;
 import com.thfw.mobileheart.adapter.DialogLikeAdapter;
 import com.thfw.mobileheart.constants.AnimFileName;
 import com.thfw.mobileheart.lhxk.LhXkHelper;
+import com.thfw.ui.common.LhXkSet;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnBindViewListener;
@@ -294,7 +295,7 @@ public class DialogFactory {
                     .setScreenWidthAspect(activity, WIDTH_ASPECT_2)
                     .setNotFocusable(true)
                     .setDimAmount(0.1f)
-                    .setGravity(Gravity.CENTER)
+                    .setGravity(LhXkSet.voiceTextGravity)
                     .setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {

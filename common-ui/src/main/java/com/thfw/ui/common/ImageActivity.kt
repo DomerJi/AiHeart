@@ -200,7 +200,7 @@ class ImageActivity : KtBaseActivity() {
                         if (position == 0) {
                             saveImage29()
                         } else if (position == 1) {
-                            var qrCode: String = selects[position].get("key.qrcode").toString()
+                            var qrCode: String = selects[position].get("key.qrcode")
                             if (ContextApp.getWebViewListener() != null) {
                                 ContextApp.getWebViewListener().jump(mContext, qrCode)
                             }

@@ -40,10 +40,12 @@ import com.thfw.mobileheart.constants.AnimFileName;
 import com.thfw.mobileheart.util.AnimFrequencyUtil;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FileSizeUtil;
+import com.thfw.ui.common.LhXkSettingActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.LoadingMobileDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -68,6 +70,8 @@ public class SettingActivity extends BaseActivity {
     private TextView mTvTransition;
     private PopupWindow mPopWindow;
     private TextView mTvDeleteAccount;
+    private LinearLayout mLlVoiceFocus;
+    private View mVVoiceFocus;
 
     @Override
     public int getContentView() {
@@ -172,6 +176,13 @@ public class SettingActivity extends BaseActivity {
                 }
             }, false);
         });
+        mLlVoiceFocus = (LinearLayout) findViewById(R.id.ll_voice_focus);
+        mVVoiceFocus = (View) findViewById(R.id.v_voice_focus);
+        if (DeviceUtil.isLhXk_CM_GB03D()) {
+            mLlVoiceFocus.setVisibility(View.VISIBLE);
+            mVVoiceFocus.setVisibility(View.VISIBLE);
+            mLlVoiceFocus.setOnClickListener(v -> LhXkSettingActivity.startActivity(mContext));
+        }
     }
 
     private void deleteAccount() {

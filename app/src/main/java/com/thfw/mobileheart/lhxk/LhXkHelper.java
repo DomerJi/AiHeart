@@ -22,25 +22,24 @@ import com.ainirobot.coreservice.client.speech.SkillApi;
 import com.ainirobot.coreservice.client.speech.SkillCallback;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
-import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
-import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.util.AppLifeHelper;
 import com.thfw.mobileheart.util.DialogFactory;
+import com.thfw.ui.common.LhXkSet;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.thfw.mobileheart.activity.PrivateSetActivity.KEY_FACE_FOCUS;
 
 /**
  * Author:pengs
@@ -57,22 +56,21 @@ public class LhXkHelper {
 
     private static LinkedHashMap<Integer, List<SpeechToAction>> mSpeechToActionMap = new LinkedHashMap<>();
     private static PersonListener listener;
-    // 别看我 的 人员 id
-    private static int cancelPersonId;
-    // 别看我后 持续多长时间
-    private static final long CANCEL_PERSON_ID_TIME_MAX = HourUtil.LEN_MINUTE;
-    private static long cancelPersonIdTime;
-    // 获取机器人视野内N米范围内所有的人员信息
-    private static final int MAX_DISTANCE = 3;
+
+    // 别看我 的 人员id 和 别看我时间
+    private static HashMap<Integer, Long> cancelPersonIdOrTime = new HashMap<>();
+
 
     static {
         putAction(LhXkHelper.class, new SpeechToAction("别看我,看别人,看其他人,看别的人,看别的地方,不准看我,不要看我", () -> {
             LogUtil.i(TAG, "============================别看我============================");
             if (mPersonId != -1) {
-                cancelPersonId = mPersonId;
-                cancelPersonIdTime = System.currentTimeMillis();
+                if (LhXkSet.focusNoseeModel == 0) {
+                    cancelPersonIdOrTime.clear();
+                }
+                cancelPersonIdOrTime.put(mPersonId, System.currentTimeMillis());
                 stopFocusFollow();
-                List<Person> personList = PersonApi.getInstance().getAllPersons(MAX_DISTANCE);
+                List<Person> personList = PersonApi.getInstance().getAllPersons(LhXkSet.focusM);
                 // 如果有其他人在视野内，看向其他人
                 if (!EmptyUtil.isEmpty(personList)) {
                     int tempPersonId = getFocusPersonId(personList);
@@ -85,6 +83,7 @@ public class LhXkHelper {
             // 恢复云台初始位置
             reset();
         }));
+        LhXkSet.refreshLhXkSet();
     }
 
     private static SkillCallback mSkillCallback;
@@ -262,8 +261,8 @@ public class LhXkHelper {
 //                List<Person> personList = PersonApi.getInstance().getAllPersons();
                 // 获取机器人视野内1m范围内所有的人员信息
 
-                if (SharePreferenceUtil.getInt(KEY_FACE_FOCUS, 1) == 1) {
-                    List<Person> personList = PersonApi.getInstance().getAllPersons(MAX_DISTANCE);
+                if (LhXkSet.focusOpen == 1) {
+                    List<Person> personList = PersonApi.getInstance().getAllPersons(LhXkSet.focusM);
                     if (!EmptyUtil.isEmpty(personList)) {
                         startFocusFollowPerson(getFocusPersonId(personList));
                     } else {
@@ -281,9 +280,12 @@ public class LhXkHelper {
         double tempDistance = Double.MAX_VALUE;
         for (Person p : personList) {
             // 别看我了。十秒内 不进行此人脸的跟随。
-            if (cancelPersonId == p.getId() && System.currentTimeMillis() - cancelPersonIdTime
-                    < CANCEL_PERSON_ID_TIME_MAX) {
-                continue;
+            if (cancelPersonIdOrTime.containsKey(p.getId())) {
+                if (System.currentTimeMillis() - cancelPersonIdOrTime.get(p.getId()) < LhXkSet.focusNoseeTime) {
+                    continue;
+                } else {
+                    cancelPersonIdOrTime.remove(p.getId());
+                }
             }
             if (p.getDistance() < tempDistance) {
                 tempDistance = p.getDistance();
@@ -426,14 +428,20 @@ public class LhXkHelper {
                 @Override
                 public void onSpeechParResult(String s) throws RemoteException {
                     mSpeechParResult = s;
-                    showSpeechText(onActionText(mSpeechParResult));
+
                     Log.i(TAG, "onSpeechParResult ->>>>>>>>>>> s = " + s);
-                    // 语音临时识别结果
-                    if (runnable != null) {
-                        HandlerUtil.getMainHandler().removeCallbacks(runnable);
+                    if (LhXkSet.voiceOpen == 1) {
+                        if (LhXkSet.voiceTextOpen == 1) {
+                            showSpeechText(onActionText(mSpeechParResult));
+                        }
+                        // 语音临时识别结果
+                        if (runnable != null) {
+                            HandlerUtil.getMainHandler().removeCallbacks(runnable);
+                        }
+                        runnable = new SpeechRunnable(mSpeechParResult);
+                        HandlerUtil.getMainHandler().postDelayed(runnable, 1200);
                     }
-                    runnable = new SpeechRunnable(mSpeechParResult);
-                    HandlerUtil.getMainHandler().postDelayed(runnable, 1200);
+
                 }
 
                 @Override
@@ -542,6 +550,7 @@ public class LhXkHelper {
 
     public interface SpeechResult {
         void onResult(String result);
+
     }
 
     private static void showSpeechText(String text) {
