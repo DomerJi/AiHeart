@@ -8,7 +8,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -53,6 +55,7 @@ import com.thfw.robotheart.util.WifiHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -383,6 +386,23 @@ public class SetNetFragment extends RobotBaseFragment {
 
     @Override
     public void initData() {
+        if (mWifiManager != null) {
+            List<ScanResult> scanResults = mWifiManager.getScanResults();
+            if (!EmptyUtil.isEmpty(scanResults)) {
+                getScanResults(scanResults);
+            } else {
+                WifiInfo wifiInfo = mWifiManager.getConnectionInfo();
+                if (wifiInfo != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        ScanResult scanResult = new ScanResult();
+                        scanResult.SSID = wifiInfo.getSSID();
+                        scanResult.BSSID = wifiInfo.getBSSID();
+                        getScanResults(Arrays.asList(scanResult), true);
+                    }
+                }
+            }
+        }
+
         onScanWifi();
     }
 
@@ -428,39 +448,44 @@ public class SetNetFragment extends RobotBaseFragment {
 
 
     private void getScanResults(@NonNull final List<ScanResult> results) {
+        getScanResults(results, false);
+    }
+
+    private void getScanResults(@NonNull final List<ScanResult> results, boolean cache) {
 //        removeNullNameWifi(results);
         mPbLoading.setVisibility(View.GONE);
-        if (results.isEmpty()) {
-            if (wifiAdapter != null && wifiAdapter.getItemCount() == 0) {
-                mTvHint.setVisibility(View.VISIBLE);
-                mTvHint.setText("没有扫描到Wifi");
+        if (!cache) {
+            if (results.isEmpty()) {
+                if (wifiAdapter != null && wifiAdapter.getItemCount() == 0) {
+                    mTvHint.setVisibility(View.VISIBLE);
+                    mTvHint.setText("没有扫描到Wifi");
+                }
+                return;
             }
-            return;
-        }
 
-        newResults.clear();
-        int len = results.size();
-        for (int i = 0; i < len; i++) {
-            ScanResult scanResult = results.get(i);
-            if (TextUtils.isEmpty(scanResult.SSID)) {
-                continue;
-            }
-            boolean connected = WifiHelper.get().isWifiConnected(scanResult.SSID);
-            if (connected) {
-                newResults.add(0, scanResult);
-            } else {
-                if (Util.isSavePassWord(mWifiManager, scanResult.SSID)) {
-                    if (newResults.isEmpty()) {
-                        newResults.add(0, scanResult);
-                    } else {
-                        newResults.add(1, scanResult);
-                    }
+            newResults.clear();
+            int len = results.size();
+            for (int i = 0; i < len; i++) {
+                ScanResult scanResult = results.get(i);
+                if (TextUtils.isEmpty(scanResult.SSID)) {
+                    continue;
+                }
+                boolean connected = WifiHelper.get().isWifiConnected(scanResult.SSID);
+                if (connected) {
+                    newResults.add(0, scanResult);
                 } else {
-                    newResults.add(scanResult);
+                    if (Util.isSavePassWord(mWifiManager, scanResult.SSID)) {
+                        if (newResults.isEmpty()) {
+                            newResults.add(0, scanResult);
+                        } else {
+                            newResults.add(1, scanResult);
+                        }
+                    } else {
+                        newResults.add(scanResult);
+                    }
                 }
             }
         }
-
         mTvHint.setVisibility(View.GONE);
         if (wifiAdapter != null) {
             wifiAdapter.notifyDataSetChanged();
