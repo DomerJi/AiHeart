@@ -73,8 +73,8 @@ public class PrivateSetActivity extends RobotBaseActivity {
         mLlRobotAction = (LinearLayout) findViewById(R.id.ll_robot_action);
         mTvTranAnimFrequency = (TextView) findViewById(R.id.tv_tran_anim_frequency);
         mLlHostSet = (LinearLayout) findViewById(R.id.ll_host_set);
-        if (!RobotUtil.isInstallRobot()) {
-            mCbAce = (CheckBox) findViewById(R.id.cb_ace);
+        mCbAce = (CheckBox) findViewById(R.id.cb_ace);
+        if (RobotUtil.isInstallRobot()) {
             mCbAce.setVisibility(View.VISIBLE);
             mCbAce.setChecked(SharePreferenceUtil.getBoolean(KEY_ACE_OPEN, true));
             mCbAce.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

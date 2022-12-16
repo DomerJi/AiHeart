@@ -154,7 +154,7 @@ public class WakeupHelper implements IWakeUpFace {
 
     @Override
     public boolean isIng() {
-        if (RobotUtil2.isInstallRobot()) {
+        if (RobotUtil2.isInstallRobot() && SharePreferenceUtil.getBoolean(KEY_ACE_OPEN, RobotUtil2.isInstallRobot())) {
             return CaeWakeupHelper.getInstance().isRecording();
         }
         return initialized() && mIvw.isListening();
