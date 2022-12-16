@@ -361,9 +361,7 @@ public class DialogFactory {
                 imageView.animate().translationX(12).setInterpolator(new CycleInterpolator(2)).setDuration(400);
             }
         } else {
-            imageView.post(() -> {
-                Glide.with(imageView.getContext()).asGif().load(R.drawable.live_micing_icon_black).into(imageView);
-            });
+            Glide.with(imageView.getContext()).asGif().load(R.drawable.live_micing_icon_black).into(imageView);
         }
     }
 

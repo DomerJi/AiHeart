@@ -717,13 +717,6 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         if (isMeResumed2()) {
             onMeResume();
         }
-        LhXkHelper.onSpeechStart();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        LhXkHelper.onSpeechStop();
     }
 
     private void initSelectedList

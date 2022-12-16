@@ -101,6 +101,7 @@ public class LhXkHelper {
                             initFace();
                         }
                     } else {
+                        stopFocusFollow();
                         if (listener != null) {
                             PersonApi.getInstance().unregisterPersonListener(listener);
                         }
@@ -281,6 +282,8 @@ public class LhXkHelper {
                     } else {
                         stopFocusFollow();
                     }
+                } else {
+                    stopFocusFollow();
                 }
             }
         };
@@ -524,15 +527,18 @@ public class LhXkHelper {
 
             @Override
             public void handleApiConnected() {
-                Log.i(TAG, "handleApiConnected ->>>>>>>>>>>");
+                Log.i(TAG, "handleApiConnected ->>>>>   >>>>>>");
                 //语音服务连接成功，注册语音回调
                 skillApi.registerCallBack(mSkillCallback);
                 skillApi.setRecognizeMode(true);
-                onSpeechStart();
+                if (LhXkSet.voiceOpen == 1) {
+                    onSpeechStart();
+                }
             }
 
             @Override
             public void handleApiDisconnected() {
+                onSpeechStop();
                 //语音服务已断开
                 skillApi.unregisterCallBack(mSkillCallback);
                 Log.i(TAG, "handleApiDisconnected ->>>>>>>>>>>");
