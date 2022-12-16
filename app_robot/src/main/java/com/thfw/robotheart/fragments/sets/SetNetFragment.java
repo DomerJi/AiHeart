@@ -442,6 +442,9 @@ public class SetNetFragment extends RobotBaseFragment {
         int len = results.size();
         for (int i = 0; i < len; i++) {
             ScanResult scanResult = results.get(i);
+            if (TextUtils.isEmpty(scanResult.SSID)) {
+                continue;
+            }
             boolean connected = WifiHelper.get().isWifiConnected(scanResult.SSID);
             if (connected) {
                 newResults.add(0, scanResult);

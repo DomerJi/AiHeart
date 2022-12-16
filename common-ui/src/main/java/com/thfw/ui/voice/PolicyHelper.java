@@ -109,7 +109,7 @@ public class PolicyHelper {
                                 TtsHelper.getInstance().stop();
                             }
                             if (!SpeechHelper.getInstance().start()) {
-                                sendCheckMsg(5000);
+                                sendCheckMsg(1500);
                             } else {
                                 sendCheckMsg();
                             }

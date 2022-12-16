@@ -30,6 +30,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.WeatherUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
+import com.thfw.robotheart.adapter.WeatherAlarmsAdapter;
 import com.thfw.robotheart.adapter.WeatherCityAdapter;
 import com.thfw.robotheart.adapter.WeatherHourAdapter;
 import com.thfw.robotheart.adapter.WeatherWeekAdapter;
@@ -60,8 +61,6 @@ public class WeatherActivity extends RobotBaseActivity {
     private android.widget.TextView mTvSunTime;
     private androidx.recyclerview.widget.RecyclerView mRvTodayHour;
     private androidx.recyclerview.widget.RecyclerView mRvWeek;
-    private TextView mTvAlarmsTitle;
-    private TextView mTvAlarmsContent;
     private TextView mTvFuture;
     private android.view.View mVCenter;
     private TextView mTvTempUnit;
@@ -72,6 +71,7 @@ public class WeatherActivity extends RobotBaseActivity {
     private com.thfw.ui.widget.LoadingView mLoadingView;
     private TextView mHotCityTitle;
     private WeatherCityAdapter weatherCityAdapter;
+    private RecyclerView mRvAlarms;
 
     @Override
     public int getContentView() {
@@ -117,6 +117,8 @@ public class WeatherActivity extends RobotBaseActivity {
             mTvSunTime = (TextView) findViewById(R.id.tv_sun_time);
             mRvTodayHour = (RecyclerView) findViewById(R.id.rv_today_hour);
             mRvWeek = (RecyclerView) findViewById(R.id.rv_week);
+            mRvAlarms = findViewById(R.id.rv_alarms);
+            mRvAlarms.setLayoutManager(new LinearLayoutManager(mContext));
             mTvFuture = (TextView) findViewById(R.id.tv_future);
             mVCenter = (View) findViewById(R.id.v_center);
 
@@ -151,16 +153,10 @@ public class WeatherActivity extends RobotBaseActivity {
 
             mRvWeek.setLayoutManager(new LinearLayoutManager(mContext));
             mRvWeek.setAdapter(new WeatherWeekAdapter(model.getValueBean().getWeathers()));
-
-            mTvAlarmsTitle = (TextView) findViewById(R.id.tv_alarms_title);
-            mTvAlarmsContent = (TextView) findViewById(R.id.tv_alarms_content);
             if (!EmptyUtil.isEmpty(model.getValueBean().getAlarms())) {
-                mTvAlarmsTitle.setText(model.getValueBean().getAlarms().get(0).getAlarmTypeDesc()
-                        + "/" + model.getValueBean().getAlarms().get(0).getAlarmLevelNoDesc());
-                mTvAlarmsContent.setText(model.getValueBean().getAlarms().get(0).getAlarmContent());
+                mRvAlarms.setAdapter(new WeatherAlarmsAdapter(model.getValueBean().getAlarms()));
             } else {
-                mTvAlarmsTitle.setText("");
-                mTvAlarmsContent.setText("");
+                mRvAlarms.setAdapter(new WeatherAlarmsAdapter(new ArrayList<>()));
             }
         } catch (Exception e) {
             finish();
@@ -359,6 +355,10 @@ public class WeatherActivity extends RobotBaseActivity {
                         if (firstModel == null) {
                             firstModel = weatherInfoModel;
                         }
+                    }
+                    if (model == null || model.getValueBean() == null || model.getValueBean().getRealtime() == null) {
+                        ToastUtil.show("没有查到此城市天气信息");
+                        return;
                     }
                     initView();
                 });

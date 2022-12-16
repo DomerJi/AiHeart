@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:paddingTop="16dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_alarms_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_yellow"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="MissingConstraints"
+        tools:text="大风蓝色预警" />
+
+
+    <TextView
+        android:id="@+id/tv_alarms_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="12dp"
+        android:textColor="@color/text_yellow"
+        android:textSize="14sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_alarms_title"
+        tools:ignore="MissingConstraints"
+        tools:text="大风蓝色预警信号：预计16日14时到17日2时，沈阳市浑南区东北风转西北风4到5级，阵风7级，请注意出行安全，加固临时搭建物，防范高空坠物等风险。浑南区气象台2022年9月16日10时47分发布" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
