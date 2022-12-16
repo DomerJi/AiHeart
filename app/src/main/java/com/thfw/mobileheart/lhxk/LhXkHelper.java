@@ -84,7 +84,7 @@ public class LhXkHelper {
             }
             // 恢复云台初始位置
             reset();
-        }));
+        }).setLike(true));
         LhXkSet.init();
         LhXkSet.setLhXkListener(new LhXkListener() {
             @Override
@@ -142,7 +142,35 @@ public class LhXkHelper {
         for (Map.Entry<Integer, List<SpeechToAction>> map : entrySet) {
             List<SpeechToAction> list = map.getValue();
             for (SpeechToAction speechToAction : list) {
-                String regex = ".{0,2}(" + speechToAction.text.replaceAll(",", "|") + ").{0,2}";
+                String regex;
+                String matchesWord;
+                int len;
+                if (speechToAction.text.contains(",")) {
+                    matchesWord = speechToAction.text.replaceAll(",", "|");
+                    String[] allWords = speechToAction.text.split(",");
+                    len = allWords[0].length();
+                    for (int i = 1; i < allWords.length; i++) {
+                        if (len > allWords[i].length()) {
+                            len = allWords[i].length();
+                        }
+                    }
+                } else {
+                    matchesWord = speechToAction.text;
+                    len = matchesWord.length();
+                }
+                if (speechToAction.like) {
+                    int likeLen = Math.max(2, len / 2);
+                    regex = ".{0," + likeLen + "}(" + matchesWord + ").{0," + likeLen + "}";
+                } else {
+                    if (len >= 3) {
+                        int likeLen = Math.max(1, len / 3);
+                        regex = ".{0," + likeLen + "}(" + matchesWord + ").{0," + likeLen + "}";
+                    } else {
+                        regex = "(" + matchesWord + ")";
+                    }
+
+                }
+
                 LogUtil.i(TAG, "regex -> " + regex);
                 if (newWord.matches(regex)) {
                     String[] words = speechToAction.text.split(",");
@@ -163,7 +191,9 @@ public class LhXkHelper {
                 }
             }
         }
-        return SpeechModel.create(oldWord).setMatches(false);
+        return SpeechModel.create(oldWord).
+
+                setMatches(false);
     }
 
     public static class SpeechToAction {

@@ -238,7 +238,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
     public void initData() {
 
         mBtBegin.setOnClickListener(v -> {
-            if (!mCbProduct.isChecked()) {
+            if (!mCbProduct.isChecked() && !UserManager.getInstance().isLogin()) {
                 LoginActivity.agreeDialog(getActivity(), new OnViewClickListener() {
                     @Override
                     public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {

@@ -433,7 +433,7 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
                 () -> MeHistoryActivity.startActivity(mContext, 4)));
         LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("我学的",
                 () -> MeHistoryActivity.startActivity(mContext, 5)));
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("健康档案",
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("心理健康档案,健康档案",
                 () -> mLlSafeReport.performClick()));
         LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("个人信息",
                 () -> InfoActivity.startActivity(mContext)));

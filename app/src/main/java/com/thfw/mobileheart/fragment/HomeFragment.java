@@ -150,7 +150,7 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
                 () -> MoodDetailActivity.startActivity(mContext)));
         LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("活跃",
                 () -> MoodDetailActivity.startActivity(mContext)).setLike(true));
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("心理热线,了解更多",
+        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("全国心理热线,心理热线,了解更多",
                 () -> mContext.startActivity(new Intent(mContext, HotPhoneActivity.class))).setLike(true));
 
         LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("搜索",
