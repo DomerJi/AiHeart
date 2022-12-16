@@ -152,16 +152,17 @@ public class WifiInputFragment extends RobotBaseFragment {
         hideInput();
         connectUi(true);
         String user = mEtUser.getText().toString();
+        String password = mEtPass.getText().toString().replaceAll(" ", "").trim();
         WifiConnectorBuilder.WifiSuccessListener successListener;
         if (!TextUtils.isEmpty(user)) {
             successListener = WifiHelper.get()
-                    .connectWith(user, scanResult.BSSID, mEtPass.getText().toString());
+                    .connectWith(user, scanResult.BSSID, password);
 
         } else {
             successListener = WifiHelper.get()
-                    .connectWith(scanResult.SSID, scanResult.BSSID, mEtPass.getText().toString());
+                    .connectWith(scanResult.SSID, scanResult.BSSID, password);
         }
-        successListener.setTimeout(10000)
+        successListener.setTimeout(15000)
                 .onConnectionResult(new ConnectionSuccessListener() {
                     @Override
                     public void success() {
@@ -175,6 +176,10 @@ public class WifiInputFragment extends RobotBaseFragment {
 
                     @Override
                     public void failed(@NonNull ConnectionErrorCode errorCode) {
+                        if (WifiHelper.get().isWifiConnected()) {
+                            success();
+                            return;
+                        }
                         connectUi(false);
                         Util.removeWifiBySsid((WifiManager) mContext.getSystemService(Context.WIFI_SERVICE), scanResult.SSID);
                         ToastUtil.show("连接失败");

@@ -304,7 +304,7 @@ public class SetNetFragment extends RobotBaseFragment {
                 if (TextUtils.isEmpty(passType)) {
                     WifiHelper.get()
                             .connectWith(scanResult.SSID, scanResult.BSSID, "")
-                            .setTimeout(10000).onConnectionResult(new ConnectionSuccessListener() {
+                            .setTimeout(15000).onConnectionResult(new ConnectionSuccessListener() {
                         @Override
                         public void success() {
                             wifiAdapter.notifyDataSetChanged();
