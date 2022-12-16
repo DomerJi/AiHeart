@@ -45,8 +45,8 @@ public class GlideUtil {
         } else {
             requestOptions = RequestOptions
                     .placeholderOf(R.drawable.glide_placeholder_phone)
-                    .error(R.drawable.glide_error_phone)
-                    .fallback(R.drawable.glide_fallback_phone);
+                    .error(R.drawable.ic_error_default)
+                    .fallback(R.drawable.ic_error_default);
         }
         return requestOptions;
     }
@@ -64,8 +64,8 @@ public class GlideUtil {
         } else {
             requestThumbnail = RequestOptions
                     .placeholderOf(R.drawable.glide_placeholder_phone)
-                    .error(R.drawable.glide_error_phone)
-                    .fallback(R.drawable.glide_fallback_phone)
+                    .error(R.drawable.ic_error_default)
+                    .fallback(R.drawable.ic_error_default)
                     .override(Util.dipToPx(90, ContextApp.get()));
         }
         return requestThumbnail;
