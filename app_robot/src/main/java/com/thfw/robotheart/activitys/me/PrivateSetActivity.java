@@ -30,6 +30,8 @@ import com.thfw.ui.widget.InputBoxSquareView;
 
 import java.util.Calendar;
 
+import static com.thfw.ui.voice.wakeup.WakeupHelper.KEY_ACE_OPEN;
+
 public class PrivateSetActivity extends RobotBaseActivity {
 
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
@@ -44,6 +46,7 @@ public class PrivateSetActivity extends RobotBaseActivity {
     private ConstraintLayout mClInputPassword;
     private InputBoxSquareView mIbvCode;
     private CheckBox mCbDebug;
+    private CheckBox mCbAce;
 
     public static final int getAnimFrequency() {
         return SharePreferenceUtil.getInt(AnimFileName.Frequency.KEY_FREQUENCY, AnimFileName.Frequency.EVERY_TIME);
@@ -70,6 +73,19 @@ public class PrivateSetActivity extends RobotBaseActivity {
         mLlRobotAction = (LinearLayout) findViewById(R.id.ll_robot_action);
         mTvTranAnimFrequency = (TextView) findViewById(R.id.tv_tran_anim_frequency);
         mLlHostSet = (LinearLayout) findViewById(R.id.ll_host_set);
+        if (!RobotUtil.isInstallRobot()) {
+            mCbAce = (CheckBox) findViewById(R.id.cb_ace);
+            mCbAce.setVisibility(View.VISIBLE);
+            mCbAce.setChecked(SharePreferenceUtil.getBoolean(KEY_ACE_OPEN, true));
+            mCbAce.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    SharePreferenceUtil.setBoolean(KEY_ACE_OPEN, isChecked);
+                }
+            });
+        } else {
+            mCbAce.setVisibility(View.GONE);
+        }
 
         InputBoxSquareView mInputBoxSquareView = findViewById(R.id.ibv_code);
         mInputBoxSquareView.setOnInputCompleteListener(new InputBoxSquareView.OnInputCompleteListener() {

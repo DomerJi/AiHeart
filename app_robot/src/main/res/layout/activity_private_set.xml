@@ -171,6 +171,17 @@
                     android:text="应用程序设置" />
 
                 <CheckBox
+                    android:id="@+id/cb_ace"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:buttonTint="@color/colorRobotFore"
+                    android:checked="true"
+                    android:paddingRight="8dp"
+                    android:text="阵列 MIC 唤醒"
+                    android:textColor="@color/colorRobotFore" />
+
+                <CheckBox
                     android:id="@+id/cb_debug"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -54,7 +54,7 @@ class LhXkSettingActivity : KtBaseActivity() {
         val KEY_VOICE_DEFALUT = 1
 
         @JvmField
-        val KEY_VOICE_TEXT = "lhxk.voice" // 文字上屏 开关
+        val KEY_VOICE_TEXT = "lhxk.voice.text" // 文字上屏 开关
 
         @JvmField
         val KEY_VOICE_TEXT_DEFALUT = 1

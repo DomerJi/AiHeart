@@ -17,6 +17,7 @@ import com.thfw.aiui.util.CaeWakeupHelper;
 import com.thfw.base.ContextApp;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.RobotUtil2;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.ui.voice.VoiceType;
 import com.thfw.ui.voice.VoiceTypeManager;
 import com.thfw.ui.voice.tts.TtsHelper;
@@ -29,6 +30,8 @@ import com.thfw.ui.voice.tts.TtsHelper;
 public class WakeupHelper implements IWakeUpFace {
 
     private static final String TAG = WakeupHelper.class.getSimpleName();
+    // ACE 阵列mic唤醒 开关控制
+    public static final String KEY_ACE_OPEN = "ace_open";
 
     // for wakeup
     private static final int curThresh = 1600;
@@ -121,7 +124,7 @@ public class WakeupHelper implements IWakeUpFace {
 
     @Override
     public boolean start() {
-        if (RobotUtil2.isInstallRobot()) {
+        if (RobotUtil2.isInstallRobot() && SharePreferenceUtil.getBoolean(KEY_ACE_OPEN, RobotUtil2.isInstallRobot())) {
             CaeWakeupHelper.getInstance().setOnWakeUpListener(new CaeWakeupHelper.OnWakeUpListener() {
                 @Override
                 public void onWakeup(int angle, int beam) {

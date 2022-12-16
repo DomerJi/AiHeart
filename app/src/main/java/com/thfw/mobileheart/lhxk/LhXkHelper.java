@@ -525,22 +525,23 @@ public class LhXkHelper {
                         return;
                     }
                     if (LhXkSet.voiceOpen == 1) {
+                        SpeechModel speechModel = onActionText(asrResult, true);
+                        speechModel.setType(speechModel.matches ? SpeechModel.Type.SUCCESS : SpeechModel.Type.FAIL);
+
                         if (LhXkSet.voiceTextOpen == 1) {
-                            SpeechModel speechModel = onActionText(asrResult, true);
-                            speechModel.setType(speechModel.matches ? SpeechModel.Type.SUCCESS : SpeechModel.Type.FAIL);
                             showSpeechText(speechModel);
-                            if (speechResult != null) {
-                                if (ToastUtil.isMainThread()) {
+                        }
+                        if (speechResult != null) {
+                            if (ToastUtil.isMainThread()) {
+                                if (speechResult != null) {
+                                    speechResult.onResult(asrResult);
+                                }
+                            } else {
+                                HandlerUtil.getMainHandler().post(() -> {
                                     if (speechResult != null) {
                                         speechResult.onResult(asrResult);
                                     }
-                                } else {
-                                    HandlerUtil.getMainHandler().post(() -> {
-                                        if (speechResult != null) {
-                                            speechResult.onResult(asrResult);
-                                        }
-                                    });
-                                }
+                                });
                             }
                         }
                     }
