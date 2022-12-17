@@ -8,14 +8,14 @@ android {
         applicationId "com.thfw.robotheart"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 254
-        versionName "2.0.52"
+        versionCode 257
+        versionName "2.0.55"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         flavorDimensions "buildTest"
         ndk {
-            abiFilters 'armeabi-v7a'
-//            abiFilters 'armeabi-v7a',  'arm64-v8a'
+//            abiFilters 'armeabi-v7a'
+            abiFilters 'armeabi-v7a',  'arm64-v8a'
 //            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86'
         }
     }
@@ -172,9 +172,12 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.github.yyued:SVGAPlayer-Android:2.6.1'
     api 'me.samlss:bloom:1.0.0'
+
     api 'org.bytedeco:opencv:4.5.3-1.5.6'
+    api 'org.bytedeco:opencv:4.5.3-1.5.6:android-arm'
+    api 'org.bytedeco:opencv:4.5.3-1.5.6:android-arm64'
+
     // 歌词
     api 'me.wcy:lrcview:2.2'
-//    api 'org.bytedeco:opencv:4.5.3-1.5.6:android-arm'
 
 }

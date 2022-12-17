@@ -37,6 +37,7 @@ import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.MyPreferences;
+import com.thfw.base.utils.RobotUtil2;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.activitys.MainActivity;
@@ -183,10 +184,12 @@ public class MyApplication extends MultiDexApplication {
 
     public void agreedInit() {
         boolean agreed = MyPreferences.getInstance(MyApplication.getApp()).hasAgreePrivacyAgreement();
-        if (agreed) {
+        if (agreed || true) {
             UserManager.getInstance().setAgreedInitListener(null);
             if (RobotUtil.isInstallRobot()) {
-                WakeupHelper.initCae(app);
+                if (RobotUtil2.isEnableMic()) {
+                    WakeupHelper.initCae(app);
+                }
                 BuglyUtil.init("382fc62522");
             } else {
                 BuglyUtil.init("d24e28638f");

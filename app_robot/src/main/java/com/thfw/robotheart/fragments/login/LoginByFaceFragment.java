@@ -143,9 +143,10 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     private String faceHint02 = "请靠近摄像头，保持双眼睁开";
     private String faceHint03 = "正在识别...";
     // 检测器
-    private int mDetectorType = NATIVE_DETECTOR;
+//    private int mDetectorType = NATIVE_DETECTOR;
+    private int mDetectorType = JAVA_DETECTOR;
     private String[] mDetectorName;
-    private float mRelativeFaceSize = 0.2f;
+    private float mRelativeFaceSize = 0.36f;
     private int mAbsoluteFaceSize = 0;
     private ObjectAnimator lineAnimation;
 
@@ -392,8 +393,6 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         mDetectorName[JAVA_DETECTOR] = "Java";
         mDetectorName[NATIVE_DETECTOR] = "Native (tracking)";
 
-        System.loadLibrary("detection_based_tracker");
-
         try {
 
             // load cascade file from application resources
@@ -409,16 +408,17 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             }
             is.close();
             os.close();
-
-            mJavaDetector = new CascadeClassifier(mCascadeFile.getAbsolutePath());
-            if (mJavaDetector.empty()) {
-                Log.e(TAG, "Failed to load cascade classifier");
-                mJavaDetector = null;
-            } else
-                Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
-
-            mNativeDetector = new DetectionBasedTracker(mCascadeFile.getAbsolutePath(), 0);
-
+            if (mDetectorType == NATIVE_DETECTOR) {
+                System.loadLibrary("detection_based_tracker");
+                mNativeDetector = new DetectionBasedTracker(mCascadeFile.getAbsolutePath(), 0);
+            } else {
+                mJavaDetector = new CascadeClassifier(mCascadeFile.getAbsolutePath());
+                if (mJavaDetector.empty()) {
+                    Log.e(TAG, "Failed to load cascade classifier");
+                    mJavaDetector = null;
+                } else
+                    Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
+            }
             cascadeDir.delete();
 
         } catch (IOException e) {
@@ -447,15 +447,16 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             is.close();
             os.close();
 
-            mJavaEyeDetector = new CascadeClassifier(mCascadeEyeFile.getAbsolutePath());
-            if (mJavaEyeDetector.empty()) {
-                Log.e(TAG, "Failed to load cascade classifier");
-                mJavaEyeDetector = null;
-            } else
-                Log.i(TAG, "Loaded cascade classifier from " + mCascadeEyeFile.getAbsolutePath());
-
-            mNativeEyeDetector = new DetectionBasedTracker(mCascadeEyeFile.getAbsolutePath(), 0);
-
+            if (mDetectorType == NATIVE_DETECTOR) {
+                mNativeEyeDetector = new DetectionBasedTracker(mCascadeEyeFile.getAbsolutePath(), 0);
+            } else {
+                mJavaEyeDetector = new CascadeClassifier(mCascadeEyeFile.getAbsolutePath());
+                if (mJavaEyeDetector.empty()) {
+                    Log.e(TAG, "Failed to load cascade classifier");
+                    mJavaEyeDetector = null;
+                } else
+                    Log.i(TAG, "Loaded cascade classifier from " + mCascadeEyeFile.getAbsolutePath());
+            }
             cascadeDir.delete();
 
         } catch (IOException e) {
@@ -502,7 +503,11 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             if (Math.round(height * mRelativeFaceSize) > 0) {
                 mAbsoluteFaceSize = Math.round(height * mRelativeFaceSize);
             }
-            mNativeDetector.setMinFaceSize(mAbsoluteFaceSize);
+            if (mDetectorType == JAVA_DETECTOR) {
+                // todo
+            } else {
+                mNativeDetector.setMinFaceSize(mAbsoluteFaceSize);
+            }
         }
 
         MatOfRect faces = new MatOfRect();
@@ -511,7 +516,6 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
             if (mJavaDetector != null)
                 mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
                         new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
-
         } else if (mDetectorType == NATIVE_DETECTOR) {
             if (mNativeDetector != null)
                 mNativeDetector.detect(mGray, faces);

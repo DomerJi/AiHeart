@@ -76,7 +76,7 @@ public class Static2Helper {
             }
         } else {
             // If dependencies list is not defined or empty.
-            result = loadLibrary("opencv_java");
+            result = loadLibrary("opencv_java3");
         }
 
         return result;

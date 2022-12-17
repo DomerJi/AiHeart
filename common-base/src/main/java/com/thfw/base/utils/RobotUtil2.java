@@ -13,8 +13,10 @@ import com.thfw.base.ContextApp;
 public class RobotUtil2 {
 
     private static final String TAG = RobotUtil2.class.getSimpleName();
-
+    // ACE 阵列mic唤醒 开关控制
+    public static final String KEY_ACE_OPEN = "ace_open";
     private static int installRobot = -1;
+    private static int enableMic = -1; // 是否启用阵列mic
 
     /**
      * @return 是否系统应用
@@ -43,6 +45,22 @@ public class RobotUtil2 {
             installRobot = isSystemApp() ? 1 : 0;
         }
         return installRobot == 1;
+    }
+
+    public static void resetEnableMic() {
+        enableMic = SharePreferenceUtil.getBoolean(KEY_ACE_OPEN, isInstallRobot()) ? 1 : 0;
+    }
+
+    /**
+     * 是否启用阵列mic
+     *
+     * @return
+     */
+    public static boolean isEnableMic() {
+        if (enableMic == -1) {
+            enableMic = SharePreferenceUtil.getBoolean(KEY_ACE_OPEN, isInstallRobot()) ? 1 : 0;
+        }
+        return enableMic == 1;
     }
 
 }

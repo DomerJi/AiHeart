@@ -131,6 +131,9 @@ public class SetNetFragment extends RobotBaseFragment {
         setWifiAdapter();
         Log.i(TAG, "isWifiEnabled =  " + enabled);
         mSwitchWifi.setChecked(enabled);
+        if (!enabled) {
+            wifiCloseView();
+        }
         mIvRescan.setVisibility(enabled ? View.VISIBLE : View.GONE);
         mIvRescan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -386,7 +389,7 @@ public class SetNetFragment extends RobotBaseFragment {
 
     @Override
     public void initData() {
-        if (mWifiManager != null) {
+        if (mWifiManager != null && mWifiManager.isWifiEnabled()) {
             List<ScanResult> scanResults = mWifiManager.getScanResults();
             if (!EmptyUtil.isEmpty(scanResults)) {
                 getScanResults(scanResults);

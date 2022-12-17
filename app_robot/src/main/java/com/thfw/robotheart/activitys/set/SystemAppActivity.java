@@ -27,6 +27,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.service.AutoUpdateService;
+import com.thfw.robotheart.util.Dormant;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -208,9 +209,9 @@ public class SystemAppActivity extends RobotBaseActivity {
                                 .divide(new BigDecimal(totalBytes), 2, BigDecimal.ROUND_HALF_UP);
 
                         int progress = (int) Math.round(progressObj.doubleValue());
-                        ;
-                        Log.d(TAG, "progress  - > " + progress);
 
+                        Log.d(TAG, "progress  - > " + progress);
+                        Dormant.reset();
                         mPbDowning.setProgress(progress);
                         mTvProgress.setText(progressObj.doubleValue() + "%");
                         if (soFarBytes == totalBytes) {

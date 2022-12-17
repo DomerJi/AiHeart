@@ -16,6 +16,7 @@ import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.RobotUtil2;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
@@ -26,11 +27,12 @@ import com.thfw.robotheart.port.ShakeNodActivity;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.common.HostActivity;
+import com.thfw.ui.voice.wakeup.WakeupHelper;
 import com.thfw.ui.widget.InputBoxSquareView;
 
 import java.util.Calendar;
 
-import static com.thfw.ui.voice.wakeup.WakeupHelper.KEY_ACE_OPEN;
+import static com.thfw.base.utils.RobotUtil2.KEY_ACE_OPEN;
 
 public class PrivateSetActivity extends RobotBaseActivity {
 
@@ -81,6 +83,10 @@ public class PrivateSetActivity extends RobotBaseActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     SharePreferenceUtil.setBoolean(KEY_ACE_OPEN, isChecked);
+                    RobotUtil2.resetEnableMic();
+                    if (isChecked) {
+                        WakeupHelper.initCae(mContext);
+                    }
                 }
             });
         } else {

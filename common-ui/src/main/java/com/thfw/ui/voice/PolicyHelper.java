@@ -105,9 +105,14 @@ public class PolicyHelper {
                         sendCheckMsg(1000);
                     } else {
                         if (!SpeechHelper.getInstance().isIng()) {
-                            if (TtsHelper.getInstance().isIng()) {
+                            try {
+                                if (TtsHelper.getInstance().isIng()) {
+                                    TtsHelper.getInstance().stop();
+                                }
+                            } catch (Exception e) {
                                 TtsHelper.getInstance().stop();
                             }
+
                             if (!SpeechHelper.getInstance().start()) {
                                 sendCheckMsg(1500);
                             } else {

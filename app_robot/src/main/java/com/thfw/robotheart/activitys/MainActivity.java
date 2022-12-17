@@ -47,6 +47,7 @@ import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LocationUtils;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.MyPreferences;
+import com.thfw.base.utils.RobotUtil2;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
@@ -451,7 +452,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
      * 测试
      */
     private void wakeup() {
-        if (RobotUtil.isInstallRobot()) {
+        if (RobotUtil.isInstallRobot() && RobotUtil2.isEnableMic()) {
             if (WakeupHelper.getInstance().isIng()) {
                 return;
             }

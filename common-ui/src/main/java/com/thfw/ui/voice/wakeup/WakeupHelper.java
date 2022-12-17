@@ -17,7 +17,6 @@ import com.thfw.aiui.util.CaeWakeupHelper;
 import com.thfw.base.ContextApp;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.RobotUtil2;
-import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.ui.voice.VoiceType;
 import com.thfw.ui.voice.VoiceTypeManager;
 import com.thfw.ui.voice.tts.TtsHelper;
@@ -30,8 +29,6 @@ import com.thfw.ui.voice.tts.TtsHelper;
 public class WakeupHelper implements IWakeUpFace {
 
     private static final String TAG = WakeupHelper.class.getSimpleName();
-    // ACE 阵列mic唤醒 开关控制
-    public static final String KEY_ACE_OPEN = "ace_open";
 
     // for wakeup
     private static final int curThresh = 1600;
@@ -42,6 +39,7 @@ public class WakeupHelper implements IWakeUpFace {
     private static final String IVW_SST_ONESHOT = "oneshot";
     private VoiceWakeuper mIvw;
     private static WakeupHelper wakeupHelper;
+    private static boolean inited;
 
     public static WakeupHelper getInstance() {
         if (wakeupHelper == null) {
@@ -124,7 +122,7 @@ public class WakeupHelper implements IWakeUpFace {
 
     @Override
     public boolean start() {
-        if (RobotUtil2.isInstallRobot() && SharePreferenceUtil.getBoolean(KEY_ACE_OPEN, RobotUtil2.isInstallRobot())) {
+        if (RobotUtil2.isInstallRobot() && RobotUtil2.isEnableMic()) {
             CaeWakeupHelper.getInstance().setOnWakeUpListener(new CaeWakeupHelper.OnWakeUpListener() {
                 @Override
                 public void onWakeup(int angle, int beam) {
@@ -154,7 +152,7 @@ public class WakeupHelper implements IWakeUpFace {
 
     @Override
     public boolean isIng() {
-        if (RobotUtil2.isInstallRobot() && SharePreferenceUtil.getBoolean(KEY_ACE_OPEN, RobotUtil2.isInstallRobot())) {
+        if (RobotUtil2.isInstallRobot() && RobotUtil2.isEnableMic()) {
             return CaeWakeupHelper.getInstance().isRecording();
         }
         return initialized() && mIvw.isListening();
@@ -167,7 +165,7 @@ public class WakeupHelper implements IWakeUpFace {
             mIvw.destroy();
             mIvw = null;
         }
-        if (RobotUtil2.isInstallRobot()) {
+        if (RobotUtil2.isInstallRobot() && RobotUtil2.isEnableMic()) {
             try {
                 if (CaeWakeupHelper.getInstance().isRecording()) {
                     CaeWakeupHelper.getInstance().destroyRecord();
@@ -242,6 +240,9 @@ public class WakeupHelper implements IWakeUpFace {
     }
 
     public static void initCae(Context context) {
-        CaeWakeupHelper.init(context);
+        if (!inited) {
+            CaeWakeupHelper.init(context);
+            inited = true;
+        }
     }
 }

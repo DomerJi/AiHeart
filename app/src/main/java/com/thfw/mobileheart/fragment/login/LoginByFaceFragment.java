@@ -150,7 +150,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
 //    private int mDetectorType = NATIVE_DETECTOR;
     private int mDetectorType = JAVA_DETECTOR;
     private String[] mDetectorName;
-    private float mRelativeFaceSize = 0.2f;
+    private float mRelativeFaceSize = 0.36f;
     private int mAbsoluteFaceSize = 0;
     private TextView mTvFaceHint;
     private Runnable changeFaceHintRunnable;

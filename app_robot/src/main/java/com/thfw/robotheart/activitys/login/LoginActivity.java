@@ -30,6 +30,7 @@ import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.PermissionUtil;
 import com.thfw.base.utils.RegularUtil;
+import com.thfw.base.utils.RobotUtil2;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.MyApplication;
@@ -325,7 +326,7 @@ public class LoginActivity extends RobotBaseActivity {
      * 测试
      */
     private void wakeup() {
-        if (RobotUtil.isInstallRobot()) {
+        if (RobotUtil.isInstallRobot() && RobotUtil2.isEnableMic()) {
             if (WakeupHelper.getInstance().isIng()) {
                 return;
             }
