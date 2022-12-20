@@ -307,6 +307,7 @@ public class LoginActivity extends RobotBaseActivity {
     @Override
     public void onResume() {
         super.onResume();
+
         Static2Helper.initOpenCV(true);
         MainActivity.resetInit();
         if (!checkPermissionsNoRequest()) {
