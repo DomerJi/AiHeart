@@ -298,6 +298,9 @@ public class MusicApi {
         String url = "https://suggest3.sinajs.cn/suggest/type=&key=" + key + "&name=result";
         LogUtil.e(TAG, "url = " + url);
         OkHttpClient httpClient = new OkHttpClient();
+        httpClient = httpClient.newBuilder()
+                .sslSocketFactory(new SSL(OkHttpUtil.sslSocket()), OkHttpUtil.sslSocket())
+                .build();
         Request request = new Request.Builder()
                 .url(url)
                 .get()
@@ -361,9 +364,12 @@ public class MusicApi {
         // https://suggest3.sinajs.cn/suggest/type=1&key=天和防务&name=1
         // https://zj.v.api.aa1.cn/api/gupiao-01/?gp=sz300397
 
-        String url = "https://zj.v.api.aa1.cn/api/gupiao-01/?gp=" + guPiaoModel.requestGp();
+        String url = "http://qt.gtimg.cn/q=" + guPiaoModel.requestGp();
         LogUtil.e(TAG, "url = " + url);
         OkHttpClient httpClient = new OkHttpClient();
+        httpClient = httpClient.newBuilder()
+                .sslSocketFactory(new SSL(OkHttpUtil.sslSocket()), OkHttpUtil.sslSocket())
+                .build();
         Request request = new Request.Builder()
                 .url(url)
                 .get()
