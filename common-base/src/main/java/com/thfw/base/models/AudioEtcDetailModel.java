@@ -318,6 +318,15 @@ public class AudioEtcDetailModel implements IModel {
         private Object img;
         @SerializedName("mp3PicId")
         private String mp3PicId;
+        private String lrcUrl;
+
+        public void setLrcUrl(String lrcUrl) {
+            this.lrcUrl = lrcUrl;
+        }
+
+        public String getLrcUrl() {
+            return lrcUrl;
+        }
 
         public void setMp3PicId(String mp3PicId) {
             this.mp3PicId = mp3PicId;

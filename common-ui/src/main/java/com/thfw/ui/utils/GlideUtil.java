@@ -45,8 +45,8 @@ public class GlideUtil {
         } else {
             requestOptions = RequestOptions
                     .placeholderOf(R.drawable.glide_placeholder_phone)
-                    .error(R.drawable.ic_error_default)
-                    .fallback(R.drawable.ic_error_default);
+                    .error(R.drawable.glide_error_phone)
+                    .fallback(R.drawable.glide_fallback_phone);
         }
         return requestOptions;
     }

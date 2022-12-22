@@ -6,27 +6,22 @@ import android.util.Log;
 import com.google.common.reflect.TypeToken;
 import com.thfw.base.models.BaikeModel;
 import com.thfw.base.models.GuPiaoModel;
-import com.thfw.base.models.LyricModel;
-import com.thfw.base.models.Mp3PicModel;
 import com.thfw.base.models.MusicModel;
 import com.thfw.base.models.WeatherDetailsModel;
+import com.thfw.base.net.OkHttpUtil;
+import com.thfw.base.net.SSL;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.RegularUtil;
-import com.thfw.base.utils.SharePreferenceUtil;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -38,34 +33,109 @@ import okhttp3.Response;
  */
 public class MusicApi {
     public static final String TAG = "MusicApi";
-    public static final String COOKIE = "PHPSESSID=ueimn7bbdegnipmtm28fr86ti2";
-    public static final String KEY_ALBUM_PIC = "key.mp3.pics";
-    public static final Map<String, String> mAlbumPicMap = Collections.synchronizedMap(new HashMap<>());
-    public static boolean initPics;
-
-    private static void initPics() {
-        Type type = new TypeToken<HashMap<String, String>>() {
-        }.getType();
-        HashMap<String, String> cachePics = SharePreferenceUtil.getObject(KEY_ALBUM_PIC, type);
-        if (!EmptyUtil.isEmpty(cachePics)) {
-            mAlbumPicMap.putAll(cachePics);
-        }
-        initPics = true;
-    }
 
     public static void request(String name, MusicCallback callback) {
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        builder.addFormDataPart("name", name);
-        builder.addFormDataPart("pages", "1");
-        builder.addFormDataPart("count", "10");
-        builder.addFormDataPart("source", "netease");
-        builder.addFormDataPart("types", "search");
         OkHttpClient httpClient = new OkHttpClient();
         Request request = new Request.Builder()
-                .addHeader("cookie", COOKIE)
-                .url("https://l-by.cn/yinyue/api.php")
-                .post(builder.build())
-                .build();
+                // https://search.kuwo.cn/r.s?all=%E6%9E%97%E5%AD%90%E7%A5%A5&ft=music&%20itemset=web_2013&client=kt&pn=0&rn=5&rformat=json&encoding=utf8
+                .url("https://search.kuwo.cn/r.s?all=" + name + "&ft=music&%20itemset=web_2013&client=kt&pn=0&rn=15&rformat=json&encoding=utf8")
+                .get().build();
+        /**
+         * 	'abslist': [{
+         * 		'AARTIST': 'George&nbsp;Lam###Sally&nbsp;Yeh',
+         * 		'ALBUM': '2013年江苏卫视春晚',
+         * 		'ALBUMID': '266850',
+         * 		'ARTIST': '林子祥&叶蒨文',
+         * 		'ARTISTID': '646',
+         * 		'COPYRIGHT': '0',
+         * 		'CanSetRing': '1',
+         * 		'CanSetRingback': '1',
+         * 		'DC_TARGETID': '3240843',
+         * 		'DC_TARGETTYPE': 'music',
+         * 		'DURATION': '171',
+         * 		'FORMATS': 'WMA96|WMA128|MP3H|MP3192|MP3128|AAC48|AAC24|EXMV720P|EXMV700|EXMV500|EXMP4L|EXMP4HV|EXMP4',
+         * 		'HASECHO': '0',
+         * 		'IS_POINT': '0',
+         * 		'MKVRID': 'MV_260024',
+         * 		'MP3NSIG1': '2987303865',
+         * 		'MP3NSIG2': '367591860',
+         * 		'MP3RID': 'MP3_3240843',
+         * 		'MUSICRID': 'MUSIC_3240843',
+         * 		'MUTI_VER': '0',
+         * 		'MVFLAG': '1',
+         * 		'MVPIC': '324/24/57/3166051194.jpg',
+         * 		'NAME': '选择',
+         * 		'NEW': '0',
+         * 		'NSIG1': '1624304761',
+         * 		'NSIG2': '2240890720',
+         * 		'ONLINE': '1',
+         * 		'PAY': '0',
+         * 		'PICPATH': '',
+         * 		'PLAYCNT': '81267',
+         * 		'SCORE100': '67',
+         * 		'SIG1': '1624304761',
+         * 		'SIG2': '2240890720',
+         * 		'SONGNAME': '选择(Live)',
+         * 		'SUBLIST': [],
+         * 		'SUBTITLE': '',
+         * 		'TAG': 'http://music.hyey.com/music/483/200506/13d/747592736.wma',
+         * 		'ad_subtype': '',
+         * 		'ad_type': '',
+         * 		'allartistid': '646&36',
+         * 		'audiobookpayinfo': {
+         * 			'download': '0',
+         * 			'play': '0'
+         *                },
+         * 		'barrage': '0',
+         * 		'cache_status': '1',
+         * 		'content_type': '0',
+         * 		'fpay': '0',
+         * 		'hts_MVPIC': 'https://img4.kuwo.cn/wmvpic/324/24/57/3166051194.jpg',
+         * 		'info': 'xxxx',
+         * 		'iot_info': '',
+         * 		'isdownload': '0',
+         * 		'isshowtype': '0',
+         * 		'isstar': '0',
+         * 		'mp4sig1': '4194141894',
+         * 		'mp4sig2': '212024382',
+         * 		'mvpayinfo': {
+         * 			'download': '0',
+         * 			'play': '0',
+         * 			'vid': '268889'
+         *        },
+         * 		'originalsongtype': '0',
+         * 		'payInfo': {
+         * 			'cannotDownload': '0',
+         * 			'cannotOnlinePlay': '0',
+         * 			'download': '1000',
+         * 			'feeType': {
+         * 				'album': '0',
+         * 				'bookvip': '0',
+         * 				'song': '0',
+         * 				'vip': '1'
+         *            },
+         * 			'limitfree': '0',
+         * 			'listen_fragment': '0',
+         * 			'local_encrypt': '0',
+         * 			'ndown': '000001',
+         * 			'nplay': '000001',
+         * 			'overseas_ndown': '0',
+         * 			'overseas_nplay': '0',
+         * 			'play': '1000',
+         * 			'refrain_end': '0',
+         * 			'refrain_start': '0',
+         * 			'tips_intercept': '0'
+         *        },
+         * 		'spPrivilege': '0',
+         * 		'subsStrategy': '0',
+         * 		'subsText': '',
+         * 		'terminal': '',
+         * 		'tme_musician_adtype': '0',
+         * 		'tpay': '0',
+         * 		'web_albumpic_short': '120/90/63/1524470202.jpg',
+         * 		'web_artistpic_short': '120/19/84/1010990435.jpg',
+         * 		'web_timingonline': ''* 	}
+         */
         Call call = httpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -80,11 +150,13 @@ public class MusicApi {
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
                 Log.i(TAG, "json = " + json);
+
                 List<MusicModel> list = null;
                 try {
-                    Type type = new TypeToken<List<MusicModel>>() {
+                    Type type = new TypeToken<MusicModel.MusicResult>() {
                     }.getType();
-                    list = GsonUtil.fromJson(json, type);
+                    MusicModel.MusicResult result = GsonUtil.fromJson(json, type);
+                    list = result.abslist;
                 } catch (Exception e) {
                     LogUtil.e(TAG, "list e = " + e.getMessage());
                 } finally {
@@ -100,22 +172,15 @@ public class MusicApi {
         });
     }
 
-    public static void requestLyric(String id, LyricCallback callback) {
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        builder.addFormDataPart("id", id);
-        /**
-         * types:
-         * id: 553543175
-         * source: netease
-         */
-        builder.addFormDataPart("source", "netease");
-        builder.addFormDataPart("types", "lyric");
+    public static void requestLyric(String lrcUrl, LyricCallback callback) {
         OkHttpClient httpClient = new OkHttpClient();
-        Request request = new Request.Builder()
-                .addHeader("cookie", COOKIE)
-                .url("https://l-by.cn/yinyue/api.php")
-                .post(builder.build())
+        httpClient = httpClient.newBuilder()
+                .sslSocketFactory(new SSL(OkHttpUtil.sslSocket()), OkHttpUtil.sslSocket())
                 .build();
+        Request request = new Request.Builder()
+                .url(lrcUrl)
+                .get().build();
+        LogUtil.i(TAG, "lrcUrl -> " + lrcUrl);
         Call call = httpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -130,90 +195,13 @@ public class MusicApi {
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
                 Log.i(TAG, "json = " + json);
-                LyricModel lyricModel = null;
-                try {
-                    Type type = new TypeToken<LyricModel>() {
-                    }.getType();
-                    lyricModel = GsonUtil.fromJson(json, type);
-                } catch (Exception e) {
-                    LogUtil.e(TAG, "lyricModel e = " + e.getMessage());
-                } finally {
-                    if (callback != null) {
-                        if (null != lyricModel) {
-                            callback.onResponse(lyricModel);
-                        } else {
-                            callback.onFailure(-2, "data is null");
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    public static void requestAlbum(String picId, AlbumCallback callback) {
-        if (!initPics) {
-            initPics();
-        }
-        String mAlbumPic = mAlbumPicMap.get(picId);
-        if (!TextUtils.isEmpty(mAlbumPic)) {
-            if (callback != null) {
-                callback.onResponse(mAlbumPic);
-            }
-            return;
-        }
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        builder.addFormDataPart("id", picId);
-        /**
-         * types:
-         * id: 553543175
-         * source: netease
-         */
-        builder.addFormDataPart("source", "netease");
-        builder.addFormDataPart("types", "pic");
-        OkHttpClient httpClient = new OkHttpClient();
-        Request request = new Request.Builder()
-                .addHeader("cookie", COOKIE)
-                .url("https://l-by.cn/yinyue/api.php")
-                .post(builder.build())
-                .build();
-        Call call = httpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e(TAG, "e = " + e.getMessage());
                 if (callback != null) {
-                    callback.onFailure(-1, e.getMessage());
-                }
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String json = response.body().string();
-                Log.i(TAG, "json = " + json);
-                Mp3PicModel mp3PicModel = null;
-                try {
-                    Type type = new TypeToken<Mp3PicModel>() {
-                    }.getType();
-                    mp3PicModel = GsonUtil.fromJson(json, type);
-                } catch (Exception e) {
-                    Log.i(TAG, "mp3PicModel e = " + e.getMessage());
-                } finally {
-                    if (callback != null) {
-                        if (null != mp3PicModel) {
-                            if (!TextUtils.isEmpty(mp3PicModel.getUrl())) {
-                                mAlbumPicMap.put(picId, mp3PicModel.getUrl());
-                                SharePreferenceUtil.setString(KEY_ALBUM_PIC, GsonUtil.toJson(mAlbumPicMap));
-                                callback.onResponse(mp3PicModel.getUrl());
-                            } else {
-                                callback.onFailure(-3, "data picUrl is null");
-                            }
-                        } else {
-                            callback.onFailure(-2, "data is null");
-                        }
+                    if (!TextUtils.isEmpty(json)) {
+                        callback.onResponse(json);
+                    } else {
+                        callback.onFailure(-2, "data is null");
                     }
                 }
-
-
             }
         });
     }
@@ -508,7 +496,7 @@ public class MusicApi {
     public interface LyricCallback {
         void onFailure(int code, String msg);
 
-        void onResponse(LyricModel lyricModel);
+        void onResponse(String lyricStr);
     }
 
     public interface AlbumCallback {

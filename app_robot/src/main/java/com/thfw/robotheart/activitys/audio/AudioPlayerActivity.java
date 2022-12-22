@@ -48,7 +48,6 @@ import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
-import com.thfw.base.models.LyricModel;
 import com.thfw.base.models.MusicModel;
 import com.thfw.base.models.TaskMusicEtcModel;
 import com.thfw.base.net.ResponeThrowable;
@@ -932,13 +931,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
      */
     private void mp3LrcLoad() {
         if (mIsMp3) {
-            int mp3Id = -1;
-            String mp3PicId = "";
-            AudioEtcDetailModel.AudioItemModel model;
+            AudioEtcDetailModel.AudioItemModel model = null;
             try {
                 model = mAudios.get(player.getCurrentWindowIndex());
-                mp3Id = model.getId();
-                mp3PicId = model.getMp3PicId();
                 mTvAudioTitle.setText(mAudios.get(player.getCurrentWindowIndex()).getTitle());
             } catch (Exception e) {
                 return;
@@ -949,37 +944,9 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                 mLrcView.loadLrc("");
             }
 
-            GlideUtil.load(mContext, model.getImg(), mRivEtc);
-            MusicApi.requestAlbum(mp3PicId, new MusicApi.AlbumCallback() {
-                @Override
-                public void onFailure(int code, String msg) {
-                    LogUtil.e("code = " + code + "; msg = " + msg);
-                    if (mRivEtc == null || EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
-                        return;
-                    }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            GlideUtil.load(mContext, model.getImg(), R.drawable.ic_music_album, mRivEtc);
-                        }
-                    });
-                }
+            GlideUtil.load(mContext, model.getMp3PicId(), R.drawable.ic_music_album, mRivEtc);
 
-                @Override
-                public void onResponse(String albumPic) {
-                    LogUtil.e("albumPic = " + albumPic + ";");
-                    if (mRivEtc == null || EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
-                        return;
-                    }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            GlideUtil.load(mContext, albumPic, R.drawable.ic_music_album, mRivEtc);
-                        }
-                    });
-                }
-            });
-            MusicApi.requestLyric(String.valueOf(mp3Id), new MusicApi.LyricCallback() {
+            MusicApi.requestLyric(model.getLrcUrl(), new MusicApi.LyricCallback() {
                 @Override
                 public void onFailure(int code, String msg) {
                     if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
@@ -998,7 +965,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                 }
 
                 @Override
-                public void onResponse(LyricModel lyricModel) {
+                public void onResponse(String lyricStr) {
                     if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
                         return;
                     }
@@ -1009,11 +976,11 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                                 return;
                             }
                             if (mLrcView != null) {
-                                if (lyricModel == null || TextUtils.isEmpty(lyricModel.lyric)) {
+                                if (TextUtils.isEmpty(lyricStr)) {
                                     mLrcView.setLabel("找不到歌词( @_ @)");
                                 } else {
                                     mLrcView.setLabel("找不到歌词( @_ @)");
-                                    mLrcView.loadLrc(lyricModel.lyric);
+                                    mLrcView.loadLrc(lyricStr);
                                     lrcLoop();
                                 }
 

@@ -4,10 +4,8 @@ import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
 import com.thfw.base.R;
-import com.thfw.base.utils.EmptyUtil;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,38 +15,200 @@ import java.util.List;
  */
 public class MusicModel implements Serializable {
 
+    @SerializedName("AARTIST")
+    public String aartist;
+    @SerializedName("ALBUM")
+    public String album;
+    @SerializedName("ALBUMID")
+    public String albumid;
+    @SerializedName("ARTIST")
+    public String artist;
+    @SerializedName("ARTISTID")
+    public String artistid;
+    @SerializedName("COPYRIGHT")
+    public String copyright;
+    @SerializedName("CanSetRing")
+    public String CanSetRing;
+    @SerializedName("CanSetRingback")
+    public String CanSetRingback;
+    @SerializedName("DC_TARGETID")
+    public String dcTargetid;
+    @SerializedName("DC_TARGETTYPE")
+    public String dcTargettype;
+    @SerializedName("DURATION")
+    public String duration;
+    @SerializedName("FORMATS")
+    public String formats;
+    @SerializedName("HASECHO")
+    public String hasecho;
+    @SerializedName("IS_POINT")
+    public String isPoint;
+    @SerializedName("MKVRID")
+    public String mkvrid;
+    @SerializedName("MP3NSIG1")
+    public String MP3NSIG1;
+    @SerializedName("MP3NSIG2")
+    public String MP3NSIG2;
+    @SerializedName("MP3RID")
+    public String MP3RID;
+    @SerializedName("MUSICRID")
+    public String musicrid;
+    @SerializedName("MUTI_VER")
+    public String mutiVer;
+    @SerializedName("MVFLAG")
+    public String mvflag;
+    @SerializedName("MVPIC")
+    public String mvpic;
+    @SerializedName("NAME")
+    public String name; // 歌名
+    @SerializedName("NEW")
+    public String newX;
+    @SerializedName("NSIG1")
+    public String NSIG1;
+    @SerializedName("NSIG2")
+    public String NSIG2;
+    @SerializedName("ONLINE")
+    public String online;
+    @SerializedName("PAY")
+    public String pay;
+    @SerializedName("PICPATH")
+    public String picpath;
+    @SerializedName("PLAYCNT")
+    public String playcnt;
+    @SerializedName("SCORE100")
+    public String SCORE100;
+    @SerializedName("SIG1")
+    public String SIG1;
+    @SerializedName("SIG2")
+    public String SIG2;
+    @SerializedName("SONGNAME")
+    public String songname;
+    @SerializedName("SUBTITLE")
+    public String subtitle;
+    @SerializedName("TAG")
+    public String tag;
+    @SerializedName("ad_subtype")
+    public String adSubtype;
+    @SerializedName("ad_type")
+    public String adType;
+    @SerializedName("allartistid")
+    public String allartistid;
+    @SerializedName("audiobookpayinfo")
+    public AudiobookpayinfoBean audiobookpayinfo;
+    @SerializedName("barrage")
+    public String barrage;
+    @SerializedName("cache_status")
+    public String cacheStatus;
+    @SerializedName("content_type")
+    public String contentType;
+    @SerializedName("fpay")
+    public String fpay;
+    @SerializedName("hts_MVPIC")
+    public String htsMVPIC;
+    @SerializedName("info")
+    public String info;
+    @SerializedName("iot_info")
+    public String iotInfo;
+    @SerializedName("isdownload")
+    public String isdownload;
+    @SerializedName("isshowtype")
+    public String isshowtype;
+    @SerializedName("isstar")
+    public String isstar;
+    @SerializedName("mp4sig1")
+    public String mp4sig1;
+    @SerializedName("mp4sig2")
+    public String mp4sig2;
+    @SerializedName("mvpayinfo")
+    public MvpayinfoBean mvpayinfo;
+    @SerializedName("originalsongtype")
+    public String originalsongtype;
+    @SerializedName("payInfo")
+    public PayInfoBean payInfo;
+    @SerializedName("spPrivilege")
+    public String spPrivilege;
+    @SerializedName("subsStrategy")
+    public String subsStrategy;
+    @SerializedName("subsText")
+    public String subsText;
+    @SerializedName("terminal")
+    public String terminal;
+    @SerializedName("tme_musician_adtype")
+    public String tmeMusicianAdtype;
+    @SerializedName("tpay")
+    public String tpay;
+    @SerializedName("web_albumpic_short")
+    public String webAlbumpicShort;
+    @SerializedName("web_artistpic_short")
+    public String webArtistpicShort;
+    @SerializedName("web_timingonline")
+    public String webTimingonline;
+    @SerializedName("SUBLIST")
+    public List<?> sublist;
 
-    /**
-     * id : 500665346
-     * name : 平凡之路 (Live)
-     * artist : ["朴树"]
-     * album : 乐人・Live：朴树“好好地II”巡回演唱会上海站(Live)
-     * pic_id : 109951163009071893
-     * url_id : 500665346
-     * lyric_id : 500665346
-     * source : netease
-     */
+    public static class AudiobookpayinfoBean implements Serializable {
+        @SerializedName("download")
+        public String download;
+        @SerializedName("play")
+        public String play;
+    }
 
-    @SerializedName("id")
-    private int id;
-    @SerializedName("name")
-    private String name;
-    @SerializedName("album")
-    private String album;
-    @SerializedName("pic_id")
-    private String picId;
-    @SerializedName("url_id")
-    private int urlId;
-    @SerializedName("lyric_id")
-    private int lyricId;
-    @SerializedName("source")
-    private String source;
-    @SerializedName("artist")
-    private List<String> artist;
+    public static class MvpayinfoBean implements Serializable {
+        @SerializedName("download")
+        public String download;
+        @SerializedName("play")
+        public String play;
+        @SerializedName("vid")
+        public String vid;
+    }
+
+    public static class PayInfoBean implements Serializable {
+        @SerializedName("cannotDownload")
+        public String cannotDownload;
+        @SerializedName("cannotOnlinePlay")
+        public String cannotOnlinePlay;
+        @SerializedName("download")
+        public String download;
+        @SerializedName("feeType")
+        public FeeTypeBean feeType;
+        @SerializedName("limitfree")
+        public String limitfree;
+        @SerializedName("listen_fragment")
+        public String listenFragment;
+        @SerializedName("local_encrypt")
+        public String localEncrypt;
+        @SerializedName("ndown")
+        public String ndown;
+        @SerializedName("nplay")
+        public String nplay;
+        @SerializedName("overseas_ndown")
+        public String overseasNdown;
+        @SerializedName("overseas_nplay")
+        public String overseasNplay;
+        @SerializedName("play")
+        public String play;
+        @SerializedName("refrain_end")
+        public String refrainEnd;
+        @SerializedName("refrain_start")
+        public String refrainStart;
+        @SerializedName("tips_intercept")
+        public String tipsIntercept;
+
+        public static class FeeTypeBean implements Serializable {
+            @SerializedName("album")
+            public String album;
+            @SerializedName("bookvip")
+            public String bookvip;
+            @SerializedName("song")
+            public String song;
+            @SerializedName("vip")
+            public String vip;
+        }
+    }
 
 
     public String getMp3Url() {
-        return String.format("http://music.163.com/song/media/outer/url?id=%d.mp3", urlId);
+        return "https://apis.jxcxin.cn/api/kuwo?id=" + dcTargetid + "&type=mp3";
     }
 
     public Object getPicUrl() {
@@ -56,11 +216,7 @@ public class MusicModel implements Serializable {
     }
 
     public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        return Integer.parseInt(dcTargetid);
     }
 
     public String getName() {
@@ -80,43 +236,18 @@ public class MusicModel implements Serializable {
     }
 
     public String getPicId() {
-        return picId;
+        if (!TextUtils.isEmpty(webArtistpicShort)) {
+            return "http://img4.kuwo.cn/star/starheads/" + webArtistpicShort;
+        } else if (!TextUtils.isEmpty(htsMVPIC)) {
+            return htsMVPIC;
+        } else if (!TextUtils.isEmpty(webAlbumpicShort)) {
+            return " https://img4.kuwo.cn/star/albumcover/" + webArtistpicShort;
+        }
+        return "";
     }
 
-    public void setPicId(String picId) {
-        this.picId = picId;
-    }
-
-    public int getUrlId() {
-        return urlId;
-    }
-
-    public void setUrlId(int urlId) {
-        this.urlId = urlId;
-    }
-
-    public int getLyricId() {
-        return lyricId;
-    }
-
-    public void setLyricId(int lyricId) {
-        this.lyricId = lyricId;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public List<String> getArtist() {
-        return artist;
-    }
-
-    public void setArtist(List<String> artist) {
-        this.artist = artist;
+    public String getLyricId() {
+        return "https://nanjing.cdn.cxinyun.cn/api/Kuwolrc.php?id=" + dcTargetid;
     }
 
     public AudioEtcDetailModel.AudioItemModel toAudioItemModel() {
@@ -126,42 +257,23 @@ public class MusicModel implements Serializable {
         audioItemModel.setSfile(getMp3Url());
         audioItemModel.setImg(getPicUrl());
         audioItemModel.setMp3PicId(getPicId());
-        if (TextUtils.isEmpty(getAlbum())) {
-            if (!EmptyUtil.isEmpty(artist)) {
-                String author = Arrays.toString(artist.toArray());
-                author = author.substring(1, author.length() - 1);
-                audioItemModel.setTitle(getName() + " - " + author);
-            } else {
-                audioItemModel.setTitle(getName());
-            }
+        audioItemModel.setLrcUrl(getLyricId());
+        if (TextUtils.isEmpty(album)) {
+            audioItemModel.setTitle(getName() + " - " + artist);
         } else {
-            if (!EmptyUtil.isEmpty(artist)) {
-                String author = Arrays.toString(artist.toArray());
-                author = author.substring(1, author.length() - 1);
-                audioItemModel.setTitle(getName() + " - " + getAlbum() + " - " + author);
-            } else {
-                audioItemModel.setTitle(getName() + " - " + getAlbum());
-            }
-
+            audioItemModel.setTitle(getName() + " - " + artist + " • 《" + album + "》");
         }
-
+        audioItemModel.setTitle(audioItemModel.getTitle().replaceAll("&apos;", "'"));
+        audioItemModel.setTitle(audioItemModel.getTitle().replaceAll("( |&nbsp;)", " "));
         audioItemModel.setAuthor(getAlbum());
         audioItemModel.setMp3(true);
         audioItemModel.setAutoFinished(true);
         return audioItemModel;
     }
 
-    @Override
-    public String toString() {
-        return "MusicModel{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", album='" + album + '\'' +
-                ", picId='" + picId + '\'' +
-                ", urlId=" + urlId +
-                ", lyricId=" + lyricId +
-                ", source='" + source + '\'' +
-                ", artist=" + artist +
-                '}';
+    public static class MusicResult {
+        public List<MusicModel> abslist;
     }
+
+
 }
