@@ -321,6 +321,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         }
         if (isVisible) {
             resetFaceFlag();
+            mCbProduct.setChecked(LoginActivity.mTvRightAgreed);
         } else {
             cancelLineAnim();
             cancelBorderAnim();

@@ -121,7 +121,7 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
             if (getActivity() instanceof LoginActivity) {
                 LoginActivity activity = (LoginActivity) getActivity();
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("register",true);
+                bundle.putBoolean("register", true);
                 activity.getFragmentLoader().load(LoginActivity.BY_MOBILE).setArguments(bundle);
                 hideInput();
             }
@@ -185,6 +185,15 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
         super.onVisible(isVisible);
         if (isVisible) {
             mEtMobile.setText(LoginActivity.INPUT_PHONE);
+            mCbProduct.setChecked(LoginActivity.mTvRightAgreed);
+            LoginActivity.agreeDialog(getActivity(), new OnViewClickListener() {
+                @Override
+                public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                    if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                        mCbProduct.setChecked(true);
+                    }
+                }
+            });
         } else {
             LoginActivity.INPUT_PHONE = mEtMobile.getText().toString();
         }

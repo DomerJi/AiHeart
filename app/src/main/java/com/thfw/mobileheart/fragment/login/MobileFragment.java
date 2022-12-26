@@ -168,6 +168,7 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
                     && LoginActivity.INPUT_PHONE.startsWith("1")) {
                 mEtMobile.setText(LoginActivity.INPUT_PHONE);
             }
+            mCheckBox.setChecked(LoginActivity.mTvRightAgreed);
             Bundle bundle = getArguments();
             if (bundle != null && bundle.getBoolean("register")) {
                 mTvMobileTitle.setText("免密登录/注册");

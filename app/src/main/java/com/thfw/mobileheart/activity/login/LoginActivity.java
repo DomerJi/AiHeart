@@ -2,6 +2,7 @@ package com.thfw.mobileheart.activity.login;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
@@ -58,6 +59,7 @@ public class LoginActivity extends BaseActivity {
     public static String INPUT_PHONE = "";
     private int type;
     private FragmentLoader fragmentLoader;
+    public static boolean mTvRightAgreed;
 
     public static void startActivity(Context context, int type) {
         context.startActivity(new Intent(context, LoginActivity.class).putExtra(KEY_DATA, type));
@@ -176,10 +178,12 @@ public class LoginActivity extends BaseActivity {
     }
 
     public static void agreeDialog(FragmentActivity activity, OnViewClickListener onViewClickListener) {
+        if (mTvRightAgreed) {
+            return;
+        }
         DialogFactory.createCustomDialog(activity, new DialogFactory.OnViewCallBack() {
             @Override
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-
                 String html = "请你务必审慎阅读、充分理解 " +
                         " <font color='" + UIConfig.COLOR_AGREE + "'>《用户服务协议》</font>" +
                         "和<font color='" + UIConfig.COLOR_AGREE + "'>《隐私保护政策》</font>各条款。<p> </p>" +
@@ -197,12 +201,21 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                tDialog.dismiss();
                 if (onViewClickListener != null) {
                     if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                        mTvRightAgreed = true;
                         MyPreferences.getInstance(MyApplication.getApp()).setAgreePrivacyAgreement(true);
                     }
                     onViewClickListener.onViewClick(viewHolder, view, tDialog);
+                }
+
+                tDialog.dismiss();
+            }
+        }, false, new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (!mTvRightAgreed) {
+                    MyApplication.kill();
                 }
             }
         });

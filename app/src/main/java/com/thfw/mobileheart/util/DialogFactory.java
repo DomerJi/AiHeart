@@ -1,5 +1,8 @@
 package com.thfw.mobileheart.util;
 
+import static android.content.Context.VIBRATOR_SERVICE;
+import static com.thfw.ui.utils.UrgeUtil.URGE_DELAY_TIME;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Vibrator;
@@ -68,9 +71,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Calendar;
 import java.util.List;
 
-import static android.content.Context.VIBRATOR_SERVICE;
-import static com.thfw.ui.utils.UrgeUtil.URGE_DELAY_TIME;
-
 /**
  * 弹框工厂
  */
@@ -97,7 +97,7 @@ public class DialogFactory {
     }
 
     public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack) {
-        return createCustomDialog(activity, onViewCallBack, true);
+        return createCustomDialog(activity, onViewCallBack, true, null);
     }
 
     /**
@@ -108,12 +108,20 @@ public class DialogFactory {
      * @return
      */
     public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack, boolean cancleOutside) {
+        return createCustomDialog(activity, onViewCallBack, cancleOutside, null);
+    }
+
+    public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack, boolean cancleOutside,
+                                             DialogInterface.OnDismissListener listener) {
         return new TDialog.Builder(activity.getSupportFragmentManager())
                 .setLayoutRes(com.thfw.ui.R.layout.dialog_custom_layout)
                 .setDialogAnimationRes(R.style.animate_dialog_fade)
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
+                        if (listener != null) {
+                            listener.onDismiss(dialog);
+                        }
                         dialogSpeechUnRegister();
                     }
                 })
