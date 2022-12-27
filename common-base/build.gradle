@@ -93,7 +93,9 @@ dependencies {
     api 'com.github.Justson:Downloader:v5.0.0-androidx' // (可选)
 
     // 省市区选择弹框
-    api 'com.contrarywind:Android-PickerView:' + rootProject.ext.android_pickerview
+    api project(':pickerview')
+    api project(':wheelview')
+
     api 'androidx.core:core:' + rootProject.ext.core
     api 'org.jsoup:jsoup:1.13.1'
 

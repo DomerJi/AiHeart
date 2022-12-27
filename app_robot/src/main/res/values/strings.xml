@@ -442,4 +442,61 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
+
+    <string name="settings_content_description">Settings</string>
+    <string name="upload_video"><u>Upload video</u></string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_video_processing">Video processing</string>
+    <string name="settings_title">Settings</string>
+    <string name="max_thread_pool_size">Maximum thread pool size</string>
+    <string name="max_number_of_faces">Maximum number of faces</string>
+    <string name="location_for_CSV">Location for CSV file</string>
+    <string name="change_location"><u>Change location</u></string>
+    <string name="select_metrics">Select metrics</string>
+    <string name="expressions">Expressions( 表露)</string>
+    <string name="emotions">Emotions(情绪)</string>
+    <string name="measurements">Measurements(测量)</string>
+    <string name="dialog_title">Dialog title</string>
+    <string name="dialog_message">Dialog message</string>
+    <string name="upload_new_video">Upload new video</string>
+    <string name="go_to_csv">Go to CSV file</string>
+    <string name="close"><u>Close</u></string>
+    <string name="stop">Cancel uploading</string>
+    <string name="emotion_joy">Joy(快乐)</string>
+    <string name="emotion_anger">Anger(愤怒)</string>
+    <string name="emotion_surprise">Surprise(惊讶)</string>
+    <string name="emotion_valence">Valence(期望)</string>
+    <string name="emotion_fear">Fear(害怕)</string>
+    <string name="emotion_sadness">Sadness(悲伤)</string>
+    <string name="emotion_disgust">Disgust(厌恶)</string>
+    <string name="emotion_neutral">Neutral(中性的)</string>
+    <string name="emotion_mood">Mood(情绪):</string>
+    <string name="dominant_emotion">Dominant Emotion(显性情感):</string>
+    <string name="expressions_smile">Smile(微笑)</string>
+    <string name="expressions_brow_raise">Brow Raise(眉毛抬升)</string>
+    <string name="expressions_brow_furrow">Brow Furrow(眉沟)</string>
+    <string name="expressions_blink">Blink:</string>
+    <string name="expressions_blink_rate">Blink Rate:</string>
+    <string name="expressions_nose_wrinkle">Nose Wrinkle(鼻子褶皱)</string>
+    <string name="expressions_upper_lip_raise">Upper Lip Raise(上唇隆起)</string>
+    <string name="expressions_mouth_open">Mouth Open(张口)</string>
+    <string name="expressions_eye_closure">Eye Closure(眼睛闭上)</string>
+    <string name="expressions_cheek_raise">Cheek Raise(面部提高)</string>
+    <string name="expressions_yawn">Yawn(打哈欠)</string>
+    <string name="orientation">Orientation:</string>
+    <string name="orientation_pitch">Pitch:</string>
+    <string name="orientation_yaw">Yaw:</string>
+    <string name="orientation_roll">Roll:</string>
+    <string name="interocular_distance">Interocular Distance:</string>
+    <string name="brightness">Brightness</string>
+    <string name="face_quality">Face Quality:</string>
+    <string name="processing_frame_rate">Processing frame rate</string>
+    <string name="insufficient_permissions">Insufficient Permissions</string>
+    <string name="permissions_camera_needed_explanation">This app requires the permission to access your camera to be able to gather facial images for processing. No video is saved or used other than for immediate emotion processing.</string>
+    <string name="permissions_storage_needed_explanation">This app requires the permission to access your external storage to save screenshots.</string>
+    <string name="error">Error</string>
+    <string name="understood">Understood</string>
+    <string name="retry">Retry</string>
+    <string name="not_found">Sorry, AffdexMe requires the use of a front-facing camera, which was not found on your device.</string>
+
 </resources>

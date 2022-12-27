@@ -79,6 +79,13 @@
     <color name="transparent">#00000000</color>
     <color name="gain_verification">#21BE56</color>
 
+    <color name="colorGreen">#22EB8E</color>
+    <color name="colorRed">#F14E5B</color>
+    <color name="colorGrey">#5d5d5d</color>
+    <color name="colorGreyLight">#757575</color>
+    <color name="transparent_overlay">#5B050505</color>
+
+
     <!-- 白色 -->
     <color name="white">#FFFFFFFF</color>
     <color name="white_95">#F2FFFFFF</color>

@@ -10,3 +10,6 @@ include ':export_ym'
 include ':voice-aiui'
 include ':app_xunai'
 include ':app_robot_push'
+
+include ':pickerview'
+include ':wheelview'
