@@ -19,4 +19,8 @@ public class DeviceUtil {
         return "CM-GB03D".equals(Build.MODEL);
     }
 
+    public static boolean isLhXk_OS_R_SD01B() {
+        return "OS-R-SD01B".equals(Build.MODEL);
+    }
+
 }

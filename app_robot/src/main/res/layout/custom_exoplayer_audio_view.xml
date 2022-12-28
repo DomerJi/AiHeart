@@ -125,12 +125,12 @@
         app:lrcDividerHeight="15dp"
         app:lrcLabel="找不到歌词(@_@)"
         app:lrcNormalTextColor="@color/white_50"
+        app:lrcNormalTextSize="15sp"
         app:lrcTextGravity="left"
         app:lrcTextSize="15sp"
-        app:lrcTimelineHeight="10dp"
-        app:lrcNormalTextSize="15sp"
         app:lrcTimeTextColor="#BDBDBD"
         app:lrcTimelineColor="#80BDBDBD"
+        app:lrcTimelineHeight="10dp"
         app:lrcTimelineTextColor="#9FA8DA" />
 
 
@@ -167,10 +167,11 @@
 
             <TextView
                 android:id="@id/exo_position"
-                android:layout_width="40dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:includeFontPadding="false"
+                android:minWidth="40dp"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
@@ -199,10 +200,11 @@
 
             <TextView
                 android:id="@id/exo_duration"
-                android:layout_width="40dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:includeFontPadding="false"
+                android:minWidth="40dp"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 

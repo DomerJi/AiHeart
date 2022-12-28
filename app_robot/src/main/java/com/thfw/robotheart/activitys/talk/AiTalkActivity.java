@@ -166,6 +166,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     private int maxVolume;
     private ShowChangeLayout scl;
     private int newVolume;
+    private Runnable mAnimRunable;
 
     public static void startActivity(Context context, TalkModel talkModel) {
         context.startActivity(new Intent(context, AiTalkActivity.class).putExtra(KEY_DATA, talkModel));
@@ -398,21 +399,31 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             });
             return;
         }
-        String fileName = null;
-        switch (type) {
-            case FACE_TYPE_LISTEN:
-                fileName = AnimFileName.EMOJI_QINGTING;
-                break;
-            case FACE_TYPE_SPEECH:
-                fileName = AnimFileName.EMOJI_SPEECH;
-                break;
-            default:
-                fileName = AnimFileName.EMOJI_KAIJI;
-                break;
-        }
         this.mFaceType = type;
-        LogUtil.d(TAG, "startAnimFaceType type = " + type + ", fileName" + fileName);
-        SVGAHelper.playSVGA(mSvgaFace, SVGAHelper.SVGAModel.create(fileName), null);
+        if (mAnimRunable != null) {
+            HandlerUtil.getMainHandler().removeCallbacks(mAnimRunable);
+        } else {
+            mAnimRunable = () -> {
+                if (EmptyUtil.isEmpty(AiTalkActivity.this) || !isMeResumed()) {
+                    return;
+                }
+                String fileName = null;
+                switch (this.mFaceType) {
+                    case FACE_TYPE_LISTEN:
+                        fileName = AnimFileName.EMOJI_QINGTING;
+                        break;
+                    case FACE_TYPE_SPEECH:
+                        fileName = AnimFileName.EMOJI_SPEECH;
+                        break;
+                    default:
+                        fileName = AnimFileName.EMOJI_KAIJI;
+                        break;
+                }
+                LogUtil.d(TAG, "startAnimFaceType type = " + this.mFaceType + ", fileName" + fileName);
+                SVGAHelper.playSVGA(mSvgaFace, SVGAHelper.SVGAModel.create(fileName), null);
+            };
+        }
+        HandlerUtil.getMainHandler().postDelayed(mAnimRunable, 300);
     }
 
     private void sendInputText(String inputText) {
