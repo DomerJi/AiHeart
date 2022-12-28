@@ -55,6 +55,7 @@ import com.thfw.robotheart.activitys.me.PrivateSetActivity;
 import com.thfw.robotheart.adapter.BaseAdapter;
 import com.thfw.robotheart.adapter.DialogLikeAdapter;
 import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.ui.R;
 import com.thfw.ui.common.LhXkSet;
@@ -65,6 +66,7 @@ import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.utils.DragViewUtil;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.InputBoxView;
 
 import org.jetbrains.annotations.NotNull;
@@ -111,7 +113,12 @@ public class DialogRobotFactory {
      * @return
      */
     public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack, boolean cancleOutside) {
-        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_custom_layout).setDialogAnimationRes(R.style.animate_dialog_fade).addOnClickListener(R.id.tv_left, R.id.tv_right).setScreenWidthAspect(activity, 0.4f).setCancelableOutside(cancleOutside)
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_custom_layout).setDialogAnimationRes(R.style.animate_dialog_fade).addOnClickListener(R.id.tv_left, R.id.tv_right).setScreenWidthAspect(activity, 0.4f).setCancelableOutside(cancleOutside).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        dialogSpeechUnRegister();
+                    }
+                })
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     TextView mTvTitle = viewHolder.getView(R.id.tv_title);
@@ -120,6 +127,7 @@ public class DialogRobotFactory {
                     TextView mTvRight = viewHolder.getView(R.id.tv_right);
                     View mVLineVertical = viewHolder.getView(R.id.vline_vertical);
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
+                    dialogSpeechRegister(mTvLeft, mTvRight);
                 }).setOnViewClickListener(onViewCallBack).create().show();
     }
 
@@ -135,6 +143,7 @@ public class DialogRobotFactory {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         onViewCallBack.onViewClick(null, null, null);
+                        dialogSpeechUnRegister();
                     }
                 }).setScreenWidthAspect(activity, 0.4f).setCancelableOutside(false)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
@@ -148,6 +157,7 @@ public class DialogRobotFactory {
                     mVLineVertical.setVisibility(View.GONE);
                     mTvLeft.setVisibility(View.GONE);
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
+                    dialogSpeechRegister(mTvLeft, mTvRight);
                 }).setOnViewClickListener(onViewCallBack).create().show();
     }
 
@@ -190,6 +200,7 @@ public class DialogRobotFactory {
                         if (dismissListener != null) {
                             dismissListener.onDismiss(dialog);
                         }
+                        dialogSpeechUnRegister();
                     }
                 }).setDialogAnimationRes(R.style.animate_dialog_fade).addOnClickListener(R.id.tv_left, R.id.tv_right).setScreenWidthAspect(activity, 0.4f).setCancelableOutside(false)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
@@ -204,6 +215,7 @@ public class DialogRobotFactory {
                     mTvLeft.setVisibility(View.GONE);
                     mTvRight.setBackgroundResource(com.thfw.robotheart.R.drawable.dialog_button_selector);
                     mVLineVertical.setVisibility(View.GONE);
+                    dialogSpeechRegister(mTvLeft, mTvRight);
                 }).setOnViewClickListener(new OnViewClickListener() {
                     @Override
                     public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
@@ -488,11 +500,19 @@ public class DialogRobotFactory {
      * @return
      */
     public static TDialog createSelectCustomText(FragmentActivity activity, String title, List<PickerData> likeModels, OnViewSelectCallBack onViewCallBack) {
-        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(com.thfw.robotheart.R.layout.dialog_select_custom_layout).setGravity(Gravity.BOTTOM).setDialogAnimationRes(R.style.animate_dialog).addOnClickListener(R.id.btnCancel, R.id.btnSubmit).setScreenWidthAspect(activity, 1f)
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(com.thfw.robotheart.R.layout.dialog_select_custom_layout).setGravity(Gravity.BOTTOM).setDialogAnimationRes(R.style.animate_dialog).addOnClickListener(R.id.btnCancel, R.id.btnSubmit).setScreenWidthAspect(activity, 1f).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        dialogSpeechUnRegister();
+                    }
+                })
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     RecyclerView mRvSelect = viewHolder.getView(com.thfw.robotheart.R.id.rv_select);
                     TextView mTvTitle = viewHolder.getView(com.thfw.robotheart.R.id.tvTitle);
+                    TextView mTvLeft = viewHolder.getView(R.id.btnCancel);
+                    TextView mTvRight = viewHolder.getView(R.id.btnSubmit);
+                    dialogSpeechRegister(mTvLeft, mTvRight);
                     mTvTitle.setText(title);
 
                     // 设置布局管理器
@@ -743,6 +763,27 @@ public class DialogRobotFactory {
                 setSpeechView(viewHolder, model);
             }).create().show();
             resetSpeech();
+        }
+    }
+
+    private static void dialogSpeechRegister(TextView mTvLeft, TextView mTvRight) {
+        if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+            if (mTvLeft != null && mTvLeft.getVisibility() == View.VISIBLE) {
+                LhXkHelper.putAction(TDialog.class, new LhXkHelper.SpeechToAction(mTvLeft.getText().toString(), () -> {
+                    mTvLeft.performClick();
+                }));
+            }
+            if (mTvRight != null && mTvRight.getVisibility() == View.VISIBLE) {
+                LhXkHelper.putAction(TDialog.class, new LhXkHelper.SpeechToAction(mTvRight.getText().toString(), () -> {
+                    mTvRight.performClick();
+                }));
+            }
+        }
+    }
+
+    private static void dialogSpeechUnRegister() {
+        if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+            LhXkHelper.removeAction(TDialog.class);
         }
     }
 

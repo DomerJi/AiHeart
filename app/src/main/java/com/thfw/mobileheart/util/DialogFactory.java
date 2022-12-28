@@ -111,12 +111,8 @@ public class DialogFactory {
         return createCustomDialog(activity, onViewCallBack, cancleOutside, null);
     }
 
-    public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack, boolean cancleOutside,
-                                             DialogInterface.OnDismissListener listener) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(com.thfw.ui.R.layout.dialog_custom_layout)
-                .setDialogAnimationRes(R.style.animate_dialog_fade)
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+    public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack, boolean cancleOutside, DialogInterface.OnDismissListener listener) {
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(com.thfw.ui.R.layout.dialog_custom_layout).setDialogAnimationRes(R.style.animate_dialog_fade).setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         if (listener != null) {
@@ -124,10 +120,7 @@ public class DialogFactory {
                         }
                         dialogSpeechUnRegister();
                     }
-                })
-                .addOnClickListener(com.thfw.ui.R.id.tv_left, com.thfw.ui.R.id.tv_right)
-                .setScreenWidthAspect(activity, WIDTH_ASPECT)
-                .setCancelableOutside(cancleOutside)
+                }).addOnClickListener(com.thfw.ui.R.id.tv_left, com.thfw.ui.R.id.tv_right).setScreenWidthAspect(activity, WIDTH_ASPECT).setCancelableOutside(cancleOutside)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     TextView mTvTitle = viewHolder.getView(com.thfw.ui.R.id.tv_title);
@@ -137,8 +130,7 @@ public class DialogFactory {
                     View mVLineVertical = viewHolder.getView(com.thfw.ui.R.id.vline_vertical);
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
                     dialogSpeechRegister(mTvLeft, mTvRight);
-                })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                }).setOnViewClickListener(onViewCallBack).create().show();
     }
 
     private static void dialogSpeechRegister(TextView mTvLeft, TextView mTvRight) {
@@ -166,19 +158,13 @@ public class DialogFactory {
      * @return
      */
     public static TDialog createServerStopDialog(FragmentActivity activity, OnViewCallBack onViewCallBack) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(com.thfw.ui.R.layout.dialog_custom_layout)
-                .setDialogAnimationRes(com.thfw.ui.R.style.animate_dialog_fade)
-                .addOnClickListener(com.thfw.ui.R.id.tv_left, com.thfw.ui.R.id.tv_right)
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(com.thfw.ui.R.layout.dialog_custom_layout).setDialogAnimationRes(com.thfw.ui.R.style.animate_dialog_fade).addOnClickListener(com.thfw.ui.R.id.tv_left, com.thfw.ui.R.id.tv_right).setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         onViewCallBack.onViewClick(null, null, null);
                         dialogSpeechUnRegister();
                     }
-                })
-                .setScreenWidthAspect(activity, WIDTH_ASPECT)
-                .setCancelableOutside(false)
+                }).setScreenWidthAspect(activity, WIDTH_ASPECT).setCancelableOutside(false)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     TextView mTvTitle = viewHolder.getView(com.thfw.ui.R.id.tv_title);
@@ -191,8 +177,7 @@ public class DialogFactory {
                     mTvLeft.setVisibility(View.GONE);
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
                     dialogSpeechRegister(mTvLeft, mTvRight);
-                })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                }).setOnViewClickListener(onViewCallBack).create().show();
     }
 
 
@@ -201,36 +186,28 @@ public class DialogFactory {
         if (urgedDialog != null) {
             urgedDialog.dismiss();
         }
-        urgedDialog = new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_urged_top_layout)
-                .setDialogAnimationRes(R.style.animate_dialog_top)
-                .setScreenWidthAspect(activity, WIDTH_ASPECT_2)
-                .setGravity(Gravity.TOP)
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        if (urgedDialog != null) {
-                            urgedDialog.dismiss();
-                            urgedDialog = null;
-                        }
-                        if (urgedDialogRunnable != null) {
-                            HandlerUtil.getMainHandler().removeCallbacks(urgedDialogRunnable);
-                            urgedDialogRunnable = null;
-                        }
+        urgedDialog = new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_urged_top_layout).setDialogAnimationRes(R.style.animate_dialog_top).setScreenWidthAspect(activity, WIDTH_ASPECT_2).setGravity(Gravity.TOP).setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (urgedDialog != null) {
+                    urgedDialog.dismiss();
+                    urgedDialog = null;
+                }
+                if (urgedDialogRunnable != null) {
+                    HandlerUtil.getMainHandler().removeCallbacks(urgedDialogRunnable);
+                    urgedDialogRunnable = null;
+                }
 
-                    }
-                })
-                .setNotFocusable(true)
-                .addOnClickListener(R.id.cv_bg)
-                .setOnBindViewListener(viewHolder -> {
-                    view[0] = viewHolder.getView(R.id.cv_bg);
-                    TextView textView = viewHolder.getView(R.id.tv_hint);
-                    textView.setText(model.getContent());
-                    Vibrator vibrator = (Vibrator) activity.getApplicationContext().getSystemService(VIBRATOR_SERVICE);
-                    if (vibrator != null) {
-                        vibrator.vibrate(200);
-                    }
-                }).create().show();
+            }
+        }).setNotFocusable(true).addOnClickListener(R.id.cv_bg).setOnBindViewListener(viewHolder -> {
+            view[0] = viewHolder.getView(R.id.cv_bg);
+            TextView textView = viewHolder.getView(R.id.tv_hint);
+            textView.setText(model.getContent());
+            Vibrator vibrator = (Vibrator) activity.getApplicationContext().getSystemService(VIBRATOR_SERVICE);
+            if (vibrator != null) {
+                vibrator.vibrate(200);
+            }
+        }).create().show();
         HandlerUtil.getMainHandler().postDelayed(() -> {
             if (view[0] != null) {
                 DragViewUtil.registerDragAction(view[0], urgedDialog, v -> {
@@ -309,22 +286,14 @@ public class DialogFactory {
                 }
             }
             dismissSpeech();
-            speechDialog = new TDialog.Builder(activity.getSupportFragmentManager())
-                    .setLayoutRes(R.layout.dialog_speech_layout)
-                    .setDialogAnimationRes(R.style.animate_dialog_fade)
-                    .setScreenWidthAspect(activity, WIDTH_ASPECT_2)
-                    .setNotFocusable(true)
-                    .setDimAmount(0.08f)
-                    .setGravity(LhXkSet.voiceTextGravity)
-                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            dismissSpeech();
-                        }
-                    })
-                    .setOnBindViewListener(viewHolder -> {
-                        setSpeechView(viewHolder, model);
-                    }).create().show();
+            speechDialog = new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_speech_layout).setDialogAnimationRes(R.style.animate_dialog_fade).setScreenWidthAspect(activity, WIDTH_ASPECT_2).setNotFocusable(true).setDimAmount(0.08f).setGravity(LhXkSet.voiceTextGravity).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    dismissSpeech();
+                }
+            }).setOnBindViewListener(viewHolder -> {
+                setSpeechView(viewHolder, model);
+            }).create().show();
             resetSpeech();
         }
     }
@@ -415,22 +384,15 @@ public class DialogFactory {
      *
      * @param activity
      */
-    public static void createSimple(FragmentActivity activity, String title, String msg,
-                                    DialogInterface.OnDismissListener dismissListener) {
-        new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(com.thfw.ui.R.layout.dialog_custom_layout)
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+    public static void createSimple(FragmentActivity activity, String title, String msg, DialogInterface.OnDismissListener dismissListener) {
+        new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(com.thfw.ui.R.layout.dialog_custom_layout).setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         if (dismissListener != null) {
                             dismissListener.onDismiss(dialog);
                         }
                     }
-                })
-                .setDialogAnimationRes(com.thfw.ui.R.style.animate_dialog_fade)
-                .addOnClickListener(com.thfw.ui.R.id.tv_left, com.thfw.ui.R.id.tv_right)
-                .setScreenWidthAspect(activity, WIDTH_ASPECT)
-                .setCancelableOutside(false)
+                }).setDialogAnimationRes(com.thfw.ui.R.style.animate_dialog_fade).addOnClickListener(com.thfw.ui.R.id.tv_left, com.thfw.ui.R.id.tv_right).setScreenWidthAspect(activity, WIDTH_ASPECT).setCancelableOutside(false)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     TextView mTvTitle = viewHolder.getView(com.thfw.ui.R.id.tv_title);
@@ -444,14 +406,14 @@ public class DialogFactory {
                     mTvRight.setBackgroundResource(R.drawable.dialog_button_selector);
                     mVLineVertical.setVisibility(View.GONE);
                 }).setOnViewClickListener(new OnViewClickListener() {
-            @Override
-            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                tDialog.dismiss();
-                if (dismissListener != null) {
-                    dismissListener.onDismiss(tDialog.getDialog());
-                }
-            }
-        }).create().show();
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                        tDialog.dismiss();
+                        if (dismissListener != null) {
+                            dismissListener.onDismiss(tDialog.getDialog());
+                        }
+                    }
+                }).create().show();
     }
 
 
@@ -463,11 +425,7 @@ public class DialogFactory {
      * @return
      */
     public static TDialog createCustomThreeDialog(FragmentActivity activity, OnViewThreeCallBack onViewCallBack) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_custom_three_layout)
-                .setDialogAnimationRes(R.style.animate_dialog_fade)
-                .setScreenWidthAspect(activity, WIDTH_ASPECT)
-                .addOnClickListener(R.id.tv_one, R.id.tv_two, R.id.tv_three)
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_custom_three_layout).setDialogAnimationRes(R.style.animate_dialog_fade).setScreenWidthAspect(activity, WIDTH_ASPECT).addOnClickListener(R.id.tv_one, R.id.tv_two, R.id.tv_three)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     TextView mTvTitle = viewHolder.getView(R.id.tv_title);
@@ -476,8 +434,7 @@ public class DialogFactory {
                     TextView mTvTwo = viewHolder.getView(R.id.tv_two);
                     TextView mTvThree = viewHolder.getView(R.id.tv_three);
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvOne, mTvTwo, mTvThree);
-                })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                }).setOnViewClickListener(onViewCallBack).create().show();
     }
 
     /**
@@ -515,12 +472,7 @@ public class DialogFactory {
         // 语音播放
         TtsHelper.getInstance().start(new TtsModel(hint), null);
         dismissSVGA();
-        mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_svga_layout)
-                .setDialogAnimationRes(com.thfw.ui.R.style.animate_dialog_fade)
-                .setScreenWidthAspect(activity, 1.0f)
-                .setScreenHeightAspect(activity, 1.0f)
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+        mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_svga_layout).setDialogAnimationRes(com.thfw.ui.R.style.animate_dialog_fade).setScreenWidthAspect(activity, 1.0f).setScreenHeightAspect(activity, 1.0f).setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         if (mTvTime != null && mMinuteRunnable != null) {
@@ -530,8 +482,7 @@ public class DialogFactory {
                         }
                         dismissSVGA();
                     }
-                })
-                .setDimAmount(0.6f)
+                }).setDimAmount(0.6f)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     SVGAParser parser = new SVGAParser(activity);
@@ -616,8 +567,7 @@ public class DialogFactory {
                             }
                         }
                     });
-                })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                }).setOnViewClickListener(onViewCallBack).create().show();
     }
 
     /**
@@ -627,37 +577,27 @@ public class DialogFactory {
      * @param onViewCallBack
      * @return
      */
-    public static TDialog createMoodSignInDialog(FragmentActivity activity,
-                                                 DialogInterface.OnDismissListener onDismissListener,
-                                                 OnViewClickListener onViewCallBack) {
-        mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_mood_sign_in_layout)
-                .setDialogAnimationRes(R.style.animate_dialog_fade)
-                .setScreenWidthAspect(activity, WIDTH_ASPECT)
-                .setOnDismissListener((dialogInterface) -> {
+    public static TDialog createMoodSignInDialog(FragmentActivity activity, DialogInterface.OnDismissListener onDismissListener, OnViewClickListener onViewCallBack) {
+        mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_mood_sign_in_layout).setDialogAnimationRes(R.style.animate_dialog_fade).setScreenWidthAspect(activity, WIDTH_ASPECT).setOnDismissListener((dialogInterface) -> {
                     if (onDismissListener != null) {
                         onDismissListener.onDismiss(dialogInterface);
                     }
                     mSvgaTDialog = null;
-                })
-                .addOnClickListener(R.id.bt_go, R.id.iv_close)
+                }).addOnClickListener(R.id.bt_go, R.id.iv_close)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
-                })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                }).setOnViewClickListener(onViewCallBack).create().show();
         return mSvgaTDialog;
     }
 
-    public static void createAddressBirthDay(Context mContext, ViewGroup
-            decorView, OnTimeSelectListener optionsSelectListener) {
+    public static void createAddressBirthDay(Context mContext, ViewGroup decorView, OnTimeSelectListener optionsSelectListener) {
 
         Calendar selectedDate = Calendar.getInstance();//系统当前时间
         Calendar startDate = Calendar.getInstance();
         startDate.set(selectedDate.get(Calendar.YEAR) - 120, 0, 1);
         Calendar endDate = Calendar.getInstance();
         endDate.set(selectedDate.get(Calendar.YEAR) - 5, selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DAY_OF_MONTH));
-        TimePickerBuilder builder = new TimePickerBuilder(mContext, optionsSelectListener).setDecorView(decorView)
-                .setTitleText("选择年月日")//标题文字
+        TimePickerBuilder builder = new TimePickerBuilder(mContext, optionsSelectListener).setDecorView(decorView).setTitleText("选择年月日")//标题文字
                 .setTitleSize(17)//标题文字大小
                 .setTitleColor(mContext.getResources().getColor(R.color.black))//标题文字颜色
                 .setCancelText("取消")//取消按钮文字
@@ -665,13 +605,8 @@ public class DialogFactory {
                 .setSubmitText("确定")//确认按钮文字
                 .setSubmitColor(mContext.getResources().getColor(R.color.black))//确定按钮文字颜色
                 .setContentTextSize(17)//滚轮文字大小
-                .setTextColorOut(mContext.getResources().getColor(R.color.text_content))
-                .setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
-                .setSubCalSize(14)
-                .setDate(endDate)
-                .setRangDate(startDate, endDate)
-                .setBgColor(mContext.getResources().getColor(R.color.white))
-                .setLineSpacingMultiplier(2.2f)//行间距
+                .setTextColorOut(mContext.getResources().getColor(R.color.text_content)).setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
+                .setSubCalSize(14).setDate(endDate).setRangDate(startDate, endDate).setBgColor(mContext.getResources().getColor(R.color.white)).setLineSpacingMultiplier(2.2f)//行间距
                 .setDividerColor(mContext.getResources().getColor(R.color.black_10));//设置分割线的颜色
         TimePickerView timePickerView = builder.build();
         setOptionPickerView(timePickerView, mContext);
@@ -685,18 +620,20 @@ public class DialogFactory {
      * @param onViewCallBack
      * @return
      */
-    public static TDialog createSelectCustomText(FragmentActivity activity, String
-            title, List<PickerData> likeModels, OnViewSelectCallBack onViewCallBack) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_select_custom_layout)
-                .setGravity(Gravity.BOTTOM)
-                .setDialogAnimationRes(R.style.animate_dialog)
-                .addOnClickListener(R.id.btnCancel, R.id.btnSubmit)
-                .setScreenWidthAspect(activity, 1f)
+    public static TDialog createSelectCustomText(FragmentActivity activity, String title, List<PickerData> likeModels, OnViewSelectCallBack onViewCallBack) {
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_select_custom_layout).setGravity(Gravity.BOTTOM).setDialogAnimationRes(R.style.animate_dialog).addOnClickListener(R.id.btnCancel, R.id.btnSubmit).setScreenWidthAspect(activity, 1f).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        dialogSpeechUnRegister();
+                    }
+                })
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     RecyclerView mRvSelect = viewHolder.getView(R.id.rv_select);
                     TextView mTvTitle = viewHolder.getView(R.id.tvTitle);
+                    TextView mTvLeft = viewHolder.getView(R.id.btnCancel);
+                    TextView mTvRight = viewHolder.getView(R.id.btnSubmit);
+                    dialogSpeechRegister(mTvLeft, mTvRight);
                     mTvTitle.setText(title);
 
                     // 设置布局管理器
@@ -714,8 +651,7 @@ public class DialogFactory {
                     mRvSelect.setAdapter(dialogLikeAdapter);
                     onViewCallBack.callBack(dialogLikeAdapter);
 
-                })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                }).setOnViewClickListener(onViewCallBack).create().show();
     }
 
     /**
@@ -726,12 +662,7 @@ public class DialogFactory {
      * @return
      */
     public static TDialog createSelectCustom(FragmentActivity activity, List<PickerData> likeModels, OnViewSelectCallBack onViewCallBack) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_select_cancel_layout)
-                .setGravity(Gravity.BOTTOM)
-                .setDialogAnimationRes(R.style.animate_dialog)
-                .addOnClickListener(R.id.tv_cancel)
-                .setScreenWidthAspect(activity, 1f)
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_select_cancel_layout).setGravity(Gravity.BOTTOM).setDialogAnimationRes(R.style.animate_dialog).addOnClickListener(R.id.tv_cancel).setScreenWidthAspect(activity, 1f)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     RecyclerView mRvSelect = viewHolder.getView(R.id.rv_select);
@@ -740,16 +671,14 @@ public class DialogFactory {
                     mRvSelect.setAdapter(dialogLikeAdapter);
                     onViewCallBack.callBack(dialogLikeAdapter);
 
-                })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                }).setOnViewClickListener(onViewCallBack).create().show();
     }
 
 
     /**
      * 创建地区选择弹框
      */
-    public static void createAddressDialog(Context mContext, ViewGroup
-            decorView, OnOptionsSelectListener optionsSelectListener, int... opsitions) {
+    public static void createAddressDialog(Context mContext, ViewGroup decorView, OnOptionsSelectListener optionsSelectListener, int... opsitions) {
         OptionsPickerBuilder optionsPickerBuilder = new OptionsPickerBuilder(mContext, optionsSelectListener).setDecorView(decorView)//必须是RelativeLayout，不设置setDecorView的话，底部虚拟导航栏会显示在弹出的选择器区域
                 .setTitleText("选择地区")//标题文字
                 .setTitleSize(17)//标题文字大小
@@ -759,11 +688,8 @@ public class DialogFactory {
                 .setSubmitText("确定")//确认按钮文字
                 .setSubmitColor(mContext.getResources().getColor(R.color.black))//确定按钮文字颜色
                 .setContentTextSize(17)//滚轮文字大小
-                .setTextColorOut(mContext.getResources().getColor(R.color.text_content))
-                .setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
-                .setSubCalSize(14)
-                .setBgColor(mContext.getResources().getColor(R.color.white))
-                .setLineSpacingMultiplier(2.2f)//行间距
+                .setTextColorOut(mContext.getResources().getColor(R.color.text_content)).setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
+                .setSubCalSize(14).setBgColor(mContext.getResources().getColor(R.color.white)).setLineSpacingMultiplier(2.2f)//行间距
                 .setDividerColor(mContext.getResources().getColor(R.color.black_10));//设置分割线的颜色
 
         if (!EmptyUtil.isEmpty(opsitions) && opsitions.length == 3) {
@@ -779,9 +705,7 @@ public class DialogFactory {
     /**
      * 创建通用单选选择框
      */
-    public static void createSelectDialog(Context mContext, ViewGroup decorView,
-                                          OnOptionsSelectListener optionsSelectListener,
-                                          String title, List<PickerData> list) {
+    public static void createSelectDialog(Context mContext, ViewGroup decorView, OnOptionsSelectListener optionsSelectListener, String title, List<PickerData> list) {
 
         OptionsPickerBuilder optionsPickerBuilder = new OptionsPickerBuilder(mContext, optionsSelectListener).setDecorView(decorView)//必须是RelativeLayout，不设置setDecorView的话，底部虚拟导航栏会显示在弹出的选择器区域
                 .setTitleText(title) // 标题文字
@@ -792,11 +716,8 @@ public class DialogFactory {
                 .setSubmitText("确定")//确认按钮文字
                 .setSubmitColor(mContext.getResources().getColor(R.color.black))//确定按钮文字颜色
                 .setContentTextSize(17)//滚轮文字大小
-                .setTextColorOut(mContext.getResources().getColor(R.color.text_content))
-                .setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
-                .setSubCalSize(14)
-                .setBgColor(mContext.getResources().getColor(R.color.white))
-                .setLineSpacingMultiplier(2.2f) // 行间距
+                .setTextColorOut(mContext.getResources().getColor(R.color.text_content)).setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
+                .setSubCalSize(14).setBgColor(mContext.getResources().getColor(R.color.white)).setLineSpacingMultiplier(2.2f) // 行间距
                 .setDividerColor(mContext.getResources().getColor(R.color.black_10));// 设置分割线的颜色
 
 
@@ -806,8 +727,7 @@ public class DialogFactory {
         optionsPickerView.show();
     }
 
-    private static void setOptionPickerView(OptionsPickerView optionsPickerView, Context
-            mContext) {
+    private static void setOptionPickerView(OptionsPickerView optionsPickerView, Context mContext) {
         LinearLayout picker = (LinearLayout) optionsPickerView.findViewById(R.id.optionspicker);
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) picker.getLayoutParams();
         layoutParams.height = Util.dipToPx(200, mContext);
@@ -833,24 +753,18 @@ public class DialogFactory {
      * @return
      */
     public static TDialog createTransactionPasswordDialog(FragmentActivity activity, InputBoxView.OnInputCompleteListener onInputCompleteListener) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_transaction_password_layout)
-                .setGravity(Gravity.BOTTOM)
-                .setScreenWidthAspect(activity, 1)
-                .addOnClickListener(R.id.iv_close)
-                .setOnBindViewListener(new OnBindViewListener() {
-                    @Override
-                    public void bindView(BindViewHolder viewHolder) {
-                        InputBoxView inputBoxView = viewHolder.getView(R.id.ibv_transaction);
-                        inputBoxView.setOnInputCompleteListener(onInputCompleteListener);
-                    }
-                })
-                .setOnViewClickListener(new OnViewClickListener() {
-                    @Override
-                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                        tDialog.dismiss();
-                    }
-                }).create().show();
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_transaction_password_layout).setGravity(Gravity.BOTTOM).setScreenWidthAspect(activity, 1).addOnClickListener(R.id.iv_close).setOnBindViewListener(new OnBindViewListener() {
+            @Override
+            public void bindView(BindViewHolder viewHolder) {
+                InputBoxView inputBoxView = viewHolder.getView(R.id.ibv_transaction);
+                inputBoxView.setOnInputCompleteListener(onInputCompleteListener);
+            }
+        }).setOnViewClickListener(new OnViewClickListener() {
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+            }
+        }).create().show();
 
     }
 
@@ -862,24 +776,18 @@ public class DialogFactory {
      * @return
      */
     public static TDialog createVerificationCodeDialog(FragmentActivity activity, InputBoxView.OnInputCompleteListener onInputCompleteListener) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_verification_code_layout)
-                .setGravity(Gravity.BOTTOM)
-                .setScreenWidthAspect(activity, 1)
-                .addOnClickListener(R.id.iv_close)
-                .setOnBindViewListener(new OnBindViewListener() {
-                    @Override
-                    public void bindView(BindViewHolder viewHolder) {
-                        InputBoxView inputBoxView = viewHolder.getView(R.id.ibv_transaction);
-                        inputBoxView.setOnInputCompleteListener(onInputCompleteListener);
-                    }
-                })
-                .setOnViewClickListener(new OnViewClickListener() {
-                    @Override
-                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                        tDialog.dismiss();
-                    }
-                }).create().show();
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_verification_code_layout).setGravity(Gravity.BOTTOM).setScreenWidthAspect(activity, 1).addOnClickListener(R.id.iv_close).setOnBindViewListener(new OnBindViewListener() {
+            @Override
+            public void bindView(BindViewHolder viewHolder) {
+                InputBoxView inputBoxView = viewHolder.getView(R.id.ibv_transaction);
+                inputBoxView.setOnInputCompleteListener(onInputCompleteListener);
+            }
+        }).setOnViewClickListener(new OnViewClickListener() {
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+            }
+        }).create().show();
 
     }
 
@@ -890,27 +798,19 @@ public class DialogFactory {
      * @return
      */
     public static TDialog createScreenDialog(FragmentActivity activity) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_screen_layout)
-                .setDialogAnimationRes(R.style.animate_dialog_right)
-                .setGravity(Gravity.RIGHT)
-                .setScreenHeightAspect(activity, 1f)
-                .setScreenWidthAspect(activity, 0.8f)
-                .addOnClickListener(R.id.bt_reset, R.id.bt_confirm)
-                .setOnBindViewListener(new OnBindViewListener() {
-                    @Override
-                    public void bindView(BindViewHolder viewHolder) {
-                        RecyclerView rvScreen = viewHolder.getView(R.id.rv_screen);
-                    }
-                })
-                .setOnViewClickListener(new OnViewClickListener() {
-                    @Override
-                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                        if (view.getId() == R.id.bt_confirm) {
-                            tDialog.dismiss();
-                        }
-                    }
-                }).create().show();
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_screen_layout).setDialogAnimationRes(R.style.animate_dialog_right).setGravity(Gravity.RIGHT).setScreenHeightAspect(activity, 1f).setScreenWidthAspect(activity, 0.8f).addOnClickListener(R.id.bt_reset, R.id.bt_confirm).setOnBindViewListener(new OnBindViewListener() {
+            @Override
+            public void bindView(BindViewHolder viewHolder) {
+                RecyclerView rvScreen = viewHolder.getView(R.id.rv_screen);
+            }
+        }).setOnViewClickListener(new OnViewClickListener() {
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                if (view.getId() == R.id.bt_confirm) {
+                    tDialog.dismiss();
+                }
+            }
+        }).create().show();
 
     }
 
@@ -918,43 +818,25 @@ public class DialogFactory {
      * 【问一问】 更多弹框
      */
     public static TDialog createAskMore(FragmentActivity activity, OnViewClickListener onViewClickListener) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_ask_more_layout)
-                .setGravity(Gravity.BOTTOM)
-                .setScreenWidthAspect(activity, 1f)
-                .addOnClickListener(R.id.tv_cancel, R.id.ll_what, R.id.ll_clear, R.id.ll_help)
-                .setOnBindViewListener(new OnBindViewListener() {
-                    @Override
-                    public void bindView(BindViewHolder viewHolder) {
-                    }
-                })
-                .setOnViewClickListener(onViewClickListener).create().show();
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_ask_more_layout).setGravity(Gravity.BOTTOM).setScreenWidthAspect(activity, 1f).addOnClickListener(R.id.tv_cancel, R.id.ll_what, R.id.ll_clear, R.id.ll_help).setOnBindViewListener(new OnBindViewListener() {
+            @Override
+            public void bindView(BindViewHolder viewHolder) {
+            }
+        }).setOnViewClickListener(onViewClickListener).create().show();
     }
 
     /**
      * 【分享】第三方
      */
     public static TDialog createShare(FragmentActivity activity, OnBindViewListener onBindViewListener, OnViewClickListener onViewClickListener) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_share_layout)
-                .setGravity(Gravity.BOTTOM)
-                .setScreenWidthAspect(activity, 1f)
-                .addOnClickListener(R.id.ll_wechat, R.id.ll_friend, R.id.ll_qq, R.id.ll_sina, R.id.tv_cancel)
-                .setOnBindViewListener(onBindViewListener)
-                .setOnViewClickListener(onViewClickListener).create().show();
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_share_layout).setGravity(Gravity.BOTTOM).setScreenWidthAspect(activity, 1f).addOnClickListener(R.id.ll_wechat, R.id.ll_friend, R.id.ll_qq, R.id.ll_sina, R.id.tv_cancel).setOnBindViewListener(onBindViewListener).setOnViewClickListener(onViewClickListener).create().show();
     }
 
     /**
      * 【状态】自定义
      */
     public static TDialog createCustomStatus(FragmentActivity activity, OnBindViewListener onBindViewListener, OnViewClickListener onViewClickListener) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_custom_status_layout)
-                .setGravity(Gravity.BOTTOM)
-                .setScreenWidthAspect(activity, 1f)
-                .addOnClickListener(R.id.tv_confirm, R.id.iv_close)
-                .setOnBindViewListener(onBindViewListener)
-                .setOnViewClickListener(onViewClickListener).create().show();
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_custom_status_layout).setGravity(Gravity.BOTTOM).setScreenWidthAspect(activity, 1f).addOnClickListener(R.id.tv_confirm, R.id.iv_close).setOnBindViewListener(onBindViewListener).setOnViewClickListener(onViewClickListener).create().show();
     }
 
     public interface OnViewSelectCallBack extends OnViewClickListener {

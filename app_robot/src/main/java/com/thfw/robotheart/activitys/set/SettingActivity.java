@@ -19,6 +19,7 @@ import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.MainActivity;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.sets.SetBlueFragment;
 import com.thfw.robotheart.fragments.sets.SetDormantFragment;
@@ -27,6 +28,7 @@ import com.thfw.robotheart.fragments.sets.SetNetFragment;
 import com.thfw.robotheart.fragments.sets.SetSpeechFragment;
 import com.thfw.robotheart.fragments.sets.SetUpdateFragment;
 import com.thfw.robotheart.fragments.sets.SetVolumeFragment;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
@@ -171,6 +173,22 @@ public class SettingActivity extends RobotBaseActivity {
                 view.setVisibility(hasNewVersion ? View.VISIBLE : View.GONE);
             }
         });
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("音量设置", () -> mTvSetVolume.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("语音设置,语音和焦点", () -> mTvSetSpeech.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("蓝牙设置", () -> mTvSetBlue.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("休眠设置", () -> mTvSetDormant.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("系统更新", () -> mTvSetUpdate.performClick()));
+
+        if (RobotUtil.isSystemApp()) {
+            LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("网络设置", () -> mTvSetNet.performClick()));
+            LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("亮度设置", () -> mTvSetLight.performClick()));
+        }
     }
 
     @Override

@@ -18,11 +18,13 @@ import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.MainActivity;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.activitys.task.MsgActivity;
 import com.thfw.robotheart.activitys.task.TaskActivity;
 import com.thfw.robotheart.activitys.test.TestReportActivity;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.MsgCountManager;
 import com.thfw.robotheart.view.TitleRobotView;
@@ -304,6 +306,31 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
 
     @Override
     public void onReadAll(int type) {
+
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        // 历史记录
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("测评问卷", () -> mLlTest.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("成长训练", () -> mLlExercise.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("视频集锦", () -> mLlSee.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("正念冥想", () -> mLlMusic.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("心理文库", () -> mLlRead.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("思政文库", () -> mLlStudy.performClick()));
+
+
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("个人信息", () -> mRlMsg.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("人脸录入", () -> mRlFace.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("我的消息", () -> mRlMeMsg.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("我的收藏", () -> mRlCollection.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("我的任务", () -> mRlWork.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("心理健康档案", () -> mRlReport.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("帮助中心", () -> mRlBackHelp.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("账号管理", () -> mRlAccountManager.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("退出登录", () -> mBtLogout.performClick()));
+
 
     }
 }
