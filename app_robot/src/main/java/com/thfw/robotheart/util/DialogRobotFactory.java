@@ -1,5 +1,8 @@
 package com.thfw.robotheart.util;
 
+import static android.content.Context.VIBRATOR_SERVICE;
+import static com.thfw.ui.utils.UrgeUtil.URGE_DELAY_TIME;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
@@ -8,10 +11,14 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.animation.CycleInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +28,7 @@ import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.bigkoo.pickerview.view.TimePickerView;
+import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
@@ -30,14 +38,17 @@ import com.opensource.svgaplayer.SVGADrawable;
 import com.opensource.svgaplayer.SVGAImageView;
 import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
+import com.thfw.base.ContextApp;
 import com.thfw.base.models.AreaModel;
 import com.thfw.base.models.PickerData;
+import com.thfw.base.models.SpeechModel;
 import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
+import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.activitys.me.PrivateSetActivity;
@@ -46,6 +57,7 @@ import com.thfw.robotheart.adapter.DialogLikeAdapter;
 import com.thfw.robotheart.constants.AnimFileName;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.ui.R;
+import com.thfw.ui.common.LhXkSet;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnBindViewListener;
@@ -60,9 +72,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Calendar;
 import java.util.List;
 
-import static android.content.Context.VIBRATOR_SERVICE;
-import static com.thfw.ui.utils.UrgeUtil.URGE_DELAY_TIME;
-
 /**
  * 弹框工厂
  */
@@ -75,6 +84,8 @@ public class DialogRobotFactory {
     private static int minute;
     private static Runnable mMinuteRunnable;
     private static long currentTimeMillis;
+
+    private static TDialog speechDialog;
 
 
     private static TDialog urgedDialog;
@@ -100,12 +111,7 @@ public class DialogRobotFactory {
      * @return
      */
     public static TDialog createCustomDialog(FragmentActivity activity, OnViewCallBack onViewCallBack, boolean cancleOutside) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_custom_layout)
-                .setDialogAnimationRes(R.style.animate_dialog_fade)
-                .addOnClickListener(R.id.tv_left, R.id.tv_right)
-                .setScreenWidthAspect(activity, 0.4f)
-                .setCancelableOutside(cancleOutside)
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_custom_layout).setDialogAnimationRes(R.style.animate_dialog_fade).addOnClickListener(R.id.tv_left, R.id.tv_right).setScreenWidthAspect(activity, 0.4f).setCancelableOutside(cancleOutside)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     TextView mTvTitle = viewHolder.getView(R.id.tv_title);
@@ -114,8 +120,7 @@ public class DialogRobotFactory {
                     TextView mTvRight = viewHolder.getView(R.id.tv_right);
                     View mVLineVertical = viewHolder.getView(R.id.vline_vertical);
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
-                })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                }).setOnViewClickListener(onViewCallBack).create().show();
     }
 
     /**
@@ -126,18 +131,12 @@ public class DialogRobotFactory {
      * @return
      */
     public static TDialog createServerStopDialog(FragmentActivity activity, OnViewCallBack onViewCallBack) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_custom_layout)
-                .setDialogAnimationRes(R.style.animate_dialog_fade)
-                .addOnClickListener(R.id.tv_left, R.id.tv_right)
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_custom_layout).setDialogAnimationRes(R.style.animate_dialog_fade).addOnClickListener(R.id.tv_left, R.id.tv_right).setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         onViewCallBack.onViewClick(null, null, null);
                     }
-                })
-                .setScreenWidthAspect(activity, 0.4f)
-                .setCancelableOutside(false)
+                }).setScreenWidthAspect(activity, 0.4f).setCancelableOutside(false)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     TextView mTvTitle = viewHolder.getView(R.id.tv_title);
@@ -149,8 +148,7 @@ public class DialogRobotFactory {
                     mVLineVertical.setVisibility(View.GONE);
                     mTvLeft.setVisibility(View.GONE);
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvLeft, mTvRight, mVLineVertical);
-                })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                }).setOnViewClickListener(onViewCallBack).create().show();
     }
 
     public static void createSimple(FragmentActivity activity, String msg) {
@@ -185,22 +183,15 @@ public class DialogRobotFactory {
      *
      * @param activity
      */
-    public static void createSimple(FragmentActivity activity, String title, String msg,
-                                    DialogInterface.OnDismissListener dismissListener) {
-        new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_custom_layout)
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+    public static void createSimple(FragmentActivity activity, String title, String msg, DialogInterface.OnDismissListener dismissListener) {
+        new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_custom_layout).setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         if (dismissListener != null) {
                             dismissListener.onDismiss(dialog);
                         }
                     }
-                })
-                .setDialogAnimationRes(R.style.animate_dialog_fade)
-                .addOnClickListener(R.id.tv_left, R.id.tv_right)
-                .setScreenWidthAspect(activity, 0.4f)
-                .setCancelableOutside(false)
+                }).setDialogAnimationRes(R.style.animate_dialog_fade).addOnClickListener(R.id.tv_left, R.id.tv_right).setScreenWidthAspect(activity, 0.4f).setCancelableOutside(false)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     TextView mTvTitle = viewHolder.getView(R.id.tv_title);
@@ -214,14 +205,14 @@ public class DialogRobotFactory {
                     mTvRight.setBackgroundResource(com.thfw.robotheart.R.drawable.dialog_button_selector);
                     mVLineVertical.setVisibility(View.GONE);
                 }).setOnViewClickListener(new OnViewClickListener() {
-            @Override
-            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                tDialog.dismiss();
-                if (dismissListener != null) {
-                    dismissListener.onDismiss(tDialog.getDialog());
-                }
-            }
-        }).create().show();
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                        tDialog.dismiss();
+                        if (dismissListener != null) {
+                            dismissListener.onDismiss(tDialog.getDialog());
+                        }
+                    }
+                }).create().show();
     }
 
 
@@ -230,32 +221,24 @@ public class DialogRobotFactory {
         if (urgedDialog != null) {
             urgedDialog.dismiss();
         }
-        urgedDialog = new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(com.thfw.robotheart.R.layout.dialog_urged_top_layout)
-                .setDialogAnimationRes(R.style.animate_dialog_top)
-                .setScreenWidthAspect(activity, WIDTH_ASPECT_2)
-                .setGravity(Gravity.TOP)
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        urgedDialog = null;
-                        if (urgedDialogRunnable != null) {
-                            HandlerUtil.getMainHandler().removeCallbacks(urgedDialogRunnable);
-                        }
-                        urgedDialogRunnable = null;
-                    }
-                })
-                .setNotFocusable(true)
-                .addOnClickListener(com.thfw.robotheart.R.id.cv_bg)
-                .setOnBindViewListener(viewHolder -> {
-                    view[0] = viewHolder.getView(com.thfw.robotheart.R.id.cv_bg);
-                    TextView textView = viewHolder.getView(R.id.tv_hint);
-                    textView.setText(model.getContent());
-                    Vibrator vibrator = (Vibrator) activity.getApplicationContext().getSystemService(VIBRATOR_SERVICE);
-                    if (vibrator != null) {
-                        vibrator.vibrate(200);
-                    }
-                }).create().show();
+        urgedDialog = new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(com.thfw.robotheart.R.layout.dialog_urged_top_layout).setDialogAnimationRes(R.style.animate_dialog_top).setScreenWidthAspect(activity, WIDTH_ASPECT_2).setGravity(Gravity.TOP).setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                urgedDialog = null;
+                if (urgedDialogRunnable != null) {
+                    HandlerUtil.getMainHandler().removeCallbacks(urgedDialogRunnable);
+                }
+                urgedDialogRunnable = null;
+            }
+        }).setNotFocusable(true).addOnClickListener(com.thfw.robotheart.R.id.cv_bg).setOnBindViewListener(viewHolder -> {
+            view[0] = viewHolder.getView(com.thfw.robotheart.R.id.cv_bg);
+            TextView textView = viewHolder.getView(R.id.tv_hint);
+            textView.setText(model.getContent());
+            Vibrator vibrator = (Vibrator) activity.getApplicationContext().getSystemService(VIBRATOR_SERVICE);
+            if (vibrator != null) {
+                vibrator.vibrate(200);
+            }
+        }).create().show();
         HandlerUtil.getMainHandler().postDelayed(() -> {
             if (view[0] != null) {
                 DragViewUtil.registerDragAction(view[0], urgedDialog, v -> {
@@ -295,12 +278,7 @@ public class DialogRobotFactory {
     public static void createFullSvgaDialog(FragmentActivity activity, String svgaAssets, final OnSVGACallBack onViewCallBack) {
         String hint = AnimFileName.getHint(svgaAssets);
         dismissSVGA();
-        mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(com.thfw.robotheart.R.layout.dialog_full_svga_layout)
-                .setDialogAnimationRes(R.style.animate_dialog_fade)
-                .setScreenWidthAspect(activity, 1.0f)
-                .setScreenHeightAspect(activity, 1.0f)
-                .setDimAmount(1f)
+        mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(com.thfw.robotheart.R.layout.dialog_full_svga_layout).setDialogAnimationRes(R.style.animate_dialog_fade).setScreenWidthAspect(activity, 1.0f).setScreenHeightAspect(activity, 1.0f).setDimAmount(1f)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     SVGAParser parser = new SVGAParser(activity);
@@ -341,8 +319,7 @@ public class DialogRobotFactory {
                             svgaImageView.clear();
                         }
                     });
-                })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                }).setOnViewClickListener(onViewCallBack).create().show();
     }
 
     private static void dismissSVGA() {
@@ -392,12 +369,7 @@ public class DialogRobotFactory {
         // 语音播放
         TtsHelper.getInstance().start(new TtsModel(hint), null);
         dismissSVGA();
-        mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(com.thfw.robotheart.R.layout.dialog_svga_layout)
-                .setDialogAnimationRes(R.style.animate_dialog_fade)
-                .setScreenWidthAspect(activity, 1.0f)
-                .setScreenHeightAspect(activity, 1.0f)
-                .setDimAmount(0.6f)
+        mSvgaTDialog = new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(com.thfw.robotheart.R.layout.dialog_svga_layout).setDialogAnimationRes(R.style.animate_dialog_fade).setScreenWidthAspect(activity, 1.0f).setScreenHeightAspect(activity, 1.0f).setDimAmount(0.6f)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     SVGAParser parser = new SVGAParser(activity);
@@ -482,20 +454,17 @@ public class DialogRobotFactory {
                             }
                         }
                     });
-                })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                }).setOnViewClickListener(onViewCallBack).create().show();
     }
 
-    public static void createAddressBirthDay(Context mContext, ViewGroup
-            decorView, OnTimeSelectListener optionsSelectListener) {
+    public static void createAddressBirthDay(Context mContext, ViewGroup decorView, OnTimeSelectListener optionsSelectListener) {
 
         Calendar selectedDate = Calendar.getInstance();//系统当前时间
         Calendar startDate = Calendar.getInstance();
         startDate.set(selectedDate.get(Calendar.YEAR) - 120, 0, 1);
         Calendar endDate = Calendar.getInstance();
         endDate.set(selectedDate.get(Calendar.YEAR) - 5, selectedDate.get(Calendar.MONTH), selectedDate.get(Calendar.DAY_OF_MONTH));
-        TimePickerBuilder builder = new TimePickerBuilder(mContext, optionsSelectListener).setDecorView(decorView)
-                .setTitleText("选择年月日")//标题文字
+        TimePickerBuilder builder = new TimePickerBuilder(mContext, optionsSelectListener).setDecorView(decorView).setTitleText("选择年月日")//标题文字
                 .setTitleSize(17)//标题文字大小
                 .setTitleColor(mContext.getResources().getColor(R.color.black))//标题文字颜色
                 .setCancelText("取消")//取消按钮文字
@@ -503,13 +472,8 @@ public class DialogRobotFactory {
                 .setSubmitText("确定")//确认按钮文字
                 .setSubmitColor(mContext.getResources().getColor(R.color.black))//确定按钮文字颜色
                 .setContentTextSize(17)//滚轮文字大小
-                .setTextColorOut(mContext.getResources().getColor(R.color.text_content))
-                .setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
-                .setSubCalSize(14)
-                .setDate(endDate)
-                .setRangDate(startDate, endDate)
-                .setBgColor(mContext.getResources().getColor(R.color.colorRobotDialogBg))
-                .setLineSpacingMultiplier(2.2f)//行间距
+                .setTextColorOut(mContext.getResources().getColor(R.color.text_content)).setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
+                .setSubCalSize(14).setDate(endDate).setRangDate(startDate, endDate).setBgColor(mContext.getResources().getColor(R.color.colorRobotDialogBg)).setLineSpacingMultiplier(2.2f)//行间距
                 .setDividerColor(mContext.getResources().getColor(R.color.black_10));//设置分割线的颜色
         TimePickerView timePickerView = builder.build();
         setOptionPickerView(timePickerView, mContext);
@@ -523,14 +487,8 @@ public class DialogRobotFactory {
      * @param onViewCallBack
      * @return
      */
-    public static TDialog createSelectCustomText(FragmentActivity activity, String
-            title, List<PickerData> likeModels, OnViewSelectCallBack onViewCallBack) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(com.thfw.robotheart.R.layout.dialog_select_custom_layout)
-                .setGravity(Gravity.BOTTOM)
-                .setDialogAnimationRes(R.style.animate_dialog)
-                .addOnClickListener(R.id.btnCancel, R.id.btnSubmit)
-                .setScreenWidthAspect(activity, 1f)
+    public static TDialog createSelectCustomText(FragmentActivity activity, String title, List<PickerData> likeModels, OnViewSelectCallBack onViewCallBack) {
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(com.thfw.robotheart.R.layout.dialog_select_custom_layout).setGravity(Gravity.BOTTOM).setDialogAnimationRes(R.style.animate_dialog).addOnClickListener(R.id.btnCancel, R.id.btnSubmit).setScreenWidthAspect(activity, 1f)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     RecyclerView mRvSelect = viewHolder.getView(com.thfw.robotheart.R.id.rv_select);
@@ -552,16 +510,14 @@ public class DialogRobotFactory {
                     mRvSelect.setAdapter(dialogLikeAdapter);
                     onViewCallBack.callBack(dialogLikeAdapter);
 
-                })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                }).setOnViewClickListener(onViewCallBack).create().show();
     }
 
 
     /**
      * 创建地区选择弹框
      */
-    public static void createAddressDialog(Context mContext, ViewGroup
-            decorView, OnOptionsSelectListener optionsSelectListener, int... opsitions) {
+    public static void createAddressDialog(Context mContext, ViewGroup decorView, OnOptionsSelectListener optionsSelectListener, int... opsitions) {
         OptionsPickerBuilder optionsPickerBuilder = new OptionsPickerBuilder(mContext, optionsSelectListener).setDecorView(decorView)//必须是RelativeLayout，不设置setDecorView的话，底部虚拟导航栏会显示在弹出的选择器区域
                 .setTitleText("选择地区")//标题文字
                 .setTitleSize(17)//标题文字大小
@@ -571,11 +527,8 @@ public class DialogRobotFactory {
                 .setSubmitText("确定")//确认按钮文字
                 .setSubmitColor(mContext.getResources().getColor(R.color.black))//确定按钮文字颜色
                 .setContentTextSize(17)//滚轮文字大小
-                .setTextColorOut(mContext.getResources().getColor(R.color.text_content))
-                .setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
-                .setSubCalSize(14)
-                .setBgColor(mContext.getResources().getColor(R.color.colorRobotDialogBg))
-                .setLineSpacingMultiplier(2.2f)//行间距
+                .setTextColorOut(mContext.getResources().getColor(R.color.text_content)).setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
+                .setSubCalSize(14).setBgColor(mContext.getResources().getColor(R.color.colorRobotDialogBg)).setLineSpacingMultiplier(2.2f)//行间距
                 .setDividerColor(mContext.getResources().getColor(R.color.black_10));//设置分割线的颜色
 
         if (!EmptyUtil.isEmpty(opsitions) && opsitions.length == 3) {
@@ -591,9 +544,7 @@ public class DialogRobotFactory {
     /**
      * 创建通用单选选择框
      */
-    public static void createSelectDialog(Context mContext, ViewGroup decorView,
-                                          OnOptionsSelectListener optionsSelectListener,
-                                          String title, List<PickerData> list) {
+    public static void createSelectDialog(Context mContext, ViewGroup decorView, OnOptionsSelectListener optionsSelectListener, String title, List<PickerData> list) {
 
         OptionsPickerBuilder optionsPickerBuilder = new OptionsPickerBuilder(mContext, optionsSelectListener).setDecorView(decorView)//必须是RelativeLayout，不设置setDecorView的话，底部虚拟导航栏会显示在弹出的选择器区域
                 .setTitleText(title) // 标题文字
@@ -604,11 +555,8 @@ public class DialogRobotFactory {
                 .setSubmitText("确定")//确认按钮文字
                 .setSubmitColor(mContext.getResources().getColor(R.color.black))//确定按钮文字颜色
                 .setContentTextSize(17)//滚轮文字大小
-                .setTextColorOut(mContext.getResources().getColor(R.color.text_content))
-                .setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
-                .setSubCalSize(14)
-                .setBgColor(mContext.getResources().getColor(R.color.colorRobotDialogBg))
-                .setLineSpacingMultiplier(2.2f) // 行间距
+                .setTextColorOut(mContext.getResources().getColor(R.color.text_content)).setTextColorCenter(mContext.getResources().getColor(R.color.text_common))//设置选中文本的颜色值
+                .setSubCalSize(14).setBgColor(mContext.getResources().getColor(R.color.colorRobotDialogBg)).setLineSpacingMultiplier(2.2f) // 行间距
                 .setDividerColor(mContext.getResources().getColor(R.color.black_10));// 设置分割线的颜色
 
 
@@ -618,8 +566,7 @@ public class DialogRobotFactory {
         optionsPickerView.show();
     }
 
-    private static void setOptionPickerView(OptionsPickerView optionsPickerView, Context
-            mContext) {
+    private static void setOptionPickerView(OptionsPickerView optionsPickerView, Context mContext) {
         LinearLayout picker = (LinearLayout) optionsPickerView.findViewById(R.id.optionspicker);
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) picker.getLayoutParams();
         layoutParams.height = Util.dipToPx(235 * MyApplication.getFontScale(), mContext);
@@ -645,12 +592,8 @@ public class DialogRobotFactory {
      * @param onViewCallBack
      * @return
      */
-    public static TDialog createCustomThreeDialog(FragmentActivity
-                                                          activity, OnViewThreeCallBack onViewCallBack) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_custom_three_layout)
-                .setDialogAnimationRes(R.style.animate_dialog_fade)
-                .addOnClickListener(R.id.tv_one, R.id.tv_two, R.id.tv_three)
+    public static TDialog createCustomThreeDialog(FragmentActivity activity, OnViewThreeCallBack onViewCallBack) {
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_custom_three_layout).setDialogAnimationRes(R.style.animate_dialog_fade).addOnClickListener(R.id.tv_one, R.id.tv_two, R.id.tv_three)
                 // R.id.tv_title, R.id.tv_hint, R.id.tv_left, R.id.tv_right
                 .setOnBindViewListener(viewHolder -> {
                     TextView mTvTitle = viewHolder.getView(R.id.tv_title);
@@ -659,8 +602,7 @@ public class DialogRobotFactory {
                     TextView mTvTwo = viewHolder.getView(R.id.tv_two);
                     TextView mTvThree = viewHolder.getView(R.id.tv_three);
                     onViewCallBack.callBack(mTvTitle, mTvHint, mTvOne, mTvTwo, mTvThree);
-                })
-                .setOnViewClickListener(onViewCallBack).create().show();
+                }).setOnViewClickListener(onViewCallBack).create().show();
     }
 
     /**
@@ -670,26 +612,19 @@ public class DialogRobotFactory {
      * @param onInputCompleteListener
      * @return
      */
-    public static TDialog createTransactionPasswordDialog(FragmentActivity
-                                                                  activity, InputBoxView.OnInputCompleteListener onInputCompleteListener) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_transaction_password_layout)
-                .setGravity(Gravity.BOTTOM)
-                .setScreenWidthAspect(activity, 1)
-                .addOnClickListener(R.id.iv_close)
-                .setOnBindViewListener(new OnBindViewListener() {
-                    @Override
-                    public void bindView(BindViewHolder viewHolder) {
-                        InputBoxView inputBoxView = viewHolder.getView(R.id.ibv_transaction);
-                        inputBoxView.setOnInputCompleteListener(onInputCompleteListener);
-                    }
-                })
-                .setOnViewClickListener(new OnViewClickListener() {
-                    @Override
-                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                        tDialog.dismiss();
-                    }
-                }).create().show();
+    public static TDialog createTransactionPasswordDialog(FragmentActivity activity, InputBoxView.OnInputCompleteListener onInputCompleteListener) {
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_transaction_password_layout).setGravity(Gravity.BOTTOM).setScreenWidthAspect(activity, 1).addOnClickListener(R.id.iv_close).setOnBindViewListener(new OnBindViewListener() {
+            @Override
+            public void bindView(BindViewHolder viewHolder) {
+                InputBoxView inputBoxView = viewHolder.getView(R.id.ibv_transaction);
+                inputBoxView.setOnInputCompleteListener(onInputCompleteListener);
+            }
+        }).setOnViewClickListener(new OnViewClickListener() {
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+            }
+        }).create().show();
 
     }
 
@@ -700,26 +635,19 @@ public class DialogRobotFactory {
      * @param onInputCompleteListener
      * @return
      */
-    public static TDialog createVerificationCodeDialog(FragmentActivity
-                                                               activity, InputBoxView.OnInputCompleteListener onInputCompleteListener) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_verification_code_layout)
-                .setGravity(Gravity.BOTTOM)
-                .setScreenWidthAspect(activity, 1)
-                .addOnClickListener(R.id.iv_close)
-                .setOnBindViewListener(new OnBindViewListener() {
-                    @Override
-                    public void bindView(BindViewHolder viewHolder) {
-                        InputBoxView inputBoxView = viewHolder.getView(R.id.ibv_transaction);
-                        inputBoxView.setOnInputCompleteListener(onInputCompleteListener);
-                    }
-                })
-                .setOnViewClickListener(new OnViewClickListener() {
-                    @Override
-                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                        tDialog.dismiss();
-                    }
-                }).create().show();
+    public static TDialog createVerificationCodeDialog(FragmentActivity activity, InputBoxView.OnInputCompleteListener onInputCompleteListener) {
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_verification_code_layout).setGravity(Gravity.BOTTOM).setScreenWidthAspect(activity, 1).addOnClickListener(R.id.iv_close).setOnBindViewListener(new OnBindViewListener() {
+            @Override
+            public void bindView(BindViewHolder viewHolder) {
+                InputBoxView inputBoxView = viewHolder.getView(R.id.ibv_transaction);
+                inputBoxView.setOnInputCompleteListener(onInputCompleteListener);
+            }
+        }).setOnViewClickListener(new OnViewClickListener() {
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+            }
+        }).create().show();
 
     }
 
@@ -730,74 +658,150 @@ public class DialogRobotFactory {
      * @return
      */
     public static TDialog createScreenDialog(FragmentActivity activity) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_screen_layout)
-                .setDialogAnimationRes(R.style.animate_dialog_right)
-                .setGravity(Gravity.RIGHT)
-                .setScreenHeightAspect(activity, 1f)
-                .setScreenWidthAspect(activity, 0.8f)
-                .addOnClickListener(R.id.bt_reset, R.id.bt_confirm)
-                .setOnBindViewListener(new OnBindViewListener() {
-                    @Override
-                    public void bindView(BindViewHolder viewHolder) {
-                        RecyclerView rvScreen = viewHolder.getView(R.id.rv_screen);
-                    }
-                })
-                .setOnViewClickListener(new OnViewClickListener() {
-                    @Override
-                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                        if (view.getId() == R.id.bt_confirm) {
-                            tDialog.dismiss();
-                        }
-                    }
-                }).create().show();
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_screen_layout).setDialogAnimationRes(R.style.animate_dialog_right).setGravity(Gravity.RIGHT).setScreenHeightAspect(activity, 1f).setScreenWidthAspect(activity, 0.8f).addOnClickListener(R.id.bt_reset, R.id.bt_confirm).setOnBindViewListener(new OnBindViewListener() {
+            @Override
+            public void bindView(BindViewHolder viewHolder) {
+                RecyclerView rvScreen = viewHolder.getView(R.id.rv_screen);
+            }
+        }).setOnViewClickListener(new OnViewClickListener() {
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                if (view.getId() == R.id.bt_confirm) {
+                    tDialog.dismiss();
+                }
+            }
+        }).create().show();
 
     }
 
     /**
      * 【问一问】 更多弹框
      */
-    public static TDialog createAskMore(FragmentActivity activity, OnViewClickListener
-            onViewClickListener) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_ask_more_layout)
-                .setGravity(Gravity.BOTTOM)
-                .setScreenWidthAspect(activity, 1f)
-                .addOnClickListener(R.id.tv_cancel, R.id.ll_what, R.id.ll_clear, R.id.ll_help)
-                .setOnBindViewListener(new OnBindViewListener() {
-                    @Override
-                    public void bindView(BindViewHolder viewHolder) {
-                    }
-                })
-                .setOnViewClickListener(onViewClickListener).create().show();
+    public static TDialog createAskMore(FragmentActivity activity, OnViewClickListener onViewClickListener) {
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_ask_more_layout).setGravity(Gravity.BOTTOM).setScreenWidthAspect(activity, 1f).addOnClickListener(R.id.tv_cancel, R.id.ll_what, R.id.ll_clear, R.id.ll_help).setOnBindViewListener(new OnBindViewListener() {
+            @Override
+            public void bindView(BindViewHolder viewHolder) {
+            }
+        }).setOnViewClickListener(onViewClickListener).create().show();
+    }
+
+
+    private static BindViewHolder bindViewHolder;
+
+    public static void dismissSpeech() {
+        try {
+            if (speechDialog != null) {
+                speechDialog.dismiss();
+                speechDialog = null;
+            }
+            bindViewHolder = null;
+            runnable = null;
+        } catch (Exception e) {
+
+        }
+
+
+    }
+
+    public static void resetSpeech() {
+        resetSpeech(1200);
+
+    }
+
+    public static final int SPEECH_END_TIME = 500;
+
+    public static void resetSpeech(long delayMillis) {
+        if (runnable != null) {
+            HandlerUtil.getMainHandler().removeCallbacks(runnable);
+
+        }
+        runnable = () -> {
+            dismissSpeech();
+        };
+        HandlerUtil.getMainHandler().postDelayed(runnable, delayMillis);
+
+    }
+
+    private static Runnable runnable;
+
+    public static void createSpeechDialog(FragmentActivity activity, SpeechModel model) {
+        synchronized (DialogRobotFactory.class) {
+            if (speechDialog != null) {
+                if (bindViewHolder != null) {
+                    resetSpeech();
+                    setSpeechView(bindViewHolder, model);
+                    return;
+                }
+            }
+            dismissSpeech();
+            speechDialog = new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(com.thfw.robotheart.R.layout.dialog_speech_layout).setDialogAnimationRes(R.style.animate_dialog_fade).setScreenWidthAspect(activity, WIDTH_ASPECT_2).setNotFocusable(true).setDimAmount(0.08f).setGravity(LhXkSet.voiceTextGravity).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    dismissSpeech();
+                }
+            }).setOnBindViewListener(viewHolder -> {
+                setSpeechView(viewHolder, model);
+            }).create().show();
+            resetSpeech();
+        }
+    }
+
+    private static void setSpeechView(BindViewHolder viewHolder, SpeechModel model) {
+
+        bindViewHolder = viewHolder;
+        if (viewHolder == null) {
+            return;
+        }
+        if (!ToastUtil.isMainThread()) {
+            HandlerUtil.getMainHandler().post(() -> setSpeechView(viewHolder, model));
+            return;
+        }
+        ImageView imageView = viewHolder.getView(com.thfw.robotheart.R.id.iv_voice);
+        TextView textView = viewHolder.getView(com.thfw.robotheart.R.id.tv_hint);
+        textView.setText(HtmlCompat.fromHtml(model.text, HtmlCompat.FROM_HTML_MODE_LEGACY));
+
+        textView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                //这个监听的回调是异步的，在监听完以后一定要把绘制监听移除，不然这个会一直回调，导致界面错乱
+                textView.getViewTreeObserver().removeOnPreDrawListener(this);
+
+                int line = textView.getLineCount();
+                if (line > 1) {
+                    ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) textView.getLayoutParams();
+                    lp.height = line * Util.dipToPx(17, ContextApp.get());
+                    textView.setLayoutParams(lp);
+                }
+                return true;
+            }
+        });
+        if (model.type != SpeechModel.Type.ING) {
+            resetSpeech(SPEECH_END_TIME);
+            Glide.with(imageView.getContext()).pauseRequests();
+            if (model.type == SpeechModel.Type.SUCCESS) {
+                imageView.setImageResource(com.thfw.ui.R.drawable.ic_speech_success);
+                imageView.animate().translationY(12).setInterpolator(new CycleInterpolator(2)).setDuration(400);
+            } else {
+                imageView.setImageResource(com.thfw.ui.R.drawable.ic_speech_fail);
+                imageView.animate().translationX(12).setInterpolator(new CycleInterpolator(2)).setDuration(400);
+            }
+        } else {
+            Glide.with(imageView.getContext()).asGif().load(R.drawable.live_micing_icon_black).into(imageView);
+        }
     }
 
     /**
      * 【分享】第三方
      */
-    public static TDialog createShare(FragmentActivity activity, OnBindViewListener
-            onBindViewListener, OnViewClickListener onViewClickListener) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_share_layout)
-                .setGravity(Gravity.BOTTOM)
-                .setScreenWidthAspect(activity, 1f)
-                .addOnClickListener(R.id.ll_wechat, R.id.ll_friend, R.id.ll_qq, R.id.ll_sina, R.id.tv_cancel)
-                .setOnBindViewListener(onBindViewListener)
-                .setOnViewClickListener(onViewClickListener).create().show();
+    public static TDialog createShare(FragmentActivity activity, OnBindViewListener onBindViewListener, OnViewClickListener onViewClickListener) {
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_share_layout).setGravity(Gravity.BOTTOM).setScreenWidthAspect(activity, 1f).addOnClickListener(R.id.ll_wechat, R.id.ll_friend, R.id.ll_qq, R.id.ll_sina, R.id.tv_cancel).setOnBindViewListener(onBindViewListener).setOnViewClickListener(onViewClickListener).create().show();
     }
 
     /**
      * 【状态】自定义
      */
-    public static TDialog createCustomStatus(FragmentActivity activity, OnBindViewListener
-            onBindViewListener, OnViewClickListener onViewClickListener) {
-        return new TDialog.Builder(activity.getSupportFragmentManager())
-                .setLayoutRes(R.layout.dialog_custom_status_layout)
-                .setGravity(Gravity.BOTTOM)
-                .setScreenWidthAspect(activity, 1f)
-                .addOnClickListener(R.id.tv_confirm, R.id.iv_close)
-                .setOnBindViewListener(onBindViewListener)
-                .setOnViewClickListener(onViewClickListener).create().show();
+    public static TDialog createCustomStatus(FragmentActivity activity, OnBindViewListener onBindViewListener, OnViewClickListener onViewClickListener) {
+        return new TDialog.Builder(activity.getSupportFragmentManager()).setLayoutRes(R.layout.dialog_custom_status_layout).setGravity(Gravity.BOTTOM).setScreenWidthAspect(activity, 1f).addOnClickListener(R.id.tv_confirm, R.id.iv_close).setOnBindViewListener(onBindViewListener).setOnViewClickListener(onViewClickListener).create().show();
     }
 
     public interface OnViewSelectCallBack extends OnViewClickListener {

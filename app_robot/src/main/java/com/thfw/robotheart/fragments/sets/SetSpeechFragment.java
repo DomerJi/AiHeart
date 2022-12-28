@@ -17,8 +17,10 @@ import com.thfw.base.models.Informant;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.adapter.InformantAdapter;
+import com.thfw.ui.common.LhXkSettingActivity;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.ui.widget.DeviceUtil;
 
 import java.util.List;
 
@@ -54,6 +56,12 @@ public class SetSpeechFragment extends RobotBaseFragment {
         mRvList = (RecyclerView) findViewById(R.id.rv_list);
         mRvList.setLayoutManager(new LinearLayoutManager(mContext));
         mTvHint = (TextView) findViewById(R.id.tv_hint);
+
+        if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+            findViewById(R.id.rl_focus_speech).setOnClickListener(v -> {
+                LhXkSettingActivity.startActivity(mContext);
+            });
+        }
     }
 
     @Override

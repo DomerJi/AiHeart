@@ -31,6 +31,7 @@ public class TitleView extends FrameLayout {
     private String centerText;
     private String rightText;
     private boolean showIcon;
+    private View view;
 
     public TitleView(@NonNull Context context) {
         this(context, null);
@@ -42,7 +43,7 @@ public class TitleView extends FrameLayout {
 
     public TitleView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        View view = inflate(context, R.layout.layout_top_navigation, this);
+        view = inflate(context, R.layout.layout_top_navigation, this);
         initView();
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.TitleView);
@@ -71,6 +72,12 @@ public class TitleView extends FrameLayout {
         setRightText(rightText);
         setCenterText(centerText);
 
+    }
+
+    public void setMeBackgroundColor(int color) {
+        if (view != null) {
+            view.setBackgroundColor(color);
+        }
     }
 
     private void initView() {

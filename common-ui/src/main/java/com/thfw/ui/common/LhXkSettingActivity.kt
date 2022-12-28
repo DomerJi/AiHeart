@@ -2,6 +2,7 @@ package com.thfw.ui.common
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -15,6 +16,7 @@ import com.thfw.base.utils.SharePreferenceUtil
 import com.thfw.ui.R
 import com.thfw.ui.base.KtBaseActivity
 import com.thfw.ui.dialog.OptionDialog
+import com.thfw.ui.widget.DeviceUtil
 import com.thfw.ui.widget.TitleView
 
 class LhXkSettingActivity : KtBaseActivity() {
@@ -114,6 +116,9 @@ class LhXkSettingActivity : KtBaseActivity() {
             LhXkSettingActivity.resetData()
             initData()
         })
+        if(DeviceUtil.isLhXk_OS_R_SD01B()){
+            mTitleView.setMeBackgroundColor(Color.parseColor("#333333"))
+        }
         // ================ 焦点跟随开关 ============
         mLlFaceFocus = findViewById<LinearLayout>(R.id.ll_face_focus) as LinearLayout
         mLlFocusChild = findViewById<LinearLayout>(R.id.ll_focus_child) as LinearLayout

@@ -1,5 +1,7 @@
 package com.thfw.robotheart;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
@@ -20,6 +22,7 @@ import androidx.annotation.RequiresApi;
 import androidx.multidex.MultiDexApplication;
 import androidx.room.Room;
 
+import com.ainirobot.coreservice.client.RobotApi;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
 import com.pl.sphelper.SPHelper;
@@ -42,20 +45,21 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.activitys.MainActivity;
 import com.thfw.robotheart.activitys.set.DormantActivity;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.push.helper.PushHelper;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.Dormant;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.voice.wakeup.WakeupHelper;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.commonsdk.utils.UMUtils;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 
 /**
  * 入口
@@ -74,8 +78,7 @@ public class MyApplication extends MultiDexApplication {
         SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator() {
             @Override
             public RefreshHeader createRefreshHeader(Context context, RefreshLayout layout) {
-                return new ClassicsHeader(context)
-                        .setTimeFormat(new SimpleDateFormat("更新于 MM-dd HH:mm", Locale.CHINA));
+                return new ClassicsHeader(context).setTimeFormat(new SimpleDateFormat("更新于 MM-dd HH:mm", Locale.CHINA));
             }
         });
         // 设置全局的Footer构建器
@@ -178,6 +181,8 @@ public class MyApplication extends MultiDexApplication {
             RobotUtil.hookWebView();
             initScreenReceiver();
             initActivityLifecycle();
+        } else if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+            initActivityLifecycle();
         }
         agreedInit();
     }
@@ -213,6 +218,15 @@ public class MyApplication extends MultiDexApplication {
 
     private static int startedActivityCount;
     private static int foregroundFlag = -1;
+    private static WeakReference<Activity> mTopActivity;
+
+    public static Activity getTopActivity() {
+        if (ifForeground() && mTopActivity != null) {
+            return mTopActivity.get();
+        }
+        return null;
+    }
+
     private static ActivityLifecycleCallbacks activityLifecycleCallbacks;
 
     private void initActivityLifecycle() {
@@ -231,11 +245,12 @@ public class MyApplication extends MultiDexApplication {
 
                 @Override
                 public void onActivityResumed(@NonNull Activity activity) {
+                    mTopActivity = new WeakReference<Activity>(activity);
                 }
 
                 @Override
                 public void onActivityPaused(@NonNull Activity activity) {
-
+                    mTopActivity = null;
                 }
 
                 @Override
@@ -258,6 +273,9 @@ public class MyApplication extends MultiDexApplication {
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
     }
 
+
+    private static final long ONE_NS_TIME = 1000 * 1000 * 1000;
+
     public static void onForeground() {
         int flag = ifForeground() ? 1 : 0;
         if (foregroundFlag != flag) {
@@ -270,8 +288,33 @@ public class MyApplication extends MultiDexApplication {
                     RobotUtil.showBar(getApp());
                     LogUtil.d("onForeground = " + 0);
                 }
+            } else if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+
+                if (foregroundFlag == 1) {
+                    if (!RobotApi.getInstance().isApiConnectedService()) {
+                        if (System.nanoTime() < 180 * ONE_NS_TIME) {
+                            HandlerUtil.getMainHandler().postDelayed(() -> LhXkHelper.init(), 1200);
+                        } else {
+                            LhXkHelper.init();
+                        }
+
+                    }
+                    LogUtil.d("onForeground = " + 1);
+                } else {
+                    if (RobotApi.getInstance().isApiConnectedService()) {
+                        LhXkHelper.disconnectApi();
+                    }
+                    MyApplication.kill();
+                }
+
             }
+
         }
+    }
+
+
+    public static void kill() {
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     public static boolean ifForeground() {

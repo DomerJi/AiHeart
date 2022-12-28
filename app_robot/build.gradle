@@ -174,7 +174,8 @@ dependencies {
 //    api 'com.affectiva.android:auto-sdk:1.2.1-SNAPSHOT'
 //    api 'com.affectiva.android:emotion-sdk:4.0-SNAPSHOT'
 //    api 'com.microsoft.projectoxford:emotion:1.0.0'
-
+    // 猎豹星空sdk
+    implementation files('libs\\robotservice.jar')
     // 歌词
     api 'me.wcy:lrcview:2.2'
 

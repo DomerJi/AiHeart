@@ -1,5 +1,7 @@
 package com.thfw.robotheart.activitys;
 
+import static com.thfw.robotheart.constants.AnimFileName.HOME_IP_ANIM_TIME;
+
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -69,6 +71,7 @@ import com.thfw.robotheart.activitys.text.BookActivity;
 import com.thfw.robotheart.activitys.text.BookStudyActivity;
 import com.thfw.robotheart.activitys.video.VideoHomeActivity;
 import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.port.ActionParams;
 import com.thfw.robotheart.port.SerialManager;
 import com.thfw.robotheart.push.AidlHelper;
@@ -105,8 +108,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-
-import static com.thfw.robotheart.constants.AnimFileName.HOME_IP_ANIM_TIME;
 
 public class MainActivity extends RobotBaseActivity implements View.OnClickListener, MsgCountManager.OnCountChangeListener {
 
@@ -1001,4 +1002,39 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             }
         }
     }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("主题对话,专业心理咨询,心理咨询",
+                () -> mClSpecialityTalk.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("倾诉吐槽",
+                () -> mLlTalk.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("测评问卷",
+                () -> mLlTest.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("成长训练",
+                () -> mLlExercise.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("正念冥想",
+                () -> mLlMusic.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("视频集锦",
+                () -> mLlVideo.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("思政文库",
+                () -> mLlBook.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("学一学",
+                () -> mLlStudy.performClick()));
+
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("我的",
+                () -> mClMe.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("设置",
+                () -> mClSetting.performClick()));
+
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("全国心理热线,心理热线,了解更多",
+                () -> mLlHotCall.performClick()));
+
+        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("搜索",
+                () -> startActivity(new Intent(mContext, SearchActivity.class))));
+    }
+
+
 }

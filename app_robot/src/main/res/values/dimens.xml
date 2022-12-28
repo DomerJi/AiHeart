@@ -6,6 +6,7 @@
     <!--导航栏高度-->
     <dimen name="navigation_height">50dp</dimen>
     <dimen name="set_top_bar_height">52dp</dimen>
+    <dimen name="set_top_bar_height_max">58dp</dimen>
 
     <dimen name="home_textSize">18sp</dimen>
     <dimen name="home_textSize_phone">16sp</dimen>

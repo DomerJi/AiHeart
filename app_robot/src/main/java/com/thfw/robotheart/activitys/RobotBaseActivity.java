@@ -20,6 +20,7 @@ import com.thfw.base.utils.HourUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.activitys.task.TaskActivity;
 import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.port.SerialManager;
 import com.thfw.robotheart.receiver.BootCompleteReceiver;
 import com.thfw.robotheart.robot.RobotUtil;
@@ -30,6 +31,7 @@ import com.thfw.ui.utils.UrgeUtil;
 import com.thfw.ui.voice.speech.SpeechHelper;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.ui.widget.DeviceUtil;
 
 /**
  * Author:pengs
@@ -39,6 +41,8 @@ import com.thfw.ui.voice.tts.TtsModel;
 public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActivity<T> implements SerialManager.RobotTouchListener {
 
     private static long lastTouch;
+    public static final int VOICE_STATIC = 0;
+    public static final int VOICE_CHANGED = 1;
 
     @Override
     public void onTouch(int code, int down) {
@@ -104,6 +108,10 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
             }
             showUrgedDialog();
         });
+
+        if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+            initLocalVoice(VOICE_STATIC);
+        }
     }
 
     @Override
@@ -113,6 +121,10 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
             DialogRobotFactory.getUrgedDialog().dismiss();
         }
         UrgeUtil.setListener(null);
+
+        if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+            clearLocalVoice(VOICE_STATIC);
+        }
     }
 
     @Override
@@ -145,4 +157,19 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
         Dormant.reset();
         return super.onKeyDown(keyCode, event);
     }
+
+
+
+
+    protected void initLocalVoice(int type) {
+        LhXkHelper.putAction(RobotBaseActivity.class, new LhXkHelper.SpeechToAction("返回", () -> {
+            onBackPressed();
+        }));
+    }
+
+    protected void clearLocalVoice(int type) {
+        LhXkHelper.removeAction(RobotBaseActivity.class);
+        LhXkHelper.removeAction(this.getClass());
+    }
+
 }

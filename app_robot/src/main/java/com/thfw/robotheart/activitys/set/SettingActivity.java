@@ -18,7 +18,6 @@ import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.EmptyUtil;
-import com.thfw.base.utils.LogUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.sets.SetBlueFragment;
@@ -31,6 +30,7 @@ import com.thfw.robotheart.fragments.sets.SetVolumeFragment;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
+import com.thfw.ui.widget.DeviceUtil;
 
 public class SettingActivity extends RobotBaseActivity {
 
@@ -76,13 +76,16 @@ public class SettingActivity extends RobotBaseActivity {
         mTvSetDormant = (TextView) findViewById(R.id.tv_set_dormant);
         mTvSetUpdate = (TextView) findViewById(R.id.tv_set_update);
         mRlSetUpdate = (RelativeLayout) findViewById(R.id.rl_set_update);
+        if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+            mTvSetSpeech.setText("语音和焦点");
+        }
     }
 
     @Override
     public void initData() {
 
         mLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content);
-        if (LogUtil.isLogEnabled() || RobotUtil.isSystemApp()) {
+        if (RobotUtil.isSystemApp()) {
             mLoader.add(R.id.tv_set_net, new SetNetFragment());
         } else {
             mTvSetNet.setVisibility(View.GONE);
@@ -90,7 +93,7 @@ public class SettingActivity extends RobotBaseActivity {
         mLoader.add(R.id.tv_set_volume, new SetVolumeFragment());
         mLoader.add(R.id.tv_set_speech, new SetSpeechFragment());
 
-        if (LogUtil.isLogEnabled() || RobotUtil.isSystemApp()) {
+        if (RobotUtil.isSystemApp()) {
             mLoader.add(R.id.tv_set_light, new SetLightFragment());
         } else {
             mTvSetLight.setVisibility(View.GONE);
@@ -99,7 +102,7 @@ public class SettingActivity extends RobotBaseActivity {
         mLoader.add(R.id.tv_set_dormant, new SetDormantFragment());
 //        mLoader.add(R.id.tv_set_shutdown, new SetShutdownFragment());
         mLoader.add(R.id.rl_set_update, new SetUpdateFragment());
-        if (LogUtil.isLogEnabled() || RobotUtil.isSystemApp()) {
+        if (RobotUtil.isSystemApp()) {
             mTabs = new View[]{mTvSetNet, mTvSetVolume, mTvSetSpeech, mTvSetLight, mTvSetBlue, mTvSetDormant, mRlSetUpdate};
         } else {
             mTabs = new View[]{mTvSetVolume, mTvSetSpeech, mTvSetBlue, mTvSetDormant, mRlSetUpdate};
