@@ -1,5 +1,7 @@
 package com.thfw.robotheart.activitys.video;
 
+import static android.view.View.VISIBLE;
+
 import android.animation.Animator;
 import android.app.Activity;
 import android.app.Service;
@@ -59,6 +61,7 @@ import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.talk.TalkItemJumpHelper;
 import com.thfw.robotheart.adapter.VideoItemAdapter;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.ExoPlayerFactory;
 import com.thfw.robotheart.view.TitleBarView;
@@ -74,8 +77,6 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.view.View.VISIBLE;
 
 /**
  * 视频播放
@@ -938,6 +939,39 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         }
         // 还可以添加更多按键操作，可以参阅 KeyEvent 类
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("播放,继续", () -> {
+            if (mExoPlayer != null && !mExoPlayer.isPlaying()) {
+                mExoPlayer.play();
+            }
+        }));
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("暂停,停止", () -> {
+            if (mExoPlayer != null && mExoPlayer.isPlaying()) {
+                mExoPlayer.pause();
+            }
+        }));
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("下一个,下一首,下一曲", () -> {
+            if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
+                int newPostion = this.mPlayPosition + 1;
+                if (newPostion > 0 && newPostion < mVideoList.size()) {
+                    videoChanged(this.mPlayPosition + 1);
+                }
+            }
+        }));
+
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("上一个,上一首,上一曲", () -> {
+            if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
+                int newPostion = this.mPlayPosition - 1;
+                if (newPostion > 0 && newPostion < mVideoList.size()) {
+                    videoChanged(this.mPlayPosition - 1);
+                }
+            }
+
+        }));
     }
 
 }

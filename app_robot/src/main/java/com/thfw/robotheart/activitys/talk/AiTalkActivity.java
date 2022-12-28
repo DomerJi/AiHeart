@@ -68,6 +68,7 @@ import com.thfw.robotheart.activitys.test.TestActivity;
 import com.thfw.robotheart.adapter.ChatAdapter;
 import com.thfw.robotheart.adapter.ChatSelectAdapter;
 import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.port.ActionParams;
 import com.thfw.robotheart.port.SerialManager;
 import com.thfw.robotheart.robot.RobotUtil;
@@ -76,6 +77,7 @@ import com.thfw.robotheart.util.PageJumpUtils;
 import com.thfw.robotheart.util.SVGAHelper;
 import com.thfw.robotheart.view.HomeIpTextView;
 import com.thfw.robotheart.view.TitleRobotView;
+import com.thfw.ui.common.LhXkSet;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.voice.PolicyHelper;
@@ -83,6 +85,7 @@ import com.thfw.ui.voice.speech.SpeechHelper;
 import com.thfw.ui.voice.tts.SimpleSynthesizerListener;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
 import com.thfw.ui.widget.SpeechTextView;
@@ -581,8 +584,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         String volumeRegex2 = ".{0,4}(调高|调低|调大|调小|增加|减少).{0,3}(音量|声音).{0,2}";
         String volumeRegex3 = ".{0,4}(音量|声音).{0,2}(调整|调|设置|增加|增|减少|减)(到|成|为)" +
                 // 1/3  0~100 30%
-                "((\\d+)\\/(\\d+)|(\\d|[1-9]\\d|100)|(\\d|[1-9]\\d|100)%" +
-                "|(一半|中等|中间|零|一|二|三|四|五|六|七|八|九|十))";
+                "((\\d+)\\/(\\d+)|(\\d|[1-9]\\d|100)|(\\d|[1-9]\\d|100)%" + "|(一半|中等|中间|零|一|二|三|四|五|六|七|八|九|十))";
         if (tempText.matches(volumeRegex) || tempText.matches(volumeRegex2)) {
             // 声音变小
             if (tempText.matches(".{0,6}(太高|太大).{0,6}")) {
@@ -715,8 +717,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         String surname = mContext.getResources().getString(R.string.surname);
         String[] surnames = surname.split(",");
         List<String> surnameList = Arrays.asList(surnames);
-        if ((surnameList.contains(inputText.substring(0, 1)) || surnameList.contains(inputText.substring(0, 2)))
-                && !inputText.substring(0, 1).equals(inputText.substring(1, 2))) {
+        if ((surnameList.contains(inputText.substring(0, 1)) || surnameList.contains(inputText.substring(0, 2))) && !inputText.substring(0, 1).equals(inputText.substring(1, 2))) {
             if (containsByWords(inputText)) {
                 return false;
             }
@@ -895,11 +896,8 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         String regexAsk2 = "(你|)(认识|知道).{1,8}(吗)";
         String regexAsk3 = "(给我|给|请|)(介绍一下).{1,8}";
         String regexAsk4 = "(把).{1,8}(介绍一下)(吧|)";
-        if (tempText.matches(regexAsk) || tempText.matches(regexAsk2)
-                || tempText.matches(regexAsk3) || tempText.matches(regexAsk4)) {
-            String replace = "(是)(谁|干什么用的|干什么的|干啥的|啥|什么东西|什么|干啥用的|做什么用的)(呀|)" +
-                    "|(你|)(认识|知道)" +
-                    "|(吗|把)|(给我|给|请|)(介绍一下)(吧|)";
+        if (tempText.matches(regexAsk) || tempText.matches(regexAsk2) || tempText.matches(regexAsk3) || tempText.matches(regexAsk4)) {
+            String replace = "(是)(谁|干什么用的|干什么的|干啥的|啥|什么东西|什么|干啥用的|做什么用的)(呀|)" + "|(你|)(认识|知道)" + "|(吗|把)|(给我|给|请|)(介绍一下)(吧|)";
             String replaceAfter = tempText.replaceAll(replace, "");
 
             final String tempTextfinal = replaceAfter;
@@ -941,11 +939,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         String REGEX_MUSIC3 = ".{0,5}(推荐|来|唱|听)(一个|一首|一曲|个|首|).{0,20}(的音乐|的歌曲|歌儿|歌吧|的歌|歌曲|音乐|曲儿|个歌|music).{0,3}";
         String REGEX_MUSIC4 = ".{0,5}(放|唱)(一个|一首|一曲|个|首).{1,20}";
         String REGEX_MUSIC5 = ".{0,5}(要听|想听).{1,20}";
-        if (tempText.matches(REGEX_MUSIC)
-                || tempText.matches(REGEX_MUSIC2)
-                || tempText.matches(REGEX_MUSIC3)
-                || tempText.matches(REGEX_MUSIC4)
-                || tempText.matches(REGEX_MUSIC5)) {
+        if (tempText.matches(REGEX_MUSIC) || tempText.matches(REGEX_MUSIC2) || tempText.matches(REGEX_MUSIC3) || tempText.matches(REGEX_MUSIC4) || tempText.matches(REGEX_MUSIC5)) {
             String REGEX_MUSIC_REPLACE = ".{0,5}(要听|想听)|.{0,5}(播放|推荐|来|放|唱|听)(一个|一首|一曲|个|首)|.{0,5}(播放)";
             String REGEX_MUSIC_REPLACE2 = "(的音乐|的歌曲|歌儿|歌吧|的歌|歌曲|音乐|曲儿|个歌|music).{0,3}";
 
@@ -1155,16 +1149,22 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 if (ing) {
                     startAnimFaceType(FACE_TYPE_LISTEN);
                     mStvText.show();
+                    if (DeviceUtil.isLhXk_OS_R_SD01B() && LhXkSet.voiceOpen == 1) {
+                        LhXkHelper.onSpeechStop();
+                    }
                 } else {
                     // 播完再听 播放tts不消失
                     if (!isReadAfterSpeech()) {
-                        if (!(PolicyHelper.getInstance().isSpeechMode()
-                                || PolicyHelper.getInstance().isPressMode())) {
+                        if (!(PolicyHelper.getInstance().isSpeechMode() || PolicyHelper.getInstance().isPressMode())) {
                             mStvText.hide();
                         }
                     }
                     startAnimFaceType(FACE_TYPE_FREE);
+                    if (DeviceUtil.isLhXk_OS_R_SD01B() && LhXkSet.voiceOpen == 1) {
+                        LhXkHelper.onSpeechStart();
+                    }
                 }
+
             }
         });
 
@@ -1385,10 +1385,8 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         if (v != null && (v instanceof EditText)) {
             int[] l = {0, 0};
             v.getLocationInWindow(l);
-            int left = l[0], top = l[1], bottom = top + v.getHeight(), right = left
-                    + v.getWidth();
-            if (event.getX() > left && event.getX() < right
-                    && event.getY() > top && event.getY() < bottom) {
+            int left = l[0], top = l[1], bottom = top + v.getHeight(), right = left + v.getWidth();
+            if (event.getX() > left && event.getX() < right && event.getY() > top && event.getY() < bottom) {
                 // 点击EditText的事件，忽略它。
                 return false;
             } else {
@@ -1403,8 +1401,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mRvList.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {//
 
             @Override
-            public void onLayoutChange(View v, int left, int top, int right,
-                                       int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 if (bottom < oldBottom) {
                     mRvList.postDelayed(new Runnable() {
 
@@ -1432,8 +1429,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             if (lastChatEntity != null && lastChatEntity.isTalkType()) {
                 long limitTime = chatEntity.time - lastChatEntity.time;
                 LogUtil.d(TAG, "sendData -> limitTime = " + limitTime);
-                if (limitTime > HourUtil.LEN_MINUTE ||
-                        System.currentTimeMillis() - lastTime > HourUtil.LEN_5_MINUTE) {
+                if (limitTime > HourUtil.LEN_MINUTE || System.currentTimeMillis() - lastTime > HourUtil.LEN_5_MINUTE) {
                     lastTime = System.currentTimeMillis();
                     mChatAdapter.addData(ChatEntity.createTime());
                     mChatAdapter.notifyItemInserted(mChatAdapter.getItemCount() - 1);
@@ -1450,8 +1446,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mChatAdapter.addData(chatEntity);
         // 插入一条
         mChatAdapter.notifyItemInserted(mChatAdapter.getItemCount() - 1);
-        if (!addTime && lastChatEntity != null && lastChatEntity.type == ChatEntity.TYPE_TO
-                && mChatAdapter.getItemCount() > 2) {
+        if (!addTime && lastChatEntity != null && lastChatEntity.type == ChatEntity.TYPE_TO && mChatAdapter.getItemCount() > 2) {
             mChatAdapter.notifyItemChanged(mChatAdapter.getItemCount() - 2);
         }
         mRvList.smoothScrollToPosition(mChatAdapter.getItemCount() - 1);
@@ -1720,8 +1715,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         final ChatEntity chatEntity = new ChatEntity(talkModel);
         // 树洞 自由输入逻辑判断
         if (mScene == 1) {
-            if (chatEntity.type == ChatEntity.TYPE_FROM_SELECT
-                    && !EmptyUtil.isEmpty(chatEntity.getTalkModel().getCheckRadio())) {
+            if (chatEntity.type == ChatEntity.TYPE_FROM_SELECT && !EmptyUtil.isEmpty(chatEntity.getTalkModel().getCheckRadio())) {
                 mCurrentChatType = chatEntity.type;
             } else {
                 mCurrentChatType = ChatEntity.TYPE_INPUT;
@@ -1786,8 +1780,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 DialogTalkModel.CheckRadioBean radioBean = list.get(position);
                 sendData(new ChatEntity(ChatEntity.TYPE_TO, radioBean.getValue()));
                 if (radioBean.getKey() > 0) {
-                    NetParams netParams = NetParams.crete().add("id", chatEntity.getTalkModel().getId())
-                            .add("value", radioBean.getKey());
+                    NetParams netParams = NetParams.crete().add("id", chatEntity.getTalkModel().getId()).add("value", radioBean.getKey());
                     onDialog(mScene, netParams);
                 } else {
                     PageJumpUtils.jump(radioBean.getHref(), new PageJumpUtils.OnJumpListener() {
@@ -1844,8 +1837,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (!handleResult) {
             return;
@@ -1865,18 +1857,14 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             case PageJumpUtils.JUMP_TEXT:
             case PageJumpUtils.JUMP_MUSIC:
             case PageJumpUtils.JUMP_AI_HOME:
-                mPresenter.onDialog(mScene, NetParams.crete()
-                        .add("id", mHelper.getTalkModel().getId())
-                        .add("value", "list_return"));
+                mPresenter.onDialog(mScene, NetParams.crete().add("id", mHelper.getTalkModel().getId()).add("value", "list_return"));
                 break;
             case ChatEntity.TYPE_RECOMMEND_TEXT:
             case ChatEntity.TYPE_RECOMMEND_VIDEO:
             case ChatEntity.TYPE_RECOMMEND_AUDIO:
             case ChatEntity.TYPE_RECOMMEND_AUDIO_ETC:
             case ChatEntity.TYPE_RECOMMEND_TEST:
-                mPresenter.onDialog(mScene, NetParams.crete()
-                        .add("id", mHelper.getTalkModel().getId())
-                        .add("value", "talking_recommend"));
+                mPresenter.onDialog(mScene, NetParams.crete().add("id", mHelper.getTalkModel().getId()).add("value", "talking_recommend"));
                 break;
             default:
                 ToastUtil.show("未处理该类型结果 -> " + requestCode);

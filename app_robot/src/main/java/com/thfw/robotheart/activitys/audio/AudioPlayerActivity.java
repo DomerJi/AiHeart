@@ -64,6 +64,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.AudioItemAdapter;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.ExoPlayerFactory;
 import com.thfw.robotheart.view.TitleRobotView;
@@ -236,6 +237,32 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                 }
             }
         });
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("播放,继续", () -> {
+            if (player != null && !player.isPlaying()) {
+                player.play();
+            }
+        }));
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("暂停,停止", () -> {
+            if (player != null && player.isPlaying()) {
+                player.pause();
+            }
+        }));
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("下一个,下一首,下一曲", () -> {
+            if (player != null && player.hasNext()) {
+                player.next();
+            }
+        }));
+        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("上一个,上一首,上一曲", () -> {
+            if (player != null && player.hasPrevious()) {
+                player.previous();
+            }
+
+        }));
     }
 
     /**
