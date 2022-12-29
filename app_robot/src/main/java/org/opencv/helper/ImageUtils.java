@@ -1,5 +1,6 @@
 package org.opencv.helper;
 
+import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
@@ -21,9 +22,7 @@ public class ImageUtils {
             buffer.get(data);
             return data;
         } else if (image.getFormat() == ImageFormat.YUV_420_888) {
-            data = NV21toJPEG(
-                    YUV_420_888toNV21(image),
-                    image.getWidth(), image.getHeight());
+            data = NV21toJPEG(YUV_420_888toNV21(image), image.getWidth(), image.getHeight());
         }
         return data;
     }
@@ -89,5 +88,70 @@ public class ImageUtils {
         yuv.compressToJpeg(new Rect(0, 0, width, height), 100, out);
         return out.toByteArray();
     }
+
+    private static int[] pixelsTmp;
+
+    public static int[] convertNv21toArgb8888(final byte[] data, final int width, final int height) {
+        final int size = width * height;
+        if (pixelsTmp == null) {
+            pixelsTmp = new int[size];
+        }
+        int u;
+        int v;
+        int y1;
+        int y2;
+        int y3;
+        int y4;
+
+        for (int i = 0, k = 0; i < size; i += 2, k += 2) {
+            y1 = data[i] & 0xff;
+            y2 = data[i + 1] & 0xff;
+            y3 = data[width + i] & 0xff;
+            y4 = data[width + i + 1] & 0xff;
+
+            v = data[size + k] & 0xff;
+            u = data[size + k + 1] & 0xff;
+            v = v - 128;
+            u = u - 128;
+
+            pixelsTmp[i] = convertYuvToArgb(y1, u, v);
+            pixelsTmp[i + 1] = convertYuvToArgb(y2, u, v);
+            pixelsTmp[width + i] = convertYuvToArgb(y3, u, v);
+            pixelsTmp[width + i + 1] = convertYuvToArgb(y4, u, v);
+
+            if (i != 0 && (i + 2) % width == 0) {
+                i += width;
+            }
+        }
+
+        return pixelsTmp;
+    }
+
+    @SuppressWarnings("PMD.ShortVariable")
+    private static int convertYuvToArgb(final int y, final int u, final int v) {
+        int r = y + (int) (1.772f * v);
+        int g = y - (int) (0.344f * v + 0.714f * u);
+        int b = y + (int) (1.402f * u);
+        r = r > 255 ? 255 : r < 0 ? 0 : r;
+        g = g > 255 ? 255 : g < 0 ? 0 : g;
+        b = b > 255 ? 255 : b < 0 ? 0 : b;
+        return 0xff000000 | (r << 16) | (g << 8) | b;
+    }
+
+    public static Bitmap getBitmapFromBytes(final int[] data, int previewWidth, int previewHeight) {
+        final Bitmap bitmap = Bitmap.createBitmap(previewWidth, previewHeight, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(data, 0, previewWidth, 0, 0, previewWidth, previewHeight);
+
+        return bitmap;
+    }
+
+    public static byte[] getByteArrayFromBitmap(final Bitmap bitmap) {
+        final int byteCount = bitmap.getByteCount();
+        final ByteBuffer byteBuffer = ByteBuffer.allocate(byteCount);
+        bitmap.copyPixelsToBuffer(byteBuffer);
+
+        return byteBuffer.array();
+    }
+
 
 }

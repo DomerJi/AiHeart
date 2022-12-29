@@ -321,6 +321,7 @@ public class LoginActivity extends RobotBaseActivity {
             checkOrganDialog();
         }
         wakeup();
+//        startActivity(new Intent(mContext, com.affectiva.camera.MainActivity.class));
     }
 
     /**

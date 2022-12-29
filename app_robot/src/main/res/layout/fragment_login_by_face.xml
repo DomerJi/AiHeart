@@ -38,10 +38,10 @@
 
         <LinearLayout
             android:id="@+id/cl_fail"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/tv_face_hint"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -145,6 +145,13 @@
         android:layout_height="wrap_content"
         app:layout_constraintRight_toRightOf="@id/cl_login_center"
         app:layout_constraintTop_toTopOf="@id/cl_login_center" />
+
+
+    <FrameLayout
+        android:id="@+id/fl_emotions"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
     <include layout="@layout/layout_login_bottom" />

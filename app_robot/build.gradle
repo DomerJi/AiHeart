@@ -171,7 +171,7 @@ dependencies {
     api 'org.bytedeco:opencv:4.5.3-1.5.6:android-arm64'
 
 //    api 'com.affectiva.android:affdexsdk:3.2'
-//    api 'com.affectiva.android:auto-sdk:1.2.1-SNAPSHOT'
+    api 'com.affectiva.android:auto-sdk:1.2.1-SNAPSHOT'
 //    api 'com.affectiva.android:emotion-sdk:4.0-SNAPSHOT'
 //    api 'com.microsoft.projectoxford:emotion:1.0.0'
     // 猎豹星空sdk

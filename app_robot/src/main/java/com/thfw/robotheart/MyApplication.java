@@ -22,6 +22,7 @@ import androidx.annotation.RequiresApi;
 import androidx.multidex.MultiDexApplication;
 import androidx.room.Room;
 
+import com.affectiva.camera.Preferences;
 import com.ainirobot.coreservice.client.RobotApi;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
@@ -129,6 +130,7 @@ public class MyApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         app = this;
+        Preferences.initialize(app);
         mStartTime = System.currentTimeMillis();
         ContextApp.init(this);
         SharePreferenceUtil.init(this);

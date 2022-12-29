@@ -3,7 +3,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.thfw.robotheart"> <!-- android:sharedUserId="android.uid.system" -->
     <!-- 友盟 -->
-    <uses-sdk tools:overrideLibrary="com.huawei.hms.framework.common,         com.huawei.hms.framework.network.grs,         com.huawei.hmf.tasks,         com.huawei.agconnect.core,         com.huawei.hms.log,         com.huawei.hms.base.device,         com.huawei.hms.base.ui,         com.huawei.hms.stats,         com.huawei.hms.base.availableupdate,         com.huawei.android.hms.base,         com.huawei.android.hms.openid,         org.android.agoo.oppo,         com.vivo.push,         org.android.agoo.vivo,         org.android.agoo.meizu,         com.huawei.android.hms.push,         org.android.agoo.huawei,         com.pushsdk,         com.huawei.hms.hatool,         com.huawei.hms.framework.network.frameworkcompat" />
+    <uses-sdk tools:overrideLibrary="com.huawei.hms.framework.common,
+     com.huawei.hms.framework.network.grs,
+     com.huawei.hmf.tasks,
+     com.huawei.agconnect.core,
+     com.huawei.hms.log,
+     com.huawei.hms.base.device,
+     com.huawei.hms.base.ui,
+     com.huawei.hms.stats,
+     com.huawei.hms.base.availableupdate,
+     com.huawei.android.hms.base,
+     com.huawei.android.hms.openid,
+     org.android.agoo.oppo,
+     com.vivo.push,
+     org.android.agoo.vivo,
+     org.android.agoo.meizu,
+     com.huawei.android.hms.push,
+     org.android.agoo.huawei,
+     com.pushsdk,
+     com.huawei.hms.hatool,
+     com.affectiva.vision,
+     com.huawei.hms.framework.network.frameworkcompat" />
     <!-- 录音/麦克风权限 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 联网权限 -->
     <uses-permission android:name="android.permission.INTERNET" /> <!-- wifi权限 -->
@@ -366,14 +386,15 @@
             android:name="org.android.agoo.vivo.PushMessageReceiverImpl"
             android:exported="true" />
 
-        <!--        <activity-->
-        <!--            android:name="com.affectiva.camera.MainActivity"-->
-        <!--            android:configChanges="screenSize|keyboardHidden|orientation"-->
-        <!--            android:hardwareAccelerated="true">-->
-        <!--        </activity>-->
-        <!--        <activity-->
-        <!--            android:name="com.affectiva.camera.SettingsActivity"-->
-        <!--            android:screenOrientation="portrait"></activity>-->
+        <activity
+            android:name="com.affectiva.camera.MainActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:hardwareAccelerated="true"/>
+
+        <activity
+            android:name="com.affectiva.camera.SettingsActivity"
+            android:screenOrientation="landscape"/>
+
     </application>
 
 </manifest>

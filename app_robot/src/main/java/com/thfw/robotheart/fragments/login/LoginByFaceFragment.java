@@ -1,10 +1,14 @@
 package com.thfw.robotheart.fragments.login;
 
+import static com.affectiva.camera.CameraDetector.MAX_FACES_NUMBER;
+import static com.affectiva.camera.CameraDetector.MAX_THREAD_POOL_SIZE;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,6 +26,13 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import com.affectiva.camera.EmotionsMetricsFragment;
+import com.affectiva.camera.Preferences;
+import com.affectiva.vision.Face;
+import com.affectiva.vision.Feature;
+import com.affectiva.vision.Frame;
+import com.affectiva.vision.FrameDetector;
+import com.affectiva.vision.ImageListener;
 import com.google.common.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
@@ -56,6 +67,7 @@ import com.thfw.user.login.UserManager;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCamera2CircleView;
+import org.opencv.android.JavaCamera2View;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
@@ -64,6 +76,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.helper.FaceUtil;
+import org.opencv.helper.ImageUtils;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.samples.facedetect.DetectionBasedTracker;
@@ -74,7 +87,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -216,8 +232,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 
     @Override
     public void initData() {
-        if (ContextCompat.checkSelfPermission(mContext, UIConfig.NEEDED_PERMISSION[0])
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(mContext, UIConfig.NEEDED_PERMISSION[0]) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         // opencv
@@ -227,6 +242,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         mJavaCamera2CircleView.setVisibility(SurfaceView.VISIBLE);
         mJavaCamera2CircleView.enableView();
         startAnim();
+//        initializeFrameDetector();
     }
 
     public void startAnim() {
@@ -327,8 +343,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         int height = mJavaCamera2CircleView.getHeight() - mIvLine.getHeight();
         int mRCircle = mJavaCamera2CircleView.getHeight() / 2;
 
-        lineAnimation = ObjectAnimator.ofFloat(mIvLine, "translationY",
-                mLineUpAnim ? 0 : height, mLineUpAnim ? height : 0);
+        lineAnimation = ObjectAnimator.ofFloat(mIvLine, "translationY", mLineUpAnim ? 0 : height, mLineUpAnim ? height : 0);
         lineAnimation.setDuration(3000);
         lineAnimation.setInterpolator(new LinearInterpolator());
         lineAnimation.addListener(new MyAnimationListener() {
@@ -385,6 +400,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         return onCameraFrameHandle(inputFrame);
     }
 
+
     /**
      * 初始化人脸检测
      */
@@ -416,8 +432,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                 if (mJavaDetector.empty()) {
                     Log.e(TAG, "Failed to load cascade classifier");
                     mJavaDetector = null;
-                } else
-                    Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
+                } else Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
             }
             cascadeDir.delete();
 
@@ -454,8 +469,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
                 if (mJavaEyeDetector.empty()) {
                     Log.e(TAG, "Failed to load cascade classifier");
                     mJavaEyeDetector = null;
-                } else
-                    Log.i(TAG, "Loaded cascade classifier from " + mCascadeEyeFile.getAbsolutePath());
+                } else Log.i(TAG, "Loaded cascade classifier from " + mCascadeEyeFile.getAbsolutePath());
             }
             cascadeDir.delete();
 
@@ -476,19 +490,28 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         Core.flip(rgba, flipRgbaMap, 1);
         mRgba = flipRgbaMap;
 
+        // 情绪识别
+        if (frameDetector != null && System.currentTimeMillis() - detectTimes > 149 && inputFrame instanceof JavaCamera2View.JavaCameraFrame) {
+            detectTimes = System.currentTimeMillis();
+            JavaCamera2View.JavaCameraFrame javaCameraFrame = (JavaCamera2View.JavaCameraFrame) inputFrame;
+            int[] buff = ImageUtils.convertNv21toArgb8888(javaCameraFrame.getNv21Byte(), javaCameraFrame.getmWidth(), javaCameraFrame.getmHeight());
+            final Bitmap bitmap = ImageUtils.getBitmapFromBytes(buff, javaCameraFrame.getmWidth(), javaCameraFrame.getmHeight());
+
+            final byte[] frameData = ImageUtils.getByteArrayFromBitmap(bitmap);
+            bitmap.recycle();
+            onFrameAvailable(frameData, javaCameraFrame.getmWidth(), javaCameraFrame.getmHeight(), Frame.Rotation.UPRIGHT);
+        }
+
         if (frameHandleIng || showFail) {
             return mRgba;
         } else if (failByNet) {
-            showFaceFail(inputFace ? "人脸录入失败，当前网络异常，请检查网络状态。" :
-                    "刷脸登录失败，当前网络异常，请检查网络状态。");
+            showFaceFail(inputFace ? "人脸录入失败，当前网络异常，请检查网络状态。" : "刷脸登录失败，当前网络异常，请检查网络状态。");
             return mRgba;
         } else if (failCount >= FAIL_COUNT_MAX) {
-            showFaceFail(inputFace ? "人脸录入失败，已经为您重试多次，要求面部无遮挡，光照好的环境。" :
-                    "刷脸登录失败，已为您重试多次，您可以选择重新尝试或其他登录方式");
+            showFaceFail(inputFace ? "人脸录入失败，已经为您重试多次，要求面部无遮挡，光照好的环境。" : "刷脸登录失败，已为您重试多次，您可以选择重新尝试或其他登录方式");
             return mRgba;
         } else if (System.currentTimeMillis() - beginTime > HourUtil.LEN_MINUTE) {
-            showFaceFail(inputFace ? "人脸录入超时，要求面部无遮挡，光照好的环境。" :
-                    "刷脸登录超时，您可以选择重新尝试或其他登录方式");
+            showFaceFail(inputFace ? "人脸录入超时，要求面部无遮挡，光照好的环境。" : "刷脸登录超时，您可以选择重新尝试或其他登录方式");
             return mRgba;
         }
         frameHandleIng = true;
@@ -513,12 +536,10 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         MatOfRect faces = new MatOfRect();
 
         if (mDetectorType == JAVA_DETECTOR) {
-            if (mJavaDetector != null)
-                mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
-                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
+            if (mJavaDetector != null) mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                    new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else if (mDetectorType == NATIVE_DETECTOR) {
-            if (mNativeDetector != null)
-                mNativeDetector.detect(mGray, faces);
+            if (mNativeDetector != null) mNativeDetector.detect(mGray, faces);
         } else {
             Log.e(TAG, "Detection method is not selected!");
         }
@@ -699,8 +720,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         if (!TextUtils.isEmpty(avatarUrl)) {
             factory.addImage("pic", avatarUrl);
         }
-        factory.addString("device_type", CommonParameter.getDeviceType())
-                .addString("device_id", CommonParameter.getDeviceId());
+        factory.addString("device_type", CommonParameter.getDeviceType()).addString("device_id", CommonParameter.getDeviceId());
         if (!TextUtils.isEmpty(CommonParameter.getOrganizationId())) {
             factory.addString("organization", CommonParameter.getOrganizationId());
         }
@@ -791,6 +811,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         cancelBorderAnim();
         cancelLineAnim();
         mMainHandler.removeCallbacksAndMessages(null);
+        stop();
         super.onDestroy();
     }
 
@@ -810,12 +831,10 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         MatOfRect faceDetections = new MatOfRect();
 
         if (mDetectorType == JAVA_DETECTOR) {
-            if (mJavaEyeDetector != null)
-                mJavaEyeDetector.detectMultiScale(image, faceDetections, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
-                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
+            if (mJavaEyeDetector != null) mJavaEyeDetector.detectMultiScale(image, faceDetections, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                    new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else if (mDetectorType == NATIVE_DETECTOR) {
-            if (mNativeEyeDetector != null)
-                mNativeEyeDetector.detect(image, faceDetections);
+            if (mNativeEyeDetector != null) mNativeEyeDetector.detect(image, faceDetections);
         } else {
             Log.e(TAG, "Detection method is not selected!");
         }
@@ -838,11 +857,9 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         // TODO: objdetect.CV_HAAR_SCALE_IMAGE
         if (mDetectorType == JAVA_DETECTOR) {
             if (mJavaEyeDetector != null)
-                mJavaEyeDetector.detectMultiScale(image, faceDetections, 1.1, 2, 2,
-                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
+                mJavaEyeDetector.detectMultiScale(image, faceDetections, 1.1, 2, 2, new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else if (mDetectorType == NATIVE_DETECTOR) {
-            if (mNativeEyeDetector != null)
-                mNativeEyeDetector.detect(image, faceDetections);
+            if (mNativeEyeDetector != null) mNativeEyeDetector.detect(image, faceDetections);
         } else {
             Log.e(TAG, "Detection method is not selected!");
         }
@@ -873,13 +890,115 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         Log.d(TAG, "angle is " + angle);
 
         for (Rect rect : rects) {
-            Imgproc.rectangle(mRgba, new Point(rect.x, rect.y), new Point(rect.x
-                    + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
+            Imgproc.rectangle(mRgba, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
         }
     }
 
     /**
      * ======================== 检测画框 ================================ 结束
+     */
+
+    /**
+     * ======================== 情绪识别 ================================ 开始
+     */
+
+    private Long firstFrameTimestamp;
+    private long detectTimes;
+
+    private FrameDetector frameDetector;
+    private EmotionsMetricsFragment emotionsMetricsFragment;
+
+    private void initializeFrameDetector() {
+
+        final int processingFrameRate = Preferences.getInstance().getIntValue(Preferences.PROCESSING_FRAME_RATE, 20);
+
+        frameDetector = new FrameDetector(mContext, processingFrameRate, MAX_FACES_NUMBER, MAX_THREAD_POOL_SIZE);
+        frameDetector.setImageListener(new ImageListener() {
+
+            @Override
+            public void onImageResults(Map<Integer, Face> map, Frame frame) {
+                Log.i("frameDetector", "map.size = " + map.size());
+                onFaceHandle(map.get(map.keySet().toArray()[0]));
+            }
+
+            @Override
+            public void onImageCapture(Frame frame) {
+            }
+        });
+
+        enableFrameDetectorsFeatures();
+
+        start();
+    }
+
+    public void onFaceHandle(Face face) {
+        if (emotionsMetricsFragment == null) {
+            emotionsMetricsFragment = new EmotionsMetricsFragment();
+            getActivity().getSupportFragmentManager().beginTransaction().add(R.id.fl_emotions, emotionsMetricsFragment).show(emotionsMetricsFragment).commit();
+        }
+        emotionsMetricsFragment.updateMetrics(face);
+//        final Face.DominantEmotionMetric dominantEmotionMetric = face.getDominantEmotion();
+//        final Face.DominantEmotion dominantEmotion = dominantEmotionMetric.getDominantEmotion();
+//        final Map<Face.Emotion, Float> emotionsMap = face.getEmotions();
+//        final Face.Mood mood = face.getMood();
+//
+//        final int angerValue = Math.round(emotionsMap.get(Face.Emotion.ANGER));
+//        final int joyValue = Math.round(emotionsMap.get(Face.Emotion.JOY));
+//        final int neutralValue = Math.round(emotionsMap.get(Face.Emotion.NEUTRAL));
+//        final int sadnessValue = Math.round(emotionsMap.get(Face.Emotion.SADNESS));
+//        final int surpriseValue = Math.round(emotionsMap.get(Face.Emotion.SURPRISE));
+//        final int valenceValue = Math.abs(emotionsMap.get(Face.Emotion.VALENCE).intValue());
+
+    }
+
+    /**
+     * Starts frameDetector and camera.
+     */
+    protected void start() {
+        if (this.frameDetector != null && !this.frameDetector.isRunning()) {
+            frameDetector.start();
+        }
+    }
+
+    /**
+     * Stops frameDetector and camera.
+     */
+    protected void stop() {
+        if (frameDetector != null) {
+            frameDetector.stop();
+        }
+    }
+
+    /**
+     * Enable detecting metrics, depending on the choice of settings.
+     */
+    private void enableFrameDetectorsFeatures() {
+        final List<Feature> features = new ArrayList<>();
+        features.add(Feature.EMOTIONS);
+        features.add(Feature.EXPRESSIONS);
+
+        frameDetector.enable(features);
+    }
+
+    public void onFrameAvailable(final byte[] frameBytes, final int width, final int height, final Frame.Rotation rotation) {
+        final long currentTime = System.nanoTime();
+
+        if (firstFrameTimestamp == null) {
+            firstFrameTimestamp = currentTime;
+        }
+
+        final long timestamp = (currentTime - firstFrameTimestamp) / 1000000;
+
+        final Frame frame = new Frame(width, height, frameBytes, Frame.ColorFormat.RGBA, rotation, timestamp);
+
+        if (frameDetector != null && frameDetector.isRunning()) {
+            frameDetector.process(frame);
+        }
+
+    }
+
+    /**
+     * ======================== 情绪识别 ================================ 结束
      */
 
 }
