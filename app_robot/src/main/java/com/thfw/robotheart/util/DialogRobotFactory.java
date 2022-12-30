@@ -810,7 +810,7 @@ public class DialogRobotFactory {
                 int line = textView.getLineCount();
                 if (line > 1) {
                     ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) textView.getLayoutParams();
-                    lp.height = line * Util.dipToPx(17, ContextApp.get());
+                    lp.height = line * Util.dipToPx(26, ContextApp.get());
                     textView.setLayoutParams(lp);
                 }
                 return true;
