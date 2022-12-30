@@ -153,6 +153,34 @@
         android:layout_height="160dp"
         app:layout_constraintBottom_toBottomOf="parent" />
 
+    <RadioGroup
+        android:id="@+id/rg_model"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/fl_emotions"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:ignore="MissingConstraints"
+        tools:visibility="visible">
+
+        <RadioButton
+            android:id="@+id/rb_emotions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="情绪"
+            android:textColor="@drawable/textcolor_black_green_selector" />
+
+        <RadioButton
+            android:id="@+id/rb_expressions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="表露"
+            android:textColor="@drawable/textcolor_black_green_selector" />
+
+    </RadioGroup>
 
     <include layout="@layout/layout_login_bottom" />
 

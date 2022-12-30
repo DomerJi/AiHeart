@@ -10,9 +10,9 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 258,
-      "versionName": "2.0.56",
-      "outputFile": "pad_258_2.0.56.apk"
+      "versionCode": 259,
+      "versionName": "2.0.57",
+      "outputFile": "../release/pad_259_2.0.57.apk"
     }
   ]
 }

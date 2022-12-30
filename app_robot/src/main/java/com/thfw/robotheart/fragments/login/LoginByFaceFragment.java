@@ -21,12 +21,15 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import com.affectiva.camera.BaseMetricsFragment;
 import com.affectiva.camera.EmotionsMetricsFragment;
+import com.affectiva.camera.ExpressionsMetricsFragment;
 import com.affectiva.camera.Preferences;
 import com.affectiva.vision.Face;
 import com.affectiva.vision.Feature;
@@ -237,7 +240,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         }
         // opencv
         initializeOpenCVDependencies();
-        initializeDetectEye();
+//        initializeDetectEye();
         mJavaCamera2CircleView.setCvCameraViewListener(this);
         mJavaCamera2CircleView.setVisibility(SurfaceView.VISIBLE);
         mJavaCamera2CircleView.enableView();
@@ -491,7 +494,7 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
         mRgba = flipRgbaMap;
 
         // 情绪识别
-        if (frameDetector != null && System.currentTimeMillis() - detectTimes > 149 && inputFrame instanceof JavaCamera2View.JavaCameraFrame) {
+        if (frameDetector != null && System.currentTimeMillis() - detectTimes > 99 && inputFrame instanceof JavaCamera2View.JavaCameraFrame) {
             detectTimes = System.currentTimeMillis();
             JavaCamera2View.JavaCameraFrame javaCameraFrame = (JavaCamera2View.JavaCameraFrame) inputFrame;
             int[] buff = ImageUtils.convertNv21toArgb8888(javaCameraFrame.getNv21Byte(), javaCameraFrame.getmWidth(), javaCameraFrame.getmHeight());
@@ -906,9 +909,19 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     private long detectTimes;
 
     private FrameDetector frameDetector;
-    private EmotionsMetricsFragment emotionsMetricsFragment;
+    private BaseMetricsFragment baseMetricsEmotionFragment;
+    private BaseMetricsFragment baseMetricsExpressionsFragment;
+    private int model = 0;
 
     private void initializeFrameDetector() {
+        RadioGroup mRgModel = (RadioGroup) findViewById(R.id.rg_model);
+        mRgModel.setVisibility(View.VISIBLE);
+        mRgModel.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                model = checkedId == R.id.rb_emotions ? 0 : 1;
+            }
+        });
 
         final int processingFrameRate = Preferences.getInstance().getIntValue(Preferences.PROCESSING_FRAME_RATE, 20);
 
@@ -917,6 +930,9 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
 
             @Override
             public void onImageResults(Map<Integer, Face> map, Frame frame) {
+                if (EmptyUtil.isEmpty(map)) {
+                    return;
+                }
                 Log.i("frameDetector", "map.size = " + map.size());
                 onFaceHandle(map.get(map.keySet().toArray()[0]));
             }
@@ -932,11 +948,22 @@ public class LoginByFaceFragment extends RobotBaseFragment implements CameraBrid
     }
 
     public void onFaceHandle(Face face) {
-        if (emotionsMetricsFragment == null) {
-            emotionsMetricsFragment = new EmotionsMetricsFragment();
-            getActivity().getSupportFragmentManager().beginTransaction().add(R.id.fl_emotions, emotionsMetricsFragment).show(emotionsMetricsFragment).commit();
+        if (model == 0) {
+            if (baseMetricsEmotionFragment == null) {
+                baseMetricsEmotionFragment = new EmotionsMetricsFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fl_emotions, baseMetricsEmotionFragment).commit();
+                baseMetricsExpressionsFragment = null;
+            }
+            baseMetricsEmotionFragment.updateMetrics(face);
+        } else {
+            if (baseMetricsExpressionsFragment == null) {
+                baseMetricsExpressionsFragment = new ExpressionsMetricsFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fl_emotions, baseMetricsExpressionsFragment).commit();
+                baseMetricsEmotionFragment = null;
+            }
+            baseMetricsExpressionsFragment.updateMetrics(face);
         }
-        emotionsMetricsFragment.updateMetrics(face);
+
 //        final Face.DominantEmotionMetric dominantEmotionMetric = face.getDominantEmotion();
 //        final Face.DominantEmotion dominantEmotion = dominantEmotionMetric.getDominantEmotion();
 //        final Map<Face.Emotion, Float> emotionsMap = face.getEmotions();
