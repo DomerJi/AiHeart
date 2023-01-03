@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.MoodLivelyModel;
 import com.thfw.base.models.OrganizationModel;
@@ -694,16 +695,16 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("首页", () -> {
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("首页", () -> {
             mLlHome.performClick();
         }));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("消息", () -> {
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("消息", () -> {
             mLlMessage.performClick();
         }));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("我的", () -> {
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("我的", () -> {
             mLlMe.performClick();
         }));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("倾诉吐槽", () -> {
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("倾诉吐槽", () -> {
             mLlAiChat.performClick();
         }));
     }

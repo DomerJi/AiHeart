@@ -24,6 +24,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.api.MusicApi;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.base.models.OrganizationSelectedModel;
@@ -1007,32 +1008,32 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
 
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("主题对话,专业心理咨询,心理咨询",
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("主题对话,专业心理咨询,心理咨询",
                 () -> mClSpecialityTalk.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("倾诉吐槽",
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("倾诉吐槽",
                 () -> mLlTalk.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("测评问卷",
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("测评问卷",
                 () -> mLlTest.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("成长训练",
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("成长训练",
                 () -> mLlExercise.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("正念冥想",
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("正念冥想",
                 () -> mLlMusic.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("视频集锦",
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("视频集锦",
                 () -> mLlVideo.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("思政文库",
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("思政文库",
                 () -> mLlBook.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("学一学",
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("学一学",
                 () -> mLlStudy.performClick()));
 
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("我的",
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("我的",
                 () -> mClMe.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("设置",
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("设置",
                 () -> mClSetting.performClick()));
 
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("全国心理热线,心理热线,了解更多",
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("全国心理热线,心理热线,了解更多",
                 () -> mLlHotCall.performClick()));
 
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("搜索",
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("搜索",
                 () -> startActivity(new Intent(mContext, SearchActivity.class))));
     }
 

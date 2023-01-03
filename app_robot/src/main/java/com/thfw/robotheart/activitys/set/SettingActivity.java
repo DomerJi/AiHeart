@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.ClickCountUtils;
@@ -179,15 +180,15 @@ public class SettingActivity extends RobotBaseActivity {
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
 
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("音量设置", () -> mTvSetVolume.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("语音设置,语音和焦点", () -> mTvSetSpeech.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("蓝牙设置", () -> mTvSetBlue.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("休眠设置", () -> mTvSetDormant.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("系统更新", () -> mTvSetUpdate.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("音量设置", () -> mTvSetVolume.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("语音设置,语音和焦点", () -> mTvSetSpeech.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("蓝牙设置", () -> mTvSetBlue.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("休眠设置", () -> mTvSetDormant.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("系统更新", () -> mTvSetUpdate.performClick()));
 
         if (RobotUtil.isSystemApp()) {
-            LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("网络设置", () -> mTvSetNet.performClick()));
-            LhXkHelper.putAction(MainActivity.class, new LhXkHelper.SpeechToAction("亮度设置", () -> mTvSetLight.performClick()));
+            LhXkHelper.putAction(MainActivity.class, new SpeechToAction("网络设置", () -> mTvSetNet.performClick()));
+            LhXkHelper.putAction(MainActivity.class, new SpeechToAction("亮度设置", () -> mTvSetLight.performClick()));
         }
     }
 

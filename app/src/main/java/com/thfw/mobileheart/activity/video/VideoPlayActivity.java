@@ -1,5 +1,7 @@
 package com.thfw.mobileheart.activity.video;
 
+import static android.view.View.VISIBLE;
+
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -43,6 +45,7 @@ import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.video.VideoSize;
 import com.luck.picture.lib.tools.ScreenUtils;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.VideoModel;
@@ -76,8 +79,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import static android.view.View.VISIBLE;
 
 /**
  * 悬浮窗播放，全屏播放，竖屏播放
@@ -579,17 +580,17 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("播放,继续", () -> {
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("播放,继续", () -> {
             if (mExoPlayer != null && !mExoPlayer.isPlaying()) {
                 mExoPlayer.play();
             }
         }));
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("暂停,停止", () -> {
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("暂停,停止", () -> {
             if (mExoPlayer != null && mExoPlayer.isPlaying()) {
                 mExoPlayer.pause();
             }
         }));
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("下一个,下一首,下一曲", () -> {
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("下一个,下一首,下一曲", () -> {
             if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
                 int newPostion = this.mPlayPosition + 1;
                 if (newPostion > 0 && newPostion < mVideoList.size()) {
@@ -598,7 +599,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
             }
         }));
 
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("上一个,上一首,上一曲", () -> {
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("上一个,上一首,上一曲", () -> {
             if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
                 int newPostion = this.mPlayPosition - 1;
                 if (newPostion > 0 && newPostion < mVideoList.size()) {

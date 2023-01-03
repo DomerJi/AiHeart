@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.api.HistoryApi;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.TestDetailModel;
@@ -25,6 +26,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.TestHintAdapter;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.utils.GlideUtil;
@@ -97,6 +99,20 @@ public class TestDetailActivity extends RobotBaseActivity<TestPresenter> impleme
         }
         mPresenter.onGetInfo(mTestId);
 
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(TestDetailActivity.class, new SpeechToAction("查看报告", () -> {
+            mLlSeePort.performClick();
+        }));
+        LhXkHelper.putAction(TestDetailActivity.class, new SpeechToAction("收藏", () -> {
+            mLlCollect.performClick();
+        }));
+        LhXkHelper.putAction(TestDetailActivity.class, new SpeechToAction("开始,开始测试", () -> {
+            mBtBeginTest.performClick();
+        }));
     }
 
     @Override

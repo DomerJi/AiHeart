@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.TestDetailModel;
 import com.thfw.base.models.TestResultModel;
@@ -20,6 +21,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.TestngAdapter;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.LoadingDialog;
@@ -111,9 +113,36 @@ public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements
                 boolean mUserInputEnabled = mTestIngAdapter.getDataList().get(position).getSelectedIndex() != -1;
                 LogUtil.d(TAG, "mUserInputEnabled = " + mUserInputEnabled);
                 mVpList.setUserInputEnabled(false);
+                initLocal();
             }
         });
 
+    }
+
+    private void initLocal() {
+        List<TestDetailModel.SubjectListBean> listBeans = mTestIngAdapter.getDataList();
+        final int currentItem = mVpList.getCurrentItem();
+        List<TestDetailModel.SubjectListBean> optionArray = listBeans.get(mVpList.getCurrentItem()).getOptionArray();
+        int len = optionArray.size();
+        LhXkHelper.removeAction(mVpList.getClass());
+        for (int i = 0; i < len; i++) {
+            TestDetailModel.SubjectListBean option = optionArray.get(i);
+            String speech = option.getOption() + option.getAnswer() + "," + option.getOption() + "," + option.getAnswer();
+            final int index = i;
+            LhXkHelper.putAction(mVpList.getClass(), new SpeechToAction(speech, () -> {
+                listBeans.get(currentItem).setSelectedIndex(index);
+                mTestIngAdapter.notifyItemChanged(currentItem);
+                if (mTestIngAdapter.getOnRvItemListener() != null) {
+                    mTestIngAdapter.getOnRvItemListener().onItemClick(listBeans, index);
+                }
+            }));
+        }
+    }
+
+    @Override
+    protected void clearLocalVoice(int type) {
+        super.clearLocalVoice(type);
+        LhXkHelper.removeAction(mVpList.getClass());
     }
 
     private void submit() {
@@ -142,14 +171,12 @@ public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements
     public void onSuccess(TestResultModel data) {
         LoadingDialog.hide();
         if (data.isHide()) {
-            DialogRobotFactory.createSimple(TestIngActivity.this, "温馨提示",
-                    "感谢你认真的填答，祝你拥有美好的一天",
-                    new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            finish();
-                        }
-                    });
+            DialogRobotFactory.createSimple(TestIngActivity.this, "温馨提示", "感谢你认真的填答，祝你拥有美好的一天", new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    finish();
+                }
+            });
         } else {
             data.setTestId(mModel.getPsychtestInfo().getId());
             TestResultWebActivity.startActivity(mContext, data);

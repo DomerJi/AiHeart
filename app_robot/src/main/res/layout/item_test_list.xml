@@ -20,6 +20,17 @@
         app:riv_corner_radius="@dimen/card_image_radius"
         app:riv_oval="false" />
 
+    <com.thfw.ui.widget.OrderView
+        android:id="@+id/orderView"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        app:layout_constraintLeft_toLeftOf="@id/riv_etc_bg"
+        app:layout_constraintTop_toTopOf="@id/riv_etc_bg"
+        app:order_bottom_right="@dimen/card_image_radius"
+        app:order_text_size="12sp"
+        app:order_top_left="@dimen/card_image_radius"
+        tools:ignore="MissingConstraints" />
+
 
     <TextView
         android:id="@+id/tv_hour"
@@ -30,7 +41,6 @@
         android:paddingRight="@dimen/card_image_bottom_padding"
         android:text="@string/title"
         android:textColor="@drawable/common_left_tab_textcolor_selector"
-        android:textSize="@dimen/card_image_bottom_textSize"
         app:layout_constraintBottom_toBottomOf="@id/riv_etc_bg" />
 
     <TextView

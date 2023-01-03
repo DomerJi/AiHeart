@@ -12,6 +12,7 @@ import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.TestListAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -60,6 +61,12 @@ public class TestActivity extends RobotBaseActivity<TestPresenter> implements Te
             }
         });
         mRvTest.setAdapter(mTestListAdapter);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(TestActivity.class, mRvTest);
     }
 
     @Override

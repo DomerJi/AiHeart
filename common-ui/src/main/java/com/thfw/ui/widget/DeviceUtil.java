@@ -1,7 +1,6 @@
 package com.thfw.ui.widget;
 
 import android.os.Build;
-import android.util.Log;
 
 /**
  * Author:pengs
@@ -10,6 +9,8 @@ import android.util.Log;
  */
 public class DeviceUtil {
 
+    private static final Boolean isLhXk_CM_GB03D = "CM-GB03D".equals(Build.MODEL);
+    private static final Boolean isLhXk_OS_R_SD01B = "OS-R-SD01B".equals(Build.MODEL);
 
     /**
      * 是否是猎户星空 CM-GB03D [豹大屏]
@@ -17,7 +18,7 @@ public class DeviceUtil {
      * @return
      */
     public static boolean isLhXk_CM_GB03D() {
-        return "CM-GB03D".equals(Build.MODEL);
+        return isLhXk_CM_GB03D;
     }
 
     /**
@@ -26,8 +27,7 @@ public class DeviceUtil {
      * @return
      */
     public static boolean isLhXk_OS_R_SD01B() {
-        Log.i("Build.MODEL", "Build.MODEL =" + Build.MODEL);
-        return "OS-R-SD01B".equals(Build.MODEL);
+        return isLhXk_OS_R_SD01B;
     }
 
 }

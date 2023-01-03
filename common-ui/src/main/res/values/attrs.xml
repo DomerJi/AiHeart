@@ -35,6 +35,17 @@
         <attr name="tv_centerTextColor" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="OrderView">
+        <attr name="order_bg_color" format="reference" />
+        <attr name="order_text_color" format="reference" />
+        <attr name="order_top_left" format="dimension" />
+        <attr name="order_top_right" format="dimension" />
+        <attr name="order_bottom_left" format="dimension" />
+        <attr name="order_bottom_right" format="dimension" />
+        <attr name="order_text_size" format="dimension" />
+    </declare-styleable>
+
+
     <declare-styleable name="TitleRobotView">
         <attr name="trv_centerText" format="string" />
         <attr name="trv_rightText" format="string" />

@@ -18,6 +18,7 @@ import com.scwang.smart.refresh.layout.api.RefreshHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 import com.scwang.smart.refresh.layout.simple.SimpleMultiListener;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.HomeEntity;
@@ -130,30 +131,30 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
 
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("主题对话,聊一聊",
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("主题对话,聊一聊",
                 () -> onAction(AnimFileName.TRANSITION_THEME)));
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("倾诉吐槽",
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("倾诉吐槽",
                 () -> onAction(AnimFileName.TRANSITION_TALK)));
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("测一测",
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("测一测",
                 () -> onAction(AnimFileName.TRANSITION_TEST)));
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("练一练",
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("练一练",
                 () -> onAction(AnimFileName.TRANSITION_TOOL)));
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("听一听",
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("听一听",
                 () -> onAction(AnimFileName.TRANSITION_AUDIO)));
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("看一看",
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("看一看",
                 () -> onAction(AnimFileName.TRANSITION_VIDEO)));
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("读一读",
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("读一读",
                 () -> onAction(AnimFileName.TRANSITION_BOOK)));
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("学一学",
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("学一学",
                 () -> onAction(AnimFileName.TRANSITION_IDEO)));
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("心情日记",
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("心情日记",
                 () -> MoodDetailActivity.startActivity(mContext)));
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("活跃",
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("活跃",
                 () -> MoodDetailActivity.startActivity(mContext)).setLike(true));
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("全国心理热线,心理热线,了解更多",
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("全国心理热线,心理热线,了解更多",
                 () -> mContext.startActivity(new Intent(mContext, HotPhoneActivity.class))).setLike(true));
 
-        LhXkHelper.putAction(HomeFragment.class, new LhXkHelper.SpeechToAction("搜索",
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("搜索",
                 () -> startActivity(new Intent(mContext, SearchActivity.class))));
     }
 

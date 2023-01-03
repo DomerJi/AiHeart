@@ -42,6 +42,7 @@ import com.iflytek.cloud.SpeechError;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.api.MusicApi;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.MyAnimationListener;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcDetailModel;
@@ -242,22 +243,22 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("播放,继续", () -> {
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("播放,继续", () -> {
             if (player != null && !player.isPlaying()) {
                 player.play();
             }
         }));
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("暂停,停止", () -> {
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("暂停,停止", () -> {
             if (player != null && player.isPlaying()) {
                 player.pause();
             }
         }));
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("下一个,下一首,下一曲", () -> {
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("下一个,下一首,下一曲", () -> {
             if (player != null && player.hasNext()) {
                 player.next();
             }
         }));
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("上一个,上一首,上一曲", () -> {
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("上一个,上一首,上一曲", () -> {
             if (player != null && player.hasPrevious()) {
                 player.previous();
             }

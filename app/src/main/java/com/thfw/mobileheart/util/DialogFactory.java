@@ -39,6 +39,7 @@ import com.opensource.svgaplayer.SVGAImageView;
 import com.opensource.svgaplayer.SVGAParser;
 import com.opensource.svgaplayer.SVGAVideoEntity;
 import com.thfw.base.ContextApp;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.AreaModel;
 import com.thfw.base.models.PickerData;
 import com.thfw.base.models.SpeechModel;
@@ -135,10 +136,10 @@ public class DialogFactory {
 
     private static void dialogSpeechRegister(TextView mTvLeft, TextView mTvRight) {
         if (DeviceUtil.isLhXk_CM_GB03D()) {
-            LhXkHelper.putAction(TDialog.class, new LhXkHelper.SpeechToAction(mTvLeft.getText().toString(), () -> {
+            LhXkHelper.putAction(TDialog.class, new SpeechToAction(mTvLeft.getText().toString(), () -> {
                 mTvLeft.performClick();
             }));
-            LhXkHelper.putAction(TDialog.class, new LhXkHelper.SpeechToAction(mTvRight.getText().toString(), () -> {
+            LhXkHelper.putAction(TDialog.class, new SpeechToAction(mTvRight.getText().toString(), () -> {
                 mTvRight.performClick();
             }));
         }

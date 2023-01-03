@@ -9,10 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.TestDetailModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.test.TestIngActivity;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -62,6 +65,9 @@ public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, 
             }
         });
         holder.mBtConfirm.setEnabled(position != 0);
+        LhXkHelper.putAction(TestIngActivity.class, new SpeechToAction("上一题", () -> {
+            holder.mBtConfirm.performClick();
+        }));
 
     }
 

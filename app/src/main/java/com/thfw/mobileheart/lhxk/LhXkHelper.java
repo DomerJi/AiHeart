@@ -1,7 +1,6 @@
 package com.thfw.mobileheart.lhxk;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,6 +19,7 @@ import com.ainirobot.coreservice.client.person.PersonApi;
 import com.ainirobot.coreservice.client.person.PersonListener;
 import com.ainirobot.coreservice.client.speech.SkillApi;
 import com.ainirobot.coreservice.client.speech.SkillCallback;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.LhXkListener;
 import com.thfw.base.models.SpeechModel;
 import com.thfw.base.utils.EmptyUtil;
@@ -194,41 +194,6 @@ public class LhXkHelper {
         return SpeechModel.create(oldWord).
 
                 setMatches(false);
-    }
-
-    public static class SpeechToAction {
-        public String text;
-        public int type;
-        public int code;
-        public boolean like;
-        public Intent intent;
-        public Runnable runnable;
-
-        public SpeechToAction(String text, Runnable runnable) {
-            this.text = text;
-            this.runnable = runnable;
-        }
-
-        public SpeechToAction setLike(boolean like) {
-            this.like = like;
-            return this;
-        }
-
-        public boolean run() {
-            if (runnable != null) {
-                try {
-                    runnable.run();
-                    LogUtil.i(TAG, "SpeechToAction -> text = " + text);
-                    return true;
-                } catch (Exception e) {
-                    LogUtil.i(TAG, "SpeechToAction -> Exception e " + e.getMessage() + " text = " + text);
-                    return false;
-                }
-            } else {
-                LogUtil.i(TAG, "SpeechToAction -> runnable is null text = " + text);
-                return false;
-            }
-        }
     }
 
     public static void disconnectApi() {

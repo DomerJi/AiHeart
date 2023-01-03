@@ -9,11 +9,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.face.OnSpeakTextListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseAdapter<T, V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V> {
+public abstract class BaseAdapter<T, V extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<V> implements OnSpeakTextListener {
     protected Context mContext;
     protected RecyclerView mRecyclerView;
 
@@ -112,5 +113,17 @@ public abstract class BaseAdapter<T, V extends RecyclerView.ViewHolder> extends 
 
     public void setOnRvItemListener(OnRvItemListener<T> onRvItemListener) {
         this.mOnRvItemListener = onRvItemListener;
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        return null;
+    }
+
+    @Override
+    public void onSpeakItemClick(int position) {
+        if (mOnRvItemListener != null && mDataList != null && position > -1 && position < mDataList.size()) {
+            mOnRvItemListener.onItemClick(mDataList, position);
+        }
     }
 }

@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 
 import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HourUtil;
@@ -162,7 +163,7 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
 
 
     protected void initLocalVoice(int type) {
-        LhXkHelper.putAction(RobotBaseActivity.class, new LhXkHelper.SpeechToAction("返回", () -> {
+        LhXkHelper.putAction(RobotBaseActivity.class, new SpeechToAction("返回", () -> {
             onBackPressed();
         }));
     }

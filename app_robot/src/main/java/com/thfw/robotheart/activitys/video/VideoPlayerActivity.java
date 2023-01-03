@@ -40,6 +40,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.thfw.base.api.HistoryApi;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.MyAnimationListener;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.ChatEntity;
@@ -944,17 +945,17 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("播放,继续", () -> {
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("播放,继续", () -> {
             if (mExoPlayer != null && !mExoPlayer.isPlaying()) {
                 mExoPlayer.play();
             }
         }));
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("暂停,停止", () -> {
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("暂停,停止", () -> {
             if (mExoPlayer != null && mExoPlayer.isPlaying()) {
                 mExoPlayer.pause();
             }
         }));
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("下一个,下一首,下一曲", () -> {
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("下一个,下一首,下一曲", () -> {
             if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
                 int newPostion = this.mPlayPosition + 1;
                 if (newPostion > 0 && newPostion < mVideoList.size()) {
@@ -963,7 +964,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
             }
         }));
 
-        LhXkHelper.putAction(this.getClass(), new LhXkHelper.SpeechToAction("上一个,上一首,上一曲", () -> {
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("上一个,上一首,上一曲", () -> {
             if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
                 int newPostion = this.mPlayPosition - 1;
                 if (newPostion > 0 && newPostion < mVideoList.size()) {

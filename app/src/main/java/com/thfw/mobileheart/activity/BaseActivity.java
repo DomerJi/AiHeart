@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.PermissionListener;
 import com.thfw.base.models.UrgedMsgModel;
 import com.thfw.base.utils.EmptyUtil;
@@ -92,7 +93,7 @@ public abstract class BaseActivity<T extends IPresenter> extends IBaseActivity<T
     }
 
     protected void initLocalVoice(int type) {
-        LhXkHelper.putAction(BaseActivity.class, new LhXkHelper.SpeechToAction("返回", () -> {
+        LhXkHelper.putAction(BaseActivity.class, new SpeechToAction("返回", () -> {
             onBackPressed();
         }));
     }

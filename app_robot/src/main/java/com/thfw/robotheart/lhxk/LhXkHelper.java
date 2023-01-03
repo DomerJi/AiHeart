@@ -1,7 +1,6 @@
 package com.thfw.robotheart.lhxk;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,6 +19,7 @@ import com.ainirobot.coreservice.client.person.PersonApi;
 import com.ainirobot.coreservice.client.person.PersonListener;
 import com.ainirobot.coreservice.client.speech.SkillApi;
 import com.ainirobot.coreservice.client.speech.SkillCallback;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.LhXkListener;
 import com.thfw.base.models.SpeechModel;
 import com.thfw.base.utils.EmptyUtil;
@@ -34,7 +34,7 @@ import com.thfw.ui.common.LhXkSet;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -55,7 +55,7 @@ public class LhXkHelper {
     private static int mReqId = -1;
     private static int mPersonId = -1;
 
-    private static LinkedHashMap<Integer, List<SpeechToAction>> mSpeechToActionMap = new LinkedHashMap<>();
+    private static LinkedHashMap<Integer, HashMap<String, SpeechToAction>> mSpeechToActionMap = new LinkedHashMap<>();
     private static PersonListener listener;
 
     // 别看我 的 人员id 和 别看我时间
@@ -118,12 +118,13 @@ public class LhXkHelper {
     }
 
     public static void putAction(int code, SpeechToAction speechToAction) {
-        List<SpeechToAction> actions = mSpeechToActionMap.get(code);
+        HashMap<String, SpeechToAction> actions = mSpeechToActionMap.get(code);
         if (actions == null) {
-            actions = new ArrayList<>();
+            actions = new HashMap<String, SpeechToAction>();
+            mSpeechToActionMap.put(code, actions);
         }
-        actions.add(speechToAction);
-        mSpeechToActionMap.put(code, actions);
+        actions.put(speechToAction.text, speechToAction);
+
     }
 
     public static void removeAction(Class classes) {
@@ -137,9 +138,9 @@ public class LhXkHelper {
     public static SpeechModel onActionText(String word, boolean end) {
         String oldWord = word;
         String newWord = word.replaceAll("(打开|点击)", "");
-        Set<Map.Entry<Integer, List<SpeechToAction>>> entrySet = mSpeechToActionMap.entrySet();
-        for (Map.Entry<Integer, List<SpeechToAction>> map : entrySet) {
-            List<SpeechToAction> list = map.getValue();
+        Set<Map.Entry<Integer, HashMap<String, SpeechToAction>>> entrySet = mSpeechToActionMap.entrySet();
+        for (Map.Entry<Integer, HashMap<String, SpeechToAction>> map : entrySet) {
+            Collection<SpeechToAction> list = map.getValue().values();
             for (SpeechToAction speechToAction : list) {
                 String regex;
                 String matchesWord;
@@ -176,8 +177,7 @@ public class LhXkHelper {
                     for (String key : words) {
                         int start = oldWord.indexOf(key);
                         if (start != -1) {
-                            oldWord = oldWord.substring(0, start) + "<font color='" + UIConfig.COLOR_HOUR + "'>" + key +
-                                    "</font>";
+                            oldWord = oldWord.substring(0, start) + "<font color='" + UIConfig.COLOR_HOUR + "'>" + key + "</font>";
                         }
                     }
                     if (end) {
@@ -193,41 +193,6 @@ public class LhXkHelper {
         return SpeechModel.create(oldWord).
 
                 setMatches(false);
-    }
-
-    public static class SpeechToAction {
-        public String text;
-        public int type;
-        public int code;
-        public boolean like;
-        public Intent intent;
-        public Runnable runnable;
-
-        public SpeechToAction(String text, Runnable runnable) {
-            this.text = text;
-            this.runnable = runnable;
-        }
-
-        public SpeechToAction setLike(boolean like) {
-            this.like = like;
-            return this;
-        }
-
-        public boolean run() {
-            if (runnable != null) {
-                try {
-                    runnable.run();
-                    LogUtil.i(TAG, "SpeechToAction -> text = " + text);
-                    return true;
-                } catch (Exception e) {
-                    LogUtil.i(TAG, "SpeechToAction -> Exception e " + e.getMessage() + " text = " + text);
-                    return false;
-                }
-            } else {
-                LogUtil.i(TAG, "SpeechToAction -> runnable is null text = " + text);
-                return false;
-            }
-        }
     }
 
     public static void disconnectApi() {
