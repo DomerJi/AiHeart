@@ -79,8 +79,12 @@
     <dimen name="login_button_height">54dp</dimen>
     <dimen name="login_edit_height_phone">45dp</dimen>
 
+    <dimen name="order_height">42dp</dimen>
+    <dimen name="order_width">42dp</dimen>
     <dimen name="card_image_radius">10dp</dimen>
-    <dimen name="card_image_radius2">16dp</dimen>
+    <dimen name="order_bottom_right">16dp</dimen>
+    <dimen name="order_top_left">10dp</dimen>
+    <dimen name="order_text_size">12dp</dimen>
     <dimen name="card_image_bottom_bg_height">40dp</dimen>
     <dimen name="card_image_play_height">46dp</dimen>
     <dimen name="card_image_bottom_textSize">12sp</dimen>

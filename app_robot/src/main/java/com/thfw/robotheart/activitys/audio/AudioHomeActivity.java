@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.reflect.TypeToken;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioLastEtcModel;
 import com.thfw.base.models.AudioTypeModel;
@@ -21,8 +22,10 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.AudioEtcTypeAdapter;
 import com.thfw.robotheart.fragments.media.AudioEtcListFragment;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.user.login.UserManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -126,6 +129,16 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
         mAudioEtcTypeAdapter.setDataListNotify(data);
         if (isSetEmpty) {
             mAudioEtcTypeAdapter.getOnRvItemListener().onItemClick(mAudioEtcTypeAdapter.getDataList(), 0);
+        }
+        int len = data.size();
+        if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+            for (int i = 0; i < len; i++) {
+                String name = data.get(i).getName();
+                final int index = i;
+                LhXkHelper.putAction(AudioHomeActivity.class, new SpeechToAction(name, () -> {
+                    mAudioEtcTypeAdapter.getOnRvItemListener().onItemClick(mAudioEtcTypeAdapter.getDataList(), index);
+                }));
+            }
         }
     }
 

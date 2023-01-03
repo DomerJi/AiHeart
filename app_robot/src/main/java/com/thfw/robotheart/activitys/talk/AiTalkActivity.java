@@ -33,6 +33,7 @@ import com.opensource.svgaplayer.SVGAImageView;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.thfw.base.api.MusicApi;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcDetailModel;
@@ -42,6 +43,7 @@ import com.thfw.base.models.ChosenModel;
 import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.models.GuPiaoModel;
 import com.thfw.base.models.MusicModel;
+import com.thfw.base.models.SpeechModel;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.WeatherDetailsModel;
 import com.thfw.base.net.HttpResult;
@@ -1275,7 +1277,10 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mStvText.setSpeechText("");
         LogUtil.d(TAG, "chooseOption(result)" + result + "; end = " + end);
         LogUtil.d(TAG, "chooseOption(result) mCurrentChatType = " + mCurrentChatType);
-
+        SpeechModel speechModel = LhXkHelper.onActionText(result, true);
+        if (speechModel.matches) {
+            return;
+        }
         if (mCurrentChatType == ChatEntity.TYPE_INPUT) {
             if (end) {
                 sendInputText(result);
@@ -1725,6 +1730,17 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         }
         onSceneHandle(talkModel);
         sendData(chatEntity);
+        // 语音打开猎户星空 & 是否推荐
+        if (DeviceUtil.isLhXk_OS_R_SD01B() && chatEntity.isRecommend() && chatEntity.getTalkModel() != null && chatEntity.getTalkModel().getRecommendInfo() != null) {
+            String title = chatEntity.getTalkModel().getRecommendInfo().getTitle();
+            final int position = mChatAdapter.getItemCount() - 1;
+            LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction(title, () -> {
+                RecyclerView.ViewHolder viewHolder = mRvList.findViewHolderForAdapterPosition(position);
+                if (viewHolder instanceof ChatAdapter.RecommendHolder) {
+                    ((ChatAdapter.RecommendHolder) viewHolder).itemView.performClick();
+                }
+            }));
+        }
         ttsHandle(chatEntity);
         if (mCurrentChatType == ChatEntity.TYPE_FROM_SELECT) {
             hideInput();
@@ -1969,4 +1985,55 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         return contains;
     }
 
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction("历史记录", () -> {
+            mLlTalkHistory.performClick();
+        }));
+        LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction("语音播报", () -> {
+            mLlVolumeSwitch.performClick();
+        }));
+        LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction("开启语音", () -> {
+            if (currentSelect) {
+                return;
+            }
+            currentSelect = true;
+            openOrCloseVoice();
+        }));
+
+        LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction("关闭语音", () -> {
+            if (!currentSelect) {
+                return;
+            }
+            currentSelect = false;
+            openOrCloseVoice();
+        }));
+
+        LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction("打开键盘", () -> {
+            if (mRlKeyword.getVisibility() == View.GONE) {
+                return;
+            }
+            mRlKeyword.performClick();
+        }));
+
+        LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction("关闭键盘", () -> {
+            hideInput();
+        }));
+    }
+
+    private void openOrCloseVoice() {
+        if (currentSelect) {
+            PolicyHelper.getInstance().startSpeech();
+            if (mStvText != null) {
+                mStvText.setSpeechTextHint("倾听中···");
+            }
+        } else {
+            LogUtil.d(TAG, "chooseOption ACTION_UP Pressed End ++++++++++++++++");
+            PolicyHelper.getInstance().end();
+            chooseOption(mStvText.getText(), true);
+            mStvText.hide();
+        }
+        onTalkModel(currentSelect);
+    }
 }

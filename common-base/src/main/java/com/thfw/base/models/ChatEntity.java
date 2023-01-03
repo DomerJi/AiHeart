@@ -179,4 +179,16 @@ public class ChatEntity implements IModel {
                 return "";
         }
     }
+
+    public boolean isRecommend() {
+        switch (type) {
+            case ChatEntity.TYPE_RECOMMEND_TEST: // 测评
+            case ChatEntity.TYPE_RECOMMEND_VIDEO: // 视频
+            case ChatEntity.TYPE_RECOMMEND_TEXT: // 文章
+            case ChatEntity.TYPE_RECOMMEND_AUDIO: // 音频
+            case ChatEntity.TYPE_RECOMMEND_AUDIO_ETC:
+                return true;
+        }
+        return false;
+    }
 }

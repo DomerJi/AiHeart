@@ -12,7 +12,9 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.ui.utils.GlideUtil;
+import com.thfw.ui.widget.OrderView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -46,14 +48,25 @@ public class AudioEtcListAdapter extends BaseAdapter<AudioEtcModel, AudioEtcList
 //                    + "</font>课时";
             holder.mTvHour.setText(bean.getMusicSize() + "课时");
         } else {
-            mHour = "已练习至  <font color='" + UIConfig.COLOR_HOUR + "'>" + bean.getListenHistorySize()
-                    + "</font>/" + bean.getMusicSize() + "  课时";
+            mHour = "已练习至  <font color='" + UIConfig.COLOR_HOUR + "'>" + bean.getListenHistorySize() + "</font>/" + bean.getMusicSize() + "  课时";
             holder.mTvHour.setText(HtmlCompat.fromHtml(mHour, HtmlCompat.FROM_HTML_MODE_LEGACY));
         }
-
+        holder.mOrderView.setOrder(position + 1);
         holder.mTvTitle.setText(bean.getTitle());
         GlideUtil.loadThumbnail(mContext, bean.getImg(), holder.mRivImage);
 
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+            case TYPE_SPEAK_ORDER:
+                return InstructScrollHelper.speakNumber(position + 1);
+
+        }
+        return super.getText(position, type);
     }
 
     public class AudioEdtListHolder extends RecyclerView.ViewHolder {
@@ -61,12 +74,14 @@ public class AudioEtcListAdapter extends BaseAdapter<AudioEtcModel, AudioEtcList
         private final TextView mTvTitle;
         private final TextView mTvHour;
         private final RoundedImageView mRivImage;
+        private final OrderView mOrderView;
 
         public AudioEdtListHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mRivImage = itemView.findViewById(R.id.riv_etc_bg);
             mTvHour = itemView.findViewById(R.id.tv_hour);
             mTvTitle = itemView.findViewById(R.id.tv_title);
+            mOrderView = itemView.findViewById(R.id.orderView);
             itemView.setOnClickListener(v -> {
                 if (mOnRvItemListener != null) {
                     mOnRvItemListener.onItemClick(getDataList(), getBindingAdapterPosition());

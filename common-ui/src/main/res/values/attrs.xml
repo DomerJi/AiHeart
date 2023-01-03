@@ -37,6 +37,7 @@
 
     <declare-styleable name="OrderView">
         <attr name="order_bg_color" format="reference" />
+        <attr name="order_bg_src" format="reference" />
         <attr name="order_text_color" format="reference" />
         <attr name="order_top_left" format="dimension" />
         <attr name="order_top_right" format="dimension" />

@@ -22,14 +22,12 @@
 
     <com.thfw.ui.widget.OrderView
         android:id="@+id/orderView"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="@dimen/order_width"
+        android:layout_height="@dimen/order_height"
         app:layout_constraintLeft_toLeftOf="@id/riv_etc_bg"
         app:layout_constraintTop_toTopOf="@id/riv_etc_bg"
-        app:order_bottom_right="@dimen/card_image_radius"
-        app:order_text_size="12sp"
-        app:order_top_left="@dimen/card_image_radius"
-        tools:ignore="MissingConstraints" />
+        app:order_bg_src="@drawable/order_robot_src"
+        app:order_text_size="12sp"/>
 
 
     <TextView

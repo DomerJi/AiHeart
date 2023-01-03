@@ -17,6 +17,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.adapter.AudioEtcListAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -29,8 +30,7 @@ import java.util.List;
  * Date: 2021/12/2 16:15
  * Describe:Todo
  */
-public class AudioEtcListFragment extends RobotBaseFragment<AudioPresenter>
-        implements AudioPresenter.AudioUi<List<AudioEtcModel>>, HourChangeHelper.HourChangeListener {
+public class AudioEtcListFragment extends RobotBaseFragment<AudioPresenter> implements AudioPresenter.AudioUi<List<AudioEtcModel>>, HourChangeHelper.HourChangeListener {
 
     private int type;
     private SmartRefreshLayout mRefreshLayout;
@@ -82,6 +82,13 @@ public class AudioEtcListFragment extends RobotBaseFragment<AudioPresenter>
     @Override
     public LifecycleProvider getLifecycleProvider() {
         return this;
+    }
+
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(AudioEtcListFragment.class, mRvEtcList);
     }
 
     @Override

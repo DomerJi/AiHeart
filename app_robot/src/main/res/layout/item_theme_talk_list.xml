@@ -18,7 +18,18 @@
         android:src="@drawable/default_card_image"
         app:layout_constraintDimensionRatio="5:3"
         app:riv_corner_radius="@dimen/card_image_radius"
-        app:riv_oval="false" />
+        app:riv_oval="false"
+        tools:ignore="MissingConstraints" />
+
+    <com.thfw.ui.widget.OrderView
+        android:id="@+id/orderView"
+        android:layout_width="@dimen/order_width"
+        android:layout_height="@dimen/order_height"
+        app:layout_constraintLeft_toLeftOf="@id/riv_etc_bg"
+        app:layout_constraintTop_toTopOf="@id/riv_etc_bg"
+        app:order_bg_src="@drawable/order_robot_src"
+        app:order_text_size="12sp"/>
+
 
 
     <TextView

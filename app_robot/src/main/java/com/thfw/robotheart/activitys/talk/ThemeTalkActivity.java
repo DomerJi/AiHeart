@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.opensource.svgaplayer.SVGAImageView;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.ThemeTalkModel;
@@ -18,6 +19,8 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.ThemeTalkAdapter;
 import com.thfw.robotheart.constants.AnimFileName;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.SVGAHelper;
 import com.thfw.robotheart.view.HomeIpTextView;
@@ -94,16 +97,22 @@ public class ThemeTalkActivity extends RobotBaseActivity<TalkPresenter> implemen
         talkAdapter.setOnRvItemListener(new OnRvItemListener<ThemeTalkModel>() {
             @Override
             public void onItemClick(List<ThemeTalkModel> list, int position) {
-                AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
-                        .setId(list.get(position).getId())
-                        .setCollected(list.get(position).getCollected() == 1)
-                        .setTitle(list.get(position).getTitle()));
+                AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT).setId(list.get(position).getId()).setCollected(list.get(position).getCollected() == 1).setTitle(list.get(position).getTitle()));
             }
         });
         mRvList.setAdapter(talkAdapter);
         mClTheme.setOnClickListener(v -> {
             AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_THEME));
         });
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(ThemeTalkActivity.class, new SpeechToAction("专业的咨询助理,咨询助理", () -> {
+            mClTheme.performClick();
+        }));
+        new InstructScrollHelper(ThemeTalkActivity.class, mRvList);
     }
 
     @Override

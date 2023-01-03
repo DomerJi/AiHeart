@@ -69,6 +69,8 @@
     <color name="transparent">#00000000</color>
     <color name="gain_verification">#21BE56</color>
 
+
+    <color name="gold">#FFD700</color>
     <!-- 白色 -->
     <color name="white">#FFFFFFFF</color>
     <color name="white_95">#F2FFFFFF</color>
