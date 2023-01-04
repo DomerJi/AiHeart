@@ -11,7 +11,7 @@ import java.util.Objects;
  * Date: 2022/11/18 14:57
  * Describe:Todo
  */
-public class PageStateModel implements IModel{
+public class PageStateModel implements IModel {
 
     private static final String TRUE_FLAG = "1";
 
@@ -33,8 +33,14 @@ public class PageStateModel implements IModel{
         this.hideRedFlag = hideRedFlag;
     }
 
+    /**
+     * 是否隐藏小红旗
+     *
+     * @return
+     */
     public boolean isHideRedFlag() {
         return TRUE_FLAG.equals(hideRedFlag);
+//        return true;
     }
 
     @Override
@@ -42,8 +48,7 @@ public class PageStateModel implements IModel{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PageStateModel that = (PageStateModel) o;
-        return StringUtil.contentEquals(homeBlack,that.homeBlack) &&
-                StringUtil.contentEquals(hideRedFlag,that.hideRedFlag);
+        return StringUtil.contentEquals(homeBlack, that.homeBlack) && StringUtil.contentEquals(hideRedFlag, that.hideRedFlag);
     }
 
     @Override

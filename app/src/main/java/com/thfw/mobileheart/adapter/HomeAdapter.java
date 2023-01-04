@@ -62,8 +62,7 @@ import java.util.List;
  * Date: 2021/7/22 10:21
  * Describe:首页适配器
  */
-public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder>
-        implements MyApplication.OnMinuteListener, MoodLivelyHelper.MoodLivelyListener {
+public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder> implements MyApplication.OnMinuteListener, MoodLivelyHelper.MoodLivelyListener {
     private static final long DELAY_TIME_BANNER = 5000;
     private PageStateViewModel pageStateViewModel;
 
@@ -84,6 +83,10 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                 RecyclerView.ViewHolder viewHolderSort = mRecyclerView.findViewHolderForLayoutPosition(1);
                 if (viewHolderSort instanceof SortHolder) {
                     ((SortHolder) viewHolderSort).setData();
+                }
+                RecyclerView.ViewHolder viewHolderMade = mRecyclerView.findViewHolderForLayoutPosition(2);
+                if (viewHolderMade instanceof MadeHolder) {
+                    ((MadeHolder) viewHolderMade).setFlag();
                 }
             }
         });
@@ -206,6 +209,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                 MadeHolder madeHolder = (MadeHolder) holder;
                 madeHolder.notifyTodayTime();
                 madeHolder.setMood(MoodLivelyHelper.getModel());
+                madeHolder.setFlag();
                 break;
             case HomeEntity.TYPE_TAB_TITLE:
                 TabTitleHolder tabTitleHolder = (TabTitleHolder) holder;
@@ -323,36 +327,34 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                         sparseArray.put(R.id.rl_tab_07, AnimFileName.TRANSITION_BOOK);
                         sparseArray.put(R.id.rl_tab_08, AnimFileName.TRANSITION_IDEO);
                     }
-                    DialogFactory.createSvgaDialog((FragmentActivity) mContext,
-                            sparseArray.get(v.getId()),
-                            new DialogFactory.OnSVGACallBack() {
-                                @Override
-                                public void callBack(SVGAImageView svgaImageView) {
-                                    switch (v.getId()) {
-                                        case R.id.cl_tab_01:
-                                            ThemeListActivity.startActivity(mContext);
-                                            break;
-                                        case R.id.rl_tab_03:
-                                            TestingActivity.startActivity(mContext);
-                                            break;
-                                        case R.id.rl_tab_04:
-                                            ExerciseActivity.startActivity(mContext);
-                                            break;
-                                        case R.id.rl_tab_05:
-                                            AudioHomeActivity.startActivity(mContext);
-                                            break;
-                                        case R.id.rl_tab_06:
-                                            VideoHomeActivity.startActivity(mContext);
-                                            break;
-                                        case R.id.rl_tab_07:
-                                            ReadHomeActivity.startActivity(mContext);
-                                            break;
-                                        case R.id.rl_tab_08:
-                                            StudyHomeActivity.startActivity(mContext);
-                                            break;
-                                    }
-                                }
-                            });
+                    DialogFactory.createSvgaDialog((FragmentActivity) mContext, sparseArray.get(v.getId()), new DialogFactory.OnSVGACallBack() {
+                        @Override
+                        public void callBack(SVGAImageView svgaImageView) {
+                            switch (v.getId()) {
+                                case R.id.cl_tab_01:
+                                    ThemeListActivity.startActivity(mContext);
+                                    break;
+                                case R.id.rl_tab_03:
+                                    TestingActivity.startActivity(mContext);
+                                    break;
+                                case R.id.rl_tab_04:
+                                    ExerciseActivity.startActivity(mContext);
+                                    break;
+                                case R.id.rl_tab_05:
+                                    AudioHomeActivity.startActivity(mContext);
+                                    break;
+                                case R.id.rl_tab_06:
+                                    VideoHomeActivity.startActivity(mContext);
+                                    break;
+                                case R.id.rl_tab_07:
+                                    ReadHomeActivity.startActivity(mContext);
+                                    break;
+                                case R.id.rl_tab_08:
+                                    StudyHomeActivity.startActivity(mContext);
+                                    break;
+                            }
+                        }
+                    });
 
                 }
             };
@@ -368,9 +370,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         }
 
         public void setData() {
-
-            boolean showFlag = (pageStateViewModel == null || pageStateViewModel.getPageStateLive().getValue() == null
-                    || !pageStateViewModel.getPageStateLive().getValue().isHideRedFlag());
+            boolean showFlag = (pageStateViewModel == null || pageStateViewModel.getPageStateLive().getValue() == null || !pageStateViewModel.getPageStateLive().getValue().isHideRedFlag());
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 int[] handleRedIds = new int[]{R.id.iv_tab_04, R.id.iv_tab_06, R.id.iv_tab_08};
@@ -408,6 +408,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         private ConstraintLayout mRootHotline;
         private TextView mTvTitle;
         private TextView mTvContent;
+        private ImageView mRivRedFlag;
 
         public MadeHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -417,14 +418,12 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             });
             mClLeft.setOnClickListener(v -> {
                 if (mContext instanceof FragmentActivity) {
-                    DialogFactory.createSvgaDialog((FragmentActivity) mContext,
-                            AnimFileName.TRANSITION_TALK,
-                            new DialogFactory.OnSVGACallBack() {
-                                @Override
-                                public void callBack(SVGAImageView svgaImageView) {
-                                    ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
-                                }
-                            });
+                    DialogFactory.createSvgaDialog((FragmentActivity) mContext, AnimFileName.TRANSITION_TALK, new DialogFactory.OnSVGACallBack() {
+                        @Override
+                        public void callBack(SVGAImageView svgaImageView) {
+                            ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
+                        }
+                    });
                 }
             });
 
@@ -443,6 +442,11 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
                 StatusActivity.startActivity(mContext);
             });
 
+        }
+
+        public void setFlag() {
+            boolean showFlag = (pageStateViewModel == null || pageStateViewModel.getPageStateLive().getValue() == null || !pageStateViewModel.getPageStateLive().getValue().isHideRedFlag());
+            mRivRedFlag.setVisibility(showFlag ? View.VISIBLE : View.GONE);
         }
 
         public void setMood(MoodLivelyModel mood) {
@@ -484,8 +488,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         public void notifyTodayTime() {
             if (UserManager.getInstance().isTrueLogin()) {
                 if (mTvTodayActivityValue != null) {
-                    mTvTodayActivityValue.setText(FunctionDurationUtil
-                            .getFunctionTimeHour(FunctionType.FUNCTION_APP));
+                    mTvTodayActivityValue.setText(FunctionDurationUtil.getFunctionTimeHour(FunctionType.FUNCTION_APP));
                 }
                 LogUtil.i("onMoodLively 05");
             } else {
@@ -512,6 +515,7 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
             mRootHotline = (ConstraintLayout) itemView.findViewById(R.id.root_hotline);
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             mTvContent = (TextView) itemView.findViewById(R.id.tv_content);
+            mRivRedFlag = itemView.findViewById(R.id.riv_red_flag);
         }
     }
 

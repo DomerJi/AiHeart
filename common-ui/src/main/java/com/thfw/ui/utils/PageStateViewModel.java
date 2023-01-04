@@ -18,11 +18,12 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 public class PageStateViewModel extends ViewModel {
 
     private MutableLiveData<PageStateModel> pageStateLive;
-    private static final String KEY_STATE = "key.state";
+    private static final String KEY_STATE = "key.state01";
 
     public MutableLiveData<PageStateModel> getPageStateLive() {
         if (pageStateLive == null) {
             pageStateLive = new MutableLiveData<>();
+            check();
         }
         return pageStateLive;
     }
@@ -32,6 +33,8 @@ public class PageStateViewModel extends ViewModel {
             PageStateModel pageStateModel = SharePreferenceUtil.getObject(KEY_STATE, PageStateModel.class);
             if (pageStateModel != null) {
                 getPageStateLive().setValue(pageStateModel);
+            } else {
+                getPageStateLive().setValue(new PageStateModel());
             }
         }
 
