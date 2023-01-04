@@ -178,6 +178,17 @@ public abstract class BaseActivity<T extends IPresenter> extends IBaseActivity<T
             ToastUtil.show("不是有效电话");
             return;
         }
+        if (true) {
+            try {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                Uri data = Uri.parse("tel:" + phone);
+                intent.setData(data);
+                startActivity(intent);
+                return;
+            } catch (Exception e) {
+
+            }
+        }
         phoneCall = phone;
         DialogFactory.createCustomDialog(this, new DialogFactory.OnViewCallBack() {
             @Override
@@ -272,8 +283,7 @@ public abstract class BaseActivity<T extends IPresenter> extends IBaseActivity<T
                 mTvRight.setBackgroundResource(R.drawable.dialog_button_selector);
                 ArrayList<String> noGrantedPermission = new ArrayList<>();
                 for (String str : NEEDED_PERMISSION) {
-                    if (ContextCompat.checkSelfPermission(BaseActivity.this, str)
-                            != PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(BaseActivity.this, str) != PackageManager.PERMISSION_GRANTED) {
                         noGrantedPermission.add(str);
                     }
                 }
