@@ -89,8 +89,7 @@ import me.wcy.lrcview.LrcView;
 /**
  * 正念冥想播放音频
  */
-public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> implements
-        VideoGestureHelper.VideoGestureListener, AudioPresenter.AudioUi<AudioEtcDetailModel> {
+public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> implements VideoGestureHelper.VideoGestureListener, AudioPresenter.AudioUi<AudioEtcDetailModel> {
 
 
     private static final String KEY_RECOMMEND = "key.recommend";
@@ -139,19 +138,16 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     private Runnable mExoPlayerErrorRunnable;
 
     public static void startActivity(Context context, AudioEtcModel audioEtcModel) {
-        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
-                .putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
+        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class).putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
     }
 
     public static void startActivity(Context context, AudioEtcModel audioEtcModel, TaskMusicEtcModel taskMusicEtcModel) {
         mStaticTaskEtcModel = taskMusicEtcModel;
-        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
-                .putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
+        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class).putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
     }
 
     public static void startActivity(Context context, AudioEtcDetailModel.AudioItemModel audioItemModel) {
-        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
-                .putExtra(KEY_RECOMMEND, audioItemModel), ChatEntity.TYPE_RECOMMEND_AUDIO);
+        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class).putExtra(KEY_RECOMMEND, audioItemModel), ChatEntity.TYPE_RECOMMEND_AUDIO);
     }
 
     @Override
@@ -263,6 +259,16 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                 player.previous();
             }
 
+        }));
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("收藏", () -> {
+            if (mIvCollect != null) {
+                mIvCollect.performClick();
+            }
+        }));
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("取消收藏", () -> {
+            if (mIvCollect != null && mIvCollect.isSelected()) {
+                mIvCollect.performClick();
+            }
         }));
     }
 
@@ -449,8 +455,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                 addCollect();
             });
             mTvEtcTitleLogcate.setText(mDetailModel.getCollectionInfo().getTitle() + mAudios.size() + "课时");
-            mTvEtcTitle.setText("所属章节：" + mDetailModel.getCollectionInfo().getTitle()
-                    + "  " + (mDetailModel.getCollectionInfo().getListenHistorySize()) + "/" + mAudios.size());
+            mTvEtcTitle.setText("所属章节：" + mDetailModel.getCollectionInfo().getTitle() + "  " + (mDetailModel.getCollectionInfo().getListenHistorySize()) + "/" + mAudios.size());
             mTvAudioTitle.setText(mAudios.get(mDetailModel.getCollectionInfo().getLastHourIndex()).getTitle());
             player.seekTo(mDetailModel.getCollectionInfo().getLastHourIndex(), 0);
         } else {
@@ -481,10 +486,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     public DefaultDataSourceFactory buildDataSourceFactory() {
 
         DefaultBandwidthMeter mDefaultBandwidthMeter = new DefaultBandwidthMeter();
-        DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(
-                mContext,
-                mDefaultBandwidthMeter,
-                new DefaultHttpDataSourceFactory("audio/mpeg", 15000, 15000, true));
+        DefaultDataSourceFactory upstreamFactory = new DefaultDataSourceFactory(mContext, mDefaultBandwidthMeter, new DefaultHttpDataSourceFactory("audio/mpeg", 15000, 15000, true));
         return upstreamFactory;
     }
 
@@ -698,8 +700,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     }
 
     @Override
-    public void onBrightnessGesture(MotionEvent e1, MotionEvent e2, float distanceX,
-                                    float distanceY) {
+    public void onBrightnessGesture(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         onVolumeGesture(e1, e2, distanceX, distanceY);
     }
 
@@ -760,174 +761,6 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                 }
             }
         });
-    }
-
-    public class PlayerListener implements Player.Listener {
-        private LoadingView mPbBar;
-
-        public void setPbBar(LoadingView mPbBar) {
-            this.mPbBar = mPbBar;
-        }
-
-        public LoadingView getLoading() {
-            return mPbBar;
-        }
-
-        private void uiPlayOrPause(boolean play) {
-            LoadingView mPbBar = getLoading();
-            if (mPbBar == null) {
-                return;
-            }
-            if (play) {
-                mPbBar.hide();
-            } else {
-                if (player != null && player.getPlayWhenReady()) {
-                    mPbBar.showLoadingNoText();
-                }
-            }
-            if (play) {
-                etcAnimState(true);
-            }
-        }
-
-
-        @Override
-        public void onPlaybackStateChanged(int state) {
-            if (isTask && state == Player.STATE_ENDED) {
-                onFinishMusic(mMusicId);
-            }
-            if (state == Player.STATE_READY) {
-                uiPlayOrPause(player.getPlayWhenReady());
-            } else if (state == Player.STATE_ENDED) {
-                if (autoFinished) {
-                    finish();
-                    return;
-                } else {
-                    player.setPlayWhenReady(false);
-                    player.seekTo(player.getCurrentWindowIndex(), 0);
-                    player.setPlayWhenReady(false);
-                    uiPlayOrPause(false);
-                    etcAnimState(false);
-                }
-            } else {
-                uiPlayOrPause(false);
-            }
-            LoadingView mPbBar = getLoading();
-            if (mPbBar == null) {
-                return;
-            }
-            if ("error".equals(String.valueOf(mPbBar.getTag()))) {
-                mPbBar.hide();
-            }
-
-        }
-
-        @Override
-        public void onPlayWhenReadyChanged(boolean playWhenReady, int reason) {
-            btPause.setVisibility(!playWhenReady ? View.GONE : View.VISIBLE);
-            btPlay.setVisibility(playWhenReady ? View.GONE : View.VISIBLE);
-            etcAnimState(playWhenReady);
-        }
-
-        /**
-         * 列表播放曲目切换监听
-         *
-         * @param mediaItem
-         * @param reason
-         */
-        @Override
-        public void onMediaItemTransition(@Nullable @org.jetbrains.annotations.Nullable MediaItem mediaItem, int reason) {
-            LogUtil.d(TAG, "onMediaItemTransition reason = " + reason);
-
-            if (isTask && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
-                onFinishMusic(mMusicId);
-            }
-            if (autoFinished && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
-                finish();
-                return;
-            }
-            // 刷新歌词及标题
-            mp3LrcLoad();
-
-            // 目录打开 自动切换音乐 正在播放条目刷新
-            if (mClContent != null && mClContent.getVisibility() == View.VISIBLE && player != null
-                    && mRvList != null && mRvList.getAdapter() != null) {
-                ((AudioItemAdapter) mRvList.getAdapter()).setCurrentIndex(player.getCurrentWindowIndex());
-            }
-
-            // 列表播放曲目切换监听
-            if (mDetailModel == null) {
-                return;
-            }
-            LogUtil.d("onMediaItemTransition -> " + mediaItem.playbackProperties.uri);
-            mTvAudioTitle.setText(mAudios.get(player.getCurrentWindowIndex()).getTitle());
-
-            mTvEtcTitle.setText("所属章节：" + mDetailModel.getCollectionInfo().getTitle()
-                    + "  " + (player.getCurrentWindowIndex() + 1) + "/" + mAudios.size());
-            int musicId = mAudios.get(player.getCurrentWindowIndex()).getId();
-            mMusicId = musicId;
-            mPresenter.addAudioHistory(musicId, mDetailModel.getCollectionInfo().getId());
-            // 列表页更新
-            HourChangeHelper.getInstance().notify(mDetailModel.getCollectionInfo().getId(), player.getCurrentWindowIndex() + 1, musicId);
-//            if (player == null) {
-//                return;
-//            }
-//            findViewById(R.id.exo_next).setAlpha(player.hasNext() ? 1f : 0.5f);
-//            findViewById(R.id.exo_prev).setAlpha(player.hasPrevious() ? 1f : 0.5f);
-        }
-
-        @Override
-        public void onPlayerError(ExoPlaybackException error) {
-            LogUtil.e("ExoPlaybackException", "error = " + error.type + "_" + error.getMessage());
-            if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
-                return;
-            }
-            LoadingView mPbBar = getLoading();
-            if (mPbBar != null) {
-                mPbBar.setTag("error");
-                mPbBar.showLoadingNoText();
-                uiPlayOrPause(false);
-            }
-
-            if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                String errorHandle = (player != null && player.hasNext()) ? "（3S后自动为您播放下一个)" : "（已经是最后一个）";
-                IOException cause = error.getSourceException();
-                if (cause instanceof HttpDataSource.HttpDataSourceException) {
-                    // An HTTP error occurred.
-                    HttpDataSource.HttpDataSourceException httpError = (HttpDataSource.HttpDataSourceException) cause;
-                    // This is the request for which the error occurred.
-                    DataSpec requestDataSpec = httpError.dataSpec;
-                    // It's possible to find out more about the error both by casting and by
-                    // querying the cause.
-                    if (httpError instanceof HttpDataSource.InvalidResponseCodeException) {
-                        // Cast to InvalidResponseCodeException and retrieve the response code,
-                        // message and headers.
-                        ToastUtil.show("音频资源错误" + errorHandle);
-                        exoPlayerErrorHandle();
-                    } else {
-                        // Try calling httpError.getCause() to retrieve the underlying cause,
-                        // although note that it may be null.
-                        if (httpError.getCause() instanceof UnknownHostException) {
-                            ToastUtil.show("网络异常，请检查网络");
-                        } else {
-                            ToastUtil.show("未知错误" + errorHandle);
-                            exoPlayerErrorHandle();
-                        }
-                    }
-                } else {
-                    ToastUtil.show("音频资源错误" + errorHandle);
-                    exoPlayerErrorHandle();
-                }
-            } else if (error.type == ExoPlaybackException.TYPE_RENDERER) {
-                ToastUtil.show("渲染错误 - TYPE_UNEXPECTED");
-            } else if (error.type == ExoPlaybackException.TYPE_UNEXPECTED) {
-                ToastUtil.show("未知错误 - TYPE_UNEXPECTED");
-            } else if (error.type == ExoPlaybackException.TYPE_REMOTE) {
-                ToastUtil.show("网络错误");
-            } else {
-                ToastUtil.show("未知错误");
-            }
-        }
     }
 
     private void exoPlayerErrorHandle() {
@@ -1040,5 +873,171 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         }
         // 还可以添加更多按键操作，可以参阅 KeyEvent 类
         return super.onKeyDown(keyCode, event);
+    }
+
+    public class PlayerListener implements Player.Listener {
+        private LoadingView mPbBar;
+
+        public void setPbBar(LoadingView mPbBar) {
+            this.mPbBar = mPbBar;
+        }
+
+        public LoadingView getLoading() {
+            return mPbBar;
+        }
+
+        private void uiPlayOrPause(boolean play) {
+            LoadingView mPbBar = getLoading();
+            if (mPbBar == null) {
+                return;
+            }
+            if (play) {
+                mPbBar.hide();
+            } else {
+                if (player != null && player.getPlayWhenReady()) {
+                    mPbBar.showLoadingNoText();
+                }
+            }
+            if (play) {
+                etcAnimState(true);
+            }
+        }
+
+
+        @Override
+        public void onPlaybackStateChanged(int state) {
+            if (isTask && state == Player.STATE_ENDED) {
+                onFinishMusic(mMusicId);
+            }
+            if (state == Player.STATE_READY) {
+                uiPlayOrPause(player.getPlayWhenReady());
+            } else if (state == Player.STATE_ENDED) {
+                if (autoFinished) {
+                    finish();
+                    return;
+                } else {
+                    player.setPlayWhenReady(false);
+                    player.seekTo(player.getCurrentWindowIndex(), 0);
+                    player.setPlayWhenReady(false);
+                    uiPlayOrPause(false);
+                    etcAnimState(false);
+                }
+            } else {
+                uiPlayOrPause(false);
+            }
+            LoadingView mPbBar = getLoading();
+            if (mPbBar == null) {
+                return;
+            }
+            if ("error".equals(String.valueOf(mPbBar.getTag()))) {
+                mPbBar.hide();
+            }
+
+        }
+
+        @Override
+        public void onPlayWhenReadyChanged(boolean playWhenReady, int reason) {
+            btPause.setVisibility(!playWhenReady ? View.GONE : View.VISIBLE);
+            btPlay.setVisibility(playWhenReady ? View.GONE : View.VISIBLE);
+            etcAnimState(playWhenReady);
+        }
+
+        /**
+         * 列表播放曲目切换监听
+         *
+         * @param mediaItem
+         * @param reason
+         */
+        @Override
+        public void onMediaItemTransition(@Nullable @org.jetbrains.annotations.Nullable MediaItem mediaItem, int reason) {
+            LogUtil.d(TAG, "onMediaItemTransition reason = " + reason);
+
+            if (isTask && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
+                onFinishMusic(mMusicId);
+            }
+            if (autoFinished && reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
+                finish();
+                return;
+            }
+            // 刷新歌词及标题
+            mp3LrcLoad();
+
+            // 目录打开 自动切换音乐 正在播放条目刷新
+            if (mClContent != null && mClContent.getVisibility() == View.VISIBLE && player != null && mRvList != null && mRvList.getAdapter() != null) {
+                ((AudioItemAdapter) mRvList.getAdapter()).setCurrentIndex(player.getCurrentWindowIndex());
+            }
+
+            // 列表播放曲目切换监听
+            if (mDetailModel == null) {
+                return;
+            }
+            LogUtil.d("onMediaItemTransition -> " + mediaItem.playbackProperties.uri);
+            mTvAudioTitle.setText(mAudios.get(player.getCurrentWindowIndex()).getTitle());
+
+            mTvEtcTitle.setText("所属章节：" + mDetailModel.getCollectionInfo().getTitle() + "  " + (player.getCurrentWindowIndex() + 1) + "/" + mAudios.size());
+            int musicId = mAudios.get(player.getCurrentWindowIndex()).getId();
+            mMusicId = musicId;
+            mPresenter.addAudioHistory(musicId, mDetailModel.getCollectionInfo().getId());
+            // 列表页更新
+            HourChangeHelper.getInstance().notify(mDetailModel.getCollectionInfo().getId(), player.getCurrentWindowIndex() + 1, musicId);
+//            if (player == null) {
+//                return;
+//            }
+//            findViewById(R.id.exo_next).setAlpha(player.hasNext() ? 1f : 0.5f);
+//            findViewById(R.id.exo_prev).setAlpha(player.hasPrevious() ? 1f : 0.5f);
+        }
+
+        @Override
+        public void onPlayerError(ExoPlaybackException error) {
+            LogUtil.e("ExoPlaybackException", "error = " + error.type + "_" + error.getMessage());
+            if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
+                return;
+            }
+            LoadingView mPbBar = getLoading();
+            if (mPbBar != null) {
+                mPbBar.setTag("error");
+                mPbBar.showLoadingNoText();
+                uiPlayOrPause(false);
+            }
+
+            if (error.type == ExoPlaybackException.TYPE_SOURCE) {
+                String errorHandle = (player != null && player.hasNext()) ? "（3S后自动为您播放下一个)" : "（已经是最后一个）";
+                IOException cause = error.getSourceException();
+                if (cause instanceof HttpDataSource.HttpDataSourceException) {
+                    // An HTTP error occurred.
+                    HttpDataSource.HttpDataSourceException httpError = (HttpDataSource.HttpDataSourceException) cause;
+                    // This is the request for which the error occurred.
+                    DataSpec requestDataSpec = httpError.dataSpec;
+                    // It's possible to find out more about the error both by casting and by
+                    // querying the cause.
+                    if (httpError instanceof HttpDataSource.InvalidResponseCodeException) {
+                        // Cast to InvalidResponseCodeException and retrieve the response code,
+                        // message and headers.
+                        ToastUtil.show("音频资源错误" + errorHandle);
+                        exoPlayerErrorHandle();
+                    } else {
+                        // Try calling httpError.getCause() to retrieve the underlying cause,
+                        // although note that it may be null.
+                        if (httpError.getCause() instanceof UnknownHostException) {
+                            ToastUtil.show("网络异常，请检查网络");
+                        } else {
+                            ToastUtil.show("未知错误" + errorHandle);
+                            exoPlayerErrorHandle();
+                        }
+                    }
+                } else {
+                    ToastUtil.show("音频资源错误" + errorHandle);
+                    exoPlayerErrorHandle();
+                }
+            } else if (error.type == ExoPlaybackException.TYPE_RENDERER) {
+                ToastUtil.show("渲染错误 - TYPE_UNEXPECTED");
+            } else if (error.type == ExoPlaybackException.TYPE_UNEXPECTED) {
+                ToastUtil.show("未知错误 - TYPE_UNEXPECTED");
+            } else if (error.type == ExoPlaybackException.TYPE_REMOTE) {
+                ToastUtil.show("网络错误");
+            } else {
+                ToastUtil.show("未知错误");
+            }
+        }
     }
 }

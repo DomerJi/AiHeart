@@ -20,11 +20,6 @@ import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
  */
 public class TalkItemJumpHelper {
 
-    public interface FromType {
-        int TOOL = 1;
-        int AI_CHAT = 2;
-    }
-
     public static void onItemClick(Context mContext, int type, DialogTalkModel.RecommendInfoBean recommendInfoBean) {
         onItemClick(mContext, type, recommendInfoBean, FromType.AI_CHAT);
     }
@@ -68,5 +63,10 @@ public class TalkItemJumpHelper {
                 ToastUtil.show("未处理该类型跳转 ->" + type);
                 break;
         }
+    }
+
+    public interface FromType {
+        int TOOL = 1;
+        int AI_CHAT = 2;
     }
 }

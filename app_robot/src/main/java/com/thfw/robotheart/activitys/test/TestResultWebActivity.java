@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
+import android.widget.ScrollView;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +33,7 @@ import com.thfw.robotheart.activitys.talk.AiTalkActivity;
 import com.thfw.robotheart.activitys.text.BookDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.TestRecommendAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -51,13 +53,11 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
     private TitleRobotView tvTitleView;
     private RecyclerView mRvCommend;
     private TestResultModel testResultModel;
+    private ScrollView mSvView;
 
 
     public static void startActivity(Context context, TestResultModel testResultModel) {
-        context.startActivity(new Intent(context, TestResultWebActivity.class)
-                .putExtra(KEY_DATA, testResultModel)
-                .putExtra(KEY_URL, ApiHost.getTestH5Host(testResultModel.getResultId()))
-                .putExtra(KEY_TITLE, "测评结果"));
+        context.startActivity(new Intent(context, TestResultWebActivity.class).putExtra(KEY_DATA, testResultModel).putExtra(KEY_URL, ApiHost.getTestH5Host(testResultModel.getResultId())).putExtra(KEY_TITLE, "测评结果"));
     }
 
     @Override
@@ -74,6 +74,7 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
     public void initView() {
         tvTitleView = findViewById(R.id.titleView);
         mRvCommend = findViewById(R.id.rv_recommend);
+        mSvView = findViewById(R.id.sv_view);
         mRvCommend.setHasFixedSize(true);
         mRvCommend.setLayoutManager(new GridLayoutManager(mContext, 4));
 
@@ -106,7 +107,7 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
                             return;
                         }
                         if (testResultModel != null) {
-                            findViewById(R.id.sv_view).scrollTo(0, 0);
+                            mSvView.scrollTo(0, 0);
                             // 解决 推荐内容 先出现闪烁的问题
                             HandlerUtil.getMainHandler().postDelayed(() -> {
                                 if (testResultModel.getRecommendInfo() != null) {
@@ -117,8 +118,7 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
                             }, 650);
                         }
                     }
-                })
-                .createAgentWeb();// 创建AgentWeb。
+                }).createAgentWeb();// 创建AgentWeb。
 
         mAgentWeb = preAgentWeb.get();
         // 不使用缓存
@@ -194,6 +194,12 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
     }
 
     @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(TestResultWebActivity.class, mSvView);
+    }
+
+    @Override
     public void onDestroy() {
         AgentWebConfig.clearDiskCache(this);
         mAgentWeb.getWebLifeCycle().onDestroy();
@@ -237,8 +243,7 @@ public class TestResultWebActivity extends RobotBaseActivity<TestPresenter> impl
                         TestDetailActivity.startActivity(mContext, infoBean.getInfo().getId());
                         break;
                     case 2: // 主题对话
-                        AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
-                                .setId(infoBean.getInfo().getId()));
+                        AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT).setId(infoBean.getInfo().getId()));
                         break;
                     case 3: // 音频
                         AudioEtcModel audioEtcModel = new AudioEtcModel();

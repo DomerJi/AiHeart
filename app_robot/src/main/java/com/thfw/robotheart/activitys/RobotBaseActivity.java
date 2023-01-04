@@ -41,9 +41,9 @@ import com.thfw.ui.widget.DeviceUtil;
  */
 public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActivity<T> implements SerialManager.RobotTouchListener {
 
-    private static long lastTouch;
     public static final int VOICE_STATIC = 0;
     public static final int VOICE_CHANGED = 1;
+    private static long lastTouch;
 
     @Override
     public void onTouch(int code, int down) {
@@ -158,8 +158,6 @@ public abstract class RobotBaseActivity<T extends IPresenter> extends IBaseActiv
         Dormant.reset();
         return super.onKeyDown(keyCode, event);
     }
-
-
 
 
     protected void initLocalVoice(int type) {

@@ -48,6 +48,9 @@ import java.util.Set;
 
 public class WeatherActivity extends RobotBaseActivity {
 
+    public static final int REQUEST_CODE = 10;
+    private static WeatherDetailsModel model;
+    private static WeatherDetailsModel firstModel;
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private android.widget.TextView mTvTemp;
     private android.widget.TextView mTvWeather;
@@ -73,23 +76,18 @@ public class WeatherActivity extends RobotBaseActivity {
     private WeatherCityAdapter weatherCityAdapter;
     private RecyclerView mRvAlarms;
 
-    @Override
-    public int getContentView() {
-        return R.layout.activity_weather;
-    }
-
-    private static WeatherDetailsModel model;
-    private static WeatherDetailsModel firstModel;
-
     public static WeatherDetailsModel getFirstModel() {
         return firstModel;
     }
 
-    public static final int REQUEST_CODE = 10;
-
     public static void startActivity(Context mContext, WeatherDetailsModel model) {
         WeatherActivity.model = model;
         ((Activity) mContext).startActivityForResult(new Intent(mContext, WeatherActivity.class), REQUEST_CODE);
+    }
+
+    @Override
+    public int getContentView() {
+        return R.layout.activity_weather;
     }
 
     @Override

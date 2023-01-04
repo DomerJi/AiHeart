@@ -37,10 +37,10 @@ public class OrderView extends FrameLayout {
 
         view = inflate(context, R.layout.layout_order_view, this);
         mTvOrder = findViewById(R.id.tv_order);
-//        if (!DeviceUtil.isLhXk_OS_R_SD01B()) {
-//            setVisibility(GONE);
-//            return;
-//        }
+        if (!DeviceUtil.isLhXk_OS_R_SD01B()) {
+            setVisibility(GONE);
+            return;
+        }
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.OrderView);
             final int orderBgColor = ta.getColor(R.styleable.OrderView_order_bg_color, -1);

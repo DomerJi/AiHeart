@@ -139,6 +139,67 @@ public class LoginActivity extends RobotBaseActivity {
                 + "\n当前机构编码：" + (TextUtils.isEmpty(organId) ? "空" : organId));
     }
 
+    public static void onLoginFail(FragmentActivity activity) {
+        if (EmptyUtil.isEmpty(activity)) {
+            return;
+        }
+        DialogRobotFactory.createFullSvgaDialog(activity, AnimFileName.EMOJI_SHIWANG, new DialogRobotFactory.OnSVGACallBack() {
+            @Override
+            public void callBack(SVGAImageView svgaImageView) {
+
+            }
+        });
+        TtsHelper.getInstance().start(new TtsModel("请重新登录哦"), null);
+    }
+
+    public static void agreeDialog(FragmentActivity activity, OnViewClickListener onViewClickListener) {
+        DialogRobotFactory.createCustomDialog(activity, new DialogRobotFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+
+                String html = "请你务必审慎阅读、充分理解 " +
+                        " <font color='" + UIConfig.COLOR_RED + "'>《用户服务协议》</font>" +
+                        "和<font color='" + UIConfig.COLOR_RED + "'>《隐私保护政策》</font>各条款。<p> </p>" +
+                        "如您同意所列条款，请点击\"同意\"按钮，开始使用我们的产品和服务。";
+
+                mTvHint.setText(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY));
+                mTvHint.setOnClickListener(v -> {
+                    activity.startActivity(new Intent(activity, PrivacyPolicyActivity.class));
+                });
+
+                mTvTitle.setText("欢迎使用AI咨询师");
+                mTvLeft.setText("拒绝");
+                mTvRight.setText("同意");
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                tDialog.dismiss();
+                if (onViewClickListener != null) {
+                    onViewClickListener.onViewClick(viewHolder, view, tDialog);
+                }
+            }
+        });
+    }
+
+    public static void agreedClickDialog(CheckBox mCbProduct) {
+        if (LoginActivity.AGREE_CLICK_DIALOG) {
+            mCbProduct.setOnClickListener(v -> {
+                if (mCbProduct.isChecked()) {
+                    mCbProduct.setChecked(false);
+                    LoginActivity.agreeDialog((FragmentActivity) mCbProduct.getContext(), new OnViewClickListener() {
+                        @Override
+                        public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                            if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                                mCbProduct.setChecked(true);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
+
     @Override
     public int getContentView() {
         return R.layout.activity_login;
@@ -257,7 +318,6 @@ public class LoginActivity extends RobotBaseActivity {
         }
     }
 
-
     /**
      * 禁止权限后的弹框处理
      *
@@ -364,68 +424,6 @@ public class LoginActivity extends RobotBaseActivity {
     private void checkOrganDialog() {
         if (!CommonParameter.isValid() && checkPermissionsNoRequest()) {
             showOrganIdNoValid(LoginActivity.this);
-        }
-    }
-
-
-    public static void onLoginFail(FragmentActivity activity) {
-        if (EmptyUtil.isEmpty(activity)) {
-            return;
-        }
-        DialogRobotFactory.createFullSvgaDialog(activity, AnimFileName.EMOJI_SHIWANG, new DialogRobotFactory.OnSVGACallBack() {
-            @Override
-            public void callBack(SVGAImageView svgaImageView) {
-
-            }
-        });
-        TtsHelper.getInstance().start(new TtsModel("请重新登录哦"), null);
-    }
-
-    public static void agreeDialog(FragmentActivity activity, OnViewClickListener onViewClickListener) {
-        DialogRobotFactory.createCustomDialog(activity, new DialogRobotFactory.OnViewCallBack() {
-            @Override
-            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-
-                String html = "请你务必审慎阅读、充分理解 " +
-                        " <font color='" + UIConfig.COLOR_RED + "'>《用户服务协议》</font>" +
-                        "和<font color='" + UIConfig.COLOR_RED + "'>《隐私保护政策》</font>各条款。<p> </p>" +
-                        "如您同意所列条款，请点击\"同意\"按钮，开始使用我们的产品和服务。";
-
-                mTvHint.setText(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY));
-                mTvHint.setOnClickListener(v -> {
-                    activity.startActivity(new Intent(activity, PrivacyPolicyActivity.class));
-                });
-
-                mTvTitle.setText("欢迎使用AI咨询师");
-                mTvLeft.setText("拒绝");
-                mTvRight.setText("同意");
-            }
-
-            @Override
-            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                tDialog.dismiss();
-                if (onViewClickListener != null) {
-                    onViewClickListener.onViewClick(viewHolder, view, tDialog);
-                }
-            }
-        });
-    }
-
-    public static void agreedClickDialog(CheckBox mCbProduct) {
-        if (LoginActivity.AGREE_CLICK_DIALOG) {
-            mCbProduct.setOnClickListener(v -> {
-                if (mCbProduct.isChecked()) {
-                    mCbProduct.setChecked(false);
-                    LoginActivity.agreeDialog((FragmentActivity) mCbProduct.getContext(), new OnViewClickListener() {
-                        @Override
-                        public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                            if (view.getId() == com.thfw.ui.R.id.tv_right) {
-                                mCbProduct.setChecked(true);
-                            }
-                        }
-                    });
-                }
-            });
         }
     }
 }

@@ -136,6 +136,8 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
                 String name = data.get(i).getName();
                 final int index = i;
                 LhXkHelper.putAction(AudioHomeActivity.class, new SpeechToAction(name, () -> {
+                    mAudioEtcTypeAdapter.setSelectedIndex(index);
+                    mAudioEtcTypeAdapter.notifyDataSetChanged();
                     mAudioEtcTypeAdapter.getOnRvItemListener().onItemClick(mAudioEtcTypeAdapter.getDataList(), index);
                 }));
             }

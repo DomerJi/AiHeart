@@ -1,5 +1,12 @@
 package com.thfw.robotheart.activitys.set;
 
+import static android.os.BatteryManager.BATTERY_STATUS_CHARGING;
+import static android.os.BatteryManager.BATTERY_STATUS_DISCHARGING;
+import static android.os.BatteryManager.BATTERY_STATUS_FULL;
+import static android.os.BatteryManager.BATTERY_STATUS_NOT_CHARGING;
+import static android.os.BatteryManager.BATTERY_STATUS_UNKNOWN;
+import static android.os.BatteryManager.EXTRA_STATUS;
+
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -36,23 +43,16 @@ import com.thfw.ui.voice.wakeup.WakeupHelper;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
 
-import static android.os.BatteryManager.BATTERY_STATUS_CHARGING;
-import static android.os.BatteryManager.BATTERY_STATUS_DISCHARGING;
-import static android.os.BatteryManager.BATTERY_STATUS_FULL;
-import static android.os.BatteryManager.BATTERY_STATUS_NOT_CHARGING;
-import static android.os.BatteryManager.BATTERY_STATUS_UNKNOWN;
-import static android.os.BatteryManager.EXTRA_STATUS;
-
 public class DormantActivity extends RobotBaseActivity
         implements Dormant.MinuteChangeListener, SerialManager.ElectricityListener,
         SerialManager.RobotTouchListener {
 
+    private static DormantActivity dormantActivity;
     private SVGAImageView mIvAnim;
     private android.widget.TextView mTvTime;
     private String mOriginalText;
     // 唤醒过程中不允许，多次唤醒
     private boolean wakeupIng = false;
-
     private String[] mEmojiFileNames = new String[]{
             AnimFileName.EMOJI_CHUMO,
             AnimFileName.EMOJI_HUANXING,
@@ -64,13 +64,11 @@ public class DormantActivity extends RobotBaseActivity
             AnimFileName.EMOJI_XUANYUN,
             AnimFileName.EMOJI_QINGTING,
     };
-
     private int testIndex = 0;
     private int originCharge = -1;
     private BroadcastReceiver mBatInfoReceiver;
     private int level;
     private boolean chargeIng;
-    private static DormantActivity dormantActivity;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, DormantActivity.class);
@@ -80,6 +78,17 @@ public class DormantActivity extends RobotBaseActivity
         } else {
             context.startActivity(intent);
         }
+    }
+
+    public static void onWakeup() {
+        Dormant.reset();
+        if (!EmptyUtil.isEmpty(dormantActivity)) {
+            dormantActivity.onWakeUp(WakeUpType.CLICK);
+        }
+    }
+
+    public static boolean isWake() {
+        return !EmptyUtil.isEmpty(dormantActivity);
     }
 
     @Override
@@ -112,18 +121,6 @@ public class DormantActivity extends RobotBaseActivity
 
         onStartDormant();
     }
-
-    public static void onWakeup() {
-        Dormant.reset();
-        if (!EmptyUtil.isEmpty(dormantActivity)) {
-            dormantActivity.onWakeUp(WakeUpType.CLICK);
-        }
-    }
-
-    public static boolean isWake() {
-        return !EmptyUtil.isEmpty(dormantActivity);
-    }
-
 
     private void onStartDormant() {
         SVGAHelper.playSVGA(mIvAnim, SVGAHelper.SVGAModel.create(AnimFileName.EMOJI_XIUMIAN).setLoopCount(1), new DialogRobotFactory.SimpleSVGACallBack() {
@@ -338,17 +335,6 @@ public class DormantActivity extends RobotBaseActivity
         return super.onKeyDown(keyCode, event);
     }
 
-    public static class WakeUpType {
-        // 点击屏幕 【唤醒】
-        public static final int CLICK = 0;
-        // 触摸机器人 【唤醒】
-        public static final int TOUCH = 1;
-        // 语音唤醒 【唤醒】
-        public static final int VOICE = 2;
-        // 离开充电座 眩晕后继续休眠 【不唤醒】
-        public static final int SWIM = 3;
-    }
-
     private void initBatReceiver() {
         createBatReceiver();
         mContext.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -387,5 +373,16 @@ public class DormantActivity extends RobotBaseActivity
                 }
             };
         }
+    }
+
+    public static class WakeUpType {
+        // 点击屏幕 【唤醒】
+        public static final int CLICK = 0;
+        // 触摸机器人 【唤醒】
+        public static final int TOUCH = 1;
+        // 语音唤醒 【唤醒】
+        public static final int VOICE = 2;
+        // 离开充电座 眩晕后继续休眠 【不唤醒】
+        public static final int SWIM = 3;
     }
 }

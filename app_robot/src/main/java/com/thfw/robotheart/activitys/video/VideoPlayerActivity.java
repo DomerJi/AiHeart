@@ -59,6 +59,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
+import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.activitys.talk.TalkItemJumpHelper;
 import com.thfw.robotheart.adapter.VideoItemAdapter;
 import com.thfw.robotheart.constants.UIConfig;
@@ -840,6 +841,74 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         }
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MEDIA_NEXT) {
+            // 下一首按键
+        } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
+            // 上一首按键
+        } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
+            // 播放/暂停按键
+            if (mExoPlayer != null) {
+                if (mExoPlayer.isPlaying()) {
+                    mExoPlayer.pause();
+                } else {
+                    mExoPlayer.play();
+                }
+                return true;
+            }
+        }
+        // 还可以添加更多按键操作，可以参阅 KeyEvent 类
+        return super.onKeyDown(keyCode, event);
+    }
+
+
+    //=============== 结束 视频手势 =======================//
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("播放,继续", () -> {
+            if (mExoPlayer != null && !mExoPlayer.isPlaying()) {
+                mExoPlayer.play();
+            }
+        }));
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("暂停,停止", () -> {
+            if (mExoPlayer != null && mExoPlayer.isPlaying()) {
+                mExoPlayer.pause();
+            }
+        }));
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("下一个,下一首,下一曲", () -> {
+            if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
+                int newPostion = this.mPlayPosition + 1;
+                if (newPostion > 0 && newPostion < mVideoList.size()) {
+                    videoChanged(this.mPlayPosition + 1);
+                }
+            }
+        }));
+
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("上一个,上一首,上一曲", () -> {
+            if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
+                int newPostion = this.mPlayPosition - 1;
+                if (newPostion > 0 && newPostion < mVideoList.size()) {
+                    videoChanged(this.mPlayPosition - 1);
+                }
+            }
+
+        }));
+
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("收藏", () -> {
+            if (mIvCollect != null) {
+                mIvCollect.performClick();
+            }
+        }));
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("取消收藏", () -> {
+            if (mIvCollect != null && mIvCollect.isSelected()) {
+                mIvCollect.performClick();
+            }
+        }));
+    }
+
     /**
      * 视频事件监听
      */
@@ -915,64 +984,6 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
             }
             videoError();
         }
-    }
-
-
-    //=============== 结束 视频手势 =======================//
-
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MEDIA_NEXT) {
-            // 下一首按键
-        } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
-            // 上一首按键
-        } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
-            // 播放/暂停按键
-            if (mExoPlayer != null) {
-                if (mExoPlayer.isPlaying()) {
-                    mExoPlayer.pause();
-                } else {
-                    mExoPlayer.play();
-                }
-                return true;
-            }
-        }
-        // 还可以添加更多按键操作，可以参阅 KeyEvent 类
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    protected void initLocalVoice(int type) {
-        super.initLocalVoice(type);
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("播放,继续", () -> {
-            if (mExoPlayer != null && !mExoPlayer.isPlaying()) {
-                mExoPlayer.play();
-            }
-        }));
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("暂停,停止", () -> {
-            if (mExoPlayer != null && mExoPlayer.isPlaying()) {
-                mExoPlayer.pause();
-            }
-        }));
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("下一个,下一首,下一曲", () -> {
-            if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
-                int newPostion = this.mPlayPosition + 1;
-                if (newPostion > 0 && newPostion < mVideoList.size()) {
-                    videoChanged(this.mPlayPosition + 1);
-                }
-            }
-        }));
-
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("上一个,上一首,上一曲", () -> {
-            if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
-                int newPostion = this.mPlayPosition - 1;
-                if (newPostion > 0 && newPostion < mVideoList.size()) {
-                    videoChanged(this.mPlayPosition - 1);
-                }
-            }
-
-        }));
     }
 
 }

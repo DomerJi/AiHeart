@@ -55,8 +55,7 @@ public class TestDetailActivity extends RobotBaseActivity<TestPresenter> impleme
     private boolean requestIng = false;
 
     public static void startActivity(Context context, int id) {
-        ((Activity) context).startActivityForResult(new Intent(context, TestDetailActivity.class)
-                .putExtra(KEY_DATA, id), ChatEntity.TYPE_RECOMMEND_TEST);
+        ((Activity) context).startActivityForResult(new Intent(context, TestDetailActivity.class).putExtra(KEY_DATA, id), ChatEntity.TYPE_RECOMMEND_TEST);
     }
 
     @Override
@@ -110,7 +109,12 @@ public class TestDetailActivity extends RobotBaseActivity<TestPresenter> impleme
         LhXkHelper.putAction(TestDetailActivity.class, new SpeechToAction("收藏", () -> {
             mLlCollect.performClick();
         }));
-        LhXkHelper.putAction(TestDetailActivity.class, new SpeechToAction("开始,开始测试", () -> {
+        LhXkHelper.putAction(TestDetailActivity.class, new SpeechToAction("取消收藏", () -> {
+            if (mIvCollect.isSelected()) {
+                mLlCollect.performClick();
+            }
+        }));
+        LhXkHelper.putAction(TestDetailActivity.class, new SpeechToAction("开始测试,开始测评,开始", () -> {
             mBtBeginTest.performClick();
         }));
     }

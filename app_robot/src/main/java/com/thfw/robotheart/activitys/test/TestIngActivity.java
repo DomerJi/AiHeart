@@ -128,15 +128,25 @@ public class TestIngActivity extends RobotBaseActivity<TestPresenter> implements
         for (int i = 0; i < len; i++) {
             TestDetailModel.SubjectListBean option = optionArray.get(i);
             String speech = option.getOption() + option.getAnswer() + "," + option.getOption() + "," + option.getAnswer();
+            String speechLower = speech.toLowerCase();
             final int index = i;
-            LhXkHelper.putAction(mVpList.getClass(), new SpeechToAction(speech, () -> {
+            LhXkHelper.putAction(mVpList.getClass(), new SpeechToAction(speech + "," + speechLower, () -> {
                 listBeans.get(currentItem).setSelectedIndex(index);
                 mTestIngAdapter.notifyItemChanged(currentItem);
                 if (mTestIngAdapter.getOnRvItemListener() != null) {
-                    mTestIngAdapter.getOnRvItemListener().onItemClick(listBeans, index);
+                    mTestIngAdapter.getOnRvItemListener().onItemClick(listBeans, currentItem);
                 }
             }));
         }
+
+        LhXkHelper.putAction(TestIngActivity.class, new SpeechToAction("下一题", () -> {
+            if (listBeans.get(currentItem).getSelectedIndex() == -1) {
+                return;
+            }
+            if (mTestIngAdapter.getOnRvItemListener() != null) {
+                mTestIngAdapter.getOnRvItemListener().onItemClick(listBeans, currentItem);
+            }
+        }));
     }
 
     @Override

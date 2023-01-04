@@ -31,6 +31,11 @@ public class AudioEtcTypeAdapter extends BaseAdapter<AudioTypeModel, AudioEtcTyp
         super(dataList);
     }
 
+
+    public void setSelectedIndex(int selectedIndex) {
+        this.selectedIndex = selectedIndex;
+    }
+
     @NonNull
     @NotNull
     @Override

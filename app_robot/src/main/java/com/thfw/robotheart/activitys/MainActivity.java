@@ -112,6 +112,9 @@ import java.util.Random;
 
 public class MainActivity extends RobotBaseActivity implements View.OnClickListener, MsgCountManager.OnCountChangeListener {
 
+    private static final String KEY_WEATHER = "key.weather";
+    // 10分钟后自动更新
+    private static final long MIN_WEATHER_TIME = HourUtil.LEN_10_MINUTE;
     /**
      * 机构信息、用户信息、友盟初始化标识
      */
@@ -120,9 +123,10 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private static boolean initUmeng;
     private static boolean initTts;
     private static int initUrgedMsg = -1;
-    private static final String KEY_WEATHER = "key.weather";
     // 登录动画是否显示，为了不频繁获取sp数据
     private static boolean showLoginAnim;
+    // 天气最后一次更新
+    private static long notifyWeatherTime;
     private com.thfw.robotheart.view.TitleBarView mTitleBarView;
     private com.thfw.ui.widget.WeekView mWeekView;
     private com.makeramen.roundedimageview.RoundedImageView mRivAvatar;
@@ -158,13 +162,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private UrgedMsgModel mUrgedMsgModel;
     // 气泡文案动画
     private com.thfw.robotheart.view.HomeIpTextView mHitAnim;
-
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
-    private Random random = new Random();
-
-    private WeatherDetailsModel weatherInfoModel;
-
-    /**
+    private Random random = new Random();    /**
      * 延时开启脸部动画
      */
     private Runnable mStartFaceRunnable = () -> {
@@ -172,7 +171,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             startFaceAnim();
         }
     };
-
+    private WeatherDetailsModel weatherInfoModel;
     /**
      * 延时检查版本动画
      */
@@ -184,14 +183,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private ImageView mIvHand;
     private ImageView mIvWeather;
     private TextView mTvWeather;
-    private ConstraintLayout mClWeather;
-    private Runnable mWeatherRunnable = () -> {
+    private ConstraintLayout mClWeather;    private Runnable mWeatherRunnable = () -> {
         checkWeather();
     };
-    // 天气最后一次更新
-    private static long notifyWeatherTime;
-    // 10分钟后自动更新
-    private static final long MIN_WEATHER_TIME = HourUtil.LEN_10_MINUTE;
     private TDialog mServerStopDialog;
 
     /**
@@ -448,7 +442,6 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
             GlideUtil.load(mContext, R.drawable.ic_ip_hand, mIvHand);
         }
     }
-
 
     /**
      * 测试
@@ -1036,6 +1029,10 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         LhXkHelper.putAction(MainActivity.class, new SpeechToAction("搜索",
                 () -> startActivity(new Intent(mContext, SearchActivity.class))));
     }
+
+
+
+
 
 
 }

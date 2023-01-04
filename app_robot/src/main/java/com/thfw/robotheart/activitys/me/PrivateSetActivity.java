@@ -1,5 +1,7 @@
 package com.thfw.robotheart.activitys.me;
 
+import static com.thfw.base.utils.RobotUtil2.KEY_ACE_OPEN;
+
 import android.content.Intent;
 import android.provider.Settings;
 import android.view.View;
@@ -31,8 +33,6 @@ import com.thfw.ui.voice.wakeup.WakeupHelper;
 import com.thfw.ui.widget.InputBoxSquareView;
 
 import java.util.Calendar;
-
-import static com.thfw.base.utils.RobotUtil2.KEY_ACE_OPEN;
 
 public class PrivateSetActivity extends RobotBaseActivity {
 

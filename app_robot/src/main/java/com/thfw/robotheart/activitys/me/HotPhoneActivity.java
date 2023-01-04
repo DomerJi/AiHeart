@@ -33,6 +33,7 @@ import java.util.List;
 
 public class HotPhoneActivity extends RobotBaseActivity<OtherPresenter> implements OtherPresenter.OtherUi<List<HotCallModel>> {
 
+    private static final String KEY_CACHE_HOT = "key.cache.hot";
     private com.thfw.robotheart.view.TitleRobotView mTitleRobotView;
     private androidx.recyclerview.widget.RecyclerView mRvList;
     private com.thfw.ui.widget.MyRobotSearchView mRsvSearch;
@@ -40,8 +41,6 @@ public class HotPhoneActivity extends RobotBaseActivity<OtherPresenter> implemen
     private List<String> mAzList;
     private android.widget.TextView mTvCenterAz;
     private List<HotCallModel> hotCallModels;
-    private static final String KEY_CACHE_HOT = "key.cache.hot";
-
     private Handler mMainHandler = new Handler();
     private com.thfw.ui.widget.LoadingView mLoadingView;
 

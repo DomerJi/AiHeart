@@ -69,6 +69,7 @@ public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, 
             holder.mBtConfirm.performClick();
         }));
 
+
     }
 
     public void setBtnListener(OnBtnListener btnListener) {

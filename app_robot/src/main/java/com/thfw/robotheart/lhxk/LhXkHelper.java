@@ -15,10 +15,12 @@ import com.ainirobot.coreservice.client.actionbean.FaceTrackBean;
 import com.ainirobot.coreservice.client.listener.ActionListener;
 import com.ainirobot.coreservice.client.listener.CommandListener;
 import com.ainirobot.coreservice.client.listener.Person;
+import com.ainirobot.coreservice.client.listener.TextListener;
 import com.ainirobot.coreservice.client.person.PersonApi;
 import com.ainirobot.coreservice.client.person.PersonListener;
 import com.ainirobot.coreservice.client.speech.SkillApi;
 import com.ainirobot.coreservice.client.speech.SkillCallback;
+import com.ainirobot.coreservice.client.speech.entity.TTSEntity;
 import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.LhXkListener;
 import com.thfw.base.models.SpeechModel;
@@ -39,6 +41,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 
@@ -53,6 +56,7 @@ public class LhXkHelper {
     private static SkillApi skillApi;
     private static String mSpeechParResult;
     private static int mReqId = -1;
+    private static String[] ttsReply = new String[]{"嗯", "好的", "收到"};
     private static int mPersonId = -1;
 
     private static LinkedHashMap<Integer, HashMap<String, SpeechToAction>> mSpeechToActionMap = new LinkedHashMap<>();
@@ -61,6 +65,9 @@ public class LhXkHelper {
     // 别看我 的 人员id 和 别看我时间
     private static HashMap<Integer, Long> cancelPersonIdOrTime = new HashMap<>();
 
+    private static String getTtsReplay() {
+        return ttsReply[new Random().nextInt(ttsReply.length)];
+    }
 
     static {
         putAction(LhXkHelper.class, new SpeechToAction("别看我,看别人,看其他人,看别的人,看别的地方,不准看我,不要看我", () -> {
@@ -137,7 +144,7 @@ public class LhXkHelper {
 
     public static SpeechModel onActionText(String word, boolean end) {
         String oldWord = word;
-        String newWord = word.replaceAll("(打开|点击)", "");
+        String newWord = word.replaceAll("(打开|点击|选择)", "");
         Set<Map.Entry<Integer, HashMap<String, SpeechToAction>>> entrySet = mSpeechToActionMap.entrySet();
         for (Map.Entry<Integer, HashMap<String, SpeechToAction>> map : entrySet) {
             Collection<SpeechToAction> list = map.getValue().values();
@@ -182,9 +189,10 @@ public class LhXkHelper {
                     }
                     if (end) {
                         LogUtil.i(TAG, "regex true*********** -> " + regex);
+                        tts(getTtsReplay());
                         HandlerUtil.getMainHandler().postDelayed(() -> {
                             speechToAction.run();
-                        }, 500);
+                        }, 450);
                     }
                     return SpeechModel.create(oldWord).setMatches(true);
                 }
@@ -583,6 +591,32 @@ public class LhXkHelper {
     public interface SpeechResult {
         void onResult(String result);
 
+    }
+
+    public static void tts(String text) {
+        if (skillApi != null && skillApi.isApiConnectedService()) {
+            skillApi.playText(new TTSEntity(text), new TextListener() {
+                @Override
+                public void onStart() {
+                    //播放开始
+                }
+
+                @Override
+                public void onStop() {
+                    //播放停止
+                }
+
+                @Override
+                public void onError() {
+                    //播放错误
+                }
+
+                @Override
+                public void onComplete() {
+                    //播放完成
+                }
+            });
+        }
     }
 
     private static void showSpeechText(SpeechModel model) {

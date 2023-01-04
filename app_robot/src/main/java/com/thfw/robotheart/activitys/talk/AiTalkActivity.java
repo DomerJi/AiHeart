@@ -1946,37 +1946,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         super.onDestroy();
     }
 
-    public class Helper {
-
-        private List<DialogTalkModel> mTalks;
-        private int index = 0;
-        private DialogTalkModel talkModel;
-
-        public void setTalks(List<DialogTalkModel> mTalks) {
-            this.mTalks = mTalks;
-            this.index = 0;
-        }
-
-        public boolean hasNext() {
-            return mTalks != null && mTalks.size() > index;
-        }
-
-        public synchronized DialogTalkModel next() {
-            if (hasNext()) {
-                talkModel = mTalks.get(index);
-                index++;
-                return talkModel;
-            } else {
-                return null;
-            }
-        }
-
-        public DialogTalkModel getTalkModel() {
-            return talkModel;
-        }
-
-    }
-
     public boolean containsByWords(String word) {
         long start = System.currentTimeMillis();
         String keywords = mContext.getResources().getString(R.string.short_keyword);
@@ -2035,5 +2004,36 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             mStvText.hide();
         }
         onTalkModel(currentSelect);
+    }
+
+    public class Helper {
+
+        private List<DialogTalkModel> mTalks;
+        private int index = 0;
+        private DialogTalkModel talkModel;
+
+        public void setTalks(List<DialogTalkModel> mTalks) {
+            this.mTalks = mTalks;
+            this.index = 0;
+        }
+
+        public boolean hasNext() {
+            return mTalks != null && mTalks.size() > index;
+        }
+
+        public synchronized DialogTalkModel next() {
+            if (hasNext()) {
+                talkModel = mTalks.get(index);
+                index++;
+                return talkModel;
+            } else {
+                return null;
+            }
+        }
+
+        public DialogTalkModel getTalkModel() {
+            return talkModel;
+        }
+
     }
 }

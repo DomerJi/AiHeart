@@ -1,7 +1,10 @@
 package com.thfw.robotheart.lhxk;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.ViewTreeObserver;
+import android.webkit.WebView;
+import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -13,6 +16,8 @@ import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NumberUtil;
+import com.thfw.base.utils.Util;
+import com.thfw.robotheart.MyApplication;
 
 /**
  * Author:pengs
@@ -23,18 +28,98 @@ public class InstructScrollHelper {
     private static final String TAG = InstructScrollHelper.class.getSimpleName();
     private int screenItemCount = -1;
     private RecyclerView recyclerView;
+    private WebView webView;
+    private ScrollView scrollView;
     private Class classes;
     private boolean onChildViewAttachedToWindowed;
+
+    private static final String LAST = "向上滑动,向上滚动,往上看，向上看,向前看";
+    private static final String NEXT = "向下滑动,向下滚动,往下看，向下看,向后看";
+
+
+    public InstructScrollHelper(Class classes, WebView webView) {
+        Log.i(TAG, "webView = " + webView);
+        this.webView = webView;
+        this.classes = classes;
+        LhXkHelper.putAction(classes, new SpeechToAction(NEXT, () -> {
+            Log.i(TAG, "webView = " + webView);
+            if (webView == null) {
+                return;
+            }
+            webView.scrollTo(0, webView.getScrollY() + Util.getScreenHeight(MyApplication.getApp()));
+        }));
+
+        LhXkHelper.putAction(classes, new SpeechToAction(LAST, () -> {
+            Log.i(TAG, "webView = " + webView);
+            if (webView == null) {
+                return;
+            }
+            webView.scrollTo(0, webView.getScrollY() - Util.getScreenHeight(MyApplication.getApp()));
+        }));
+
+        LhXkHelper.putAction(classes, new SpeechToAction("滑动到顶部,滚动到顶部", () -> {
+            Log.i(TAG, "webView = " + webView);
+            if (webView == null) {
+                return;
+            }
+            webView.scrollTo(0, 0);
+        }));
+
+        LhXkHelper.putAction(classes, new SpeechToAction("滑动到底部, 滚动到底部", () -> {
+            Log.i(TAG, "webView = " + webView);
+            if (webView == null) {
+                return;
+            }
+            webView.scrollTo(0, webView.getContentHeight());
+        }));
+    }
+
+    public InstructScrollHelper(Class classes, ScrollView scrollView) {
+        Log.i(TAG, "webView = " + scrollView);
+        this.scrollView = scrollView;
+        this.classes = classes;
+        LhXkHelper.putAction(classes, new SpeechToAction(NEXT, () -> {
+            Log.i(TAG, "scrollView = " + scrollView);
+            if (scrollView == null) {
+                return;
+            }
+            scrollView.smoothScrollTo(0, scrollView.getScrollY() + Util.getScreenHeight(MyApplication.getApp()));
+        }));
+
+        LhXkHelper.putAction(classes, new SpeechToAction(LAST, () -> {
+            Log.i(TAG, "scrollView = " + scrollView);
+            if (scrollView == null) {
+                return;
+            }
+            scrollView.smoothScrollTo(0, scrollView.getScrollY() - Util.getScreenHeight(MyApplication.getApp()));
+        }));
+
+        LhXkHelper.putAction(classes, new SpeechToAction("滑动到顶部,滚动到顶部", () -> {
+            Log.i(TAG, "scrollView = " + scrollView);
+            if (scrollView == null) {
+                return;
+            }
+            scrollView.smoothScrollTo(0, 0);
+        }));
+
+        LhXkHelper.putAction(classes, new SpeechToAction("滑动到底部, 滚动到底部", () -> {
+            Log.i(TAG, "scrollView = " + scrollView);
+            if (scrollView == null) {
+                return;
+            }
+            scrollView.smoothScrollTo(0, 1000000);
+        }));
+    }
 
     public InstructScrollHelper(Class classes, RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
         this.classes = classes;
-        LhXkHelper.putAction(classes, new SpeechToAction("向上滑动,向上滚动", () -> {
-            onScrollRight();
+        LhXkHelper.putAction(classes, new SpeechToAction(LAST, () -> {
+            onScrollLeft();
         }));
 
-        LhXkHelper.putAction(classes, new SpeechToAction("向下滑动,向下滚动", () -> {
-            onScrollLeft();
+        LhXkHelper.putAction(classes, new SpeechToAction(NEXT, () -> {
+            onScrollRight();
         }));
 
         LhXkHelper.putAction(classes, new SpeechToAction("滑动到顶部,滚动到顶部", () -> {
