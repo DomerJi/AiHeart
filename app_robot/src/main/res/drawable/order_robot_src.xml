@@ -6,7 +6,7 @@
 <!--        android:endColor="@color/transparent"-->
 <!--        android:startColor="@color/black" />-->
 
-    <solid android:color="@color/black_70"/>
+    <solid android:color="@color/black_60"/>
     <corners
         android:bottomRightRadius="@dimen/_10dp"
         android:topLeftRadius="9.5dp" />

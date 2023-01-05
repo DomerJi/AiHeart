@@ -11,6 +11,7 @@ import com.thfw.base.presenter.UserToolPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.ExerciseAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -78,6 +79,12 @@ public class ExerciseActivity extends RobotBaseActivity<UserToolPresenter> imple
     public void onSuccess(List<ExerciseModel> data) {
         mExerciseAdapter.setDataListNotify(data);
         mLoadingView.hide();
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(ExerciseActivity.class, mRvList);
     }
 
     @Override

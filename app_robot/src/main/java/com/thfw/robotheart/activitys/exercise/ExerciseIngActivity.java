@@ -32,6 +32,7 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.thfw.base.api.TalkApi;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.ChatEntity;
@@ -48,6 +49,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.audio.AudioHomeActivity;
+import com.thfw.robotheart.activitys.talk.AiTalkActivity;
 import com.thfw.robotheart.activitys.talk.AndroidBug5497Workaround;
 import com.thfw.robotheart.activitys.talk.SoftKeyBoardListener;
 import com.thfw.robotheart.activitys.talk.TalkItemJumpHelper;
@@ -55,6 +57,7 @@ import com.thfw.robotheart.activitys.talk.ThemeTalkActivity;
 import com.thfw.robotheart.activitys.test.TestActivity;
 import com.thfw.robotheart.adapter.ChatAdapter;
 import com.thfw.robotheart.adapter.ChatSelectAdapter;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.PageJumpUtils;
 import com.thfw.robotheart.view.TitleRobotView;
@@ -397,6 +400,22 @@ public class ExerciseIngActivity extends RobotBaseActivity<UserToolPresenter> im
         }, 3000);
 
 
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+
+        LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction("打开键盘", () -> {
+            if (mRlKeyword.getVisibility() == View.GONE) {
+                return;
+            }
+            mRlKeyword.performClick();
+        }));
+
+        LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction("关闭键盘", () -> {
+            hideInput();
+        }));
     }
 
     private void softInput() {

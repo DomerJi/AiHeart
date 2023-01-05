@@ -15,6 +15,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.text.BookIdeoDetailActivity;
 import com.thfw.robotheart.adapter.BookStudyListAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -81,6 +82,12 @@ public class BookStudyFragment extends RobotBaseFragment<BookPresenter> implemen
         pageHelper = new PageHelper<>(mLoadingView, mRefreshLayout, mBookStudyListAdapter);
         pageHelper.setRefreshEnable(false);
         mPresenter.getIdeologyArticleList(type, pageHelper.getPage());
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(BookStudyFragment.class, mRvList);
     }
 
     @Override

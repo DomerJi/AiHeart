@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.reflect.TypeToken;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.VideoLastEtcModel;
 import com.thfw.base.models.VideoTypeModel;
@@ -23,6 +24,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.VideoEtcTypeAdapter;
 import com.thfw.robotheart.fragments.media.VideoEtcListFragment;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.widget.LoadingView;
@@ -146,8 +148,41 @@ public class VideoHomeActivity extends RobotBaseActivity<VideoPresenter> impleme
         if (isSetEmpty) {
             mVideoEtcTypeAdapter.getOnRvItemListener().onItemClick(mVideoEtcTypeAdapter.getDataList(), 0);
         }
+        initLocalVoice(VOICE_STATIC);
     }
 
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(VideoHomeActivity.class, new SpeechToAction("上次播放", () -> {
+            mTvLastAudio.performClick();
+        }));
+        if (mVideoEtcTypeAdapter == null) {
+            return;
+        }
+        if (isMeResumed2()) {
+            mVideoEtcTypeAdapter.notifyDataSetChanged();
+        }
+        List<VideoTypeModel> data = mVideoEtcTypeAdapter.getDataList();
+        if (EmptyUtil.isEmpty(data)) {
+            return;
+        }
+        putActionDG(data);
+    }
+
+    public void putActionDG(List<VideoTypeModel> data) {
+
+        int len = data.size();
+        for (int i = 0; i < len; i++) {
+            String name = data.get(i).name;
+            final int index = i;
+            LhXkHelper.putAction(VideoHomeActivity.class, new SpeechToAction(name, () -> {
+                mVideoEtcTypeAdapter.setSelectedIndex(index);
+                mVideoEtcTypeAdapter.notifyDataSetChanged();
+                mVideoEtcTypeAdapter.getOnRvItemListener().onItemClick(mVideoEtcTypeAdapter.getDataList(), index);
+            }));
+        }
+    }
 
     @Override
     public void onFail(ResponeThrowable throwable) {

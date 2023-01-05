@@ -18,6 +18,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.NumberUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.MyApplication;
+import com.thfw.robotheart.adapter.BaseAdapter;
 
 /**
  * Author:pengs
@@ -70,7 +71,7 @@ public class InstructScrollHelper {
             if (webView == null) {
                 return;
             }
-            webView.scrollTo(0, webView.getContentHeight());
+            webView.scrollTo(0, 100000);
         }));
     }
 
@@ -141,20 +142,37 @@ public class InstructScrollHelper {
                 }
             }
         });
+        if (recyclerView.getAdapter() instanceof BaseAdapter) {
+            if (((BaseAdapter) recyclerView.getAdapter()).getItemCount() > 0) {
+                initData();
+            } else {
+                ((BaseAdapter) recyclerView.getAdapter()).registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                    @Override
+                    public void onChanged() {
+                        super.onChanged();
+                        initData();
+                    }
+                });
+            }
+        }
         ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if (!onChildViewAttachedToWindowed) {
-                    onChildViewAttachedToWindowed = true;
-                    LogUtil.i(TAG, "onChildViewAttachedToWindow init");
-                    HandlerUtil.getMainHandler().postDelayed(() -> {
-                        init();
-                    }, 300);
-
-                }
+                initData();
             }
         };
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
+    }
+
+    private void initData() {
+        if (!onChildViewAttachedToWindowed) {
+            onChildViewAttachedToWindowed = true;
+            LogUtil.i(TAG, "onChildViewAttachedToWindow init");
+            HandlerUtil.getMainHandler().postDelayed(() -> {
+                init();
+            }, 500);
+
+        }
     }
 
     public static String speakNumber(int order) {

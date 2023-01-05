@@ -19,6 +19,7 @@ import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.DefaultWebClient;
 import com.thfw.base.api.HistoryApi;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.BookIdeoDetailModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
@@ -30,6 +31,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.WebSizeUtil;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.widget.LoadingView;
@@ -96,6 +98,18 @@ public class BookIdeoDetailActivity extends RobotBaseActivity<BookPresenter> imp
         mPresenter.getIdeologyArticleInfo(mBookId);
     }
 
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(BookIdeoDetailActivity.class, new SpeechToAction("收藏", () -> {
+            mLlCollect.performClick();
+        }));
+        LhXkHelper.putAction(BookIdeoDetailActivity.class, new SpeechToAction("取消收藏", () -> {
+            if (mIvCollect.isSelected()) {
+                mLlCollect.performClick();
+            }
+        }));
+    }
 
     public void initHtmlData() {
         /**

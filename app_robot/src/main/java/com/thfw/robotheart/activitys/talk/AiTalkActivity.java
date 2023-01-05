@@ -22,6 +22,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.flexbox.FlexDirection;
@@ -1733,8 +1734,9 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         // 语音打开猎户星空 & 是否推荐
         if (DeviceUtil.isLhXk_OS_R_SD01B() && chatEntity.isRecommend() && chatEntity.getTalkModel() != null && chatEntity.getTalkModel().getRecommendInfo() != null) {
             String title = chatEntity.getTalkModel().getRecommendInfo().getTitle();
+            String type = chatEntity.getRecommendType();
             final int position = mChatAdapter.getItemCount() - 1;
-            LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction(title, () -> {
+            LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction(type + "," + title, () -> {
                 RecyclerView.ViewHolder viewHolder = mRvList.findViewHolderForAdapterPosition(position);
                 if (viewHolder instanceof ChatAdapter.RecommendHolder) {
                     ((ChatAdapter.RecommendHolder) viewHolder).itemView.performClick();
@@ -1989,6 +1991,30 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction("关闭键盘", () -> {
             hideInput();
         }));
+        // 语音打开猎户星空 & 是否推荐
+        if (DeviceUtil.isLhXk_OS_R_SD01B() && mChatAdapter != null && mChatAdapter.getItemCount() > 0) {
+            LinearLayoutManager layoutManager = (LinearLayoutManager) mRvList.getLayoutManager();
+            int fposition = layoutManager.findFirstVisibleItemPosition();
+            int lposition = layoutManager.findLastVisibleItemPosition();
+            if (fposition == RecyclerView.NO_POSITION || lposition == RecyclerView.NO_POSITION) {
+                return;
+            }
+            List<ChatEntity> chatEntities = mChatAdapter.getDataList();
+            for (int i = fposition; i <= fposition; i++) {
+                if (chatEntities.get(i).isRecommend()) {
+                    final int pI = i;
+                    String title = chatEntities.get(i).getTalkModel().getRecommendInfo().getTitle();
+                    String rType = chatEntities.get(i).getRecommendType();
+                    LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction(rType + "," + title, () -> {
+                        RecyclerView.ViewHolder viewHolder = mRvList.findViewHolderForAdapterPosition(pI);
+                        if (viewHolder instanceof ChatAdapter.RecommendHolder) {
+                            ((ChatAdapter.RecommendHolder) viewHolder).itemView.performClick();
+                        }
+                    }));
+                }
+            }
+
+        }
     }
 
     private void openOrCloseVoice() {

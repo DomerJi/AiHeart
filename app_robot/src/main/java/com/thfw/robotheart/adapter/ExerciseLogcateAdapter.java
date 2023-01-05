@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.models.ExerciseModel;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -62,6 +63,18 @@ public class ExerciseLogcateAdapter extends BaseAdapter<ExerciseModel.LinkModel,
                 holder.mIvLock.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+            case TYPE_SPEAK_ORDER:
+                return InstructScrollHelper.speakNumber(position + 1);
+
+        }
+        return super.getText(position, type);
     }
 
 

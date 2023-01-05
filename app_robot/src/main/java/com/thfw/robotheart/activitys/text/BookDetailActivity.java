@@ -19,6 +19,7 @@ import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.DefaultWebClient;
 import com.thfw.base.api.HistoryApi;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.BookDetailModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
@@ -29,7 +30,10 @@ import com.thfw.base.utils.DataChangeHelper;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
+import com.thfw.robotheart.activitys.test.TestDetailActivity;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.WebSizeUtil;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.widget.LoadingView;
@@ -96,6 +100,21 @@ public class BookDetailActivity extends RobotBaseActivity<BookPresenter> impleme
         mPresenter.getArticleInfo(mBookId);
     }
 
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        if (mAgentWeb != null && mAgentWeb.getWebCreator() != null && mAgentWeb.getWebCreator().getWebView() != null) {
+            new InstructScrollHelper(BookDetailActivity.class, mAgentWeb.getWebCreator().getWebView());
+        }
+        LhXkHelper.putAction(BookDetailActivity.class, new SpeechToAction("收藏", () -> {
+            mLlCollect.performClick();
+        }));
+        LhXkHelper.putAction(BookDetailActivity.class, new SpeechToAction("取消收藏", () -> {
+            if (mIvCollect.isSelected()) {
+                mLlCollect.performClick();
+            }
+        }));
+    }
 
     public void initHtmlData() {
         /**

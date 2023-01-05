@@ -63,6 +63,7 @@ import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.activitys.talk.TalkItemJumpHelper;
 import com.thfw.robotheart.adapter.VideoItemAdapter;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.robot.RobotUtil;
 import com.thfw.robotheart.util.ExoPlayerFactory;
@@ -70,6 +71,7 @@ import com.thfw.robotheart.view.TitleBarView;
 import com.thfw.ui.base.AVResource;
 import com.thfw.ui.utils.BrightnessHelper;
 import com.thfw.ui.utils.VideoGestureHelper;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -83,8 +85,7 @@ import java.util.List;
 /**
  * 视频播放
  */
-public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
-        implements TimingHelper.WorkListener, VideoGestureHelper.VideoGestureListener, VideoPresenter.VideoUi<VideoModel> {
+public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter> implements TimingHelper.WorkListener, VideoGestureHelper.VideoGestureListener, VideoPresenter.VideoUi<VideoModel> {
 
 
     public static final String KEY_PLAY_POSITION = "key.position";
@@ -158,9 +159,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     private int mVideoId;
 
     public static void startActivity(Context context, int videoId, boolean autoFinished) {
-        ((Activity) context).startActivityForResult(new Intent(context, VideoPlayerActivity.class)
-                .putExtra(KEY_DATA, videoId)
-                .putExtra(KEY_AUTO_FINISH, autoFinished), ChatEntity.TYPE_RECOMMEND_VIDEO);
+        ((Activity) context).startActivityForResult(new Intent(context, VideoPlayerActivity.class).putExtra(KEY_DATA, videoId).putExtra(KEY_AUTO_FINISH, autoFinished), ChatEntity.TYPE_RECOMMEND_VIDEO);
     }
 
     /**
@@ -170,10 +169,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
      * @param fromType     来自哪里 如果是工具包禁止相关推荐
      */
     public static void startActivity(Context context, int videoId, boolean autoFinished, int fromType) {
-        ((Activity) context).startActivityForResult(new Intent(context, VideoPlayerActivity.class)
-                .putExtra(KEY_DATA, videoId)
-                .putExtra(KEY_AUTO_FINISH, autoFinished)
-                .putExtra(KEY_FROM_TYPE, fromType), ChatEntity.TYPE_RECOMMEND_VIDEO);
+        ((Activity) context).startActivityForResult(new Intent(context, VideoPlayerActivity.class).putExtra(KEY_DATA, videoId).putExtra(KEY_AUTO_FINISH, autoFinished).putExtra(KEY_FROM_TYPE, fromType), ChatEntity.TYPE_RECOMMEND_VIDEO);
     }
 
     @Override
@@ -415,6 +411,9 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
                 if (mExoPlayer != null) {
                     ((VideoItemAdapter) mRvList.getAdapter()).setCurrentIndex(mPlayPosition);
                 }
+            }
+            if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+                new InstructScrollHelper(VideoPlayerActivity.class, mRvList);
             }
             mClContent.setAlpha(0f);
             mClContent.setVisibility(VISIBLE);
@@ -736,8 +735,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
     }
 
     @Override
-    public void onBrightnessGesture(MotionEvent e1, MotionEvent e2, float distanceX,
-                                    float distanceY) {
+    public void onBrightnessGesture(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         setSpeed(1);
         //下面这是设置当前APP亮度的方法
         Log.d(TAG, "onBrightnessGesture: old" + brightness);
@@ -898,13 +896,28 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter>
         }));
 
         LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("收藏", () -> {
-            if (mIvCollect != null) {
+            if (mIvCollect != null && mLlCollect != null) {
                 mIvCollect.performClick();
             }
         }));
         LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("取消收藏", () -> {
-            if (mIvCollect != null && mIvCollect.isSelected()) {
-                mIvCollect.performClick();
+            if (mIvCollect != null && mIvCollect.isSelected() && mLlCollect != null) {
+                mLlCollect.performClick();
+            }
+        }));
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("简介", () -> {
+            mClHint.setVisibility(VISIBLE);
+        }));
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("关闭简介", () -> {
+            mClHint.setVisibility(View.GONE);
+        }));
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("列表,目录", () -> {
+            videoLogcatue();
+        }));
+
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("关闭列表,关闭目录", () -> {
+            if (mClContent != null && mClContent.getVisibility() == View.VISIBLE) {
+                videoLogcatue();
             }
         }));
     }

@@ -65,6 +65,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.AudioItemAdapter;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.ExoPlayerFactory;
@@ -75,6 +76,7 @@ import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.utils.VideoGestureHelper;
 import com.thfw.ui.voice.tts.SimpleSynthesizerListener;
 import com.thfw.ui.voice.tts.TtsHelper;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -260,13 +262,26 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
             }
 
         }));
+
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("列表,目录", () -> {
+            if (mFlContent != null) {
+                mFlContent.performClick();
+            }
+        }));
+
+        LhXkHelper.putAction(this.getClass(), new SpeechToAction("关闭列表,关闭目录", () -> {
+            if (mFlContent != null && mFlContent.getVisibility() == View.VISIBLE) {
+                mFlContent.performClick();
+            }
+        }));
+
         LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("收藏", () -> {
-            if (mIvCollect != null) {
+            if (mIvCollect != null && mIvCollect.getVisibility() == View.VISIBLE) {
                 mIvCollect.performClick();
             }
         }));
         LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("取消收藏", () -> {
-            if (mIvCollect != null && mIvCollect.isSelected()) {
+            if (mIvCollect != null && mIvCollect.getVisibility() == View.VISIBLE && mIvCollect.isSelected()) {
                 mIvCollect.performClick();
             }
         }));
@@ -299,10 +314,14 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                     }
                 });
                 mRvList.setAdapter(audioItemAdapter);
+
             } else {
                 if (player != null) {
                     ((AudioItemAdapter) mRvList.getAdapter()).setCurrentIndex(player.getCurrentWindowIndex());
                 }
+            }
+            if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+                new InstructScrollHelper(AudioPlayerActivity.class, mRvList);
             }
             mFlContent.setAlpha(0f);
             mFlContent.setVisibility(View.VISIBLE);

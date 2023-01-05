@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.api.HistoryApi;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.ExerciseModel;
@@ -24,8 +25,11 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
+import com.thfw.robotheart.activitys.test.TestDetailActivity;
 import com.thfw.robotheart.adapter.ExerciseLogcateAdapter;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.LoadingView;
@@ -125,8 +129,7 @@ public class ExerciseDetailsActivity extends RobotBaseActivity<UserToolPresenter
                     ToastUtil.show("需要按顺序完成后，方可解锁");
                     return;
                 }
-                ExerciseIngActivity.startActivity(mContext, list.get(position).getDialogId(),
-                        list.get(position).isUsed());
+                ExerciseIngActivity.startActivity(mContext, list.get(position).getDialogId(), list.get(position).isUsed());
             }
         });
         mRvLike.setAdapter(mLogcateAdapter);
@@ -178,6 +181,20 @@ public class ExerciseDetailsActivity extends RobotBaseActivity<UserToolPresenter
             addCollect();
         });
         mLoadingView.hide();
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(ExerciseDetailsActivity.class, mRvLike);
+        LhXkHelper.putAction(ExerciseDetailsActivity.class, new SpeechToAction("收藏", () -> {
+            mLlCollect.performClick();
+        }));
+        LhXkHelper.putAction(ExerciseDetailsActivity.class, new SpeechToAction("取消收藏", () -> {
+            if (mIvCollect.isSelected()) {
+                mLlCollect.performClick();
+            }
+        }));
     }
 
     @Override

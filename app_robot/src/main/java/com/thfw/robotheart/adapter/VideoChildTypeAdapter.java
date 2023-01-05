@@ -12,11 +12,15 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.VideoTypeModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.video.VideoHomeActivity;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.lhxk.LhXkHelper;
+import com.thfw.ui.widget.DeviceUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -108,6 +112,18 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
                         }
                     }
                 });
+                if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+                    int len = bean.list.size();
+                    for (int i = 0; i < len; i++) {
+                        String name = bean.list.get(i).name;
+                        final int index = i;
+                        LhXkHelper.putAction(VideoHomeActivity.class, new SpeechToAction(name, () -> {
+                            childAdapter.setSelectedIndex(index);
+                            childAdapter.notifyDataSetChanged();
+                            childAdapter.getOnRvItemListener().onItemClick(childAdapter.getDataList(), index);
+                        }));
+                    }
+                }
                 holder.mRvChild.setAdapter(childAdapter);
                 holder.mRvChild.setVisibility(View.VISIBLE);
             } else {

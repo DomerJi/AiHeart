@@ -31,6 +31,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.constants.UIConfig;
 import com.thfw.robotheart.util.DialogRobotFactory;
+import com.thfw.robotheart.util.Dormant;
 import com.thfw.ui.common.LhXkSet;
 
 import org.json.JSONException;
@@ -190,6 +191,7 @@ public class LhXkHelper {
                     if (end) {
                         LogUtil.i(TAG, "regex true*********** -> " + regex);
                         tts(getTtsReplay());
+                        Dormant.reset();
                         HandlerUtil.getMainHandler().postDelayed(() -> {
                             speechToAction.run();
                         }, 450);

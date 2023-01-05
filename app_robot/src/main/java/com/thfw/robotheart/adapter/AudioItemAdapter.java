@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -52,6 +53,18 @@ public class AudioItemAdapter extends BaseAdapter<AudioEtcDetailModel.AudioItemM
         } else {
             holder.mTvFlag.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+            case TYPE_SPEAK_ORDER:
+                return InstructScrollHelper.speakNumber(position + 1);
+
+        }
+        return super.getText(position, type);
     }
 
     public class AudioItemHolder extends RecyclerView.ViewHolder {

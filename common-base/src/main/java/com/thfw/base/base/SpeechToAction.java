@@ -14,6 +14,7 @@ public class SpeechToAction {
     public Runnable runnable;
 
     public SpeechToAction(String text, Runnable runnable) {
+        LogUtil.i(TAG, "text -->> " + text);
         this.text = text;
         this.runnable = runnable;
     }

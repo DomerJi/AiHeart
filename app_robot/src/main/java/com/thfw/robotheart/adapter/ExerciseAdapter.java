@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.ExerciseModel;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.ui.utils.GlideUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -54,6 +55,17 @@ public class ExerciseAdapter extends BaseAdapter<ExerciseModel, ExerciseAdapter.
 
     }
 
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+            case TYPE_SPEAK_ORDER:
+                return InstructScrollHelper.speakNumber(position + 1);
+
+        }
+        return super.getText(position, type);
+    }
 
     public class ExerciseHolder extends RecyclerView.ViewHolder {
 

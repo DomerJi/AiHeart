@@ -15,6 +15,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.text.BookDetailActivity;
 import com.thfw.robotheart.adapter.BookListAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -97,6 +98,12 @@ public class BookFragment extends RobotBaseFragment<BookPresenter> implements Bo
         }
         page++;
 
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(BookFragment.class, mRvList);
     }
 
     @Override

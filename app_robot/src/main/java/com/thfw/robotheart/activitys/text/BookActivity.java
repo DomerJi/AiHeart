@@ -16,6 +16,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.BookTypeAdapter;
 import com.thfw.robotheart.fragments.text.BookFragment;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.widget.LoadingView;
@@ -102,6 +103,12 @@ public class BookActivity extends RobotBaseActivity<BookPresenter> implements Bo
         if (isSetEmpty) {
             mBookTypeAdapter.getOnRvItemListener().onItemClick(mBookTypeAdapter.getDataList(), 0);
         }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(BookActivity.class,mRvType);
     }
 
     @Override

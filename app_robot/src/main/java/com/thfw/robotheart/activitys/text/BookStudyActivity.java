@@ -7,16 +7,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.reflect.TypeToken;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.BookStudyTypeModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.BookPresenter;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
+import com.thfw.robotheart.activitys.video.VideoHomeActivity;
 import com.thfw.robotheart.adapter.BookStudyTypeAdapter;
 import com.thfw.robotheart.fragments.text.BookStudyFragment;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.FragmentLoader;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.widget.LoadingView;
@@ -111,7 +115,41 @@ public class BookStudyActivity extends RobotBaseActivity<BookPresenter> implemen
         if (isSetEmpty) {
             studyTypeAdapter.getOnRvItemListener().onItemClick(studyTypeAdapter.getDataList(), 0);
         }
+
+        initLocalVoice(VOICE_STATIC);
     }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+
+        if (studyTypeAdapter == null) {
+            return;
+        }
+        if (isMeResumed2()) {
+            studyTypeAdapter.notifyDataSetChanged();
+        }
+        List<BookStudyTypeModel> data = studyTypeAdapter.getDataList();
+        if (EmptyUtil.isEmpty(data)) {
+            return;
+        }
+        putActionDG(data);
+    }
+
+    public void putActionDG(List<BookStudyTypeModel> data) {
+
+        int len = data.size();
+        for (int i = 0; i < len; i++) {
+            String name = data.get(i).name;
+            final int index = i;
+            LhXkHelper.putAction(VideoHomeActivity.class, new SpeechToAction(name, () -> {
+                studyTypeAdapter.setSelectedIndex(index);
+                studyTypeAdapter.notifyDataSetChanged();
+                studyTypeAdapter.getOnRvItemListener().onItemClick(studyTypeAdapter.getDataList(), index);
+            }));
+        }
+    }
+
 
     @Override
     public void onFail(ResponeThrowable throwable) {

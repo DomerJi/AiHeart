@@ -16,6 +16,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.VideoEtcListAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -76,6 +77,12 @@ public class VideoEtcListFragment extends RobotBaseFragment<VideoPresenter> impl
                 initData();
             }
         });
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(VideoEtcListFragment.class, mRvEtcList);
     }
 
     @Override

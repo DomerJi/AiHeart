@@ -16,10 +16,12 @@ import com.thfw.base.models.AudioLastEtcModel;
 import com.thfw.base.models.AudioTypeModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.AudioPresenter;
+import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
+import com.thfw.robotheart.activitys.video.VideoHomeActivity;
 import com.thfw.robotheart.adapter.AudioEtcTypeAdapter;
 import com.thfw.robotheart.fragments.media.AudioEtcListFragment;
 import com.thfw.robotheart.lhxk.LhXkHelper;
@@ -130,17 +132,33 @@ public class AudioHomeActivity extends RobotBaseActivity<AudioPresenter> impleme
         if (isSetEmpty) {
             mAudioEtcTypeAdapter.getOnRvItemListener().onItemClick(mAudioEtcTypeAdapter.getDataList(), 0);
         }
-        int len = data.size();
         if (DeviceUtil.isLhXk_OS_R_SD01B()) {
-            for (int i = 0; i < len; i++) {
-                String name = data.get(i).getName();
-                final int index = i;
-                LhXkHelper.putAction(AudioHomeActivity.class, new SpeechToAction(name, () -> {
-                    mAudioEtcTypeAdapter.setSelectedIndex(index);
-                    mAudioEtcTypeAdapter.notifyDataSetChanged();
-                    mAudioEtcTypeAdapter.getOnRvItemListener().onItemClick(mAudioEtcTypeAdapter.getDataList(), index);
-                }));
-            }
+            initLocalVoice(VOICE_STATIC);
+        }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(VideoHomeActivity.class, new SpeechToAction("上次播放", () -> {
+            mTvLastAudio.performClick();
+        }));
+        if (mAudioEtcTypeAdapter == null) {
+            return;
+        }
+        List<AudioTypeModel> data = mAudioEtcTypeAdapter.getDataList();
+        if (EmptyUtil.isEmpty(data)) {
+            return;
+        }
+        int len = data.size();
+        for (int i = 0; i < len; i++) {
+            String name = data.get(i).getName();
+            final int index = i;
+            LhXkHelper.putAction(AudioHomeActivity.class, new SpeechToAction(name, () -> {
+                mAudioEtcTypeAdapter.setSelectedIndex(index);
+                mAudioEtcTypeAdapter.notifyDataSetChanged();
+                mAudioEtcTypeAdapter.getOnRvItemListener().onItemClick(mAudioEtcTypeAdapter.getDataList(), index);
+            }));
         }
     }
 

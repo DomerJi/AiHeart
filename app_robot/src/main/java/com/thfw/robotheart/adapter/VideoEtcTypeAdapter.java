@@ -11,12 +11,16 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.VideoTypeModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.activitys.video.VideoHomeActivity;
 import com.thfw.robotheart.constants.UIConfig;
+import com.thfw.robotheart.lhxk.LhXkHelper;
+import com.thfw.ui.widget.DeviceUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -42,6 +46,11 @@ public class VideoEtcTypeAdapter extends BaseAdapter<VideoTypeModel, VideoEtcTyp
     @Override
     public AudioEctTypeHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         return new AudioEctTypeHolder(inflate(R.layout.item_video_etc_type, parent));
+    }
+
+    public void setSelectedIndex(int selectedIndex) {
+        expand = !expand;
+        this.selectedIndex = selectedIndex;
     }
 
     @Override
@@ -73,7 +82,7 @@ public class VideoEtcTypeAdapter extends BaseAdapter<VideoTypeModel, VideoEtcTyp
 
         if (selectedIndex == position && expand) {
             if (!EmptyUtil.isEmpty(bean.list)) {
-                VideoChildTypeAdapter childAdapter = new VideoChildTypeAdapter(bean.list);
+                final VideoChildTypeAdapter childAdapter = new VideoChildTypeAdapter(bean.list);
                 childAdapter.setSelectedIndex(childSelectedIndex);
                 childAdapter.setOnRvItemListener(new OnRvItemListener<VideoTypeModel>() {
                     @Override
@@ -84,6 +93,20 @@ public class VideoEtcTypeAdapter extends BaseAdapter<VideoTypeModel, VideoEtcTyp
                         }
                     }
                 });
+
+                if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+                    int len = bean.list.size();
+                    for (int i = 0; i < len; i++) {
+                        String name = bean.list.get(i).name;
+                        final int index = i;
+                        LhXkHelper.putAction(VideoHomeActivity.class, new SpeechToAction(name, () -> {
+                            childAdapter.setSelectedIndex(index);
+                            childAdapter.notifyDataSetChanged();
+                            childAdapter.getOnRvItemListener().onItemClick(childAdapter.getDataList(), index);
+                        }));
+                    }
+                }
+
                 holder.mRvChild.setAdapter(childAdapter);
                 holder.mRvChild.setVisibility(View.VISIBLE);
             } else {

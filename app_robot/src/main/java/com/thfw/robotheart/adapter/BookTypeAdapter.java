@@ -65,6 +65,16 @@ public class BookTypeAdapter extends BaseAdapter<BookTypeModel.BookTypeImpModel,
         }
     }
 
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position).value;
+
+        }
+        return super.getText(position, type);
+    }
+
     public class BookTypeHolder extends RecyclerView.ViewHolder {
 
         private final TextView mTvType;
