@@ -15,6 +15,7 @@ import com.just.agentweb.DefaultWebClient;
 import com.thfw.base.base.IPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.constants.AgreeOn;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.util.WebSizeUtil;
 import com.thfw.robotheart.view.TitleRobotView;
 
@@ -40,8 +41,7 @@ public class WebActivity extends RobotBaseActivity {
     }
 
     public static void startActivity(Context context, String url, String title) {
-        context.startActivity(new Intent(context, WebActivity.class)
-                .putExtra(KEY_URL, url).putExtra(KEY_TITLE, title));
+        context.startActivity(new Intent(context, WebActivity.class).putExtra(KEY_URL, url).putExtra(KEY_TITLE, title));
     }
 
     @Override
@@ -147,6 +147,14 @@ public class WebActivity extends RobotBaseActivity {
     public void onPause() {
         mAgentWeb.getWebLifeCycle().onPause(); // 暂停应用内所有WebView,调用mWebView.resumeTimers();/mAgentWeb.getWebLifeCycle().onResume(); 恢复。
         super.onPause();
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        if (mAgentWeb != null && mAgentWeb.getWebCreator() != null && mAgentWeb.getWebCreator().getWebView() != null) {
+            new InstructScrollHelper(WebActivity.class, mAgentWeb.getWebCreator().getWebView());
+        }
     }
 
     @Override

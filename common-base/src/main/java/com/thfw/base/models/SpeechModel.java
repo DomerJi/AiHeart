@@ -1,5 +1,7 @@
 package com.thfw.base.models;
 
+import android.util.Log;
+
 /**
  * Author:pengs
  * Date: 2022/12/15 16:12
@@ -8,6 +10,7 @@ package com.thfw.base.models;
 public class SpeechModel {
 
     public String text;
+    public String outText;
     public String message;
     public int type;
     public boolean matches;
@@ -35,6 +38,16 @@ public class SpeechModel {
         speechModel.text = text;
         speechModel.type = Type.ING;
         return speechModel;
+    }
+
+    public SpeechModel setOutText(String outText) {
+        Log.i("SpeechModel", "outText -> " + outText);
+        this.outText = outText;
+        return this;
+    }
+
+    public String getOutText() {
+        return outText;
     }
 
     public SpeechModel setType(int type) {

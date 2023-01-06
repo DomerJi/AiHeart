@@ -20,6 +20,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.AzQuickAdapter;
 import com.thfw.robotheart.adapter.HotPhoneAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.MyRobotSearchView;
@@ -153,8 +154,7 @@ public class HotPhoneActivity extends RobotBaseActivity<OtherPresenter> implemen
     @Override
     public void onSuccess(List<HotCallModel> data) {
         if (EmptyUtil.isEmpty(data)) {
-            if (mRvList == null || mRvList.getAdapter() == null
-                    || mRvList.getAdapter().getItemCount() == 0) {
+            if (mRvList == null || mRvList.getAdapter() == null || mRvList.getAdapter().getItemCount() == 0) {
                 mLoadingView.showEmpty();
             }
             return;
@@ -193,6 +193,13 @@ public class HotPhoneActivity extends RobotBaseActivity<OtherPresenter> implemen
 
         mRvAcQuick.setAdapter(new AzQuickAdapter(mAzList));
         mRvList.setAdapter(new HotPhoneAdapter(hotCallModels));
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(HotPhoneActivity.class, mRvList);
+        new InstructScrollHelper(HotPhoneActivity.class, mRvAcQuick, false);
     }
 
     @Override

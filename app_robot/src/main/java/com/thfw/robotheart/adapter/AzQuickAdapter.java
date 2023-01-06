@@ -34,6 +34,15 @@ public class AzQuickAdapter extends BaseAdapter<String, AzQuickAdapter.AzHolder>
     }
 
     @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position);
+        }
+        return super.getText(position, type);
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull @NotNull AzQuickAdapter.AzHolder holder, int position) {
         holder.mTvAz.setText(mDataList.get(position));
     }

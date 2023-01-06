@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.CollectModel;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
+import com.thfw.ui.widget.OrderView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -40,6 +42,7 @@ public class CollectAdapter extends BaseAdapter<CollectModel, CollectAdapter.Col
         CollectModel collectModel = mDataList.get(position);
         holder.mTvTime.setText(collectModel.duration);
         holder.mTvTitle.setText(collectModel.title);
+        holder.mOrderView.setOrder(position + 1);
         if (TextUtils.isEmpty(collectModel.type)) {
             holder.mTvType.setVisibility(View.INVISIBLE);
         } else {
@@ -47,6 +50,19 @@ public class CollectAdapter extends BaseAdapter<CollectModel, CollectAdapter.Col
             holder.mTvType.setText("分类：" + collectModel.type);
         }
 
+    }
+
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position).title;
+            case TYPE_SPEAK_ORDER:
+                return InstructScrollHelper.speakNumber(position + 1);
+
+        }
+        return super.getText(position, type);
     }
 
     public class CollectHolder extends RecyclerView.ViewHolder {
@@ -57,6 +73,7 @@ public class CollectAdapter extends BaseAdapter<CollectModel, CollectAdapter.Col
         private TextView mTvType;
         private TextView mTvTime;
         private View mVLine;
+        private OrderView mOrderView;
 
         public CollectHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -75,6 +92,7 @@ public class CollectAdapter extends BaseAdapter<CollectModel, CollectAdapter.Col
             mTvType = (TextView) itemView.findViewById(R.id.tv_type);
             mTvTime = (TextView) itemView.findViewById(R.id.tv_time);
             mVLine = (View) itemView.findViewById(R.id.v_line);
+            mOrderView = itemView.findViewById(R.id.orderView);
         }
     }
 }

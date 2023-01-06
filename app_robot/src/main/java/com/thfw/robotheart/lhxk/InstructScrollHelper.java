@@ -113,23 +113,29 @@ public class InstructScrollHelper {
     }
 
     public InstructScrollHelper(Class classes, RecyclerView recyclerView) {
+        this(classes, recyclerView, true);
+    }
+
+    public InstructScrollHelper(Class classes, RecyclerView recyclerView, boolean scroll) {
         this.recyclerView = recyclerView;
         this.classes = classes;
-        LhXkHelper.putAction(classes, new SpeechToAction(LAST, () -> {
-            onScrollLeft();
-        }));
+        if (scroll) {
+            LhXkHelper.putAction(classes, new SpeechToAction(LAST, () -> {
+                onScrollLeft();
+            }));
 
-        LhXkHelper.putAction(classes, new SpeechToAction(NEXT, () -> {
-            onScrollRight();
-        }));
+            LhXkHelper.putAction(classes, new SpeechToAction(NEXT, () -> {
+                onScrollRight();
+            }));
 
-        LhXkHelper.putAction(classes, new SpeechToAction("滑动到顶部,滚动到顶部", () -> {
-            onScrollMostLeft();
-        }));
+            LhXkHelper.putAction(classes, new SpeechToAction("滑动到顶部,滚动到顶部", () -> {
+                onScrollMostLeft();
+            }));
 
-        LhXkHelper.putAction(classes, new SpeechToAction("滑动到底部, 滚动到底部", () -> {
-            onScrollMostRight();
-        }));
+            LhXkHelper.putAction(classes, new SpeechToAction("滑动到底部, 滚动到底部", () -> {
+                onScrollMostRight();
+            }));
+        }
         if (recyclerView.isAttachedToWindow()) {
             init();
         }
@@ -194,7 +200,7 @@ public class InstructScrollHelper {
             LinearLayoutManager linearLayoutManager = (LinearLayoutManager) manager;
             first = linearLayoutManager.findFirstVisibleItemPosition();
             last = linearLayoutManager.findLastVisibleItemPosition();
-            if (first == RecyclerView.NO_POSITION || last == RecyclerView.NO_POSITION) {
+            if (first == RecyclerView.NO_POSITION || last == RecyclerView.NO_POSITION || (first == 0 && last == 0)) {
                 return;
             }
 
@@ -202,6 +208,9 @@ public class InstructScrollHelper {
 
         if (recyclerView.getAdapter() instanceof OnSpeakTextListener) {
             OnSpeakTextListener onSpeakTextListener = (OnSpeakTextListener) recyclerView.getAdapter();
+            if (recyclerView.getAdapter().getItemCount() == 0) {
+                return;
+            }
             for (int i = first; i <= last; i++) {
                 String text = onSpeakTextListener.getText(i, OnSpeakTextListener.TYPE_SPEAK_TEXT);
                 String order = onSpeakTextListener.getText(i, OnSpeakTextListener.TYPE_SPEAK_ORDER);

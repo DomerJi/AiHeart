@@ -40,6 +40,15 @@ public class HotPhoneAdapter extends BaseAdapter<HotCallModel, HotPhoneAdapter.B
         holder.mTvPhone.setText(callModel.phone.trim());
     }
 
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position).title;
+        }
+        return super.getText(position, type);
+    }
+
     public class BookStudyHolder extends RecyclerView.ViewHolder {
 
         private final TextView mTvTitle;

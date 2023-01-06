@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,7 +20,9 @@ import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.thfw.base.api.MusicApi;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.models.SpeechModel;
 import com.thfw.base.models.WeatherDetailsModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LocationUtils;
@@ -34,6 +37,7 @@ import com.thfw.robotheart.adapter.WeatherAlarmsAdapter;
 import com.thfw.robotheart.adapter.WeatherCityAdapter;
 import com.thfw.robotheart.adapter.WeatherHourAdapter;
 import com.thfw.robotheart.adapter.WeatherWeekAdapter;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.IconUtil;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.utils.GlideUtil;
@@ -170,10 +174,7 @@ public class WeatherActivity extends RobotBaseActivity {
     public void initData() {
 
         if (hotCityList == null) {
-            hotCityList = Arrays.asList(new String[]{LocationUtils.getCityName(), "北京", "上海", "广州", "深圳", "珠海",
-                    "佛山", "南京", "苏州", "昆明", "南宁", "成都",
-                    "长沙", "福州", "杭州", "西安", "太原", "石家庄"
-                    , "沈阳", "重庆", "天津"});
+            hotCityList = Arrays.asList(new String[]{LocationUtils.getCityName(), "北京", "上海", "广州", "深圳", "珠海", "佛山", "南京", "苏州", "昆明", "南宁", "成都", "长沙", "福州", "杭州", "西安", "太原", "石家庄", "沈阳", "重庆", "天津"});
             weatherCityAdapter = new WeatherCityAdapter(null);
             weatherCityAdapter.setOnRvItemListener(new OnRvItemListener<String>() {
                 @Override
@@ -317,6 +318,35 @@ public class WeatherActivity extends RobotBaseActivity {
         search(LocationUtils.getCityName(), false);
     }
 
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(WeatherActivity.class, new SpeechToAction("选择城市,其他城市", () -> {
+            if (mTitleRobotView.getTvTitle() != null) {
+                mTitleRobotView.getTvTitle().performClick();
+            }
+        }));
+        SpeechToAction.Instruction instruction = new SpeechToAction.Instruction() {
+            @Override
+            public SpeechModel matching(String speechText) {
+                String city = speechText.replaceAll("(选择|搜索|市|自治区)", "");
+                if (!TextUtils.isEmpty(city) && !EmptyUtil.isEmpty(WeatherUtil.getCityIdMap())) {
+                    HashMap<String, String> cityIdMap = WeatherUtil.getCityIdMap();
+                    if (cityIdMap.containsKey(city)) {
+                        String cityId = cityIdMap.get(city);
+                        if (!TextUtils.isEmpty(cityId)) {
+                            return SpeechModel.create(speechText).setOutText(city).setMatches(true);
+                        }
+                    }
+                }
+                return super.matching(speechText);
+            }
+        };
+        LhXkHelper.putAction(WeatherActivity.class, new SpeechToAction(instruction, () -> {
+            hideInput();
+            search(instruction.speechModel.getOutText(), true);
+        }));
+    }
 
     private void search(String cityName, boolean showLoading) {
         if (showLoading) {

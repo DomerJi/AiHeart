@@ -1,5 +1,6 @@
 package com.thfw.robotheart.activitys;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,9 +15,11 @@ import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.tabs.TabItem;
 import com.google.common.reflect.TypeToken;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.SearchResultModel;
+import com.thfw.base.models.SpeechModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.SearchPresenter;
 import com.thfw.base.utils.EmptyUtil;
@@ -27,6 +30,8 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.adapter.SearchHistoryAdapter;
 import com.thfw.robotheart.fragments.SearchFragment;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.LoadingView;
@@ -213,6 +218,34 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
         mKeyHistoryList.clear();
         mKeyHistoryList.addAll(list);
         searchHistoryAdapter.setDataListNotify(mKeyHistoryList);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(SearchActivity.class, mRvHistory, false);
+        SpeechToAction.Instruction instruction = new SpeechToAction.Instruction() {
+            @Override
+            public SpeechModel matching(String speechText) {
+                String weather = ".{0,2}(搜索).{1,8}";
+                if (speechText.matches(weather)) {
+                    String key = speechText.replaceAll(".{0,2}(搜索)", "");
+                    if (!TextUtils.isEmpty(key)) {
+                        return SpeechModel.create(speechText).setMatches(true).setOutText(key);
+                    }
+                }
+                return super.matching(speechText);
+            }
+        };
+        LhXkHelper.putAction(SearchActivity.class, new SpeechToAction(instruction, () -> {
+            String key = instruction.speechModel.getOutText();
+            mMySearch.getEditeText().setText(key);
+            mMySearch.getEditeText().setSelection(key.length());
+            onGoSearch(key);
+        }));
+        LhXkHelper.putAction(SearchActivity.class, new SpeechToAction("清除记录,清空记录", () -> {
+            mLlClearHistory.performClick();
+        }));
     }
 
     @Override

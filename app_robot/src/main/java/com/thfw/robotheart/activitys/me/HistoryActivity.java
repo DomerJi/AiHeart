@@ -28,6 +28,7 @@ import com.thfw.robotheart.activitys.text.BookDetailActivity;
 import com.thfw.robotheart.activitys.text.BookIdeoDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.HistoryAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.widget.LoadingView;
@@ -52,8 +53,7 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
 
 
     public static void startActivity(Context context, int type) {
-        Intent intent = new Intent(context, HistoryActivity.class)
-                .putExtra(KEY_TYPE, type);
+        Intent intent = new Intent(context, HistoryActivity.class).putExtra(KEY_TYPE, type);
 
 
         switch (type) {
@@ -165,6 +165,12 @@ public class HistoryActivity extends RobotBaseActivity<HistoryPresenter> impleme
     @Override
     public LifecycleProvider getLifecycleProvider() {
         return this;
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(HistoryActivity.class, mRvList);
     }
 
     @Override

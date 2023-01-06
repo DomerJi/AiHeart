@@ -11,10 +11,13 @@ import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.me.CollectFragment;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.view.TitleRobotView;
+import com.thfw.ui.widget.DeviceUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -58,6 +61,7 @@ public class CollectActivity extends RobotBaseActivity {
         int count = mTabLayout.getTabCount();
         for (int i = 0; i < count; i++) {
             TabLayout.TabView tabView = mTabLayout.getTabAt(i).view;
+
             LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) tabView.getLayoutParams();
             if (i != 0) {
                 p.leftMargin = 25;
@@ -117,5 +121,21 @@ public class CollectActivity extends RobotBaseActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        int count = mTabLayout.getTabCount();
+        for (int i = 0; i < count; i++) {
+            TabLayout.TabView tabView = mTabLayout.getTabAt(i).view;
+            if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+                final TabLayout.Tab fTab = tabView.getTab();
+                LhXkHelper.putAction(CollectActivity.class, new SpeechToAction(tabView.getTab().getText().toString(), () -> {
+                    mTabLayout.selectTab(fTab);
+                }));
+            }
+        }
+
     }
 }

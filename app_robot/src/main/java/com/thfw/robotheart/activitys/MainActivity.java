@@ -1028,6 +1028,9 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
 
         LhXkHelper.putAction(MainActivity.class, new SpeechToAction("搜索",
                 () -> startActivity(new Intent(mContext, SearchActivity.class))));
+
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("查看天气,天气,今天天气怎么样",
+                () -> mClWeather.performClick()));
     }
 
 

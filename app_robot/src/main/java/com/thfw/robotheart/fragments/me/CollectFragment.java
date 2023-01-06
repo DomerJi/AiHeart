@@ -24,6 +24,7 @@ import com.thfw.robotheart.activitys.text.BookDetailActivity;
 import com.thfw.robotheart.activitys.text.BookIdeoDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.CollectAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -129,6 +130,13 @@ public class CollectFragment extends RobotBaseFragment<HistoryPresenter>
     @Override
     public void onSuccess(List<CollectModel> data) {
         mPageHelper.onSuccess(data);
+    }
+
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(CollectFragment.class, mRvList);
     }
 
     @Override

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.models.HistoryModel;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -69,6 +70,40 @@ public class HistoryAdapter extends BaseAdapter<HistoryModel, HistoryAdapter.His
             holder.mTvTitle.setText(bookModel.getTitle() + " - " + bookModel.getToolPackageTitle());
             holder.mTvTime.setText(bookModel.getAddTime());
         }
+    }
+
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                HistoryModel historyModel = mDataList.get(position);
+                if (historyModel instanceof HistoryModel.HistoryTestModel) {
+                    HistoryModel.HistoryTestModel testModel = (HistoryModel.HistoryTestModel) historyModel;
+                    return testModel.getTitle();
+                } else if (historyModel instanceof HistoryModel.HistoryVideoModel) {
+                    HistoryModel.HistoryVideoModel videoModel = (HistoryModel.HistoryVideoModel) historyModel;
+                    return videoModel.getTitle();
+                } else if (historyModel instanceof HistoryModel.HistoryAudioModel) {
+                    HistoryModel.HistoryAudioModel audioModel = (HistoryModel.HistoryAudioModel) historyModel;
+                    return audioModel.getTitle();
+                } else if (historyModel instanceof HistoryModel.HistoryBookModel) {
+                    HistoryModel.HistoryBookModel bookModel = (HistoryModel.HistoryBookModel) historyModel;
+                    return bookModel.getTitle();
+                } else if (historyModel instanceof HistoryModel.HistoryStudyModel) {
+                    HistoryModel.HistoryStudyModel bookModel = (HistoryModel.HistoryStudyModel) historyModel;
+                    return bookModel.getTitle();
+                } else if (historyModel instanceof HistoryModel.HistoryExerciseModel) {
+                    HistoryModel.HistoryExerciseModel bookModel = (HistoryModel.HistoryExerciseModel) historyModel;
+                    return bookModel.getTitle();
+                } else {
+                    return null;
+                }
+            case TYPE_SPEAK_ORDER:
+                return InstructScrollHelper.speakNumber(position + 1);
+
+        }
+        return super.getText(position, type);
     }
 
     @Override

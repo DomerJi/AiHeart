@@ -150,6 +150,24 @@ public class LhXkHelper {
         for (Map.Entry<Integer, HashMap<String, SpeechToAction>> map : entrySet) {
             Collection<SpeechToAction> list = map.getValue().values();
             for (SpeechToAction speechToAction : list) {
+                if (TextUtils.isEmpty(speechToAction.text)) {
+                    if (speechToAction.instruction != null) {
+                        SpeechModel speechModel = speechToAction.instruction.matching(oldWord);
+                        if (speechModel != null) {
+                            speechToAction.instruction.speechModel = speechModel;
+                            if (end) {
+                                LogUtil.i(TAG, "regex true*********** -> ");
+                                tts(getTtsReplay());
+                                Dormant.reset();
+                                HandlerUtil.getMainHandler().postDelayed(() -> {
+                                    speechToAction.run();
+                                }, 450);
+                            }
+                            return speechModel;
+                        }
+                    }
+                    continue;
+                }
                 String regex;
                 String matchesWord;
                 int len;

@@ -38,6 +38,15 @@ public class SearchHistoryAdapter extends BaseAdapter<String, SearchHistoryAdapt
     }
 
     @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position);
+        }
+        return super.getText(position, type);
+    }
+
+    @Override
     public int getItemCount() {
         return super.getItemCount() > 10 ? 10 : super.getItemCount();
     }

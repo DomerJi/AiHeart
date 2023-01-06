@@ -2,11 +2,13 @@ package com.thfw.base.base;
 
 import android.content.Intent;
 
+import com.thfw.base.models.SpeechModel;
 import com.thfw.base.utils.LogUtil;
 
 public class SpeechToAction {
     private static final String TAG = SpeechToAction.class.getSimpleName();
     public String text;
+    public Instruction instruction;
     public int type;
     public int code;
     public boolean like;
@@ -16,6 +18,12 @@ public class SpeechToAction {
     public SpeechToAction(String text, Runnable runnable) {
         LogUtil.i(TAG, "text -->> " + text);
         this.text = text;
+        this.runnable = runnable;
+    }
+
+    public SpeechToAction(Instruction instruction, Runnable runnable) {
+        LogUtil.i(TAG, "text -->> " + text);
+        this.instruction = instruction;
         this.runnable = runnable;
     }
 
@@ -37,6 +45,13 @@ public class SpeechToAction {
         } else {
             LogUtil.i(TAG, "SpeechToAction -> runnable is null text = " + text);
             return false;
+        }
+    }
+
+    public static class Instruction {
+        public SpeechModel speechModel;
+        public SpeechModel matching(String speechText) {
+            return null;
         }
     }
 }
