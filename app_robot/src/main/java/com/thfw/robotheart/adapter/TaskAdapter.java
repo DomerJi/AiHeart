@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
+import com.thfw.ui.widget.OrderView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -47,6 +49,7 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
         holder.mTvStatus.setText(itemModel.getFinishCount() + "/" + itemModel.getCount());
         holder.mTvTitle.setText(itemModel.getTitle());
         holder.mTvType.setText(itemModel.getTaskTypeStr());
+        holder.mOrderView.setOrder(position + 1);
         if (itemModel.getStatus() == 4) {
             holder.mTvFlag.setVisibility(View.VISIBLE);
             holder.mTvFlag.setText("未开始");
@@ -81,6 +84,18 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
 
     }
 
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+            case TYPE_SPEAK_ORDER:
+                return InstructScrollHelper.speakNumber(position + 1);
+
+        }
+        return super.getText(position, type);
+    }
+
     public class TaskHolder extends RecyclerView.ViewHolder {
 
         private RoundedImageView mRivDot;
@@ -90,6 +105,7 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
         private TextView mTvFlag;
         private TextView mTvType;
         private TextView mTvStatus;
+        private OrderView mOrderView;
 
         public TaskHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -109,6 +125,7 @@ public class TaskAdapter extends BaseAdapter<TaskItemModel, TaskAdapter.TaskHold
             mTvFlag = (TextView) itemView.findViewById(R.id.tv_flag);
             mTvType = (TextView) itemView.findViewById(R.id.tv_type);
             mTvStatus = (TextView) itemView.findViewById(R.id.tv_status);
+            mOrderView = itemView.findViewById(R.id.orderView);
         }
     }
 }

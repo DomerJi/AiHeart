@@ -10,10 +10,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.me.MsgFragment;
 import com.thfw.robotheart.fragments.me.MsgTaskFragment;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.MsgCountManager;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.LoadingDialog;
@@ -132,6 +134,20 @@ public class MsgActivity extends RobotBaseActivity implements MsgCountManager.On
                 mBtReadMsgAll.setEnabled(MsgCountManager.getInstance().getNumSystem() > 0);
             }
         }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+
+        LhXkHelper.putAction(MsgActivity.class, new SpeechToAction(mTvTab01.getText().toString(), () -> {
+            mTvTab01.performClick();
+        }));
+        LhXkHelper.putAction(MsgActivity.class, new SpeechToAction(mTvTab02.getText().toString(), () -> {
+            mTvTab02.performClick();
+        }));
+
+
     }
 
     @Override

@@ -12,12 +12,15 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.help.AboutMeFragment;
 import com.thfw.robotheart.fragments.help.AudioInstructFragment;
 import com.thfw.robotheart.fragments.help.CommonProblemFragment;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.view.TitleRobotView;
+import com.thfw.ui.widget.DeviceUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -67,6 +70,12 @@ public class HelpBackActivity extends RobotBaseActivity {
             p.leftMargin = 50;
             p.rightMargin = 50;
             tabView.setLayoutParams(p);
+            if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+                final TabLayout.Tab fTab = tabView.getTab();
+                LhXkHelper.putAction(HelpBackActivity.class, new SpeechToAction(tabView.getTab().getText().toString(), () -> {
+                    mTabLayout.selectTab(fTab);
+                }));
+            }
         }
         HashMap<Integer, Fragment> collectMap = new HashMap<>();
         collectMap.put(0, new CommonProblemFragment());

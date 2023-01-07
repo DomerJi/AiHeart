@@ -9,6 +9,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.net.CommonParameter;
 import com.thfw.base.utils.BuglyUtil;
@@ -18,6 +19,7 @@ import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.set.SystemAppActivity;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 
 /**
  * Author:pengs
@@ -75,6 +77,19 @@ public class SetUpdateFragment extends RobotBaseFragment {
                 SharePreferenceUtil.setBoolean(SET_AUTO_UPDATE_BOOLEAN, isChecked);
             }
         });
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(SetUpdateFragment.class, new SpeechToAction("自动更新", () -> {
+            mSwitchWifiUpdate.setChecked(!mSwitchWifiUpdate.isChecked());
+        }));
+        LhXkHelper.putAction(SetUpdateFragment.class, new SpeechToAction("关闭自动更新", () -> {
+            if (mSwitchWifiUpdate.isChecked()) {
+                mSwitchWifiUpdate.setChecked(false);
+            }
+        }));
     }
 
     @Override

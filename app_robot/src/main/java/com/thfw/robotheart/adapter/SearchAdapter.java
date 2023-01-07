@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.thfw.base.models.SearchResultModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
+import com.thfw.ui.widget.OrderView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -43,16 +45,28 @@ public class SearchAdapter extends BaseAdapter<SearchResultModel.ResultBean, Sea
     public void onBindViewHolder(@NonNull @NotNull SearchAdapter.ResultHolder holder, int position) {
         SearchResultModel.ResultBean resultModel = mDataList.get(position);
         holder.mTvTitle.setText(resultModel.getTitle());
-
+        holder.mOrderView.setOrder(position + 1);
         if (type == SearchResultModel.TYPE_HOT_PHONE) {
             holder.mTvPhone.setText(resultModel.getPhone());
             holder.mTvTime.setText(resultModel.getTime());
         }
     }
 
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+            case TYPE_SPEAK_ORDER:
+                return InstructScrollHelper.speakNumber(position + 1);
+
+        }
+        return super.getText(position, type);
+    }
     public class ResultHolder extends RecyclerView.ViewHolder {
 
         private final TextView mTvTitle;
+        private final OrderView mOrderView;
         private ImageView mIvCall;
         private TextView mTvPhone;
         private TextView mTvTime;
@@ -60,6 +74,7 @@ public class SearchAdapter extends BaseAdapter<SearchResultModel.ResultBean, Sea
         public ResultHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             mTvTitle = itemView.findViewById(R.id.tv_title);
+            mOrderView = itemView.findViewById(R.id.orderView);
             if (type == SearchResultModel.TYPE_HOT_PHONE) {
                 mIvCall = itemView.findViewById(R.id.iv_call);
                 mIvCall.setVisibility(View.VISIBLE);

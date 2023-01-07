@@ -20,6 +20,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.task.TaskActivity;
 import com.thfw.robotheart.adapter.MsgTaskAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.util.MsgCountManager;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
@@ -96,6 +97,12 @@ public class MsgTaskFragment extends RobotBaseFragment<TaskPresenter> implements
         if (isVisible) {
             numTask = MsgCountManager.getInstance().getNumTask();
         }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(MsgTaskFragment.class, mRvList);
     }
 
     @Override

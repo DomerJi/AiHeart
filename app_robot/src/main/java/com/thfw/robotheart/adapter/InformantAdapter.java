@@ -45,6 +45,16 @@ public class InformantAdapter extends BaseAdapter<Informant, InformantAdapter.Do
     }
 
 
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position).simpleName;
+
+        }
+        return super.getText(position, type);
+    }
+
     public class DormantViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView mTvTime;
@@ -65,4 +75,13 @@ public class InformantAdapter extends BaseAdapter<Informant, InformantAdapter.Do
         }
     }
 
+    @Override
+    public void onSpeakItemClick(int position) {
+//        super.onSpeakItemClick(position);
+        InformantUtil.setInformant(mDataList.get(position).vnc);
+        if (mOnRvItemListener != null) {
+            mOnRvItemListener.onItemClick(mDataList, position);
+        }
+        notifyDataSetChanged();
+    }
 }

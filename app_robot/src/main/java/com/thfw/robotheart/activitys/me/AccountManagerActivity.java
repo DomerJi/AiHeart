@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.ResponeThrowable;
@@ -22,6 +23,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.login.BindPhoneActivity;
 import com.thfw.robotheart.activitys.login.SetPasswordActivity;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.LoadingDialog;
@@ -82,6 +84,20 @@ public class AccountManagerActivity extends RobotBaseActivity {
         mIvPasswrodArrow = (ImageView) findViewById(R.id.iv_passwrod_arrow);
         mTvUserNickname = (TextView) findViewById(R.id.tv_user_nickname);
         mTvUserName = (TextView) findViewById(R.id.tv_user_name);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(AccountManagerActivity.class, new SpeechToAction(mBtLogout.getText().toString(), () -> {
+            mBtLogout.performClick();
+        }));
+        LhXkHelper.putAction(AccountManagerActivity.class, new SpeechToAction("手机号", () -> {
+            mRlPhoneChange.performClick();
+        }));
+        LhXkHelper.putAction(AccountManagerActivity.class, new SpeechToAction("登录密码", () -> {
+            mRlPasswordChange.performClick();
+        }));
     }
 
     @Override
@@ -175,9 +191,7 @@ public class AccountManagerActivity extends RobotBaseActivity {
 
 
     public void onUpdateInfo(String key, Object value) {
-        onUpdateInfo(NetParams.crete()
-                .add("key", key)
-                .add("value", value));
+        onUpdateInfo(NetParams.crete().add("key", key).add("value", value));
     }
 
     public void onUpdateInfo(NetParams netParams) {

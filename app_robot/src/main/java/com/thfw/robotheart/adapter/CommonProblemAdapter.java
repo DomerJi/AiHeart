@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.CommonProblemModel;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -38,6 +39,18 @@ public class CommonProblemAdapter extends BaseAdapter<CommonProblemModel, Common
     public void onBindViewHolder(@NonNull @NotNull ProblemHolder holder, int position) {
         String question = mDataList.get(position).getQuestion();
         holder.mTvTitle.setText(question);
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getQuestion();
+            case TYPE_SPEAK_ORDER:
+                return InstructScrollHelper.speakNumber(position + 1);
+
+        }
+        return super.getText(position, type);
     }
 
     public class ProblemHolder extends RecyclerView.ViewHolder {

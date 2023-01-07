@@ -20,6 +20,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.task.TaskDetailsActivity;
 import com.thfw.robotheart.adapter.TaskAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -30,8 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class TaskFragment extends RobotBaseFragment<TaskPresenter> implements TaskPresenter.TaskUi<List<TaskItemModel>>
-        , DataChangeHelper.DataChangeListener {
+public class TaskFragment extends RobotBaseFragment<TaskPresenter> implements TaskPresenter.TaskUi<List<TaskItemModel>>, DataChangeHelper.DataChangeListener {
 
     private int type;
     private SmartRefreshLayout mRefreshLayout;
@@ -108,6 +108,11 @@ public class TaskFragment extends RobotBaseFragment<TaskPresenter> implements Ta
         mPresenter.onGetList(type, mPageHelper.getPage());
     }
 
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(TaskFragment.class, mRvList);
+    }
 
     @Override
     public LifecycleProvider getLifecycleProvider() {

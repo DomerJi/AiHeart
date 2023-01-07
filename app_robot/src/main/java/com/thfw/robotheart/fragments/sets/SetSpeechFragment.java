@@ -17,6 +17,7 @@ import com.thfw.base.models.Informant;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.adapter.InformantAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.ui.common.LhXkSettingActivity;
 import com.thfw.ui.voice.tts.TtsHelper;
 import com.thfw.ui.voice.tts.TtsModel;
@@ -62,6 +63,12 @@ public class SetSpeechFragment extends RobotBaseFragment {
                 LhXkSettingActivity.startActivity(mContext);
             });
         }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(SetSpeechFragment.class, mRvList);
     }
 
     @Override

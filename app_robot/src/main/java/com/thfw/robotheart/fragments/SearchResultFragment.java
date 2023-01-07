@@ -24,6 +24,7 @@ import com.thfw.robotheart.activitys.text.BookDetailActivity;
 import com.thfw.robotheart.activitys.text.BookIdeoDetailActivity;
 import com.thfw.robotheart.activitys.video.VideoPlayerActivity;
 import com.thfw.robotheart.adapter.SearchAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 
 import java.util.List;
 
@@ -69,6 +70,12 @@ public class SearchResultFragment extends RobotBaseFragment {
     }
 
     @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(SearchResultFragment.class, mRvList);
+    }
+
+    @Override
     public void onVisible(boolean isVisible) {
         super.onVisible(isVisible);
         if (isVisible) {
@@ -110,8 +117,7 @@ public class SearchResultFragment extends RobotBaseFragment {
                         ExerciseDetailsActivity.startActivity(mContext, resultBean.getId());
                         break;
                     case SearchResultModel.TYPE_DIALOG:
-                        AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
-                                .setId(resultBean.getId()));
+                        AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT).setId(resultBean.getId()));
                         break;
                     case SearchResultModel.TYPE_HOT_PHONE:
                         // 平板和机器人无法打电话

@@ -24,6 +24,7 @@ import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.activitys.talk.AiTalkActivity;
 import com.thfw.robotheart.activitys.test.TestDetailActivity;
 import com.thfw.robotheart.adapter.TaskChildLineAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.LoadingView;
@@ -137,6 +138,11 @@ public class TaskDetailsActivity extends RobotBaseActivity<TaskPresenter> implem
         mLoadingView.hide();
     }
 
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(TaskDetailsActivity.class, mRvList);
+    }
 
     private void musicEtcInfo(int id) {
         LoadingDialog.show(this, "加载中");
@@ -164,6 +170,8 @@ public class TaskDetailsActivity extends RobotBaseActivity<TaskPresenter> implem
 
     @Override
     public void onFail(ResponeThrowable throwable) {
-
+        mLoadingView.showFail(v -> {
+            mPresenter.onGetInfo(mId);
+        });
     }
 }

@@ -72,6 +72,9 @@ public class LhXkHelper {
     }
 
     static {
+        putAction(LhXkHelper.class, new SpeechToAction("返回到首页,到首页,回首页,去首页", () -> {
+            MyApplication.goAppHome(MyApplication.getTopActivity());
+        }));
         putAction(LhXkHelper.class, new SpeechToAction("别看我,看别人,看其他人,看别的人,看别的地方,不准看我,不要看我", () -> {
             LogUtil.i(TAG, "============================别看我============================");
             if (mPersonId != -1) {

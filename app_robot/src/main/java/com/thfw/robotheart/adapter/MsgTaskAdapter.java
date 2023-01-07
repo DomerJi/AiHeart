@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.TaskItemModel;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.push.helper.PushHandle;
 import com.thfw.robotheart.util.MsgCountManager;
 import com.thfw.ui.utils.GlideUtil;
+import com.thfw.ui.widget.OrderView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -48,8 +50,21 @@ public class MsgTaskAdapter extends BaseAdapter<TaskItemModel, MsgTaskAdapter.Ta
             holder.mVDotState.setVisibility(View.INVISIBLE);
         }
         holder.mTvTime.setText(itemModel.getCreateTime());
+        holder.mOrderView.setOrder(position+1);
     }
 
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+            case TYPE_SPEAK_ORDER:
+                return InstructScrollHelper.speakNumber(position + 1);
+
+        }
+        return super.getText(position, type);
+    }
 
     public class TaskHolder extends RecyclerView.ViewHolder {
 
@@ -60,6 +75,7 @@ public class MsgTaskAdapter extends BaseAdapter<TaskItemModel, MsgTaskAdapter.Ta
         private TextView mTvFlag;
         private TextView mTvTime;
         private View mVLine;
+        private OrderView mOrderView;
 
         public TaskHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -79,6 +95,7 @@ public class MsgTaskAdapter extends BaseAdapter<TaskItemModel, MsgTaskAdapter.Ta
             mTvFlag = (TextView) itemView.findViewById(R.id.tv_flag);
             mTvTime = (TextView) itemView.findViewById(R.id.tv_time);
             mVLine = (View) itemView.findViewById(R.id.v_line);
+            mOrderView = itemView.findViewById(R.id.orderView);
         }
     }
 }

@@ -13,10 +13,14 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.SearchResultModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
+import com.thfw.robotheart.activitys.me.CollectActivity;
+import com.thfw.robotheart.lhxk.LhXkHelper;
+import com.thfw.ui.widget.DeviceUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -212,6 +216,13 @@ public class SearchFragment extends RobotBaseFragment {
                 p.rightMargin = 25;
             }
             tabView.setLayoutParams(p);
+
+            if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+                final TabLayout.Tab fTab = tabView.getTab();
+                LhXkHelper.putAction(SearchFragment.class, new SpeechToAction(tabView.getTab().getText().toString(), () -> {
+                    mTabLayout.selectTab(fTab);
+                }));
+            }
         }
 
         /**

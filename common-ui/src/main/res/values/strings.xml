@@ -3,6 +3,7 @@
 
     <string name="load_ing">加载中...</string>
     <string name="load_fail">网络故障，请检查网络连接</string>
+    <string name="load_retry">点击重试</string>
     <string name="load_more">加载更多</string>
     <string name="load_success">加载成功</string>
     <string name="load_empty">暂无内容</string>

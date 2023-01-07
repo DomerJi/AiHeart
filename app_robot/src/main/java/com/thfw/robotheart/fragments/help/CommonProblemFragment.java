@@ -18,6 +18,7 @@ import com.thfw.robotheart.activitys.WebActivity;
 import com.thfw.robotheart.activitys.me.SimpleTextActivity;
 import com.thfw.robotheart.adapter.CommonProblemAdapter;
 import com.thfw.robotheart.constants.AgreeOn;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.robotheart.view.CustomRefreshLayout;
 import com.thfw.ui.widget.LoadingView;
@@ -65,12 +66,9 @@ public class CommonProblemFragment extends RobotBaseFragment<OtherPresenter> imp
             @Override
             public void onItemClick(List<CommonProblemModel> list, int position) {
                 if (TextUtils.isEmpty(list.get(position).getAnswerUrl())) {
-                    SimpleTextActivity.startActivity(mContext,
-                            list.get(position).getQuestion(),
-                            list.get(position).getAnswer());
+                    SimpleTextActivity.startActivity(mContext, list.get(position).getQuestion(), list.get(position).getAnswer());
                 } else {
-                    WebActivity.startActivity(mContext, list.get(position).getAnswerUrl(),
-                            list.get(position).getQuestion());
+                    WebActivity.startActivity(mContext, list.get(position).getAnswerUrl(), list.get(position).getQuestion());
                 }
             }
         });
@@ -86,6 +84,12 @@ public class CommonProblemFragment extends RobotBaseFragment<OtherPresenter> imp
         });
 
 
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(CommonProblemFragment.class, mRvList);
     }
 
     @Override

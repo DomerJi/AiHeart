@@ -9,9 +9,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.fragments.me.TaskFragment;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.view.TitleRobotView;
 
 import org.jetbrains.annotations.NotNull;
@@ -100,6 +102,20 @@ public class TaskActivity extends RobotBaseActivity {
     private void selectTab(int position) {
         mTvTab01.setSelected(position == 0);
         mTvTab02.setSelected(position == 1);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+
+        LhXkHelper.putAction(MsgActivity.class, new SpeechToAction(mTvTab01.getText().toString(), () -> {
+            mTvTab01.performClick();
+        }));
+        LhXkHelper.putAction(MsgActivity.class, new SpeechToAction(mTvTab02.getText().toString(), () -> {
+            mTvTab02.performClick();
+        }));
+
+
     }
 
 }

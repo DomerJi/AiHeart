@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.models.ReportTestModel;
 import com.thfw.robotheart.R;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,6 +42,19 @@ public class ReportTestAdapter extends BaseAdapter<ReportTestModel, ReportTestAd
         holder.mTvTime.setText(mDataList.get(position).getAddTime());
     }
 
+
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+            case TYPE_SPEAK_ORDER:
+                return InstructScrollHelper.speakNumber(position + 1);
+
+        }
+        return super.getText(position, type);
+    }
     public class ReportHolder extends RecyclerView.ViewHolder {
 
         private RoundedImageView mRivDot;

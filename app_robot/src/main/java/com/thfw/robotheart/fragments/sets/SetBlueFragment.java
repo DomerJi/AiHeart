@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
@@ -31,6 +32,7 @@ import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.activitys.me.EditInfoActivity;
 import com.thfw.robotheart.adapter.BleAdapter;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 import com.thfw.robotheart.robot.BleDevice;
 import com.thfw.robotheart.robot.BleManager;
 import com.thfw.robotheart.robot.BleScanCallback;
@@ -201,6 +203,20 @@ public class SetBlueFragment extends RobotBaseFragment {
         });
     }
 
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(SetBlueFragment.class, new SpeechToAction("蓝牙", () -> {
+            if (!mSwitchBlue.isChecked()) {
+                mSwitchBlue.setChecked(true);
+            }
+        }));
+        LhXkHelper.putAction(SetBlueFragment.class, new SpeechToAction("关闭蓝牙", () -> {
+            if (mSwitchBlue.isChecked()) {
+                mSwitchBlue.setChecked(false);
+            }
+        }));
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -271,9 +287,7 @@ public class SetBlueFragment extends RobotBaseFragment {
         }
         mIvRescan.setVisibility(View.VISIBLE);
         mIvRescan.clearAnimation();
-        RotateAnimation rotateAnimation = new RotateAnimation(0, 360,
-                Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF, 0.5f);
+        RotateAnimation rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotateAnimation.setDuration(1000);
         rotateAnimation.setRepeatCount(20);
         rotateAnimation.setInterpolator(new LinearInterpolator());
@@ -456,8 +470,7 @@ public class SetBlueFragment extends RobotBaseFragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode,
-                                 @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && requestCode == EditInfoActivity.EditType.BLUE_NAME.getType()) {
             String blueName = data.getStringExtra(EditInfoActivity.KEY_RESULT);

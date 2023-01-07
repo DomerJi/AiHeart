@@ -18,6 +18,7 @@ import com.thfw.base.presenter.TestPresenter;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.adapter.ReportTestAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.util.PageHelper;
 import com.thfw.robotheart.view.TitleRobotView;
@@ -43,8 +44,7 @@ public class TestReportActivity extends RobotBaseActivity<TestPresenter> impleme
     private ReportTestAdapter reportTestAdapter;
 
     public static void startActivity(Context context, int rid) {
-        context.startActivity(new Intent(context, TestReportActivity.class)
-                .putExtra(KEY_RID, rid));
+        context.startActivity(new Intent(context, TestReportActivity.class).putExtra(KEY_RID, rid));
     }
 
     public static void startActivity(Context context) {
@@ -98,6 +98,12 @@ public class TestReportActivity extends RobotBaseActivity<TestPresenter> impleme
         pageHelper = new PageHelper<>(mLoadingView, mRefreshLayout, reportTestAdapter);
         pageHelper.setRefreshEnable(false);
         mPresenter.onResultHistory(rid, pageHelper.getPage());
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(TestDetailActivity.class, mRvList);
     }
 
     @Override

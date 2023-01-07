@@ -29,4 +29,16 @@
         app:layout_constraintTop_toBottomOf="@id/iv_load_fail"
         tools:ignore="MissingConstraints" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:gravity="center_horizontal"
+        android:text="@string/load_retry"
+        android:textColor="@color/text_yellow"
+        app:layout_constraintLeft_toLeftOf="@id/tv_load_fail"
+        app:layout_constraintRight_toRightOf="@id/tv_load_fail"
+        app:layout_constraintTop_toBottomOf="@id/tv_load_fail"
+        tools:ignore="MissingConstraints" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

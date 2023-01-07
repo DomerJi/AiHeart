@@ -1,5 +1,7 @@
 package com.thfw.robotheart.fragments.sets;
 
+import static com.thfw.robotheart.util.Dormant.KEY_DORMANT_SWITCH;
+
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -8,14 +10,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseFragment;
 import com.thfw.robotheart.adapter.DormantAdapter;
+import com.thfw.robotheart.lhxk.InstructScrollHelper;
+import com.thfw.robotheart.lhxk.LhXkHelper;
 
 import java.util.ArrayList;
-
-import static com.thfw.robotheart.util.Dormant.KEY_DORMANT_SWITCH;
 
 /**
  * Author:pengs
@@ -75,5 +78,21 @@ public class SetDormantFragment extends RobotBaseFragment {
             minutes.add(60);
             mRvList.setAdapter(new DormantAdapter(minutes));
         }
+    }
+
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(SetBlueFragment.class, new SpeechToAction("自动休眠", () -> {
+            mSwitchAllDormant.setChecked(!mSwitchAllDormant.isChecked());
+        }));
+        LhXkHelper.putAction(SetBlueFragment.class, new SpeechToAction("关闭自动休眠", () -> {
+            if (mSwitchAllDormant.isChecked()) {
+                mSwitchAllDormant.setChecked(false);
+            }
+        }));
+
+        new InstructScrollHelper(SetDormantFragment.class, mRvList);
     }
 }
