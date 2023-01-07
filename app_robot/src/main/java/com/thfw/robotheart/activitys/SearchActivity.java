@@ -223,7 +223,7 @@ public class SearchActivity extends RobotBaseActivity<SearchPresenter> implement
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        new InstructScrollHelper(SearchActivity.class, mRvHistory, false);
+        new InstructScrollHelper(SearchActivity.class, mRvHistory, new InstructScrollHelper.InstructScrollModel().setScroll(false));
         SpeechToAction.Instruction instruction = new SpeechToAction.Instruction() {
             @Override
             public SpeechModel matching(String speechText) {

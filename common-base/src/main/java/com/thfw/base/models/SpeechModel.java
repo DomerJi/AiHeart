@@ -15,6 +15,11 @@ public class SpeechModel {
     public int type;
     public boolean matches;
 
+    public static class OutText{
+        public static final String PLAY = "play";
+        public static final String PAUSE = "pause";
+    }
+
     public SpeechModel setMatches(boolean matches) {
         this.matches = matches;
         return this;

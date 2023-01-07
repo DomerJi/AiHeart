@@ -82,7 +82,9 @@ public class VideoEtcListFragment extends RobotBaseFragment<VideoPresenter> impl
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        new InstructScrollHelper(VideoEtcListFragment.class, mRvEtcList);
+        new InstructScrollHelper(VideoEtcListFragment.class, mRvEtcList,
+                new InstructScrollHelper.InstructScrollModel()
+                .setReplace("播放"));
     }
 
     @Override

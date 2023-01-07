@@ -20,6 +20,15 @@
         app:riv_oval="false"
         tools:ignore="MissingConstraints" />
 
+    <com.thfw.ui.widget.OrderView
+        android:id="@+id/orderView"
+        android:layout_width="@dimen/order_width"
+        android:layout_height="@dimen/order_height"
+        app:layout_constraintLeft_toLeftOf="@id/riv_pic"
+        app:layout_constraintTop_toTopOf="@id/riv_pic"
+        app:order_bg_src="@drawable/order_robot_src_4dp"
+        app:order_text_size="12sp" />
+
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="0dp"

@@ -1,6 +1,7 @@
 package com.thfw.base.base;
 
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.thfw.base.models.SpeechModel;
 import com.thfw.base.utils.LogUtil;
@@ -11,9 +12,24 @@ public class SpeechToAction {
     public Instruction instruction;
     public int type;
     public int code;
+    public String replace;
     public boolean like;
     public Intent intent;
     public Runnable runnable;
+
+    // 替换文本中的 词汇 如播放 方便匹配列表
+    public SpeechToAction setReplace(String replace) {
+        this.replace = replace;
+        return this;
+    }
+
+    public String getReplace() {
+        return replace;
+    }
+
+    public boolean isReplace(){
+        return !TextUtils.isEmpty(replace);
+    }
 
     public SpeechToAction(String text, Runnable runnable) {
         LogUtil.i(TAG, "text -->> " + text);

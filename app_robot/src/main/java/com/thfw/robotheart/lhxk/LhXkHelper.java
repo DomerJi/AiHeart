@@ -25,6 +25,7 @@ import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.LhXkListener;
 import com.thfw.base.models.SpeechModel;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -133,6 +134,7 @@ public class LhXkHelper {
         }
         actions.put(speechToAction.text, speechToAction);
 
+        LogUtil.i(TAG, "actions -> " + GsonUtil.toJson(mSpeechToActionMap));
     }
 
     public static void removeAction(Class classes) {
@@ -140,6 +142,7 @@ public class LhXkHelper {
     }
 
     public static void removeAction(int code) {
+        LogUtil.i(TAG, "removeAction -> " + code);
         mSpeechToActionMap.remove(code);
     }
 
@@ -147,6 +150,7 @@ public class LhXkHelper {
         String oldWord = word;
         String newWord = word.replaceAll("(打开|点击|选择)", "");
         Set<Map.Entry<Integer, HashMap<String, SpeechToAction>>> entrySet = mSpeechToActionMap.entrySet();
+        LogUtil.i(TAG, "entrySet -> " + GsonUtil.toJson(mSpeechToActionMap));
         for (Map.Entry<Integer, HashMap<String, SpeechToAction>> map : entrySet) {
             Collection<SpeechToAction> list = map.getValue().values();
             for (SpeechToAction speechToAction : list) {
@@ -198,7 +202,11 @@ public class LhXkHelper {
                 }
 
                 LogUtil.i(TAG, "regex -> " + regex);
-                if (newWord.matches(regex)) {
+                String finalWord = newWord;
+                if (speechToAction.isReplace()) {
+                    finalWord = finalWord.replaceAll(speechToAction.getReplace(), "");
+                }
+                if (finalWord.matches(regex)) {
                     String[] words = speechToAction.text.split(",");
                     for (String key : words) {
                         int start = oldWord.indexOf(key);

@@ -50,6 +50,7 @@ import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.MusicModel;
+import com.thfw.base.models.SpeechModel;
 import com.thfw.base.models.TaskMusicEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.AudioPresenter;
@@ -241,35 +242,49 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("播放,继续", () -> {
-            if (player != null && !player.isPlaying()) {
-                player.play();
+        SpeechToAction.Instruction instruction = new SpeechToAction.Instruction() {
+            @Override
+            public SpeechModel matching(String speechText) {
+
+                if (speechText.matches(".{0,2}(停止|暂停|别|不要|退出)(播放|放了).{0,2}") || speechText.matches(".{0,1}(停止|暂停).{0,1}") || speechText.matches(".{0,2}(播放)(停止|暂停|退出).{0,2}")) {
+                    return SpeechModel.create(speechText).setOutText(SpeechModel.OutText.PAUSE).setMatches(true);
+                } else if (speechText.matches(".{0,2}(开始|继续)(播放).{0,2}") || speechText.matches(".{0,1}(开始|继续|播放).{0,1}") || speechText.matches(".{0,2}(播放)(继续|开始).{0,2}")) {
+                    return SpeechModel.create(speechText).setOutText(SpeechModel.OutText.PLAY).setMatches(true);
+                }
+                return super.matching(speechText);
             }
-        }));
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("暂停,停止", () -> {
-            if (player != null && player.isPlaying()) {
-                player.pause();
+        };
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction(instruction, () -> {
+            if (SpeechModel.OutText.PLAY.equals(instruction.speechModel.getOutText())) {
+                if (player != null && !player.isPlaying()) {
+                    player.play();
+                }
+            } else if (SpeechModel.OutText.PAUSE.equals(instruction.speechModel.getOutText())) {
+                if (player != null && player.isPlaying()) {
+                    player.pause();
+                }
             }
+
         }));
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("下一个,下一首,下一曲", () -> {
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("下一个,下一首,下一曲", () -> {
             if (player != null && player.hasNext()) {
                 player.next();
             }
         }));
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("上一个,上一首,上一曲", () -> {
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("上一个,上一首,上一曲", () -> {
             if (player != null && player.hasPrevious()) {
                 player.previous();
             }
 
         }));
 
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("列表,目录", () -> {
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("列表,目录", () -> {
             if (mFlContent != null) {
                 mFlContent.performClick();
             }
         }));
 
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("关闭列表,关闭目录", () -> {
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("关闭列表,关闭目录", () -> {
             if (mFlContent != null && mFlContent.getVisibility() == View.VISIBLE) {
                 mFlContent.performClick();
             }
@@ -321,7 +336,8 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                 }
             }
             if (DeviceUtil.isLhXk_OS_R_SD01B()) {
-                new InstructScrollHelper(AudioPlayerActivity.class, mRvList);
+                new InstructScrollHelper(AudioPlayerActivity.class, mRvList, new InstructScrollHelper.InstructScrollModel()
+                        .setReplace("播放"));
             }
             mFlContent.setAlpha(0f);
             mFlContent.setVisibility(View.VISIBLE);

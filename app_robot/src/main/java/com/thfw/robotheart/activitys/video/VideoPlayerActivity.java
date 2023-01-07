@@ -45,6 +45,7 @@ import com.thfw.base.face.MyAnimationListener;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.SpeechModel;
 import com.thfw.base.models.VideoModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.HistoryPresenter;
@@ -413,7 +414,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter> imple
                 }
             }
             if (DeviceUtil.isLhXk_OS_R_SD01B()) {
-                new InstructScrollHelper(VideoPlayerActivity.class, mRvList);
+                new InstructScrollHelper(VideoPlayerActivity.class, mRvList, new InstructScrollHelper.InstructScrollModel().setReplace("播放"));
             }
             mClContent.setAlpha(0f);
             mClContent.setVisibility(VISIBLE);
@@ -866,17 +867,31 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter> imple
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("播放,继续", () -> {
-            if (mExoPlayer != null && !mExoPlayer.isPlaying()) {
-                mExoPlayer.play();
+        SpeechToAction.Instruction instruction = new SpeechToAction.Instruction() {
+            @Override
+            public SpeechModel matching(String speechText) {
+
+                if (speechText.matches(".{0,2}(停止|暂停|别|不要|退出)(播放|放了).{0,2}") || speechText.matches(".{0,1}(停止|暂停).{0,1}") || speechText.matches(".{0,2}(播放)(停止|暂停|退出).{0,2}")) {
+                    return SpeechModel.create(speechText).setOutText(SpeechModel.OutText.PAUSE).setMatches(true);
+                } else if (speechText.matches(".{0,2}(开始|继续)(播放).{0,2}") || speechText.matches(".{0,1}(开始|继续|播放).{0,1}") || speechText.matches(".{0,2}(播放)(继续|开始).{0,2}")) {
+                    return SpeechModel.create(speechText).setOutText(SpeechModel.OutText.PLAY).setMatches(true);
+                }
+                return super.matching(speechText);
             }
-        }));
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("暂停,停止", () -> {
-            if (mExoPlayer != null && mExoPlayer.isPlaying()) {
-                mExoPlayer.pause();
+        };
+        LhXkHelper.putAction(VideoPlayerActivity.class, new SpeechToAction(instruction, () -> {
+            if (SpeechModel.OutText.PLAY.equals(instruction.speechModel.getOutText())) {
+                if (mExoPlayer != null && !mExoPlayer.isPlaying()) {
+                    mExoPlayer.play();
+                }
+            } else if (SpeechModel.OutText.PAUSE.equals(instruction.speechModel.getOutText())) {
+                if (mExoPlayer != null && mExoPlayer.isPlaying()) {
+                    mExoPlayer.pause();
+                }
             }
+
         }));
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("下一个,下一首,下一曲", () -> {
+        LhXkHelper.putAction(VideoPlayerActivity.class, new SpeechToAction("下一个,下一首,下一曲", () -> {
             if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
                 int newPostion = this.mPlayPosition + 1;
                 if (newPostion > 0 && newPostion < mVideoList.size()) {
@@ -885,7 +900,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter> imple
             }
         }));
 
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("上一个,上一首,上一曲", () -> {
+        LhXkHelper.putAction(VideoPlayerActivity.class, new SpeechToAction("上一个,上一首,上一曲", () -> {
             if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
                 int newPostion = this.mPlayPosition - 1;
                 if (newPostion > 0 && newPostion < mVideoList.size()) {
@@ -895,27 +910,27 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter> imple
 
         }));
 
-        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("收藏", () -> {
+        LhXkHelper.putAction(VideoPlayerActivity.class, new SpeechToAction("收藏", () -> {
             if (mIvCollect != null && mLlCollect != null) {
                 mIvCollect.performClick();
             }
         }));
-        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("取消收藏", () -> {
+        LhXkHelper.putAction(VideoPlayerActivity.class, new SpeechToAction("取消收藏", () -> {
             if (mIvCollect != null && mIvCollect.isSelected() && mLlCollect != null) {
                 mLlCollect.performClick();
             }
         }));
-        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("简介", () -> {
+        LhXkHelper.putAction(VideoPlayerActivity.class, new SpeechToAction("简介", () -> {
             mClHint.setVisibility(VISIBLE);
         }));
-        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("关闭简介", () -> {
+        LhXkHelper.putAction(VideoPlayerActivity.class, new SpeechToAction("关闭简介", () -> {
             mClHint.setVisibility(View.GONE);
         }));
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("列表,目录", () -> {
+        LhXkHelper.putAction(VideoPlayerActivity.class, new SpeechToAction("列表,目录", () -> {
             videoLogcatue();
         }));
 
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("关闭列表,关闭目录", () -> {
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("关闭列表,关闭目录", () -> {
             if (mClContent != null && mClContent.getVisibility() == View.VISIBLE) {
                 videoLogcatue();
             }

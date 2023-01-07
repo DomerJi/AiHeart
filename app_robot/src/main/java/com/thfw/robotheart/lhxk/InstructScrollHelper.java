@@ -32,7 +32,24 @@ public class InstructScrollHelper {
     private WebView webView;
     private ScrollView scrollView;
     private Class classes;
+    private InstructScrollModel model;
     private boolean onChildViewAttachedToWindowed;
+    private static final InstructScrollModel DEFAULT_MODEL = new InstructScrollModel();
+
+    public static class InstructScrollModel {
+        public String replace;
+        public boolean scroll = true;
+
+        public InstructScrollModel setReplace(String replace) {
+            this.replace = replace;
+            return this;
+        }
+
+        public InstructScrollModel setScroll(boolean scroll) {
+            this.scroll = scroll;
+            return this;
+        }
+    }
 
     private static final String LAST = "向上滑动,向上滚动,往上看，向上看,向前看";
     private static final String NEXT = "向下滑动,向下滚动,往下看，向下看,向后看";
@@ -113,13 +130,14 @@ public class InstructScrollHelper {
     }
 
     public InstructScrollHelper(Class classes, RecyclerView recyclerView) {
-        this(classes, recyclerView, true);
+        this(classes, recyclerView, DEFAULT_MODEL);
     }
 
-    public InstructScrollHelper(Class classes, RecyclerView recyclerView, boolean scroll) {
+    public InstructScrollHelper(Class classes, RecyclerView recyclerView, InstructScrollModel model) {
         this.recyclerView = recyclerView;
         this.classes = classes;
-        if (scroll) {
+        this.model = model;
+        if (model.scroll) {
             LhXkHelper.putAction(classes, new SpeechToAction(LAST, () -> {
                 onScrollLeft();
             }));
@@ -176,7 +194,7 @@ public class InstructScrollHelper {
             LogUtil.i(TAG, "onChildViewAttachedToWindow init");
             HandlerUtil.getMainHandler().postDelayed(() -> {
                 init();
-            }, 500);
+            }, 800);
 
         }
     }
@@ -194,6 +212,7 @@ public class InstructScrollHelper {
             first = gridLayoutManager.findFirstVisibleItemPosition();
             last = gridLayoutManager.findLastVisibleItemPosition();
             if (first == RecyclerView.NO_POSITION || last == RecyclerView.NO_POSITION) {
+                onChildViewAttachedToWindowed = false;
                 return;
             }
         } else if (manager instanceof LinearLayoutManager) {
@@ -201,6 +220,7 @@ public class InstructScrollHelper {
             first = linearLayoutManager.findFirstVisibleItemPosition();
             last = linearLayoutManager.findLastVisibleItemPosition();
             if (first == RecyclerView.NO_POSITION || last == RecyclerView.NO_POSITION || (first == 0 && last == 0)) {
+                onChildViewAttachedToWindowed = false;
                 return;
             }
 
@@ -209,8 +229,10 @@ public class InstructScrollHelper {
         if (recyclerView.getAdapter() instanceof OnSpeakTextListener) {
             OnSpeakTextListener onSpeakTextListener = (OnSpeakTextListener) recyclerView.getAdapter();
             if (recyclerView.getAdapter().getItemCount() == 0) {
+                onChildViewAttachedToWindowed = false;
                 return;
             }
+
             for (int i = first; i <= last; i++) {
                 String text = onSpeakTextListener.getText(i, OnSpeakTextListener.TYPE_SPEAK_TEXT);
                 String order = onSpeakTextListener.getText(i, OnSpeakTextListener.TYPE_SPEAK_ORDER);
@@ -224,7 +246,7 @@ public class InstructScrollHelper {
                     LhXkHelper.putAction(classes, new SpeechToAction(actionText, () -> {
                         onSpeakTextListener.onSpeakItemClick(finalI);
                         LogUtil.i(TAG, "onSpeakItemClick(" + finalI + ")");
-                    }));
+                    }).setReplace(model.replace));
                 }
 
 

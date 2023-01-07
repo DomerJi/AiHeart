@@ -314,23 +314,23 @@ public class MeActivity extends RobotBaseActivity implements MsgCountManager.OnC
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
         // 历史记录
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("测评问卷", () -> mLlTest.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("成长训练", () -> mLlExercise.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("视频集锦", () -> mLlSee.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("正念冥想", () -> mLlMusic.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("心理文库", () -> mLlRead.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("思政文库", () -> mLlStudy.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("测评问卷", () -> mLlTest.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("成长训练", () -> mLlExercise.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("视频集锦", () -> mLlSee.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("正念冥想", () -> mLlMusic.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("心理文库", () -> mLlRead.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("思政文库", () -> mLlStudy.performClick()));
 
 
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("个人信息", () -> mRlMsg.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("人脸录入", () -> mRlFace.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("我的消息", () -> mRlMeMsg.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("我的收藏", () -> mRlCollection.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("我的任务", () -> mRlWork.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("心理健康档案", () -> mRlReport.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("帮助中心", () -> mRlBackHelp.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("账号管理", () -> mRlAccountManager.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("退出登录", () -> mBtLogout.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("个人信息", () -> mRlMsg.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("人脸录入", () -> mRlFace.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("我的消息", () -> mRlMeMsg.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("我的收藏", () -> mRlCollection.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("我的任务", () -> mRlWork.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("心理健康档案", () -> mRlReport.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("帮助中心", () -> mRlBackHelp.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("账号管理", () -> mRlAccountManager.performClick()));
+        LhXkHelper.putAction(MeActivity.class, new SpeechToAction("退出登录", () -> mBtLogout.performClick()));
 
 
     }

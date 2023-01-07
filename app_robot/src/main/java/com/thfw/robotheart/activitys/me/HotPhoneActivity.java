@@ -199,7 +199,8 @@ public class HotPhoneActivity extends RobotBaseActivity<OtherPresenter> implemen
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
         new InstructScrollHelper(HotPhoneActivity.class, mRvList);
-        new InstructScrollHelper(HotPhoneActivity.class, mRvAcQuick, false);
+        new InstructScrollHelper(HotPhoneActivity.class, mRvAcQuick, new InstructScrollHelper.InstructScrollModel()
+                .setScroll(false));
     }
 
     @Override

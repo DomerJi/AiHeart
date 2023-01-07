@@ -88,7 +88,9 @@ public class AudioEtcListFragment extends RobotBaseFragment<AudioPresenter> impl
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        new InstructScrollHelper(AudioEtcListFragment.class, mRvEtcList);
+        new InstructScrollHelper(AudioEtcListFragment.class, mRvEtcList,
+                new InstructScrollHelper.InstructScrollModel()
+                .setReplace("播放"));
     }
 
     @Override
