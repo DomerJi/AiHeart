@@ -41,7 +41,11 @@ public class BookStudyTypeAdapter extends BaseAdapter<BookStudyTypeModel, BookSt
     }
 
     public void setSelectedIndex(int selectedIndex) {
-        expand = !expand;
+        if (selectedIndex == this.selectedIndex) {
+            expand = !expand;
+        } else {
+            expand = true;
+        }
         this.selectedIndex = selectedIndex;
     }
 

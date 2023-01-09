@@ -49,7 +49,11 @@ public class VideoEtcTypeAdapter extends BaseAdapter<VideoTypeModel, VideoEtcTyp
     }
 
     public void setSelectedIndex(int selectedIndex) {
-        expand = !expand;
+        if (selectedIndex == this.selectedIndex) {
+            expand = !expand;
+        } else {
+            expand = true;
+        }
         this.selectedIndex = selectedIndex;
     }
 
