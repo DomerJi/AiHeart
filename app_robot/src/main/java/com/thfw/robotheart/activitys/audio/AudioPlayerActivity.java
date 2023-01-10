@@ -248,7 +248,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
                 if (speechText.matches(".{0,2}(停止|暂停|别|不要|退出)(播放|放了).{0,2}") || speechText.matches(".{0,1}(停止|暂停).{0,1}") || speechText.matches(".{0,2}(播放)(停止|暂停|退出).{0,2}")) {
                     return SpeechModel.create(speechText).setOutText(SpeechModel.OutText.PAUSE).setMatches(true);
-                } else if (speechText.matches(".{0,2}(开始|继续)(播放).{0,2}") || speechText.matches(".{0,1}(开始|继续|播放).{0,1}") || speechText.matches(".{0,2}(播放)(继续|开始).{0,2}")) {
+                } else if (speechText.matches(".{0,2}(开始|继续|重新|恢复)(播放).{0,2}") || speechText.matches(".{0,2}(开始|继续|恢复|播放).{0,2}") || speechText.matches(".{0,2}(播放)(继续|开始|恢复).{0,2}")) {
                     return SpeechModel.create(speechText).setOutText(SpeechModel.OutText.PLAY).setMatches(true);
                 }
                 return super.matching(speechText);
@@ -336,8 +336,7 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
                 }
             }
             if (DeviceUtil.isLhXk_OS_R_SD01B()) {
-                new InstructScrollHelper(AudioPlayerActivity.class, mRvList, new InstructScrollHelper.InstructScrollModel()
-                        .setReplace("播放"));
+                new InstructScrollHelper(AudioPlayerActivity.class, mRvList, new InstructScrollHelper.InstructScrollModel().setReplace("播放"));
             }
             mFlContent.setAlpha(0f);
             mFlContent.setVisibility(View.VISIBLE);
