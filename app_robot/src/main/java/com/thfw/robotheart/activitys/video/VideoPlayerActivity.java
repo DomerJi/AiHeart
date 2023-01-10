@@ -1,6 +1,7 @@
 package com.thfw.robotheart.activitys.video;
 
 import static android.view.View.VISIBLE;
+import static com.google.android.exoplayer2.Player.STATE_ENDED;
 
 import android.animation.Animator;
 import android.app.Activity;
@@ -881,8 +882,16 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter> imple
         };
         LhXkHelper.putAction(VideoPlayerActivity.class, new SpeechToAction(instruction, () -> {
             if (SpeechModel.OutText.PLAY.equals(instruction.speechModel.getOutText())) {
-                if (mExoPlayer != null && !mExoPlayer.isPlaying()) {
-                    mExoPlayer.play();
+                if (mExoPlayer != null) {
+                    if (mExoPlayer.getPlaybackState() == STATE_ENDED) {
+                        mExoPlayer.prepare();
+                        mExoPlayer.seekTo(mExoPlayer.getCurrentWindowIndex(), 0);
+                        mExoPlayer.setPlayWhenReady(true);
+                    } else {
+                        if (!mExoPlayer.isPlaying()) {
+                            mExoPlayer.play();
+                        }
+                    }
                 }
             } else if (SpeechModel.OutText.PAUSE.equals(instruction.speechModel.getOutText())) {
                 if (mExoPlayer != null && mExoPlayer.isPlaying()) {

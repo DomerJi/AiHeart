@@ -1,5 +1,7 @@
 package com.thfw.robotheart.activitys.audio;
 
+import static com.google.android.exoplayer2.Player.STATE_ENDED;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -256,8 +258,16 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
         };
         LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction(instruction, () -> {
             if (SpeechModel.OutText.PLAY.equals(instruction.speechModel.getOutText())) {
-                if (player != null && !player.isPlaying()) {
-                    player.play();
+                if (player != null) {
+                    if (player.getPlaybackState() == STATE_ENDED) {
+                        player.prepare();
+                        player.seekTo(player.getCurrentWindowIndex(), 0);
+                        player.setPlayWhenReady(true);
+                    } else {
+                        if (!player.isPlaying()) {
+                            player.play();
+                        }
+                    }
                 }
             } else if (SpeechModel.OutText.PAUSE.equals(instruction.speechModel.getOutText())) {
                 if (player != null && player.isPlaying()) {
@@ -940,12 +950,12 @@ public class AudioPlayerActivity extends RobotBaseActivity<AudioPresenter> imple
 
         @Override
         public void onPlaybackStateChanged(int state) {
-            if (isTask && state == Player.STATE_ENDED) {
+            if (isTask && state == STATE_ENDED) {
                 onFinishMusic(mMusicId);
             }
             if (state == Player.STATE_READY) {
                 uiPlayOrPause(player.getPlayWhenReady());
-            } else if (state == Player.STATE_ENDED) {
+            } else if (state == STATE_ENDED) {
                 if (autoFinished) {
                     finish();
                     return;
