@@ -1,15 +1,20 @@
 package com.thfw.mobileheart.fragment.login;
 
+import static android.content.Context.VIBRATOR_SERVICE;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -23,6 +28,7 @@ import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.utils.ClickCountUtils;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.PrivateSetActivity;
@@ -36,7 +42,15 @@ import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.utils.EditTextUtil;
+import com.thfw.ui.utils.GlideUtil;
+import com.thfw.user.login.UserManager;
+import com.thfw.user.models.HistoryAccount;
 import com.trello.rxlifecycle2.LifecycleProvider;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Author:pengs
@@ -64,6 +78,18 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
     private ImageView mIvSeePassword;
     private TextView mTvNoAccount;
     private CheckBox mCbProduct;
+    private RelativeLayout mRlAccountCache;
+    private RoundedImageView mRivCache01;
+    private TextView mTvMobileCache01;
+    private ImageView mIvArrowCache;
+    private RelativeLayout mRlAccountCache02;
+    private RoundedImageView mRivCache02;
+    private TextView mTvMobileCache02;
+    private RelativeLayout mRlAccountCache03;
+    private RelativeLayout mRlAccount;
+    private String mUseCacheAccount;
+    private ImageView mIvClearCache01;
+    private ImageView mIvClearCache02;
 
     @Override
     public int getContentView() {
@@ -97,7 +123,7 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
         MyTextWatcher myTextWatcher = new MyTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String phone = mEtMobile.getText().toString();
+                String phone = getInputPhone();
                 String password = mEtPassword.getText().toString();
                 mBtLogin.setEnabled((phone != null && phone.length() > 3) && (password != null && password.length() > 5));
             }
@@ -161,13 +187,160 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
                 return;
             }
 
-            phone = mEtMobile.getText().toString();
+            phone = getInputPhone();
             String password = mEtPassword.getText().toString();
             LoadingDialog.show(getActivity(), "登录中");
             mPresenter.loginByPassword(phone, password);
         });
         EditTextUtil.setEditTextInhibitInputSpeChatAndSpace(mEtMobile);
         EditTextUtil.setEditTextInhibitInputSpace(mEtPassword);
+
+        // 两个历史账户和其他账户
+        mRlAccountCache = (RelativeLayout) findViewById(R.id.rl_account_cache);
+        mRlAccount = (RelativeLayout) findViewById(R.id.rl_account);
+        mRivCache01 = (RoundedImageView) findViewById(R.id.riv_cache01);
+        mTvMobileCache01 = (TextView) findViewById(R.id.tv_mobile_cache01);
+        mIvArrowCache = (ImageView) findViewById(R.id.iv_arrow_cache);
+        mRlAccountCache02 = (RelativeLayout) findViewById(R.id.rl_account_cache02);
+        mRivCache02 = (RoundedImageView) findViewById(R.id.riv_cache02);
+        mTvMobileCache02 = (TextView) findViewById(R.id.tv_mobile_cache02);
+        mRlAccountCache03 = (RelativeLayout) findViewById(R.id.rl_account_cache03);
+        mIvClearCache02 = (ImageView) findViewById(R.id.iv_clear_cache02);
+        mIvClearCache01 = (ImageView) findViewById(R.id.iv_clear_cache01);
+        getView().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideInput();
+                if (mRlAccountCache03.getVisibility() == View.VISIBLE) {
+                    mRlAccountCache02.setVisibility(View.GONE);
+                    mRlAccountCache03.setVisibility(View.GONE);
+                    goVibrator();
+                    return true;
+
+                }
+                return false;
+            }
+        });
+        updateHistory();
+    }
+
+    private String getInputPhone() {
+        if (mRlAccount.getVisibility() == View.VISIBLE) {
+            return mEtMobile.getText().toString();
+        } else {
+            return mUseCacheAccount;
+        }
+    }
+
+    private void updateHistory() {
+        HashMap<String, HistoryAccount> accountHashMap = UserManager.getHistoryAccount();
+        List<HistoryAccount> listAccount = new ArrayList<>();
+
+        int size = accountHashMap == null ? 0 : accountHashMap.size();
+        if (accountHashMap != null) {
+            for (HistoryAccount historyAccount : accountHashMap.values()) {
+                listAccount.add(historyAccount);
+            }
+            Collections.sort(listAccount);
+        }
+        switch (size) {
+            case 0:
+                mRlAccount.setVisibility(View.VISIBLE);
+                mRlAccountCache.setVisibility(View.GONE);
+                mRlAccountCache02.setVisibility(View.GONE);
+                mRlAccountCache03.setVisibility(View.GONE);
+                break;
+            case 1:
+                mTvMobileCache01.setText(listAccount.get(0).simpleAccount);
+                mUseCacheAccount = listAccount.get(0).account;
+                GlideUtil.load(mContext, listAccount.get(0).avatar, mRivCache01);
+                mRlAccount.setVisibility(View.GONE);
+                mRlAccountCache.setVisibility(View.VISIBLE);
+                mRlAccountCache02.setVisibility(View.GONE);
+                mRlAccountCache03.setVisibility(View.GONE);
+                LoginActivity.mTvRightAgreed = true;
+                mCbProduct.setChecked(true);
+                break;
+            case 2:
+                mTvMobileCache01.setText(listAccount.get(0).simpleAccount);
+                mUseCacheAccount = listAccount.get(0).account;
+                GlideUtil.load(mContext, listAccount.get(0).avatar, mRivCache01);
+
+                mTvMobileCache02.setText(listAccount.get(1).simpleAccount);
+                GlideUtil.load(mContext, listAccount.get(1).avatar, mRivCache02);
+                mRlAccount.setVisibility(View.GONE);
+                mRlAccountCache.setVisibility(View.VISIBLE);
+                mRlAccountCache02.setVisibility(View.GONE);
+                mRlAccountCache03.setVisibility(View.GONE);
+                LoginActivity.mTvRightAgreed = true;
+                mCbProduct.setChecked(true);
+                break;
+        }
+        mIvClearCache01.setOnClickListener(v3 -> {
+            UserManager.removeHistoryAccount(mUseCacheAccount);
+            updateHistory();
+            mRlAccount.setVisibility(View.VISIBLE);
+            mRlAccountCache.setVisibility(View.GONE);
+            mRlAccountCache02.setVisibility(View.GONE);
+            mRlAccountCache03.setVisibility(View.GONE);
+            goVibrator();
+        });
+        mIvClearCache02.setOnClickListener(v3 -> {
+            if (listAccount.get(0).account.equals(mUseCacheAccount)) {
+                UserManager.removeHistoryAccount(listAccount.get(1).account);
+            } else {
+                UserManager.removeHistoryAccount(listAccount.get(0).account);
+            }
+            updateHistory();
+        });
+        mRlAccountCache.setOnClickListener(v -> {
+            goVibrator();
+            if (mRlAccountCache03.getVisibility() == View.VISIBLE) {
+                mRlAccountCache02.setVisibility(View.GONE);
+                mRlAccountCache03.setVisibility(View.GONE);
+
+            } else {
+                if (size == 2) {
+                    mRlAccountCache02.setVisibility(View.VISIBLE);
+                    mRlAccountCache02.setOnClickListener(v2 -> {
+
+                        if (listAccount.get(0).account.equals(mUseCacheAccount)) {
+                            mUseCacheAccount = listAccount.get(1).account;
+                            mTvMobileCache01.setText(listAccount.get(1).simpleAccount);
+                            GlideUtil.load(mContext, listAccount.get(1).avatar, mRivCache01);
+                            mTvMobileCache02.setText(listAccount.get(0).simpleAccount);
+                            GlideUtil.load(mContext, listAccount.get(0).avatar, mRivCache02);
+                        } else {
+                            mUseCacheAccount = listAccount.get(0).account;
+                            mTvMobileCache01.setText(listAccount.get(0).simpleAccount);
+                            GlideUtil.load(mContext, listAccount.get(0).avatar, mRivCache01);
+                            mTvMobileCache02.setText(listAccount.get(1).simpleAccount);
+                            GlideUtil.load(mContext, listAccount.get(1).avatar, mRivCache02);
+                        }
+                        mRlAccountCache02.setVisibility(View.GONE);
+                        mRlAccountCache03.setVisibility(View.GONE);
+                        goVibrator();
+                    });
+                }
+                mRlAccountCache03.setVisibility(View.VISIBLE);
+                mRlAccountCache03.setOnClickListener(v1 -> {
+                    mRlAccount.setVisibility(View.VISIBLE);
+                    mRlAccountCache.setVisibility(View.GONE);
+                    mRlAccountCache02.setVisibility(View.GONE);
+                    mRlAccountCache03.setVisibility(View.GONE);
+                    goVibrator();
+                });
+            }
+
+
+        });
+    }
+
+    private void goVibrator() {
+        Vibrator vibrator = (Vibrator) MyApplication.getApp().getSystemService(VIBRATOR_SERVICE);
+        if (vibrator != null) {
+            vibrator.vibrate(100);
+        }
     }
 
     @Override
@@ -175,17 +348,22 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
         super.onVisible(isVisible);
         if (isVisible) {
             mEtMobile.setText(LoginActivity.INPUT_PHONE);
-            mCbProduct.setChecked(LoginActivity.mTvRightAgreed);
-            LoginActivity.agreeDialog(getActivity(), new OnViewClickListener() {
-                @Override
-                public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                    if (view.getId() == com.thfw.ui.R.id.tv_right) {
-                        mCbProduct.setChecked(true);
+            if (!mCbProduct.isChecked()) {
+                LoginActivity.agreeDialog(getActivity(), new OnViewClickListener() {
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                        if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                            mCbProduct.setChecked(true);
+                        }
                     }
-                }
-            });
+                });
+            }
         } else {
-            LoginActivity.INPUT_PHONE = mEtMobile.getText().toString();
+            if (mRlAccount.getVisibility() == View.VISIBLE) {
+                LoginActivity.INPUT_PHONE = mEtMobile.getText().toString();
+            } else {
+                LoginActivity.INPUT_PHONE = "";
+            }
         }
     }
 
@@ -226,4 +404,6 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
             ToastUtil.show(throwable.getMessage());
         }
     }
+
+
 }

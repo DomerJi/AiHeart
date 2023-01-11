@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.fragment.login;
 
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -156,6 +157,14 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
             }
             LoadingDialog.show(getActivity(), "登录中");
             mPresenter.loginByMobile(phone, mVfcode.getVerificationCode().getText().toString());
+        });
+
+        getView().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideInput();
+                return false;
+            }
         });
     }
 

@@ -2,14 +2,20 @@ package com.thfw.user.login;
 
 import android.text.TextUtils;
 
+import com.google.gson.reflect.TypeToken;
 import com.thfw.base.ContextApp;
 import com.thfw.base.net.CommonInterceptor;
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.MyPreferences;
 import com.thfw.base.utils.SharePreferenceUtil;
+import com.thfw.user.models.HistoryAccount;
 import com.thfw.user.models.User;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Observable;
 
 
@@ -26,6 +32,65 @@ public class UserManager extends Observable {
 
     public boolean isNewLogin() {
         return isNewLogin;
+    }
+
+
+    public static final String KEY_HISTORY_ACCOUNT = "history.account";
+    public static final String KEY_HISTORY_ACCOUNT_AVATAR = "history.account.avatar";
+    public static final String KEY_HISTORY_ACCOUNT_NUMBER = "history.account.number";
+
+    public static void setHistoryAccount(String accountAll, String avatar) {
+        HashMap<String, HistoryAccount> caches = getHistoryAccount();
+        if (caches != null) {
+            Collection<HistoryAccount> collections = caches.values();
+            for (HistoryAccount historyAccount : collections) {
+                String[] accounts = accountAll.split(",");
+                if (Arrays.asList(accounts).contains(historyAccount.account)) {
+                    historyAccount.avatar = avatar;
+                    break;
+                }
+            }
+        }
+
+        SharePreferenceUtil.setString(KEY_HISTORY_ACCOUNT, GsonUtil.toJson(caches));
+    }
+
+    public static void removeHistoryAccount(String account) {
+        HashMap<String, HistoryAccount> caches = getHistoryAccount();
+        if (caches != null) {
+            caches.remove(account);
+        }
+        SharePreferenceUtil.setString(KEY_HISTORY_ACCOUNT, GsonUtil.toJson(caches));
+    }
+
+    public static void addHistoryAccount(String account, String avatar) {
+        HashMap<String, HistoryAccount> caches = getHistoryAccount();
+
+        if (caches == null) {
+            caches = new HashMap<>();
+        }
+        caches.put(account, new HistoryAccount(avatar, account));
+
+        if (caches.size() > 2) {
+            long time = 0;
+            HistoryAccount deleteAccount = null;
+            Collection<HistoryAccount> collections = caches.values();
+            for (HistoryAccount historyAccount : collections) {
+                if (time > historyAccount.addTime) {
+                    deleteAccount = historyAccount;
+                }
+            }
+            if (deleteAccount != null) {
+                caches.remove(deleteAccount.account);
+            }
+        }
+        SharePreferenceUtil.setString(KEY_HISTORY_ACCOUNT, GsonUtil.toJson(caches));
+    }
+
+    public static HashMap<String, HistoryAccount> getHistoryAccount() {
+        Type type = new TypeToken<HashMap<String, HistoryAccount>>() {
+        }.getType();
+        return SharePreferenceUtil.getObject(KEY_HISTORY_ACCOUNT, type);
     }
 
     private UserManager() {

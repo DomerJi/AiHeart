@@ -11,6 +11,7 @@ import com.thfw.base.utils.StringUtil;
 import com.thfw.user.IUser;
 import com.thfw.user.IUserInfo;
 import com.thfw.user.login.LoginStatus;
+import com.thfw.user.login.UserManager;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ public class User implements IUser, IUserInfo {
 
     public void setUserInfo(UserInfo userInfo) {
         if (userInfo != null) {
+            UserManager.setHistoryAccount(userInfo.account + "," + userInfo.mobile, userInfo.pic);
             this.userInfo = userInfo;
         }
     }
@@ -248,11 +250,7 @@ public class User implements IUser, IUserInfo {
     public boolean equals(User user) {
         if (user == user) {
             return true;
-        } else if (getLoginStatus() == user.getLoginStatus() &&
-                StringUtil.contentEquals(getUserId(), user.getUserId()) &&
-                StringUtil.contentEquals(getNickName(), user.getNickName()) &&
-                StringUtil.contentEquals(getAvatar(), user.getAvatar()) &&
-                StringUtil.contentEquals(getMobile(), user.getMobile())) {
+        } else if (getLoginStatus() == user.getLoginStatus() && StringUtil.contentEquals(getUserId(), user.getUserId()) && StringUtil.contentEquals(getNickName(), user.getNickName()) && StringUtil.contentEquals(getAvatar(), user.getAvatar()) && StringUtil.contentEquals(getMobile(), user.getMobile())) {
             return true;
         } else {
             return false;

@@ -83,7 +83,7 @@ public class LoginActivity extends BaseActivity {
                     return false;
                 }
             }
-
+            UserManager.addHistoryAccount(mobile,"");
             LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
             if (data.isNoOrganization()) {
                 // todo 手机加入组织机构比较复杂
