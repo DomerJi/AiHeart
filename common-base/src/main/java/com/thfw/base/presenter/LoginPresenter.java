@@ -12,6 +12,7 @@ import com.thfw.base.net.CommonParameter;
 import com.thfw.base.net.HttpResult;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.OkHttpUtil;
+import com.thfw.user.login.UserManager;
 
 import java.util.Map;
 
@@ -30,11 +31,7 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
      * @param code
      */
     public void loginByMobile(String phone, String code) {
-        NetParams netParams = NetParams.crete().add("device_type", CommonParameter.getDeviceType())
-                .add("device_id", CommonParameter.getDeviceId())
-                .add("verification_code", code)
-                .add("identification", phone)
-                .add("time_stamp", System.currentTimeMillis());
+        NetParams netParams = NetParams.crete().add("device_type", CommonParameter.getDeviceType()).add("device_id", CommonParameter.getDeviceId()).add("verification_code", code).add("identification", phone).add("time_stamp", System.currentTimeMillis());
         if (!TextUtils.isEmpty(CommonParameter.getOrganizationId())) {
             netParams.add("organization", CommonParameter.getOrganizationId());
         }
@@ -49,11 +46,7 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
      * @param password
      */
     public void loginByPassword(String identification, String password) {
-        NetParams netParams = NetParams.crete().add("device_type", CommonParameter.getDeviceType())
-                .add("device_id", CommonParameter.getDeviceId())
-                .add("password", password)
-                .add("identification", identification)
-                .add("time_stamp", System.currentTimeMillis());
+        NetParams netParams = NetParams.crete().add("device_type", CommonParameter.getDeviceType()).add("device_id", CommonParameter.getDeviceId()).add("password", password).add("identification", identification).add("time_stamp", System.currentTimeMillis());
         if (!TextUtils.isEmpty(CommonParameter.getOrganizationId())) {
             netParams.add("organization", CommonParameter.getOrganizationId());
         }
@@ -77,11 +70,7 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
          *  @Field("old_password") String oldPassword,
          *  @Field("password") String password
          */
-        NetParams netParams = NetParams.crete()
-                .add("phone_number", phone)
-                .add("verification_code", code)
-                .add("type", 1)
-                .add("password", password);
+        NetParams netParams = NetParams.crete().add("phone_number", phone).add("verification_code", code).add("type", 1).add("password", password);
         Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(LoginApi.class).onSetPassword(netParams);
         OkHttpUtil.request(observable, getUI());
     }
@@ -100,10 +89,7 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
          *  @Field("old_password") String oldPassword,
          *  @Field("password") String password
          */
-        NetParams netParams = NetParams.crete()
-                .add("old_password", originPassword)
-                .add("type", 2)
-                .add("password", password);
+        NetParams netParams = NetParams.crete().add("old_password", originPassword).add("type", 2).add("password", password);
         Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(LoginApi.class).onSetPassword(netParams);
         OkHttpUtil.request(observable, getUI());
     }
@@ -121,8 +107,7 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
          *  @Field("old_password") String oldPassword,
          *  @Field("password") String password
          */
-        NetParams netParams = NetParams.crete()
-                .add("password", password);
+        NetParams netParams = NetParams.crete().add("password", password);
         Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(LoginApi.class).onSetPasswordFirst(netParams);
         OkHttpUtil.request(observable, getUI());
     }
@@ -150,13 +135,12 @@ public class LoginPresenter extends IPresenter<LoginPresenter.LoginUi> {
     }
 
     /**
-     * [账号密码登录]
-     *
+     * [用户注销]
      */
     public void onDeleteAccount() {
         NetParams netParams = NetParams.crete();
-        Observable<HttpResult<CommonModel>> observable = OkHttpUtil.createService(LoginApi.class)
-                .onDeleteAccount(netParams);
+        netParams.add("uid", UserManager.getInstance().getUID());
+        Observable<HttpResult<String>> observable = OkHttpUtil.createService(LoginApi.class).onDeleteAccount(netParams);
         OkHttpUtil.request(observable, getUI());
     }
 

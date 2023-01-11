@@ -10,7 +10,9 @@ import io.reactivex.Observable;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.QueryMap;
 
 /**
  * Author:pengs
@@ -60,8 +62,7 @@ public interface LoginApi {
      */
     @FormUrlEncoded
     @POST("send_mobile_code")
-    Observable<HttpResult<CommonModel>> onSendCode(@Field("phone_number") String phoneNumber,
-                                                   @Field("type") int type);
+    Observable<HttpResult<CommonModel>> onSendCode(@Field("phone_number") String phoneNumber, @Field("type") int type);
 
     /**
      * [发送验证码]
@@ -107,17 +108,15 @@ public interface LoginApi {
      */
     @FormUrlEncoded
     @POST("mobile_code_check")
-    Observable<HttpResult<CommonModel>> onCheckMobileCode(@Field("mobile") String mobile,
-                                                          @Field("code") String code);
+    Observable<HttpResult<CommonModel>> onCheckMobileCode(@Field("mobile") String mobile, @Field("code") String code);
 
     /**
-     * [验证码-手机验证码验证]
+     * [用户注销]
      *
      * @return
      */
-    @FormUrlEncoded
-    @POST("delete_account")
-    Observable<HttpResult<CommonModel>> onDeleteAccount(@FieldMap Map<String, Object> params);
+    @GET("user/unRegister")
+    Observable<HttpResult<String>> onDeleteAccount(@QueryMap Map<String, Object> params);
 
 
 }

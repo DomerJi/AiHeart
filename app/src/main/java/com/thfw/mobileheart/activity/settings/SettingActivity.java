@@ -21,14 +21,12 @@ import com.bumptech.glide.Glide;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.face.SimpleUpgradeStateListener;
-import com.thfw.base.models.CommonModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
 import com.thfw.base.utils.BuglyUtil;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
-import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.MyApplication;
@@ -133,6 +131,7 @@ public class SettingActivity extends BaseActivity {
         mTvTransition.setText(AnimFrequencyUtil.getAnimFrequencyStr());
 
         mTvDeleteAccount.setOnClickListener(v -> {
+
             DialogFactory.createCustomDialog(SettingActivity.this, new DialogFactory.OnViewCallBack() {
                 int countS = 5;
                 Runnable runnable;
@@ -191,16 +190,15 @@ public class SettingActivity extends BaseActivity {
         HandlerUtil.getMainHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                new LoginPresenter(new LoginPresenter.LoginUi<CommonModel>() {
+                new LoginPresenter(new LoginPresenter.LoginUi<String>() {
                     @Override
                     public LifecycleProvider getLifecycleProvider() {
                         return SettingActivity.this;
                     }
 
                     @Override
-                    public void onSuccess(CommonModel data) {
+                    public void onSuccess(String data) {
                         LoadingMobileDialog.hide();
-                        SharePreferenceUtil.setLong(UserManager.getInstance().getUser().getMobile(), System.currentTimeMillis());
                         ToastUtil.showLong("账号注销成功");
                         mBtLogout.performClick();
                     }
@@ -208,15 +206,12 @@ public class SettingActivity extends BaseActivity {
                     @Override
                     public void onFail(ResponeThrowable throwable) {
                         LoadingMobileDialog.hide();
-                        // todo 假成功
-                        SharePreferenceUtil.setLong(UserManager.getInstance().getUser().getMobile(), System.currentTimeMillis());
-                        ToastUtil.showLong("账号注销成功");
-                        mBtLogout.performClick();
+                        ToastUtil.showLong("账号注销失败");
                     }
                 }).onDeleteAccount();
 
             }
-        }, 2500);
+        }, 1500);
 
     }
 

@@ -401,7 +401,8 @@
         android:text="@string/delete_account"
         android:textColor="@color/link"
         android:textSize="@dimen/textSize_small"
-        android:visibility="gone" />
+        android:visibility="visible"
+        tools:visibility="visible" />
 
 
 </LinearLayout>

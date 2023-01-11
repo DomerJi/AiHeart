@@ -72,8 +72,6 @@ public class LoginActivity extends BaseActivity {
             user.setToken(data.token);
             if (RegularUtil.isPhone(mobile)) {
                 user.setMobile(mobile);
-                // 假 注销
-                SharePreferenceUtil.setLong(mobile, 0);
             }
             user.setSetUserInfo(data.isSetUserInfo());
             user.setOrganization(data.organization);
