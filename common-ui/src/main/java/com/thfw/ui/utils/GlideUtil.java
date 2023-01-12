@@ -1,5 +1,7 @@
 package com.thfw.ui.utils;
 
+import static com.bumptech.glide.load.resource.bitmap.VideoDecoder.FRAME_OPTION;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,12 +17,11 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.request.RequestOptions;
 import com.thfw.base.ContextApp;
+import com.thfw.base.utils.BlurTransformation;
 import com.thfw.base.utils.Util;
 import com.thfw.ui.R;
 
 import java.security.MessageDigest;
-
-import static com.bumptech.glide.load.resource.bitmap.VideoDecoder.FRAME_OPTION;
 
 /**
  * Author:pengs
@@ -38,15 +39,9 @@ public class GlideUtil {
             return requestOptions;
         }
         if (ContextApp.getDeviceType() == ContextApp.DeviceType.ROBOT) {
-            requestOptions = RequestOptions
-                    .placeholderOf(R.drawable.glide_placeholder)
-                    .error(R.drawable.glide_error)
-                    .fallback(R.drawable.glide_fallback);
+            requestOptions = RequestOptions.placeholderOf(R.drawable.glide_placeholder).error(R.drawable.glide_error).fallback(R.drawable.glide_fallback);
         } else {
-            requestOptions = RequestOptions
-                    .placeholderOf(R.drawable.glide_placeholder_phone)
-                    .error(R.drawable.glide_error_phone)
-                    .fallback(R.drawable.glide_fallback_phone);
+            requestOptions = RequestOptions.placeholderOf(R.drawable.glide_placeholder_phone).error(R.drawable.glide_error_phone).fallback(R.drawable.glide_fallback_phone);
         }
         return requestOptions;
     }
@@ -56,83 +51,56 @@ public class GlideUtil {
             return requestThumbnail;
         }
         if (ContextApp.getDeviceType() == ContextApp.DeviceType.ROBOT) {
-            requestThumbnail = RequestOptions
-                    .placeholderOf(R.drawable.glide_placeholder)
-                    .error(R.drawable.glide_error)
-                    .fallback(R.drawable.glide_fallback)
-                    .override(Util.dipToPx(160, ContextApp.get()), Util.dipToPx(90, ContextApp.get()));
+            requestThumbnail = RequestOptions.placeholderOf(R.drawable.glide_placeholder).error(R.drawable.glide_error).fallback(R.drawable.glide_fallback).override(Util.dipToPx(160, ContextApp.get()), Util.dipToPx(90, ContextApp.get()));
         } else {
-            requestThumbnail = RequestOptions
-                    .placeholderOf(R.drawable.glide_placeholder_phone)
-                    .error(R.drawable.ic_error_default)
-                    .fallback(R.drawable.ic_error_default)
-                    .override(Util.dipToPx(90, ContextApp.get()));
+            requestThumbnail = RequestOptions.placeholderOf(R.drawable.glide_placeholder_phone).error(R.drawable.ic_error_default).fallback(R.drawable.ic_error_default).override(Util.dipToPx(90, ContextApp.get()));
         }
         return requestThumbnail;
     }
 
     public static void loadThumbnail(Context mContext, String url, ImageView imageView) {
-        Glide.with(mContext)
-                .load(url)
-                .apply(getRequestOptionsThumbnail())
+        Glide.with(mContext).load(url).apply(getRequestOptionsThumbnail())
 //                .transition(DrawableTransitionOptions.withCrossFade())
-                .centerCrop()
-                .into(imageView);
+                .centerCrop().into(imageView);
     }
 
+    public static void loadBlur(Context mContext, String url, ImageView imageView) {
+        Glide.with(mContext).load(url).apply(RequestOptions.bitmapTransform(new BlurTransformation(mContext, 4, 3))).into(imageView);
+    }
+
+
     public static void load(Context mContext, String url, ImageView imageView) {
-        Glide.with(mContext)
-                .load(url)
-                .apply(getRequestOptions())
+        Glide.with(mContext).load(url).apply(getRequestOptions())
 //                .transition(DrawableTransitionOptions.withCrossFade())
-                .centerCrop()
-                .into(imageView);
+                .centerCrop().into(imageView);
     }
 
     public static void load(Context mContext, Object url, ImageView imageView) {
-        Glide.with(mContext)
-                .load(url)
-                .apply(getRequestOptions())
+        Glide.with(mContext).load(url).apply(getRequestOptions())
 //                .transition(DrawableTransitionOptions.withCrossFade())
-                .centerCrop()
-                .into(imageView);
+                .centerCrop().into(imageView);
     }
 
     public static void load(Context mContext, Object url, int placeholder, ImageView imageView) {
-        Glide.with(mContext)
-                .load(url)
-                .apply(RequestOptions.placeholderOf(placeholder)
-                        .error(placeholder)
-                        .fallback(placeholder))
-                .centerCrop()
-                .into(imageView);
+        Glide.with(mContext).load(url).apply(RequestOptions.placeholderOf(placeholder).error(placeholder).fallback(placeholder)).centerCrop().into(imageView);
     }
 
     public static void load(Context mContext, int resId, ImageView imageView) {
-        Glide.with(mContext)
-                .load(resId)
-                .apply(getRequestOptions())
+        Glide.with(mContext).load(resId).apply(getRequestOptions())
 //                .transition(DrawableTransitionOptions.withCrossFade())
-                .centerCrop()
-                .into(imageView);
+                .centerCrop().into(imageView);
     }
 
     public static void load(Activity mContext, String url, ImageView imageView) {
-        Glide.with(mContext)
-                .load(url)
-                .apply(getRequestOptions())
+        Glide.with(mContext).load(url).apply(getRequestOptions())
 //                .transition(DrawableTransitionOptions.withCrossFade())
-                .centerCrop()
-                .into(imageView);
+                .centerCrop().into(imageView);
     }
 
     public static void load(Fragment mContext, String url, ImageView imageView) {
-        Glide.with(mContext)
-                .load(url)
-                .apply(getRequestOptions())
+        Glide.with(mContext).load(url).apply(getRequestOptions())
 //                .transition(DrawableTransitionOptions.withCrossFade())
-                .centerCrop()
-                .into(imageView);
+                .centerCrop().into(imageView);
     }
 
     public static void loadVideoScreenshot(final Context context, String uri, ImageView imageView, long frameTimeMicros) {

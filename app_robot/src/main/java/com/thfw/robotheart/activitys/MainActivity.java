@@ -163,7 +163,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     // 气泡文案动画
     private com.thfw.robotheart.view.HomeIpTextView mHitAnim;
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
-    private Random random = new Random();    /**
+    private Random random = new Random();
+    /**
      * 延时开启脸部动画
      */
     private Runnable mStartFaceRunnable = () -> {
@@ -183,7 +184,8 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     private ImageView mIvHand;
     private ImageView mIvWeather;
     private TextView mTvWeather;
-    private ConstraintLayout mClWeather;    private Runnable mWeatherRunnable = () -> {
+    private ConstraintLayout mClWeather;
+    private Runnable mWeatherRunnable = () -> {
         checkWeather();
     };
     private TDialog mServerStopDialog;
@@ -210,8 +212,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         AidlHelper.resetId();
 
         try {
-            NotificationManager manager = (NotificationManager) MyApplication.getApp()
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager manager = (NotificationManager) MyApplication.getApp().getSystemService(Context.NOTIFICATION_SERVICE);
             if (manager != null) {
                 manager.cancelAll();
             }
@@ -408,8 +409,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         if (!TextUtils.isEmpty(cacheWeather)) {
             String weathers[] = cacheWeather.split(" ");
             if (weathers.length == 2 && !TextUtils.isEmpty(weathers[0]) && !TextUtils.isEmpty(weathers[1])) {
-                GlideUtil.load(mContext, IconUtil.getWeatherIcon(weathers[0]),
-                        R.mipmap.refresh_cloud, mIvWeather);
+                GlideUtil.load(mContext, IconUtil.getWeatherIcon(weathers[0]), R.mipmap.refresh_cloud, mIvWeather);
                 mTvWeather.setText(cacheWeather);
             }
         }
@@ -564,72 +564,56 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
         } else if (vId == R.id.cl_setting) {
             startActivity(new Intent(mContext, SettingActivity.class));
         } else if (vId == R.id.cl_music) {
-            DialogRobotFactory.createSvgaDialog(MainActivity.this,
-                    AnimFileName.TRANSITION_AUDIO,
-                    new DialogRobotFactory.OnSVGACallBack() {
+            DialogRobotFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_AUDIO, new DialogRobotFactory.OnSVGACallBack() {
 
-                        public void callBack(SVGAImageView svgaImageView) {
-                            startActivity(new Intent(mContext, AudioHomeActivity.class));
-                        }
-                    });
+                public void callBack(SVGAImageView svgaImageView) {
+                    startActivity(new Intent(mContext, AudioHomeActivity.class));
+                }
+            });
         } else if (vId == R.id.cl_test) {
-            DialogRobotFactory.createSvgaDialog(MainActivity.this,
-                    AnimFileName.TRANSITION_TEST,
-                    new DialogRobotFactory.OnSVGACallBack() {
-                        public void callBack(SVGAImageView svgaImageView) {
-                            startActivity(new Intent(mContext, TestActivity.class));
-                        }
-                    });
+            DialogRobotFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_TEST, new DialogRobotFactory.OnSVGACallBack() {
+                public void callBack(SVGAImageView svgaImageView) {
+                    startActivity(new Intent(mContext, TestActivity.class));
+                }
+            });
         } else if (vId == R.id.cl_video) {
-            DialogRobotFactory.createSvgaDialog(MainActivity.this,
-                    AnimFileName.TRANSITION_VIDEO,
-                    new DialogRobotFactory.OnSVGACallBack() {
-                        public void callBack(SVGAImageView svgaImageView) {
-                            startActivity(new Intent(mContext, VideoHomeActivity.class));
-                        }
-                    });
+            DialogRobotFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_VIDEO, new DialogRobotFactory.OnSVGACallBack() {
+                public void callBack(SVGAImageView svgaImageView) {
+                    startActivity(new Intent(mContext, VideoHomeActivity.class));
+                }
+            });
         } else if (vId == R.id.cl_exercise) {
-            DialogRobotFactory.createSvgaDialog(MainActivity.this,
-                    AnimFileName.TRANSITION_TOOL,
-                    new DialogRobotFactory.OnSVGACallBack() {
-                        public void callBack(SVGAImageView svgaImageView) {
-                            startActivity(new Intent(mContext, ExerciseActivity.class));
-                        }
-                    });
+            DialogRobotFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_TOOL, new DialogRobotFactory.OnSVGACallBack() {
+                public void callBack(SVGAImageView svgaImageView) {
+                    startActivity(new Intent(mContext, ExerciseActivity.class));
+                }
+            });
         } else if (vId == R.id.cl_speciality_talk) {
-            DialogRobotFactory.createSvgaDialog(MainActivity.this,
-                    AnimFileName.TRANSITION_THEME,
-                    new DialogRobotFactory.OnSVGACallBack() {
-                        public void callBack(SVGAImageView svgaImageView) {
-                            startActivity(new Intent(mContext, ThemeTalkActivity.class));
-                        }
-                    });
+            DialogRobotFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_THEME, new DialogRobotFactory.OnSVGACallBack() {
+                public void callBack(SVGAImageView svgaImageView) {
+                    startActivity(new Intent(mContext, ThemeTalkActivity.class));
+                }
+            });
         } else if (vId == R.id.cl_talk) {
-            DialogRobotFactory.createSvgaDialog(MainActivity.this,
-                    AnimFileName.TRANSITION_TALK,
-                    new DialogRobotFactory.OnSVGACallBack() {
-                        public void callBack(SVGAImageView svgaImageView) {
-                            AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
-                        }
-                    });
+            DialogRobotFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_TALK, new DialogRobotFactory.OnSVGACallBack() {
+                public void callBack(SVGAImageView svgaImageView) {
+                    AiTalkActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
+                }
+            });
         } else if (vId == R.id.cl_hot_call) {
             startActivity(new Intent(mContext, HotPhoneActivity.class));
         } else if (vId == R.id.cl_study) {
-            DialogRobotFactory.createSvgaDialog(MainActivity.this,
-                    AnimFileName.TRANSITION_IDEO,
-                    new DialogRobotFactory.OnSVGACallBack() {
-                        public void callBack(SVGAImageView svgaImageView) {
-                            startActivity(new Intent(mContext, BookStudyActivity.class));
-                        }
-                    });
+            DialogRobotFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_IDEO, new DialogRobotFactory.OnSVGACallBack() {
+                public void callBack(SVGAImageView svgaImageView) {
+                    startActivity(new Intent(mContext, BookStudyActivity.class));
+                }
+            });
         } else if (vId == R.id.cl_book) {
-            DialogRobotFactory.createSvgaDialog(MainActivity.this,
-                    AnimFileName.TRANSITION_BOOK,
-                    new DialogRobotFactory.OnSVGACallBack() {
-                        public void callBack(SVGAImageView svgaImageView) {
-                            startActivity(new Intent(mContext, BookActivity.class));
-                        }
-                    });
+            DialogRobotFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_BOOK, new DialogRobotFactory.OnSVGACallBack() {
+                public void callBack(SVGAImageView svgaImageView) {
+                    startActivity(new Intent(mContext, BookActivity.class));
+                }
+            });
         }
     }
 
@@ -976,8 +960,7 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     }
 
     private void onUrgedDialog() {
-        if (mUrgedMsgModel == null || !mUrgedMsgModel.isDisplay() ||
-                DialogRobotFactory.getSvgaTDialog() != null) {
+        if (mUrgedMsgModel == null || !mUrgedMsgModel.isDisplay() || DialogRobotFactory.getSvgaTDialog() != null) {
             return;
         }
         HashMap<Integer, Object> map = new HashMap<>();
@@ -1001,41 +984,25 @@ public class MainActivity extends RobotBaseActivity implements View.OnClickListe
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
 
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("主题对话,专业心理咨询,心理咨询",
-                () -> mClSpecialityTalk.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("倾诉吐槽",
-                () -> mLlTalk.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("测评问卷",
-                () -> mLlTest.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("成长训练",
-                () -> mLlExercise.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("正念冥想",
-                () -> mLlMusic.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("视频集锦",
-                () -> mLlVideo.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("思政文库",
-                () -> mLlBook.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("学一学",
-                () -> mLlStudy.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("主题对话,专业心理咨询,心理咨询", () -> mClSpecialityTalk.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("倾诉吐槽", () -> mLlTalk.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("测评问卷", () -> mLlTest.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("成长训练", () -> mLlExercise.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("正念冥想", () -> mLlMusic.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("视频集锦", () -> mLlVideo.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("思政文库", () -> mLlStudy.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("心理文库", () -> mLlBook.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("学一学", () -> mLlStudy.performClick()));
 
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("我的",
-                () -> mClMe.performClick()));
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("设置",
-                () -> mClSetting.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("我的", () -> mClMe.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("设置", () -> mClSetting.performClick()));
 
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("全国心理热线,心理热线,了解更多",
-                () -> mLlHotCall.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("全国心理热线,心理热线,了解更多", () -> mLlHotCall.performClick()));
 
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("搜索",
-                () -> startActivity(new Intent(mContext, SearchActivity.class))));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("搜索", () -> startActivity(new Intent(mContext, SearchActivity.class))));
 
-        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("查看天气,天气,今天天气怎么样",
-                () -> mClWeather.performClick()));
+        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("查看天气,天气,今天天气怎么样", () -> mClWeather.performClick()));
     }
-
-
-
-
 
 
 }

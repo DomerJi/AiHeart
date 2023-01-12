@@ -254,7 +254,7 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
             case 1:
                 mTvMobileCache01.setText(listAccount.get(0).simpleAccount);
                 mUseCacheAccount = listAccount.get(0).account;
-                GlideUtil.load(mContext, listAccount.get(0).avatar, mRivCache01);
+                GlideUtil.loadBlur(mContext, listAccount.get(0).avatar, mRivCache01);
                 mRlAccount.setVisibility(View.GONE);
                 mRlAccountCache.setVisibility(View.VISIBLE);
                 mRlAccountCache02.setVisibility(View.GONE);
@@ -265,10 +265,10 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
             case 2:
                 mTvMobileCache01.setText(listAccount.get(0).simpleAccount);
                 mUseCacheAccount = listAccount.get(0).account;
-                GlideUtil.load(mContext, listAccount.get(0).avatar, mRivCache01);
+                GlideUtil.loadBlur(mContext, listAccount.get(0).avatar, mRivCache01);
 
                 mTvMobileCache02.setText(listAccount.get(1).simpleAccount);
-                GlideUtil.load(mContext, listAccount.get(1).avatar, mRivCache02);
+                GlideUtil.loadBlur(mContext, listAccount.get(1).avatar, mRivCache02);
                 mRlAccount.setVisibility(View.GONE);
                 mRlAccountCache.setVisibility(View.VISIBLE);
                 mRlAccountCache02.setVisibility(View.GONE);
@@ -309,15 +309,16 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
                         if (listAccount.get(0).account.equals(mUseCacheAccount)) {
                             mUseCacheAccount = listAccount.get(1).account;
                             mTvMobileCache01.setText(listAccount.get(1).simpleAccount);
-                            GlideUtil.load(mContext, listAccount.get(1).avatar, mRivCache01);
+                            GlideUtil.loadBlur(mContext, listAccount.get(1).avatar, mRivCache01);
                             mTvMobileCache02.setText(listAccount.get(0).simpleAccount);
-                            GlideUtil.load(mContext, listAccount.get(0).avatar, mRivCache02);
+                            GlideUtil.loadBlur(mContext, listAccount.get(0).avatar, mRivCache02);
+
                         } else {
                             mUseCacheAccount = listAccount.get(0).account;
                             mTvMobileCache01.setText(listAccount.get(0).simpleAccount);
-                            GlideUtil.load(mContext, listAccount.get(0).avatar, mRivCache01);
+                            GlideUtil.loadBlur(mContext, listAccount.get(0).avatar, mRivCache01);
                             mTvMobileCache02.setText(listAccount.get(1).simpleAccount);
-                            GlideUtil.load(mContext, listAccount.get(1).avatar, mRivCache02);
+                            GlideUtil.loadBlur(mContext, listAccount.get(1).avatar, mRivCache02);
                         }
                         mRlAccountCache02.setVisibility(View.GONE);
                         mRlAccountCache03.setVisibility(View.GONE);
