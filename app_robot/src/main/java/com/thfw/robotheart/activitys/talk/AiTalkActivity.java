@@ -1278,7 +1278,8 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         mStvText.setSpeechText("");
         LogUtil.d(TAG, "chooseOption(result)" + result + "; end = " + end);
         LogUtil.d(TAG, "chooseOption(result) mCurrentChatType = " + mCurrentChatType);
-        SpeechModel speechModel = LhXkHelper.onActionText(result, true);
+        String tempText = result.replaceAll("(小密|，|。|！|!|？)", "");
+        SpeechModel speechModel = LhXkHelper.onActionText(tempText, true);
         if (speechModel.matches) {
             return;
         }
@@ -1287,7 +1288,6 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
                 sendInputText(result);
             }
         } else if (mCurrentChatType == ChatEntity.TYPE_FROM_SELECT) {
-            String tempText = result.replaceAll("(小密|，|。|！|!|？)", "");
             // 音量调整
             if (checkVolume(tempText)) {
                 hideInput();
@@ -1981,7 +1981,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
             openOrCloseVoice();
         }));
 
-        LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction("打开键盘", () -> {
+        LhXkHelper.putAction(AiTalkActivity.class, new SpeechToAction("键盘", () -> {
             if (mRlKeyword.getVisibility() == View.GONE) {
                 return;
             }
