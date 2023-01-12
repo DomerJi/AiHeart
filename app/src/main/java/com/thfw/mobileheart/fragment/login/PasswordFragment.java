@@ -214,6 +214,7 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
                 if (mRlAccountCache03.getVisibility() == View.VISIBLE) {
                     mRlAccountCache02.setVisibility(View.GONE);
                     mRlAccountCache03.setVisibility(View.GONE);
+                    mIvArrowCache.animate().rotation(360).setDuration(300);
                     goVibrator();
                     return true;
 
@@ -298,8 +299,9 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
             if (mRlAccountCache03.getVisibility() == View.VISIBLE) {
                 mRlAccountCache02.setVisibility(View.GONE);
                 mRlAccountCache03.setVisibility(View.GONE);
-
+                mIvArrowCache.animate().rotation(360).setDuration(300);
             } else {
+                mIvArrowCache.animate().rotation(180).setDuration(300);
                 if (size == 2) {
                     mRlAccountCache02.setVisibility(View.VISIBLE);
                     mRlAccountCache02.setOnClickListener(v2 -> {
@@ -319,6 +321,7 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
                         }
                         mRlAccountCache02.setVisibility(View.GONE);
                         mRlAccountCache03.setVisibility(View.GONE);
+                        mIvArrowCache.animate().rotation(360).setDuration(300);
                         goVibrator();
                     });
                 }
