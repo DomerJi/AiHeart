@@ -1,8 +1,13 @@
 package com.thfw.mobileheart.adapter;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +32,7 @@ import java.util.List;
  */
 public class StatusAdapter extends BaseAdapter<StatusEntity, RecyclerView.ViewHolder> {
 
+    private View mTopItemView;
     private ImageView mIvTopBanner;
 
     private int mSelectedIndex = -1;
@@ -34,6 +40,122 @@ public class StatusAdapter extends BaseAdapter<StatusEntity, RecyclerView.ViewHo
 
     public StatusAdapter(List<StatusEntity> dataList) {
         super(dataList);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+
+            boolean topPull;
+            float topPullDownY = 0;
+            int originHeight = 0;
+
+            float downY = 0;
+            long downTime;
+            boolean noMove = true;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        boolean flag = !mRecyclerView.canScrollVertically(-1);
+                        if (flag != topPull) {
+                            topPull = flag;
+                        }
+
+                        downTime = System.currentTimeMillis();
+                        noMove = true;
+                        downY = topPullDownY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        boolean flag1 = !mRecyclerView.canScrollVertically(-1);
+                        if (flag1 != topPull) {
+                            topPull = flag1;
+                            topPullDownY = event.getY();
+                        }
+
+                        int moveY = Math.round(event.getY() - downY);
+                        if (noMove && Math.abs(moveY) > 25) {
+                            noMove = false;
+                        }
+
+                        if (!topPull) {
+                            return false;
+                        }
+                        if (event.getY() < topPullDownY) {
+                            return false;
+                        }
+                        if (originHeight == 0) {
+                            originHeight = getTopBanner();
+                        }
+                        if (originHeight == 0 || mIvTopBanner == null) {
+                            return false;
+                        }
+
+                        Log.i("topPullDownY", " originHeight = " + originHeight + " ; topPullDownY = " + topPullDownY + " ; event.getY() " + event.getY());
+                        int newHeight = (int) (originHeight + (event.getY() - topPullDownY));
+                        if (newHeight < originHeight) {
+                            return false;
+                        }
+                        mIvTopBanner.getLayoutParams().height = newHeight;
+                        mIvTopBanner.setLayoutParams(mIvTopBanner.getLayoutParams());
+                        return true;
+
+                    case MotionEvent.ACTION_UP:
+                        clickItem(event);
+                        if (originHeight == 0 || mIvTopBanner == null || mIvTopBanner.getLayoutParams().height < originHeight) {
+                            return false;
+                        }
+                        ValueAnimator animator = ObjectAnimator.ofInt(mIvTopBanner.getLayoutParams().height, originHeight);
+                        animator.setDuration(300);
+                        animator.setInterpolator(new DecelerateInterpolator());
+                        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                            @Override
+                            public void onAnimationUpdate(ValueAnimator animation) {
+                                int height = (int) animation.getAnimatedValue();
+                                mIvTopBanner.getLayoutParams().height = height;
+                                mIvTopBanner.setLayoutParams(mIvTopBanner.getLayoutParams());
+                            }
+                        });
+                        animator.start();
+                        break;
+                }
+
+
+                return false;
+            }
+
+            private void clickItem(MotionEvent event) {
+                Log.d("TvDrag", "clickItem = ");
+                if (noMove && Math.abs(event.getY() - downY) < 25 && System.currentTimeMillis() - downTime < 200) {
+                    View childView = mRecyclerView.findChildViewUnder(event.getX(), event.getY());
+                    Log.d("TvDrag", "childView = " + childView);
+                    if (childView != null) {
+                        RecyclerView.ViewHolder viewHolder = mRecyclerView.findContainingViewHolder(childView);
+                        if (viewHolder != null) {
+                            Log.d("TvDrag", "viewHolder = " + viewHolder);
+                            onItemCLick(viewHolder.getBindingAdapterPosition());
+                            Log.d("TvDrag", "position = " + viewHolder.getBindingAdapterPosition());
+                        }
+                    }
+
+                }
+            }
+        });
+    }
+
+    private void onItemCLick(int bindingAdapterPosition) {
+        oldIndex = mSelectedIndex;
+        mSelectedIndex = bindingAdapterPosition;
+        if (oldIndex != -1) {
+            notifyItemChanged(oldIndex);
+        }
+        notifyItemChanged(mSelectedIndex);
+        if (mOnRvItemListener != null) {
+            mOnRvItemListener.onItemClick(getDataList(), mSelectedIndex);
+        }
     }
 
     public void setSelectedIndex(int mSelectedIndex) {
@@ -101,6 +223,7 @@ public class StatusAdapter extends BaseAdapter<StatusEntity, RecyclerView.ViewHo
 
         public StatusTopHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            mTopItemView = itemView;
             mIvTopBanner = itemView.findViewById(R.id.iv_top_banner);
         }
     }
@@ -129,17 +252,19 @@ public class StatusAdapter extends BaseAdapter<StatusEntity, RecyclerView.ViewHo
             mRivStatus = (RoundedImageView) itemView.findViewById(R.id.riv_status);
             mTvStatus = (TextView) itemView.findViewById(R.id.tv_status);
             mClMood = itemView.findViewById(R.id.cl_mood);
-            itemView.setOnClickListener(v -> {
-                oldIndex = mSelectedIndex;
-                mSelectedIndex = getBindingAdapterPosition();
-                if (oldIndex != -1) {
-                    notifyItemChanged(oldIndex);
-                }
-                notifyItemChanged(mSelectedIndex);
-                if (mOnRvItemListener != null) {
-                    mOnRvItemListener.onItemClick(getDataList(), mSelectedIndex);
-                }
-            });
+//            itemView.setOnClickListener(v -> {
+//                oldIndex = mSelectedIndex;
+//                mSelectedIndex = getBindingAdapterPosition();
+//                if (oldIndex != -1) {
+//                    notifyItemChanged(oldIndex);
+//                }
+//                notifyItemChanged(mSelectedIndex);
+//                if (mOnRvItemListener != null) {
+//                    mOnRvItemListener.onItemClick(getDataList(), mSelectedIndex);
+//                }
+//            });
         }
     }
+
+
 }
