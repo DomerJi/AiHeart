@@ -1,11 +1,16 @@
 package com.thfw.mobileheart.activity.talk;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -83,10 +88,12 @@ public class ThemeListActivity extends BaseActivity<TalkPresenter> implements Ta
         talkAdapter.setOnRvItemListener(new OnRvItemListener<ThemeTalkModel>() {
             @Override
             public void onItemClick(List<ThemeTalkModel> list, int position) {
-                ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
-                        .setId(list.get(position).getId())
-                        .setCollected(list.get(position).getCollected() == 1)
-                        .setTitle(list.get(position).getTitle()));
+                if (position == 0) {
+                    // 主题对话
+                    ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_THEME));
+                    return;
+                }
+                ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT).setId(list.get(position).getId()).setCollected(list.get(position).getCollected() == 1).setTitle(list.get(position).getTitle()));
             }
         });
         mRvList.setAdapter(talkAdapter);
@@ -129,9 +136,121 @@ public class ThemeListActivity extends BaseActivity<TalkPresenter> implements Ta
                 }
             }
         });
-        mClTalkTop.setOnClickListener(v -> {
-            // todo 主题对话
-            ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_THEME));
+//        mClTalkTop.setOnClickListener(v -> {
+//            // todo 主题对话
+//            ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_THEME));
+//        });
+
+        mRvList.setOnTouchListener(new View.OnTouchListener() {
+
+            boolean topPull;
+            float topPullDownY = 0;
+
+            float downY = 0;
+            long downTime;
+            boolean noMove = true;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        boolean flag = !mRvList.canScrollVertically(-1);
+                        if (flag != topPull) {
+                            topPull = flag;
+                        }
+
+                        downTime = System.currentTimeMillis();
+                        noMove = true;
+                        downY = topPullDownY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+
+                        int moveY = Math.round(event.getY() - downY);
+                        if (noMove && Math.abs(moveY) > 25) {
+                            noMove = false;
+                        }
+
+                        boolean flag1 = !mRvList.canScrollVertically(-1);
+                        if (flag1 != topPull) {
+                            topPull = flag1;
+                            topPullDownY = event.getY();
+
+                            if (!topPull) {
+                                Log.i("topPullDownY", "bannerHeight = " + bannerHeight);
+                                mIvTalkBanner.getLayoutParams().height = bannerHeight;
+                                mIvTalkBanner.setLayoutParams(mIvTalkBanner.getLayoutParams());
+                                mClTalkTop.getLayoutParams().height = bannerHeight;
+                                mClTalkTop.setLayoutParams(mClTalkTop.getLayoutParams());
+                                talkAdapter.setTopBannerHeight(bannerHeight);
+                            }
+                        }
+
+                        if (!topPull) {
+                            return false;
+                        }
+                        if (event.getY() < topPullDownY) {
+                            return false;
+                        }
+                        if (bannerHeight == 0 || mIvTalkBanner == null || mClTalkTop == null) {
+                            return false;
+                        }
+
+                        Log.i("topPullDownY", " originHeight = " + bannerHeight + " ; topPullDownY = " + topPullDownY + " ; event.getY() " + event.getY());
+                        int newHeight = (int) (bannerHeight + (event.getY() - topPullDownY));
+                        if (newHeight < bannerHeight) {
+                            return false;
+                        }
+                        mIvTalkBanner.getLayoutParams().height = newHeight;
+                        mIvTalkBanner.setLayoutParams(mIvTalkBanner.getLayoutParams());
+                        mClTalkTop.getLayoutParams().height = newHeight;
+                        mClTalkTop.setLayoutParams(mClTalkTop.getLayoutParams());
+                        talkAdapter.setTopBannerHeight(newHeight);
+                        return true;
+
+                    case MotionEvent.ACTION_UP:
+                        clickItem(event);
+                        if (bannerHeight == 0 || mIvTalkBanner == null || mIvTalkBanner.getLayoutParams().height <= bannerHeight) {
+                            return false;
+                        }
+                        ValueAnimator animator = ObjectAnimator.ofInt(mIvTalkBanner.getLayoutParams().height, bannerHeight);
+                        animator.setDuration(300);
+                        animator.setInterpolator(new DecelerateInterpolator());
+                        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                            @Override
+                            public void onAnimationUpdate(ValueAnimator animation) {
+                                int height = (int) animation.getAnimatedValue();
+                                mIvTalkBanner.getLayoutParams().height = height;
+                                mIvTalkBanner.setLayoutParams(mIvTalkBanner.getLayoutParams());
+                                mClTalkTop.getLayoutParams().height = height;
+                                mClTalkTop.setLayoutParams(mClTalkTop.getLayoutParams());
+                                talkAdapter.setTopBannerHeight(height);
+                            }
+                        });
+                        animator.start();
+                        break;
+                }
+
+
+                return false;
+            }
+
+            private void clickItem(MotionEvent event) {
+                Log.d("TvDrag", "clickItem = ");
+                if (noMove && Math.abs(event.getY() - downY) < 25 && System.currentTimeMillis() - downTime < 200) {
+                    View childView = mRvList.findChildViewUnder(event.getX(), event.getY());
+                    Log.d("TvDrag", "childView = " + childView);
+                    if (childView != null) {
+                        RecyclerView.ViewHolder viewHolder = mRvList.findContainingViewHolder(childView);
+                        if (viewHolder != null) {
+                            Log.d("TvDrag", "viewHolder = " + viewHolder);
+                            talkAdapter.onItemCLick(viewHolder.getBindingAdapterPosition());
+                            Log.d("TvDrag", "position = " + viewHolder.getBindingAdapterPosition());
+                        }
+                    }
+
+                }
+            }
         });
 
         minHeight = (int) getResources().getDimension(R.dimen.navigation_height);
@@ -144,22 +263,23 @@ public class ThemeListActivity extends BaseActivity<TalkPresenter> implements Ta
      * @param y
      */
     public void onScroll(int y) {
-        ViewGroup.LayoutParams lp = mClTalkTop.getLayoutParams();
-        lp.height = bannerHeight - y;
 
-        if (lp.height < minHeight) {
-            lp.height = minHeight;
-        } else if (lp.height > bannerHeight) {
-            lp.height = bannerHeight;
+        int newHeight = bannerHeight - y;
+
+        if (newHeight < minHeight) {
+            newHeight = minHeight;
+        } else if (newHeight > bannerHeight) {
+            newHeight = bannerHeight;
         }
 
-        float alpha = (lp.height - minHeight) * 1.0f / (bannerHeight - minHeight);
+
+        float alpha = (newHeight - minHeight) * 1.0f / (bannerHeight - minHeight);
         LogUtil.d("onScroll alpha = " + alpha);
         if (blurBitmap == null) {
             blurBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_theme_banner);
         }
         mTvDeepTalk.setAlpha(alpha);
-        if (lp.height < bannerHeight) {
+        if (newHeight < bannerHeight) {
             int radius = (int) (20 * (1 - alpha));
             if (radius < 4) {
                 radius = 4;
@@ -169,7 +289,8 @@ public class ThemeListActivity extends BaseActivity<TalkPresenter> implements Ta
         } else {
             mIvTalkBanner.setImageBitmap(blurBitmap);
         }
-
+        ViewGroup.LayoutParams lp = mClTalkTop.getLayoutParams();
+        lp.height = newHeight;
         mClTalkTop.setLayoutParams(lp);
         ConstraintSet constraintSet = new ConstraintSet();
         constraintSet.clone(mClTalkTop);

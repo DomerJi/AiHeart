@@ -2,6 +2,7 @@ package com.thfw.mobileheart.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,8 @@ import java.util.List;
  */
 public class ThemeTalkAdapter extends BaseAdapter<ThemeTalkModel, ThemeTalkAdapter.AudioEdtListHolder> {
 
+    private ImageView mIvTopBanner;
+
     public ThemeTalkAdapter(List<ThemeTalkModel> dataList) {
         super(dataList);
     }
@@ -32,7 +35,7 @@ public class ThemeTalkAdapter extends BaseAdapter<ThemeTalkModel, ThemeTalkAdapt
     @Override
     public AudioEdtListHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         if (viewType == ThemeTalkModel.TYPE_TOP) {
-            return new AudioEdtListHolder(inflate(R.layout.item_theme_talk_top, parent));
+            return new AudioTopHolder(inflate(R.layout.item_theme_talk_top, parent));
         }
         return new AudioEdtListHolder(inflate(R.layout.item_theme_talk_list, parent));
     }
@@ -47,9 +50,24 @@ public class ThemeTalkAdapter extends BaseAdapter<ThemeTalkModel, ThemeTalkAdapt
 
     }
 
+    public void setTopBannerHeight(int newHeight) {
+        if (mIvTopBanner != null) {
+            mIvTopBanner.getLayoutParams().height = newHeight;
+            mIvTopBanner.setLayoutParams(mIvTopBanner.getLayoutParams());
+        }
+    }
+
     @Override
     public int getItemViewType(int position) {
         return mDataList.get(position).getItemType();
+    }
+
+    public class AudioTopHolder extends AudioEdtListHolder {
+
+        public AudioTopHolder(@NonNull @NotNull View itemView) {
+            super(itemView);
+            mIvTopBanner = itemView.findViewById(R.id.iv_talk_banner);
+        }
     }
 
     public class AudioEdtListHolder extends RecyclerView.ViewHolder {
@@ -63,11 +81,17 @@ public class ThemeTalkAdapter extends BaseAdapter<ThemeTalkModel, ThemeTalkAdapt
             mRivImage = itemView.findViewById(R.id.riv_etc_bg);
             mTvHour = itemView.findViewById(R.id.tv_hour);
             mTvTitle = itemView.findViewById(R.id.tv_title);
-            itemView.setOnClickListener(v -> {
-                if (mOnRvItemListener != null) {
-                    mOnRvItemListener.onItemClick(getDataList(), getBindingAdapterPosition());
-                }
-            });
+//            itemView.setOnClickListener(v -> {
+//                if (mOnRvItemListener != null) {
+//                    mOnRvItemListener.onItemClick(getDataList(), getBindingAdapterPosition());
+//                }
+//            });
+        }
+    }
+
+    public void onItemCLick(int position) {
+        if (mOnRvItemListener != null) {
+            mOnRvItemListener.onItemClick(getDataList(), position);
         }
     }
 

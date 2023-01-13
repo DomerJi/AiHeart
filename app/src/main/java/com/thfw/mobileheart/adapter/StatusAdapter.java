@@ -105,7 +105,7 @@ public class StatusAdapter extends BaseAdapter<StatusEntity, RecyclerView.ViewHo
 
                     case MotionEvent.ACTION_UP:
                         clickItem(event);
-                        if (originHeight == 0 || mIvTopBanner == null || mIvTopBanner.getLayoutParams().height < originHeight) {
+                        if (originHeight == 0 || mIvTopBanner == null || mIvTopBanner.getLayoutParams().height <= originHeight) {
                             return false;
                         }
                         ValueAnimator animator = ObjectAnimator.ofInt(mIvTopBanner.getLayoutParams().height, originHeight);
