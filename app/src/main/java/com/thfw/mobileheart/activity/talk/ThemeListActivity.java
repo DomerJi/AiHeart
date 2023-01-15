@@ -136,10 +136,6 @@ public class ThemeListActivity extends BaseActivity<TalkPresenter> implements Ta
                 }
             }
         });
-//        mClTalkTop.setOnClickListener(v -> {
-//            // todo 主题对话
-//            ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_THEME));
-//        });
 
         mRvList.setOnTouchListener(new View.OnTouchListener() {
 
@@ -197,7 +193,10 @@ public class ThemeListActivity extends BaseActivity<TalkPresenter> implements Ta
                         }
 
                         Log.i("topPullDownY", " originHeight = " + bannerHeight + " ; topPullDownY = " + topPullDownY + " ; event.getY() " + event.getY());
-                        int newHeight = (int) (bannerHeight + (event.getY() - topPullDownY));
+                        float downSumY = event.getY() - topPullDownY;
+                        float v1 = 1 - (downSumY / bannerHeight * 0.1f);
+
+                        int newHeight = (int) (bannerHeight + downSumY * v1);
                         if (newHeight < bannerHeight) {
                             return false;
                         }
@@ -271,8 +270,18 @@ public class ThemeListActivity extends BaseActivity<TalkPresenter> implements Ta
         } else if (newHeight > bannerHeight) {
             newHeight = bannerHeight;
         }
-
-
+        if (mClTalkTop.getLayoutParams().height == newHeight) {
+            return;
+        }
+        if (newHeight == minHeight) {
+            mClTalkTop.setOnClickListener(v -> {
+                // todo 主题对话
+                ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_THEME));
+            });
+        } else {
+            mClTalkTop.setOnClickListener(null);
+            mClTalkTop.setClickable(false);
+        }
         float alpha = (newHeight - minHeight) * 1.0f / (bannerHeight - minHeight);
         LogUtil.d("onScroll alpha = " + alpha);
         if (blurBitmap == null) {

@@ -95,7 +95,10 @@ public class StatusAdapter extends BaseAdapter<StatusEntity, RecyclerView.ViewHo
                         }
 
                         Log.i("topPullDownY", " originHeight = " + originHeight + " ; topPullDownY = " + topPullDownY + " ; event.getY() " + event.getY());
-                        int newHeight = (int) (originHeight + (event.getY() - topPullDownY));
+                        float downSumY = event.getY() - topPullDownY;
+                        float v1 = 1 - (downSumY / originHeight * 0.125f);
+                        int newHeight = (int) (originHeight + downSumY * v1);
+
                         if (newHeight < originHeight) {
                             return false;
                         }
