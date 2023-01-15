@@ -1,6 +1,9 @@
 package com.thfw.mobileheart.activity;
 
+import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
+
 import android.animation.Animator;
+import android.animation.ArgbEvaluator;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -17,9 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 
 import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.base.IPresenter;
@@ -65,7 +72,6 @@ import com.thfw.mobileheart.push.helper.PushHelper;
 import com.thfw.mobileheart.push.tester.UPushAlias;
 import com.thfw.mobileheart.util.ActivityLifeCycle;
 import com.thfw.mobileheart.util.DialogFactory;
-import com.thfw.mobileheart.util.FragmentLoader;
 import com.thfw.mobileheart.util.MoodLivelyHelper;
 import com.thfw.mobileheart.util.MsgCountManager;
 import com.thfw.mobileheart.view.SimpleAnimatorListener;
@@ -125,7 +131,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private android.widget.LinearLayout mLlMe;
     private android.widget.ImageView mIvMe;
     private android.widget.TextView mTvMe;
-    private FragmentLoader mFragmentLoader;
+    //    private FragmentLoader mFragmentLoader;
     private View mCurrent;
     private LinearLayout mLlAiChat;
     private TextView mTvMsgCount;
@@ -140,6 +146,16 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private long exitTime = 0;
     private UrgedMsgModel mUrgedMsgModel;
     private TDialog mServerStopDialog;
+    private ViewPager mViewPager;
+
+
+    private int startColorInt = Color.parseColor("#666666");
+    private int endColorInt = Color.parseColor("#FF5311");
+    private Object startColor = startColorInt;
+    private Object endColor = endColorInt;
+
+    private ImageView[] imageViews;
+    private TextView[] textViews;
 
     public static void setShowLoginAnim(boolean showLoginAnim) {
         MainActivity.showLoginAnim = showLoginAnim;
@@ -157,8 +173,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         initUrgedMsg = -1;
 
         try {
-            NotificationManager manager = (NotificationManager) MyApplication.getApp()
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager manager = (NotificationManager) MyApplication.getApp().getSystemService(Context.NOTIFICATION_SERVICE);
             if (manager != null) {
                 manager.cancelAll();
             }
@@ -268,16 +283,16 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         mTvMe = (TextView) findViewById(R.id.tv_me);
         // 智能聊天/倾诉吐槽
         mLlAiChat.setOnClickListener(v -> {
-            DialogFactory.createSvgaDialog(MainActivity.this,
-                    AnimFileName.TRANSITION_TALK,
-                    new DialogFactory.OnSVGACallBack() {
-                        @Override
-                        public void callBack(SVGAImageView svgaImageView) {
-                            ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
-                        }
-                    });
+            DialogFactory.createSvgaDialog(MainActivity.this, AnimFileName.TRANSITION_TALK, new DialogFactory.OnSVGACallBack() {
+                @Override
+                public void callBack(SVGAImageView svgaImageView) {
+                    ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
+                }
+            });
 
         });
+        imageViews = new ImageView[]{mIvHome, mIvMessage, mIvMe};
+        textViews = new TextView[]{mTvHome, mTvMessage, mTvMe};
 
     }
 
@@ -296,17 +311,115 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         });
         pageStateViewModel.check();
 
-        mFragmentLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content)
-                .add(mLlHome.getId(), new HomeFragment())
-                .add(mLlMessage.getId(), new MessageFragment())
-                .add(mLlMe.getId(), new MeFragment());
+//        mFragmentLoader = new FragmentLoader(getSupportFragmentManager(), R.id.fl_content)
+//                .add(mLlHome.getId(), new HomeFragment())
+//                .add(mLlMessage.getId(), new MessageFragment())
+//                .add(mLlMe.getId(), new MeFragment());
+        List<Fragment> list = new ArrayList<>();
+        list.add(new HomeFragment());
+        list.add(new MessageFragment());
+        list.add(new MeFragment());
+        mViewPager = findViewById(R.id.vp_content);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
+            ArgbEvaluator argbEvaluator = new ArgbEvaluator();
 
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (positionOffset <= 0 || positionOffsetPixels <= 0) {
+                    return;
+                }
+                int color = (int) argbEvaluator.evaluate(positionOffset, startColor, endColor);
+                int color2 = (int) argbEvaluator.evaluate(positionOffset, endColor, startColor);
+                imageViews[position].setColorFilter(color2);
+                textViews[position].setTextColor(color2);
+
+                imageViews[position + 1].setColorFilter(color);
+                textViews[position + 1].setTextColor(color);
+                Log.i("onPageScrolled", "position -> " + position + " ; positionOffset -> " + positionOffset + " ; positionOffsetPixels -> " + positionOffsetPixels + " ; color -> " + color + " ; toPosition -> " + (position + 1));
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        mLlHome.performClick();
+                        break;
+                    case 1:
+                        mLlMessage.performClick();
+                        break;
+                    case 2:
+                        mLlMe.performClick();
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+            @NonNull
+            @Override
+            public Fragment getItem(int position) {
+                return list.get(position);
+            }
+
+            @Override
+            public int getCount() {
+                return 3;
+            }
+        });
+        mViewPager.setOffscreenPageLimit(3);
         View.OnClickListener mOnTabListener = v -> {
+
+            int newItem = 0;
+            switch (v.getId()) {
+                case R.id.ll_home:
+                    newItem = 0;
+                    imageViews[newItem].setColorFilter(endColorInt);
+                    textViews[newItem].setTextColor(endColorInt);
+
+                    imageViews[1].setColorFilter(startColorInt);
+                    textViews[1].setTextColor(startColorInt);
+
+                    imageViews[2].setColorFilter(startColorInt);
+                    textViews[2].setTextColor(startColorInt);
+                    break;
+                case R.id.ll_message:
+                    newItem = 1;
+                    imageViews[newItem].setColorFilter(endColorInt);
+                    textViews[newItem].setTextColor(endColorInt);
+
+                    imageViews[0].setColorFilter(startColorInt);
+                    textViews[0].setTextColor(startColorInt);
+
+                    imageViews[2].setColorFilter(startColorInt);
+                    textViews[2].setTextColor(startColorInt);
+                    break;
+                case R.id.ll_me:
+                    newItem = 2;
+
+                    imageViews[newItem].setColorFilter(endColorInt);
+                    textViews[newItem].setTextColor(endColorInt);
+
+                    imageViews[0].setColorFilter(startColorInt);
+                    textViews[0].setTextColor(startColorInt);
+
+                    imageViews[1].setColorFilter(startColorInt);
+                    textViews[1].setTextColor(startColorInt);
+                    break;
+            }
+
+            if (mViewPager.getCurrentItem() != newItem) {
+                mViewPager.setCurrentItem(newItem, false);
+            }
+
             if (mCurrent == v) {
                 return;
             }
-            mFragmentLoader.load(v.getId());
+//            mFragmentLoader.load(v.getId());
             setTab((LinearLayout) v, true);
             setTab((LinearLayout) mCurrent, false);
             mCurrent = v;
@@ -469,9 +582,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
 
     private void onUrgedDialog() {
         // 在 欢迎动画和心情打卡后 执行动画
-        if (mUrgedMsgModel == null || !mUrgedMsgModel.isDisplay()
-                || DialogFactory.getSvgaTDialog() != null
-                || !moodHint) {
+        if (mUrgedMsgModel == null || !mUrgedMsgModel.isDisplay() || DialogFactory.getSvgaTDialog() != null || !moodHint) {
             return;
         }
         HashMap<Integer, Object> map = new HashMap<>();
@@ -528,8 +639,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         if (moodHint) {
             return;
         }
-        moodHint = SharePreferenceUtil.getBoolean(KEY_MOOD_HINT + ActivityLifeCycle.getTodayStartTime()
-                + UserManager.getInstance().getUID(), false);
+        moodHint = SharePreferenceUtil.getBoolean(KEY_MOOD_HINT + ActivityLifeCycle.getTodayStartTime() + UserManager.getInstance().getUID(), false);
         if (moodHint) {
             return;
         }
@@ -545,26 +655,24 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             @Override
             public void onMoodLively(MoodLivelyModel data) {
                 if (data != null && data.getUserMood() == null) {
-                    DialogFactory.createMoodSignInDialog(MainActivity.this,
-                            dialog -> {
-                                mMainHandler.postDelayed(() -> {
-                                    if (isMeResumed()) {
-                                        onUrgedDialog();
-                                    }
-                                }, 500);
-                            }, new OnViewClickListener() {
-                                @Override
-                                public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                                    tDialog.dismiss();
-                                    if (view.getId() == R.id.bt_go) {
-                                        StatusActivity.startActivity(mContext, true);
-                                    }
-                                }
-                            });
+                    DialogFactory.createMoodSignInDialog(MainActivity.this, dialog -> {
+                        mMainHandler.postDelayed(() -> {
+                            if (isMeResumed()) {
+                                onUrgedDialog();
+                            }
+                        }, 500);
+                    }, new OnViewClickListener() {
+                        @Override
+                        public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                            tDialog.dismiss();
+                            if (view.getId() == R.id.bt_go) {
+                                StatusActivity.startActivity(mContext, true);
+                            }
+                        }
+                    });
                 }
                 moodHint = true;
-                SharePreferenceUtil.setBoolean(KEY_MOOD_HINT + ActivityLifeCycle.getTodayStartTime()
-                        + UserManager.getInstance().getUID(), moodHint);
+                SharePreferenceUtil.setBoolean(KEY_MOOD_HINT + ActivityLifeCycle.getTodayStartTime() + UserManager.getInstance().getUID(), moodHint);
                 MoodLivelyHelper.removeListener(this);
             }
         });
@@ -720,9 +828,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         }
     }
 
-    private void initSelectedList
-            (List<OrganizationModel.OrganizationBean> list, OrganizationSelectedModel.OrganizationBean
-                    bean) {
+    private void initSelectedList(List<OrganizationModel.OrganizationBean> list, OrganizationSelectedModel.OrganizationBean bean) {
         if (bean != null) {
             OrganizationModel.OrganizationBean oBean = new OrganizationModel.OrganizationBean();
             oBean.setId(bean.getId());

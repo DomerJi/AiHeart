@@ -70,6 +70,7 @@ public class SettingActivity extends BaseActivity {
     private TextView mTvDeleteAccount;
     private LinearLayout mLlVoiceFocus;
     private View mVVoiceFocus;
+    private LinearLayout mLlHelpBack;
 
     @Override
     public int getContentView() {
@@ -103,8 +104,7 @@ public class SettingActivity extends BaseActivity {
             startActivity(new Intent(mContext, AboutMeActivity.class));
         });
         mBtLogout.setOnClickListener(v -> {
-            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
-            finish();
+            logoutDialog();
         });
         appCache = new FileSizeUtil.AppCache();
 
@@ -133,7 +133,7 @@ public class SettingActivity extends BaseActivity {
         mTvDeleteAccount.setOnClickListener(v -> {
 
             DialogFactory.createCustomDialog(SettingActivity.this, new DialogFactory.OnViewCallBack() {
-                int countS = 5;
+                int countS = 6;
                 Runnable runnable;
 
                 @Override
@@ -182,6 +182,33 @@ public class SettingActivity extends BaseActivity {
             mVVoiceFocus.setVisibility(View.VISIBLE);
             mLlVoiceFocus.setOnClickListener(v -> LhXkSettingActivity.startActivity(mContext));
         }
+
+        mLlHelpBack = findViewById(R.id.ll_help_back);
+        mLlHelpBack.setOnClickListener(v -> {
+            startActivity(new Intent(mContext, HelpBackActivity.class));
+        });
+
+    }
+
+    private void logoutDialog() {
+        DialogFactory.createCustomDialog(SettingActivity.this, new DialogFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvHint.setText("确认退出登录吗");
+                mTvTitle.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                if (view.getId() == R.id.tv_left) {
+                    tDialog.dismiss();
+                } else {
+                    tDialog.dismiss();
+                    UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+                    finish();
+                }
+            }
+        });
     }
 
     private void deleteAccount() {
