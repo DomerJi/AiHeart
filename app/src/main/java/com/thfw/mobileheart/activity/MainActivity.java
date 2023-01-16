@@ -149,7 +149,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private ViewPager mViewPager;
 
 
-    private int startColorInt = Color.parseColor("#666666");
+    private int startColorInt = Color.parseColor("#707070");
     private int endColorInt = Color.parseColor("#FF5311");
     private Object startColor = startColorInt;
     private Object endColor = endColorInt;

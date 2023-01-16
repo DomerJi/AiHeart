@@ -82,7 +82,7 @@
                 android:id="@+id/iv_home"
                 android:layout_width="@dimen/home_tab_icon_height"
                 android:layout_height="@dimen/home_tab_icon_height"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="6dp"
                 android:src="@drawable/hometab_home_selector" />
 
             <TextView
@@ -125,7 +125,7 @@
                     android:id="@+id/iv_message"
                     android:layout_width="@dimen/home_tab_icon_height"
                     android:layout_height="@dimen/home_tab_icon_height"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="3dp"
                     android:src="@drawable/hometab_sort_selector"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -174,7 +174,7 @@
                     android:id="@+id/iv_me"
                     android:layout_width="@dimen/home_tab_icon_height"
                     android:layout_height="@dimen/home_tab_icon_height"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="3dp"
                     android:src="@drawable/hometab_me_selector"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
