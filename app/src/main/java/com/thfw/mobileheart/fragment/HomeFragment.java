@@ -8,7 +8,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.reflect.TypeToken;
@@ -70,8 +70,7 @@ import java.util.List;
 /**
  * 首页
  */
-public class HomeFragment extends BaseFragment<MobilePresenter>
-        implements MobilePresenter.MobileUi<List<MobileRecommendModel>> {
+public class HomeFragment extends BaseFragment<MobilePresenter> implements MobilePresenter.MobileUi<List<MobileRecommendModel>> {
 
     private static final String KEY_HOME_DEFAULT = "key.home.more1.";
     private static String KEY_HOME = KEY_HOME_DEFAULT;
@@ -131,67 +130,53 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
 
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("主题对话,聊一聊",
-                () -> onAction(AnimFileName.TRANSITION_THEME)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("倾诉吐槽",
-                () -> onAction(AnimFileName.TRANSITION_TALK)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("测一测",
-                () -> onAction(AnimFileName.TRANSITION_TEST)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("练一练",
-                () -> onAction(AnimFileName.TRANSITION_TOOL)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("听一听",
-                () -> onAction(AnimFileName.TRANSITION_AUDIO)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("看一看",
-                () -> onAction(AnimFileName.TRANSITION_VIDEO)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("读一读",
-                () -> onAction(AnimFileName.TRANSITION_BOOK)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("学一学",
-                () -> onAction(AnimFileName.TRANSITION_IDEO)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("心情日记",
-                () -> MoodDetailActivity.startActivity(mContext)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("活跃",
-                () -> MoodDetailActivity.startActivity(mContext)).setLike(true));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("全国心理热线,心理热线,了解更多",
-                () -> mContext.startActivity(new Intent(mContext, HotPhoneActivity.class))).setLike(true));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("主题对话,聊一聊", () -> onAction(AnimFileName.TRANSITION_THEME)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("倾诉吐槽", () -> onAction(AnimFileName.TRANSITION_TALK)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("测一测", () -> onAction(AnimFileName.TRANSITION_TEST)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("练一练", () -> onAction(AnimFileName.TRANSITION_TOOL)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("听一听", () -> onAction(AnimFileName.TRANSITION_AUDIO)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("看一看", () -> onAction(AnimFileName.TRANSITION_VIDEO)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("读一读", () -> onAction(AnimFileName.TRANSITION_BOOK)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("学一学", () -> onAction(AnimFileName.TRANSITION_IDEO)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("心情日记", () -> MoodDetailActivity.startActivity(mContext)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("活跃", () -> MoodDetailActivity.startActivity(mContext)).setLike(true));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("全国心理热线,心理热线,了解更多", () -> mContext.startActivity(new Intent(mContext, HotPhoneActivity.class))).setLike(true));
 
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("搜索",
-                () -> startActivity(new Intent(mContext, SearchActivity.class))));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("搜索", () -> startActivity(new Intent(mContext, SearchActivity.class))));
     }
 
     private void onAction(String animName) {
-        DialogFactory.createSvgaDialog((FragmentActivity) mContext,
-                animName,
-                new DialogFactory.OnSVGACallBack() {
-                    @Override
-                    public void callBack(SVGAImageView svgaImageView) {
-                        switch (animName) {
-                            case AnimFileName.TRANSITION_THEME:
-                                ThemeListActivity.startActivity(mContext);
-                                break;
-                            case AnimFileName.TRANSITION_TALK:
-                                ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
-                                break;
-                            case AnimFileName.TRANSITION_TEST:
-                                TestingActivity.startActivity(mContext);
-                                break;
-                            case AnimFileName.TRANSITION_TOOL:
-                                ExerciseActivity.startActivity(mContext);
-                                break;
-                            case AnimFileName.TRANSITION_AUDIO:
-                                AudioHomeActivity.startActivity(mContext);
-                                break;
-                            case AnimFileName.TRANSITION_VIDEO:
-                                VideoHomeActivity.startActivity(mContext);
-                                break;
-                            case AnimFileName.TRANSITION_BOOK:
-                                ReadHomeActivity.startActivity(mContext);
-                                break;
-                            case AnimFileName.TRANSITION_IDEO:
-                                StudyHomeActivity.startActivity(mContext);
-                                break;
-                        }
-                    }
-                });
+        DialogFactory.createSvgaDialog((FragmentActivity) mContext, animName, new DialogFactory.OnSVGACallBack() {
+            @Override
+            public void callBack(SVGAImageView svgaImageView) {
+                switch (animName) {
+                    case AnimFileName.TRANSITION_THEME:
+                        ThemeListActivity.startActivity(mContext);
+                        break;
+                    case AnimFileName.TRANSITION_TALK:
+                        ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_AI));
+                        break;
+                    case AnimFileName.TRANSITION_TEST:
+                        TestingActivity.startActivity(mContext);
+                        break;
+                    case AnimFileName.TRANSITION_TOOL:
+                        ExerciseActivity.startActivity(mContext);
+                        break;
+                    case AnimFileName.TRANSITION_AUDIO:
+                        AudioHomeActivity.startActivity(mContext);
+                        break;
+                    case AnimFileName.TRANSITION_VIDEO:
+                        VideoHomeActivity.startActivity(mContext);
+                        break;
+                    case AnimFileName.TRANSITION_BOOK:
+                        ReadHomeActivity.startActivity(mContext);
+                        break;
+                    case AnimFileName.TRANSITION_IDEO:
+                        StudyHomeActivity.startActivity(mContext);
+                        break;
+                }
+            }
+        });
 
     }
 
@@ -253,15 +238,7 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
 
     @Override
     public void initData() {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext, 2);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return mHomeAdapter.getItemViewType(position) == HomeEntity.TYPE_BODY2 ? 1 : 2;
-            }
-        });
-        mRvHome.setLayoutManager(gridLayoutManager);
-
+        mRvHome.setLayoutManager(new LinearLayoutManager(mContext));
         mHomeAdapter = new HomeAdapter(mMainList);
         mHomeAdapter.setOnRvItemListener(new OnRvItemListener<HomeEntity>() {
             @Override
@@ -286,8 +263,7 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
                         VideoPlayActivity.startActivity(mContext, model.getContentId(), false);
                         break;
                     case 5:
-                        ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
-                                .setId(model.getContentId()));
+                        ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT).setId(model.getContentId()));
                         break;
                     case 6:
                         BookIdeoDetailActivity.startActivity(mContext, model.getContentId());
@@ -396,40 +372,33 @@ public class HomeFragment extends BaseFragment<MobilePresenter>
 
     @Override
     public void onSuccess(List<MobileRecommendModel> data) {
-        int oldSize = 0;
-        if (recommendPage == 1) {
-            int size = mMainList.size();
-            if (size > 4) {
-                for (int i = size - 1; i > 3; i--) {
-                    mMainList.remove(i);
+
+        if (!EmptyUtil.isEmpty(data)) {
+            if (recommendPage == 1) {
+                int size = mMainList.size();
+                if (size > 4) {
+                    for (int i = size - 1; i > 3; i--) {
+                        mMainList.remove(i);
+                    }
                 }
             }
-            mRefreshLayout.finishRefresh(true);
-            mRefreshLayout.finishLoadMore(true);
-        } else {
-            oldSize = mMainList.size();
-            mRefreshLayout.finishRefresh(true);
-            mRefreshLayout.finishLoadMore(true);
-        }
-        if (!EmptyUtil.isEmpty(data)) {
             for (MobileRecommendModel model : data) {
                 mMainList.add(new HomeEntity().setRecommendModel(model));
             }
             if (recommendPage == 1) {
                 SharePreferenceUtil.setString(KEY_HOME, GsonUtil.toJson(mMainList));
             }
+            mRefreshLayout.finishRefresh(true);
+            mRefreshLayout.finishLoadMore(true);
+            mHomeAdapter.notifyDataSetChanged();
+            recommendPage++;
         } else {
-            if (recommendPage > 1) {
+            mRefreshLayout.finishRefresh(true);
+            mRefreshLayout.finishLoadMore(true);
+            if (recommendPage >= 1) {
                 mRefreshLayout.setNoMoreData(true);
             }
         }
-
-        if (recommendPage == 1) {
-            mHomeAdapter.notifyItemRangeChanged(4, mMainList.size());
-        } else {
-            mHomeAdapter.notifyItemRangeChanged(oldSize, mMainList.size());
-        }
-        recommendPage++;
     }
 
     @Override

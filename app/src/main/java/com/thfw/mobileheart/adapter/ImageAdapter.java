@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.models.HomeEntity;
+import com.thfw.base.utils.Util;
+import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.ui.utils.GlideUtil;
 import com.youth.banner.adapter.BannerAdapter;
@@ -20,9 +22,15 @@ import java.util.List;
  */
 public class ImageAdapter extends BannerAdapter<HomeEntity.BannerModel, ImageAdapter.BannerViewHolder> {
 
+    private final int width;
+    private final int height;
+
     public ImageAdapter(List<HomeEntity.BannerModel> mDatas) {
         //设置数据，也可以调用banner提供的方法,或者自己在adapter中实现
         super(mDatas);
+
+        width = (int) (Util.getScreenWidth(MyApplication.getApp()) / 1.5f);
+        height = (int) (width / 36 * 21 + 0.5);
     }
 
     protected View inflate(int layoutId, ViewGroup parent) {
@@ -37,7 +45,7 @@ public class ImageAdapter extends BannerAdapter<HomeEntity.BannerModel, ImageAda
 
     @Override
     public void onBindView(BannerViewHolder holder, HomeEntity.BannerModel data, int position, int size) {
-        GlideUtil.load(holder.itemView.getContext(), data.imageUrl, holder.imageView);
+        GlideUtil.load(holder.itemView.getContext(), data.imageUrl, holder.imageView, width, height);
     }
 
     protected class BannerViewHolder extends RecyclerView.ViewHolder {

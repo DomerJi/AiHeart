@@ -32,6 +32,7 @@ public class GlideUtil {
 
 
     private static RequestOptions requestOptions;
+    private static RequestOptions requestOptionsSize;
     private static RequestOptions requestThumbnail;
 
     public static RequestOptions getRequestOptions() {
@@ -44,6 +45,18 @@ public class GlideUtil {
             requestOptions = RequestOptions.placeholderOf(R.drawable.glide_placeholder_phone).error(R.drawable.glide_error_phone).fallback(R.drawable.glide_fallback_phone);
         }
         return requestOptions;
+    }
+
+    public static RequestOptions getRequestOptionsSize() {
+        if (requestOptionsSize != null) {
+            return requestOptionsSize;
+        }
+        if (ContextApp.getDeviceType() == ContextApp.DeviceType.ROBOT) {
+            requestOptionsSize = RequestOptions.placeholderOf(R.drawable.glide_placeholder).error(R.drawable.glide_error).fallback(R.drawable.glide_fallback);
+        } else {
+            requestOptionsSize = RequestOptions.placeholderOf(R.drawable.glide_placeholder_phone).error(R.drawable.glide_error_phone).fallback(R.drawable.glide_fallback_phone);
+        }
+        return requestOptionsSize;
     }
 
     private static RequestOptions getRequestOptionsThumbnail() {
@@ -71,6 +84,12 @@ public class GlideUtil {
 
     public static void load(Context mContext, String url, ImageView imageView) {
         Glide.with(mContext).load(url).apply(getRequestOptions())
+//                .transition(DrawableTransitionOptions.withCrossFade())
+                .centerCrop().into(imageView);
+    }
+
+    public static void load(Context mContext, String url, ImageView imageView, int width, int height) {
+        Glide.with(mContext).load(url).apply(getRequestOptionsSize().override(width, height))
 //                .transition(DrawableTransitionOptions.withCrossFade())
                 .centerCrop().into(imageView);
     }

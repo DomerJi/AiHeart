@@ -50,6 +50,13 @@ public abstract class BaseAdapter<T, V extends RecyclerView.ViewHolder> extends 
         notifyDataSetChanged();
     }
 
+    public boolean checkPosition(int position) {
+        if (mDataList != null && !mDataList.isEmpty() && position < mDataList.size() && position >= 0) {
+            return true;
+        }
+        return false;
+    }
+
     public void addDataList(List<T> mDataList) {
         if (this.mDataList == null) {
             this.mDataList = new ArrayList<>();
