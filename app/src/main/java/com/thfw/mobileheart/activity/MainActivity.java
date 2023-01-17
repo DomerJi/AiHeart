@@ -29,6 +29,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import com.opensource.svgaplayer.SVGAImageView;
+import com.thfw.base.ThemeType;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.SimpleUpgradeStateListener;
@@ -199,6 +200,11 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
 
     public static boolean isFinished() {
         return EmptyUtil.isEmpty(mainActivity);
+    }
+
+    @Override
+    protected int getThemeType() {
+        return ThemeType.TYPE_APP_SPLASH;
     }
 
     @Override

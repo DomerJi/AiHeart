@@ -53,12 +53,16 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity imp
         if (userObserver != null) {
             UserManager.getInstance().addObserver(userObserver);
         }
+        setCustomTheme();
         setContentView(getContentView());
         mPresenter = onCreatePresenter();
         initView();
         initData();
     }
 
+    public void setCustomTheme() {
+
+    }
 
     public int getStatusBarColor() {
         return STATUSBAR_NONE;

@@ -43,7 +43,7 @@ public class TitleView extends FrameLayout {
 
     public TitleView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        view = inflate(context, R.layout.layout_top_navigation, this);
+        inflate(context, R.layout.layout_top_navigation, this);
         initView();
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.TitleView);
@@ -51,7 +51,8 @@ public class TitleView extends FrameLayout {
             rightText = ta.getString(R.styleable.TitleView_tv_rightText);
             showIcon = ta.getBoolean(R.styleable.TitleView_tv_showIcon, true);
             final Drawable d = ta.getDrawable(R.styleable.TitleView_tv_leftIcon);
-            final int colorBg = ta.getColor(R.styleable.TitleView_tv_background, getResources().getColor(R.color.colorPrimary));
+            final int colorBg = ta.getColor(R.styleable.TitleView_tv_background, -99);
+
             final int leftIconColor = ta.getColor(R.styleable.TitleView_tv_leftIconColor, Color.WHITE);
             final int centerTextColor = ta.getColor(R.styleable.TitleView_tv_centerTextColor, Color.WHITE);
             if (d != null) {
@@ -63,7 +64,9 @@ public class TitleView extends FrameLayout {
                     mIvBack.setColorFilter(leftIconColor);
                 }
             }
-            view.setBackgroundColor(colorBg);
+            if (colorBg != -99) {
+                view.setBackgroundColor(colorBg);
+            }
             mTvTitle.setTextColor(centerTextColor);
             mIvBack.setVisibility(showIcon ? VISIBLE : GONE);
 
@@ -81,6 +84,7 @@ public class TitleView extends FrameLayout {
     }
 
     private void initView() {
+        view = findViewById(R.id.top_navigation);
         mIvBack = findViewById(R.id.iv_back);
         mTvTitle = findViewById(R.id.tv_title);
         mTvRight = findViewById(R.id.tv_right);

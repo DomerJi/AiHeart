@@ -11,7 +11,7 @@
         android:id="@+id/v_top_banner"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:background="@color/colorPrimary"
+        android:background="?attr/colorPrimary"
         tools:ignore="MissingConstraints" />
 
     <com.thfw.ui.widget.LinearTopLayout
@@ -51,7 +51,8 @@
     </com.thfw.ui.widget.LinearTopLayout>
 
 
-    <ScrollView
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/smart_refresh"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
@@ -871,7 +872,7 @@
         </LinearLayout>
 
 
-    </ScrollView>
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

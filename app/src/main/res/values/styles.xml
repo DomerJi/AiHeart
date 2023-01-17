@@ -5,13 +5,19 @@
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <!-- 分割线主题颜色设置 -->
         <item name="android:listDivider">@drawable/list_divider</item>
         <item name="android:windowBackground">@color/page_background_white</item>
         <!--        <item name="android:windowDrawsSystemBarBackgrounds">false</item>-->
         <item name="android:overScrollMode">never</item>
+    </style>
+
+    <style name="AppTheme.NewYear" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/china_red</item>
+        <item name="colorPrimaryDark">@color/china_red</item>
     </style>
 
     <!-- 用于纯白背景的页面-->
@@ -26,6 +32,13 @@
         <item name="android:overScrollMode">never</item>
     </style>
 
+
+    <style name="AppThemeWhite.NewYear" parent="AppThemeWhite">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/china_red</item>
+        <item name="colorPrimaryDark">@color/white</item>
+    </style>
+
     <style name="AppThemeSplash" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -33,6 +46,13 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@mipmap/splash</item>
         <item name="android:overScrollMode">never</item>
+    </style>
+
+
+    <style name="AppThemeSplash.NewYear" parent="AppThemeSplash">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/china_red</item>
+        <item name="colorPrimaryDark">@color/transparent</item>
     </style>
 
     <style name="HomeTabText">

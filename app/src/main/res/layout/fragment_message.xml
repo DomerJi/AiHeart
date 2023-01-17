@@ -12,7 +12,7 @@
     <com.thfw.ui.widget.LinearTopLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:background="?attr/colorPrimary">
 
         <com.thfw.ui.widget.TitleView
             android:id="@+id/titleView"

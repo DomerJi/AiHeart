@@ -156,11 +156,6 @@
             android:name=".activity.test.TestProgressIngActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.ScrollingActivity"
-            android:label="@string/title_activity_scrolling"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activity.heartbox.MeHeartBoxActivity"
             android:screenOrientation="portrait" />
         <activity

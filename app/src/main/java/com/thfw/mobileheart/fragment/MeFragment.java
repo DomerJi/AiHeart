@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.PermissionListener;
@@ -62,8 +63,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * 我的
  */
-public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLivelyListener,
-        MyApplication.OnMinuteListener {
+public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLivelyListener, MyApplication.OnMinuteListener {
 
     public static final String KEY_INPUT_FACE = "key.input.face";
     private static boolean initFaceState;
@@ -212,6 +212,12 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
 
         mLlMeFace = (LinearLayout) findViewById(R.id.ll_me_face);
         mTvFaceSwitch = (TextView) findViewById(R.id.tv_face_switch);
+        SmartRefreshLayout smartRefresh = (SmartRefreshLayout) findViewById(R.id.smart_refresh);
+        smartRefresh.setEnableRefresh(false); // 是否启用下拉刷新功能
+        smartRefresh.setEnableLoadMore(false); // 是否启用上拉加载功能
+        smartRefresh.setEnablePureScrollMode(true); // 是否启用纯滚动模式
+        smartRefresh.setEnableOverScrollBounce(true); // 是否启用越界回弹
+        smartRefresh.setEnableOverScrollDrag(true); // 是否启用越界拖动（仿苹果效果）1.0.4
     }
 
 
@@ -339,15 +345,14 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
             mLlMeFace.setOnClickListener(v -> {
                 if (getActivity() instanceof BaseActivity) {
                     BaseActivity baseActivity = (BaseActivity) getActivity();
-                    baseActivity.requestCallPermission(new String[]{UIConfig.NEEDED_PERMISSION[0]},
-                            new PermissionListener() {
-                                @Override
-                                public void onPermission(boolean has) {
-                                    if (has) {
-                                        LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
-                                    }
-                                }
-                            });
+                    baseActivity.requestCallPermission(new String[]{UIConfig.NEEDED_PERMISSION[0]}, new PermissionListener() {
+                        @Override
+                        public void onPermission(boolean has) {
+                            if (has) {
+                                LoginActivity.startActivity(mContext, LoginActivity.BY_FACE);
+                            }
+                        }
+                    });
                 }
 
             });
@@ -420,37 +425,22 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("活跃,历史心情",
-                () -> MoodDetailActivity.startActivity(mContext)).setLike(true));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我测的",
-                () -> MeHistoryActivity.startActivity(mContext, 0)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我练的",
-                () -> MeHistoryActivity.startActivity(mContext, 1)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我听的",
-                () -> MeHistoryActivity.startActivity(mContext, 2)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我看的",
-                () -> MeHistoryActivity.startActivity(mContext, 3)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我读的",
-                () -> MeHistoryActivity.startActivity(mContext, 4)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我学的",
-                () -> MeHistoryActivity.startActivity(mContext, 5)));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("心理健康档案,健康档案",
-                () -> mLlSafeReport.performClick()));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("个人信息",
-                () -> InfoActivity.startActivity(mContext)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("活跃,历史心情", () -> MoodDetailActivity.startActivity(mContext)).setLike(true));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我测的", () -> MeHistoryActivity.startActivity(mContext, 0)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我练的", () -> MeHistoryActivity.startActivity(mContext, 1)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我听的", () -> MeHistoryActivity.startActivity(mContext, 2)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我看的", () -> MeHistoryActivity.startActivity(mContext, 3)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我读的", () -> MeHistoryActivity.startActivity(mContext, 4)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我学的", () -> MeHistoryActivity.startActivity(mContext, 5)));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("心理健康档案,健康档案", () -> mLlSafeReport.performClick()));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("个人信息", () -> InfoActivity.startActivity(mContext)));
 
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("人脸录入",
-                () -> mLlMeFace.performClick()));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我的收藏",
-                () -> mLlMeCollect.performClick()));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我的任务",
-                () -> mLlMeTask.performClick()));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("帮助与反馈",
-                () -> mLlHelpBack.performClick()));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("设置",
-                () -> mLlSetting.performClick()));
-        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("退出登录",
-                () -> mBtLogout.performClick()).setLike(true));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("人脸录入", () -> mLlMeFace.performClick()));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我的收藏", () -> mLlMeCollect.performClick()));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("我的任务", () -> mLlMeTask.performClick()));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("帮助与反馈", () -> mLlHelpBack.performClick()));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("设置", () -> mLlSetting.performClick()));
+        LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("退出登录", () -> mBtLogout.performClick()).setLike(true));
 
     }
 }

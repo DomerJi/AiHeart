@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.thfw.base.ThemeType;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.PermissionListener;
@@ -29,6 +30,7 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.task.MeTaskActivity;
 import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.DialogFactory;
+import com.thfw.mobileheart.util.ThemeUtil;
 import com.thfw.ui.base.IBaseActivity;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
@@ -63,6 +65,17 @@ public abstract class BaseActivity<T extends IPresenter> extends IBaseActivity<T
                 MeTaskActivity.startActivity(view.getContext());
             }
         });
+    }
+
+
+    @Override
+    public void setCustomTheme() {
+        super.setCustomTheme();
+        ThemeUtil.setTheme(this, getThemeType());
+    }
+
+    protected int getThemeType() {
+        return ThemeType.TYPE_APP;
     }
 
     @Override

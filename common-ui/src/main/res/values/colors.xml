@@ -60,6 +60,7 @@
     <color name="text_green_80">#CC00A871</color>
     <color name="text_red">#FF5454</color>
     <color name="dot_red">#FF0000</color>
+    <color name="china_red">#E60000</color>
     <color name="btn_red">#E64550</color>
     <color name="gray">#888888</color>
     <color name="gray_ccc">#CCCCCC</color>
@@ -71,6 +72,13 @@
 
 
     <color name="gold">#FFD700</color>
+
+    <!-- 通用提示文本颜色 -->
+    <color name="text_price">#FF9F89</color>
+    <color name="progress_red01">#FF9F89</color>
+    <color name="progress_red02">#FF0000</color>
+    <color name="dialog_code_corlor">#21BE56</color>
+
     <!-- 白色 -->
     <color name="white">#FFFFFFFF</color>
     <color name="white_95">#F2FFFFFF</color>
@@ -114,12 +122,6 @@
     <color name="black_15">#21000000</color>
     <color name="black_10">#19000000</color>
     <color name="black_05">#0C000000</color>
-
-    <!-- 通用提示文本颜色 -->
-    <color name="text_price">#FF9F89</color>
-    <color name="progress_red01">#FF9F89</color>
-    <color name="progress_red02">#FF0000</color>
-    <color name="dialog_code_corlor">#21BE56</color>
 
     <!--    100% — FF-->
     <!--    99% — FC-->

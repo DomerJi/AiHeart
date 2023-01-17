@@ -13,6 +13,7 @@ import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.thfw.base.ContextApp;
+import com.thfw.base.ThemeType;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.CommonParameter;
@@ -78,12 +79,11 @@ public class LoginActivity extends BaseActivity {
             user.setAuthTypeList(data.getAuthType());
             if (!data.isNoOrganization()) {
                 if (EmptyUtil.isEmpty(data.getAuthType()) || !data.getAuthType().contains(ContextApp.getDeviceTypeStr())) {
-                    DialogFactory.createSimple((FragmentActivity) activity,
-                            MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login));
+                    DialogFactory.createSimple((FragmentActivity) activity, MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login));
                     return false;
                 }
             }
-            UserManager.addHistoryAccount(mobile,"");
+            UserManager.addHistoryAccount(mobile, "");
             LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
             if (data.isNoOrganization()) {
                 // todo 手机加入组织机构比较复杂
@@ -106,6 +106,11 @@ public class LoginActivity extends BaseActivity {
             ToastUtil.show("token 参数错误");
             return false;
         }
+    }
+
+    @Override
+    protected int getThemeType() {
+        return ThemeType.TYPE_APP_WHITE;
     }
 
     @Override
@@ -182,10 +187,7 @@ public class LoginActivity extends BaseActivity {
         DialogFactory.createCustomDialog(activity, new DialogFactory.OnViewCallBack() {
             @Override
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
-                String html = "请你务必审慎阅读、充分理解 " +
-                        " <font color='" + UIConfig.COLOR_AGREE + "'>《用户服务协议》</font>" +
-                        "和<font color='" + UIConfig.COLOR_AGREE + "'>《隐私保护政策》</font>各条款。<p> </p>" +
-                        "如您同意所列条款，请点击\"同意\"按钮，开始使用我们的产品和服务。";
+                String html = "请你务必审慎阅读、充分理解 " + " <font color='" + UIConfig.COLOR_AGREE + "'>《用户服务协议》</font>" + "和<font color='" + UIConfig.COLOR_AGREE + "'>《隐私保护政策》</font>各条款。<p> </p>" + "如您同意所列条款，请点击\"同意\"按钮，开始使用我们的产品和服务。";
 
                 mTvHint.setText(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY));
                 mTvHint.setOnClickListener(v -> {

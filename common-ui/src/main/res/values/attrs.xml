@@ -81,4 +81,87 @@
         <attr name="rsv_background" format="reference" />
     </declare-styleable>
 
+<!--    <attr name="colorValue" format="color" />-->
+<!--    <attr name="floatValue" format="float" />-->
+<!--    <attr name="integerValue" format="integer" />-->
+<!--    <attr name="booleanValue" format="boolean" />-->
+<!--    <attr name="dimensionValue" format="dimension" />-->
+<!--    <attr name="stringValue" format="string" />-->
+<!--    <attr name="referenceValue" format="reference" />-->
+
+    <attr name="colorPrimary" format="color" />
+    <attr name="colorPrimaryDark" format="color" />
+    <attr name="colorPrimaryLight" format="color" />
+    <attr name="colorAccent" format="color" />
+    <attr name="colorFore" format="color" />
+
+    <attr name="colorRobotPrimary" format="color" />
+    <attr name="colorRobotPrimaryDark" format="color" />
+    <attr name="colorRobotAccent" format="color" />
+    <attr name="colorRobotFore" format="color" />
+    <attr name="colorRobotForeDark" format="color" />
+    <attr name="colorRobotDialogBg" format="color" />
+    <attr name="text_blue" format="color" />
+    <attr name="blue" format="color" />
+    <attr name="text_splash" format="color" />
+
+    <!--辅助线颜色-->
+    <attr name="divider_color" format="color" />
+
+    <!--页面通用背景-->
+    <attr name="page_background_gray" format="color" />
+    <attr name="page_background_white" format="color" />
+    <attr name="exercise" format="color" />
+    <attr name="exercise_20" format="color" />
+    <attr name="exercise_text" format="color" />
+
+    <attr name="colorButtonLeft" format="color" />
+    <attr name="colorButtonRight" format="color" />
+
+    <attr name="colorButtonLeft2" format="color" />
+    <attr name="colorButtonRight2" format="color" />
+
+    <attr name="btn_green" format="color" />
+    <attr name="btn_green_50" format="color" />
+    <attr name="enabled_false" format="color" />
+    <attr name="link" format="color" />
+
+    <!-- 通用文本颜色 -->
+    <attr name="text_common" format="color" />
+    <!-- 通用提示文本颜色 -->
+    <attr name="text_content" format="color" />
+    <attr name="text_hint" format="color" />
+    <attr name="text_bg" format="color" />
+    <!-- 通用时间文本颜色 -->
+    <attr name="text_time" format="color" />
+    <attr name="robot_search_border_color" format="color" />
+    <attr name="robot_search_bg" format="color" />
+    <attr name="left_navigation_divder" format="color" />
+    <attr name="left_navigation_divder_height" format="color" />
+
+
+    <attr name="text_green" format="color" />
+    <attr name="tint_emoji" format="color" />
+    <attr name="green_selected_text" format="color" />
+    <attr name="text_yellow" format="color" />
+    <attr name="text_yellow2" format="color" />
+    <attr name="text_green_80" format="color" />
+    <attr name="text_red" format="color" />
+    <attr name="dot_red" format="color" />
+    <attr name="btn_red" format="color" />
+    <attr name="gray_ccc" format="color" />
+
+    <!-- 透明 -->
+    <attr name="gain_verification" format="color" />
+
+
+    <attr name="gold" format="color" />
+
+    <!-- 通用提示文本颜色 -->
+    <attr name="text_price" format="color" />
+    <attr name="progress_red01" format="color" />
+    <attr name="progress_red02" format="color" />
+    <attr name="dialog_code_corlor" format="color" />
+    
+
 </resources>

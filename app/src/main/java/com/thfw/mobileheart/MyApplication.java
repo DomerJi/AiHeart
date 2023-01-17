@@ -1,5 +1,7 @@
 package com.thfw.mobileheart;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -37,6 +39,7 @@ import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.push.helper.PushHelper;
 import com.thfw.mobileheart.util.ActivityLifeCycle;
 import com.thfw.mobileheart.util.AppLifeHelper;
+import com.thfw.mobileheart.util.ThemeUtil;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.user.login.UserManager;
@@ -47,8 +50,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 
 /**
  * 入口
@@ -70,8 +71,7 @@ public class MyApplication extends MultiDexApplication {
         SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator() {
             @Override
             public RefreshHeader createRefreshHeader(Context context, RefreshLayout layout) {
-                return new ClassicsHeader(context)
-                        .setTimeFormat(new SimpleDateFormat("更新于 MM-dd HH:mm", Locale.CHINA));
+                return new ClassicsHeader(context).setTimeFormat(new SimpleDateFormat("更新于 MM-dd HH:mm", Locale.CHINA));
             }
         });
         // 设置全局的Footer构建器
@@ -166,8 +166,7 @@ public class MyApplication extends MultiDexApplication {
         app = this;
         ContextApp.init(this);
         SharePreferenceUtil.init(this);
-        ContextApp.setDeviceType(Util.isPad(this) ? ContextApp.DeviceType.PAD
-                : ContextApp.DeviceType.MOBILE);
+        ContextApp.setDeviceType(Util.isPad(this) ? ContextApp.DeviceType.PAD : ContextApp.DeviceType.MOBILE);
         ToastUtil.init(this);
         TDialog.init(this);
         LogUtil.setLogEnabled(LogUtil.isLogSpEnable());
