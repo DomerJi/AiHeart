@@ -83,7 +83,7 @@
                 android:layout_width="@dimen/home_tab_icon_height"
                 android:layout_height="@dimen/home_tab_icon_height"
                 android:layout_marginTop="6dp"
-                android:src="@drawable/hometab_home_selector" />
+                android:background="@mipmap/ic_home_tab_home_normal" />
 
             <TextView
                 android:id="@+id/tv_home"
@@ -126,7 +126,7 @@
                     android:layout_width="@dimen/home_tab_icon_height"
                     android:layout_height="@dimen/home_tab_icon_height"
                     android:layout_marginTop="3dp"
-                    android:src="@drawable/hometab_sort_selector"
+                    android:background="@mipmap/ic_home_tab_msg_normal"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -175,7 +175,7 @@
                     android:layout_width="@dimen/home_tab_icon_height"
                     android:layout_height="@dimen/home_tab_icon_height"
                     android:layout_marginTop="3dp"
-                    android:src="@drawable/hometab_me_selector"
+                    android:background="@mipmap/ic_home_tab_me_normal"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

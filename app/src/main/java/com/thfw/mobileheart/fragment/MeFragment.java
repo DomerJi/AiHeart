@@ -15,6 +15,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshHeader;
+import com.scwang.smart.refresh.layout.simple.SimpleMultiListener;
 import com.thfw.base.base.IPresenter;
 import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.PermissionListener;
@@ -60,6 +62,8 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * 我的
  */
@@ -98,6 +102,7 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
     private LinearLayout mLlMeFace;
     private TextView mTvFaceSwitch;
     private ImageView mIvMoodStatus;
+    private View mVTopBanner;
 
     public static void resetInitFaceState() {
         initFaceState = false;
@@ -156,7 +161,8 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
         mLlMeTask = (LinearLayout) findViewById(R.id.ll_me_task);
         mTvHistoryHappy = (TextView) findViewById(R.id.tv_history_happy);
         mBtLogout = (Button) findViewById(R.id.bt_logout);
-        findViewById(R.id.v_top_banner).setOnClickListener(v -> {
+        mVTopBanner = findViewById(R.id.v_top_banner);
+        mVTopBanner.setOnClickListener(v -> {
             if (ClickCountUtils.click(10)) {
                 startActivity(new Intent(mContext, PrivateSetActivity.class));
             }
@@ -213,6 +219,20 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
         mLlMeFace = (LinearLayout) findViewById(R.id.ll_me_face);
         mTvFaceSwitch = (TextView) findViewById(R.id.tv_face_switch);
         SmartRefreshLayout smartRefresh = (SmartRefreshLayout) findViewById(R.id.smart_refresh);
+        AtomicInteger minHeight = new AtomicInteger();
+        mVTopBanner.post(()->{
+            minHeight.set(mVTopBanner.getHeight());
+        });
+        smartRefresh.setOnMultiListener(new SimpleMultiListener() {
+
+            @Override
+            public void onHeaderMoving(RefreshHeader header, boolean isDragging, float percent, int offset, int headerHeight, int maxDragHeight) {
+                super.onHeaderMoving(header, isDragging, percent, offset, headerHeight, maxDragHeight);
+//                Log.i("onHeaderMoving", "isDragging = " + isDragging + " ; percent = " + percent + " ; offset = " + offset + " ; headerHeight = " + headerHeight + " ; maxDragHeight = " + maxDragHeight);
+                mVTopBanner.getLayoutParams().height = offset + minHeight.get();
+                mVTopBanner.setLayoutParams(mVTopBanner.getLayoutParams());
+            }
+        });
         smartRefresh.setEnableRefresh(false); // 是否启用下拉刷新功能
         smartRefresh.setEnableLoadMore(false); // 是否启用上拉加载功能
         smartRefresh.setEnablePureScrollMode(true); // 是否启用纯滚动模式

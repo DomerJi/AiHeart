@@ -9,6 +9,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -156,6 +158,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private Object endColor = endColorInt;
 
     private ImageView[] imageViews;
+    private int[] imgIds = new int[]{R.mipmap.ic_home_tab_home, R.mipmap.ic_home_tab_msg, R.mipmap.ic_home_tab_me};
     private TextView[] textViews;
 
     public static void setShowLoginAnim(boolean showLoginAnim) {
@@ -339,6 +342,18 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                 int color2 = (int) argbEvaluator.evaluate(positionOffset, endColor, startColor);
                 imageViews[position].setColorFilter(color2);
                 textViews[position].setTextColor(color2);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    Drawable drawable2 = getResources().getDrawable(imgIds[position]);
+                    drawable2.setAlpha((int) ((1 - positionOffset) * 255));
+                    imageViews[position].setForeground(drawable2);
+
+                    Drawable drawable = getResources().getDrawable(imgIds[position + 1]);
+                    drawable.setAlpha((int) (positionOffset * 255));
+                    imageViews[position + 1].setForeground(drawable);
+
+                    imageViews[position].getBackground().setAlpha((int) (positionOffset * 255));
+                    imageViews[position + 1].getBackground().setAlpha((int) ((1 - positionOffset) * 255));
+                }
 
                 imageViews[position + 1].setColorFilter(color);
                 textViews[position + 1].setTextColor(color);
@@ -378,12 +393,26 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             }
         });
         mViewPager.setOffscreenPageLimit(3);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            mIvHome.setImageResource(R.drawable.hometab_home_selector);
+            mIvMessage.setImageResource(R.drawable.hometab_sort_selector);
+            mIvMe.setImageResource(R.drawable.hometab_me_selector);
+        }
         View.OnClickListener mOnTabListener = v -> {
 
             int newItem = 0;
             switch (v.getId()) {
                 case R.id.ll_home:
                     newItem = 0;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        imageViews[newItem].getBackground().setAlpha(0);
+                        imageViews[1].getBackground().setAlpha(255);
+                        imageViews[2].getBackground().setAlpha(255);
+                        imageViews[1].setForeground(null);
+                        imageViews[2].setForeground(null);
+                    }
+
                     imageViews[newItem].setColorFilter(endColorInt);
                     textViews[newItem].setTextColor(endColorInt);
 
@@ -395,6 +424,14 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     break;
                 case R.id.ll_message:
                     newItem = 1;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        imageViews[newItem].getBackground().setAlpha(0);
+                        imageViews[0].getBackground().setAlpha(255);
+                        imageViews[2].getBackground().setAlpha(255);
+                        imageViews[0].setForeground(null);
+                        imageViews[2].setForeground(null);
+                    }
+
                     imageViews[newItem].setColorFilter(endColorInt);
                     textViews[newItem].setTextColor(endColorInt);
 
@@ -406,7 +443,13 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     break;
                 case R.id.ll_me:
                     newItem = 2;
-
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        imageViews[newItem].getBackground().setAlpha(0);
+                        imageViews[0].getBackground().setAlpha(255);
+                        imageViews[1].getBackground().setAlpha(255);
+                        imageViews[0].setForeground(null);
+                        imageViews[1].setForeground(null);
+                    }
                     imageViews[newItem].setColorFilter(endColorInt);
                     textViews[newItem].setTextColor(endColorInt);
 
@@ -418,6 +461,11 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     break;
             }
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Drawable drawable = getResources().getDrawable(imgIds[newItem]);
+                drawable.setAlpha(255);
+                imageViews[newItem].setForeground(drawable);
+            }
             if (mViewPager.getCurrentItem() != newItem) {
                 mViewPager.setCurrentItem(newItem, false);
             }
