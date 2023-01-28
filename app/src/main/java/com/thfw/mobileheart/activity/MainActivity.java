@@ -396,8 +396,11 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             mIvHome.setImageResource(R.drawable.hometab_home_selector);
+            mIvHome.setBackground(null);
             mIvMessage.setImageResource(R.drawable.hometab_sort_selector);
+            mIvMessage.setBackground(null);
             mIvMe.setImageResource(R.drawable.hometab_me_selector);
+            mIvMe.setBackground(null);
         }
         View.OnClickListener mOnTabListener = v -> {
 
