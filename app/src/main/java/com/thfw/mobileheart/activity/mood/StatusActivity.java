@@ -2,7 +2,6 @@ package com.thfw.mobileheart.activity.mood;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -78,8 +77,7 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
      * @param formHome
      */
     public static void startActivity(Context context, boolean formHome) {
-        context.startActivity(new Intent(context, StatusActivity.class)
-                .putExtra(KEY_DATA, formHome));
+        context.startActivity(new Intent(context, StatusActivity.class).putExtra(KEY_DATA, formHome));
     }
 
     @Override
@@ -145,8 +143,8 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
                 onScroll(dyAll);
             }
         });
-        mLtlTop = (LinearTopLayout) findViewById(R.id.ltl_top);
-
+        mLtlTop = (LinearTopLayout) findViewById(R.id.ltl_top_bg);
+        mLtlTop.setAlpha(0);
     }
 
     /**
@@ -165,13 +163,12 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
         // LogUtil.d("ivHeight = " + ivHeight + ";topHeight = " + topHeight);
 
         if (y > maxHeight) {
-            mLtlTop.setBackgroundColor(Color.argb(255, 89, 198, 193));
+            mLtlTop.setAlpha(1);
         } else if (y < minHeight) {
-            mLtlTop.setBackgroundColor(Color.TRANSPARENT);
+            mLtlTop.setAlpha(0);
         } else {
             float rate = (y - minHeight) * 1.0f / topHeight;
-            int a = (int) (rate * 255);
-            mLtlTop.setBackgroundColor(Color.argb(a, 89, 198, 193));
+            mLtlTop.setAlpha(rate);
         }
     }
 
@@ -188,8 +185,7 @@ public class StatusActivity extends BaseActivity<MobilePresenter> implements Mob
 
             for (MoodModel model : data) {
                 if (setTags.add(model.getTag())) {
-                    arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_GROUP)
-                            .setTag(mapTags.get(model.getTag())));
+                    arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_GROUP).setTag(mapTags.get(model.getTag())));
                 }
                 arrayList.add(new StatusEntity().setType(StatusEntity.TYPE_BODY).setMoodModel(model));
             }
