@@ -409,7 +409,6 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                 case R.id.ll_home:
                     newItem = 0;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        imageViews[newItem].getBackground().setAlpha(0);
                         imageViews[1].getBackground().setAlpha(255);
                         imageViews[2].getBackground().setAlpha(255);
                         imageViews[1].setForeground(null);
@@ -428,7 +427,6 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                 case R.id.ll_message:
                     newItem = 1;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        imageViews[newItem].getBackground().setAlpha(0);
                         imageViews[0].getBackground().setAlpha(255);
                         imageViews[2].getBackground().setAlpha(255);
                         imageViews[0].setForeground(null);
@@ -447,7 +445,6 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                 case R.id.ll_me:
                     newItem = 2;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        imageViews[newItem].getBackground().setAlpha(0);
                         imageViews[0].getBackground().setAlpha(255);
                         imageViews[1].getBackground().setAlpha(255);
                         imageViews[0].setForeground(null);
@@ -464,12 +461,13 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     break;
             }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Drawable drawable = getResources().getDrawable(imgIds[newItem]);
-                drawable.setAlpha(255);
-                imageViews[newItem].setForeground(drawable);
-            }
             if (mViewPager.getCurrentItem() != newItem) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    imageViews[newItem].getBackground().setAlpha(0);
+                    Drawable drawable = getResources().getDrawable(imgIds[newItem]);
+                    drawable.setAlpha(255);
+                    imageViews[newItem].setForeground(drawable);
+                }
                 mViewPager.setCurrentItem(newItem, false);
             }
 
@@ -485,6 +483,12 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         mLlMe.setOnClickListener(mOnTabListener);
         mLlMessage.setOnClickListener(mOnTabListener);
         mLlHome.performClick();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            imageViews[0].getBackground().setAlpha(0);
+            Drawable drawable = getResources().getDrawable(imgIds[0]);
+            drawable.setAlpha(255);
+            imageViews[0].setForeground(drawable);
+        }
     }
 
     /**
