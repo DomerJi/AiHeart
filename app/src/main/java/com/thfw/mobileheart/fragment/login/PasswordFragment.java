@@ -259,8 +259,8 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
                 mRlAccountCache.setVisibility(View.VISIBLE);
                 mRlAccountCache02.setVisibility(View.GONE);
                 mRlAccountCache03.setVisibility(View.GONE);
-                LoginActivity.mTvRightAgreed = true;
-                mCbProduct.setChecked(true);
+//                LoginActivity.mTvRightAgreed = false;
+//                mCbProduct.setChecked(false);
                 break;
             case 2:
                 mTvMobileCache01.setText(listAccount.get(0).simpleAccount);
@@ -273,8 +273,8 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
                 mRlAccountCache.setVisibility(View.VISIBLE);
                 mRlAccountCache02.setVisibility(View.GONE);
                 mRlAccountCache03.setVisibility(View.GONE);
-                LoginActivity.mTvRightAgreed = true;
-                mCbProduct.setChecked(true);
+//                LoginActivity.mTvRightAgreed = false;
+//                mCbProduct.setChecked(false);
                 break;
         }
         mIvClearCache01.setOnClickListener(v3 -> {

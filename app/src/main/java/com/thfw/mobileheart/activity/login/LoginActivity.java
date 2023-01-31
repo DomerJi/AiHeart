@@ -221,6 +221,34 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
+    public static void onDialogLoginByFail(FragmentActivity activity, OnViewClickListener onViewClickListener) {
+        DialogFactory.createCustomDialog(activity, new DialogFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvHint.setText("放弃注册，将无法使用该应用，是否放弃？");
+                mTvHint.setOnClickListener(v -> {
+                    activity.startActivity(new Intent(activity, PrivacyPolicyActivity.class));
+                });
+                mTvTitle.setText("放弃注册？");
+                mTvLeft.setText("放弃");
+                mTvRight.setText("我再想想");
+
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                if (onViewClickListener != null) {
+                    onViewClickListener.onViewClick(viewHolder, view, tDialog);
+                }
+                tDialog.dismiss();
+            }
+        }, false, new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+            }
+        });
+    }
+
     public static void agreedClickDialog(CheckBox mCbProduct) {
         if (LoginActivity.AGREE_CLICK_DIALOG) {
             mCbProduct.setOnClickListener(v -> {

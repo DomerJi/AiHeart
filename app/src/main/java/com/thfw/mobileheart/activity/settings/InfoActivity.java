@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
@@ -57,8 +58,10 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.PinYinUtil;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
+import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.organ.AskForSelectActivity;
 import com.thfw.mobileheart.adapter.BaseAdapter;
 import com.thfw.mobileheart.adapter.DialogLikeAdapter;
@@ -71,6 +74,7 @@ import com.thfw.ui.common.ImageActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.TitleView;
 import com.thfw.user.login.LoginStatus;
@@ -186,14 +190,6 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
             UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
         }
         super.onDestroy();
-    }
-
-    @Override
-    public void finish() {
-        if (!mFirstInputMsg) {
-            super.finish();
-        }
-
     }
 
     @Override
@@ -376,11 +372,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
                     finish();
                 }
             });
-            int[] ids = new int[]{R.id.tv_star_00, R.id.tv_star_01, R.id.tv_star_01_pinyin, R.id.tv_star_02, R.id.tv_star_03,
-                    R.id.tv_star_04, R.id.tv_star_05, R.id.tv_star_06, R.id.tv_star_07,
-                    R.id.tv_star_08, R.id.tv_star_09, R.id.tv_star_10, R.id.tv_star_11,
-                    R.id.tv_star_12, R.id.tv_star_13, R.id.tv_star_14, R.id.tv_star_15,
-                    R.id.tv_star_16};
+            int[] ids = new int[]{R.id.tv_star_00, R.id.tv_star_01, R.id.tv_star_01_pinyin, R.id.tv_star_02, R.id.tv_star_03, R.id.tv_star_04, R.id.tv_star_05, R.id.tv_star_06, R.id.tv_star_07, R.id.tv_star_08, R.id.tv_star_09, R.id.tv_star_10, R.id.tv_star_11, R.id.tv_star_12, R.id.tv_star_13, R.id.tv_star_14, R.id.tv_star_15, R.id.tv_star_16};
             for (int id : ids) {
                 findViewById(id).setVisibility(View.VISIBLE);
             }
@@ -515,8 +507,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
             DialogFactory.createAddressDialog(mContext, findViewById(R.id.cl_root), new OnOptionsSelectListener() {
                 @Override
                 public void onOptionsSelect(int options1, int options2, int options3, View v) {
-                    mTvAddress.setText(AreaUtil.getOp1().get(options1).getPickerViewText()
-                            + " - " + AreaUtil.getOp2().get(options1).get(options2).getPickerViewText());
+                    mTvAddress.setText(AreaUtil.getOp1().get(options1).getPickerViewText() + " - " + AreaUtil.getOp2().get(options1).get(options2).getPickerViewText());
 
                     onUpdateInfo("native", mTvAddress.getText().toString());
                 }
@@ -664,8 +655,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
                         List<PickerData> pickerDatas = baseAdapter.getDataList();
                         List<PickerData> checkedDatas = new ArrayList<>();
                         for (PickerData data : pickerDatas) {
-                            if (data.getType() == -1 && !StringUtil.isSpace(data.getPickerViewText())
-                                    && data.getPickerViewText().trim().length() >= 2) {
+                            if (data.getType() == -1 && !StringUtil.isSpace(data.getPickerViewText()) && data.getPickerViewText().trim().length() >= 2) {
                                 mHobby.add(data.getPickerViewText());
                                 checkedDatas.add(data);
                             }
@@ -731,8 +721,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
                         List<PickerData> pickerDatas = baseAdapter.getDataList();
                         List<PickerData> checkedDatas = new ArrayList<>();
                         for (PickerData data : pickerDatas) {
-                            if (data.getType() == -1 && !StringUtil.isSpace(data.getPickerViewText())
-                                    && data.getPickerViewText().trim().length() >= 2) {
+                            if (data.getType() == -1 && !StringUtil.isSpace(data.getPickerViewText()) && data.getPickerViewText().trim().length() >= 2) {
                                 checkedDatas.add(data);
                             }
                             if (data.getType() != -1 && data.isCheck()) {
@@ -798,8 +787,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
                         List<PickerData> pickerDatas = baseAdapter.getDataList();
                         List<PickerData> checkedDatas = new ArrayList<>();
                         for (PickerData data : pickerDatas) {
-                            if (data.getType() == -1 && !StringUtil.isSpace(data.getPickerViewText())
-                                    && data.getPickerViewText().trim().length() >= 2) {
+                            if (data.getType() == -1 && !StringUtil.isSpace(data.getPickerViewText()) && data.getPickerViewText().trim().length() >= 2) {
                                 mSupport.add(data.getPickerViewText());
                                 checkedDatas.add(data);
                             }
@@ -853,15 +841,14 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
         mTvAlbum.setOnClickListener(v -> {
             mPopWindow.dismiss();
             mPopWindow = null;
-            requestCallPermission(new String[]{UIConfig.NEEDED_PERMISSION[0], UIConfig.NEEDED_PERMISSION[2]},
-                    new PermissionListener() {
-                        @Override
-                        public void onPermission(boolean has) {
-                            if (has) {
-                                showAlbum();
-                            }
-                        }
-                    });
+            requestCallPermission(new String[]{UIConfig.NEEDED_PERMISSION[0], UIConfig.NEEDED_PERMISSION[2]}, new PermissionListener() {
+                @Override
+                public void onPermission(boolean has) {
+                    if (has) {
+                        showAlbum();
+                    }
+                }
+            });
 
         });
         // 预置头像库
@@ -878,10 +865,8 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
      */
     private void showAlbum() {
         //参数很多，根据需要添加
-        PictureSelector.create(this)
-                .openGallery(PictureMimeType.ofImage())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
-                .loadImageEngine(new GlideImageEngine())
-                .maxSelectNum(1)// 最大图片选择数量
+        PictureSelector.create(this).openGallery(PictureMimeType.ofImage())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
+                .loadImageEngine(new GlideImageEngine()).maxSelectNum(1)// 最大图片选择数量
                 .minSelectNum(1) // 最小选择数量
                 .imageSpanCount(4)// 每行显示个数
                 .selectionMode(PictureConfig.SINGLE)// 多选 or 单选PictureConfig.MULTIPLE : PictureConfig.SINGLE
@@ -890,8 +875,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
                 .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
                 .compress(true)// 是否压缩
                 .withAspectRatio(1, 1)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
-                .enableCrop(true)
-                .videoMaxSecond(15) // 过滤掉15秒以上的视频
+                .enableCrop(true).videoMaxSecond(15) // 过滤掉15秒以上的视频
                 .videoMinSecond(2) // 过滤掉2秒以下的视频
                 .rotateEnabled(true) // 裁剪是否可旋转图片
                 .forResult(new OnResultCallbackListener<LocalMedia>() {
@@ -1119,9 +1103,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
                 }
 
             }
-        }).onUpdate(NetParams.crete()
-                .add("key", key)
-                .add("value", value));
+        }).onUpdate(NetParams.crete().add("key", key).add("value", value));
     }
 
     public void onUpdateInfoAccount(String key, Object value) {
@@ -1150,9 +1132,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
                 mTvNamePinyin.setText("");
 
             }
-        }).onUpdateAccount(NetParams.crete()
-                .add("key", key)
-                .add("value", value));
+        }).onUpdateAccount(NetParams.crete().add("key", key).add("value", value));
     }
 
     @Override
@@ -1255,9 +1235,23 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
             public void onFail(ResponeThrowable throwable) {
                 LogUtil.i(TAG, "onUpdateInfoAvatar+++++++++++++++++++++++++onFail");
             }
-        }).onUpdate(NetParams.crete()
-                .add("key", "pic")
-                .add("value", value));
+        }).onUpdate(NetParams.crete().add("key", "pic").add("value", value));
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mFirstInputMsg) {
+            LoginActivity.onDialogLoginByFail((FragmentActivity) mContext, new OnViewClickListener() {
+                @Override
+                public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                    if (view.getId() == com.thfw.ui.R.id.tv_left) {
+                        finish();
+                        MyApplication.kill();
+                    }
+                }
+            });
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

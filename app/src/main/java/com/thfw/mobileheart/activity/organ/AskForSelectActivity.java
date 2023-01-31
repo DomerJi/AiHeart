@@ -34,6 +34,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
+import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.activity.settings.InfoActivity;
 import com.thfw.mobileheart.adapter.OrganSelectChildrenAdapter;
 import com.thfw.mobileheart.adapter.OrganSelectedAdapter;
@@ -43,6 +44,7 @@ import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
@@ -81,8 +83,7 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
     private androidx.constraintlayout.widget.ConstraintLayout mClSelect;
 
     public static void startForResult(Context context, boolean isFirst) {
-        ((Activity) context).startActivityForResult(new Intent(context, AskForSelectActivity.class)
-                .putExtra(KEY_DATA, isFirst), CODE_ASK_FOR);
+        ((Activity) context).startActivityForResult(new Intent(context, AskForSelectActivity.class).putExtra(KEY_DATA, isFirst), CODE_ASK_FOR);
     }
 
     /**
@@ -296,12 +297,13 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
                 }
                 LoadingDialog.hide();
                 ToastUtil.show("选择成功");
-                mIsFirst = false;
+
                 if (!UserManager.getInstance().getUser().isSetUserInfo()) {
                     InfoActivity.startActivityFirst(mContext);
                 } else {
                     UserManager.getInstance().login();
                 }
+                mIsFirst = false;
                 finish();
             }
 
@@ -320,15 +322,14 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
         mTvUserName.setText(UserManager.getInstance().getUser().getVisibleName());
         GlideUtil.load(mContext, UserManager.getInstance().getUser().getVisibleAvatar(), mRivAvatar);
         mBtScanJoin.setOnClickListener(v -> {
-            requestCallPermission(new String[]{UIConfig.NEEDED_PERMISSION[0], UIConfig.NEEDED_PERMISSION[2]},
-                    new PermissionListener() {
-                        @Override
-                        public void onPermission(boolean has) {
-                            if (has) {
-                                ZxingScanActivity.startActivityForResult((Activity) mContext);
-                            }
-                        }
-                    });
+            requestCallPermission(new String[]{UIConfig.NEEDED_PERMISSION[0], UIConfig.NEEDED_PERMISSION[2]}, new PermissionListener() {
+                @Override
+                public void onPermission(boolean has) {
+                    if (has) {
+                        ZxingScanActivity.startActivityForResult((Activity) mContext);
+                    }
+                }
+            });
 
         });
 
@@ -504,11 +505,20 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
     }
 
     @Override
-    public void finish() {
-        if (mIsFirst) {
-            return;
+    public void onBackPressed() {
+        if (!mIsFirst) {
+            super.onBackPressed();
+        } else {
+            LoginActivity.onDialogLoginByFail((FragmentActivity) mContext, new OnViewClickListener() {
+                @Override
+                public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                    if (view.getId() == com.thfw.ui.R.id.tv_left) {
+                        finish();
+                        MyApplication.kill();
+                    }
+                }
+            });
         }
-        super.finish();
     }
 
 }
