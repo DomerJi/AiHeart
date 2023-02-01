@@ -178,6 +178,16 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
                 mEtMobile.setText(LoginActivity.INPUT_PHONE);
             }
             mCheckBox.setChecked(LoginActivity.mTvRightAgreed);
+            if (!mCheckBox.isChecked()) {
+                LoginActivity.agreeDialog(getActivity(), new OnViewClickListener() {
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                        if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                            mCheckBox.setChecked(true);
+                        }
+                    }
+                });
+            }
             Bundle bundle = getArguments();
             if (bundle != null && bundle.getBoolean("register")) {
                 mTvMobileTitle.setText("免密登录/注册");

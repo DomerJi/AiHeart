@@ -181,9 +181,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     public static void agreeDialog(FragmentActivity activity, OnViewClickListener onViewClickListener) {
-        if (mTvRightAgreed) {
-            return;
-        }
+        mTvRightAgreed = false;
         DialogFactory.createCustomDialog(activity, new DialogFactory.OnViewCallBack() {
             @Override
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
@@ -205,6 +203,8 @@ public class LoginActivity extends BaseActivity {
                     if (view.getId() == com.thfw.ui.R.id.tv_right) {
                         mTvRightAgreed = true;
                         MyPreferences.getInstance(MyApplication.getApp()).setAgreePrivacyAgreement(true);
+                    } else {
+                        mTvRightAgreed = false;
                     }
                     onViewClickListener.onViewClick(viewHolder, view, tDialog);
                 }
@@ -254,14 +254,29 @@ public class LoginActivity extends BaseActivity {
             mCbProduct.setOnClickListener(v -> {
                 if (mCbProduct.isChecked()) {
                     mCbProduct.setChecked(false);
+                    mTvRightAgreed = false;
                     LoginActivity.agreeDialog((FragmentActivity) mCbProduct.getContext(), new OnViewClickListener() {
                         @Override
                         public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
                             if (view.getId() == com.thfw.ui.R.id.tv_right) {
                                 mCbProduct.setChecked(true);
+                                mTvRightAgreed = true;
                             }
                         }
                     });
+                } else {
+                    mCbProduct.setChecked(true);
+                    mTvRightAgreed = true;
+                }
+            });
+        } else {
+            mCbProduct.setOnClickListener(v -> {
+                if (mCbProduct.isChecked()) {
+                    mCbProduct.setChecked(true);
+                    mTvRightAgreed = true;
+                } else {
+                    mCbProduct.setChecked(false);
+                    mTvRightAgreed = false;
                 }
             });
         }

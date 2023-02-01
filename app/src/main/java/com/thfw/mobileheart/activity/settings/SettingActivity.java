@@ -46,7 +46,13 @@ import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
+import com.thfw.user.models.HistoryAccount;
 import com.trello.rxlifecycle2.LifecycleProvider;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 public class SettingActivity extends BaseActivity {
 
@@ -227,7 +233,27 @@ public class SettingActivity extends BaseActivity {
                     public void onSuccess(String data) {
                         LoadingMobileDialog.hide();
                         ToastUtil.showLong("账号注销成功");
-                        mBtLogout.performClick();
+
+                        try {
+                            HashMap<String, HistoryAccount> accountHashMap = UserManager.getHistoryAccount();
+                            List<HistoryAccount> listAccount = new ArrayList<>();
+
+                            if (accountHashMap != null && !accountHashMap.isEmpty()) {
+                                for (HistoryAccount historyAccount : accountHashMap.values()) {
+                                    listAccount.add(historyAccount);
+                                }
+                                Collections.sort(listAccount);
+                                if (!EmptyUtil.isEmpty(listAccount)) {
+                                    UserManager.removeHistoryAccount(listAccount.get(0).account);
+                                }
+                            }
+                        } catch (Exception e) {
+                            LogUtil.e(TAG, "e.getMessage() = " + e.getMessage());
+                        } finally {
+                            UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
+                            finish();
+                        }
+
                     }
 
                     @Override
