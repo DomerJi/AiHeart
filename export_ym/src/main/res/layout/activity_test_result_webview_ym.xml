@@ -37,6 +37,12 @@
 
             <WebView
                 android:id="@+id/webView"
+                android:background="@color/btn_red"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <com.thfw.view.LoadingView
+                android:id="@+id/loadingView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
@@ -49,7 +55,7 @@
     <LinearLayout
         android:id="@+id/ll_bottom"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="56dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
 

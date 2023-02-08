@@ -100,7 +100,9 @@ public abstract class BaseDialogFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         //去除Dialog默认头部
         Dialog dialog = getDialog();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        if (view == null) {
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        }
         dialog.setCanceledOnTouchOutside(isCancelableOutside());
         if (dialog.getWindow() != null && getDialogAnimationRes() > 0) {
             dialog.getWindow().setWindowAnimations(getDialogAnimationRes());
@@ -133,8 +135,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
             //设置宽高
             WindowManager.LayoutParams layoutParams = window.getAttributes();
             if (getDialogWidth() > 0) {
-                layoutParams.width = getDialogWidth() == getScreenWidth(getContext())
-                        ? WindowManager.LayoutParams.MATCH_PARENT : getDialogWidth();
+                layoutParams.width = getDialogWidth() == getScreenWidth(getContext()) ? WindowManager.LayoutParams.MATCH_PARENT : getDialogWidth();
             } else {
                 layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
             }

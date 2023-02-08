@@ -2,6 +2,12 @@ package com.thfw.export_ym.test;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -12,6 +18,7 @@ import com.thfw.export_ym.R;
 import com.thfw.models.TestResultModel;
 import com.thfw.net.ResponeThrowable;
 import com.thfw.presenter.TestPresenter;
+import com.thfw.view.LoadingView;
 import com.thfw.view.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -32,6 +39,7 @@ public class TestResultWebActivity extends YmBaseActivity<TestPresenter> impleme
     private Button mBtTryOne;
     private Button mBtHistory;
     private int mTestId;
+    private LoadingView mLoadingView;
 
 
     public static void startActivity(Context context, TestResultModel testResultModel) {
@@ -56,6 +64,7 @@ public class TestResultWebActivity extends YmBaseActivity<TestPresenter> impleme
         mFlWebContent = (FrameLayout) findViewById(R.id.fl_web_content);
         mBtTryOne = (Button) findViewById(R.id.bt_try_one);
         mBtHistory = (Button) findViewById(R.id.bt_history);
+        mLoadingView = findViewById(R.id.loadingView);
     }
 
     @Override
@@ -79,20 +88,39 @@ public class TestResultWebActivity extends YmBaseActivity<TestPresenter> impleme
 
     private void initAgentWeb() {
         WebView webView = findViewById(R.id.webView);
+
+
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webSettings.setJavaScriptEnabled(true);//启用js
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+            //解决视频无法播放问题
+        }
+        webView.setWebChromeClient(new WebChromeClient());
+        webView.loadUrl(url);//覆盖WebView默认使用第三方或系统默认浏览器打开网页的行为，使网页用WebView打开
         webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    view.loadUrl(request.getUrl().toString());
+                }
+                return true;
+            }
+
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                if (testResultModel != null) {
-                    if (testResultModel.getRecommendInfo() != null) {
-                        setRecommend();
-                    } else {
-                        mPresenter.onGetResult(testResultModel.getResultId());
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLoadingView.hide();
                     }
-                }
+                }, 400);
+
             }
         });
-        webView.loadUrl(url);
+
     }
 
 
@@ -103,16 +131,7 @@ public class TestResultWebActivity extends YmBaseActivity<TestPresenter> impleme
 
     @Override
     public void onSuccess(TestResultModel data) {
-        if (data != null) {
-            testResultModel = data;
-            setRecommend();
-        }
-    }
 
-    private void setRecommend() {
-        if (testResultModel == null) {
-            return;
-        }
     }
 
     @Override
