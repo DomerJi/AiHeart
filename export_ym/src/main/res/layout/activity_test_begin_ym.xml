@@ -84,7 +84,7 @@
         <Button
             android:id="@+id/btn_begin"
             android:layout_width="0dp"
-            android:layout_height="30dp"
+            android:layout_height="36dp"
             android:background="@drawable/btn_text_green_bg"
             android:text="开始测试"
             android:textColor="@color/white"

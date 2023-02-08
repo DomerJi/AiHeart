@@ -1,5 +1,7 @@
 package com.thfw.view;
 
+import static android.view.Gravity.CENTER;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
@@ -13,9 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.export_ym.R;
-
-import static android.view.Gravity.CENTER;
+import com.thfw.export_ym.R;
 
 /**
  * 页面加载状态

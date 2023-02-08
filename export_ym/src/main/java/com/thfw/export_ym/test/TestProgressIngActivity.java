@@ -8,13 +8,14 @@ import android.widget.TextView;
 
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.export_ym.R;
 import com.thfw.adapter.TestngAdapter;
-import com.thfw.base.BaseActivity;
 import com.thfw.base.OnRvItemListener;
+import com.thfw.base.YmBaseActivity;
 import com.thfw.dialog.LoadingDialog;
 import com.thfw.dialog.TDialog;
 import com.thfw.dialog.base.BindViewHolder;
+import com.thfw.export_ym.R;
+import com.thfw.models.HttpResult;
 import com.thfw.models.TestDetailModel;
 import com.thfw.models.TestResultModel;
 import com.thfw.net.ResponeThrowable;
@@ -28,7 +29,7 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 import java.util.Iterator;
 import java.util.List;
 
-public class TestProgressIngActivity extends BaseActivity<TestPresenter> implements TestPresenter.TestUi<TestResultModel> {
+public class TestProgressIngActivity extends YmBaseActivity<TestPresenter> implements TestPresenter.TestUi<TestResultModel> {
 
 
     private static TestDetailModel testDetailModel;
@@ -154,7 +155,9 @@ public class TestProgressIngActivity extends BaseActivity<TestPresenter> impleme
     @Override
     public void onFail(ResponeThrowable throwable) {
         LoadingDialog.hide();
-        ToastUtil.show("提交失败");
+        if (!HttpResult.noTokenFailShowMsg(throwable.code)) {
+            ToastUtil.show("提交失败");
+        }
     }
 
     @Override

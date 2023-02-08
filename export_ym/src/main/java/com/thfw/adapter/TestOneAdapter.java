@@ -7,12 +7,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.export_ym.R;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.export_ym.R;
 import com.thfw.models.TestModel;
 import com.thfw.util.GlideUtil;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -28,14 +26,13 @@ public class TestOneAdapter extends BaseAdapter<TestModel, TestOneAdapter.TestHo
     }
 
     @NonNull
-    @NotNull
     @Override
-    public TestHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+    public TestHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new TestHolder(inflate(R.layout.item_test_list_layout_ym, parent));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull @NotNull TestHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TestHolder holder, int position) {
         TestModel testModel = mDataList.get(position);
         GlideUtil.load(mContext, testModel.getPic(), holder.mRivAvatar);
         holder.mTvTitle.setText(testModel.getTitle());
@@ -49,7 +46,7 @@ public class TestOneAdapter extends BaseAdapter<TestModel, TestOneAdapter.TestHo
         private TextView mTvNumber;
         private TextView mTvType;
 
-        public TestHolder(@NonNull @NotNull View itemView) {
+        public TestHolder(@NonNull View itemView) {
             super(itemView);
             initView(itemView);
             itemView.setOnClickListener(v -> {

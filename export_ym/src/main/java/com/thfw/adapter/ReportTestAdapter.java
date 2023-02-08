@@ -7,11 +7,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.export_ym.R;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.export_ym.R;
 import com.thfw.models.ReportTestModel;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -28,14 +27,13 @@ public class ReportTestAdapter extends BaseAdapter<ReportTestModel, ReportTestAd
     }
 
     @NonNull
-    @NotNull
     @Override
-    public ReportHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+    public ReportHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ReportHolder(inflate(R.layout.item_report_test_ym, parent));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull @NotNull ReportHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ReportHolder holder, int position) {
         holder.mTvTitle.setText(mDataList.get(position).getTitle());
         holder.mTvTime.setText(mDataList.get(position).getAddTime());
     }
@@ -47,7 +45,7 @@ public class ReportTestAdapter extends BaseAdapter<ReportTestModel, ReportTestAd
         private TextView mTvTime;
         private View mVLine;
 
-        public ReportHolder(@NonNull @NotNull View itemView) {
+        public ReportHolder(@NonNull View itemView) {
             super(itemView);
             initView(itemView);
             itemView.setOnClickListener(v -> {

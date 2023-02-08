@@ -11,12 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.export_ym.R;
 import com.thfw.dialog.base.BaseDialogFragment;
 import com.thfw.dialog.base.BindViewHolder;
 import com.thfw.dialog.base.TController;
 import com.thfw.dialog.listener.OnBindViewListener;
 import com.thfw.dialog.listener.OnViewClickListener;
+import com.thfw.export_ym.R;
 import com.thfw.util.LogUtil;
 
 

@@ -6,11 +6,12 @@ import android.content.Intent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.export_ym.R;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.thfw.adapter.TestOneAdapter;
-import com.thfw.base.BaseActivity;
 import com.thfw.base.OnRvItemListener;
+import com.thfw.base.YmBaseActivity;
+import com.thfw.export_ym.R;
+import com.thfw.models.HttpResult;
 import com.thfw.models.TestModel;
 import com.thfw.net.ResponeThrowable;
 import com.thfw.presenter.TestPresenter;
@@ -21,7 +22,7 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 
 import java.util.List;
 
-public class TestingActivity extends BaseActivity<TestPresenter> implements TestPresenter.TestUi<List<TestModel>> {
+public class TestingActivity extends YmBaseActivity<TestPresenter> implements TestPresenter.TestUi<List<TestModel>> {
 
     private TitleView mTitleView;
     private SmartRefreshLayout mRefreshLayout;
@@ -92,8 +93,10 @@ public class TestingActivity extends BaseActivity<TestPresenter> implements Test
 
     @Override
     public void onFail(ResponeThrowable throwable) {
-        mLoadingView.showFail(v -> {
-            initData();
-        });
+        if (!HttpResult.noTokenFailShowMsg(throwable.code)) {
+            mLoadingView.showFail(v -> {
+                initData();
+            });
+        }
     }
 }

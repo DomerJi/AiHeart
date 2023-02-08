@@ -7,7 +7,7 @@
         <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="1.8" />
+        <option name="gradleJvm" value="Android Studio java home" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -19,6 +19,7 @@
             <option value="$PROJECT_DIR$/common-base" />
             <option value="$PROJECT_DIR$/common-ui" />
             <option value="$PROJECT_DIR$/export_ym" />
+            <option value="$PROJECT_DIR$/export_ym_test" />
             <option value="$PROJECT_DIR$/pickerview" />
             <option value="$PROJECT_DIR$/push" />
             <option value="$PROJECT_DIR$/voice-aiui" />

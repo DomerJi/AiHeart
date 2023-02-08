@@ -10,12 +10,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.export_ym.R;
 import com.thfw.dialog.TDialog;
 import com.thfw.dialog.base.TBaseAdapter;
 import com.thfw.dialog.base.TController;
 import com.thfw.dialog.listener.OnBindViewListener;
 import com.thfw.dialog.listener.OnViewClickListener;
+import com.thfw.export_ym.R;
 
 
 /**

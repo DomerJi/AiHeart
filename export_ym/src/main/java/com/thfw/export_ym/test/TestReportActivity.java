@@ -7,13 +7,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.export_ym.R;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.thfw.adapter.ReportTestAdapter;
-import com.thfw.base.BaseActivity;
 import com.thfw.base.OnRvItemListener;
+import com.thfw.base.YmBaseActivity;
+import com.thfw.export_ym.R;
+import com.thfw.models.HttpResult;
 import com.thfw.models.ReportTestModel;
 import com.thfw.models.TestResultModel;
 import com.thfw.net.ResponeThrowable;
@@ -23,14 +24,12 @@ import com.thfw.view.LoadingView;
 import com.thfw.view.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 /**
  * 测评报告列表页
  */
-public class TestReportActivity extends BaseActivity<TestPresenter> implements TestPresenter.TestUi<List<ReportTestModel>> {
+public class TestReportActivity extends YmBaseActivity<TestPresenter> implements TestPresenter.TestUi<List<ReportTestModel>> {
 
     private static final String KEY_RID = "key.rid";
     private TitleView mTitleRobotView;
@@ -42,8 +41,7 @@ public class TestReportActivity extends BaseActivity<TestPresenter> implements T
     private ReportTestAdapter reportTestAdapter;
 
     public static void startActivity(Context context, int rid) {
-        context.startActivity(new Intent(context, TestReportActivity.class)
-                .putExtra(KEY_RID, rid));
+        context.startActivity(new Intent(context, TestReportActivity.class).putExtra(KEY_RID, rid));
     }
 
     public static void startActivity(Context context) {
@@ -71,7 +69,7 @@ public class TestReportActivity extends BaseActivity<TestPresenter> implements T
         mRvList.setLayoutManager(new LinearLayoutManager(mContext));
         mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
-            public void onLoadMore(@NonNull @NotNull RefreshLayout refreshLayout) {
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 mPresenter.onResultHistory(rid, pageHelper.getPage());
             }
         });
@@ -80,9 +78,7 @@ public class TestReportActivity extends BaseActivity<TestPresenter> implements T
         reportTestAdapter.setOnRvItemListener(new OnRvItemListener<ReportTestModel>() {
             @Override
             public void onItemClick(List<ReportTestModel> list, int position) {
-                TestResultWebActivity.startActivity(mContext, new TestResultModel()
-                        .setResultId(list.get(position).getId())
-                        .setTestId(list.get(position).getRid()));
+                TestResultWebActivity.startActivity(mContext, new TestResultModel().setResultId(list.get(position).getId()).setTestId(list.get(position).getRid()));
             }
         });
         mRvList.setAdapter(reportTestAdapter);
@@ -117,8 +113,10 @@ public class TestReportActivity extends BaseActivity<TestPresenter> implements T
 
     @Override
     public void onFail(ResponeThrowable throwable) {
-        pageHelper.onFail(v -> {
-            mPresenter.onResultHistory(rid, pageHelper.getPage());
-        });
+        if (!HttpResult.noTokenFailShowMsg(throwable.code)) {
+            pageHelper.onFail(v -> {
+                mPresenter.onResultHistory(rid, pageHelper.getPage());
+            });
+        }
     }
 }

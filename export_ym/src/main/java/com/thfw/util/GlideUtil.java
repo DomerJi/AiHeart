@@ -1,5 +1,7 @@
 package com.thfw.util;
 
+import static com.bumptech.glide.load.resource.bitmap.VideoDecoder.FRAME_OPTION;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,11 +16,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.export_ym.R;
+import com.thfw.export_ym.R;
 
 import java.security.MessageDigest;
-
-import static com.bumptech.glide.load.resource.bitmap.VideoDecoder.FRAME_OPTION;
 
 /**
  * Author:pengs

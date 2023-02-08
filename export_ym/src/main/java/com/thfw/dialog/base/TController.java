@@ -9,9 +9,9 @@ import android.view.View;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.export_ym.R;
 import com.thfw.dialog.listener.OnBindViewListener;
 import com.thfw.dialog.listener.OnViewClickListener;
+import com.thfw.export_ym.R;
 
 import java.io.Serializable;
 

@@ -10,11 +10,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.export_ym.R;
 import com.thfw.adapter.TestDetailAdapter;
 import com.thfw.api.HistoryApi;
-import com.thfw.base.BaseActivity;
+import com.thfw.base.YmBaseActivity;
+import com.thfw.export_ym.R;
 import com.thfw.models.CommonModel;
+import com.thfw.models.HttpResult;
 import com.thfw.models.MTestDetailAdapterModel;
 import com.thfw.models.TestDetailModel;
 import com.thfw.net.ResponeThrowable;
@@ -28,7 +29,7 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestBeginActivity extends BaseActivity<TestPresenter> implements TestPresenter.TestUi<TestDetailModel> {
+public class TestBeginActivity extends YmBaseActivity<TestPresenter> implements TestPresenter.TestUi<TestDetailModel> {
 
     private TitleView mTitleView;
     private Button mBtnBegin;
@@ -77,8 +78,6 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
             return;
         }
         mPresenter.onGetInfo(mTestId);
-
-
     }
 
     @Override
@@ -148,7 +147,11 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
 
     @Override
     public void onFail(ResponeThrowable throwable) {
-
+        if (!HttpResult.noTokenFailShowMsg(throwable.code)) {
+            mLoadingView.showFail(v -> {
+                initData();
+            });
+        }
     }
 
 

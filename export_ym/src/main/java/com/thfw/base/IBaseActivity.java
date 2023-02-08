@@ -11,6 +11,8 @@ import android.widget.EditText;
 import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 
+import com.thfw.util.YmActivityManager;
+
 
 /**
  * 通用基础Activity
@@ -35,6 +37,7 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+        YmActivityManager.getActivityManager().pushActivity(this);
         setContentView(getContentView());
         mPresenter = onCreatePresenter();
         initView();
@@ -57,6 +60,7 @@ public abstract class IBaseActivity<T extends IPresenter> extends RxActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        YmActivityManager.getActivityManager().popActivity();
         if (mPresenter != null) {
             mPresenter.onDestroy();
             mPresenter = null;

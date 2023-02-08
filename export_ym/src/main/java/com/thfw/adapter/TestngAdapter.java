@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.export_ym.R;
 import com.thfw.base.OnRvItemListener;
+import com.thfw.export_ym.R;
 import com.thfw.models.TestDetailModel;
 import com.thfw.util.LogUtil;
 

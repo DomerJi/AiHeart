@@ -7,7 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.export_ym.R;
+import com.thfw.export_ym.R;
 import com.thfw.models.TestDetailModel;
 
 import java.util.List;

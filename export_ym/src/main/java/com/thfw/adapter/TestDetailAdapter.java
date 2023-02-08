@@ -8,11 +8,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.export_ym.R;
+import com.thfw.export_ym.R;
 import com.thfw.models.MTestDetailAdapterModel;
 import com.thfw.util.GlideUtil;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -93,7 +91,7 @@ public class TestDetailAdapter extends BaseAdapter<MTestDetailAdapterModel, Recy
         private TextView mTvNumber;
         private TextView mTvContent;
 
-        public TestDetailTopHolder(@NonNull @NotNull View itemView) {
+        public TestDetailTopHolder(@NonNull View itemView) {
             super(itemView);
             initView(itemView);
         }
@@ -111,7 +109,7 @@ public class TestDetailAdapter extends BaseAdapter<MTestDetailAdapterModel, Recy
         private TextView mTvHint;
         private TextView mTvHintContent;
 
-        public TestDetailHintHolder(@NonNull @NotNull View itemView) {
+        public TestDetailHintHolder(@NonNull View itemView) {
             super(itemView);
             initView(itemView);
         }

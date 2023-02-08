@@ -4,14 +4,9 @@ package com.thfw.net;
 public class ApiHost {
 
     /**
-     * 沙盒环境
-     */
-    public static String SANDBOX_HOST = "https://sandbox-vehicle.baidu.com/";
-
-    /**
      * 正式环境
      */
-    public static String ONLINE_HOST = "https://tianhe.soulbuddy.cn/";
+    public static String ONLINE_HOST = "https://fw.psyhealth.work/";
 
     /**
      * 测试环境

@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
-import com.example.export_ym.R;
+import com.thfw.export_ym.R;
 
 
 /**
