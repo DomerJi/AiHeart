@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.BookStudyItemModel;
 import com.thfw.mobileheart.R;
 
@@ -55,5 +56,15 @@ public class StudyListAdapter extends BaseAdapter<BookStudyItemModel, StudyListA
             });
 
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+        }
+
+        return super.getText(position, type);
     }
 }

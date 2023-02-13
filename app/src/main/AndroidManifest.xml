@@ -123,9 +123,6 @@
             android:name=".activity.me.HotPhoneActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.me.AssessReportActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.settings.BindMobileActivity"
             android:screenOrientation="portrait" />
         <activity

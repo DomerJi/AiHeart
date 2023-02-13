@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.VideoEtcModel;
 import com.thfw.mobileheart.R;
 import com.thfw.ui.utils.GlideUtil;
@@ -61,5 +62,16 @@ public class HomeVideoListAdapter extends BaseAdapter<VideoEtcModel, HomeVideoLi
             mRivBg = (RoundedImageView) itemView.findViewById(R.id.riv_bg);
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
         }
+    }
+
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+        }
+
+        return super.getText(position, type);
     }
 }

@@ -18,6 +18,7 @@ import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.DefaultWebClient;
 import com.thfw.base.api.HistoryApi;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.BookDetailModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
@@ -29,7 +30,10 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.WebSizeUtil;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.thfw.ui.widget.WebViewTapUtil;
@@ -57,10 +61,10 @@ public class BookDetailActivity extends BaseActivity<BookPresenter> implements B
     private ImageView mIvCollect;
     private boolean requestIng = false;
     private int bookId;
+    private WebView webView;
 
     public static void startActivity(Context context, int id) {
-        ((Activity) context).startActivityForResult(new Intent(context, BookDetailActivity.class)
-                .putExtra(KEY_DATA, id), ChatEntity.TYPE_RECOMMEND_TEXT);
+        ((Activity) context).startActivityForResult(new Intent(context, BookDetailActivity.class).putExtra(KEY_DATA, id), ChatEntity.TYPE_RECOMMEND_TEXT);
     }
 
     @Override
@@ -112,14 +116,10 @@ public class BookDetailActivity extends BaseActivity<BookPresenter> implements B
 
         if (!contentHtml.startsWith("<html>")) {
 //            contentHtml = newHtml();
-            contentHtml = "<html><head><style>"
-                    + "img{max-width: 80%;height: auto;object-fit: contain;}"
-                    + "body{padding-top:26px; padding-bottom:26px; padding-left:26px;padding-right:26px;}"
+            contentHtml = "<html><head><style>" + "img{max-width: 80%;height: auto;object-fit: contain;}" + "body{padding-top:26px; padding-bottom:26px; padding-left:26px;padding-right:26px;}"
 //                    + "span{" + fontSize + "}"
 //                    + "p{" + fontSize + "}"
-                    + "</style><title>"
-                    + title + "</title></head><body>" + titleHtml
-                    + contentHtml + "</body></html>";
+                    + "</style><title>" + title + "</title></head><body>" + titleHtml + contentHtml + "</body></html>";
         }
         mLlCollect.setOnClickListener(v -> {
             addCollect();
@@ -185,7 +185,10 @@ public class BookDetailActivity extends BaseActivity<BookPresenter> implements B
         if (!TextUtils.isEmpty(contentHtml)) {
             mAgentWeb = preAgentWeb.get();
             Log.d("contentHtml", "contentHtml = " + contentHtml);
-            WebView webView = mAgentWeb.getWebCreator().getWebView();
+            webView = mAgentWeb.getWebCreator().getWebView();
+            if (DeviceUtil.isLhXk_CM_GB03D()) {
+                new InstructScrollHelper(BookDetailActivity.class, webView);
+            }
             WebViewTapUtil.initWebView(webView, contentHtml);
             webView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
             webView.getSettings().setDefaultTextEncodingName("UTF-8");//设置默认为utf-8
@@ -340,4 +343,21 @@ public class BookDetailActivity extends BaseActivity<BookPresenter> implements B
         }).addCollect(HistoryApi.TYPE_COLLECT_BOOK, bookId);
     }
 
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(BookDetailActivity.class, new SpeechToAction("收藏", () -> {
+            if (mIvCollect != null && mIvCollect.getVisibility() == View.VISIBLE) {
+                mLlCollect.performClick();
+            }
+        }));
+        LhXkHelper.putAction(BookDetailActivity.class, new SpeechToAction("取消收藏", () -> {
+            if (mIvCollect != null && mIvCollect.getVisibility() == View.VISIBLE && mIvCollect.isSelected()) {
+                mLlCollect.performClick();
+            }
+        }));
+        if (webView != null) {
+            new InstructScrollHelper(BookDetailActivity.class, webView);
+        }
+    }
 }

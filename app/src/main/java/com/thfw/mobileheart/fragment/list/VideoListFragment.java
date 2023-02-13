@@ -25,6 +25,7 @@ import com.thfw.mobileheart.activity.video.VideoHomeActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.HomeVideoListAdapter;
 import com.thfw.mobileheart.adapter.VideoChildTypeAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.util.FragmentLoader;
 import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
@@ -140,8 +141,7 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
                                             mLoader.hide(fragment);
                                         }
                                     }
-                                    videoChildTypeAdapter.getOnRvItemListener()
-                                            .onItemClick(videoChildTypeAdapter.getDataList(), videoChildTypeAdapter.getmSelectedIndex());
+                                    videoChildTypeAdapter.getOnRvItemListener().onItemClick(videoChildTypeAdapter.getDataList(), videoChildTypeAdapter.getmSelectedIndex());
                                     return;
                                 }
                                 int childType = list.get(position).id;
@@ -264,5 +264,13 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
     public void onDestroy() {
         super.onDestroy();
         SharePreferenceUtil.setInt(KEY_INDEX + type, -1);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(VideoListFragment.class, mRvList);
+        new InstructScrollHelper(VideoListFragment.class, mRvChildren);
+        new InstructScrollHelper(VideoListFragment.class, mRvChildren2);
     }
 }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.opensource.svgaplayer.SVGAImageView;
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.DialogTalkModel;
 import com.thfw.base.utils.HourUtil;
@@ -263,5 +264,15 @@ public class ChatAdapter extends BaseAdapter<ChatEntity, ChatAdapter.ChatHolder>
             mTvHint = itemView.findViewById(R.id.tv_hint);
         }
 
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getNotPTalk();
+        }
+
+        return super.getText(position, type);
     }
 }

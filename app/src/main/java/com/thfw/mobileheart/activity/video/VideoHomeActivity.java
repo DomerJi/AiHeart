@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.VideoLastEtcModel;
 import com.thfw.base.models.VideoTypeModel;
 import com.thfw.base.net.ResponeThrowable;
@@ -29,8 +30,12 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
+import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
+import com.thfw.mobileheart.activity.me.CollectActivity;
 import com.thfw.mobileheart.fragment.list.VideoListFragment;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.view.LastTextView;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -402,6 +407,26 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
     public void setRecyclerView(RecyclerView recyclerView) {
         if (mTvLastAudio != null) {
             mTvLastAudio.onAttached(recyclerView);
+        }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+
+        LhXkHelper.putAction(AudioHomeActivity.class, new SpeechToAction("上次播放", () -> {
+            mTvLastAudio.performClick();
+        }));
+
+        int count = mTabLayout.getTabCount();
+        for (int i = 0; i < count; i++) {
+            TabLayout.TabView tabView = mTabLayout.getTabAt(i).view;
+            if (DeviceUtil.isLhXk_CM_GB03D()) {
+                final TabLayout.Tab fTab = tabView.getTab();
+                LhXkHelper.putAction(CollectActivity.class, new SpeechToAction(tabView.getTab().getText().toString(), () -> {
+                    mTabLayout.selectTab(fTab);
+                }));
+            }
         }
     }
 }

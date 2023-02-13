@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.api.HistoryApi;
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.VideoPlayListModel;
 import com.thfw.base.net.ResponeThrowable;
@@ -238,5 +239,17 @@ public class VideoPlayListAdapter extends BaseAdapter<VideoPlayListModel, Recycl
                 }
             }).addCollect(HistoryApi.TYPE_COLLECT_VIDEO, mVideoId);
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                if (getItemViewType(position) == VideoPlayListModel.TYPE_BODY) {
+                    return mDataList.get(position).title;
+                }
+        }
+
+        return super.getText(position, type);
     }
 }

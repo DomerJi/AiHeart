@@ -12,6 +12,8 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.exercise.ExerciseIngActivity;
 import com.thfw.mobileheart.adapter.ExerciseLogcateAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
+import com.thfw.ui.widget.DeviceUtil;
 
 import java.util.List;
 
@@ -67,11 +69,13 @@ public class ExerciseLogcataFragment extends BaseFragment {
                         ToastUtil.show("需要按顺序完成后，方可解锁");
                         return;
                     }
-                    ExerciseIngActivity.startActivity(mContext, list.get(position).getDialogId(),
-                            list.get(position).isUsed());
+                    ExerciseIngActivity.startActivity(mContext, list.get(position).getDialogId(), list.get(position).isUsed());
                 }
             });
             mRvExercise.setAdapter(exerciseLogcateAdapter);
+            if (DeviceUtil.isLhXk_CM_GB03D()) {
+                new InstructScrollHelper(ExerciseLogcataFragment.class, mRvExercise);
+            }
         }
     }
 

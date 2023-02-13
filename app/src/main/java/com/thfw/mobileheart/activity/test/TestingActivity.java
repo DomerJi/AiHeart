@@ -15,6 +15,7 @@ import com.thfw.base.utils.EmptyUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.TestOneAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -79,6 +80,12 @@ public class TestingActivity extends BaseActivity<TestPresenter> implements Test
             }
         });
         mRvTest.setAdapter(testOneAdapter);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(TestingActivity.class, mRvTest);
     }
 
     @Override

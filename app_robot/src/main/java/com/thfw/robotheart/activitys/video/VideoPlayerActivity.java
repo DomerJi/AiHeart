@@ -61,7 +61,6 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.base.utils.Util;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
-import com.thfw.robotheart.activitys.audio.AudioPlayerActivity;
 import com.thfw.robotheart.activitys.talk.TalkItemJumpHelper;
 import com.thfw.robotheart.adapter.VideoItemAdapter;
 import com.thfw.robotheart.constants.UIConfig;
@@ -939,7 +938,7 @@ public class VideoPlayerActivity extends RobotBaseActivity<VideoPresenter> imple
             videoLogcatue();
         }));
 
-        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("关闭列表,关闭目录", () -> {
+        LhXkHelper.putAction(VideoPlayerActivity.class, new SpeechToAction("关闭列表,关闭目录", () -> {
             if (mClContent != null && mClContent.getVisibility() == View.VISIBLE) {
                 videoLogcatue();
             }

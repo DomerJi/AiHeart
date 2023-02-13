@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.BookStudyTypeModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.BookPresenter;
@@ -27,7 +28,9 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.fragment.list.StudyListFragment;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.view.LastTextView;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -212,6 +215,12 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
             TabLayout.Tab tabAt = mTabLayout.newTab().setText(cacheModel.get(i).name);
             mTabLayout.addTab(tabAt);
             tabAt.setCustomView(R.layout.tab_custeom_item_study);
+            if (DeviceUtil.isLhXk_CM_GB03D()) {
+                final TabLayout.Tab fTab = tabAt;
+                LhXkHelper.putAction(StudyHomeActivity.class, new SpeechToAction(tabAt.getText().toString(), () -> {
+                    mTabLayout.selectTab(fTab);
+                }));
+            }
             textList = new ArrayList<>();
             if (tabAt.getCustomView() != null) {
                 if (cacheModel.get(i).isUnSelectedChange()) {
@@ -288,6 +297,20 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
             mLoadingView.showFail(v -> {
                 mPresenter.getIdeologyArticleType();
             });
+        }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        int count = mTabLayout.getTabCount();
+        for (int i = 0; i < count; i++) {
+            final TabLayout.Tab fTab = mTabLayout.getTabAt(i);
+            if (DeviceUtil.isLhXk_CM_GB03D()) {
+                LhXkHelper.putAction(StudyHomeActivity.class, new SpeechToAction(fTab.getText().toString(), () -> {
+                    mTabLayout.selectTab(fTab);
+                }));
+            }
         }
     }
 }

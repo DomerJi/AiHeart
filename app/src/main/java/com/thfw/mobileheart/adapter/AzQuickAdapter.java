@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.mobileheart.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,5 +45,15 @@ public class AzQuickAdapter extends BaseAdapter<String, AzQuickAdapter.AzHolder>
             super(itemView);
             mTvAz = itemView.findViewById(R.id.tv_az);
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position);
+        }
+
+        return super.getText(position, type);
     }
 }

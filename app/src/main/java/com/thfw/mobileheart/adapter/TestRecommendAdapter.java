@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.TestResultModel;
 import com.thfw.mobileheart.R;
 import com.thfw.ui.utils.GlideUtil;
@@ -64,5 +65,15 @@ public class TestRecommendAdapter extends BaseAdapter<TestResultModel.RecommendI
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             mTvType = (TextView) itemView.findViewById(R.id.tv_type);
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getName();
+        }
+
+        return super.getText(position, type);
     }
 }

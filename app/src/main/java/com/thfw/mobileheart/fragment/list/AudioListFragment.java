@@ -18,6 +18,7 @@ import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
 import com.thfw.mobileheart.activity.audio.AudioPlayerActivity;
 import com.thfw.mobileheart.adapter.AudioListAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -130,5 +131,11 @@ public class AudioListFragment extends BaseFragment<AudioPresenter>
     public void onDestroy() {
         super.onDestroy();
         HourChangeHelper.getInstance().remove(this);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(AudioListFragment.class, mRvList);
     }
 }

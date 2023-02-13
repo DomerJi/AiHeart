@@ -1,5 +1,7 @@
 package com.thfw.mobileheart.activity.audio;
 
+import static com.google.android.exoplayer2.Player.STATE_ENDED;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -42,6 +44,7 @@ import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
+import com.thfw.base.models.SpeechModel;
 import com.thfw.base.models.TaskMusicEtcModel;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.AudioPresenter;
@@ -75,8 +78,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
-        VideoGestureHelper.VideoGestureListener, AudioPresenter.AudioUi<AudioEtcDetailModel> {
+public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements VideoGestureHelper.VideoGestureListener, AudioPresenter.AudioUi<AudioEtcDetailModel> {
 
 
     private static final String KEY_RECOMMEND = "key.recommend";
@@ -124,19 +126,16 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
     private boolean animatIng;
 
     public static void startActivity(Context context, AudioEtcModel audioEtcModel) {
-        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
-                .putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
+        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class).putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
     }
 
     public static void startActivity(Context context, AudioEtcModel audioEtcModel, TaskMusicEtcModel taskMusicEtcModel) {
         mStaticTaskEtcModel = taskMusicEtcModel;
-        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
-                .putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
+        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class).putExtra(KEY_DATA, audioEtcModel), ChatEntity.TYPE_RECOMMEND_AUDIO_ETC);
     }
 
     public static void startActivity(Context context, AudioEtcDetailModel.AudioItemModel audioItemModel) {
-        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class)
-                .putExtra(KEY_RECOMMEND, audioItemModel), ChatEntity.TYPE_RECOMMEND_AUDIO);
+        ((Activity) context).startActivityForResult(new Intent(context, AudioPlayerActivity.class).putExtra(KEY_RECOMMEND, audioItemModel), ChatEntity.TYPE_RECOMMEND_AUDIO);
     }
 
     @Override
@@ -202,36 +201,33 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
         if (!animatIng) {
             return;
         }
-        view.animate().scaleY(2).scaleX(2).alpha(0).setDuration(2200)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .setStartDelay(delay)
-                .setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
+        view.animate().scaleY(2).scaleX(2).alpha(0).setDuration(2200).setInterpolator(new AccelerateDecelerateInterpolator()).setStartDelay(delay).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
 
-                    }
+            }
 
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
-                            return;
-                        }
-                        view.setScaleX(1);
-                        view.setScaleY(1);
-                        view.setAlpha(1);
-                        startAnimateBorder(view, 0);
-                    }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (EmptyUtil.isEmpty(AudioPlayerActivity.this)) {
+                    return;
+                }
+                view.setScaleX(1);
+                view.setScaleY(1);
+                view.setAlpha(1);
+                startAnimateBorder(view, 0);
+            }
 
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
+            @Override
+            public void onAnimationCancel(Animator animation) {
 
-                    }
+            }
 
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
+            @Override
+            public void onAnimationRepeat(Animator animation) {
 
-                    }
-                }).start();
+            }
+        }).start();
     }
 
     @Override
@@ -389,8 +385,7 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
                 addCollect();
             });
             mTvEtcTitleLogcate.setText(mDetailModel.getCollectionInfo().getTitle() + mAudios.size() + "课时");
-            mTvEtcTitle.setText("所属章节：" + mDetailModel.getCollectionInfo().getTitle()
-                    + "  " + (mDetailModel.getCollectionInfo().getListenHistorySize()) + "/" + mAudios.size());
+            mTvEtcTitle.setText("所属章节：" + mDetailModel.getCollectionInfo().getTitle() + "  " + (mDetailModel.getCollectionInfo().getListenHistorySize()) + "/" + mAudios.size());
             mTvAudioTitle.setText("正在播放：" + mAudios.get(mDetailModel.getCollectionInfo().getLastHourIndex()).getTitle());
             player.seekTo(mDetailModel.getCollectionInfo().getLastHourIndex(), 0);
         } else {
@@ -425,26 +420,71 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("播放,继续", () -> {
-            if (player != null && !player.isPlaying()) {
-                player.play();
+        SpeechToAction.Instruction instruction = new SpeechToAction.Instruction() {
+            @Override
+            public SpeechModel matching(String speechText) {
+
+                if (speechText.matches(".{0,2}(停止|暂停|别|不要|退出)(播放|放了).{0,2}") || speechText.matches(".{0,1}(停止|暂停).{0,1}") || speechText.matches(".{0,2}(播放)(停止|暂停|退出).{0,2}")) {
+                    return SpeechModel.create(speechText).setOutText(SpeechModel.OutText.PAUSE).setMatches(true);
+                } else if (speechText.matches(".{0,2}(开始|继续|重新|恢复)(播放).{0,2}") || speechText.matches(".{0,2}(开始|继续|恢复|播放).{0,2}") || speechText.matches(".{0,2}(播放)(继续|开始|恢复).{0,2}")) {
+                    return SpeechModel.create(speechText).setOutText(SpeechModel.OutText.PLAY).setMatches(true);
+                }
+                return super.matching(speechText);
             }
-        }));
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("暂停,停止", () -> {
-            if (player != null && player.isPlaying()) {
-                player.pause();
+        };
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction(instruction, () -> {
+            if (SpeechModel.OutText.PLAY.equals(instruction.speechModel.getOutText())) {
+                if (player != null) {
+                    if (player.getPlaybackState() == STATE_ENDED) {
+                        player.prepare();
+                        player.seekTo(player.getCurrentWindowIndex(), 0);
+                        player.setPlayWhenReady(true);
+                    } else {
+                        if (!player.isPlaying()) {
+                            player.play();
+                        }
+                    }
+                }
+            } else if (SpeechModel.OutText.PAUSE.equals(instruction.speechModel.getOutText())) {
+                if (player != null && player.isPlaying()) {
+                    player.pause();
+                }
             }
+
         }));
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("下一个,下一首,下一曲", () -> {
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("下一个,下一首,下一曲", () -> {
             if (player != null && player.hasNext()) {
                 player.next();
             }
         }));
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("上一个,上一首,上一曲", () -> {
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("上一个,上一首,上一曲", () -> {
             if (player != null && player.hasPrevious()) {
                 player.previous();
             }
 
+        }));
+
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("列表,目录", () -> {
+            if (mClContent != null && mIvPlayCateLogue != null) {
+                mIvPlayCateLogue.performClick();
+            }
+        }));
+
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("关闭列表,关闭目录", () -> {
+            if (mClContent != null && mIvPlayCateLogue != null && mClContent.getVisibility() == View.VISIBLE) {
+                mIvPlayCateLogue.performClick();
+            }
+        }));
+
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("收藏", () -> {
+            if (mIvCollect != null && mIvCollect.getVisibility() == View.VISIBLE) {
+                mIvCollect.performClick();
+            }
+        }));
+        LhXkHelper.putAction(AudioPlayerActivity.class, new SpeechToAction("取消收藏", () -> {
+            if (mIvCollect != null && mIvCollect.getVisibility() == View.VISIBLE && mIvCollect.isSelected()) {
+                mIvCollect.performClick();
+            }
         }));
     }
 
@@ -625,8 +665,7 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
     }
 
     @Override
-    public void onBrightnessGesture(MotionEvent e1, MotionEvent e2, float distanceX,
-                                    float distanceY) {
+    public void onBrightnessGesture(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         onVolumeGesture(e1, e2, distanceX, distanceY);
     }
 
@@ -795,8 +834,7 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
             }
 
             // 目录打开 自动切换音乐 正在播放条目刷新
-            if (mClContent != null && mClContent.getVisibility() == View.VISIBLE && player != null
-                    && mRvList != null && mRvList.getAdapter() != null) {
+            if (mClContent != null && mClContent.getVisibility() == View.VISIBLE && player != null && mRvList != null && mRvList.getAdapter() != null) {
                 ((AudioItemAdapter) mRvList.getAdapter()).setCurrentIndex(player.getCurrentWindowIndex());
             }
 
@@ -808,8 +846,7 @@ public class AudioPlayerActivity extends BaseActivity<AudioPresenter> implements
             LogUtil.d("onMediaItemTransition -> " + mediaItem.playbackProperties.uri);
             mTvAudioTitle.setText("正在播放：" + mAudios.get(player.getCurrentWindowIndex()).getTitle());
 
-            mTvEtcTitle.setText("所属章节：" + mDetailModel.getCollectionInfo().getTitle()
-                    + "  " + (player.getCurrentWindowIndex() + 1) + "/" + mAudios.size());
+            mTvEtcTitle.setText("所属章节：" + mDetailModel.getCollectionInfo().getTitle() + "  " + (player.getCurrentWindowIndex() + 1) + "/" + mAudios.size());
             int musicId = mAudios.get(player.getCurrentWindowIndex()).getId();
             mMusicId = musicId;
             mPresenter.addAudioHistory(musicId, mDetailModel.getCollectionInfo().getId());

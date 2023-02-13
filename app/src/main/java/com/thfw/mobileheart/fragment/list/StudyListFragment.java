@@ -22,6 +22,7 @@ import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
 import com.thfw.mobileheart.adapter.StudyChildTypeAdapter;
 import com.thfw.mobileheart.adapter.StudyListAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.util.FragmentLoader;
 import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
@@ -200,5 +201,12 @@ public class StudyListFragment extends BaseFragment<BookPresenter> implements Bo
         mPageHelper.onFail(v -> {
             mPresenter.getIdeologyArticleList(type, mPageHelper.getPage());
         });
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(StudyListFragment.class, mRvList);
+        new InstructScrollHelper(StudyListFragment.class, mRvChildren);
     }
 }

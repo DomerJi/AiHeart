@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.opensource.svgaplayer.SVGAImageView;
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.HomeEntity;
 import com.thfw.base.models.HomeHistoryEntity;
 import com.thfw.base.models.MoodLivelyModel;
@@ -577,5 +578,20 @@ public class HomeAdapter extends BaseAdapter<HomeEntity, RecyclerView.ViewHolder
         public HomeHistoryHolder(@NonNull @NotNull View itemView) {
             super(itemView);
         }
+    }
+
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                HomeEntity entity = mDataList.get(position);
+                switch (entity.type) {
+                    case HomeEntity.TYPE_BODY:
+                        return entity.recommendModel.getTitle();
+                }
+        }
+
+        return super.getText(position, type);
     }
 }

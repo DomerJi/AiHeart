@@ -7,12 +7,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.PermissionListener;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 
 /**
  * Author:pengs
@@ -67,20 +69,38 @@ public class OtherLoginFragment extends BaseFragment {
         mTvFaceLogin.setOnClickListener(v -> {
             if (getActivity() instanceof BaseActivity) {
                 BaseActivity baseActivity = (BaseActivity) getActivity();
-                baseActivity.requestCallPermission(new String[]{UIConfig.NEEDED_PERMISSION[0]},
-                        new PermissionListener() {
-                            @Override
-                            public void onPermission(boolean has) {
-                                if (has) {
-                                    if (getActivity() instanceof LoginActivity) {
-                                        LoginActivity activity = (LoginActivity) getActivity();
-                                        activity.getFragmentLoader().load(LoginActivity.BY_FACE);
-                                    }
-                                }
+                baseActivity.requestCallPermission(new String[]{UIConfig.NEEDED_PERMISSION[0]}, new PermissionListener() {
+                    @Override
+                    public void onPermission(boolean has) {
+                        if (has) {
+                            if (getActivity() instanceof LoginActivity) {
+                                LoginActivity activity = (LoginActivity) getActivity();
+                                activity.getFragmentLoader().load(LoginActivity.BY_FACE);
                             }
-                        });
+                        }
+                    }
+                });
             }
 
         });
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+
+        LhXkHelper.putAction(OtherLoginFragment.class, new SpeechToAction(mTvAccountLogin.getText().toString(), () -> {
+            mTvAccountLogin.performClick();
+        }));
+
+
+        LhXkHelper.putAction(OtherLoginFragment.class, new SpeechToAction(mTvMobileLogin.getText().toString(), () -> {
+            mTvMobileLogin.performClick();
+        }));
+
+
+        LhXkHelper.putAction(OtherLoginFragment.class, new SpeechToAction(mTvFaceLogin.getText().toString(), () -> {
+            mTvFaceLogin.performClick();
+        }));
     }
 }

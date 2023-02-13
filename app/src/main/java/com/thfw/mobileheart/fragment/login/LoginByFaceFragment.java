@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import com.google.common.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.MyAnimationListener;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.TokenModel;
@@ -49,6 +50,7 @@ import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
 import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.fragment.MeFragment;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
@@ -250,8 +252,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
                 });
                 return;
             }
-            if (ContextCompat.checkSelfPermission(mContext, UIConfig.NEEDED_PERMISSION[0])
-                    != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(mContext, UIConfig.NEEDED_PERMISSION[0]) != PackageManager.PERMISSION_GRANTED) {
                 ToastUtil.show("没有开启相机权限");
                 return;
             }
@@ -360,8 +361,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         int height = mJavaCamera2CircleView.getHeight() - mIvLine.getHeight();
         int mRCircle = mJavaCamera2CircleView.getHeight() / 2;
 
-        lineAnimation = ObjectAnimator.ofFloat(mIvLine, "translationY",
-                mLineUpAnim ? 0 : height, mLineUpAnim ? height : 0);
+        lineAnimation = ObjectAnimator.ofFloat(mIvLine, "translationY", mLineUpAnim ? 0 : height, mLineUpAnim ? height : 0);
         lineAnimation.setDuration(3000);
         lineAnimation.setInterpolator(new LinearInterpolator());
         lineAnimation.addListener(new MyAnimationListener() {
@@ -446,8 +446,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
                 if (mJavaDetector.empty()) {
                     Log.e(TAG, "Failed to load cascade classifier");
                     mJavaDetector = null;
-                } else
-                    Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
+                } else Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
             }
             cascadeDir.delete();
 
@@ -485,8 +484,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
                 if (mJavaEyeDetector.empty()) {
                     Log.e(TAG, "Failed to load cascade classifier");
                     mJavaEyeDetector = null;
-                } else
-                    Log.i(TAG, "Loaded cascade classifier from " + mCascadeEyeFile.getAbsolutePath());
+                } else Log.i(TAG, "Loaded cascade classifier from " + mCascadeEyeFile.getAbsolutePath());
             }
             cascadeDir.delete();
 
@@ -518,16 +516,13 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         if (frameHandleIng || showFail) {
             return mRgba;
         } else if (failByNet) {
-            showFaceFail(inputFace ? "人脸录入失败，当前网络异常，请检查网络状态。" :
-                    "刷脸失败，当前网络异常，请检查网络状态。");
+            showFaceFail(inputFace ? "人脸录入失败，当前网络异常，请检查网络状态。" : "刷脸失败，当前网络异常，请检查网络状态。");
             return mRgba;
         } else if (failCount >= FAIL_COUNT_MAX) {
-            showFaceFail(inputFace ? "人脸录入失败，已经为您重试多次，要求面部无遮挡，光照好的环境。" :
-                    "刷脸失败，请重新刷脸尝试，您也可以选择其他登录方式！");
+            showFaceFail(inputFace ? "人脸录入失败，已经为您重试多次，要求面部无遮挡，光照好的环境。" : "刷脸失败，请重新刷脸尝试，您也可以选择其他登录方式！");
             return mRgba;
         } else if (System.currentTimeMillis() - beginTime > HourUtil.LEN_MINUTE) {
-            showFaceFail(inputFace ? "人脸录入超时，要求面部无遮挡，光照好的环境。" :
-                    "刷脸超时，请重新刷脸尝试，您可以选择重新尝试或其他登录方式");
+            showFaceFail(inputFace ? "人脸录入超时，要求面部无遮挡，光照好的环境。" : "刷脸超时，请重新刷脸尝试，您可以选择重新尝试或其他登录方式");
             return mRgba;
         }
         frameHandleIng = true;
@@ -554,13 +549,11 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         MatOfRect faces = new MatOfRect();
 
         if (mDetectorType == JAVA_DETECTOR) {
-            if (mJavaDetector != null)
-                mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
-                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
+            if (mJavaDetector != null) mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                    new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
 
         } else if (mDetectorType == NATIVE_DETECTOR) {
-            if (mNativeDetector != null)
-                mNativeDetector.detect(mGray, faces);
+            if (mNativeDetector != null) mNativeDetector.detect(mGray, faces);
         } else {
             Log.e(TAG, "Detection method is not selected!");
         }
@@ -740,8 +733,7 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         if (!TextUtils.isEmpty(avatarUrl)) {
             factory.addImage("pic", avatarUrl);
         }
-        factory.addString("device_type", CommonParameter.getDeviceType())
-                .addString("device_id", CommonParameter.getDeviceId());
+        factory.addString("device_type", CommonParameter.getDeviceType()).addString("device_id", CommonParameter.getDeviceId());
         if (!TextUtils.isEmpty(CommonParameter.getOrganizationId())) {
             factory.addString("organization", CommonParameter.getOrganizationId());
         }
@@ -840,12 +832,10 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         MatOfRect faceDetections = new MatOfRect();
 
         if (mDetectorType == JAVA_DETECTOR) {
-            if (mJavaEyeDetector != null)
-                mJavaEyeDetector.detectMultiScale(image, faceDetections, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
-                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
+            if (mJavaEyeDetector != null) mJavaEyeDetector.detectMultiScale(image, faceDetections, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                    new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else if (mDetectorType == NATIVE_DETECTOR) {
-            if (mNativeEyeDetector != null)
-                mNativeEyeDetector.detect(image, faceDetections);
+            if (mNativeEyeDetector != null) mNativeEyeDetector.detect(image, faceDetections);
         } else {
             Log.e(TAG, "Detection method is not selected!");
         }
@@ -868,11 +858,9 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         // TODO: objdetect.CV_HAAR_SCALE_IMAGE
         if (mDetectorType == JAVA_DETECTOR) {
             if (mJavaEyeDetector != null)
-                mJavaEyeDetector.detectMultiScale(image, faceDetections, 1.1, 2, 2,
-                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
+                mJavaEyeDetector.detectMultiScale(image, faceDetections, 1.1, 2, 2, new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else if (mDetectorType == NATIVE_DETECTOR) {
-            if (mNativeEyeDetector != null)
-                mNativeEyeDetector.detect(image, faceDetections);
+            if (mNativeEyeDetector != null) mNativeEyeDetector.detect(image, faceDetections);
         } else {
             Log.e(TAG, "Detection method is not selected!");
         }
@@ -903,8 +891,26 @@ public class LoginByFaceFragment extends BaseFragment implements CameraBridgeVie
         Log.d(TAG, "angle is " + angle);
 
         for (Rect rect : rects) {
-            Imgproc.rectangle(mRgba, new Point(rect.x, rect.y), new Point(rect.x
-                    + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
+            Imgproc.rectangle(mRgba, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
         }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(LoginByFaceFragment.class, new SpeechToAction(mTvOtherLogin.getText().toString(), () -> {
+            mTvOtherLogin.performClick();
+        }));
+        LhXkHelper.putAction(LoginByFaceFragment.class, new SpeechToAction(mBtRetry.getText().toString(), () -> {
+            if (mClFaceFail != null && mClFaceFail.getVisibility() == View.VISIBLE) {
+                mBtRetry.performClick();
+            }
+        }));
+        LhXkHelper.putAction(LoginByFaceFragment.class, new SpeechToAction(mBtBegin.getText().toString(), () -> {
+            if (mClFaceBegin != null && mClFaceBegin.getVisibility() == View.VISIBLE) {
+                mBtBegin.performClick();
+            }
+        }));
+
     }
 }

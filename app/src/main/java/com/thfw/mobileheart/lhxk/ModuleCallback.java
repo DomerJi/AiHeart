@@ -14,24 +14,18 @@ public class ModuleCallback extends ModuleCallbackApi {
     private final static String TAG = "ModuleCallback";
 
     @Override
-    public boolean onSendRequest(int reqId, String reqType, String reqText, String reqParam)
-            throws RemoteException {
+    public boolean onSendRequest(int reqId, String reqType, String reqText, String reqParam) throws RemoteException {
         // 接收语音指令,
         // reqTyp : 语音指令类型
         // reqText : 语音识别内容
         // reqParam : 语音指令参数
-        Log.i(TAG, "onSendRequest ->>>>>>>>>>>>> " +
-                "reqId = " + reqId
-                + " ; reqType = " + reqType
-                + " ; reqText = " + reqText
-                + " ; reqParam = " + reqParam);
+        Log.i(TAG, "onSendRequest ->>>>>>>>>>>>> " + "reqId = " + reqId + " ; reqType = " + reqType + " ; reqText = " + reqText + " ; reqParam = " + reqParam);
         if (Definition.REQ_SPEECH_WAKEUP.equals(reqType)) {
             HandlerUtil.getMainHandler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     RobotApi.getInstance().finishModuleParser(reqId, false, "ok");
                     LhXkHelper.stopFocusFollow();
-//                    LhXkHelper.startFocusFollow(reqId);
                     float angle = -1;
                     try {
                         angle = Float.parseFloat(reqParam);
@@ -44,8 +38,7 @@ public class ModuleCallback extends ModuleCallbackApi {
                     RobotApi.getInstance().wakeUp(reqId, angle, new ActionListener() {
                         @Override
                         public void onResult(int status, String responseString) throws RemoteException {
-                            Log.i(TAG, "onSendRequest ->>>>>>>>>>>>>  onResult = "
-                                    + status + " ; responseString = " + responseString);
+                            Log.i(TAG, "onSendRequest ->>>>>>>>>>>>>  onResult = " + status + " ; responseString = " + responseString);
                             switch (status) {
                                 case Definition.RESULT_OK:
                                     //唤醒完成
@@ -59,8 +52,7 @@ public class ModuleCallback extends ModuleCallbackApi {
                         @Override
                         public void onError(int errorCode, String errorString) throws RemoteException {
 
-                            Log.i(TAG, "onSendRequest ->>>>>>>>>>>>>  onError = "
-                                    + errorCode + " ; responseString = " + errorString);
+                            Log.i(TAG, "onSendRequest ->>>>>>>>>>>>>  onError = " + errorCode + " ; responseString = " + errorString);
                             switch (errorCode) {
                                 case Definition.ERROR_MOVE_HEAD_FAILED:
                                     //头部云台移动失败

@@ -20,6 +20,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.common.reflect.TypeToken;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.AudioLastEtcModel;
 import com.thfw.base.models.AudioTypeModel;
 import com.thfw.base.net.ResponeThrowable;
@@ -31,7 +32,9 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.fragment.list.AudioListFragment;
 import com.thfw.mobileheart.fragment.list.VideoListFragment;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.view.LastTextView;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -194,17 +197,13 @@ public class AudioHomeActivity extends BaseActivity<AudioPresenter> implements A
                 Object endColor = cacheModel.get(position + 1).getSelectedColor();
                 int color = (int) argbEvaluator.evaluate(positionOffset, startColor, endColor);
                 mTabLayout.setSelectedTabIndicatorColor(color);
-                Log.i("onPageScrolled", "position -> " + position
-                        + " ; positionOffset -> " + positionOffset
-                        + " ; positionOffsetPixels -> " + positionOffsetPixels
-                        + " ; color -> " + color + " ; toPosition -> " + (position + 1));
+                Log.i("onPageScrolled", "position -> " + position + " ; positionOffset -> " + positionOffset + " ; positionOffsetPixels -> " + positionOffsetPixels + " ; color -> " + color + " ; toPosition -> " + (position + 1));
                 mTabLayout.setScrollPosition(position, positionOffset, true);
             }
 
             @Override
             public void onPageSelected(int position) {
-                getSupportFragmentManager().beginTransaction()
-                        .setMaxLifecycle(tabFragmentList.get(position), Lifecycle.State.RESUMED).commit();
+                getSupportFragmentManager().beginTransaction().setMaxLifecycle(tabFragmentList.get(position), Lifecycle.State.RESUMED).commit();
                 if (mTabLayout.getSelectedTabPosition() != position) {
                     mTabLayout.selectTab(mTabLayout.getTabAt(position));
                 }
@@ -274,6 +273,13 @@ public class AudioHomeActivity extends BaseActivity<AudioPresenter> implements A
                     mIvFire.setVisibility(View.VISIBLE);
                     mIvFire.setImageLevel(cacheModel.get(i).fire);
                 }
+            }
+
+            if (DeviceUtil.isLhXk_CM_GB03D()) {
+                int position = i;
+                LhXkHelper.putAction(AudioHomeActivity.class, new SpeechToAction(tabAt.getText().toString(), () -> {
+                    mViewPager.setCurrentItem(position);
+                }));
             }
 
         }
@@ -372,5 +378,22 @@ public class AudioHomeActivity extends BaseActivity<AudioPresenter> implements A
         }
     }
 
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
 
+        LhXkHelper.putAction(AudioHomeActivity.class, new SpeechToAction("上次播放", () -> {
+            mTvLastAudio.performClick();
+        }));
+
+        int count = mTabLayout.getTabCount();
+        for (int i = 0; i < count; i++) {
+            final TabLayout.Tab fTab  = mTabLayout.getTabAt(i);
+            if (DeviceUtil.isLhXk_CM_GB03D()) {
+                LhXkHelper.putAction(AudioHomeActivity.class, new SpeechToAction(fTab.getText().toString(), () -> {
+                    mTabLayout.selectTab(fTab);
+                }));
+            }
+        }
+    }
 }

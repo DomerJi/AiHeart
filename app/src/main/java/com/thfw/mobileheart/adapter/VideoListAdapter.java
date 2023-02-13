@@ -1,5 +1,10 @@
 package com.thfw.mobileheart.adapter;
 
+import static android.view.View.VISIBLE;
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING;
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_SETTLING;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -24,6 +29,7 @@ import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.VideoModel;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
@@ -35,11 +41,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.List;
-
-import static android.view.View.VISIBLE;
-import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING;
-import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
-import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_SETTLING;
 
 public class VideoListAdapter extends BaseAdapter<VideoModel, VideoListAdapter.VideoHolder> {
 
@@ -318,5 +319,15 @@ public class VideoListAdapter extends BaseAdapter<VideoModel, VideoListAdapter.V
             mIvBg = itemView.findViewById(R.id.iv_bg);
             mPbLoading = itemView.findViewById(R.id.pb_loading);
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+        }
+
+        return super.getText(position, type);
     }
 }

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.VideoTypeModel;
 import com.thfw.mobileheart.R;
 
@@ -108,5 +109,15 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
                 }
             });
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).name;
+        }
+
+        return super.getText(position, type);
     }
 }

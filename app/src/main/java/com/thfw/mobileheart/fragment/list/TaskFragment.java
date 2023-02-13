@@ -18,7 +18,9 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.task.TaskDetailsActivity;
 import com.thfw.mobileheart.adapter.TaskAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.util.PageHelper;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -28,8 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class TaskFragment extends BaseFragment<TaskPresenter>
-        implements TaskPresenter.TaskUi<List<TaskItemModel>>, DataChangeHelper.DataChangeListener {
+public class TaskFragment extends BaseFragment<TaskPresenter> implements TaskPresenter.TaskUi<List<TaskItemModel>>, DataChangeHelper.DataChangeListener {
 
     private int type;
     private SmartRefreshLayout mRefreshLayout;
@@ -112,6 +113,9 @@ public class TaskFragment extends BaseFragment<TaskPresenter>
     @Override
     public void onSuccess(List<TaskItemModel> data) {
         mPageHelper.onSuccess(data);
+        if (DeviceUtil.isLhXk_CM_GB03D()) {
+            new InstructScrollHelper(TaskFragment.class, mRvList);
+        }
     }
 
     @Override

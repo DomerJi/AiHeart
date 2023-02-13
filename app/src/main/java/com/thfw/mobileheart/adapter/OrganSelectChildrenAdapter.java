@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.OrganizationModel;
 import com.thfw.mobileheart.R;
 
@@ -50,5 +51,16 @@ public class OrganSelectChildrenAdapter extends BaseAdapter<OrganizationModel.Or
                 }
             });
         }
+    }
+
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getName();
+        }
+
+        return super.getText(position, type);
     }
 }

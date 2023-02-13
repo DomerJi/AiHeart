@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.DialogTalkModel;
 import com.thfw.mobileheart.R;
 
@@ -51,5 +52,15 @@ public class ChatSelectAdapter extends BaseAdapter<DialogTalkModel.CheckRadioBea
                 }
             });
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getValue();
+        }
+
+        return super.getText(position, type);
     }
 }

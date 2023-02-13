@@ -15,6 +15,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.thfw.base.api.HistoryApi;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.ExerciseModel;
 import com.thfw.base.net.ResponeThrowable;
@@ -27,6 +28,7 @@ import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.fragment.exercise.ExerciseHintFragment;
 import com.thfw.mobileheart.fragment.exercise.ExerciseLogcataFragment;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.MyScrollView;
@@ -196,7 +198,6 @@ public class ExerciseDetailActivity extends BaseActivity<UserToolPresenter> impl
                     return tabs[position];
                 }
             });
-
             // 设置TabLayout和ViewPager联动
             mTabLayout.setupWithViewPager(mViewPager, false);
         } else {
@@ -224,5 +225,17 @@ public class ExerciseDetailActivity extends BaseActivity<UserToolPresenter> impl
                 mPresenter.onGetInfo(mId);
             });
         }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+
+        LhXkHelper.putAction(ExerciseDetailActivity.class, new SpeechToAction("简介", () -> {
+            mViewPager.setCurrentItem(0);
+        }));
+        LhXkHelper.putAction(ExerciseDetailActivity.class, new SpeechToAction("目录", () -> {
+            mViewPager.setCurrentItem(0);
+        }));
     }
 }

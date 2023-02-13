@@ -18,6 +18,7 @@ import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.DefaultWebClient;
 import com.thfw.base.api.HistoryApi;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.BookIdeoDetailModel;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
@@ -29,7 +30,10 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.WebSizeUtil;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.thfw.ui.widget.WebViewTapUtil;
@@ -57,6 +61,7 @@ public class BookIdeoDetailActivity extends BaseActivity<BookPresenter> implemen
     private ImageView mIvCollect;
     private boolean requestIng = false;
     private int bookId;
+    private WebView webView;
 
     public static void startActivity(Context context, int id) {
         ((Activity) context).startActivityForResult(new Intent(context, BookIdeoDetailActivity.class)
@@ -185,7 +190,10 @@ public class BookIdeoDetailActivity extends BaseActivity<BookPresenter> implemen
         if (!TextUtils.isEmpty(contentHtml)) {
             mAgentWeb = preAgentWeb.get();
             Log.d("contentHtml", "contentHtml = " + contentHtml);
-            WebView webView = mAgentWeb.getWebCreator().getWebView();
+            webView = mAgentWeb.getWebCreator().getWebView();
+            if (DeviceUtil.isLhXk_CM_GB03D()) {
+                new InstructScrollHelper(BookIdeoDetailActivity.class, webView);
+            }
             WebViewTapUtil.initWebView(webView, contentHtml);
             webView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_INSET);
             webView.getSettings().setDefaultTextEncodingName("UTF-8");//设置默认为utf-8
@@ -338,5 +346,23 @@ public class BookIdeoDetailActivity extends BaseActivity<BookPresenter> implemen
                 mIvCollect.setSelected(!mIvCollect.isSelected());
             }
         }).addCollect(HistoryApi.TYPE_COLLECT_IDEO_BOOK, bookId);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(BookIdeoDetailActivity.class, new SpeechToAction("收藏", () -> {
+            if (mIvCollect != null && mIvCollect.getVisibility() == View.VISIBLE) {
+                mLlCollect.performClick();
+            }
+        }));
+        LhXkHelper.putAction(BookIdeoDetailActivity.class, new SpeechToAction("取消收藏", () -> {
+            if (mIvCollect != null && mIvCollect.getVisibility() == View.VISIBLE && mIvCollect.isSelected()) {
+                mLlCollect.performClick();
+            }
+        }));
+        if (webView != null) {
+            new InstructScrollHelper(BookIdeoDetailActivity.class, webView);
+        }
     }
 }

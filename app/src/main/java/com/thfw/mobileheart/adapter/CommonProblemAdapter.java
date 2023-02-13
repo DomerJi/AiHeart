@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.CommonProblemModel;
 import com.thfw.mobileheart.R;
 
@@ -58,5 +59,15 @@ public class CommonProblemAdapter extends BaseAdapter<CommonProblemModel, Common
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             mVLine = (View) itemView.findViewById(R.id.v_line);
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getQuestion();
+        }
+
+        return super.getText(position, type);
     }
 }

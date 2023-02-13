@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thfw.base.api.HistoryApi;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.ChatEntity;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.MTestDetailAdapterModel;
@@ -23,8 +24,10 @@ import com.thfw.base.utils.DataChangeHelper;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
+import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.TestDetailAdapter;
 import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -46,8 +49,7 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
     private int mTestId;
 
     public static void startActivity(Context context, int id) {
-        ((Activity) context).startActivityForResult(new Intent(context, TestBeginActivity.class)
-                .putExtra(KEY_DATA, id), ChatEntity.TYPE_RECOMMEND_TEST);
+        ((Activity) context).startActivityForResult(new Intent(context, TestBeginActivity.class).putExtra(KEY_DATA, id), ChatEntity.TYPE_RECOMMEND_TEST);
     }
 
     @Override
@@ -173,5 +175,26 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
     public void finish() {
         setResult(RESULT_OK);
         super.finish();
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(VideoPlayActivity.class, new SpeechToAction("加入收藏，取消收藏", () -> {
+            if (mLlCollect != null && mIvCollect != null && !mIvCollect.isSelected()) {
+                mLlCollect.performClick();
+            }
+        }));
+        LhXkHelper.putAction(VideoPlayActivity.class, new SpeechToAction("取消收藏", () -> {
+            if (mLlCollect != null && mIvCollect != null && mIvCollect.isSelected()) {
+                mLlCollect.performClick();
+            }
+        }));
+
+        LhXkHelper.putAction(VideoPlayActivity.class, new SpeechToAction("开始测试,开始测评,开始", () -> {
+            if (mBtnBegin != null) {
+                mBtnBegin.performClick();
+            }
+        }));
     }
 }

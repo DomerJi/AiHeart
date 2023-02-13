@@ -8,6 +8,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -17,6 +18,7 @@ import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.WebViewClient;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.AudioEtcModel;
 import com.thfw.base.models.TalkModel;
@@ -34,6 +36,8 @@ import com.thfw.mobileheart.activity.read.BookDetailActivity;
 import com.thfw.mobileheart.activity.talk.ChatActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.TestRecommendAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -60,13 +64,11 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
     private android.widget.Button mBtTryOne;
     private android.widget.Button mBtHistory;
     private int mTestId;
+    private ScrollView mSvView;
 
 
     public static void startActivity(Context context, TestResultModel testResultModel) {
-        context.startActivity(new Intent(context, TestResultWebActivity.class)
-                .putExtra(KEY_DATA, testResultModel)
-                .putExtra(KEY_URL, ApiHost.getTestH5Host(testResultModel.getResultId()))
-                .putExtra(KEY_TITLE, "测评结果"));
+        context.startActivity(new Intent(context, TestResultWebActivity.class).putExtra(KEY_DATA, testResultModel).putExtra(KEY_URL, ApiHost.getTestH5Host(testResultModel.getResultId())).putExtra(KEY_TITLE, "测评结果"));
     }
 
     @Override
@@ -92,6 +94,7 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
         mRvRecommend = (RecyclerView) findViewById(R.id.rv_recommend);
         mBtTryOne = (Button) findViewById(R.id.bt_try_one);
         mBtHistory = (Button) findViewById(R.id.bt_history);
+        mSvView = findViewById(R.id.sv_view);
     }
 
     @Override
@@ -128,7 +131,7 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
                             return;
                         }
                         if (testResultModel != null) {
-                            findViewById(R.id.sv_view).scrollTo(0, 0);
+                            mSvView.scrollTo(0, 0);
                             // 解决 推荐内容 先出现闪烁的问题
                             HandlerUtil.getMainHandler().postDelayed(() -> {
                                 if (testResultModel.getRecommendInfo() != null) {
@@ -139,8 +142,7 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
                             }, 650);
                         }
                     }
-                })
-                .createAgentWeb();// 创建AgentWeb。
+                }).createAgentWeb();// 创建AgentWeb。
 
         mAgentWeb = preAgentWeb.get();
         // 不使用缓存
@@ -216,6 +218,18 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
     }
 
     @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(TestResultWebActivity.class, mSvView);
+        LhXkHelper.putAction(TestResultWebActivity.class, new SpeechToAction("再测一次", () -> {
+            mBtTryOne.performClick();
+        }));
+        LhXkHelper.putAction(TestResultWebActivity.class, new SpeechToAction("历史报告", () -> {
+            mBtHistory.performClick();
+        }));
+    }
+
+    @Override
     public void onDestroy() {
         AgentWebConfig.clearDiskCache(this);
         mAgentWeb.getWebLifeCycle().onDestroy();
@@ -258,8 +272,7 @@ public class TestResultWebActivity extends BaseActivity<TestPresenter> implement
                         TestBeginActivity.startActivity(mContext, infoBean.getInfo().getId());
                         break;
                     case 2: // 主题对话
-                        ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
-                                .setId(infoBean.getInfo().getId()));
+                        ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT).setId(infoBean.getInfo().getId()));
                         break;
                     case 3: // 音频
                         AudioEtcModel audioEtcModel = new AudioEtcModel();

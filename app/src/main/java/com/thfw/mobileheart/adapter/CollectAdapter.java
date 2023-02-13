@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.CollectModel;
 import com.thfw.mobileheart.R;
 
@@ -71,5 +72,15 @@ public class CollectAdapter extends BaseAdapter<CollectModel, CollectAdapter.Col
             mTvTime = (TextView) itemView.findViewById(R.id.tv_time);
             mVLine = (View) itemView.findViewById(R.id.v_line);
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).title;
+        }
+
+        return super.getText(position, type);
     }
 }

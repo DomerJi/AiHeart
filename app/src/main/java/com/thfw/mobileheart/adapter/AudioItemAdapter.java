@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.AudioEtcDetailModel;
 import com.thfw.mobileheart.R;
 
@@ -83,5 +84,15 @@ public class AudioItemAdapter extends BaseAdapter<AudioEtcDetailModel.AudioItemM
             mTvFlag = itemView.findViewById(R.id.tv_flag);
             mTvDuration = itemView.findViewById(R.id.tv_duration);
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+        }
+
+        return super.getText(position, type);
     }
 }

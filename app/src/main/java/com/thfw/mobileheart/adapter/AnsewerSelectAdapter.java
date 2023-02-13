@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.util.AnsewerModel;
 
@@ -62,5 +63,15 @@ public class AnsewerSelectAdapter extends BaseAdapter<AnsewerModel, AnsewerSelec
             mTvOrder = (TextView) itemView.findViewById(R.id.tv_order);
             mTvSelectContetn = (TextView) itemView.findViewById(R.id.tv_select_contetn);
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).content;
+        }
+
+        return super.getText(position, type);
     }
 }

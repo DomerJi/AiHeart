@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.TestDetailModel;
 import com.thfw.base.models.TestResultModel;
@@ -21,10 +22,12 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.TestngAdapter;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -123,9 +126,38 @@ public class TestProgressIngActivity extends BaseActivity<TestPresenter> impleme
                 boolean mUserInputEnabled = mTestIngAdapter.getDataList().get(position).getSelectedIndex() != -1;
                 LogUtil.d(TAG, "mUserInputEnabled = " + mUserInputEnabled);
                 mVpList.setUserInputEnabled(false);
+                if (DeviceUtil.isLhXk_CM_GB03D()) {
+                    initLocal();
+                }
             }
         });
+    }
 
+    private void initLocal() {
+        List<TestDetailModel.SubjectListBean> listBeans = mTestIngAdapter.getDataList();
+        final int currentItem = mVpList.getCurrentItem();
+        List<TestDetailModel.SubjectListBean> optionArray = listBeans.get(mVpList.getCurrentItem()).getOptionArray();
+        int len = optionArray.size();
+        LhXkHelper.removeAction(mVpList.getClass());
+        for (int i = 0; i < len; i++) {
+            TestDetailModel.SubjectListBean option = optionArray.get(i);
+            String speech = option.getOption() + option.getAnswer() + "," + option.getOption() + "," + option.getAnswer();
+            String speechLower = speech.toLowerCase();
+            final int index = i;
+            LhXkHelper.putAction(mVpList.getClass(), new SpeechToAction(speech + "," + speechLower, () -> {
+                listBeans.get(currentItem).setSelectedIndex(index);
+                mTestIngAdapter.notifyItemChanged(currentItem);
+                if (mTestIngAdapter.getOnRvItemListener() != null) {
+                    mTestIngAdapter.getOnRvItemListener().onItemClick(listBeans, currentItem);
+                }
+            }));
+        }
+    }
+
+    @Override
+    protected void clearLocalVoice(int type) {
+        super.clearLocalVoice(type);
+        LhXkHelper.removeAction(mVpList.getClass());
     }
 
     private void submit() {

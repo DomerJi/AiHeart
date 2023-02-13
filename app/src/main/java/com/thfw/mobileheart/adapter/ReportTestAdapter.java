@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.ReportTestModel;
 import com.thfw.mobileheart.R;
 
@@ -66,5 +67,16 @@ public class ReportTestAdapter extends BaseAdapter<ReportTestModel, ReportTestAd
             mTvTime = (TextView) itemView.findViewById(R.id.tv_time);
             mVLine = (View) itemView.findViewById(R.id.v_line);
         }
+    }
+
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+        }
+
+        return super.getText(position, type);
     }
 }

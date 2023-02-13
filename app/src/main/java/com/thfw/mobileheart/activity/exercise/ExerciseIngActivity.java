@@ -55,6 +55,7 @@ import com.thfw.mobileheart.activity.talk.ThemeListActivity;
 import com.thfw.mobileheart.activity.test.TestingActivity;
 import com.thfw.mobileheart.adapter.ChatAdapter;
 import com.thfw.mobileheart.adapter.ChatSelectAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.PageJumpUtils;
 import com.thfw.mobileheart.view.boom.ExplosionField;
@@ -1048,5 +1049,9 @@ public class ExerciseIngActivity extends BaseActivity<UserToolPresenter> impleme
         }
     }
 
-
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(ExerciseIngActivity.class, mRvSelect);
+    }
 }

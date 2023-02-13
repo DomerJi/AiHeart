@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.activity.video;
 
 import static android.view.View.VISIBLE;
+import static com.google.android.exoplayer2.Player.STATE_ENDED;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -48,6 +49,7 @@ import com.luck.picture.lib.tools.ScreenUtils;
 import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.ChatEntity;
+import com.thfw.base.models.SpeechModel;
 import com.thfw.base.models.VideoModel;
 import com.thfw.base.models.VideoPlayListModel;
 import com.thfw.base.net.ResponeThrowable;
@@ -63,11 +65,13 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.talk.TalkItemJumpHelper;
 import com.thfw.mobileheart.adapter.VideoPlayListAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.ExoPlayerFactory;
 import com.thfw.ui.base.AVResource;
 import com.thfw.ui.utils.BrightnessHelper;
 import com.thfw.ui.utils.VideoGestureHelper;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.ShowChangeLayout;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -83,8 +87,7 @@ import java.util.Random;
 /**
  * 悬浮窗播放，全屏播放，竖屏播放
  */
-public class VideoPlayActivity extends BaseActivity<VideoPresenter>
-        implements TimingHelper.WorkListener, VideoGestureHelper.VideoGestureListener, VideoPresenter.VideoUi<VideoModel> {
+public class VideoPlayActivity extends BaseActivity<VideoPresenter> implements TimingHelper.WorkListener, VideoGestureHelper.VideoGestureListener, VideoPresenter.VideoUi<VideoModel> {
 
 
     public static final String KEY_PLAY_POSITION = "key.position";
@@ -148,9 +151,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     }
 
     public static void startActivity(Context context, int videoId, boolean autoFinished) {
-        ((Activity) context).startActivityForResult(new Intent(context, VideoPlayActivity.class)
-                .putExtra(KEY_DATA, videoId)
-                .putExtra(KEY_AUTO_FINISH, autoFinished), ChatEntity.TYPE_RECOMMEND_VIDEO);
+        ((Activity) context).startActivityForResult(new Intent(context, VideoPlayActivity.class).putExtra(KEY_DATA, videoId).putExtra(KEY_AUTO_FINISH, autoFinished), ChatEntity.TYPE_RECOMMEND_VIDEO);
     }
 
     /**
@@ -160,10 +161,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
      * @param fromType     来自哪里 如果是工具包禁止相关推荐
      */
     public static void startActivity(Context context, int videoId, boolean autoFinished, int fromType) {
-        ((Activity) context).startActivityForResult(new Intent(context, VideoPlayActivity.class)
-                .putExtra(KEY_DATA, videoId)
-                .putExtra(KEY_AUTO_FINISH, autoFinished)
-                .putExtra(KEY_FROM_TYPE, fromType), ChatEntity.TYPE_RECOMMEND_VIDEO);
+        ((Activity) context).startActivityForResult(new Intent(context, VideoPlayActivity.class).putExtra(KEY_DATA, videoId).putExtra(KEY_AUTO_FINISH, autoFinished).putExtra(KEY_FROM_TYPE, fromType), ChatEntity.TYPE_RECOMMEND_VIDEO);
     }
 
 
@@ -498,6 +496,9 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
         mRvVideoDetail.setItemAnimator(new DefaultItemAnimator());
         mRvVideoDetail.setAdapter(mVideoPlayListAdapter);
         setRvTouch();
+        if (DeviceUtil.isLhXk_CM_GB03D()) {
+            new InstructScrollHelper(VideoPlayActivity.class, mRvVideoDetail, new InstructScrollHelper.InstructScrollModel().setReplace("播放"));
+        }
     }
 
     /**
@@ -580,17 +581,39 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("播放,继续", () -> {
-            if (mExoPlayer != null && !mExoPlayer.isPlaying()) {
-                mExoPlayer.play();
+        SpeechToAction.Instruction instruction = new SpeechToAction.Instruction() {
+            @Override
+            public SpeechModel matching(String speechText) {
+
+                if (speechText.matches(".{0,2}(停止|暂停|别|不要|退出)(播放|放了).{0,2}") || speechText.matches(".{0,1}(停止|暂停).{0,1}") || speechText.matches(".{0,2}(播放)(停止|暂停|退出).{0,2}")) {
+                    return SpeechModel.create(speechText).setOutText(SpeechModel.OutText.PAUSE).setMatches(true);
+                } else if (speechText.matches(".{0,2}(开始|继续|重新|恢复)(播放).{0,2}") || speechText.matches(".{0,2}(开始|继续|恢复|播放).{0,2}") || speechText.matches(".{0,2}(播放)(继续|开始|恢复).{0,2}")) {
+                    return SpeechModel.create(speechText).setOutText(SpeechModel.OutText.PLAY).setMatches(true);
+                }
+                return super.matching(speechText);
             }
-        }));
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("暂停,停止", () -> {
-            if (mExoPlayer != null && mExoPlayer.isPlaying()) {
-                mExoPlayer.pause();
+        };
+        LhXkHelper.putAction(VideoPlayActivity.class, new SpeechToAction(instruction, () -> {
+            if (SpeechModel.OutText.PLAY.equals(instruction.speechModel.getOutText())) {
+                if (mExoPlayer != null) {
+                    if (mExoPlayer.getPlaybackState() == STATE_ENDED) {
+                        mExoPlayer.prepare();
+                        mExoPlayer.seekTo(mExoPlayer.getCurrentWindowIndex(), 0);
+                        mExoPlayer.setPlayWhenReady(true);
+                    } else {
+                        if (!mExoPlayer.isPlaying()) {
+                            mExoPlayer.play();
+                        }
+                    }
+                }
+            } else if (SpeechModel.OutText.PAUSE.equals(instruction.speechModel.getOutText())) {
+                if (mExoPlayer != null && mExoPlayer.isPlaying()) {
+                    mExoPlayer.pause();
+                }
             }
+
         }));
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("下一个,下一首,下一曲", () -> {
+        LhXkHelper.putAction(VideoPlayActivity.class, new SpeechToAction("下一个,下一首,下一曲", () -> {
             if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
                 int newPostion = this.mPlayPosition + 1;
                 if (newPostion > 0 && newPostion < mVideoList.size()) {
@@ -599,7 +622,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
             }
         }));
 
-        LhXkHelper.putAction(this.getClass(), new SpeechToAction("上一个,上一首,上一曲", () -> {
+        LhXkHelper.putAction(VideoPlayActivity.class, new SpeechToAction("上一个,上一首,上一曲", () -> {
             if (mExoPlayer != null && !EmptyUtil.isEmpty(mVideoList)) {
                 int newPostion = this.mPlayPosition - 1;
                 if (newPostion > 0 && newPostion < mVideoList.size()) {
@@ -608,6 +631,18 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
             }
 
         }));
+
+        LhXkHelper.putAction(VideoPlayActivity.class, new SpeechToAction("收藏", () -> {
+            if (mVideoPlayListAdapter.getmIvCollectTop() != null && !mVideoPlayListAdapter.getmIvCollectTop().isSelected()) {
+                mVideoPlayListAdapter.getmIvCollectTop().performClick();
+            }
+        }));
+        LhXkHelper.putAction(VideoPlayActivity.class, new SpeechToAction("取消收藏", () -> {
+            if (mVideoPlayListAdapter.getmIvCollectTop() != null && mVideoPlayListAdapter.getmIvCollectTop().isSelected()) {
+                mVideoPlayListAdapter.getmIvCollectTop().performClick();
+            }
+        }));
+
     }
 
     @Override
@@ -737,8 +772,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
     }
 
     @Override
-    public void onBrightnessGesture(MotionEvent e1, MotionEvent e2, float distanceX,
-                                    float distanceY) {
+    public void onBrightnessGesture(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         setSpeed(1);
         //下面这是设置当前APP亮度的方法
         Log.d(TAG, "onBrightnessGesture: old" + brightness);
@@ -836,8 +870,7 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter>
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Log.i(TAG, "getY -> " + event.getY()
-                        + ",mRvVideoDetail.canScrollVertically(0) ->" + mRvVideoDetail.canScrollVertically(-1));
+                Log.i(TAG, "getY -> " + event.getY() + ",mRvVideoDetail.canScrollVertically(0) ->" + mRvVideoDetail.canScrollVertically(-1));
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:

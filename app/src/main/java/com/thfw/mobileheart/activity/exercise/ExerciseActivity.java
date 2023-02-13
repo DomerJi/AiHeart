@@ -14,6 +14,7 @@ import com.thfw.base.presenter.UserToolPresenter;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.ExerciseAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -93,5 +94,11 @@ public class ExerciseActivity extends BaseActivity<UserToolPresenter> implements
                 mPresenter.onGetList();
             });
         }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(ExerciseActivity.class, mRvList);
     }
 }

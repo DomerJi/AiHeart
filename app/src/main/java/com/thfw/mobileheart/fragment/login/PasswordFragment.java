@@ -20,6 +20,7 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.models.TokenModel;
 import com.thfw.base.net.HttpResult;
@@ -36,6 +37,7 @@ import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.activity.login.ForgetPasswordActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
@@ -391,6 +393,26 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
     @Override
     public LifecycleProvider getLifecycleProvider() {
         return this;
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(PasswordFragment.class, new SpeechToAction("忘记密码", () -> {
+            mTvForgetPassword.performClick();
+        }));
+
+        LhXkHelper.putAction(PasswordFragment.class, new SpeechToAction(mTvLoginByMobile.getText().toString(), () -> {
+            mTvLoginByMobile.performClick();
+        }));
+
+        LhXkHelper.putAction(PasswordFragment.class, new SpeechToAction("没有账号立即注册,立即注册", () -> {
+            mTvNoAccount.performClick();
+        }));
+
+        LhXkHelper.putAction(PasswordFragment.class, new SpeechToAction(mBtLogin.getText().toString(), () -> {
+            mBtLogin.performClick();
+        }));
     }
 
     @Override

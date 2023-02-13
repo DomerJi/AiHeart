@@ -18,6 +18,7 @@ import com.thfw.base.presenter.TestPresenter;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.ReportTestAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
@@ -43,8 +44,7 @@ public class TestReportActivity extends BaseActivity<TestPresenter> implements T
     private ReportTestAdapter reportTestAdapter;
 
     public static void startActivity(Context context, int rid) {
-        context.startActivity(new Intent(context, TestReportActivity.class)
-                .putExtra(KEY_RID, rid));
+        context.startActivity(new Intent(context, TestReportActivity.class).putExtra(KEY_RID, rid));
     }
 
     public static void startActivity(Context context) {
@@ -84,9 +84,7 @@ public class TestReportActivity extends BaseActivity<TestPresenter> implements T
                 if (list.get(position).isHide()) {
                     DialogFactory.createSimple(TestReportActivity.this, "本报告暂不支持查看");
                 } else {
-                    TestResultWebActivity.startActivity(mContext, new TestResultModel()
-                            .setResultId(list.get(position).getId())
-                            .setTestId(list.get(position).getRid()));
+                    TestResultWebActivity.startActivity(mContext, new TestResultModel().setResultId(list.get(position).getId()).setTestId(list.get(position).getRid()));
                 }
             }
         });
@@ -117,5 +115,11 @@ public class TestReportActivity extends BaseActivity<TestPresenter> implements T
         pageHelper.onFail(v -> {
             mPresenter.onResultHistory(rid, pageHelper.getPage());
         });
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(TestReportActivity.class, mRvList);
     }
 }

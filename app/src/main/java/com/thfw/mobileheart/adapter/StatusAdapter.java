@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.StatusEntity;
 import com.thfw.base.utils.Util;
 import com.thfw.mobileheart.R;
@@ -267,6 +268,20 @@ public class StatusAdapter extends BaseAdapter<StatusEntity, RecyclerView.ViewHo
 //                }
 //            });
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                StatusEntity statusEntity = mDataList.get(position);
+                switch (statusEntity.type) {
+                    case StatusEntity.TYPE_BODY:
+                        return mDataList.get(position).moodModel.getName();
+                }
+        }
+
+        return super.getText(position, type);
     }
 
 

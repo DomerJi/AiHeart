@@ -10,11 +10,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.TestDetailModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.activity.test.TestProgressIngActivity;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -82,6 +86,14 @@ public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, 
                 onLastNextListener.onClick(1);
             }
         });
+
+        LhXkHelper.putAction(TestProgressIngActivity.class, new SpeechToAction("上一题", () -> {
+            holder.mRlLast.performClick();
+        }));
+
+        LhXkHelper.putAction(TestProgressIngActivity.class, new SpeechToAction("下一题", () -> {
+            holder.mRlNext.performClick();
+        }));
     }
 
     public void setOnLastNextListener(OnLastNextListener onLastNextListener) {
@@ -145,5 +157,15 @@ public class TestngAdapter extends BaseAdapter<TestDetailModel.SubjectListBean, 
             mRlNext = (RelativeLayout) itemView.findViewById(R.id.rl_next);
             mTvNext = (TextView) itemView.findViewById(R.id.tv_next);
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getDes();
+        }
+
+        return super.getText(position, type);
     }
 }

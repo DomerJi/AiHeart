@@ -15,14 +15,17 @@ import com.ainirobot.coreservice.client.actionbean.FaceTrackBean;
 import com.ainirobot.coreservice.client.listener.ActionListener;
 import com.ainirobot.coreservice.client.listener.CommandListener;
 import com.ainirobot.coreservice.client.listener.Person;
+import com.ainirobot.coreservice.client.listener.TextListener;
 import com.ainirobot.coreservice.client.person.PersonApi;
 import com.ainirobot.coreservice.client.person.PersonListener;
 import com.ainirobot.coreservice.client.speech.SkillApi;
 import com.ainirobot.coreservice.client.speech.SkillCallback;
+import com.ainirobot.coreservice.client.speech.entity.TTSEntity;
 import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.LhXkListener;
 import com.thfw.base.models.SpeechModel;
 import com.thfw.base.utils.EmptyUtil;
+import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.ToastUtil;
@@ -35,11 +38,12 @@ import com.thfw.ui.common.LhXkSet;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 
@@ -54,16 +58,23 @@ public class LhXkHelper {
     private static SkillApi skillApi;
     private static String mSpeechParResult;
     private static int mReqId = -1;
+    private static String[] ttsReply = new String[]{"嗯", "好的", "收到"};
     private static int mPersonId = -1;
 
-    private static LinkedHashMap<Integer, List<SpeechToAction>> mSpeechToActionMap = new LinkedHashMap<>();
+    private static LinkedHashMap<Integer, HashMap<String, SpeechToAction>> mSpeechToActionMap = new LinkedHashMap<>();
     private static PersonListener listener;
 
     // 别看我 的 人员id 和 别看我时间
     private static HashMap<Integer, Long> cancelPersonIdOrTime = new HashMap<>();
 
+    private static String getTtsReplay() {
+        return ttsReply[new Random().nextInt(ttsReply.length)];
+    }
 
     static {
+        putAction(LhXkHelper.class, new SpeechToAction("返回到首页,到首页,回首页,去首页", () -> {
+            MyApplication.goAppHome(MyApplication.getApp());
+        }));
         putAction(LhXkHelper.class, new SpeechToAction("别看我,看别人,看其他人,看别的人,看别的地方,不准看我,不要看我", () -> {
             LogUtil.i(TAG, "============================别看我============================");
             if (mPersonId != -1) {
@@ -119,12 +130,14 @@ public class LhXkHelper {
     }
 
     public static void putAction(int code, SpeechToAction speechToAction) {
-        List<SpeechToAction> actions = mSpeechToActionMap.get(code);
+        HashMap<String, SpeechToAction> actions = mSpeechToActionMap.get(code);
         if (actions == null) {
-            actions = new ArrayList<>();
+            actions = new HashMap<String, SpeechToAction>();
+            mSpeechToActionMap.put(code, actions);
         }
-        actions.add(speechToAction);
-        mSpeechToActionMap.put(code, actions);
+        actions.put(speechToAction.text, speechToAction);
+
+        LogUtil.i(TAG, "actions -> " + GsonUtil.toJson(mSpeechToActionMap));
     }
 
     public static void removeAction(Class classes) {
@@ -132,16 +145,35 @@ public class LhXkHelper {
     }
 
     public static void removeAction(int code) {
+        LogUtil.i(TAG, "removeAction -> " + code);
         mSpeechToActionMap.remove(code);
     }
 
     public static SpeechModel onActionText(String word, boolean end) {
         String oldWord = word;
-        String newWord = word.replaceAll("(打开|点击)", "");
-        Set<Map.Entry<Integer, List<SpeechToAction>>> entrySet = mSpeechToActionMap.entrySet();
-        for (Map.Entry<Integer, List<SpeechToAction>> map : entrySet) {
-            List<SpeechToAction> list = map.getValue();
+        String newWord = word.replaceAll("(打开|点击|选择)", "");
+        Set<Map.Entry<Integer, HashMap<String, SpeechToAction>>> entrySet = mSpeechToActionMap.entrySet();
+        LogUtil.i(TAG, "entrySet -> " + GsonUtil.toJson(mSpeechToActionMap));
+        for (Map.Entry<Integer, HashMap<String, SpeechToAction>> map : entrySet) {
+            Collection<SpeechToAction> list = map.getValue().values();
             for (SpeechToAction speechToAction : list) {
+                if (TextUtils.isEmpty(speechToAction.text)) {
+                    if (speechToAction.instruction != null) {
+                        SpeechModel speechModel = speechToAction.instruction.matching(oldWord);
+                        if (speechModel != null) {
+                            speechToAction.instruction.speechModel = speechModel;
+                            if (end) {
+                                LogUtil.i(TAG, "regex true*********** -> ");
+                                tts(getTtsReplay());
+                                HandlerUtil.getMainHandler().postDelayed(() -> {
+                                    speechToAction.run();
+                                }, 450);
+                            }
+                            return speechModel;
+                        }
+                    }
+                    continue;
+                }
                 String regex;
                 String matchesWord;
                 int len;
@@ -172,20 +204,24 @@ public class LhXkHelper {
                 }
 
                 LogUtil.i(TAG, "regex -> " + regex);
-                if (newWord.matches(regex)) {
+                String finalWord = newWord;
+                if (speechToAction.isReplace()) {
+                    finalWord = finalWord.replaceAll(speechToAction.getReplace(), "");
+                }
+                if (finalWord.matches(regex)) {
                     String[] words = speechToAction.text.split(",");
                     for (String key : words) {
                         int start = oldWord.indexOf(key);
                         if (start != -1) {
-                            oldWord = oldWord.substring(0, start) + "<font color='" + UIConfig.COLOR_AGREE + "'>" + key +
-                                    "</font>";
+                            oldWord = oldWord.substring(0, start) + "<font color='" + UIConfig.COLOR_HOUR + "'>" + key + "</font>";
                         }
                     }
                     if (end) {
                         LogUtil.i(TAG, "regex true*********** -> " + regex);
+                        tts(getTtsReplay());
                         HandlerUtil.getMainHandler().postDelayed(() -> {
                             speechToAction.run();
-                        }, 500);
+                        }, 450);
                     }
                     return SpeechModel.create(oldWord).setMatches(true);
                 }
@@ -584,6 +620,32 @@ public class LhXkHelper {
     public interface SpeechResult {
         void onResult(String result);
 
+    }
+
+    public static void tts(String text) {
+        if (skillApi != null && skillApi.isApiConnectedService()) {
+            skillApi.playText(new TTSEntity(text), new TextListener() {
+                @Override
+                public void onStart() {
+                    //播放开始
+                }
+
+                @Override
+                public void onStop() {
+                    //播放停止
+                }
+
+                @Override
+                public void onError() {
+                    //播放错误
+                }
+
+                @Override
+                public void onComplete() {
+                    //播放完成
+                }
+            });
+        }
     }
 
     private static void showSpeechText(SpeechModel model) {

@@ -9,6 +9,7 @@ import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.ExerciseModel;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.constants.UIConfig;
@@ -80,5 +81,15 @@ public class ExerciseAdapter extends BaseAdapter<ExerciseModel, ExerciseAdapter.
             mTvHint = (TextView) itemView.findViewById(R.id.tv_hint);
             mTvHour = (TextView) itemView.findViewById(R.id.tv_hour);
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+        }
+
+        return super.getText(position, type);
     }
 }

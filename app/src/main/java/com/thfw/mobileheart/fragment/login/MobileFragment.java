@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.TokenModel;
@@ -26,6 +27,7 @@ import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.activity.login.ForgetPasswordActivity;
 import com.thfw.mobileheart.activity.login.LoginActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
@@ -173,8 +175,7 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
     public void onVisible(boolean isVisible) {
         super.onVisible(isVisible);
         if (isVisible) {
-            if (RegularUtil.isNumber(LoginActivity.INPUT_PHONE)
-                    && LoginActivity.INPUT_PHONE.startsWith("1")) {
+            if (RegularUtil.isNumber(LoginActivity.INPUT_PHONE) && LoginActivity.INPUT_PHONE.startsWith("1")) {
                 mEtMobile.setText(LoginActivity.INPUT_PHONE);
             }
             mCheckBox.setChecked(LoginActivity.mTvRightAgreed);
@@ -244,4 +245,20 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
         }
     }
 
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+
+        LhXkHelper.putAction(PasswordFragment.class, new SpeechToAction("忘记密码", () -> {
+            mTvForgetPassword.performClick();
+        }));
+
+        LhXkHelper.putAction(PasswordFragment.class, new SpeechToAction(mVfcode.getGainVerification().getText().toString(), () -> {
+            mVfcode.getGainVerification().performClick();
+        }));
+
+        LhXkHelper.putAction(PasswordFragment.class, new SpeechToAction(mBtLogin.getText().toString(), () -> {
+            mBtLogin.performClick();
+        }));
+    }
 }

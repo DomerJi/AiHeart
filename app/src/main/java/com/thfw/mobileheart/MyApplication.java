@@ -2,7 +2,6 @@ package com.thfw.mobileheart;
 
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -39,7 +38,6 @@ import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.push.helper.PushHelper;
 import com.thfw.mobileheart.util.ActivityLifeCycle;
 import com.thfw.mobileheart.util.AppLifeHelper;
-import com.thfw.mobileheart.util.ThemeUtil;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.user.login.UserManager;
@@ -119,7 +117,7 @@ public class MyApplication extends MultiDexApplication {
         return lv;
     }
 
-    public static void goAppHome(Activity activity) {
+    public static void goAppHome(Context activity) {
         Intent intent = new Intent(activity, MainActivity.class);
         intent.setFlags(FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivity(intent);

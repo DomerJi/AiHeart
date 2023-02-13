@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.ExerciseModel;
 import com.thfw.mobileheart.R;
 
@@ -92,5 +93,15 @@ public class ExerciseLogcateAdapter extends BaseAdapter<ExerciseModel.LinkModel,
             mTvState = (TextView) itemView.findViewById(R.id.tv_state);
             mIvLock = (ImageView) itemView.findViewById(R.id.iv_lock);
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type){
+            case OnSpeakTextListener.TYPE_SPEAK_TEXT:
+                return mDataList.get(position).getTitle();
+        }
+
+        return super.getText(position, type);
     }
 }
