@@ -440,7 +440,7 @@ public class SettingActivity extends BaseActivity {
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("账号安全", () -> {
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("账号安全,账户安全,帐号安全,帐户安全", () -> {
             mLlAccountSafe.performClick();
         }));
         LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("个人信息", () -> {
@@ -452,7 +452,7 @@ public class SettingActivity extends BaseActivity {
         LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("语音和焦点", () -> {
             mLlVoiceFocus.performClick();
         }));
-        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("清楚缓存", () -> {
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("清除缓存,清缓存", () -> {
             mLlClearCache.performClick();
         }));
         LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("帮助与反馈", () -> {

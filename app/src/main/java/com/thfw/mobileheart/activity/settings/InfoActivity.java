@@ -32,6 +32,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.face.PermissionListener;
 import com.thfw.base.models.AccountPinyinModel;
@@ -67,6 +68,7 @@ import com.thfw.mobileheart.adapter.BaseAdapter;
 import com.thfw.mobileheart.adapter.DialogLikeAdapter;
 import com.thfw.mobileheart.adapter.InfoLikeAdapter;
 import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.AreaUtil;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.GlideImageEngine;
@@ -76,6 +78,7 @@ import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
 import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.utils.GlideUtil;
+import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.TitleView;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
@@ -768,7 +771,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
             }
         }
 
-        DialogFactory.createSelectCustomText(this, "需要的支持", list, new DialogFactory.OnViewSelectCallBack() {
+        DialogFactory.createSelectCustomText(this, "最需要的支持", list, new DialogFactory.OnViewSelectCallBack() {
 
             private BaseAdapter baseAdapter;
 
@@ -837,6 +840,14 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
 
         TextView mTvAlbum = contentView.findViewById(R.id.tv_album);
         TextView mTvPreset = contentView.findViewById(R.id.tv_preset);
+        if(DeviceUtil.isLhXk_CM_GB03D()) {
+            LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(mTvAlbum.getText().toString(), () -> {
+                if (mPopWindow != null) mTvAlbum.performClick();
+            }));
+            LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(mTvPreset.getText().toString(), () -> {
+                if (mPopWindow != null) mTvPreset.performClick();
+            }));
+        }
         // 相册拍摄
         mTvAlbum.setOnClickListener(v -> {
             mPopWindow.dismiss();
@@ -1253,5 +1264,66 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_avatar), () -> {
+            mLlAvatar.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_nickname), () -> {
+            mLlNickname.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_name), () -> {
+            mLlName.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_team), () -> {
+            mLlTeam.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_birthday), () -> {
+            mLlBirthday.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_sex), () -> {
+            mLlSex.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_address), () -> {
+            mLlAddress.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_nationality), () -> {
+            mLlNationality.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_mobile), () -> {
+            mLlMobile.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_schooling), () -> {
+            mLlSchooling.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_marriage), () -> {
+            mLlMarriage.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_children), () -> {
+            mLlChildren.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_join_j), () -> {
+            mLlJoinJTime.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_politic_countenance), () -> {
+            mLlPoliticCountenance.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_class), () -> {
+            mLlClass.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_level), () -> {
+            mLlLevel.performClick();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_hobby), () -> {
+            createLikeDialog();
+        }));
+        LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(getResources().getString(R.string.info_like), () -> {
+            createNeedDialog();
+        }));
+
+
     }
 }

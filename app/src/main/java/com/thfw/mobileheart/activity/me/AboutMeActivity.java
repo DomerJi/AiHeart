@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.core.text.HtmlCompat;
 
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.models.AboutUsModel;
 import com.thfw.base.net.ResponeThrowable;
@@ -23,6 +24,7 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.activity.settings.SystemAppActivity;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -85,12 +87,10 @@ public class AboutMeActivity extends BaseActivity<OtherPresenter> implements Oth
             return;
         }
         SharePreferenceUtil.setString(KEY_ABOUT, GsonUtil.toJson(data));
-        String hint = "<font color='#0000FF'>产品概述：</font>"
-                + data.getContent();
+        String hint = "<font color='#0000FF'>产品概述：</font>" + data.getContent();
         mTvHint.setText(HtmlCompat.fromHtml(hint, HtmlCompat.FROM_HTML_MODE_LEGACY));
 
-        String companyHttp = "<font color='#0000FF'>公司官网：</font>"
-                + "<u>" + data.getCompanyUrl() + "</u>";
+        String companyHttp = "<font color='#0000FF'>公司官网：</font>" + "<u>" + data.getCompanyUrl() + "</u>";
 
         mTvCompanyAddress.setText(HtmlCompat.fromHtml(companyHttp, HtmlCompat.FROM_HTML_MODE_LEGACY));
         mTvCompanyAddress.setOnClickListener(v -> {
@@ -134,5 +134,25 @@ public class AboutMeActivity extends BaseActivity<OtherPresenter> implements Oth
         super.onDestroy();
         BuglyUtil.requestNewVersion(null);
         LoadingDialog.hide();
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(AboutMeActivity.class, new SpeechToAction("公司官网", () -> {
+            mTvCompanyAddress.performClick();
+        }));
+        LhXkHelper.putAction(AboutMeActivity.class, new SpeechToAction("检查更新", () -> {
+            mTvCheckVersion.performClick();
+        }));
+        LhXkHelper.putAction(AboutMeActivity.class, new SpeechToAction("产品概述", () -> {
+            LhXkHelper.tts(mTvHint.getText().toString());
+        }));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LhXkHelper.ttsEnd();
     }
 }

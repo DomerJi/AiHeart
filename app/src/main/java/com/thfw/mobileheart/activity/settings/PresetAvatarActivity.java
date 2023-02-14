@@ -15,6 +15,7 @@ import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.PresetAvatarAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
@@ -90,6 +91,12 @@ public class PresetAvatarActivity extends BaseActivity<UserInfoPresenter> implem
         });
     }
 
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(PresetAvatarActivity.class, mRvList);
+    }
+
     public void onUpdateInfo(String key, String value) {
 
         new UserInfoPresenter(new UserInfoPresenter.UserInfoUi<CommonModel>() {
@@ -109,8 +116,6 @@ public class PresetAvatarActivity extends BaseActivity<UserInfoPresenter> implem
             public void onFail(ResponeThrowable throwable) {
                 ToastUtil.show("设置失败");
             }
-        }).onUpdate(NetParams.crete()
-                .add("key", key)
-                .add("value", value));
+        }).onUpdate(NetParams.crete().add("key", key).add("value", value));
     }
 }

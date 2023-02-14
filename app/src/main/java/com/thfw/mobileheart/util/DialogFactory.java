@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
+import com.bigkoo.pickerview.listener.OnDismissListener;
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
@@ -725,6 +726,49 @@ public class DialogFactory {
         OptionsPickerView<PickerData> optionsPickerView = optionsPickerBuilder.build();
         setOptionPickerView(optionsPickerView, mContext);
         optionsPickerView.setPicker(list);
+        if (DeviceUtil.isLhXk_CM_GB03D()) {
+            int size = list.size();
+            for (int i = 0; i < size; i++) {
+                int position = i;
+                LhXkHelper.putAction(OptionsPickerBuilder.class, new SpeechToAction(list.get(i).getPickerViewText(), () -> {
+                    if (optionsSelectListener != null) {
+                        try {
+                            optionsSelectListener.onOptionsSelect(position, -1, -1, null);
+                        } catch (Exception e) {
+
+                        }
+                    }
+                }));
+            }
+            LhXkHelper.putAction(OptionsPickerBuilder.class, new SpeechToAction("确定", () -> {
+                if (optionsSelectListener != null) {
+                    try {
+                        optionsPickerView.returnData();
+                        optionsPickerView.dismiss();
+                    } catch (Exception e) {
+
+                    }
+                }
+            }));
+            LhXkHelper.putAction(OptionsPickerBuilder.class, new SpeechToAction("取消", () -> {
+                if (optionsSelectListener != null && optionsPickerView != null) {
+                    try {
+                        optionsPickerView.dismiss();
+                    } catch (Exception e) {
+
+                    }
+                }
+            }));
+
+            optionsPickerView.setOnDismissListener(new OnDismissListener() {
+                @Override
+                public void onDismiss(Object o) {
+                    LhXkHelper.removeAction(OptionsPickerBuilder.class);
+                }
+            });
+
+        }
+
         optionsPickerView.show();
     }
 

@@ -7,8 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.PresetAvatarModel;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.ui.utils.GlideUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -57,5 +59,14 @@ public class PresetAvatarAdapter extends BaseAdapter<PresetAvatarModel, PresetAv
         private void initView(View itemView) {
             mRivPresetAvatar = (RoundedImageView) itemView.findViewById(R.id.riv_preset_avatar);
         }
+    }
+
+    @Override
+    public String getText(int position, int type) {
+        switch (type) {
+            case OnSpeakTextListener.TYPE_SPEAK_ORDER:
+                return InstructScrollHelper.speakNumber(position + 1);
+        }
+        return super.getText(position, type);
     }
 }

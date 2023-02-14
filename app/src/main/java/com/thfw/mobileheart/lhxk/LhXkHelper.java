@@ -622,30 +622,52 @@ public class LhXkHelper {
 
     }
 
-    public static void tts(String text) {
+    public static void tts(String text, TextListener textListener) {
         if (skillApi != null && skillApi.isApiConnectedService()) {
             skillApi.playText(new TTSEntity(text), new TextListener() {
                 @Override
                 public void onStart() {
                     //播放开始
+                    if (textListener != null) {
+                        textListener.onStart();
+                    }
                 }
 
                 @Override
                 public void onStop() {
                     //播放停止
+                    if (textListener != null) {
+                        textListener.onStop();
+                    }
                 }
 
                 @Override
                 public void onError() {
                     //播放错误
+                    if (textListener != null) {
+                        textListener.onError();
+                    }
                 }
 
                 @Override
                 public void onComplete() {
                     //播放完成
+                    if (textListener != null) {
+                        textListener.onComplete();
+                    }
                 }
             });
         }
+    }
+
+    public static void ttsEnd() {
+        if (skillApi != null && skillApi.isApiConnectedService()) {
+            skillApi.stopTTS();
+        }
+    }
+
+    public static void tts(String text) {
+        tts(text, null);
     }
 
     private static void showSpeechText(SpeechModel model) {
