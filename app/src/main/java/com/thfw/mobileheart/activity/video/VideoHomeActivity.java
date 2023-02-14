@@ -277,6 +277,11 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
             TabLayout.Tab tabAt = mTabLayout.newTab().setText(cacheModel.get(i).name);
             mTabLayout.addTab(tabAt);
             tabAt.setCustomView(R.layout.tab_custeom_item_study);
+            if (DeviceUtil.isLhXk_CM_GB03D()) {
+                LhXkHelper.putAction(CollectActivity.class, new SpeechToAction(tabAt.getText().toString(), () -> {
+                    mTabLayout.selectTab(tabAt);
+                }));
+            }
             textList = new ArrayList<>();
             if (tabAt.getCustomView() != null) {
                 if (cacheModel.get(i).isUnSelectedChange()) {
@@ -285,7 +290,7 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
                     mText1.setTextColor(models.get(i).getUnSelectedColor());
                 }
                 ImageView mIvFire = tabAt.getCustomView().findViewById(R.id.iv_fire);
-                      if (cacheModel.get(i).fire == 0) {
+                if (cacheModel.get(i).fire == 0) {
                     mIvFire.setVisibility(View.GONE);
                 } else {
                     mIvFire.setVisibility(View.VISIBLE);
@@ -420,13 +425,10 @@ public class VideoHomeActivity extends BaseActivity<VideoPresenter> implements V
 
         int count = mTabLayout.getTabCount();
         for (int i = 0; i < count; i++) {
-            TabLayout.TabView tabView = mTabLayout.getTabAt(i).view;
-            if (DeviceUtil.isLhXk_CM_GB03D()) {
-                final TabLayout.Tab fTab = tabView.getTab();
-                LhXkHelper.putAction(CollectActivity.class, new SpeechToAction(tabView.getTab().getText().toString(), () -> {
-                    mTabLayout.selectTab(fTab);
-                }));
-            }
+            final TabLayout.Tab fTab = mTabLayout.getTabAt(i);
+            LhXkHelper.putAction(CollectActivity.class, new SpeechToAction(fTab.getText().toString(), () -> {
+                mTabLayout.selectTab(fTab);
+            }));
         }
     }
 }

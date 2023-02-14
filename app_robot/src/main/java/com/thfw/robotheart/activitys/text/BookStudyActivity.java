@@ -17,7 +17,6 @@ import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
-import com.thfw.robotheart.activitys.video.VideoHomeActivity;
 import com.thfw.robotheart.adapter.BookStudyTypeAdapter;
 import com.thfw.robotheart.fragments.text.BookStudyFragment;
 import com.thfw.robotheart.lhxk.LhXkHelper;
@@ -142,7 +141,7 @@ public class BookStudyActivity extends RobotBaseActivity<BookPresenter> implemen
         for (int i = 0; i < len; i++) {
             String name = data.get(i).name;
             final int index = i;
-            LhXkHelper.putAction(VideoHomeActivity.class, new SpeechToAction(name, () -> {
+            LhXkHelper.putAction(BookStudyActivity.class, new SpeechToAction(name, () -> {
                 studyTypeAdapter.setSelectedIndex(index);
                 studyTypeAdapter.notifyDataSetChanged();
                 studyTypeAdapter.getOnRvItemListener().onItemClick(studyTypeAdapter.getDataList(), index);

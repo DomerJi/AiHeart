@@ -20,6 +20,7 @@ import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
+import com.thfw.mobileheart.activity.read.StudyHomeActivity;
 import com.thfw.mobileheart.adapter.StudyChildTypeAdapter;
 import com.thfw.mobileheart.adapter.StudyListAdapter;
 import com.thfw.mobileheart.lhxk.InstructScrollHelper;
@@ -207,6 +208,7 @@ public class StudyListFragment extends BaseFragment<BookPresenter> implements Bo
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
         new InstructScrollHelper(StudyListFragment.class, mRvList);
-        new InstructScrollHelper(StudyListFragment.class, mRvChildren);
+        new InstructScrollHelper(StudyHomeActivity.class, mRvChildren);
     }
+
 }

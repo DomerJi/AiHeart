@@ -7,10 +7,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.fragment.message.MsgFragment;
 import com.thfw.mobileheart.fragment.message.MsgTaskFragment;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.FragmentLoader;
 import com.thfw.mobileheart.util.MsgCountManager;
 import com.thfw.ui.dialog.LoadingDialog;
@@ -171,5 +173,20 @@ public class MessageFragment extends BaseFragment implements MsgCountManager.OnC
     public void onDestroy() {
         MsgCountManager.getInstance().removeOnCountChangeListener(this);
         super.onDestroy();
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(MessageFragment.class, new SpeechToAction("任务", () -> {
+            mRlTab01.performClick();
+        }));
+        LhXkHelper.putAction(MessageFragment.class, new SpeechToAction("通知", () -> {
+            mRlTab02.performClick();
+        }));
+
+        LhXkHelper.putAction(MessageFragment.class, new SpeechToAction("全部已读", () -> {
+            mTitleView.getTvRight().performClick();
+        }));
     }
 }

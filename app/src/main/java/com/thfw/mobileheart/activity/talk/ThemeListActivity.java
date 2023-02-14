@@ -20,6 +20,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.TalkModel;
 import com.thfw.base.models.ThemeTalkModel;
@@ -31,6 +32,8 @@ import com.thfw.base.utils.PaletteUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.ThemeTalkAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -325,5 +328,14 @@ public class ThemeListActivity extends BaseActivity<TalkPresenter> implements Ta
     public void finish() {
         setResult(RESULT_OK);
         super.finish();
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(ThemeListActivity.class, new SpeechToAction("立即咨询", () -> {
+            mTvJustTalk.performClick();
+        }));
+        new InstructScrollHelper(ThemeListActivity.class, mRvList);
     }
 }

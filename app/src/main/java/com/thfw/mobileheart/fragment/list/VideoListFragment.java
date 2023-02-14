@@ -50,6 +50,8 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
     private RecyclerView mRvChildren;
     private VideoChildTypeAdapter videoChildTypeAdapter;
     private RecyclerView mRvChildren2;
+    private Object rv2Class = new Object();
+
 
     public VideoListFragment(int type) {
         super();
@@ -270,7 +272,8 @@ public class VideoListFragment extends BaseFragment<VideoPresenter> implements V
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
         new InstructScrollHelper(VideoListFragment.class, mRvList);
-        new InstructScrollHelper(VideoListFragment.class, mRvChildren);
-        new InstructScrollHelper(VideoListFragment.class, mRvChildren2);
+        new InstructScrollHelper(VideoHomeActivity.class, mRvChildren);
+        new InstructScrollHelper(VideoHomeActivity.class, mRvChildren2);
     }
+
 }

@@ -20,6 +20,7 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.task.MeTaskActivity;
 import com.thfw.mobileheart.adapter.MsgTaskAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.util.MsgCountManager;
 import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
@@ -202,5 +203,11 @@ public class MsgTaskFragment extends BaseFragment<TaskPresenter> implements Task
                 }
             }
         };
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(MsgFragment.class, mRvList);
     }
 }

@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.SimpleUpgradeStateListener;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.LoginPresenter;
@@ -35,6 +36,7 @@ import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.me.AboutMeActivity;
 import com.thfw.mobileheart.activity.service.AutoUpdateService;
 import com.thfw.mobileheart.constants.AnimFileName;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.AnimFrequencyUtil;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FileSizeUtil;
@@ -401,6 +403,15 @@ public class SettingActivity extends BaseActivity {
                 mTvWeek.setTextColor(getResources().getColor(R.color.text_green));
                 break;
         }
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction(mTvEvery.getText().toString(), () -> {
+            if (mPopWindow != null) mTvEvery.performClick();
+        }));
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction(mTvDay.getText().toString(), () -> {
+            if (mPopWindow != null) mTvDay.performClick();
+        }));
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction(mTvWeek.getText().toString(), () -> {
+            if (mPopWindow != null) mTvWeek.performClick();
+        }));
         // 每次
         mTvEvery.setOnClickListener(v -> {
             mPopWindow.dismiss();
@@ -426,5 +437,41 @@ public class SettingActivity extends BaseActivity {
         mPopWindow.showAsDropDown(mTvTransition, 0, 26, Gravity.LEFT);
     }
 
-
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("账号安全", () -> {
+            mLlAccountSafe.performClick();
+        }));
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("个人信息", () -> {
+            mLlInfo.performClick();
+        }));
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("过场动画", () -> {
+            mLlTransition.performClick();
+        }));
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("语音和焦点", () -> {
+            mLlVoiceFocus.performClick();
+        }));
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("清楚缓存", () -> {
+            mLlClearCache.performClick();
+        }));
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("帮助与反馈", () -> {
+            mLlHelpBack.performClick();
+        }));
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("隐私政策", () -> {
+            mLlPrivacyPolicy.performClick();
+        }));
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("版本信息", () -> {
+            mLlVersion.performClick();
+        }));
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("关于我们", () -> {
+            mLlAbout.performClick();
+        }));
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("退出登录", () -> {
+            mBtLogout.performClick();
+        }));
+        LhXkHelper.putAction(SettingActivity.class, new SpeechToAction("注销账号", () -> {
+            mTvDeleteAccount.performClick();
+        }));
+    }
 }

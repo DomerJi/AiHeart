@@ -62,6 +62,7 @@ import com.thfw.mobileheart.adapter.ChatAdapter;
 import com.thfw.mobileheart.adapter.ChatSelectAdapter;
 import com.thfw.mobileheart.constants.AnimFileName;
 import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.PageJumpUtils;
@@ -1445,5 +1446,11 @@ public class ChatActivity extends BaseActivity<TalkPresenter> implements TalkPre
         boolean contains = keywords.contains(word);
         LogUtil.i(TAG, "containsByWords time = " + (System.currentTimeMillis() - start));
         return contains;
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(ChatActivity.class, mRvSelect);
     }
 }

@@ -1,6 +1,7 @@
 package com.thfw.mobileheart.adapter;
 
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -64,9 +65,7 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
         holder.mTvTitle.setSelected(position == mSelectedIndex);
         if (typeModel.isChangedColor()) {
 
-            holder.mTvTitle.setTypeface(holder.mTvTitle.isSelected()
-                    && typeModel.getSelectedColor() == typeModel.getUnSelectedColor()
-                    ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
+            holder.mTvTitle.setTypeface(holder.mTvTitle.isSelected() && typeModel.getSelectedColor() == typeModel.getUnSelectedColor() ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
             holder.mTvTitle.setTextColor(holder.mTvTitle.isSelected() ? typeModel.getSelectedColor() : typeModel.getUnSelectedColor());
         } else {
             holder.mTvTitle.setTypeface(Typeface.DEFAULT);
@@ -95,7 +94,7 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
             itemView.setOnClickListener(v -> {
                 int position = getBindingAdapterPosition();
                 if (mSelectedIndex == position) {
-                    if(!reSetPosition){
+                    if (!reSetPosition) {
                         return;
                     }
                     mSelectedIndex = -1;
@@ -113,11 +112,27 @@ public class VideoChildTypeAdapter extends BaseAdapter<VideoTypeModel, VideoChil
 
     @Override
     public String getText(int position, int type) {
-        switch (type){
+        switch (type) {
             case OnSpeakTextListener.TYPE_SPEAK_TEXT:
                 return mDataList.get(position).name;
         }
 
         return super.getText(position, type);
+    }
+
+
+    @Override
+    public void onSpeakItemClick(int position) {
+        if (mSelectedIndex == position) {
+            if (!reSetPosition) {
+                return;
+            }
+            mSelectedIndex = -1;
+        } else {
+            mSelectedIndex = position;
+        }
+        Log.i("onSpeakItemClick", "onSpeakItemClick = " + mSelectedIndex);
+        super.onSpeakItemClick(position);
+        notifyDataSetChanged();
     }
 }

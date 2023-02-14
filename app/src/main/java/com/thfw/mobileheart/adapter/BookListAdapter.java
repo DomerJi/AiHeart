@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.thfw.base.face.OnSpeakTextListener;
 import com.thfw.base.models.BookItemModel;
 import com.thfw.mobileheart.R;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -60,9 +61,11 @@ public class BookListAdapter extends BaseAdapter<BookItemModel, BookListAdapter.
 
     @Override
     public String getText(int position, int type) {
-        switch (type){
+        switch (type) {
             case OnSpeakTextListener.TYPE_SPEAK_TEXT:
                 return mDataList.get(position).getTitle();
+            case OnSpeakTextListener.TYPE_SPEAK_ORDER:
+                return InstructScrollHelper.speakNumber(position + 1);
         }
 
         return super.getText(position, type);

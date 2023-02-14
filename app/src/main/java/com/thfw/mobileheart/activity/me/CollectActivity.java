@@ -12,9 +12,12 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
+import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
 import com.thfw.mobileheart.fragment.list.CollectListFragment;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.ui.widget.TitleView;
 
 import java.util.ArrayList;
@@ -88,5 +91,18 @@ public class CollectActivity extends BaseActivity {
 
         //设置TabLayout和ViewPager联动
         mTabLayout.setupWithViewPager(mViewPager, false);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        int count = mTabLayout.getTabCount();
+        for (int i = 0; i < count; i++) {
+            final TabLayout.Tab fTab = mTabLayout.getTabAt(i);
+
+            LhXkHelper.putAction(CollectActivity.class, new SpeechToAction(fTab.getText().toString(), () -> {
+                mTabLayout.selectTab(fTab);
+            }));
+        }
     }
 }

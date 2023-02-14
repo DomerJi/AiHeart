@@ -25,6 +25,7 @@ import com.thfw.mobileheart.activity.talk.ChatActivity;
 import com.thfw.mobileheart.activity.test.TestBeginActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.SearchAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 
 import java.util.List;
 
@@ -111,8 +112,7 @@ public class SearchResultFragment extends BaseFragment {
                         ExerciseDetailActivity.startActivity(mContext, resultBean.getId());
                         break;
                     case SearchResultModel.TYPE_DIALOG:
-                        ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT)
-                                .setId(resultBean.getId()));
+                        ChatActivity.startActivity(mContext, new TalkModel(TalkModel.TYPE_SPEECH_CRAFT).setId(resultBean.getId()));
                         break;
                     case SearchResultModel.TYPE_HOT_PHONE:
                         if (getActivity() instanceof BaseActivity) {
@@ -165,5 +165,11 @@ public class SearchResultFragment extends BaseFragment {
 
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(SearchResultFragment.class, mRvList);
     }
 }

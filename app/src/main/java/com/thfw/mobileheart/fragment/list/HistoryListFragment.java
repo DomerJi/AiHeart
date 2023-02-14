@@ -21,6 +21,7 @@ import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
 import com.thfw.mobileheart.activity.test.TestBeginActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.HistoryAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -127,5 +128,11 @@ public class HistoryListFragment extends BaseFragment<HistoryPresenter> implemen
         pageHelper.onFail(v -> {
             mPresenter.getUserHistoryList(type, pageHelper.getPage());
         });
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(HistoryListFragment.class, mRvList);
     }
 }

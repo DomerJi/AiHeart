@@ -180,18 +180,18 @@ public class TestBeginActivity extends BaseActivity<TestPresenter> implements Te
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        LhXkHelper.putAction(VideoPlayActivity.class, new SpeechToAction("加入收藏，取消收藏", () -> {
+        LhXkHelper.putAction(TestBeginActivity.class, new SpeechToAction("加入收藏，取消收藏", () -> {
             if (mLlCollect != null && mIvCollect != null && !mIvCollect.isSelected()) {
                 mLlCollect.performClick();
             }
         }));
-        LhXkHelper.putAction(VideoPlayActivity.class, new SpeechToAction("取消收藏", () -> {
+        LhXkHelper.putAction(TestBeginActivity.class, new SpeechToAction("取消收藏", () -> {
             if (mLlCollect != null && mIvCollect != null && mIvCollect.isSelected()) {
                 mLlCollect.performClick();
             }
         }));
 
-        LhXkHelper.putAction(VideoPlayActivity.class, new SpeechToAction("开始测试,开始测评,开始", () -> {
+        LhXkHelper.putAction(TestBeginActivity.class, new SpeechToAction("开始测试,开始测评,开始", () -> {
             if (mBtnBegin != null) {
                 mBtnBegin.performClick();
             }

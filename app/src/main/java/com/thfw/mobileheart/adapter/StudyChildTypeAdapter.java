@@ -43,7 +43,7 @@ public class StudyChildTypeAdapter extends BaseAdapter<BookStudyTypeModel, Study
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull VideoChildHolder holder, int position) {
-        BookStudyTypeModel typeModel =  mDataList.get(position);
+        BookStudyTypeModel typeModel = mDataList.get(position);
         holder.mTvTitle.setText(typeModel.name);
         holder.mTvTitle.setSelected(position == mSelectedIndex);
         holder.mIvFire.setVisibility(typeModel.fire == 1 ? View.VISIBLE : View.GONE);
@@ -56,9 +56,7 @@ public class StudyChildTypeAdapter extends BaseAdapter<BookStudyTypeModel, Study
         holder.mTvTitle.setSelected(position == mSelectedIndex);
         if (typeModel.isChangedColor()) {
 
-            holder.mTvTitle.setTypeface(holder.mTvTitle.isSelected()
-                    && typeModel.getSelectedColor() == typeModel.getUnSelectedColor()
-                    ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
+            holder.mTvTitle.setTypeface(holder.mTvTitle.isSelected() && typeModel.getSelectedColor() == typeModel.getUnSelectedColor() ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
             holder.mTvTitle.setTextColor(holder.mTvTitle.isSelected() ? typeModel.getSelectedColor() : typeModel.getUnSelectedColor());
         } else {
             holder.mTvTitle.setTypeface(Typeface.DEFAULT);
@@ -105,11 +103,22 @@ public class StudyChildTypeAdapter extends BaseAdapter<BookStudyTypeModel, Study
 
     @Override
     public String getText(int position, int type) {
-        switch (type){
+        switch (type) {
             case OnSpeakTextListener.TYPE_SPEAK_TEXT:
                 return mDataList.get(position).name;
         }
 
         return super.getText(position, type);
+    }
+
+    @Override
+    public void onSpeakItemClick(int position) {
+        if (mSelectedIndex == position) {
+            mSelectedIndex = -1;
+        } else {
+            mSelectedIndex = position;
+        }
+        super.onSpeakItemClick(position);
+        notifyDataSetChanged();
     }
 }

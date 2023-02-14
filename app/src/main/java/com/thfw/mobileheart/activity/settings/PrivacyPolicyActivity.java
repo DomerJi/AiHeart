@@ -3,10 +3,12 @@ package com.thfw.mobileheart.activity.settings;
 import android.widget.LinearLayout;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.activity.WebActivity;
 import com.thfw.mobileheart.constants.AgreeOn;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.ui.widget.TitleView;
 
 public class PrivacyPolicyActivity extends BaseActivity {
@@ -45,5 +47,17 @@ public class PrivacyPolicyActivity extends BaseActivity {
         });
 
 
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+
+        LhXkHelper.putAction(PrivacyPolicyActivity.class, new SpeechToAction("用户服务协议", () -> {
+            mLlUser.performClick();
+        }));
+        LhXkHelper.putAction(PrivacyPolicyActivity.class, new SpeechToAction("隐私保护政策", () -> {
+            mLlSelfMsg.performClick();
+        }));
     }
 }

@@ -20,6 +20,8 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.AzQuickAdapter;
 import com.thfw.mobileheart.adapter.HotPhoneAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -151,8 +153,7 @@ public class HotPhoneActivity extends BaseActivity<OtherPresenter> implements Ot
     @Override
     public void onSuccess(List<HotCallModel> data) {
         if (EmptyUtil.isEmpty(data)) {
-            if (mRvList == null || mRvList.getAdapter() == null
-                    || mRvList.getAdapter().getItemCount() == 0) {
+            if (mRvList == null || mRvList.getAdapter() == null || mRvList.getAdapter().getItemCount() == 0) {
                 mLoadingView.showEmpty();
             }
             return;
@@ -200,5 +201,18 @@ public class HotPhoneActivity extends BaseActivity<OtherPresenter> implements Ot
                 mPresenter.onGetHotPhoneList();
             });
         }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(HotPhoneActivity.class, mRvList);
+        new InstructScrollHelper(mRvAcQuick.getClass(), mRvAcQuick);
+    }
+
+    @Override
+    protected void clearLocalVoice(int type) {
+        super.clearLocalVoice(type);
+        LhXkHelper.removeAction(mRvAcQuick.getClass());
     }
 }

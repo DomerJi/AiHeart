@@ -388,12 +388,11 @@ public class AudioHomeActivity extends BaseActivity<AudioPresenter> implements A
 
         int count = mTabLayout.getTabCount();
         for (int i = 0; i < count; i++) {
-            final TabLayout.Tab fTab  = mTabLayout.getTabAt(i);
-            if (DeviceUtil.isLhXk_CM_GB03D()) {
-                LhXkHelper.putAction(AudioHomeActivity.class, new SpeechToAction(fTab.getText().toString(), () -> {
-                    mTabLayout.selectTab(fTab);
-                }));
-            }
+            final TabLayout.Tab fTab = mTabLayout.getTabAt(i);
+
+            LhXkHelper.putAction(AudioHomeActivity.class, new SpeechToAction(fTab.getText().toString(), () -> {
+                mTabLayout.selectTab(fTab);
+            }));
         }
     }
 }

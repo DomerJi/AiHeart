@@ -11,10 +11,13 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.SearchResultModel;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
+import com.thfw.ui.widget.DeviceUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -216,6 +219,21 @@ public class SearchFragment extends BaseFragment {
 
             }
         });
+
+        /**
+         * tabView 左右边距动态设置
+         */
+
+        if (DeviceUtil.isLhXk_OS_R_SD01B()) {
+            int count = mTabLayout.getTabCount();
+            for (int i = 0; i < count; i++) {
+                final TabLayout.Tab fTab = mTabLayout.getTabAt(i);
+                LhXkHelper.putAction(SearchFragment.class, new SpeechToAction(fTab.getText().toString(), () -> {
+                    mTabLayout.selectTab(fTab);
+                }));
+            }
+        }
+
     }
 
     /**

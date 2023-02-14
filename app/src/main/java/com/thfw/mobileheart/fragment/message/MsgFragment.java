@@ -16,6 +16,7 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.adapter.MsgAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.push.helper.PushHandle;
 import com.thfw.mobileheart.util.MsgCountManager;
 import com.thfw.mobileheart.util.PageHelper;
@@ -196,5 +197,11 @@ public class MsgFragment extends BaseFragment<TaskPresenter> implements TaskPres
                 }
             }
         };
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(MsgFragment.class, mRvList);
     }
 }

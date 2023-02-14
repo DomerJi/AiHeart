@@ -17,6 +17,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.models.HeadModel;
@@ -32,6 +33,7 @@ import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.GlideImageEngine;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.TitleView;
@@ -223,5 +225,13 @@ public class MeWillHelpBackActivity extends BaseActivity {
                 });
             }
         });
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(MeWillHelpBackActivity.class, new SpeechToAction("提交反馈", () -> {
+            mBtSubmit.performClick();
+        }));
     }
 }

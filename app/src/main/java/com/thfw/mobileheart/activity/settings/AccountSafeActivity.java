@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.net.NetParams;
 import com.thfw.base.net.ResponeThrowable;
@@ -15,6 +16,7 @@ import com.thfw.base.presenter.UserInfoPresenter;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.TitleView;
 import com.thfw.user.login.UserManager;
@@ -156,5 +158,16 @@ public class AccountSafeActivity extends BaseActivity {
 
             }
         }).onUpdate(netParams);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(AccountSafeActivity.class, new SpeechToAction("手机号码", () -> {
+            mLlMobile.performClick();
+        }));
+        LhXkHelper.putAction(AccountSafeActivity.class, new SpeechToAction("登录密码", () -> {
+            mLlPassword.performClick();
+        }));
     }
 }

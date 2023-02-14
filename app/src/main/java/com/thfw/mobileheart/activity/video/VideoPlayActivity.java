@@ -581,6 +581,8 @@ public class VideoPlayActivity extends BaseActivity<VideoPresenter> implements T
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
+
+        new InstructScrollHelper(VideoPlayActivity.class, mRvVideoDetail);
         SpeechToAction.Instruction instruction = new SpeechToAction.Instruction() {
             @Override
             public SpeechModel matching(String speechText) {

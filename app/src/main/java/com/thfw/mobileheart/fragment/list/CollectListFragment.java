@@ -24,6 +24,7 @@ import com.thfw.mobileheart.activity.read.BookIdeoDetailActivity;
 import com.thfw.mobileheart.activity.test.TestBeginActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.CollectAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -34,8 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class CollectListFragment extends BaseFragment<HistoryPresenter>
-        implements HistoryPresenter.HistoryUi<List<CollectModel>>, DataChangeHelper.DataChangeListener {
+public class CollectListFragment extends BaseFragment<HistoryPresenter> implements HistoryPresenter.HistoryUi<List<CollectModel>>, DataChangeHelper.DataChangeListener {
 
     private int type;
     private SmartRefreshLayout mRefreshLayout;
@@ -165,5 +165,11 @@ public class CollectListFragment extends BaseFragment<HistoryPresenter>
     public void onDestroy() {
         super.onDestroy();
         DataChangeHelper.getInstance().remove(this);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(CollectListFragment.class, mRvList);
     }
 }

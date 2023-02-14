@@ -12,9 +12,12 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.thfw.base.api.HistoryApi;
 import com.thfw.base.base.IPresenter;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
+import com.thfw.mobileheart.activity.audio.AudioHomeActivity;
 import com.thfw.mobileheart.fragment.list.HistoryListFragment;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.ui.widget.TitleView;
 
 import java.util.ArrayList;
@@ -91,5 +94,18 @@ public class MeHistoryActivity extends BaseActivity {
         mTabLayout.setupWithViewPager(mViewPager, false);
 
         mViewPager.setCurrentItem(mCurrentItem, false);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        int count = mTabLayout.getTabCount();
+        for (int i = 0; i < count; i++) {
+            final TabLayout.Tab fTab = mTabLayout.getTabAt(i);
+
+            LhXkHelper.putAction(MeHistoryActivity.class, new SpeechToAction(fTab.getText().toString(), () -> {
+                mTabLayout.selectTab(fTab);
+            }));
+        }
     }
 }

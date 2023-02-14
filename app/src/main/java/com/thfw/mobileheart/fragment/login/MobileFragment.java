@@ -249,15 +249,15 @@ public class MobileFragment extends BaseFragment<LoginPresenter> implements Logi
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
 
-        LhXkHelper.putAction(PasswordFragment.class, new SpeechToAction("忘记密码", () -> {
+        LhXkHelper.putAction(MobileFragment.class, new SpeechToAction("忘记密码", () -> {
             mTvForgetPassword.performClick();
         }));
 
-        LhXkHelper.putAction(PasswordFragment.class, new SpeechToAction(mVfcode.getGainVerification().getText().toString(), () -> {
+        LhXkHelper.putAction(MobileFragment.class, new SpeechToAction(mVfcode.getGainVerification().getText().toString(), () -> {
             mVfcode.getGainVerification().performClick();
         }));
 
-        LhXkHelper.putAction(PasswordFragment.class, new SpeechToAction(mBtLogin.getText().toString(), () -> {
+        LhXkHelper.putAction(MobileFragment.class, new SpeechToAction(mBtLogin.getText().toString(), () -> {
             mBtLogin.performClick();
         }));
     }

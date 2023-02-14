@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.OnRvItemListener;
 import com.thfw.base.models.CommonProblemModel;
 import com.thfw.base.net.ResponeThrowable;
@@ -20,6 +21,8 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.adapter.CommonProblemAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.PageHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.ui.widget.TitleView;
@@ -85,9 +88,7 @@ public class HelpBackActivity extends BaseActivity<OtherPresenter> implements Ot
         commonProblemAdapter.setOnRvItemListener(new OnRvItemListener<CommonProblemModel>() {
             @Override
             public void onItemClick(List<CommonProblemModel> list, int position) {
-                SimpleTextActivity.startActivity(mContext,
-                        list.get(position).getQuestion(),
-                        list.get(position).getAnswer());
+                SimpleTextActivity.startActivity(mContext, list.get(position).getQuestion(), list.get(position).getAnswer());
             }
         });
         mRvHelpHints.setAdapter(commonProblemAdapter);
@@ -119,5 +120,17 @@ public class HelpBackActivity extends BaseActivity<OtherPresenter> implements Ot
         mPageHelper.onFail(v -> {
             mPresenter.onGetCommonProblem(mPageHelper.getPage());
         });
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(HelpBackActivity.class, new SpeechToAction("我要反馈", () -> {
+            mTvMeBack.performClick();
+        }));
+        LhXkHelper.putAction(HelpBackActivity.class, new SpeechToAction("历史反馈", () -> {
+            mTitleView.getTvRight().performClick();
+        }));
+        new InstructScrollHelper(HelpBackActivity.class, mRvHelpHints);
     }
 }
