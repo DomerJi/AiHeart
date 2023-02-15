@@ -15,6 +15,7 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseFragment;
 import com.thfw.mobileheart.activity.read.BookDetailActivity;
 import com.thfw.mobileheart.adapter.BookListAdapter;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -108,5 +109,11 @@ public class ReadListFragment extends BaseFragment<BookPresenter> implements Boo
         } else {
             mRefreshLayout.finishLoadMore(false);
         }
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(ReadListFragment.class, mRvList);
     }
 }

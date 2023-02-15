@@ -16,7 +16,6 @@ import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.fragment.list.TaskFragment;
 import com.thfw.mobileheart.lhxk.LhXkHelper;
-import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.TitleView;
 
 import java.util.ArrayList;
@@ -58,12 +57,6 @@ public class MeTaskActivity extends BaseActivity {
         //添加tab
         for (int i = 0; i < tabs.length; i++) {
             mTabLayout.addTab(mTabLayout.newTab().setText(tabs[i]));
-            final int position = i;
-            if (DeviceUtil.isLhXk_CM_GB03D()) {
-                LhXkHelper.putAction(MeTaskActivity.class, new SpeechToAction(tabs[i], () -> {
-                    mViewPager.setCurrentItem(position);
-                }));
-            }
         }
         tabFragmentList.add(new TaskFragment(0));
         tabFragmentList.add(new TaskFragment(1));

@@ -51,8 +51,8 @@ public class InstructScrollHelper {
         }
     }
 
-    private static final String LAST = "向上滑动,向上滚动,往上看，向上看,向前看";
-    private static final String NEXT = "向下滑动,向下滚动,往下看，向下看,向后看";
+    private static final String LAST = "向上滑动,向上滑,向上滚动,往上看,向上看,向上翻,向前看";
+    private static final String NEXT = "向下滑动,向下滑,向下滚动,往下看,向下看,向下翻,向后看";
 
 
     public InstructScrollHelper(Class classes, WebView webView) {

@@ -5,6 +5,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.thfw.base.base.SpeechToAction;
 import com.thfw.base.face.MyTextWatcher;
 import com.thfw.base.models.CommonModel;
 import com.thfw.base.net.ResponeThrowable;
@@ -15,6 +16,7 @@ import com.thfw.base.utils.RegularUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
+import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.widget.VerificationCodeView;
 import com.thfw.user.login.UserManager;
@@ -23,8 +25,7 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 /**
  * 绑定手机号
  */
-public class BindMobileActivity extends BaseActivity<LoginPresenter>
-        implements LoginPresenter.LoginUi<CommonModel>, TimingHelper.WorkListener {
+public class BindMobileActivity extends BaseActivity<LoginPresenter> implements LoginPresenter.LoginUi<CommonModel>, TimingHelper.WorkListener {
     public static final String KEY_RESULT = "key.result";
     private EditText mEtPhone;
     private Button mBtSubmit;
@@ -154,5 +155,16 @@ public class BindMobileActivity extends BaseActivity<LoginPresenter>
     public void onDestroy() {
         super.onDestroy();
         TimingHelper.getInstance().removeWorkArriveListener(this);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        LhXkHelper.putAction(BindMobileActivity.class, new SpeechToAction("获取验证码,重新获取", () -> {
+            mVFcode.getGainVerification().performClick();
+        }));
+        LhXkHelper.putAction(BindMobileActivity.class, new SpeechToAction("确定关联,确认关联", () -> {
+            mBtSubmit.performClick();
+        }));
     }
 }

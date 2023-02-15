@@ -51,6 +51,7 @@ import com.thfw.mobileheart.activity.video.VideoHomeActivity;
 import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.HomeAdapter;
 import com.thfw.mobileheart.constants.AnimFileName;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.MoodLivelyHelper;
@@ -143,6 +144,7 @@ public class HomeFragment extends BaseFragment<MobilePresenter> implements Mobil
         LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("全国心理热线,心理热线,了解更多", () -> mContext.startActivity(new Intent(mContext, HotPhoneActivity.class))).setLike(true));
 
         LhXkHelper.putAction(HomeFragment.class, new SpeechToAction("搜索", () -> startActivity(new Intent(mContext, SearchActivity.class))));
+        new InstructScrollHelper(HomeFragment.class, mRvHome);
     }
 
     private void onAction(String animName) {

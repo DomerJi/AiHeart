@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -47,6 +48,7 @@ import com.thfw.mobileheart.activity.settings.SettingActivity;
 import com.thfw.mobileheart.activity.task.MeTaskActivity;
 import com.thfw.mobileheart.activity.test.TestReportActivity;
 import com.thfw.mobileheart.constants.UIConfig;
+import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.lhxk.LhXkHelper;
 import com.thfw.mobileheart.util.DialogFactory;
 import com.thfw.mobileheart.util.FunctionDurationUtil;
@@ -103,6 +105,7 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
     private TextView mTvFaceSwitch;
     private ImageView mIvMoodStatus;
     private View mVTopBanner;
+    private ScrollView mSvView;
 
     public static void resetInitFaceState() {
         initFaceState = false;
@@ -126,6 +129,7 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
         mTvMeLevel = (TextView) findViewById(R.id.tv_me_level);
         mTvMsgVersion = (TextView) findViewById(R.id.tv_massage_version);
         mTvStatus = (TextView) findViewById(R.id.tv_status);
+        mSvView = (ScrollView) findViewById(R.id.sv_view);
         View.OnClickListener listener = v -> {
             if (UserManager.getInstance().isTrueLogin()) {
                 startActivity(new Intent(mContext, InfoActivity.class));
@@ -220,7 +224,7 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
         mTvFaceSwitch = (TextView) findViewById(R.id.tv_face_switch);
         SmartRefreshLayout smartRefresh = (SmartRefreshLayout) findViewById(R.id.smart_refresh);
         AtomicInteger minHeight = new AtomicInteger();
-        mVTopBanner.post(()->{
+        mVTopBanner.post(() -> {
             minHeight.set(mVTopBanner.getHeight());
         });
         smartRefresh.setOnMultiListener(new SimpleMultiListener() {
@@ -461,6 +465,6 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
         LhXkHelper.putAction(MeFragment.class, new SpeechToAction("帮助与反馈", () -> mLlHelpBack.performClick()));
         LhXkHelper.putAction(MeFragment.class, new SpeechToAction("设置", () -> mLlSetting.performClick()));
         LhXkHelper.putAction(MeFragment.class, new SpeechToAction("退出登录", () -> mBtLogout.performClick()).setLike(true));
-
+        new InstructScrollHelper(MeFragment.class, mSvView);
     }
 }

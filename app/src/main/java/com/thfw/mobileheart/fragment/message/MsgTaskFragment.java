@@ -208,6 +208,6 @@ public class MsgTaskFragment extends BaseFragment<TaskPresenter> implements Task
     @Override
     protected void initLocalVoice(int type) {
         super.initLocalVoice(type);
-        new InstructScrollHelper(MsgFragment.class, mRvList);
+        new InstructScrollHelper(MsgTaskFragment.class, mRvList);
     }
 }

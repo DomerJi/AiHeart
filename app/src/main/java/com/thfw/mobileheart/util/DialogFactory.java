@@ -292,6 +292,7 @@ public class DialogFactory {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     dismissSpeech();
+                    Glide.with(activity).resumeRequests();
                 }
             }).setOnBindViewListener(viewHolder -> {
                 setSpeechView(viewHolder, model);

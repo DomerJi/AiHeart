@@ -142,17 +142,13 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
                 Object endColor = cacheModel.get(position + 1).getSelectedColor();
                 int color = (int) argbEvaluator.evaluate(positionOffset, startColor, endColor);
                 mTabLayout.setSelectedTabIndicatorColor(color);
-                Log.i("onPageScrolled", "position -> " + position
-                        + " ; positionOffset -> " + positionOffset
-                        + " ; positionOffsetPixels -> " + positionOffsetPixels
-                        + " ; color -> " + color + " ; toPosition -> " + (position + 1));
+                Log.i("onPageScrolled", "position -> " + position + " ; positionOffset -> " + positionOffset + " ; positionOffsetPixels -> " + positionOffsetPixels + " ; color -> " + color + " ; toPosition -> " + (position + 1));
                 mTabLayout.setScrollPosition(position, positionOffset, true);
             }
 
             @Override
             public void onPageSelected(int position) {
-                getSupportFragmentManager().beginTransaction()
-                        .setMaxLifecycle(tabFragmentList.get(position), Lifecycle.State.RESUMED).commit();
+                getSupportFragmentManager().beginTransaction().setMaxLifecycle(tabFragmentList.get(position), Lifecycle.State.RESUMED).commit();
                 if (mTabLayout.getSelectedTabPosition() != position) {
                     mTabLayout.selectTab(mTabLayout.getTabAt(position));
                 }
@@ -306,11 +302,10 @@ public class StudyHomeActivity extends BaseActivity<BookPresenter> implements Bo
         int count = mTabLayout.getTabCount();
         for (int i = 0; i < count; i++) {
             final TabLayout.Tab fTab = mTabLayout.getTabAt(i);
-            if (DeviceUtil.isLhXk_CM_GB03D()) {
-                LhXkHelper.putAction(StudyHomeActivity.class, new SpeechToAction(fTab.getText().toString(), () -> {
-                    mTabLayout.selectTab(fTab);
-                }));
-            }
+            LhXkHelper.putAction(StudyHomeActivity.class, new SpeechToAction(fTab.getText().toString(), () -> {
+                mTabLayout.selectTab(fTab);
+            }));
+
         }
     }
 }

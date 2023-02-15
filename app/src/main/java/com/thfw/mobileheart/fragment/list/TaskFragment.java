@@ -20,7 +20,6 @@ import com.thfw.mobileheart.activity.task.TaskDetailsActivity;
 import com.thfw.mobileheart.adapter.TaskAdapter;
 import com.thfw.mobileheart.lhxk.InstructScrollHelper;
 import com.thfw.mobileheart.util.PageHelper;
-import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.ui.widget.LoadingView;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
@@ -113,9 +112,6 @@ public class TaskFragment extends BaseFragment<TaskPresenter> implements TaskPre
     @Override
     public void onSuccess(List<TaskItemModel> data) {
         mPageHelper.onSuccess(data);
-        if (DeviceUtil.isLhXk_CM_GB03D()) {
-            new InstructScrollHelper(TaskFragment.class, mRvList);
-        }
     }
 
     @Override
@@ -161,5 +157,11 @@ public class TaskFragment extends BaseFragment<TaskPresenter> implements TaskPre
     public void onDestroy() {
         super.onDestroy();
         DataChangeHelper.getInstance().remove(this);
+    }
+
+    @Override
+    protected void initLocalVoice(int type) {
+        super.initLocalVoice(type);
+        new InstructScrollHelper(TaskFragment.class, mRvList);
     }
 }

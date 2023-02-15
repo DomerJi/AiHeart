@@ -716,7 +716,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             @Override
             public void onMoodLively(MoodLivelyModel data) {
                 if (data != null && data.getUserMood() == null) {
-                    DialogFactory.createMoodSignInDialog(MainActivity.this, dialog -> {
+                    TDialog tdialog = DialogFactory.createMoodSignInDialog(MainActivity.this, dialog -> {
                         mMainHandler.postDelayed(() -> {
                             if (isMeResumed()) {
                                 onUrgedDialog();
@@ -731,6 +731,16 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                             }
                         }
                     });
+                    if (DeviceUtil.isLhXk_CM_GB03D()) {
+                        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("关闭,close", () -> {
+                            if (tdialog != null) {
+                                tdialog.dismiss();
+                            }
+                        }));
+                        LhXkHelper.putAction(MainActivity.class, new SpeechToAction("去看看,去打卡", () -> {
+                            StatusActivity.startActivity(mContext, true);
+                        }));
+                    }
                 }
                 moodHint = true;
                 SharePreferenceUtil.setBoolean(KEY_MOOD_HINT + ActivityLifeCycle.getTodayStartTime() + UserManager.getInstance().getUID(), moodHint);
