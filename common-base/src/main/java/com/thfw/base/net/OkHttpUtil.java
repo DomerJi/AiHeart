@@ -91,7 +91,7 @@ public class OkHttpUtil {
         // 清空拦截
         clientBuilder.interceptors().clear();
         // 设置通用拦截器
-        clientBuilder.interceptors().add(mCommonInterceptor);
+        clientBuilder.addInterceptor(mCommonInterceptor);
         // 设定日志级别
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         clientBuilder.addInterceptor(httpLoggingInterceptor);
@@ -196,7 +196,7 @@ public class OkHttpUtil {
 
     public static void request(String url, MultipartBody multipartBody, Callback callback) {
         OkHttpClient httpClient = new OkHttpClient();
-        httpClient = httpClient.newBuilder().sslSocketFactory(new SSL(sslSocket()), sslSocket()).build();
+        httpClient = httpClient.newBuilder().addInterceptor(mCommonInterceptor).sslSocketFactory(new SSL(sslSocket()), sslSocket()).build();
         Request.Builder requestBuilder = new Request.Builder()
                 .url(url)
                 .post(multipartBody);
@@ -210,7 +210,7 @@ public class OkHttpUtil {
 
     public static void request(String url, Callback callback) {
         OkHttpClient httpClient = new OkHttpClient();
-        httpClient = httpClient.newBuilder().sslSocketFactory(new SSL(sslSocket()), sslSocket()).build();
+        httpClient = httpClient.newBuilder().addInterceptor(mCommonInterceptor).sslSocketFactory(new SSL(sslSocket()), sslSocket()).build();
         Request.Builder requestBuilder = new Request.Builder()
                 .url(url)
                 .get();
