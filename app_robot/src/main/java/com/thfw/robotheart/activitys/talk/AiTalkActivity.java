@@ -802,7 +802,7 @@ public class AiTalkActivity extends RobotBaseActivity<TalkPresenter> implements 
         String tempText = inputText;
 
         if (tempText.matches(".{0,6}(股价|股票|市值).{0,4}")) {
-            String company = tempText.replaceAll("(的|股价|股票|市值).{0,8}", "");
+            String company = tempText.replaceAll("(的股价|的股票|的市值|股价|股票|市值).{0,8}", "");
             if (EmptyUtil.isEmpty(company) || company.length() < 2) {
                 return false;
             }
