@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
@@ -55,9 +56,11 @@ import com.thfw.base.utils.LogUtil;
 import com.thfw.base.utils.PinYinUtil;
 import com.thfw.base.utils.StringUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
 import com.thfw.robotheart.activitys.login.BindPhoneActivity;
+import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.activitys.login.SetPasswordActivity;
 import com.thfw.robotheart.adapter.BaseAdapter;
 import com.thfw.robotheart.adapter.DialogLikeAdapter;
@@ -71,6 +74,7 @@ import com.thfw.ui.common.ImageActivity;
 import com.thfw.ui.dialog.LoadingDialog;
 import com.thfw.ui.dialog.TDialog;
 import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.utils.GlideUtil;
 import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.user.login.LoginStatus;
@@ -363,7 +367,6 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
             if (UserManager.getInstance().isLogin()) {
                 mTvWelNickname.setText(UserManager.getInstance().getUser().getVisibleName());
             }
-            mTitleView.getLlBack().setVisibility(View.GONE);
             mBtConfirm.setOnClickListener(v -> {
                 if (inputFinish()) {
                     mFirstInputMsg = false;
@@ -1306,5 +1309,22 @@ public class InfoActivity extends RobotBaseActivity<UserInfoPresenter> implement
         }));
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!mFirstInputMsg) {
+            super.onBackPressed();
+        } else {
+            LoginActivity.onDialogLoginByFail((FragmentActivity) mContext, new OnViewClickListener() {
+                @Override
+                public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                    if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                        finish();
+                        MyApplication.goAppHome(InfoActivity.this);
+                    }
+                }
+            });
+        }
     }
 }

@@ -76,6 +76,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.organ.AskForSelectActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.settings.SetPasswordOriginActivity"

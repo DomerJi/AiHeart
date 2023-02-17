@@ -1255,7 +1255,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
             LoginActivity.onDialogLoginByFail((FragmentActivity) mContext, new OnViewClickListener() {
                 @Override
                 public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
-                    if (view.getId() == com.thfw.ui.R.id.tv_left) {
+                    if (view.getId() == com.thfw.ui.R.id.tv_right) {
                         finish();
                         MyApplication.kill();
                     }

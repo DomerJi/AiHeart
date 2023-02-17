@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,14 +21,19 @@ import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.OrganizationPresenter;
 import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.robotheart.MyApplication;
 import com.thfw.robotheart.R;
 import com.thfw.robotheart.activitys.RobotBaseActivity;
+import com.thfw.robotheart.activitys.login.LoginActivity;
 import com.thfw.robotheart.adapter.OrganSelectChildrenAdapter;
 import com.thfw.robotheart.adapter.OrganSelectedAdapter;
 import com.thfw.robotheart.push.tester.UPushAlias;
 import com.thfw.robotheart.util.DialogRobotFactory;
 import com.thfw.robotheart.view.TitleRobotView;
 import com.thfw.ui.dialog.LoadingDialog;
+import com.thfw.ui.dialog.TDialog;
+import com.thfw.ui.dialog.base.BindViewHolder;
+import com.thfw.ui.dialog.listener.OnViewClickListener;
 import com.thfw.ui.widget.LoadingView;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
@@ -56,8 +62,7 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
     private ArrayList<String> childIds;
 
     public static void startActivity(Context context, boolean isFirst) {
-        context.startActivity(new Intent(context, SelectOrganizationActivity.class)
-                .putExtra(KEY_DATA, isFirst));
+        context.startActivity(new Intent(context, SelectOrganizationActivity.class).putExtra(KEY_DATA, isFirst));
     }
 
     @Override
@@ -118,20 +123,21 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
                 UserManager.getInstance().notifyUserInfo();
                 LoadingDialog.hide();
                 ToastUtil.show("选择成功");
-                mIsFirst = false;
+
                 if (!UserManager.getInstance().getUser().isSetUserInfo()) {
                     InfoActivity.startActivityFirst(mContext);
                 } else {
                     UserManager.getInstance().login();
                 }
+
+                mIsFirst = false;
                 finish();
             }
 
             @Override
             public void onFail(ResponeThrowable throwable) {
                 LoadingDialog.hide();
-                DialogRobotFactory.createSimple(SelectOrganizationActivity.this, throwable.getMessage()
-                        + "(code:" + throwable.getCode() + ")");
+                DialogRobotFactory.createSimple(SelectOrganizationActivity.this, throwable.getMessage() + "(code:" + throwable.getCode() + ")");
             }
         }).onSelectOrganization(String.valueOf(mSelecteds.get(mSelecteds.size() - 1).getId()));
     }
@@ -139,10 +145,6 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
     @Override
     public void initData() {
         mIsFirst = getIntent().getBooleanExtra(KEY_DATA, false);
-
-        if (mIsFirst) {
-            mTitleRobotView.getLlBack().setVisibility(View.GONE);
-        }
         if (UserManager.getInstance().isLogin()) {
             mTvNickname.setText(UserManager.getInstance().getUser().getVisibleName());
         }
@@ -309,10 +311,19 @@ public class SelectOrganizationActivity extends RobotBaseActivity<OrganizationPr
     }
 
     @Override
-    public void finish() {
-        if (mIsFirst) {
-            return;
+    public void onBackPressed() {
+        if (!mIsFirst) {
+            super.onBackPressed();
+        } else {
+            LoginActivity.onDialogLoginByFail((FragmentActivity) mContext, new OnViewClickListener() {
+                @Override
+                public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                    if (view.getId() == com.thfw.ui.R.id.tv_right) {
+                        finish();
+                        MyApplication.goAppHome(SelectOrganizationActivity.this);
+                    }
+                }
+            });
         }
-        super.finish();
     }
 }

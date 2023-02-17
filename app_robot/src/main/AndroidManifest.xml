@@ -229,13 +229,14 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.me.SelectOrganizationActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.me.PrivateSetActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.me.InfoActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
         <activity
             android:name=".activitys.login.SetPasswordActivity"

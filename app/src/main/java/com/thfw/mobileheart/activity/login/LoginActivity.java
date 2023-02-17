@@ -226,12 +226,9 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
                 mTvHint.setText("放弃注册，将无法使用该应用，是否放弃？");
-                mTvHint.setOnClickListener(v -> {
-                    activity.startActivity(new Intent(activity, PrivacyPolicyActivity.class));
-                });
                 mTvTitle.setText("放弃注册？");
-                mTvLeft.setText("放弃");
-                mTvRight.setText("我再想想");
+                mTvLeft.setText("我再想想");
+                mTvRight.setText("放弃注册");
 
             }
 

@@ -98,7 +98,7 @@ public class EditInfoActivity extends BaseActivity {
 
         NICKNAME(0, "填写昵称", 2, 15),
         NAME(1, "填写真实姓名", 2, 15),
-        NAME_PINYIN(4, "填写姓名全拼", 4, 30),
+        NAME_PINYIN(4, "填写姓名全拼", 3, 30),
         CLASSES(2, "填写部门", 2, 15),
         PHONE_NUMBER(3, "填写手机号", 11, 11);
 

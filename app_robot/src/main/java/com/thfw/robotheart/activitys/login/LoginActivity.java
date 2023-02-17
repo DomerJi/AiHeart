@@ -100,10 +100,8 @@ public class LoginActivity extends RobotBaseActivity {
             user.setOrganization(data.organization);
             user.setAuthTypeList(data.getAuthType());
             if (!data.isNoOrganization()) {
-                if (EmptyUtil.isEmpty(data.getAuthType())
-                        || !data.getAuthType().contains(ContextApp.getDeviceTypeStr())) {
-                    DialogRobotFactory.createSimple((FragmentActivity) activity,
-                            MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login));
+                if (EmptyUtil.isEmpty(data.getAuthType()) || !data.getAuthType().contains(ContextApp.getDeviceTypeStr())) {
+                    DialogRobotFactory.createSimple((FragmentActivity) activity, MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login));
                     return false;
                 }
             }
@@ -135,8 +133,7 @@ public class LoginActivity extends RobotBaseActivity {
      */
     public static void showOrganIdNoValid(FragmentActivity activity) {
         String organId = CommonParameter.getOrganizationId();
-        DialogRobotFactory.createSimple(activity, "设备状态", "无效的机构编码，请联系管理员解决！"
-                + "\n当前机构编码：" + (TextUtils.isEmpty(organId) ? "空" : organId));
+        DialogRobotFactory.createSimple(activity, "设备状态", "无效的机构编码，请联系管理员解决！" + "\n当前机构编码：" + (TextUtils.isEmpty(organId) ? "空" : organId));
     }
 
     public static void onLoginFail(FragmentActivity activity) {
@@ -157,10 +154,7 @@ public class LoginActivity extends RobotBaseActivity {
             @Override
             public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
 
-                String html = "请你务必审慎阅读、充分理解 " +
-                        " <font color='" + UIConfig.COLOR_RED + "'>《用户服务协议》</font>" +
-                        "和<font color='" + UIConfig.COLOR_RED + "'>《隐私保护政策》</font>各条款。<p> </p>" +
-                        "如您同意所列条款，请点击\"同意\"按钮，开始使用我们的产品和服务。";
+                String html = "请你务必审慎阅读、充分理解 " + " <font color='" + UIConfig.COLOR_RED + "'>《用户服务协议》</font>" + "和<font color='" + UIConfig.COLOR_RED + "'>《隐私保护政策》</font>各条款。<p> </p>" + "如您同意所列条款，请点击\"同意\"按钮，开始使用我们的产品和服务。";
 
                 mTvHint.setText(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY));
                 mTvHint.setOnClickListener(v -> {
@@ -337,8 +331,7 @@ public class LoginActivity extends RobotBaseActivity {
                 mTvRight.setBackgroundResource(R.drawable.dialog_button_selector);
                 ArrayList<String> noGrantedPermission = new ArrayList<>();
                 for (String str : UIConfig.NEEDED_PERMISSION) {
-                    if (ContextCompat.checkSelfPermission(LoginActivity.this, str)
-                            != PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(LoginActivity.this, str) != PackageManager.PERMISSION_GRANTED) {
                         noGrantedPermission.add(str);
                     }
                 }
@@ -360,6 +353,28 @@ public class LoginActivity extends RobotBaseActivity {
                 } else {
                     ActivityCompat.requestPermissions(LoginActivity.this, UIConfig.NEEDED_PERMISSION, 1);
                 }
+            }
+        }, false);
+    }
+
+
+    public static void onDialogLoginByFail(FragmentActivity activity, OnViewClickListener onViewClickListener) {
+        DialogRobotFactory.createCustomDialog(activity, new DialogRobotFactory.OnViewCallBack() {
+            @Override
+            public void callBack(TextView mTvTitle, TextView mTvHint, TextView mTvLeft, TextView mTvRight, View mVLineVertical) {
+                mTvHint.setText("放弃注册，将无法使用该应用，是否放弃？");
+                mTvTitle.setText("放弃注册？");
+                mTvLeft.setText("我再想想");
+                mTvRight.setText("放弃注册");
+
+            }
+
+            @Override
+            public void onViewClick(BindViewHolder viewHolder, View view, TDialog tDialog) {
+                if (onViewClickListener != null) {
+                    onViewClickListener.onViewClick(viewHolder, view, tDialog);
+                }
+                tDialog.dismiss();
             }
         }, false);
     }
