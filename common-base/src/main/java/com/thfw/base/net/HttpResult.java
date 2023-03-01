@@ -54,8 +54,8 @@ public class HttpResult<T> implements IResult, IModel {
     public static final int SERVICE_TIME_NO_START = 20;
     // 您所在的机构服务已过期，请联系所在机构管理员(token验证)
     public static final int SERVICE_TIME_ALREADY_END = 21;
-    // 您所在的机构，购买的服务开始时间为：202X-XX-XX XX:XX:XX。请耐心等待或联系所在机构管理员
-    public static final int SERVICE_TIME_NO_START_BY_JOIN = 22;
+    // 机构被删除，不存在
+    public static final int SERVICE_DELETE_OR_NO_CREATE = 22;
     // 您所在的机构服务已过期，请联系所在机构管理员(token验证)
     public static final int SERVICE_TIME_ALREADY_END_BY_JOIN = 23;
 
@@ -145,8 +145,8 @@ public class HttpResult<T> implements IResult, IModel {
                 return "您所在的机构服务已过期，请联系所在机构管理员";
             case SERVICE_TIME_ALREADY_END_BY_JOIN:
                 return "该机构服务已过期，请联系所在机构管理员";
-//            case SERVICE_TIME_NO_START_BY_JOIN:
-//                return "该机构，购买的服务开始时间为：202X-XX-XX XX:XX:XX。请耐心等待或联系所在机构管理员";
+            case SERVICE_DELETE_OR_NO_CREATE:
+                return "机构被删除或者未创建，请联系所在机构管理员";
 //            case SERVICE_TIME_NO_START_BY_LOGIN:
 //                return "所在的机构，购买的服务开始时间为：202X-XX-XX XX:XX:XX。请耐心等待或联系所在机构管理员";
 //            case SERVICE_TIME_NO_START:

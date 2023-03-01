@@ -141,6 +141,7 @@ public class OkHttpUtil {
                 case HttpResult.FAIL_TOKEN:
                 case HttpResult.SERVICE_TIME_NO_START:
                 case HttpResult.SERVICE_TIME_ALREADY_END:
+                case HttpResult.SERVICE_DELETE_OR_NO_CREATE:
 
                     // token 失效
                     LogUtil.d(TAG, "OkHttpUtil.mBaseCodeListener.onCode(" + code + ")");

@@ -238,6 +238,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     break;
                 case HttpResult.SERVICE_TIME_NO_START:
                 case HttpResult.SERVICE_TIME_ALREADY_END:
+                case HttpResult.SERVICE_DELETE_OR_NO_CREATE:
                     if (!UserManager.getInstance().isTrueLogin()) {
                         return;
                     }
