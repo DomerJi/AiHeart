@@ -16,7 +16,7 @@ public class ApiHost {
     /**
      * 测试环境
      */
-    public static final String TEST_HOST = "http://101.37.149.192:8080/";
+    public static final String TEST_HOST = "http://fw.psyhealth.work:8080/";
 
     /**
      * 正在使用

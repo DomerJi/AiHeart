@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -30,6 +31,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.opensource.svgaplayer.SVGAImageView;
 import com.thfw.base.ThemeType;
 import com.thfw.base.base.IPresenter;
@@ -160,6 +164,8 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     private ImageView[] imageViews;
     private int[] imgIds = new int[]{R.mipmap.ic_home_tab_home, R.mipmap.ic_home_tab_msg, R.mipmap.ic_home_tab_me};
     private TextView[] textViews;
+    private PageStateViewModel pageStateViewModel;
+    private View vSplash2;
 
     public static void setShowLoginAnim(boolean showLoginAnim) {
         MainActivity.showLoginAnim = showLoginAnim;
@@ -308,7 +314,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
 
     @Override
     public void initData() {
-        PageStateViewModel pageStateViewModel = new ViewModelProvider(this).get(PageStateViewModel.class);
+        pageStateViewModel = new ViewModelProvider(this).get(PageStateViewModel.class);
         pageStateViewModel.getPageStateLive().observe(this, new Observer<PageStateModel>() {
             @Override
             public void onChanged(PageStateModel pageStateModel) {
@@ -534,6 +540,56 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
         return STATUSBAR_TRANSPARENT;
     }
 
+    int showSize = 0;
+    boolean showAnimed = false;
+
+    private void setSplashSize() {
+        showSize = 0;
+        List<String> pages = pageStateViewModel.getPageStateLive().getValue().initializationPage;
+        if (EmptyUtil.isEmpty(pages)) {
+            return;
+        }
+        int size = pages.size();
+        if (size >= 1) {
+            Glide.with(mContext).load(pages.get(0)).into(new CustomTarget<Drawable>() {
+                @Override
+                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                    if (showAnimed) {
+                        return;
+                    }
+                    mSplash2.setVisibility(View.GONE);
+                    vSplash2 = findViewById(R.id.v_splash2);
+                    vSplash2.setVisibility(View.VISIBLE);
+                    vSplash2.setBackground(resource);
+                    showSize++;
+                }
+
+                @Override
+                public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                }
+            });
+            if (size >= 2) {
+                Glide.with(mContext).load(pages.get(1)).into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        if (showAnimed) {
+                            return;
+                        }
+                        mSplash3.setBackground(resource);
+                        showSize++;
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
+                });
+            }
+        }
+
+    }
+
     private void showMain() {
         if (mMainRoot.getVisibility() != View.VISIBLE) {
             // 淡入
@@ -542,54 +598,74 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
             mMainRoot.animate().alpha(1f).setDuration(300).setListener(new SimpleAnimatorListener() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    if (EmptyUtil.isEmpty(MainActivity.this)) {
-                        return;
+                    showAnimed = true;
+                    if (showSize == 1) {
+                        showMainHome();
+                    } else {
+                        showMain2();
                     }
-
-                    // 淡入
-                    mSplash3.setAlpha(0f);
-                    mSplash3.setVisibility(View.VISIBLE);
-                    mSplash3.animate().alpha(1f).setDuration(300).setListener(new SimpleAnimatorListener() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            if (EmptyUtil.isEmpty(MainActivity.this)) {
-                                return;
-                            }
-                            mMainRoot2.setAlpha(0f);
-                            mMainRoot2.setVisibility(View.VISIBLE);
-                            mMainRoot2.animate().alpha(1f).setDuration(400).setListener(new SimpleAnimatorListener() {
-
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    if (EmptyUtil.isEmpty(MainActivity.this)) {
-                                        return;
-                                    }
-                                    getWindow().setBackgroundDrawableResource(R.drawable.page_gray_radius);
-                                    mMainRoot.setBackgroundColor(Color.TRANSPARENT);
-                                    mSplash3.setVisibility(View.GONE);
-                                    mSplash2.setVisibility(View.GONE);
-                                    onMeResume();
-                                }
-                            }).setStartDelay(1300);
-
-                            // 未登录，提前跳转，防止出现首页
-                            if (!UserManager.getInstance().isTrueLogin()) {
-                                HandlerUtil.getMainHandler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        loginToed = true;
-                                        LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
-                                    }
-                                }, 1100);
-                            }
-
-                        }
-
-                    }).setStartDelay(1300);
                 }
 
             }).setStartDelay(800);
 
+        }
+    }
+
+    private void showMain2() {
+        if (EmptyUtil.isEmpty(MainActivity.this)) {
+            return;
+        }
+
+        // 淡入
+        mSplash3.setAlpha(0f);
+        mSplash3.setVisibility(View.VISIBLE);
+        mSplash3.animate().alpha(1f).setDuration(300).setListener(new SimpleAnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (vSplash2 != null) {
+                    vSplash2.setVisibility(View.GONE);
+                }
+                showMainHome();
+            }
+
+        }).setStartDelay(1300);
+
+    }
+
+    private void showMainHome() {
+
+        if (EmptyUtil.isEmpty(MainActivity.this)) {
+            return;
+        }
+        mMainRoot2.setAlpha(0f);
+        mMainRoot2.setVisibility(View.VISIBLE);
+        mMainRoot2.animate().alpha(1f).setDuration(400).setListener(new SimpleAnimatorListener() {
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (EmptyUtil.isEmpty(MainActivity.this)) {
+                    return;
+                }
+                getWindow().setBackgroundDrawableResource(R.drawable.page_gray_radius);
+                mMainRoot.setBackgroundColor(Color.TRANSPARENT);
+                mSplash3.setVisibility(View.GONE);
+                mSplash2.setVisibility(View.GONE);
+                onMeResume();
+            }
+        }).setStartDelay(1300);
+        goSplashLogin();
+    }
+
+    private void goSplashLogin() {
+        // 未登录，提前跳转，防止出现首页
+        if (!UserManager.getInstance().isTrueLogin()) {
+            HandlerUtil.getMainHandler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loginToed = true;
+                    LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+                }
+            }, 1100);
         }
     }
 
@@ -774,6 +850,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
     protected void onStart() {
         super.onStart();
         if (mMainRoot.getVisibility() != View.VISIBLE) {
+            setSplashSize();
             mMainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {

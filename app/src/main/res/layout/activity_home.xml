@@ -13,6 +13,14 @@
         layout="@layout/page_splash_2" />
 
     <View
+        android:id="@+id/v_splash2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:ignore="MissingConstraints" />
+
+
+    <View
         android:id="@+id/v_splash3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

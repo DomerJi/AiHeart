@@ -77,6 +77,14 @@ public class HourUtil {
         return formatyyMMdd.format(date);
     }
 
+    public static long getYYMMDDLong(String yymmdd) {
+        try {
+            return formatyyMMdd.parse(yymmdd).getTime();
+        } catch (ParseException e) {
+            return -1;
+        }
+    }
+
     public static String getYYMMDD(long time) {
         return getYYMMDD(new Date(time));
     }

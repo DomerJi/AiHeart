@@ -14,7 +14,9 @@ import java.util.Map;
 import io.reactivex.Observable;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.QueryMap;
 
 /**
  * Author:pengs
@@ -96,9 +98,8 @@ public interface OtherApi {
      * update_time
      * download_url
      */
-    @FormUrlEncoded
-    @POST("page/state")
-    Observable<HttpResult<PageStateModel>> pageState(@FieldMap Map<String, Object> params);
+    @GET("app/configure")
+    Observable<HttpResult<PageStateModel>> pageState(@QueryMap Map<String, Object> params);
 
 
 }

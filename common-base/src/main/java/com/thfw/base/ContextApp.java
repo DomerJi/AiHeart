@@ -15,9 +15,14 @@ public final class ContextApp {
     private static final String KEY_DEVICES_TYPE = "key_devices_type";
     private static Context context;
     private static int deviceType = DeviceType.MOBILE;
+    private static int contentType = ContentType.QIANG_JUN;
 
     private ContextApp() {
 
+    }
+
+    public static String getContentType() {
+        return String.valueOf(contentType);
     }
 
     public static int getDeviceType() {
@@ -25,6 +30,10 @@ public final class ContextApp {
             deviceType = SharePreferenceUtil.getInt(KEY_DEVICES_TYPE, deviceType);
         }
         return deviceType;
+    }
+
+    public static void setContentType(int contentType) {
+        ContextApp.contentType = contentType;
     }
 
     public static void setDeviceType(int deviceType) {
@@ -76,4 +85,23 @@ public final class ContextApp {
          */
 
     }
+
+    public interface ContentType {
+        /**
+         * 强军
+         */
+        int QIANG_JUN = 1;
+
+        /**
+         * 大学
+         */
+        int BIT_SCHOOL = 2;
+
+        /**
+         * 中小学
+         */
+        int SMALL_SCHOOL = 3;
+
+    }
+
 }

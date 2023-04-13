@@ -7,9 +7,12 @@ import static com.thfw.base.ThemeType.TYPE_APP_WHITE;
 import android.content.Context;
 import android.util.Log;
 
-import com.thfw.mobileheart.R;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
-import java.util.Calendar;
+import com.thfw.base.models.PageStateModel;
+import com.thfw.mobileheart.R;
+import com.thfw.ui.utils.PageStateViewModel;
 
 /**
  * Author:pengs
@@ -20,15 +23,31 @@ public class ThemeUtil {
 
     public static final int NOT_THEME_ID = -1;
 
-    public static int getThemeId(int type) {
-
-        Calendar calendarStart = Calendar.getInstance();
-        calendarStart.set(2023, 0, 21, 0, 0, 0);
-
-        Calendar calendarEnd = Calendar.getInstance();
-        calendarEnd.set(2023, 0, 27, 0, 0, 0);
+    public static int getThemeId(Context context, int type) {
+        if (!(context instanceof AppCompatActivity)) {
+            return NOT_THEME_ID;
+        }
+        PageStateViewModel pageStateViewModel = new ViewModelProvider((AppCompatActivity) context).get(PageStateViewModel.class);
+        if (pageStateViewModel.getPageStateLive() == null || pageStateViewModel.getPageStateLive().getValue() == null) {
+            return NOT_THEME_ID;
+        }
+        PageStateModel model = pageStateViewModel.getPageStateLive().getValue();
+        if (model.holidays == null) {
+            return NOT_THEME_ID;
+        }
+        long star = model.holidays.getStart();
+        long end = model.holidays.getEnd();
+        Log.i("ThemeUtil", "star = " + end + "   -   end = " + end);
+        if (star == -1 || end == -1) {
+            return NOT_THEME_ID;
+        }
+//        Calendar calendarStart = Calendar.getInstance();
+//        calendarStart.setTimeInMillis(star);
+//
+//        Calendar calendarEnd = Calendar.getInstance();
+//        calendarEnd.setTimeInMillis(end);
         long millis = System.currentTimeMillis();
-        if (millis >= calendarStart.getTimeInMillis() && millis <= calendarEnd.getTimeInMillis()) {
+        if (millis >= star && millis <= end) {
             switch (type) {
                 case TYPE_APP:
                     return R.style.AppTheme_NewYear;
@@ -43,7 +62,7 @@ public class ThemeUtil {
     }
 
     public static void setTheme(Context context, int type) {
-        int id = getThemeId(type);
+        int id = getThemeId(context, type);
         if (id != NOT_THEME_ID) {
             context.setTheme(id);
         }

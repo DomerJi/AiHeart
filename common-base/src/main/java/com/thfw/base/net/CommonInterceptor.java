@@ -23,6 +23,7 @@ import okhttp3.Response;
 public class CommonInterceptor implements Interceptor {
 
     public static final String TOKEN = "Token";
+    public static final String CLIENT_TYPE = "client-type";
     //    public static final String DEVICE_TYPE = "device_type";
     public static final String DEVICE_TYPE = "device-type";
     private static final String CHECK_VERSION_URL = "version/latest";
@@ -73,6 +74,8 @@ public class CommonInterceptor implements Interceptor {
         if (!TextUtils.isEmpty(token)) {
             requestBuilder.addHeader(TOKEN, token);
         }
+
+        requestBuilder.addHeader(CLIENT_TYPE, ContextApp.getContentType());
 
         if (requestBuilder.build().url().toString().endsWith(CHECK_VERSION_URL)) {
             switch (ContextApp.getDeviceType()) {
