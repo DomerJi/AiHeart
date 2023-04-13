@@ -10,8 +10,6 @@ import com.thfw.base.utils.GsonUtil;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
-import java.util.Random;
-
 /**
  * Author:pengs
  * Date: 2022/12/1 15:34
@@ -51,16 +49,6 @@ public class PageStateViewModel extends ViewModel {
             @Override
             public void onSuccess(PageStateModel data) {
                 if (data != null) {
-//                    data.blackColor = new Random().nextBoolean();
-//                    data.redStar = new Random().nextBoolean();
-//
-                    if (data.holidays != null) {
-                        boolean isset = new Random().nextBoolean();
-                        String time = isset ? "2023-04-13" : "";
-                        String endtime = isset ? "2023-04-14" : "";
-                        data.holidays.start = time;
-                        data.holidays.end = endtime;
-                    }
                     SharePreferenceUtil.setString(KEY_STATE, GsonUtil.toJson(data));
                     if (getPageStateLive().getValue() == null || !getPageStateLive().getValue().equals(data)) {
                         getPageStateLive().setValue(data);
