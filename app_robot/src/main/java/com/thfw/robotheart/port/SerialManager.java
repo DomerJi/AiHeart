@@ -1,5 +1,7 @@
 package com.thfw.robotheart.port;
 
+import static com.thfw.base.utils.RobotUtil2.KEY_ROBOT_ACTION;
+
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -16,6 +18,7 @@ import com.thfw.base.utils.EmptyUtil;
 import com.thfw.base.utils.HandlerUtil;
 import com.thfw.base.utils.HourUtil;
 import com.thfw.base.utils.LogUtil;
+import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.robotheart.robot.RobotUtil;
 
@@ -325,6 +328,10 @@ public class SerialManager {
     }
 
     public void startAction(ActionParams actionParams) {
+        if (!SharePreferenceUtil.getBoolean(KEY_ROBOT_ACTION, true)) {
+            LogUtil.e(TAG, "KEY_ROBOT_ACTION -> false");
+            return;
+        }
         if (actionParams == null) {
             LogUtil.e(TAG, "actionParams -> null");
             return;

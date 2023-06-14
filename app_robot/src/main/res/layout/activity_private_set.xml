@@ -192,6 +192,18 @@
                     android:text="Log调试"
                     android:textColor="@color/colorRobotFore" />
 
+                <CheckBox
+                    android:id="@+id/cb_robot_action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:buttonTint="@color/colorRobotFore"
+                    android:checked="true"
+                    android:paddingRight="8dp"
+                    android:text="动作"
+                    android:textColor="@color/colorRobotFore" />
+
+
             </LinearLayout>
 
         </LinearLayout>

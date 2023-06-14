@@ -10,9 +10,9 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 258,
-      "versionName": "2.0.56",
-      "outputFile": "robot_258_2.0.56.apk"
+      "versionCode": 260,
+      "versionName": "2.0.60",
+      "outputFile": "../release/robot_260_2.0.60.apk"
     }
   ]
 }

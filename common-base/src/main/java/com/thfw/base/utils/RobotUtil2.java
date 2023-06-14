@@ -15,6 +15,7 @@ public class RobotUtil2 {
     private static final String TAG = RobotUtil2.class.getSimpleName();
     // ACE 阵列mic唤醒 开关控制
     public static final String KEY_ACE_OPEN = "ace_open";
+    public static final String KEY_ROBOT_ACTION = "robot_action_open";
     private static int installRobot = -1;
     private static int enableMic = -1; // 是否启用阵列mic
 

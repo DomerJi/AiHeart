@@ -1,6 +1,7 @@
 package com.thfw.robotheart.activitys.me;
 
 import static com.thfw.base.utils.RobotUtil2.KEY_ACE_OPEN;
+import static com.thfw.base.utils.RobotUtil2.KEY_ROBOT_ACTION;
 
 import android.content.Intent;
 import android.provider.Settings;
@@ -50,6 +51,8 @@ public class PrivateSetActivity extends RobotBaseActivity {
     private CheckBox mCbDebug;
     private CheckBox mCbAce;
 
+    private CheckBox mCbRobotAction;
+
     public static final int getAnimFrequency() {
         return SharePreferenceUtil.getInt(AnimFileName.Frequency.KEY_FREQUENCY, AnimFileName.Frequency.EVERY_TIME);
     }
@@ -76,8 +79,10 @@ public class PrivateSetActivity extends RobotBaseActivity {
         mTvTranAnimFrequency = (TextView) findViewById(R.id.tv_tran_anim_frequency);
         mLlHostSet = (LinearLayout) findViewById(R.id.ll_host_set);
         mCbAce = (CheckBox) findViewById(R.id.cb_ace);
+        mCbRobotAction = (CheckBox) findViewById(R.id.cb_robot_action);
         if (RobotUtil.isInstallRobot()) {
             mCbAce.setVisibility(View.VISIBLE);
+            mCbRobotAction.setVisibility(View.VISIBLE);
             mCbAce.setChecked(SharePreferenceUtil.getBoolean(KEY_ACE_OPEN, true));
             mCbAce.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -89,8 +94,17 @@ public class PrivateSetActivity extends RobotBaseActivity {
                     }
                 }
             });
+
+            mCbRobotAction.setChecked(SharePreferenceUtil.getBoolean(KEY_ROBOT_ACTION, true));
+            mCbRobotAction.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    SharePreferenceUtil.setBoolean(KEY_ROBOT_ACTION, isChecked);
+                }
+            });
         } else {
             mCbAce.setVisibility(View.GONE);
+            mCbRobotAction.setVisibility(View.GONE);
         }
 
         InputBoxSquareView mInputBoxSquareView = findViewById(R.id.ibv_code);
