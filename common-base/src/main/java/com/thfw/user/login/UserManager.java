@@ -11,6 +11,7 @@ import com.thfw.base.utils.MyPreferences;
 import com.thfw.base.utils.SharePreferenceUtil;
 import com.thfw.user.models.HistoryAccount;
 import com.thfw.user.models.User;
+import com.umeng.analytics.MobclickAgent;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -172,6 +173,7 @@ public class UserManager extends Observable {
         notifyObservers(user);
         SharePreferenceUtil.setString(KEY_USER, "");
         MyPreferences.getInstance(ContextApp.get()).setAgreePrivacyAgreement(false);
+        MobclickAgent.onProfileSignOff();
     }
 
     public void login() {
@@ -189,6 +191,9 @@ public class UserManager extends Observable {
         LogUtil.e("login -> userJson" + userJson);
         if (user.getLoginStatus() == LoginStatus.LOGINED) {
             SharePreferenceUtil.setString(KEY_USER, userJson);
+            if (isNewLogin) {
+                MobclickAgent.onProfileSignIn(user.getUserId());
+            }
         }
         MyPreferences.getInstance(ContextApp.get()).setAgreePrivacyAgreement(isTrueLogin());
         if (agreedInitListener != null) {

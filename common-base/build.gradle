@@ -41,6 +41,8 @@ dependencies {
     api 'androidx.appcompat:appcompat:' + rootProject.ext.appcompat
     api 'androidx.constraintlayout:constraintlayout:' + rootProject.ext.constraintlayout
     implementation files('libs\\pinyin4j-2.5.0.jar')
+
+    api project(':push')
     testImplementation 'junit:junit:' + rootProject.ext.junit
     androidTestImplementation 'androidx.test.ext:junit:' + rootProject.ext.extJunit
     androidTestImplementation 'androidx.test.espresso:espresso-core:' + espressoCore

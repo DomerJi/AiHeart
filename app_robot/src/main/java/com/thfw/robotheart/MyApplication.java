@@ -55,6 +55,7 @@ import com.thfw.ui.voice.wakeup.WakeupHelper;
 import com.thfw.ui.widget.DeviceUtil;
 import com.thfw.user.login.LoginStatus;
 import com.thfw.user.login.UserManager;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.commonsdk.utils.UMUtils;
 
@@ -316,6 +317,7 @@ public class MyApplication extends MultiDexApplication {
 
 
     public static void kill() {
+        MobclickAgent.onKillProcess(app);
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
