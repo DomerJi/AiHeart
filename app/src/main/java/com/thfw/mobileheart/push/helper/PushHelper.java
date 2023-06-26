@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.thfw.base.utils.GsonUtil;
 import com.thfw.mobileheart.push.MyCustomMessageService;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UmengMessageHandler;
@@ -56,7 +57,8 @@ public class PushHelper {
         // 参数五：Push推送业务的secret，填写Umeng Message Secret对应信息
         UMConfigure.init(context, PushConstants.APP_KEY, PushConstants.CHANNEL,
                 UMConfigure.DEVICE_TYPE_PHONE, PushConstants.MESSAGE_SECRET);
-
+        // 自动采集选择
+        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO);
         //获取推送实例
         PushAgent pushAgent = PushAgent.getInstance(context);
 
