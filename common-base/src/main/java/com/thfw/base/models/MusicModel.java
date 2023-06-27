@@ -208,7 +208,8 @@ public class MusicModel implements Serializable {
 
 
     public String getMp3Url() {
-        return "https://apis.jxcxin.cn/api/kuwo?id=" + dcTargetid + "&type=mp3";
+        // https://apis.jxcxin.cn/doc/kuwo.html
+        return "https://apis.jxcxin.cn/api/kuwo?apiKey=4fd17e5b3769e9888c734229f5790cdc&id=" + dcTargetid + "&type=mp3";
     }
 
     public Object getPicUrl() {
@@ -247,7 +248,7 @@ public class MusicModel implements Serializable {
     }
 
     public String getLyricId() {
-        return "https://nanjing.cdn.cxinyun.cn/api/Kuwolrc.php?id=" + dcTargetid;
+        return "https://apis.jxcxin.cn/api/kuwo?apiKey=4fd17e5b3769e9888c734229f5790cdc&id=" + dcTargetid + "&type=lrc";
     }
 
     public AudioEtcDetailModel.AudioItemModel toAudioItemModel() {
