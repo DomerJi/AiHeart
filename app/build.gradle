@@ -12,7 +12,7 @@ android {
         versionName "2.0.6"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
+        flavorDimensions "buildTest"
         ndk {
 //            abiFilters 'armeabi-v7a'
             abiFilters 'armeabi-v7a', 'arm64-v8a'
@@ -21,6 +21,15 @@ android {
     }
 
     signingConfigs {
+
+        // 局域网
+        lan {
+            storeFile file("sign/heart_phone.jks")
+            storePassword "abc321654"
+            keyAlias "thfw"
+            keyPassword "abc321654"
+        }
+
         // 签名
         release {
             storeFile file("sign/heart_phone.jks")
@@ -28,18 +37,32 @@ android {
             keyAlias "thfw"
             keyPassword "abc321654"
         }
-    }
 
-    buildTypes {
-        release {
+        // 签名
+        debug {
+            storeFile file("sign/heart_phone.jks")
+            storePassword "abc321654"
+            keyAlias "thfw"
+            keyPassword "abc321654"
+        }
+    }
+    productFlavors {
+
+        // 手机正常版本
+        main {
+            dimension "buildTest"
             signingConfig signingConfigs.release
-            // 是否混淆
-            minifyEnabled false
-            // 是否移除无用资源
-            zipAlignEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
         }
+
+        // 【局域网】仅支持局域网 测试使用
+        lan {
+            applicationIdSuffix ".lan"//输出：com.thfw.mobilrheart.lan
+            versionNameSuffix "-lan"//输出：1.0-lan
+            dimension "buildTest"
+            signingConfig signingConfigs.lan
+        }
+
     }
 
     // 修改apk文件名
@@ -49,8 +72,13 @@ android {
                 output ->
                     def outputFile = output.outputFile
                     if (outputFile.name.contains("release")) {
-                        def fileName = "phone_${variant.versionCode}_${variant.versionName}.apk"
-                        outputFileName = new File("../release/", fileName)
+                        if (outputFile.name.contains("lan")) {
+                            def fileName = "lan_${variant.versionCode}_${variant.versionName}.apk"
+                            outputFileName = new File("../release/", fileName)
+                        } else if ("${variant.name}".contains("main")) {
+                            def fileName = "phone_${variant.versionCode}_${variant.versionName}.apk"
+                            outputFileName = new File("../release/", fileName)
+                        }
                     } else if (outputFile.name.contains("debug")) {
                         def fileName = "QjmyPhone_${variant.versionCode}_${variant.versionName}" + "_${variant.name}.apk"
                         outputFileName = new File("../debug/", fileName)
@@ -83,11 +111,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(':common-base')
+
     implementation project(':common-ui')
 //    implementation project(':picture_library')
     implementation 'io.github.lucksiege:pictureselector:v2.5.1'
     implementation project(':calendarview')
-
 
 
     implementation 'com.google.android.material:material:1.2.1'

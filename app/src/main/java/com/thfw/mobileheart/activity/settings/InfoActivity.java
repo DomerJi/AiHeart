@@ -371,7 +371,9 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
                 if (inputFinish()) {
                     mFirstInputMsg = false;
                     UserManager.getInstance().login();
-                    startActivity(new Intent(mContext, SetPasswordFirstActivity.class));
+                    if (!MyApplication.getApp().isLan()) {
+                        startActivity(new Intent(mContext, SetPasswordFirstActivity.class));
+                    }
                     finish();
                 }
             });
@@ -840,7 +842,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
 
         TextView mTvAlbum = contentView.findViewById(R.id.tv_album);
         TextView mTvPreset = contentView.findViewById(R.id.tv_preset);
-        if(DeviceUtil.isLhXk_CM_GB03D()) {
+        if (DeviceUtil.isLhXk_CM_GB03D()) {
             LhXkHelper.putAction(InfoActivity.class, new SpeechToAction(mTvAlbum.getText().toString(), () -> {
                 if (mPopWindow != null) mTvAlbum.performClick();
             }));

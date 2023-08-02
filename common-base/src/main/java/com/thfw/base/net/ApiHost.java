@@ -23,9 +23,20 @@ public class ApiHost {
      */
     private static String CURRENT_HOST;
 
+    private static String CURRENT_AGREE_HOST = "https://psyhealth.work/";
+    private static String CURRENT_TEST_H5_HOST = "https://resource.soulbuddy.cn/public/soul_the_land/depth_result.html?id=";
+
 
     public static void setCurrentHost(String currentHost) {
         CURRENT_HOST = currentHost;
+    }
+
+    public static void setCurrentTestH5Host(String currentTestH5Host) {
+        CURRENT_TEST_H5_HOST = currentTestH5Host;
+    }
+
+    public static void setCurrentAgreeHost(String currentAgreeHost) {
+        CURRENT_AGREE_HOST = currentAgreeHost;
     }
 
     public static String getHost() {
@@ -35,12 +46,18 @@ public class ApiHost {
         return CURRENT_HOST;
     }
 
+    /**
+     * 用户隐私协议
+     *
+     * @return
+     */
     public static String getNo8080Host() {
-        return "https://psyhealth.work/";
+        return CURRENT_AGREE_HOST;
     }
 
+    // 测评结果地址
     public static String getTestH5Host(Object id) {
-        return "https://resource.soulbuddy.cn/public/soul_the_land/depth_result.html?id=" + String.valueOf(id);
+        return CURRENT_TEST_H5_HOST + String.valueOf(id);
     }
 
 }

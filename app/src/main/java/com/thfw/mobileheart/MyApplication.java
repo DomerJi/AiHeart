@@ -276,4 +276,8 @@ public class MyApplication extends MultiDexApplication {
         void onChanged();
     }
 
+    public boolean isLan() {
+        return getPackageName().endsWith(".lan");
+    }
+
 }

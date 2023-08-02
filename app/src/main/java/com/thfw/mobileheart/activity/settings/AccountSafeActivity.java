@@ -14,6 +14,7 @@ import com.thfw.base.net.NetParams;
 import com.thfw.base.net.ResponeThrowable;
 import com.thfw.base.presenter.UserInfoPresenter;
 import com.thfw.base.utils.ToastUtil;
+import com.thfw.mobileheart.MyApplication;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
 import com.thfw.mobileheart.lhxk.LhXkHelper;
@@ -73,10 +74,11 @@ public class AccountSafeActivity extends BaseActivity {
         mTvUserIdValue = (TextView) findViewById(R.id.tv_user_id_value);
         mTvUserIdValue.setText(UserManager.getInstance().getUID());
         mTvPhone = (TextView) findViewById(R.id.tv_phone);
-
-        mLlMobile.setOnClickListener(v -> {
-            startActivityForResult(new Intent(mContext, BindMobileActivity.class), BIND_CODE);
-        });
+        if (!MyApplication.getApp().isLan()) {
+            mLlMobile.setOnClickListener(v -> {
+                startActivityForResult(new Intent(mContext, BindMobileActivity.class), BIND_CODE);
+            });
+        }
         mLlPassword.setOnClickListener(v -> {
             startActivity(new Intent(mContext, SetPasswordOriginActivity.class));
         });

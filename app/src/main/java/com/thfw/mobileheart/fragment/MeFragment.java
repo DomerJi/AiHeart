@@ -266,7 +266,11 @@ public class MeFragment extends BaseFragment implements MoodLivelyHelper.MoodLiv
                     tDialog.dismiss();
                     UserManager.getInstance().logout(LoginStatus.LOGOUT_EXIT);
                     if (!UserManager.getInstance().isTrueLogin()) {
-                        LoginActivity.startActivity(mContext, LoginActivity.BY_OTHER);
+                        if (MyApplication.getApp().isLan()) {
+                            LoginActivity.startActivity(mContext, LoginActivity.BY_PASSWORD);
+                        } else {
+                            LoginActivity.startActivity(mContext, LoginActivity.BY_OTHER);
+                        }
                     }
                 }
             }

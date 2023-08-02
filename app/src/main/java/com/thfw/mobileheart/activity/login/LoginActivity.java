@@ -85,7 +85,7 @@ public class LoginActivity extends BaseActivity {
             }
             UserManager.addHistoryAccount(mobile, "");
             LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
-            if (data.isNoOrganization()) {
+            if (!MyApplication.getApp().isLan() && data.isNoOrganization()) {
                 // todo 手机加入组织机构比较复杂
                 user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
                 UserManager.getInstance().login(user);
