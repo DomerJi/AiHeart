@@ -371,9 +371,7 @@ public class InfoActivity extends BaseActivity<UserInfoPresenter> implements Use
                 if (inputFinish()) {
                     mFirstInputMsg = false;
                     UserManager.getInstance().login();
-                    if (!MyApplication.getApp().isLan()) {
-                        startActivity(new Intent(mContext, SetPasswordFirstActivity.class));
-                    }
+                    startActivity(new Intent(mContext, SetPasswordFirstActivity.class));
                     finish();
                 }
             });
