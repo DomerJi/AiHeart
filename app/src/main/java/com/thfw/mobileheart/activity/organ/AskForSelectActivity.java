@@ -243,10 +243,13 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
         }
         mClSelect.setVisibility(View.VISIBLE);
         mClRequest.setVisibility(View.GONE);
-        mTitleView.setRightText("重新扫码");
-        mTitleView.setOnClickListener(v -> {
-            mBtScanJoin.performClick();
-        });
+        if (!MyApplication.getApp().isLan()) {
+            mTitleView.setRightText("重新扫码");
+            mTitleView.getTvRight().setOnClickListener(v -> {
+                mBtScanJoin.performClick();
+            });
+        }
+
         initDataList();
     }
 
@@ -341,7 +344,9 @@ public class AskForSelectActivity extends BaseActivity<OrganizationPresenter> im
         }
         if (UserManager.getInstance().getUser().isNoSetOrgan()) {
             mClSelect.setVisibility(View.GONE);
-            mClRequest.setVisibility(View.VISIBLE);
+            if (!MyApplication.getApp().isLan()) {
+                mClRequest.setVisibility(View.VISIBLE);
+            }
         } else {
             mClSelect.setVisibility(View.VISIBLE);
             mClRequest.setVisibility(View.GONE);

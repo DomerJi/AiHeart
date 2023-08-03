@@ -80,7 +80,11 @@ public class AccountSafeActivity extends BaseActivity {
             });
         }
         mLlPassword.setOnClickListener(v -> {
-            startActivity(new Intent(mContext, SetPasswordOriginActivity.class));
+            if (MyApplication.getApp().isLan()) {
+                startActivity(new Intent(mContext, SetPasswordFirstActivity.class));
+            } else {
+                startActivity(new Intent(mContext, SetPasswordOriginActivity.class));
+            }
         });
 
 
