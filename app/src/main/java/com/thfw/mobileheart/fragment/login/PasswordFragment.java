@@ -165,10 +165,11 @@ public class PasswordFragment extends BaseFragment<LoginPresenter> implements Lo
             }
             mEtPassword.setSelection(mEtPassword.getText().length());
         });
-
-        mTvForgetPassword.setOnClickListener(v -> {
-            ForgetPasswordActivity.startActivity(mContext, ForgetPasswordActivity.BY_MOBILE);
-        });
+        if (!MyApplication.getApp().isLan()) {
+            mTvForgetPassword.setOnClickListener(v -> {
+                ForgetPasswordActivity.startActivity(mContext, ForgetPasswordActivity.BY_MOBILE);
+            });
+        }
         mTvProduct3g = (TextView) findViewById(R.id.tv_product_3g);
         mTvProductUser = (TextView) findViewById(R.id.tv_product_user);
         mTvProductMsg = (TextView) findViewById(R.id.tv_product_msg);
