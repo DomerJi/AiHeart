@@ -77,6 +77,18 @@ public class LoginActivity extends BaseActivity {
             user.setSetUserInfo(data.isSetUserInfo());
             user.setOrganization(data.organization);
             user.setAuthTypeList(data.getAuthType());
+
+            // 【局域网部署】 无需 扫码 填写个人信息
+            // 【局域网部署】 无需 扫码 填写个人信息
+            // 【局域网部署】 无需 扫码 填写个人信息
+            if (MyApplication.getApp().isLan()) {
+                user.setLoginStatus(LoginStatus.LOGINED);
+                UserManager.getInstance().login(user);
+                MyPreferences.getInstance(MyApplication.getApp()).setAgreePrivacyAgreement(true);
+                activity.finish();
+                return true;
+            }
+
             if (!data.isNoOrganization()) {
                 if (EmptyUtil.isEmpty(data.getAuthType()) || !data.getAuthType().contains(ContextApp.getDeviceTypeStr())) {
                     DialogFactory.createSimple((FragmentActivity) activity, MyApplication.getApp().getResources().getString(R.string.this_device_no_auth_login));
@@ -85,7 +97,7 @@ public class LoginActivity extends BaseActivity {
             }
             UserManager.addHistoryAccount(mobile, "");
             LogUtil.d("UserManager.getInstance().isLogin() = " + UserManager.getInstance().isLogin());
-            if (!MyApplication.getApp().isLan() && data.isNoOrganization()) {
+            if (data.isNoOrganization()) {
                 // todo 手机加入组织机构比较复杂
                 user.setLoginStatus(LoginStatus.LOGOUT_HIDE);
                 UserManager.getInstance().login(user);
