@@ -1,5 +1,8 @@
 package com.thfw.ui.common;
 
+import static com.thfw.base.net.ApiHost.KEY_CUSTOM_HOST;
+import static com.thfw.base.net.ApiHost.KEY_SELECTED_HOST;
+
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -15,9 +18,6 @@ import com.thfw.ui.R;
 import com.thfw.ui.base.IBaseActivity;
 import com.thfw.ui.widget.TitleView;
 
-import static com.thfw.base.net.ApiHost.KEY_CUSTOM_HOST;
-import static com.thfw.base.net.ApiHost.KEY_SELECTED_HOST;
-
 public class HostActivity extends IBaseActivity {
 
     private com.thfw.ui.widget.TitleView mTitleView;
@@ -25,8 +25,6 @@ public class HostActivity extends IBaseActivity {
     private android.widget.TextView mTvOnline;
     private android.widget.TextView mTvTest;
     private android.widget.EditText mEtCustom;
-
-
 
 
     @Override
@@ -85,7 +83,7 @@ public class HostActivity extends IBaseActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String host = s.toString();
+                String host = s.toString().trim().replaceAll(" ", "");
                 if (!TextUtils.isEmpty(host) && host.startsWith("http") && host.length() > 10) {
                     SharePreferenceUtil.setString(KEY_SELECTED_HOST, host);
                     SharePreferenceUtil.setString(KEY_CUSTOM_HOST, host);
@@ -105,7 +103,7 @@ public class HostActivity extends IBaseActivity {
             SharePreferenceUtil.setString(KEY_SELECTED_HOST, ApiHost.ONLINE_HOST);
             currentHost = ApiHost.ONLINE_HOST;
         }
-        ApiHost.setCurrentHost(currentHost);
+        ApiHost.setHost(currentHost);
         if (setEt) {
             String customHost = SharePreferenceUtil.getString(KEY_CUSTOM_HOST, "");
             if (!TextUtils.isEmpty(customHost)) {
@@ -113,17 +111,17 @@ public class HostActivity extends IBaseActivity {
             }
         }
         if (ApiHost.ONLINE_HOST.equals(currentHost)) {
-            mTvOnline.setBackgroundColor(Color.GRAY);
+            mTvOnline.setBackgroundResource(R.drawable.host_selected_bg);
             mTvTest.setBackgroundColor(Color.WHITE);
             mEtCustom.setBackgroundColor(Color.WHITE);
         } else if (ApiHost.TEST_HOST.equals(currentHost)) {
-            mTvTest.setBackgroundColor(Color.GRAY);
+            mTvTest.setBackgroundResource(R.drawable.host_selected_bg);
             mTvOnline.setBackgroundColor(Color.WHITE);
             mEtCustom.setBackgroundColor(Color.WHITE);
         } else {
             mTvOnline.setBackgroundColor(Color.WHITE);
             mTvTest.setBackgroundColor(Color.WHITE);
-            mEtCustom.setBackgroundColor(Color.GRAY);
+            mEtCustom.setBackgroundResource(R.drawable.host_selected_bg);
             if (setEt) {
                 mEtCustom.setText(currentHost);
             }

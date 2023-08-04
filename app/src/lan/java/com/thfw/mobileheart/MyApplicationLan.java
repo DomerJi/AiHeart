@@ -8,8 +8,8 @@ import com.thfw.base.net.ApiHost;
  */
 public class MyApplicationLan extends MyApplication {
     {
-        ApiHost.setCurrentHost("http://clients.natapp1.cc/");
-        ApiHost.setCurrentTestH5Host("http://clients.natapp1.cc/soul_the_land/depth_result.html?id=xxx");
+        ApiHost.setOnlineHost("http://clients.natapp1.cc/");
+        ApiHost.setTestHost("https://fw.psyhealth.work/");
         ApiHost.setCurrentAgreeHost("https://psyhealth.work/");
     }
 }

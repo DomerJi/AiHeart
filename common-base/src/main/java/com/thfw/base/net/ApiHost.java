@@ -11,12 +11,12 @@ public class ApiHost {
     /**
      * 正式环境
      */
-    public static final String ONLINE_HOST = "https://fw.psyhealth.work/";
+    public static String ONLINE_HOST = "https://fw.psyhealth.work/";
 
     /**
      * 测试环境
      */
-    public static final String TEST_HOST = "http://fw.psyhealth.work:8080/";
+    public static String TEST_HOST = "http://clients.natapp1.cc/";
 
     /**
      * 正在使用
@@ -26,14 +26,25 @@ public class ApiHost {
     private static String CURRENT_AGREE_HOST = "https://psyhealth.work/";
     private static String CURRENT_TEST_H5_HOST = "https://resource.soulbuddy.cn/public/soul_the_land/depth_result.html?id=";
 
-
-    public static void setCurrentHost(String currentHost) {
-        CURRENT_HOST = currentHost;
+    public static void setOnlineHost(String onlineHost) {
+        ONLINE_HOST = onlineHost;
     }
 
-    public static void setCurrentTestH5Host(String currentTestH5Host) {
-        CURRENT_TEST_H5_HOST = currentTestH5Host;
+    public static void setTestHost(String testHost) {
+        TEST_HOST = testHost;
     }
+
+    public static void setHost(String currentHost) {
+        if (currentHost != null) {
+            CURRENT_HOST = currentHost;
+            if (CURRENT_HOST.startsWith("https://fw.psyhealth.work/")) {
+                CURRENT_TEST_H5_HOST = "https://resource.soulbuddy.cn/public/soul_the_land/depth_result.html?id=";
+            } else {
+                CURRENT_TEST_H5_HOST = CURRENT_HOST + "soul_the_land/depth_result.html?id=";
+            }
+        }
+    }
+
 
     public static void setCurrentAgreeHost(String currentAgreeHost) {
         CURRENT_AGREE_HOST = currentAgreeHost;
