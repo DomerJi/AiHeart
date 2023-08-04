@@ -37,11 +37,6 @@ public class ApiHost {
     public static void setHost(String currentHost) {
         if (currentHost != null) {
             CURRENT_HOST = currentHost;
-            if (CURRENT_HOST.startsWith("https://fw.psyhealth.work/")) {
-                CURRENT_TEST_H5_HOST = "https://resource.soulbuddy.cn/public/soul_the_land/depth_result.html?id=";
-            } else {
-                CURRENT_TEST_H5_HOST = CURRENT_HOST + "soul_the_land/depth_result.html?id=";
-            }
         }
     }
 
@@ -68,6 +63,11 @@ public class ApiHost {
 
     // 测评结果地址
     public static String getTestH5Host(Object id) {
+        if (CURRENT_HOST.startsWith("https://fw.psyhealth.work/")) {
+            CURRENT_TEST_H5_HOST = "https://resource.soulbuddy.cn/public/soul_the_land/depth_result.html?id=";
+        } else {
+            CURRENT_TEST_H5_HOST = CURRENT_HOST + "soul_the_land/depth_result.html?id=";
+        }
         return CURRENT_TEST_H5_HOST + String.valueOf(id);
     }
 
