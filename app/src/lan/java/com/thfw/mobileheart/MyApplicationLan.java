@@ -10,6 +10,5 @@ public class MyApplicationLan extends MyApplication {
     {
         ApiHost.setOnlineHost("http://clients.natapp1.cc/");
         ApiHost.setTestHost("https://fw.psyhealth.work/");
-        ApiHost.setCurrentAgreeHost("https://psyhealth.work/");
     }
 }

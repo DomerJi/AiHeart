@@ -23,7 +23,6 @@ public class ApiHost {
      */
     private static String CURRENT_HOST;
 
-    private static String CURRENT_AGREE_HOST = "https://psyhealth.work/";
     private static String CURRENT_TEST_H5_HOST = "https://resource.soulbuddy.cn/public/soul_the_land/depth_result.html?id=";
 
     public static void setOnlineHost(String onlineHost) {
@@ -40,11 +39,6 @@ public class ApiHost {
         }
     }
 
-
-    public static void setCurrentAgreeHost(String currentAgreeHost) {
-        CURRENT_AGREE_HOST = currentAgreeHost;
-    }
-
     public static String getHost() {
         if (CURRENT_HOST == null) {
             CURRENT_HOST = SharePreferenceUtil.getString(KEY_SELECTED_HOST, ApiHost.ONLINE_HOST);
@@ -58,7 +52,7 @@ public class ApiHost {
      * @return
      */
     public static String getNo8080Host() {
-        return CURRENT_AGREE_HOST;
+        return getHost();
     }
 
     // 测评结果地址
