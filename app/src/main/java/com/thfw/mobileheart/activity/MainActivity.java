@@ -602,11 +602,12 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                     if (showSize == 1) {
                         showMainHome();
                     } else {
-                        showMain2();
+//                        showMain2();
+                        showMainHome();
                     }
                 }
 
-            }).setStartDelay(800);
+            }).setStartDelay(1000);
 
         }
     }
@@ -856,7 +857,7 @@ public class MainActivity extends BaseActivity implements Animator.AnimatorListe
                 public void run() {
                     showMain();
                 }
-            }, 300);
+            }, 500);
         }
     }
 

@@ -227,7 +227,8 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 if (!mTvRightAgreed) {
-                    MyApplication.kill();
+                    // 什么都不做
+//                    MyApplication.kill();
                 }
             }
         });

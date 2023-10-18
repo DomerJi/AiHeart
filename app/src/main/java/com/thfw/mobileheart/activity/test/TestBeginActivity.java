@@ -24,7 +24,6 @@ import com.thfw.base.utils.DataChangeHelper;
 import com.thfw.base.utils.ToastUtil;
 import com.thfw.mobileheart.R;
 import com.thfw.mobileheart.activity.BaseActivity;
-import com.thfw.mobileheart.activity.video.VideoPlayActivity;
 import com.thfw.mobileheart.adapter.TestDetailAdapter;
 import com.thfw.mobileheart.constants.UIConfig;
 import com.thfw.mobileheart.lhxk.LhXkHelper;
